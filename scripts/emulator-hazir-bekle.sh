@@ -2,7 +2,7 @@
 # Emulatoru kare hattinin diline alir ve paket servisi kararli hale gelene kadar bekler.
 # Kare hatlari `adb wait-for-device`'tan hemen sonra, APK kurmadan once cagirir.
 #
-# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
+# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
 # cihaz Turkce olmali). `-change-locale` emulator secenegi KULLANILMAZ: acilistan hemen sonra
 # framework'u yeniden baslatir ve emulator-runner'in kendi kilit acma adimi (`input keyevent 82`)
 # "Broken pipe" ile duser — o adim kapatilamaz. Burada dil, acilis tamamlandiktan sonra root ile
@@ -35,6 +35,11 @@ case "${TOHUM_DIL:-tr}" in
   # (uygulama kaynağı values-tl; Android `fil` ile `tl`'yi eşdeğer sayar). Pencapça YALNIZ Şahmuki: betik açık
   # yazılır (pa-Arab-PK; kaynak values-b+pa+Arab, çıplak `pa` Gurmuki betiğe çözülür ve o dizini seçmez).
   fil) HEDEF="fil-PH" ;; te) HEDEF="te-IN" ;; kn) HEDEF="kn-IN" ;; mr) HEDEF="mr-IN" ;; pa) HEDEF="pa-Arab-PK" ;; as) HEDEF="as-IN" ;; ne) HEDEF="ne-NP" ;; si) HEDEF="si-LK" ;; km) HEDEF="km-KH" ;;
+  # Dalga 13 seçicide kapalıdır (kare hattı işareti açar). İbranice he-IL (uygulama kaynağı values-iw: Android cihazın
+  # `he`sini kaynak eşlemesinden önce `iw`ye çevirir); İbranice ve N'Ko sağdan sola. Üç harfli kodlar (dag, mos, mdh,
+  # ceb, nqo) values-b+<kod>; CLDR'de yerel ayarı olmayan dag/mos/aa/mdh da BCP-47 etiketiyle kaynağı seçer.
+  he) HEDEF="he-IL" ;; ka) HEDEF="ka-GE" ;; lt) HEDEF="lt-LT" ;; mg) HEDEF="mg-MG" ;; lg) HEDEF="lg-UG" ;; rw) HEDEF="rw-RW" ;; rn) HEDEF="rn-BI" ;; ln) HEDEF="ln-CD" ;;
+  dag) HEDEF="dag-GH" ;; mos) HEDEF="mos-BF" ;; aa) HEDEF="aa-ET" ;; mdh) HEDEF="mdh-PH" ;; ak) HEDEF="ak-GH" ;; ceb) HEDEF="ceb-PH" ;; nqo) HEDEF="nqo-GN" ;;
   *) HEDEF="tr-TR" ;;
 esac
 

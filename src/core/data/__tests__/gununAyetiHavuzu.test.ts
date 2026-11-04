@@ -30,7 +30,8 @@ describe('günün ayeti havuzu', () => {
         .filter(
           ([, m]) =>
             /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u.test(m) ||
-            /^\s*\p{Nd}+\s*[.)]\s/u.test(m) ||
+            // Noktasız baştaki numara da (hebrew_darussalam "255 אללה…").
+            /^\s*\p{Nd}+\s*[.)]?\s/u.test(m) ||
             /\(\p{Nd}+\)\s*[.।]?\s*$/u.test(m) ||
             // Silinemeyen ayet numarası metnin içinde (uyghur_saleh: "(24)،", "(ـ18).", "(8ـ10)").
             /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u.test(m),
@@ -57,9 +58,21 @@ describe('günün ayeti havuzu', () => {
 
   it('Latin dışı yazılı dalga 12 meallerinde Latin harf yok (sinhalese_mahir 2:277 "zසකාත්" kaynak bozulması)', () => {
     const bozuk = GUNUN_AYETI_HAVUZU.flatMap((k) =>
-      (['te', 'kn', 'mr', 'as', 'ne', 'si', 'km'] as const).filter((d) => /\p{Script=Latin}/u.test(k.mealler[d] ?? '')).map((d) => `${k.ref}:${d}`),
+      (['te', 'kn', 'mr', 'as', 'ne', 'si', 'km', 'he', 'ka', 'nqo'] as const)
+        .filter((d) => /\p{Script=Latin}/u.test(k.mealler[d] ?? ''))
+        .map((d) => `${k.ref}:${d}`),
     );
     expect(bozuk).toEqual([]);
+  });
+
+  it('Latin harfli mealde Kiril harf yok (afar_hamza "Yalli как Aanee", lingala_zakaria "тропа" kaynak bozulması)', () => {
+    const kiril = GUNUN_AYETI_HAVUZU.flatMap((k) =>
+      mealler(k)
+        .filter(([d]) => !['ru', 'uz', 'kk', 'ky', 'tg', 'uk', 'sr', 'bg', 'mk', 'el'].includes(d))
+        .filter(([, m]) => /\p{Script=Cyrillic}/u.test(m))
+        .map(([d]) => `${k.ref}:${d}`),
+    );
+    expect(kiril).toEqual([]);
   });
 
   it('mealin başında ve sonunda boşluk yok (kurdish_bamoki her ayeti satır sonuyla bitirir; üretici kırpar)', () => {
@@ -71,7 +84,9 @@ describe('günün ayeti havuzu', () => {
     for (const k of GUNUN_AYETI_HAVUZU) expect([k.ref, typeof k.mealler.tr, typeof k.mealler.en]).toEqual([k.ref, 'string', 'string']);
     for (const dil of Object.keys(GUNUN_AYETI_KAYNAKLARI.mealler)) {
       const n = GUNUN_AYETI_HAVUZU.filter((k) => (k.mealler as Record<string, string | undefined>)[dil]).length;
-      expect([dil, n >= 100]).toEqual([dil, true]);
+      // İstisna Kirundi (dalga 13): `ikirundi_gehiti` açıklamalı ve uzun, 106 kayıt 200 harfi aşar → havuz 75
+      // (QuranEnc'te tek Kirundi meal; sahibe soruldu).
+      expect([dil, n >= (dil === 'rn' ? 70 : 100)]).toEqual([dil, true]);
     }
     for (const k of GUNUN_AYETI_HAVUZU) {
       for (const dil of Object.keys(k.mealler)) expect(GUNUN_AYETI_KAYNAKLARI.mealler).toHaveProperty(dil);
@@ -188,6 +203,30 @@ describe('üreticinin meal temizliği (scripts/icerik/gunun-ayeti-uret.js)', () 
     expect(mealGerekce('ද, zසකාත් පිර', 'si')).toContain('bozuk-karakter');
     expect(mealGerekce('ದುಷ್ಪೆçÃರಣೆ', 'kn')).toContain('bozuk-karakter');
     expect(mealGerekce('Tunay na si Allāh ay kasama ng mga nagtitiis.', 'fil')).toEqual([]);
+  });
+
+  it('dalga 13: Litvanca, Dagbani, Afarca baştaki "255." ve İbranice noktasız "255 " ayet numarası silinir', () => {
+    expect(notNumarasiz('lt', '255. Allahas')).toBe('Allahas');
+    expect(notNumarasiz('dag', '5.Yaa ti Duuma Naawuni')).toBe('Yaa ti Duuma Naawuni');
+    expect(notNumarasiz('aa', '255. Yalli')).toBe('Yalli');
+    expect(notNumarasiz('he', '255 אללה')).toBe('אללה');
+    // Noktasız silme yalnız İbranicede; başka dilde noktasız baştaki numara meal eler.
+    expect(notNumarasiz('ka', '255 ალაჰი')).toBe('255 ალაჰი');
+    expect(mealGerekce('255 ალაჰი', 'ka')).toContain('basta-numara');
+  });
+
+  it('dalga 13: Latin harfli mealde Kiril/İbrani/Arap harfi ve satır sonu bozuk-karakter; ﷺ ve Yunan ε/ͻ (dag, mos, ak) elenmez; İbrani/Gürcü/N\'Ko mealinde Latin harf bozuk', () => {
+    expect(mealGerekce('Yalli sin как waase', 'aa')).toContain('bozuk-karakter');
+    expect(mealGerekce('ezali bilembo тропа bato', 'ln')).toContain('bozuk-karakter');
+    expect(mealGerekce('Nokorε sε, Onyankopכn ne', 'ak')).toContain('bozuk-karakter');
+    expect(mealGerekce('خ هanareo mpino!', 'mg')).toContain('bozuk-karakter');
+    expect(mealGerekce('pahayag\n alang sa katawhan', 'ceb')).toContain('bozuk-karakter');
+    expect(mealGerekce('Pranašas Muchammedas ﷺ', 'lt')).toEqual([]);
+    expect(mealGerekce('Wonko ara na yε\u2019resom Woͻ', 'ak')).toEqual([]);
+    expect(mealGerekce('אללה x', 'he')).toContain('bozuk-karakter');
+    expect(mealGerekce('ალაჰი a', 'ka')).toContain('bozuk-karakter');
+    // Kiril kuralı yalnız dalga 13 Latin dillerinde (Rusça meal Kiril yazılır).
+    expect(mealGerekce('Аллах', 'ru')).toEqual([]);
   });
 });
 

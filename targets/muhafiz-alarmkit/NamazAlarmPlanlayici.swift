@@ -97,7 +97,7 @@ enum NamazAlarmCekirdegi {
         return durdurEtiketleri[ArayuzDili.coz(dil)] ?? "Durdur"
     }
 
-    /// Dil tablosu (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km; cevrilmemis dil Ingilizce kopya).
+    /// Dil tablosu (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; cevrilmemis dil Ingilizce kopya).
     static let durdurEtiketleri: [String: String] = [
         "tr": "Durdur",
         "en": "Stop",
@@ -222,6 +222,36 @@ enum NamazAlarmCekirdegi {
         "si": "නවත්වන්න",
         // km
         "km": "បញ្ឈប់",
+        // ÇEVİRİ: he
+        "he": "Stop",
+        // ÇEVİRİ: ka
+        "ka": "Stop",
+        // ÇEVİRİ: lt
+        "lt": "Stop",
+        // ÇEVİRİ: mg
+        "mg": "Stop",
+        // ÇEVİRİ: lg
+        "lg": "Stop",
+        // ÇEVİRİ: rw
+        "rw": "Stop",
+        // ÇEVİRİ: rn
+        "rn": "Stop",
+        // ÇEVİRİ: ln
+        "ln": "Stop",
+        // ÇEVİRİ: dag
+        "dag": "Stop",
+        // ÇEVİRİ: mos
+        "mos": "Stop",
+        // ÇEVİRİ: aa
+        "aa": "Stop",
+        // ÇEVİRİ: mdh
+        "mdh": "Stop",
+        // ÇEVİRİ: ak
+        "ak": "Stop",
+        // ÇEVİRİ: ceb
+        "ceb": "Stop",
+        // ÇEVİRİ: nqo
+        "nqo": "Stop",
     ]
 
     static func durum() -> String {

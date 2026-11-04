@@ -53,6 +53,10 @@ describe('YonServisi', () => {
     // Pencapça yalnız Şahmuki (Arap harfli, Pakistan normu): sağdan sola. Öteki dalga 12 dilleri soldan sağa.
     expect(sagdanSolaMi('pa')).toBe(true);
     for (const dil of ['fil', 'te', 'kn', 'mr', 'as', 'ne', 'si', 'km']) expect(sagdanSolaMi(dil)).toBe(false);
+    // Dalga 13: İbranice ve N'Ko sağdan sola; öteki on üç dil soldan sağa.
+    expect(sagdanSolaMi('he')).toBe(true);
+    expect(sagdanSolaMi('nqo')).toBe(true);
+    for (const dil of ['ka', 'lt', 'mg', 'lg', 'rw', 'rn', 'ln', 'dag', 'mos', 'aa', 'mdh', 'ak', 'ceb']) expect(sagdanSolaMi(dil)).toBe(false);
     expect(sagdanSolaMi('tr')).toBe(false);
     expect(sagdanSolaMi('xx')).toBe(false);
   });

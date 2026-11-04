@@ -20,7 +20,12 @@ const DILLER = TANIMLI_DILLER.map((d) => d.kod).filter((k) => k !== 'tr');
 // Filipince AOSP gibi `values-tl` (Tagalog): kaynak sistemi `fil` ve `tl`'yi eşdeğer sayar (ResourceTypes.cpp
 // `langsAreEquivalent`), AOSP ve Launcher3 Filipince çevirisini `values-tl`'de taşır.
 // Pencapça (yalnız Şahmuki) `b+pa+Arab`: çıplak `values-pa` Gurmuki cihazlara gider (CLDR `pa` olası betiği Guru).
-const NITELEYICI: Record<string, string> = { id: 'in', ckb: 'b+ckb', fil: 'tl', pa: 'b+pa+Arab' };
+// İbranice Endonezce gibi eski kodla `values-iw`: `ResourcesImpl.adjustLanguageTag` cihazın `he`sini kaynak eşlemesinden
+// önce `iw`ye çevirir, `values-he` hiç seçilmez (lint `LocaleFolder`; AOSP ve Launcher3 de `values-iw`). Üç harfli
+// kodlar yalnız BCP-47 niteleyiciyle (`b+dag`).
+const NITELEYICI: Record<string, string> = {
+  id: 'in', ckb: 'b+ckb', fil: 'tl', pa: 'b+pa+Arab', he: 'iw', dag: 'b+dag', mos: 'b+mos', mdh: 'b+mdh', ceb: 'b+ceb', nqo: 'b+nqo',
+};
 const nitelik = (dil: string) => NITELEYICI[dil] ?? dil;
 /** Android lint `MissingQuantity` HATA'dır: dilin CLDR çoğul kategorileri `<plurals>`'ta olmalı. */
 const COGUL: Record<string, string[]> = {
@@ -88,6 +93,23 @@ const COGUL: Record<string, string[]> = {
   ne: ['one', 'other'],
   si: ['one', 'other'],
   km: ['other'],
+  // İbranice: lint minSdk 24'te CLDR 36 veritabanını kullanır (`many` var; CLDR 42'de kalktı, API 34 altı cihaz da seçer).
+  he: ['one', 'two', 'many', 'other'],
+  ka: ['one', 'other'],
+  lt: ['one', 'few', 'many', 'other'],
+  mg: ['one', 'other'],
+  lg: ['one', 'other'],
+  // rw, rn, dag, mos, aa, mdh CLDR çoğul tablosunda yok → ICU kökü (Tatarca emsali).
+  rw: ['other'],
+  rn: ['other'],
+  ln: ['one', 'other'],
+  dag: ['other'],
+  mos: ['other'],
+  aa: ['other'],
+  mdh: ['other'],
+  ak: ['one', 'other'],
+  ceb: ['one', 'other'],
+  nqo: ['other'],
 };
 
 function resDizinleri(): string[] {
@@ -150,6 +172,11 @@ describe.each(resDizinleri())('%s', (res) => {
 
   it('Filipince yalnız values-tl (AOSP kodu; values-fil ile çift kaynak olmaz)', () => {
     expect(fs.existsSync(path.join(KOK, res, 'values-fil'))).toBe(false);
+  });
+
+  it('İbranice yalnız values-iw (values-he hiç seçilmez); üç harfli kodlar yalnız values-b+<kod>', () => {
+    expect(fs.existsSync(path.join(KOK, res, 'values-he'))).toBe(false);
+    for (const kod of ['dag', 'mos', 'mdh', 'ceb', 'nqo']) expect([kod, fs.existsSync(path.join(KOK, res, `values-${kod}`))]).toEqual([kod, false]);
   });
 
   it('Pencapça yalnız values-b+pa+Arab (values-pa Gurmuki cihazlara Şahmuki gösterirdi)', () => {

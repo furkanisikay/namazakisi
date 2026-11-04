@@ -12,7 +12,7 @@ import org.junit.Test
  * (ör. `$ad`) düşürmesin diye işaretçi değerlerle çağrılır.
  */
 class SaatDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo")
     private val isaretciler = listOf("<AD>", "<SAAT>", "<SURE>", "<S>", "<D>", "987", "986", "985")
 
     private fun metinler(d: SaatDili): Map<String, String> = linkedMapOf(
@@ -145,6 +145,27 @@ class SaatDilTablolariTest {
         assertEquals(SaatDiliKm.saatSesli(1L).removePrefix("1"), SaatDiliKm.saatSesli(2L).removePrefix("2"))
         // Filipince kaynak dizini values-tl: cihazdan gelen "tl" de Filipince tabloyu seçer.
         assertSame(SaatDiliFil, saatDili("tl"))
+    }
+
+    @Test
+    fun dalga13CogulKategorileri() {
+        // CLDR he (JS `cogul.ts > ibranice`): 1 one, 2 two, gerisi other.
+        assertEquals(listOf("other", "one", "two", "other", "other"), listOf(0L, 1L, 2L, 3L, 20L).map { SaatDiliHe.cogulKategorisi(it) })
+        // CLDR lt (JS `cogul.ts > litvanca`): …1 one, …2–9 few (…11–19 hariç), gerisi other.
+        assertEquals(
+            listOf("other", "one", "few", "few", "other", "other", "other", "one", "few", "other"),
+            listOf(0L, 1L, 2L, 9L, 10L, 11L, 19L, 21L, 22L, 111L).map { SaatDiliLt.cogulKategorisi(it) },
+        )
+        // Sebuano Filipince kuralı.
+        assertEquals(listOf("one", "one", "other", "other", "one"), listOf(0L, 1L, 4L, 14L, 21L).map { SaatDiliCeb.cogulKategorisi(it) })
+        // mg, ln, ak 0 ve 1 tekil: 0'da tekil kalıp.
+        for (dil in listOf(SaatDiliMg, SaatDiliLn, SaatDiliAk)) assertEquals(dil.saatSesli(1L).removePrefix("1"), dil.saatSesli(0L).removePrefix("0"))
+        // CLDR dışı (rw, rn, dag, mos, aa, mdh) ve nqo yalnız other: sesli süre her sayıda çoğul kalıp.
+        for (dil in listOf(SaatDiliRw, SaatDiliRn, SaatDiliDag, SaatDiliMos, SaatDiliAa, SaatDiliMdh, SaatDiliNqo)) {
+            assertEquals(dil.saatSesli(1L).removePrefix("1"), dil.saatSesli(2L).removePrefix("2"))
+        }
+        // İbranice kaynak dizini values-iw: cihazdan gelen "iw" de İbranice tabloyu seçer.
+        assertSame(SaatDiliHe, saatDili("iw"))
     }
 
     @Test

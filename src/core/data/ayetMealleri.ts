@@ -706,5 +706,191 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
       "29:45": "ហើយចូរអ្នក(ឱអ្នកនាំសារមូហាំម៉ាត់)សូត្រនូវអ្វីដែលគេបានវ៉ាហ៊ីដល់អ្នកអំពីគម្ពីរ(គួរអាន) និងប្រតិបត្តសឡាតចុះ។ ជាការពិតណាស់ សឡាតអាចហាមឃាត់ពីទង្វើអសីលធម៌ និងអំពើអាក្រក់ទាំងឡាយ។ ហើយការរំឭកទៅចំពោះអល់ឡោះ គឺពិតជាធំធេងបំផុត។ ហើយអល់ឡោះដឹងបំផុតនូវអ្វីដែលពួកអ្នកប្រព្រឹត្ត។",
       "62:9": "ឱបណ្ដាអ្នកដែលមានជំនឿ! នៅពេលដែលគេ(អាហ្សាន)ប្រកាសហៅទៅកាន់ការប្រតិបត្តិសឡាតនៅថ្ងៃសុក្រ ចូរពួកអ្នករួសរាន់ទៅកាន់ការរំលឹកអល់ឡោះ(ស្តាប់ខុតហ្ពះ និងសឡាតជុមអាត់) ហើយចូរពួកអ្នកបោះបង់នូវការលក់ដូរ។ នោះគឺជាការប្រសើរបំផុតសម្រាប់ពួកអ្នក ប្រសិនបើពួកអ្នកបានដឹង។"
     }
+  },
+  "he": {
+    "anahtar": "hebrew_darussalam",
+    "surum": "1.0.3",
+    "baslik": "Hebrew Translation - Darussalam Association",
+    "ayetler": {
+      "2:153": "הוי אלה אשר האמינו! התאזרו בסבלנות ובתפילה, כי אללה הוא עם הסבלנים.",
+      "2:238": "שמרו על התפילות, ובעיקר על התפילה התיכונה, וקומו להתפלל אל אללה בהתמסרות.",
+      "4:103": "וכשתגמרו את התפילה (בתנאים כאלה), הזכירו את אללה בעומדכם, ובשבתכם, ובשוכבכם, וכשתהיו במקום מבטחים, קיימו את התפילה כרגיל. אכן התפילה נקבעו זמניה למאמינים.",
+      "11:114": "וקיים את התפילה בקצות היום, וחלק מהלילה, כי המעשים הטובים מכפרים על המעשים הרעים. וזו הזכרה לאלה אשר רוצים להיזכר.",
+      "29:45": "קרא את אשר הושרה אליך מן הספר, וקיים את התפילה כהלכתה, כי התפילה מונעת את הנתעב ואת הרע. וזכר אללה אדיר יותר, ואללה מכיר את כול מעשיכם.",
+      "62:9": "הוי אלה אשר האמינו! כאשר יקרא לתפילה ביום השישי, עזבו את עסקיכם ולכו לעבוד את אללה, כי כך עדיף לכם, אם הייתם יודעים."
+    }
+  },
+  "ka": {
+    "anahtar": "georgian_rwwad",
+    "surum": "1.0.7",
+    "baslik": "Georgian Translation",
+    "ayetler": {
+      "2:153": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! დახმარება ითხოვეთ (ალლაჰისგან) მოთმინების და ლოცვის მეშვეობით. ჭეშმარიტად, ალლაჰი მომთმენებთანაა.",
+      "2:238": "ო, მორწმუნენო! დაიცავით (სავალდებულო) ლოცვები და (განსაკუთრებით) შუა ლოცვა (‘ასრი). და დადექით ალლაჰის წინაშე (მორჩილებით).",
+      "4:103": "და როდესაც დაასრულებთ ლოცვას, გაიხსენეთ ალლაჰი — მდგომარედ, მჯდომარედ და თქვენს გვერდებზე (დაწოლილნი). ხოლო როდესაც მოიპოვებთ სიმშვიდეს (უსაფრთხოებაში აღმოჩნდებით), აღასრულეთ ლოცვა სრულყოფილად. ჭეშმარიტად, ლოცვა მორწმუნეთათვის დადგენილია (როგორც სავალდებულო) განსაზღვრულ დროს.",
+      "11:114": "და აღასრულე ლოცვა დღის ორივე მხარეს [განთიადზე და ორი ლოცვა დღის მეორე ნახევარში] და ღამის ახლო საათებში [საღამოს და ღამის ლოცვა]. ჭეშმარიტად, კარგი საქმეები შლის ცუდ საქმეებს! ეს შეხსენებაა მათთვის, ვინც იხსენებს [ვისთვისაც შეგონება სასარგებლოა].",
+      "29:45": "და იკითხე ის [ო, შუამავალო], რაც წიგნისგან ზეშთაგეგონა [ყურანისგან] და სრულყოფილად შეასრულე ლოცვა. ჭეშმარიტად, ლოცვა კრძალავს სიავენს და უკეთურობას. ალლაჰის ხსენება კი უფრო უდიდესია და ალლაჰმა იცის, რასაც აკეთებთ.",
+      "62:9": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! როდესაც მოგიწოდებენ პარასკევის ლოცვაზე, ისწრაფეთ ალლაჰის ხსენებისკენ და მიატოვეთ ვაჭრობა. ეს თქვენთვის უკეთესია, რომ იცოდეთ."
+    }
+  },
+  "lt": {
+    "anahtar": "lithuanian_rwwad",
+    "surum": "1.0.8",
+    "baslik": "Lithuanian Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "O jūs, kurie tikite! Ieškokite pagalbos kantrybėje ir As-Salat (maldoje). Iš tiesų, Allahas yra su As-Sabirūn (kantriaisiais).",
+      "4:103": "Pabaigę As-Salat (bendruomeninę maldą), prisiminkite Allahą stovėdami, sėdėdami ir (gulėdami) ant savo šonų, tačiau kai jūs nesate pavojuje, atlikite As-Salat (Ikamat-as-Salat). Iš tiesų, As-Salat (malda) yra įsakyta tikintiesiems nustatytomis valandomis.",
+      "11:114": "Ir atlik As-Salat (Ikamat as-Salat) dviejuose dienos galuose ir kai kuriomis nakties valandomis [t. y. penkias privalomas Salat (maldas)]. Iš tiesų, geri darbai panaikina blogus darbus (t. y. mažas nuodėmes). Tai priminimas (patarimas) dėmesingiems (tiems, kurie priima patarimą).",
+      "29:45": "Recituok (Muchammedai ﷺ), kas buvo apreikšta tau iš Knygos (Korano) ir atlik As-Salat (ikamat-as-salat). Iš tiesų, As-Salat (malda) užkerta kelią Al-Fahša (t. y. sunkioms įvairių rūšių nuodėmėms, neleistiniems intymiems santykiams) ir Al-Munkar (t. y. netikėjimui, daugiadievystei, ir visų rūšių blogiems ištvirkusiems veiksmams) ir Allaho tavęs prisiminimas (šlovinimas) (priešais angelus) yra didesnis iš tiesų [nei tavo prisiminimas (šlovinimas)] Allaho maldose. Ir Allahas žino, ką tu darai.",
+      "62:9": "O jūs, kurie tikite (musulmonai). Kai skelbiamas kvietimas Salat (maldai) penktadienį (Džuma maldai), ateikite į Allaho prisiminimą [Džumos religinį pamokslą (Khutba) ir Salat (maldą)] ir palikite prekybą (ir visus kitus dalykus). Tai geriau jums, jei tik žinotumėte."
+    }
+  },
+  "mg": {
+    "anahtar": "malagasy_rwwad",
+    "surum": "1.0.1",
+    "baslik": "Malagasy Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "o ianareo mpino, mangataha famonjena amin’ny alàlan’ny faharetana sy ny vavaka Soalat ianareo. Tena marina fa Allah dia miaraka mandrakariva amin’ireo manam-paharetana.",
+      "2:238": "Aoka ianareo hitandro mandrakariva ireo vavaka fanompoana (soalat), indrindra ny vavaka fanompoana afovoany ; ary mitsangana amim-panetrentena eo anatrehan’Allah ianareo.",
+      "4:103": "Ary rehefa nahavita ny vavaka fanompoana ianareo, dia tsarovinareo Allah; am-pitsanganana sy am-pipetrahana ary am-patoriana. Ary rehefa tafaverina aminareo ny filaminana, dia tanteraho ny fivavahana araka izay tokony ho izy. Tena marina fa ny vavaka fanompoana dia adidy ho an’ireo mpino ao anaty fotoana voafetra.",
+      "11:114": "Ary tanteraho sy antsangano ny Soalat (Vavaka) amin’ny fiantombohan’ny andro sy ny fiafarany, ary amin’ny ampaham-potoana amin’ny alina.Tena marina fa ireo asa soa dia mamafa ireo asa ratsy. Izany dia fampahatsiahivana ho an’ireo Olona mpandinika.",
+      "29:45": "Tanisao izay nambara taminao avy amin’ny Boky, ary tanteraho ny vavaka (soalat). Tena marina fa ny vavaka (soalat) dia manakana amin’ny asa vetaveta sy ny asa ratsy. Fa ny fahatsiarovana an’I Allah no tena lehibe indrindra. Ary Allah dia mahafantatra izay ataonareo.",
+      "62:9": "Ianareo mpino ! Rehefa tonga ny antso ho amin’ny vavaka fanompoana, amin’ny andro zoma, dia mihazakazaha ho any amin’ny antson’Allah ianareo, ka avelao avokoa ny fandraharahana rehetra fa tsara ho anareo izany raha fantatrareo !"
+    }
+  },
+  "lg": {
+    "anahtar": "luganda_foundation",
+    "surum": "1.0.2",
+    "baslik": "Luganda Translation - African Development Foundation",
+    "ayetler": {
+      "2:153": "Abange mmwe Abakkiriza, mweyambise obugumiikiriza n'okusaala olw'okubanga mazima Allah ali wamu n'abagumiikiriza.",
+      "2:238": "Mwekuume nnyo ku Sswala zonna (ettaano) naddala esswala eyaawakati; era muyimirire mu maaso ga Allah nga muli bagonvu.",
+      "4:103": "Bwe muba mumaliriza esswala, mutendereze Allah mu kuyimirira ne mu kutuula ne mu kugalamira, ate bwe muba mu mirembe musaale esswala mu ngeri eyaabulijjo. Mazima esswala yalaalikibwa ku Bakkiriza nga esaalibwa mu biseera ebigere.",
+      "11:114": "Era yimirizaawo esswala ku nsalosalo ebbiri ez'emisana (ku makya n'akawungezi) n'ekiseera ekisooka ku kiro mazima ebirungi biggyawo ebibi. Okwo nno kubuulirira eri abo abajjukira.",
+      "29:45": "Soma ebyo ebitumiddwa gy'oli ebiri mu Kitabo (Kulaani) era yimirizaawo esswala, mazima esswala eziyiza okukola eby'obuwemu n'empisa embi, era okutendereza Allah ky'ekisinga obukulu, era Allah amanyi bye mukola.",
+      "62:9": "Abange mmwe abakkiriza, bwe baaziinanga olw'esswala (y'Ejjuma) ku lunaku lw'okutaano, mwanguwenga okugenda eri okwogera ku Allah, ate muyimirize emirimu. Ekyo ky'ekirungi gyemuli singa mubadde mumanyi."
+    }
+  },
+  "rw": {
+    "anahtar": "kinyarwanda_assoc",
+    "surum": "1.0.5",
+    "baslik": "Kinyarwanda Translation - Rwanda Muslim Association",
+    "ayetler": {
+      "2:238": "Mujye muhozaho iswala (z’itegeko), by’umwihariko iswala yo hagati (al Aswir). Kandi mujye muhagarara (mu iswala) mwibombaritse imbere ya Allah.",
+      "11:114": "Kandi (yewe Muhamadi) ujye uhozaho iswala mu mpera ebyiri z’amanywa (Swalat ul Fajir, Adhuhuri na Al aswir), ndetse no mu masaha y’ijoro (Al magrib na Al ishai). Mu by’ukuri ibikorwa byiza bikuraho ibibi. Ibyo ni inyigisho ku bantu bibuka.",
+      "29:45": "Soma ibyo wahishuriwe mu gitabo (Qur’an), unahozeho iswala; mu by’ukuri iswala zibuza gukora ibiteye isoni n’ibibi. Kandi rwose gusingiza Allah biruta byose; ndetse Allah azi ibyo mukora.",
+      "62:9": "Yemwe abemeye! Umuhamagaro w’isengesho ry’umunsi wa gatanu (Ijuma) nuhamagarwa, mujye mwihuta mujya gusingiza Allah, kandi muhagarike ubucuruzi (n’ibindi bintu byose). Ibyo ni byo byiza kuri mwe, iyaba mwari mubizi."
+    }
+  },
+  "rn": {
+    "anahtar": "ikirundi_gehiti",
+    "surum": "1.0.4",
+    "baslik": "Kirundi Translation - Yusuf Gahiti",
+    "ayetler": {
+      "2:153": "Bemeramana! Mu gutunganya ivyanyu, nimwifashishe kwihanganira ibibagoye maze mwihangane mu gukora ivyo mwategetswe no mu kwirinda ivyo mwabujijwe, mwifashishe no gusenga isengesho rikwije ibisabwa ku mwanya waryo, kuko ari ryo ribuza umuntu gukora ivyaha rutura n’ibicumuro. Mu vy’ukuri, Imana Allah Iri kumwe n’abihangana mu kubatera intege no kubashikana ku vyo barondera.",
+      "2:238": "Bislamu! Nimutsimbatare mu kwamizako amasengesho-bwirizwa atanu akwije ibisabwa ku mwanya wayo, na canecane isengesho ryo hagati na hagati ryo ku muhingamo, muraheza kandi muhagarare mu masengesho mwicishije bugufi ku Mana Allah.",
+      "4:103": "Nimwaheza gusenga rero, murashishikara muninahaza Imana Allah muyitazira uko muzoba muri kwose, muhagaze, mwicaye no mu gihe mukitse urubavu. Nimwatekana urugamba ruheze, muraheza musenge isengesho rikwije ivyunamo, muryitwararike. Mu vy’ukuri, isengesho ku bemeramana ryamye ritegetswe gusengwa ku mwanya ryagenewe;",
+      "11:114": "Muvugishwamana! Tsimbataza kandi n’isengesho rikwije ibisabwa mu gitondo no ku mugoroba, no mu gihe c’ijoro. Mu vy’ukuri, ukugira ivyiza guhanagura ibicumuro, ivyo rero ni inkebuzo ku bibuka bagategera;"
+    }
+  },
+  "ln": {
+    "anahtar": "lingala_zakaria",
+    "surum": "1.0.2",
+    "baslik": "Lingala Translation - Mohammed Balangogo",
+    "ayetler": {
+      "2:153": "Eh bino bandimi! Boluka lisalisi okati ya losambo mpe na koyika mpiko. Mpamba te Allah azali elongo na bakangi mitema.",
+      "2:238": "Bobatela basambela, mpe sambela ya sima ya nzanga. Mpe botelema na limemia liboso ya Allah.",
+      "4:103": "Mpe soki bosilisi kotelemisa losambo, botanga nkombo ya Allah, ya kotelema to ya kofanda to na mipanzi na bino na kolala, mpe soki bozui kimia, botelemisa losambo na lolenge na yango. Ya sôló, losambo ezali lotomo mpona bandimi ete etelemisama na ngonga na yango.",
+      "29:45": "Tanga oyo ekitelaki yo kati na buku, mpe telemisa losambo. Ya sólo, losambo epekisaka (moto) kosala mabe, kasi bokundoli bwa Allah nde ezali monene koleka. Mpe Allah ayebi maye bozali kosala."
+    }
+  },
+  "dag": {
+    "anahtar": "dagbani_ghatubo",
+    "surum": "1.0.0",
+    "baslik": "Dagbani Translation - Muhammad Baba Ghutubo",
+    "ayetler": {
+      "2:153": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni. yεlimaŋli! Bom ya sɔŋsim ni suɣulo ni jiŋli puhibu (n-zaŋ kpa yi daadiini mini yi Dunia yεla polo). Achiika! Naawuni mini suɣulonima m-be.",
+      "2:238": "Gum ya yi jiŋaanu, n-ti pahi sunsuuni jiŋli (lahisari jiŋli).Yaha! Yiɣisim ya zani n-ti Naawuni ka nyɛla ninvuɣu shεba ban gbargiri bɛ maŋa.",
+      "4:103": "Dinzuɣu yi yi puhi jiŋli naai, tɔ! Yin teemi ya Naawuni yɛla ka di nyɛla yi ʒela zuɣusaa, bee yi ʒila tiŋgbani ni, bee ka yi dola yi luɣa zuɣu.Yi mi yi ti mali yɛmbahiga, tɔ! Yin puhimi ya jiŋli. Achiika! Jiŋli nyɛla talahi, ka nyɛla din mali saha n-zaŋ ti ninvuɣu shɛba ban ti Naawuni yɛlimaŋli.",
+      "29:45": "(Yaa nyini Annabi)! Karimmi bɛ ni siɣisi shɛli wahayi n-ti a na kundili (Alkur’aani) puuni. Yaha! Puhimi jiŋli. Achiika! Jiŋli puhibu mɔŋdila kavi tuma mini Naawuni ni je shεli. Yaha! Naawuni yɛla teebu n-nyɛ din bara. Yaha! Naawuni mi yi tuuntumsa ni nyɛ shɛli.",
+      "62:9": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Bɛ yi ti moli jiŋli Alizumma dabsili puuni, tɔ! Yin garimi ya n-chaŋ Naawuni yεla teebu (hutuba wumbu mini zumba jiŋli puhibu) ka chɛn ya daabilim, dina n-nyɛ din gari nzaŋ tin ya, yi yi nyɛla ninvuɣu shεba ban mi."
+    }
+  },
+  "mos": {
+    "anahtar": "moore_rwwad",
+    "surum": "1.0.2",
+    "baslik": "Moore Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "Yɑɑ yãmb neb nins sẽn kõ sɩd ne Wẽnde! kos-y sõngr ne sugr mɑɑneg lɑ pʋʋsgo, ɑd Wẽnd lɑgma sugrã rãmbã.",
+      "2:238": "Gũus-y pʋʋs-rãmbã lɑ sʋk pʋʋsgã (Lɑɑnsɑrã Pʋʋsgã), lɑ y yãnes ne Pʋʋsgã, Wẽnd a ye yĩngɑ, tɩ y yɑɑ gãneg-m-mens rãmbɑ ( Wẽnd tũudbɑ).",
+      "4:103": "Lɑ yãmb sã n sε Pʋʋsgã bɩ y tẽeg Wẽnd yʋʋrã tɩ y yɑɑ sẽn yãse, sẽn zĩ bɩ kɩlle, lɑ y sã n yõgne bɩ y yãnes tɩrg ne Pʋʋsgã, ɑd Pʋʋsgã yɩɩme n yɑɑ tɩlɑe n yãk wɑkɑt tɩ rog sɩd-kõtbã zugu.",
+      "11:114": "La yãnes Pʋʋsgã wĩndg kɩrems a yiibã la yʋngã wakat sãnda, ad tʋʋm-sõmsã yẽesda tʋʋm-yoodã, ad woto yaa saglg ne neb nins sẽn tagsdã.",
+      "29:45": "Kɑrem b sẽn tʋm tɩ wɑ fo nengẽ tɩ be Gafẽ wã, lɑ f yɑls Pʋʋsgã, ad Pʋʋsgã gũudɑme n yit yel-wẽn lɑ yel-kiti tʋʋmɑ, lɑ ad Wẽnd yʋʋrã tẽegrã n yɩɩd bedrem, lɑ Wẽnd mii yãmb sẽn mɑɑndã.",
+      "62:9": "Yãmb ɑ neb nins sẽn kõ sɩd ne Wẽnde! B sã n wa bool tɩ y wa pʋʋs arzũmã raare, bɩ y yãg n tʋg Wẽnd yʋʋrã tẽegrẽ la y bas koosmã; yãmb maan-kãng la sõma ne yãmb tɩ yãmb sã n da miẽ."
+    }
+  },
+  "aa": {
+    "anahtar": "afar_hamza",
+    "surum": "1.0.1",
+    "baslik": "Afar Translation - Mahmoud Abdulqader Hamza",
+    "ayetler": {
+      "2:153": "Yeemeneh yan maraw Addunyaay Akeerä caagidil inkih Yallak cato Sabrii kee Salaatal essera, Diggah Yalli catoo kee dacayrih yasbire mará luk yanik.",
+      "2:238": "Muslimiiney koona waktih Salaatay fardih Siinil yani le waktil kaa Abtaanamal kaa dacrisaay muxxi muxxi gude salaatay Qasri Salat kinni kaak dacrisa,, sinni Salaatay Abtaanal Yallak meesitak Ramma kaah Axcuk Soola.",
+      "4:103": "Tokkel Salaatak (meesitan waqdi aban Salat kinnuk) gaba kaltan waqdi, toysa isin Soolak daffeyak, isin Qaxah antik Yalla Cusa, tokkel meesi siinik gexxeeh Satta ittan waqdi, toysa Salat dudda- luk Soolisaay aba, Diggah Salat moominiinil fardiy yimixxige wakti-le kinni.",
+      "11:114": "Nabiyow salat laqók namma exxat soolis (Subcii kee Dohoriiy, Qasri salat kinnuk) barti saaqootat salat soolis (Magrib kee Qishâ Salat kinnuk) diggah meqc taamoomi warrayte dambitte dugtahak, too salat soolisaanaah meqe taamá abaanam kassitaah elle kaskassoowa marah kassis takke.",
+      "29:45": "Nabiyow wacyik kol obsimtem kitaabak (Qhuraan kitab kinnuk) ikriyaay elle taamitaay, salat soolis elle faxxiima innal, diggah salat qaxuma taamáa kee ceelewaytok waasah, Yallih cusiyyi kulliimik nabaah muxxóh yayseh, kaadu Yalli isin abba haytaanam yaaxigeh umaanék maqaanék, tohul sin gaițele.",
+      "62:9": "Yallaa Kee kay farmoyta nummayse maraw! Adan aba num jumqatti ayro jumqattâ Salaatah adan aba waqdi, toysa isin Yallih kassiti fanah (kutbaa kee salat kinnuk) gexaay tellemmó caba, toh abtaanam kayrih siinih aysuk raqta sinni nafsih meqem yaaxige mara tekkeenik."
+    }
+  },
+  "mdh": {
+    "anahtar": "maguindanao_rwwad",
+    "surum": "1.0.4",
+    "baslik": "Filipino Translation (Maguindanaon) - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "Hay sekanu a manga bamalityala (bamangimbenal)! Patabang kanu (sa Allah) sa ukit na katigkel endu kadsambayang, saben-sabenal na su Allah na salta kanu manga matigkel.",
+      "2:238": "Palihala nu su manga sambayang, endu su sambayang a Asr, endu tindeg kanu sanget kanu Allah sa balityala/gagilekan.",
+      "4:103": "Na amayka nakatunay nu su sambayang na tademi nu su Allah sa kadtindeg endu kaayan endu kabagiga nu, na amayka nakatana kanu na itindeg nu su sambayang, saben-sabenal na su sambayang na ya nin kaaden kanu bamalityala (bamangimbenal) na talanged a kutika.",
+      "11:114": "Endu itindeg nengka su sambayang sya kanu mapita-malulem endu su kaped sya kanu magabi ka su manga mapya na pakapunas kanu manga mawag, entuba na indawan a patadem kanu manga taw a pedtadem.",
+      "29:45": "Batya ka (Muhammad) su ini-wahi nami sa leka a kitab (Qur’an) endu edsambayang ka, su sambayang i makasapal sa maledsik a galebek endu su manga supak, endu ya masla i tadem nu Allah endu katawan nin i galebekan nu.",
+      "62:9": "Hay sekanu anan a bamaginugut! Amayka minebang sa kadsambayang sa jum’at na pamagayas kanu lu kanu pedtademan sa Allah (masjid), itagak nu su kabpasay, ka entu ba i makag-kapya sa lekanu umana bu ka katawan nu."
+    }
+  },
+  "ak": {
+    "anahtar": "asante_harun",
+    "surum": "1.0.3",
+    "baslik": "Akan Translation (Asante) - Harun Ismail",
+    "ayetler": {
+      "2:153": "Mo a moagye adie, monfa aboterε ne mpaebͻ nhwehwε mmoa (wͻ Nyankopͻn hͻ); nokorε sε Nyankopͻn ka aboterεfoͻ no ho.",
+      "2:238": "Monhwε mo Nyamefrε (mprε num no) so yie, titiriw adantamu (Asr) Nyamefrε no, na monfa anidie ne ahobraseε nyina hͻ ma Nyankopͻn.",
+      "4:103": "Sε mofrε Nyame no wie a, monkae Nyankopͻn wͻ (εberε a mo) gyina hͻ ne (εberε a mo) te hͻ ne (εberε) a moda monkyεn mu no mu. Nasε monya ahotᴐ a, εneε monfrε Nyame no (sεdeε yakyerε mo dada no). Nokorε sε, Nyamefrε yε adeε a yahyehyε no brε-ano-brε-ano ato agyidiefoͻ no soͻ",
+      "11:114": "Enti frε Nyame wͻ adekyeε mfitiaseε ne n’awieε hͻ, εna anadwo dͻnhwere no mu bi nso. Nokorε sε, papayε pepa bͻne. Woi yε afutusεm dema nkaekaeεfoͻ no.",
+      "29:45": "(Nkͻmhyεni), kenkan deε yayi ama wo wͻ Nwoma no mu no, na frε Nyame wͻ nebrε mu. Nokorε sε, Nyamefrε bra akohwisεm ne amumuyε; na Nyankopͻn ho nkaekaeε yε ade kεseε papaapa (wͻ onipa abrabͻ mu). Onyankopͻn deε Onim deε moyε (nyinaa).",
+      "62:9": "Mo a moagye adie, sε yεyε Azaan dema Efiada Nyame frε no a, monyε no ntεm nkͻkaekae Nyankopͻn, na monyae adwadie no. Woi na εyε papa ma mo, sε anka monim a."
+    }
+  },
+  "ceb": {
+    "anahtar": "bisayan_rwwad",
+    "surum": "1.1.3",
+    "baslik": "Filipino Translation (Bisayan) - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "Oh mga magtutuo, pangitaa ang tabang pinaagi sa pagpailub ug pag-ampo. Sa pagkatinuod, ang Allah anaa uban sa mga mapailubon.",
+      "2:238": "Ampingi ninyo (ang lima ka obligadong) pag-ampo, ug (ilabi na) ang tunga-tunga ('hapon nga pag-ampo). Ug magbarog atubangan kang Allãh nga masinugtanon.",
+      "4:103": "Sa diha nga natapos na ninyo ang ‘Salah’ (Pag-ampo), ipadayon ninyo ang paghinumdom sa Allah – nagtindog man, naglingkod o naghigda; ug sa diha nga kamo luwas na (gikan sa kakuyaw) buhata na ninyo ang ‘Salah’ sa hustong pagkahan-ay ug takna. Sa pagkatinuod ang Salah 'Pag-ampo' obligado nga gikasugo sa mga magtutuo sa mga gikatakda nga takna niini.",
+      "29:45": "Ilitok (Oh Muhammad) ang gipadayag kanimo sa Libro (Qur’an), ug mag-makanunayon sa imong Salah (Pag-ampo). Sa pagkatinuod, ang pag-ampo nagbadlong sa kalaw-ay, kaulag ug dautang(tanan nga matang sa buhat nga gidili). Sa pagkatinuod ang paghinumdom sa Allāh mas dako nga 'pagpugong'. Nasayod ang Allāh sa tanan nimong gibuhat.",
+      "62:9": "Oh mga magtutuo, sa diha nga inyong madung'gan ang tawag alang sa pag-ampo sa Adlaw nga Biyernes (ang adlaw sa katiguman), nan pagdali kamo ngadto sa Paghinumdom sa Allah, ug biyai ang pagpamaligya. Kini ang labing maayo alang kaninyo, kon kamo nasayod pa unta."
+    }
+  },
+  "nqo": {
+    "anahtar": "ankobambara_dayyan",
+    "surum": "1.0.5",
+    "baslik": "N'ko Translation - Baba Mamadi",
+    "ayetler": {
+      "2:153": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߯ ߘߍ߲߬ߡߍ߲߬ߠߌ߲߬ߢߌߣߌ߲ ߞߍ߫ ߡߎ߬ߢߎ߲ ߣߌ߫ ߛߊߟߌ ߞߊ߲߬ ߘߋ߬ ߸ ߓߊ ߊߟߊ߯ ߡߎ߬ߢߎ߲߬ߓߊ߮ ߟߎ߫ ߟߋ߫ ߝߍ߬",
+      "2:238": "ߊߟߎ߯ ߛߊߟߌ ߟߎ߬ ( ߞߍ ) ߟߊߕߊ߲߬ߞߊ߬߸ ߊ߬ ߣߌ߫ ߛߊߟߌ ߕߍߡߕߊ ( ߊ߬ ߕߎ߲ߞߎ߲ ߘߝߊ ߣߴߊ߬ ߓߎ߰ߓߎ߰ߟߌ ߟߊ߫)߸ ߊ߬ ߣߌ߫ ߞߵߊߟߎ߫ ߟߐ߬ ߊߟߊ߫ ߦߋ߫ ߓߊ߬ߕߏ߬ߟߊ߬ ߝߊߘߌ ߘߐ߫ ( ߖߙߌ߫)",
+      "4:103": "ߣߴߊߟߎ߫ ߓߊ߲߫ ߘߊ߫ ߛߊߟߌ߫ ߟߊ߫߸ ߊߟߎ߫ ߦߋ߫ ߊߟߊ߫ ߞߏߝߐ߫ ߟߐ߭ ߘߐ߫ ߸ ߛߌ߱ ߘߐ߫ ߸ ߊ߬ ߣߌ߫ ߟߊߟߌ ߘߐ߫ ߊߟߎ߫ ߝߎ߬ߘߎ ߟߎ߫ ߞߊ߲߬، ߣߴߊߟߎ߫ ߡߝߊ߫ ߘߊ߫ ߛߊ߫߸ ߊߟߎ߯ ߛߊߟߌ ߞߍ߫ ( ߊ߬ ߢߊ ߞߊ߲߬)߸ ߓߊߏ߬ ߛߊߟߌ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߫ ߡߊ߬ ߛߋ߲ߛߋߘߋ߲߫ ߕߎ߬ߡߦߊ߬ߣߍ߲ ߠߋ߬ ߘߌ߫",
+      "11:114": "ߌ ߦߋ߫ ߛߊߟߌ ߟߐ߬ ߕߋ߬ߟߋ ߣߎ߲߫ ߝߌ߬ߟߊ ߣߌ߫ ߛߎ ߡߊ߬ߛߎߘߎ߲ߧߊ ߘߐ߫، ߓߊߏ߬ ߢߌ߬ߡߊ ߟߎ߫ ߟߋ߬ ߖߎ߯ߡߊ߲ ߠߎ߬ ߟߊߕߊ߯ ߟߊ߫، ߒ߬ߓߊ߬ ߏ߬ ߦߋ߫ ߦߟߌߓߌߟߊ߫ ߟߋ߬ ߘߌ߫ ߦߟߌߓߌߟߊߟߊ ߟߎ߬ ߦߋ߫",
+      "29:45": "ߟߍߙߊ ߡߍ߲ ߦߟߌߘߏ߲ ߟߐ߬ߣߴߌ ߡߊ߬ ߏ߬ ߘߝߐ߫ ߸ ߊ߬ ߣߴߌ ߦߋ߫ ߛߊߟߌ ߟߐ߬ ߓߊ ߛߊߟߌ ߦߋ߫ ߝߊߕߊ߲ߕߟߌ ߞߍ߫ ߟߊ߫ ߞߏߙߏ߲ߧߊ ߣߌ߫ ߞߐ߲ߞߏ ߟߋ߫ ߡߊ߬ ، ߊ߬ ߣߌ߫ ߊߟߊ߫ ߞߏߝߐ ߟߋ߫ ߓߏ߲߬ߓߊ߬ߓߊ ߦߋ߫ ، ߊߟߊ߫ ߘߏ߲߬ ߞߵߊߟߎ߫ ߞߍߕߊ ߟߎ߬ ߟߐ߲߫",
+      "62:9": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߣߌ߫ ߛߊߟߌ ߡߊߞߟߌ߫ ߘߊ߫ ߛߌ߬ߣߌ߲߬ߟߏ߲ ߘߐ߫ ߊߟߎ߫ ߦߴߊߟߎ߫ ߟߞߊߟߌߦߊ߫ ߞߊ߬ ߕߊ߯ ߊߟߊ߫ ߞߏߝߐ ߡߊ߬ ߞߊ߬ ߝߋ߬ߙߋ ߓߟߏߞߊ߬ ߸ ߏ߬ ߟߋ ߘߌߡߊ߲߫ ߊߟߎ߫ ߟߊ߫ ߣߴߊߟߎ߫ ߓߴߊ߬ ߟߐ߲߫ ߠߊ߫"
+    }
   }
 };

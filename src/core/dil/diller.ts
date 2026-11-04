@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el' | 'ku' | 'tk' | 'tt' | 'sd' | 'pl' | 'ja' | 'gu' | 'bg' | 'mk' | 'fil' | 'te' | 'kn' | 'mr' | 'pa' | 'as' | 'ne' | 'si' | 'km';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el' | 'ku' | 'tk' | 'tt' | 'sd' | 'pl' | 'ja' | 'gu' | 'bg' | 'mk' | 'fil' | 'te' | 'kn' | 'mr' | 'pa' | 'as' | 'ne' | 'si' | 'km' | 'he' | 'ka' | 'lt' | 'mg' | 'lg' | 'rw' | 'rn' | 'ln' | 'dag' | 'mos' | 'aa' | 'mdh' | 'ak' | 'ceb' | 'nqo';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -99,6 +99,27 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'ne', yerelAd: 'नेपाली', yon: 'ltr', ttsDili: 'ne-NP', beta: true, secilebilir: true },
   { kod: 'si', yerelAd: 'සිංහල', yon: 'ltr', ttsDili: 'si-LK', beta: true, secilebilir: true },
   { kod: 'km', yerelAd: 'ខ្មែរ', yon: 'ltr', ttsDili: 'km-KH', beta: true, secilebilir: true },
+  // Dalga 13 (kapalı iskelet). İbranice uygulama kodu `he`, Android kaynak niteleyicisi `values-iw` (Endonezce `in`
+  // emsali: `ResourcesImpl.adjustLanguageTag` cihazın `he`sini kaynak eşlemesinden önce `iw`ye çevirir); sağdan sola.
+  // N'Ko sağdan sola, yerel rakam `nkoo` (߀–߉, CLDR `nqo` varsayılanı). Üç harfli kodlar (dag, mos, mdh, ceb, nqo)
+  // Android'de `values-b+<kod>`. Kendi adları CLDR'den; Dagbani, Mooré ve Maguindanao CLDR'de yok, Afar CLDR ana
+  // verisinde onaysız ("Qafar") → yerel adlar görev tablosundan (yerli okuyucuyla DOĞRULANMADI). Öteki dalga 13
+  // dilleri Latin ya da Gürcü harfli, soldan sağa, Batı rakamlı.
+  { kod: 'he', yerelAd: 'עברית', yon: 'rtl', ttsDili: 'he-IL', beta: true, secilebilir: false },
+  { kod: 'ka', yerelAd: 'ქართული', yon: 'ltr', ttsDili: 'ka-GE', beta: true, secilebilir: false },
+  { kod: 'lt', yerelAd: 'Lietuvių', yon: 'ltr', ttsDili: 'lt-LT', beta: true, secilebilir: false },
+  { kod: 'mg', yerelAd: 'Malagasy', yon: 'ltr', ttsDili: 'mg-MG', beta: true, secilebilir: false },
+  { kod: 'lg', yerelAd: 'Luganda', yon: 'ltr', ttsDili: 'lg-UG', beta: true, secilebilir: false },
+  { kod: 'rw', yerelAd: 'Ikinyarwanda', yon: 'ltr', ttsDili: 'rw-RW', beta: true, secilebilir: false },
+  { kod: 'rn', yerelAd: 'Ikirundi', yon: 'ltr', ttsDili: 'rn-BI', beta: true, secilebilir: false },
+  { kod: 'ln', yerelAd: 'Lingála', yon: 'ltr', ttsDili: 'ln-CD', beta: true, secilebilir: false },
+  { kod: 'dag', yerelAd: 'Dagbanli', yon: 'ltr', ttsDili: 'dag-GH', beta: true, secilebilir: false },
+  { kod: 'mos', yerelAd: 'Moore', yon: 'ltr', ttsDili: 'mos-BF', beta: true, secilebilir: false },
+  { kod: 'aa', yerelAd: 'Qafar', yon: 'ltr', ttsDili: 'aa-ET', beta: true, secilebilir: false },
+  { kod: 'mdh', yerelAd: 'Magindanawn', yon: 'ltr', ttsDili: 'mdh-PH', beta: true, secilebilir: false },
+  { kod: 'ak', yerelAd: 'Akan', yon: 'ltr', ttsDili: 'ak-GH', beta: true, secilebilir: false },
+  { kod: 'ceb', yerelAd: 'Cebuano', yon: 'ltr', ttsDili: 'ceb-PH', beta: true, secilebilir: false },
+  { kod: 'nqo', yerelAd: 'ߒߞߏ', yon: 'rtl', ttsDili: 'nqo-GN', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
@@ -120,14 +141,15 @@ export function dilKoduMu(x: unknown): x is DilKodu {
  * Filipince: `fil`, `fil-PH` ve Tagalog `tl`, `tl-PH` `fil`'dir. Pencapça YALNIZ Şahmuki cihazda: `pa-Arab`,
  * `pa-Arab-PK`, `pa-PK`, `pa_PK_#Arab` ve Batı Pencapçası `pnb` `pa`'dır; çıplak `pa` ile Gurmuki `pa-IN`,
  * `pa-Guru`, `pa-Guru-IN` EŞLENMEZ (null; CLDR'de çıplak `pa` Gurmukidir, Gurmuki okuyucu Şahmukiye düşmez).
+ * İbranice: `he`, `he-IL` ve Java/Android'in eski kodu `iw`, `iw-IL`, `iw_IL` `he`'dir.
  * Büyük/küçük harf dönüşümü yapılmaz (yerel kimlikler zaten küçük harfle başlar).
  */
 /**
  * Uygulama koduna eşlenen başka kodlar: Java `Locale` Endonezceyi eski ISO kodu "in" ile verir (Android
  * `in_ID`); Kurmancînin ISO 639-3 kodu `kmr` → `ku`; Tagalog `tl` (AOSP'nin Filipince kaynak kodu) → `fil`;
- * Batı Pencapçası (ISO 639-3 `pnb`, Şahmuki) → `pa`.
+ * Batı Pencapçası (ISO 639-3 `pnb`, Şahmuki) → `pa`; İbranicenin eski ISO kodu `iw` (Java `Locale`, Android `iw_IL`) → `he`.
  */
-const ESKI_KODLAR: Readonly<Record<string, DilKodu>> = { in: 'id', kmr: 'ku', tl: 'fil', pnb: 'pa' };
+const ESKI_KODLAR: Readonly<Record<string, DilKodu>> = { in: 'id', kmr: 'ku', tl: 'fil', pnb: 'pa', iw: 'he' };
 
 /**
  * Pencapça yerel ayarı Şahmuki mi (Arap betiği ya da Pakistan bölgesi; Gurmuki betik değil)? `parcalar` yerel

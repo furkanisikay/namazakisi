@@ -26,7 +26,7 @@ class RakamTest {
         assertEquals(Rakam.LATN, Rakam.sistem("ar", "ARAB"))
         assertEquals('0', Rakam.sifir("ar", null))
         // Yerel rakamsız dilde kayıt yok sayılır (dil değişimiyle yazım yarışı olsa bile).
-        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km", "", null)) {
+        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "", null)) {
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "arab"))
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "beng"))
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "arabext"))
@@ -126,6 +126,25 @@ class RakamTest {
     }
 
     @Test
+    fun dalga13NkoRakami() {
+        // N'Ko "nkoo" (߀ U+07C0, CLDR nqo varsayılanı); öteki dalga 13 dilleri Batı rakamlı.
+        assertEquals(Rakam.NKOO, Rakam.sistem("nqo", "nkoo"))
+        assertEquals(Rakam.NKOO, Rakam.sistem("nqo-GN", " nkoo "))
+        assertEquals(Rakam.LATN, Rakam.sistem("nqo", "arab"))
+        assertEquals(Rakam.LATN, Rakam.sistem("he", "nkoo"))
+        assertEquals('\u07C0', Rakam.sifir("nqo", "nkoo"))
+        assertTrue(Rakam.yerelRakamli("nqo"))
+        for (dil in listOf("he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb")) assertFalse(dil, Rakam.yerelRakamli(dil))
+        assertEquals("\u07C1\u07C8:\u07C0\u07C5", rakamlariYerellestir("18:05", Rakam.NKOO_SIFIR))
+        assertEquals("\u07C0\u07C5:\u07C3\u07C0", rakamlariEsitle("05:30", Rakam.NKOO_SIFIR))
+        assertEquals("05:30", rakamlariEsitle("\u07C0\u07C5:\u07C3\u07C0", '0'))
+        assertEquals("nqo-u-nu-nkoo", Rakam.yerelEtiketi("nqo", "nkoo"))
+        assertEquals("nqo-u-nu-latn", Rakam.yerelEtiketi("nqo", null))
+        // JDK'nın CLDR'sinde nqo yerel ayarı yok (sıfır '0'); uzantı N'Ko rakamını zorlar. Android ICU nqo varsayılanı nkoo.
+        assertEquals('\u07C0', DecimalFormatSymbols.getInstance(Locale.forLanguageTag("nqo-u-nu-nkoo")).zeroDigit)
+    }
+
+    @Test
     fun yerelEtiketiYalnizArapcadaUzantiTasir() {
         assertEquals("ar-u-nu-arab", Rakam.yerelEtiketi("ar", "arab"))
         assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", null))
@@ -135,7 +154,7 @@ class RakamTest {
         assertEquals("bn-u-nu-latn", Rakam.yerelEtiketi("bn", null))
         assertEquals("bn-u-nu-latn", Rakam.yerelEtiketi("bn", "arab"))
         // Diğer diller AYNEN (Endonezce "id" → Android "in" eşlemesi bozulmasın).
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km")) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb")) {
             assertEquals(dil, Rakam.yerelEtiketi(dil, "arab"))
             assertEquals(dil, Rakam.yerelEtiketi(dil, "beng"))
         }
@@ -218,7 +237,7 @@ class RakamTest {
             .filter { it.name != "Rakam.kt" }
         assertTrue(dosyalar.size > 10)
         for (f in dosyalar) {
-            val dogu = f.readText().filter { it in '٠'..'٩' || it in '۰'..'۹' || it in '০'..'৯' || it in '०'..'९' }
+            val dogu = f.readText().filter { it in '٠'..'٩' || it in '۰'..'۹' || it in '০'..'৯' || it in '०'..'९' || it in '\u07C0'..'\u07C9' }
             assertEquals("${f.path} yerel rakam taşıyor", "", dogu)
         }
     }

@@ -24,7 +24,7 @@ export interface GununAyetiKaydi {
   mealler: { readonly tr: string; readonly en: string } & Readonly<Partial<Record<MealDili, string>>>;
 }
 
-export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el' | 'ja' | 'gu' | 'bg' | 'mk' | 'fil' | 'te' | 'kn' | 'mr' | 'as' | 'ne' | 'si' | 'km';
+export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el' | 'ja' | 'gu' | 'bg' | 'mk' | 'fil' | 'te' | 'kn' | 'mr' | 'as' | 'ne' | 'si' | 'km' | 'he' | 'ka' | 'lt' | 'mg' | 'lg' | 'rw' | 'rn' | 'ln' | 'dag' | 'mos' | 'aa' | 'mdh' | 'ak' | 'ceb' | 'nqo';
 
 export interface MealKunyesi {
   anahtar: string;
@@ -322,6 +322,81 @@ export const GUNUN_AYETI_KAYNAKLARI: {
       "anahtar": "khmer_rwwad",
       "surum": "1.0.4",
       "baslik": "Rowwad Translation Center"
+    },
+    "he": {
+      "anahtar": "hebrew_darussalam",
+      "surum": "1.0.3",
+      "baslik": "Darussalam Association"
+    },
+    "ka": {
+      "anahtar": "georgian_rwwad",
+      "surum": "1.0.7",
+      "baslik": "Georgian Translation"
+    },
+    "lt": {
+      "anahtar": "lithuanian_rwwad",
+      "surum": "1.0.8",
+      "baslik": "Rowwad Translation Center"
+    },
+    "mg": {
+      "anahtar": "malagasy_rwwad",
+      "surum": "1.0.1",
+      "baslik": "Rowwad Translation Center"
+    },
+    "lg": {
+      "anahtar": "luganda_foundation",
+      "surum": "1.0.2",
+      "baslik": "African Development Foundation"
+    },
+    "rw": {
+      "anahtar": "kinyarwanda_assoc",
+      "surum": "1.0.5",
+      "baslik": "Rwanda Muslim Association"
+    },
+    "rn": {
+      "anahtar": "ikirundi_gehiti",
+      "surum": "1.0.4",
+      "baslik": "Yusuf Gahiti"
+    },
+    "ln": {
+      "anahtar": "lingala_zakaria",
+      "surum": "1.0.2",
+      "baslik": "Mohammed Balangogo"
+    },
+    "dag": {
+      "anahtar": "dagbani_ghatubo",
+      "surum": "1.0.0",
+      "baslik": "Muhammad Baba Ghutubo"
+    },
+    "mos": {
+      "anahtar": "moore_rwwad",
+      "surum": "1.0.2",
+      "baslik": "Rowwad Translation Center"
+    },
+    "aa": {
+      "anahtar": "afar_hamza",
+      "surum": "1.0.1",
+      "baslik": "Mahmoud Abdulqader Hamza"
+    },
+    "mdh": {
+      "anahtar": "maguindanao_rwwad",
+      "surum": "1.0.4",
+      "baslik": "Rowwad Translation Center"
+    },
+    "ak": {
+      "anahtar": "asante_harun",
+      "surum": "1.0.3",
+      "baslik": "Harun Ismail"
+    },
+    "ceb": {
+      "anahtar": "bisayan_rwwad",
+      "surum": "1.1.3",
+      "baslik": "Rowwad Translation Center"
+    },
+    "nqo": {
+      "anahtar": "ankobambara_dayyan",
+      "surum": "1.0.5",
+      "baslik": "Baba Mamadi"
     }
   }
 };
@@ -382,7 +457,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আমি কেৱল তোমাৰেই ইবাদত কৰোঁ, আৰু তোমাৰ ওচৰতেই সহায় প্ৰাৰ্থনা কৰোঁ।",
       "ne": "हामी मात्र तिम्रै उपासना गर्दछौं र तिमीसंग मात्र मद्दत चाहन्छौं ।",
       "si": "ඔබට ම අපි නමදිමු. ඔබගෙන් ම අපි උදව් පතමු.",
-      "km": "ចំពោះទ្រង់(តែមួយគត់)យើងខ្ញុំគោរពសក្ការៈ ហើយចំពោះទ្រង់(តែមួយគត់)យើងខ្ញុំសុំជំនួយ។"
+      "km": "ចំពោះទ្រង់(តែមួយគត់)យើងខ្ញុំគោរពសក្ការៈ ហើយចំពោះទ្រង់(តែមួយគត់)យើងខ្ញុំសុំជំនួយ។",
+      "he": "(רק) אותך אנחנו עובדים, (ורק) עליך אנחנו נשענים.",
+      "ka": "მხოლოდ შენ გეთაყვანებით და მხოლოდ შენ გთხოვთ დახმარებას!",
+      "lt": "Tave (Vienintelį) mes garbiname ir Tavęs (Vienintelio) mes prašome pagalbos.",
+      "mg": "Ianao irery ihany no tompoinay, ary Ianao irery ihany koa no angatahinay ny famonjena.",
+      "lg": "Ggwe Wekka Ggwe tusinza era Ggwe Wekka Ggwe tusaba okutuyamba.",
+      "rw": "Ni wowe (wenyine) dusenga, kandi ni wowe (wenyine) twiyambaza",
+      "rn": "Ni Wewe gusa twiyegereza mu vyo dukora vyose tukanagusenga, kandi ni Wewe gusa dutakambira mu gusaba imfashanyo.",
+      "ln": "Yonde (Allah) tozali kobondela mpe epai nayo tozali kosenga lisalisi.",
+      "dag": "Yaa ti Duuma Naawuni) ! A ko ka ti jεmda, A mi ko sani ka ti bɔri sɔŋsim.",
+      "mos": "Foo Wẽnd bal la d tũuda leb n yaa Foo Wẽnd bal la d kot sõngre.",
+      "aa": "Diggah nanu Ni Rabbow koo inkittosnaah Qibaada dibuk koo caglisna, nanu ni-caagiidah inkih cato koo esserra.",
+      "mdh": "Seka bu (Allah) i pedsimban endu seka bu (Allah) i bangeniyan nami sa tabang.",
+      "ak": "(Awurade), Wonko ara na yε’resom Woͻ, na Wonko ara Wohͻ na yε’hwehwε mmoa.",
+      "ceb": "Kanimo lamang kami magasimba ug Kanimo lang kami magadangop ug magapangayo ug tabang,",
+      "nqo": "ߊ߲ ߧߴߌߟߋ ߟߋ߫ ߓߊ߬ߕߏ߬ ߟߊ߫ ߸ ߊ߲ ߧߴߌߟߋ ߟߋ߬ ߡߊߕߙߊ߫ ߟߊ߫"
     }
   },
   {
@@ -444,7 +534,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তুমি নাজানানে যে, আকামণ্ডল আৰু পৃথিৱীৰ সাৰ্বভৌমত্ব একমাত্ৰ আল্লাহৰেই? (জানি থোৱা) আল্লাহৰ বাহিৰে তোমালোকৰ কোনো অভিভাৱক নাই আৰু কোনো সহায়কাৰীও নাই।",
       "ne": "के तिमीलाई थाहा छैन कि आकाशहरू र पृथ्वीको स्वामी अल्लाह नै हो र अल्लाह बाहेक तिम्रो कोही मित्र र सहायता प्रदान गर्नेवाला छैन ?",
       "si": "නියත වශයෙන් ම අල්ලාහ් ඔහුට අහස්හි හා මහපොළොවේ පාලනය හිමි බවත් අල්ලාහ්ගෙන් තොර කිසිදු භාරකරු වෙක් හෝ කිසිදු උදව් කරුවෙක් හෝ නුඹලාට නොමැති බවත් නුඹ නොදන්නෙහි ද?",
-      "km": "តើអ្នក(ឱព្យាការីមូហាំម៉ាត់)មិនបានដឹងទេឬថា ពិតប្រាកដណាស់ អំណាចគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់នោះ? ហើយសម្រាប់ពួកអ្នក គឺគ្មានអ្នកគាំពារ និងអ្នកជួយក្រៅពីអល់ឡោះឡើយ។"
+      "km": "តើអ្នក(ឱព្យាការីមូហាំម៉ាត់)មិនបានដឹងទេឬថា ពិតប្រាកដណាស់ អំណាចគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់នោះ? ហើយសម្រាប់ពួកអ្នក គឺគ្មានអ្នកគាំពារ និងអ្នកជួយក្រៅពីអល់ឡោះឡើយ។",
+      "he": "האם לא תדע כי לאללה מלכות השמים והארץ, ואין לכם בלעדי אללה תומך ולא מגן?",
+      "ka": "ნუთუ არ იცოდი (ო, მოციქულო), რომ მხოლოდ ალლაჰს ეკუთვნის სრული ძალაუფლება ცათა და მიწაზე? და თქვენ არ გყავთ, ალლაჰის გარდა, არც მფარველი და არც შემწე.",
+      "lt": "Argi nežinojote, kad Allahui priklauso dangų ir žemės valdžia? Ir be Allaho jūs neturite nei jokio vali (globėjo ar sergėtojo), nei jokio padėjėjo.",
+      "mg": "Tsy efa fantatrao ve fa Allah tokoa no tompon'ny fanjakan'ireo lanitra sy ny tany; ary tsy manana mpiahy na mpamonjy hafa ianareo ankoatran'i Allah ?",
+      "lg": "Abaffe, tomanyi nti mazima ddala obufuzi bw'eggulu (omusanvu) n'ensi bwa Allah, era nga temulinaayo mukuumi yenna wadde omutaasa atali Yye.",
+      "rw": "Ese (yewe Muhamadi) ntuzi ko Allah afite ubwami bw’ibirere n’ubw’isi? Nta wundi murinzi cyangwa umutabazi mufite utari Allah.",
+      "ln": "Boye oyebi te ete ya sôló Allah azali na bokonzi ya likolo na mabele, mpe bozali na mobateli mosusu te, mpe mosalisi te liboso ya Allah?",
+      "dag": "(Yaa nyini ŋun gbilsiri tibli)! Di ni -bɔŋɔ, a bi mi ni achiika! Sagbana ayɔpɔin mini tiŋgbani yiko bela Naawuni sani? Yi (ninsalinim‟) mi ka ŋun taɣiri ya, bee ŋun yɛn sɔŋ ya, ka pa ni Naawuni.",
+      "mos": "Fo pɑ bãng tɩ Wẽnd n so Sɑɑs lɑ Tẽng Nɑɑm, lɑ yãmb pɑ tɑr zẽng sẽn pɑ Wẽnde; lɑlld bɩ sõngd ye!",
+      "aa": "Nabiyow Diggah Yalli Qaranwaa kee Baaxö reeda-lem maaxaginnitoo? isin Yallak kalah hebeltoh Awlaytuy sin caagiida wagta mantuunuuy cateynay Yallih digaalak sin cata mantun.",
+      "mdh": "Ngintu di nengka katawan i saben-sabenal na su Allah na sekanin i kigkuwan kanu pitu lapis a langit endu lupa, endu dala sa lekanu i salakaw kanu Allah a pedtuganul endu pedtabang?",
+      "ak": "Anaasε wonnim sε ͻsoro ne asaase so ahennie nyinaa wͻ Nyankopͻn, na Nyankopɔn akyi no monni okyitaafoͻ anaasε ͻboafoͻ biara?",
+      "ceb": "Wala ba kamo mahibalo nga lya sa Allah (lamang) ang Gingharian sa mga langit ug sa yuta? Ug gawas Kang Allah kamo walay tigpanalipod (manluluwas) o magtatabang.",
+      "nqo": "ߌ ߡߴߊ߬ ߟߐ߲߫ ߓߊ߬ ߞߏ߫ ߊߟߊ߫ ߟߋ߬ ߕߊ߫ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫؟ ߊ߬ ߣߌ߫ ߞߏ߫ ߊߟߊ߫ ߓߐ߫ ߞߐ߫ ߕߍ߫ ߸ ߢߌ߲߰ ߕߍ߫ ߊߟߎ߫ ߟߊ߫ ߘߍ߬ߡߍ߲߬ߓߊ߯ ߕߍ߫؟"
     }
   },
   {
@@ -506,7 +610,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে ঈমান্দাৰসকল! তোমালোকে ধৈৰ্য্য আৰু ছালাতৰ মাধ্যমত সহায় প্ৰাৰ্থনা কৰা। নিশ্চয় আল্লাহ ধৈৰ্য্যশীলসকলৰ লগত আছে।",
       "ne": "हे आस्थावानहरू, धैर्य र नमाजसित मद्दतको आशा गर्नु । (निःसन्देह) अल्लाह धैर्यवानहरूको साथ दिन्छ ।",
       "si": "අහෝ විශ්වාස කළවුනි! නුඹලා ඉවසීම හා සලාතය තුළින් උදව් පතනු. නියත වශයෙන් ම අල්ලාහ් ඉවසිලිවන්තයින් සමඟ ය.",
-      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកសុំជំនួយ(ពីអល់ឡោះ)ដោយការអត់ធ្មត់ និងការប្រតិបត្តិសឡាត។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់ស្ថិតនៅជាមួយបណ្តាអ្នកដែលអត់ធ្មត់។"
+      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកសុំជំនួយ(ពីអល់ឡោះ)ដោយការអត់ធ្មត់ និងការប្រតិបត្តិសឡាត។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់ស្ថិតនៅជាមួយបណ្តាអ្នកដែលអត់ធ្មត់។",
+      "he": "הוי אלה אשר האמינו! התאזרו בסבלנות ובתפילה, כי אללה הוא עם הסבלנים.",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! დახმარება ითხოვეთ (ალლაჰისგან) მოთმინების და ლოცვის მეშვეობით. ჭეშმარიტად, ალლაჰი მომთმენებთანაა.",
+      "lt": "O jūs, kurie tikite! Ieškokite pagalbos kantrybėje ir As-Salat (maldoje). Iš tiesų, Allahas yra su As-Sabirūn (kantriaisiais).",
+      "mg": "o ianareo mpino, mangataha famonjena amin’ny alàlan’ny faharetana sy ny vavaka Soalat ianareo. Tena marina fa Allah dia miaraka mandrakariva amin’ireo manam-paharetana.",
+      "lg": "Abange mmwe Abakkiriza, mweyambise obugumiikiriza n'okusaala olw'okubanga mazima Allah ali wamu n'abagumiikiriza.",
+      "ln": "Eh bino bandimi! Boluka lisalisi okati ya losambo mpe na koyika mpiko. Mpamba te Allah azali elongo na bakangi mitema.",
+      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni. yεlimaŋli! Bom ya sɔŋsim ni suɣulo ni jiŋli puhibu (n-zaŋ kpa yi daadiini mini yi Dunia yεla polo). Achiika! Naawuni mini suɣulonima m-be.",
+      "mos": "Yɑɑ yãmb neb nins sẽn kõ sɩd ne Wẽnde! kos-y sõngr ne sugr mɑɑneg lɑ pʋʋsgo, ɑd Wẽnd lɑgma sugrã rãmbã.",
+      "aa": "Yeemeneh yan maraw Addunyaay Akeerä caagidil inkih Yallak cato Sabrii kee Salaatal essera, Diggah Yalli catoo kee dacayrih yasbire mará luk yanik.",
+      "mdh": "Hay sekanu a manga bamalityala (bamangimbenal)! Patabang kanu (sa Allah) sa ukit na katigkel endu kadsambayang, saben-sabenal na su Allah na salta kanu manga matigkel.",
+      "ak": "Mo a moagye adie, monfa aboterε ne mpaebͻ nhwehwε mmoa (wͻ Nyankopͻn hͻ); nokorε sε Nyankopͻn ka aboterεfoͻ no ho.",
+      "ceb": "Oh mga magtutuo, pangitaa ang tabang pinaagi sa pagpailub ug pag-ampo. Sa pagkatinuod, ang Allah anaa uban sa mga mapailubon.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߯ ߘߍ߲߬ߡߍ߲߬ߠߌ߲߬ߢߌߣߌ߲ ߞߍ߫ ߡߎ߬ߢߎ߲ ߣߌ߫ ߛߊߟߌ ߞߊ߲߬ ߘߋ߬ ߸ ߓߊ ߊߟߊ߯ ߡߎ߬ߢߎ߲߬ߓߊ߮ ߟߎ߫ ߟߋ߫ ߝߍ߬"
     }
   },
   {
@@ -565,7 +682,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মানৱ সম্প্ৰদায়! পৃথিৱীত থকা হালাল আৰু পৱিত্ৰ বস্তুবোৰ তোমালোকে ভক্ষণ কৰা; আৰু তোমালোকে চয়তানৰ পদানুসৰণ নকৰিবা। নিশ্চয় সি তোমালোকৰ প্ৰকাশ্য শত্ৰু।",
       "ne": "मानिसहरू ! जति कुराहरू धर्तीमा हलाल छन् ती खानु र पिउनु र शैतानको पद चिन्हहरूमा नहिंडनु । त्यो तिम्रो खुल्लम–खुल्ला शत्रु हो ।",
       "si": "අහෝ ජනයිනි! මහපොළොවේ ඇති දැයින් අනුමත පිවිතුරු දෑ අනුභව කරනු. තවද ෂෙයිතාන්ගේ පියවරවල් අනුගමනය නො කරනු. සැබැවින් ම ඔහු නුඹලාට ප්‍රකට සතුරෙකි.",
-      "km": "ឱមនុស្សលោកទាំងឡាយ! ចូរពួកអ្នកបរិភោគអំពីអ្វីដែលហាឡាល់(ត្រូវបានអនុញ្ញាត) និងល្អៗដែលមាននៅលើផែនដី ហើយចូរពួកអ្នកកុំដើរតាមមាគ៌ាទាំងឡាយរបស់ស្ហៃតនឱ្យសោះ។ ពិតប្រាកដណាស់ វាគឺជាសត្រូវយ៉ាងច្បាស់លាស់ចំពោះពួកអ្នក។"
+      "km": "ឱមនុស្សលោកទាំងឡាយ! ចូរពួកអ្នកបរិភោគអំពីអ្វីដែលហាឡាល់(ត្រូវបានអនុញ្ញាត) និងល្អៗដែលមាននៅលើផែនដី ហើយចូរពួកអ្នកកុំដើរតាមមាគ៌ាទាំងឡាយរបស់ស្ហៃតនឱ្យសោះ។ ពិតប្រាកដណាស់ វាគឺជាសត្រូវយ៉ាងច្បាស់លាស់ចំពោះពួកអ្នក។",
+      "he": "הוי, האנשים! אכלו מן מורשה והטוב אשר בארץ, ואל תלכו בעקבות השטן, כי הוא אויב גלוי לכם,",
+      "ka": "ჰეი, ადამიანებო! იკვებეთ იმით (ალლაჰის მიერ ბოძებული საზრდოდან), რაც დედამიწაზეა — რაც ნებადართულია და კეთილი, და ნუ გაჰყვებით სატანის კვალს, რადგან იგი [სატანა] თქვენთვის აშკარა მტერია!",
+      "lt": "Žmonės, valgykite iš to, kas yra leistina ir gera žemėje, ir nesekite Šaitan (Šėtono) pėdomis. Iš tiesų, jis yra jums aiškus priešas.",
+      "mg": "Ry olombelona! Mihinana ianareo amin’ireo izay fihinana (halal) sy ny tsara misy eny ambonin’ny tany, ary aoka ianareo mba tsy hanaraka ny famindran’i satana, fa fahavalonareo miharihary izy.",
+      "lg": "Abange mmwe abantu, mulye kw'ebyo ebiri mu nsi ebyakkirizibwa ebirungi, era temugobereranga amakubo ga Sitaane anti yo mulabe wammwe wa lwatu.",
+      "rw": "Yemwe bantu! Nimurye mu biri ku isi byaziruwe kandi byiza, ntimuzanakurikire inzira za Shitani. Mu by’ukuri, yo ni umwanzi wanyu ugaragara.",
+      "ln": "Eh Bino bato! bolia biye bizali na mabele, biye bizali malamu mpe bilingisami mpona bino, kasi bolanda banzela ya satana te, pamba te azali monguna na bino ya polele.",
+      "dag": "Yaa yinim’ ninsalinima! Dim ya din be tiŋgbani yaaŋa zuɣu ka nyɛla halalsi ni kasi n-tin ya, ka miri ya ka yi doli shintaŋ napɔŋboba. Achiika! O (shintaŋ) nyɛla dima n-tin ya polo ni.",
+      "mos": "Yɑɑ yãmb ɑ nebɑ! rɩ-y sẽn be tẽngã zug n yɑɑ Hɑlɑɑl n yɑɑ Yɩlgemdã lɑ y rɑ pʋg ɑ Sʋtãan nɑo ye, ɑd ɑ yɑɑ bε sẽn yɑɑ vẽenegɑ ne yãmbɑ.",
+      "mdh": "Hay sekanu a manga taw! Kan kanu kanu nganin sya kanu lupa sa halal a mapya, endu di nu bagunuti i manga sangkad nu manga shaytan, saben-sabenal na su shaytan na satru nu a mapayag.",
+      "ak": "Adasamma, moni deε εwͻ asaase so a εkwan wͻ ho, na εyε (anaasε εho teε); na monhwε yie na moanni ͻbonsam anamͻn akyi, nokorε sε ͻyε motamfo a ͻda adi pefee.",
+      "ceb": "O katawhan, kaon sa mga gikatugot ug mga maayo sa unsay anaa sa kayutaan, ug ayaw ninyo sunda ang mga tunob (mga paagi) ni Satanas; Sa pagkatinuod siya usa ka dayag nga kaaway nganha kaninyo.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߡߐ߱ ߟߎ߬ ߸ ߊߟߎ߫ ߦߋ߫ ߘߎ߰ߞߟߏ ߞߊ߲߬ ߝߋ߲߫ ߘߤߊ߬ߣߍ߲߬ ߢߌߡߊ ߓߍ߯ ߘߏ߫ ߘߊߥߎ߲߫ ߸ ߊߟߎ߫ ߞߣߊ߫ ߜߍ߬ߘߍ ߜߋ߬ߙߋ ߟߎ߫ ߟߋ߬ ߟߊߓߊ߬ߕߏ߬، ߓߊ ߏ߬ ߦߋ߫ ߊߟߎ߫ ߖߎ߯ ߘߐߜߍ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -627,7 +757,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে ঈমান্দাৰসকল! তোমালোকক আমি যিবোৰ জীৱিকা প্ৰদান কৰিছোঁ তাৰ পৰা তোমালোকে পৱিত্ৰ বস্তুবোৰ ভক্ষণ কৰা, আৰু আল্লাহৰ কৃতজ্ঞতা প্ৰকাশ কৰা, যদিহে তোমালোকে কেৱল তেওঁৰেই ইবাদত কৰা।",
       "ne": "हे आस्थावानहरू ! जुन पवित्र कुराहरू हामीले तिमीलाई प्रदान गरेका छौं, तिनको उपभोग (खानपान) गर, अल्लाहले प्रदान गरेका उपहारहरूको लागि आभार पनि प्रकट गर, यदि तिमी उसैको उपासना गर्दछौं ।",
       "si": "අහෝ විශ්වාස කළවුනි! අපි නුඹලාට පෝෂණය කළ දැයින් පිවිතුරු දෑ අනුභව කරනු. තවද නුඹලා අල්ලාහ්ට පමණක් නමදිමින් සිටියෙහු නම් ඔහුට කෘතඥ වනු.",
-      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកបរិភោគពីចំណីអាហារល្អៗដែលយើង(អល់ឡោះ)បានប្រទានជាលាភសក្ការៈដល់ពួកអ្នក។ ហើយចូរពួកអ្នកដឹងគុណចំពោះអល់ឡោះ ប្រសិនបើពួកអ្នកពិតជាគោរពសក្ការៈចំពោះទ្រង់(តែមួយគត់)មែននោះ។"
+      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកបរិភោគពីចំណីអាហារល្អៗដែលយើង(អល់ឡោះ)បានប្រទានជាលាភសក្ការៈដល់ពួកអ្នក។ ហើយចូរពួកអ្នកដឹងគុណចំពោះអល់ឡោះ ប្រសិនបើពួកអ្នកពិតជាគោរពសក្ការៈចំពោះទ្រង់(តែមួយគត់)មែននោះ។",
+      "he": "הוי, אלה אשר האמינו! איכלו מן המורשה, הדברים הטובים אשר הענקנו לפרנסתכם, והודו לאללה אם אותו אתם עובדים.",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! იკვებეთ (მხოლოდ ნებადართული) სიკეთეებით, რომელიც ჩვენ გიწყალობეთ სარჩოდ, და ემადლიერეთ ალლაჰს, თუ თქვენ მხოლოდ მას ეთაყვანებით.",
+      "lt": "O jūs, kurie tikite (Allaho Vienumu – islamiškuoju monoteizmu), valgykite iš leistinų dalykų tai, ką Mes jums suteikėme, ir būkite dėkingi Allahui, jei iš tiesų Jis yra Tas, Kurį jus garbinate.",
+      "mg": "O ianareo mpino ! Aoka ianareo hihinana amin’ireo sakafo tsara sady madio izay anjaram-pivelomana nomenay anareo. Ary aoka ianareo hisaotra an’Allah, raha toa ka Izy irery ihany no Tompoinareo.",
+      "lg": "Abange mmwe Abakkiriza, mulye ku birungi ebyo byet twabagabirira era mwebaze Allah bwe muba nga ddala Yye, Yekka Gwe musinza.",
+      "rw": "Yemwe abemeye! Murye mu byiza twabafunguriye kandi mushimire Allah niba koko ari We wenyine musenga.",
+      "rn": "Emwe bemeramana! Nimurye mu vyiza Twabafunguriye, muheze mushimire vy’ukuri Imana Allah ku nema zayo nimwaba koko ari Yo gusa mwiyegereza mu vyo mukora vyose mukanayisenga.",
+      "ln": "Eh bino baye bondima! bolia biloko ya malamu biye topesaki bino, mpe botondo Allah soki ya sôló bozali kobondela ye.",
+      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Dim ya bindirisuŋ shɛŋa Ti (Tinim’ Naawuni) ni largi ya puuni, ka paɣi ya Naawuni, di yi shiri nyɛla Ŋuna (Naawuni) ka yi jɛmda.",
+      "mos": "Yɑɑ yãmb sẽn kõ-b sɩdɑ! rɩ-y bõn-yɩlmɑ tõnd sẽn rɩlg yãmbã lɑ y pʋʋs Wẽnd bɑrk tɩ sã n yɑɑ Yẽ lɑ y tũudã.",
+      "mdh": "Hay sekanu a manga namalityala (namangimbenal): kan kanu ebpun kanu manga mapya a nganin a inirizki nami sa lekanu endu edsukur kanu sa kanu Allah amayka ya nu kaaden i sekanin i padsimban nu.",
+      "ak": "Mo a moagye adie, monidi mfiri nnepa a yεde abͻ mo akͻnhoma no mu, na monfa aseda ma Nyankopͻn, sε Ɔno mmom na moresom no ampa a.",
+      "ceb": "Oh mga magtutuo, kaon kamo sa mga maayong butang nga Among gihatag kaninyo, ug pagpasalamat sa Allah, kun Siya (lamang) mao ang inyong ginasimba.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߯ ߝߋ߲߫ ߢߌߡߊ ߟߎ߬ ߘߏ߫ ߘߊߥߎ߲߫ ߊ߲ ߞߵߊߟߎ߫ ߤߊ߬ߙߌ߬ߖߍ߰ ߡߍ߲ ߠߎ߬ ߟߊ߫߸ ߊ߬ ߣߴߊߟߎ߯ ߞߏߢߌߡߊߟߐ߲ ߞߍ߫ ߊߟߊ߫ ߦߋ߫ ߣߴߊߟߎ߫ ߦߋ߫ ߓߊ߬ߕߏ ߞߍ߫ ߟߴߊ߬ߟߋ ߟߋ߬ ߦߋ߫"
     }
   },
   {
@@ -685,7 +829,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মুমিনসকল! তোমালোকে পৰিপূৰ্ণভাৱে ইছলামত প্ৰৱেশ কৰা আৰু চয়তানৰ পদানুসৰণ নকৰিবা। নিশ্চয় সি তোমালোকৰ প্ৰকাশ্য শত্ৰু।",
       "ne": "मोमिनहरू (र्इमानवालाहरू) ! इस्लाममा पूर्णरूपले प्रवेश गरिहाल र शैतानको पाइलाहरूको अनुशरण नगर, ऊ तिम्रो प्रत्यक्ष शत्रु हो ।",
       "si": "අහෝ විශ්වාස කළවුනි! නුඹලා සාමය (නම් ඉස්ලාමය) තුළට මුළුමණින් ම පිවිසෙනු. තවද ෂෙයිතාන්ගේ පියවරවල් අනුගමනය නො කරනු. සැබැවින් ම ඔහු නුඹලාට ප්‍රකට සතුරෙකි.",
-      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកចូលកាន់សាសនាអ៊ីស្លាមឱ្យបានពេញលេញ(ពិតប្រាកដ) ហើយចូរពួកអ្នកកុំដើរតាមមាគ៌ាទាំងឡាយរបស់ស្ហៃតនឱ្យសោះ។ ពិតប្រាកដណាស់ វាជាសត្រូវរបស់ពួកអ្នកយ៉ាងច្បាស់លាស់បំផុត។"
+      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកចូលកាន់សាសនាអ៊ីស្លាមឱ្យបានពេញលេញ(ពិតប្រាកដ) ហើយចូរពួកអ្នកកុំដើរតាមមាគ៌ាទាំងឡាយរបស់ស្ហៃតនឱ្យសោះ។ ពិតប្រាកដណាស់ វាជាសត្រូវរបស់ពួកអ្នកយ៉ាងច្បាស់លាស់បំផុត។",
+      "he": "הוי, אלה אשר האמינו! קבלו על עצמכם, כולכם, התמסרות שלימה לאללה ואל תלכו בעקבות השטן, כי הוא אויבכם המושבע.",
+      "lt": "O jūs, kurie tikite! Priimkite islamą visiškai (paklusdami visiems islamo tikėjimo taisyklėms ir nurodymams) ir nesekite Šaitan (Šėtono) pėdomis. Tikrai! Jis jums yra akivaizdus priešas.",
+      "lg": "Abange mmwe Abakkiriza, muyingire mu Busiraamu muggweeremu. Temugobereranga makubo ga Sitaane, mazima yye mulabe wa mmwe owoolwatu.",
+      "rw": "Yemwe abemeye! Nimwinjire mu buyisilamu nyabyo (mwubahiriza amategeko n’amabwiriza byabwo), kandi ntimuzakurikire inzira za Shitani. Mu by’ukuri, ni umwanzi wanyu ugaragara.",
+      "ln": "Eh bino baye bondima! bokota mobimba o nzela ya islamu, mpe bolanda nzela ya satana te, ya sôló ye azali monguna wa bino ya polele.",
+      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Kpεm ya Muslinsi daadiini puuni zaasa, ka miri ya ka yi doli shintaŋ napɔmboba. Achiika! O nyɛla dima n-tin ya polo ni.",
+      "mos": "Yɑɑ yãmbɑ sɩd-kõtbɑ! kẽ-y Dĩinã zãngɑ, lɑ y rɑ pʋg ɑ sʋtãan nɑo ye, ɑd ɑ yɑɑ bε sẽn yɑɑ vẽeneg ne yãmbɑ.",
+      "mdh": "Hay sekanu a manga bamalityala (bamangimbenal)! Ludep kanu sa Islam sa langun, endu di nu munuti su manga sangkad nu Shaytan, saben-sabenal na sekanin sa lekanu na satru a mapayag.",
+      "ak": "Mo a moagye adie, monfa moakoma nyinaa nwura Islam mu, na monhwε yie na moanni ͻbonsam anamͻn akyi. Nokorε sε ͻyε motamfo a ͻda adi pefee.",
+      "ceb": "Oh mga magtutuo, sulod kamo sa Islam sa kinatibuk-an niini, ug ayaw kamo pagsunod sa mga lakang ni Satanas, sa pagkatinuod siya alang kaninyo usa ka dayag nga kaaway.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߋ߫ ߓߍ߯ ߘߏ߲߬ ߖߐ (ߢߐ߲߯ߞߟߍߓߊߟߌߦߊ) ߘߐ߫ ߞߐߘߍ߫ ߸ ߊߟߎ߫ ߞߊߣߊ߬ ߢߌߣߌ߲߫ ߜߍ߬ߘߍ ߜߋ߬ߙߋ ߟߎ߫ ߡߊ߬ ( ߘߓߌ߬ߘߐ߬ߦߊ ߞߟߍ߬ߘߐ߬ߞߏ ߟߎ߬ ߟߊߥߌ߬ߟߌ ߘߐ߫)߸ ߓߊ ߏ߬ ߦߴߊߟߎ߫ ߖߎ߯ ߘߐߜߍ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -744,7 +899,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যি দানৰ পিছত (দান গ্ৰহণকাৰীক) কষ্ট দিয়া হয়, সেই দানতকৈ ভাল কথা কোৱা আৰু ক্ষমা কৰাই উত্তম, আৰু আল্লাহ অভাৱমুক্ত, পৰম সহনশীল।",
       "ne": "मीठो कुरा गर्नु र क्षमा गर्नु त्यस दानभन्दा उत्तम हो जसपछि दुःख दिइन्छ । र अल्लाह निस्पृह र नितान्त सहनशील छ ।",
       "si": "යහ වදන හා සමාව හිංසාව පසුපස හඹා යන දානයට වඩා අති ශ්‍රේෂ්ඨ ය. තවද අල්ලාහ් අවශ්‍යතාවන්ගෙන් තොර ය. සෙනෙහෙවන්ත ය.",
-      "km": "ពាក្យសម្តីដែលល្អ ហើយនិងការចេះអភ័យទោស(ដល់អ្នកដទៃ) គឺប្រសើរជាងការបរិច្ចាគដែលភ្ជាប់ជាមួយនូវការបញ្ឈឺចិត្ដ។ ហើយអល់ឡោះមហាមានលើសលប់ មហាទន់ភ្លន់បំផុត។"
+      "km": "ពាក្យសម្តីដែលល្អ ហើយនិងការចេះអភ័យទោស(ដល់អ្នកដទៃ) គឺប្រសើរជាងការបរិច្ចាគដែលភ្ជាប់ជាមួយនូវការបញ្ឈឺចិត្ដ។ ហើយអល់ឡោះមហាមានលើសលប់ មហាទន់ភ្លន់បំផុត។",
+      "he": "אמירת דברים יפים (למבקש עזרתכם) וסליחה סוכות מצדקה המלווה בפגיעה. ואללה בלתי-זקוק לדבר והוא העשיר הסבלן.",
+      "ka": "კეთილი სიტყვა და პატიება უკეთესია, ვიდრე მოწყალება, რომელსაც შეურაცხყოფა მოჰყვება. და ალლაჰი მდიდარია და ლმობიერი (არ ჩქარობს სასჯელით).",
+      "lt": "Nuoširdūs žodžiai ir nusižengimų (netinkamo būdo) atleidimas yra geriau nei Sadaka (labdara), sekama žalos (darymo). Ir Allahas yra Turtingas (Neturintis jokių poreikių), Pakančiausiasis.",
+      "mg": "Ny teny mendrika sy ny famelan-keloka dia tsara noho ny fanomezana arahana fanafintohinana. Ary i Allah dia Manan-karena sy Malemy fanahy.",
+      "lg": "Ekigambo eky'obuntubulamu n'okusonyiwa ky'ekirungi okusinga saddaaka egoberezebwako ebigambo ebikosa, bulijjo Allah si mwetaavu (era) Waakisa kingi.",
+      "rw": "Imvugo nziza ndetse n’imbabazi biruta ituro rikurikijwe inabi, kandi Allah ni Uwihagije, Udahubuka.",
+      "ln": "Liloba ya kitoko mpe bolimbisi, ezali malamu koleka likabo liye lilandisami na liloba ya mabe. Allah azali na bosenga na eloko te, mpe atonda bolamu.",
+      "dag": "Yɛltɔɣa suŋ (zilimballi) ni chεmpaŋ n-nyɛ din gari sara shɛli bɛrim ni doli di nyaaŋa. Yaha! Naawuni nyɛla Bundana, ni Suɣulolana titali.",
+      "mos": "Koεεg sẽn mɑneg lɑ yɑɑf-n-bɑse, ɑ sõmblem yɩɩdɑ doaɑg (kũuni) nɑmsg sẽn tũnugd-ɑ, lɑ Wẽnd yɑɑ Sek-m-meng Soɑbɑ n yɑɑ sugr Soɑbɑ",
+      "mdh": "Su kadtalu a mananaw endu kaampun na labi a mapya kumin kanu sadaqah a pedtundugan sekanin sa makagkayd, endu su Allah i labi a kawasa a mamelasam.",
+      "ak": "Kasa pa ne bͻnefakyε yε kyεn adͻeε a ͻhaw di akyire. Nyankopͻn deε Ɔne Otumfoͻ a Ɔde Neho na Wanya Neho a Onhia obiara biribiara, Ɔne Ntoboaseε Hene.",
+      "nqo": "ߞߊ߲߫ ߓߘߍ߫ ߝߐ ߣߌ߫ ߡߊ߬ߞߕߏ߬ߟߌ ߟߋ߬ ߦߊ߯ ߝߌ߬ߛߊ߬ ߛߘߊߞߊ߫ ( ߓߐ߫ ) ߘߌ߫ ߕߙߐߦߊ ߦߋ߫ ߡߍ߲ ߡߊߛߊ߯ߘߊ߫ ߟߊ߫، ߊߟߊ߫ ߘߏ߲߬ ߞߊ߯ߙߌߓߊ߯ ߡߎ߬ߢߎ߲߬ߓߊ߮ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -793,7 +960,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "চয়তানে তোমালোকক দৰিদ্ৰতাৰ প্ৰতিশ্ৰুতি দিয়ে (ভয় দেখুৱায়) আৰু অশ্লিলতাৰ নিৰ্দেশ দিয়ে। আনহাতে আল্লাহে তোমালোকক তেওঁৰ ক্ষমা আৰু অনুগ্ৰহৰ প্ৰতিশ্ৰুতি দিয়ে; আৰু আল্লাহ সৰ্বব্যাপী-প্ৰাচুৰ্যময়, সৰ্বজ্ঞ।",
       "ne": "(हेर) शैतानले तिमीलाई गरिबीबाट तर्साउँछ र निर्लज्जातापूर्ण काम गर्ने प्रेरणा दिन्छ । र अल्लाह तिमीसित आफ्नो उपकार र वरदानको वचन दिन्छ । र अल्लाह सर्वव्यापी र अति ज्ञानी छ ।",
       "si": "ෂෙයිතාන් නුඹලාට දිළිඳුකම ප්‍රතිඥා කරන්නේ ය. තවද ඔහු නුඹලාට අශික්ෂිත දෑ නියම කරන්නේ ය. එනමුත් අල්ලාහ් ඔහුගෙන් වූ සමාව ද භාග්‍යය ද ප්‍රතිඥා දෙන්නේ ය. තවද අල්ලාහ් සර්ව ව්‍යාපකය, සර්වඥානී ය.",
-      "km": "ស្ហៃតនបំភ័យពួកអ្នកពីភាពក្រីក្រ និងប្រើពួកអ្នកឱ្យប្រព្រឹត្ដអំពើអាក្រក់។ តែអល់ឡោះវិញ ទ្រង់សន្យានឹងពួកអ្នកនូវការអភ័យទោស និងក្តីសប្បុរសអំពីទ្រង់។ ហើយអល់ឡោះមហាវិសេសវិសាល មហាដឹងបំផុត។"
+      "km": "ស្ហៃតនបំភ័យពួកអ្នកពីភាពក្រីក្រ និងប្រើពួកអ្នកឱ្យប្រព្រឹត្ដអំពើអាក្រក់។ តែអល់ឡោះវិញ ទ្រង់សន្យានឹងពួកអ្នកនូវការអភ័យទោស និងក្តីសប្បុរសអំពីទ្រង់។ ហើយអល់ឡោះមហាវិសេសវិសាល មហាដឹងបំផុត។",
+      "he": "השטן מבטיח לכם את העוני, ומצווה עליכם להיות מושחתים, ואילו אללה מבטיח לכם סליחה ממנו וברכה, ואללה הוא רב-אמצעים ויודע כול.",
+      "lg": "Sitaane ebatiisa okwavuwala (bwe munaasaddaaka) n'ebalagira okukola ebibi so nga Allah abalagaanyisa kusonyiyibwa okuva Gy'ali nakubawa birungi. Bulijjo Allah Mugazi nnyo mu by'agaba Mumanyi nnyo.",
+      "rw": "Shitani abakangisha ko (nimwitanga) muzakena, akanabategeka gukora ibibi. Naho Allah, abasezeranya imbabazi n’ingabire bimuturukaho. Kandi Allah ni Nyiringabire zagutse, Umumenyi uhebuje.",
+      "mos": "A Sʋtãɑn bugsdɑ yãmb ne tɑlemd lɑ ɑ sɑgend yãmb ne yel-beedo, lɑ Wẽnd pʋlemdɑ yãmb ne yɑɑfg sẽn yi A nengẽ lɑ kũuni, lɑ Wẽnd yɑɑ bãng yɑleng Soɑbɑ n yɑa Mitɑ.",
+      "ak": "Ɔbonsam de ohia hunahuna mo, san hyε mo ma mobͻ ahohwi bra; Onyankopͻn deε Ɔde bͻne fakyε a εwͻ Nehͻ ne adom na Ɛrehyε mo bͻ. Onyankopͻn deε N’adom so paa, Ɔne Onimdefoͻ.",
+      "nqo": "ߜߍ߬ߘߍ ߦߴߊߟߎ߫ ߦߟߌߡߊߜߏߦߊ߫ ߟߊ߫ ߓߟߏߞߏߟߏ߲ߧߊ ߟߋ߬ ߟߊ߫ ߞߵߊߟߎ߫ ߟߐ߬ ߞߏߙߏ߲ߧߊ ߟߊ߫، ߊߟߊ߫ ߘߏ߲߬ ߦߴߊߟߎ߫ ߦߟߌߡߊߘߌߦߊ߫ ߟߴߊ߬ ߟߊ߫ ߡߊ߬ߞߕߏ߬ߟߌ ߣߴߊ߬ ߟߊ߫ ߢߊ߬ߒߡߊ߭ ߟߋ߬ ߟߊ߫، ߊߟߊ߫ ߘߏ߲߬ ߦߙߌߥߊߓߊ߯ ߟߐ߲ߠߌ߲ߠߊ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -840,7 +1013,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "te": "నిశ్చయంగా, విశ్వసించి సత్కార్యాలు చేసే వారికీ మరియు నమాజ్ స్థాపించే వారికీ, జకాత్ ఇచ్చేవారికీ తమ ప్రభువు వద్ద తగిన ప్రతిఫలం లభిస్తుంది మరియు వారికి ఎలాంటి భయమూ ఉండదు మరియు వారు దుఃఖపడరు కూడా!",
       "kn": "ನಿಶ್ಚಯವಾಗಿಯೂ ಸತ್ಯವಿಶ್ವಾಸಿಗಳು, ಸತ್ಕರ್ಮವೆಸಗುವವರು, ನಮಾಝ್ ಸಂಸ್ಥಾಪಿಸುವವರು ಮತ್ತು ಝಕಾತ್ ನೀಡುವವರು ಯಾರೋ—ಅವರಿಗೆ ಅವರ ಪರಿಪಾಲಕನ (ಅಲ್ಲಾಹನ) ಬಳಿ ಅವರ ಪ್ರತಿಫಲವಿದೆ. ಅವರಿಗೆ ಯಾವುದೇ ಭಯವಿಲ್ಲ; ಅವರು ದುಃಖಿಸುವುದೂ ಇಲ್ಲ.",
       "mr": "जे लोक ईमानासह (पैगंबरांच्या आचरण शैलीनुसार) काम करतात, नमाजांना कायम करतात आणि जकात अदा करतात त्यांचा मोबदला त्यांच्या पालनकर्त्याच्या जवळ आहे. त्यांना ना कसले भय राहील आणि ना कसले दुःख राहील.",
-      "as": "নিশ্চয় যিসকলে ঈমান আনিছে, নেক আমল কৰিছে, ছালাত প্ৰতিষ্ঠা কৰিছে আৰু যাকাত প্ৰদান কৰিছে, তেওঁলোকৰ প্ৰতিদান আছে তেওঁলোকৰ প্ৰতিপালকৰ ওচৰত; তেওঁলোকৰ কোনো ভয় নাই আৰু তেওঁলোক চিন্তিতও নহ’ব।"
+      "as": "নিশ্চয় যিসকলে ঈমান আনিছে, নেক আমল কৰিছে, ছালাত প্ৰতিষ্ঠা কৰিছে আৰু যাকাত প্ৰদান কৰিছে, তেওঁলোকৰ প্ৰতিদান আছে তেওঁলোকৰ প্ৰতিপালকৰ ওচৰত; তেওঁলোকৰ কোনো ভয় নাই আৰু তেওঁলোক চিন্তিতও নহ’ব।",
+      "he": "אלה אשר האמינו ועושי הטובות והקימו את התפילה ונתנו את הזכאת (צדקת חובה), להם גמולם אצל ריבונם, אין חשש לגורלם ולא ייעצבו.",
+      "lt": "Tikrai, tie, kurie tiki ir daro teisingus darbus, ir atlieka As-Salat (Ikamat-as-Salat), ir duoda Zakat, - gaus atlygį pas savąjį Viešpatį. Nebus jiems baimės, anei jie liūdės.",
+      "mos": "Sẽn kõ-b sɩd lɑ b tʋm sõmã wã lɑ b duum ne pʋʋsgã lɑ b kõ zɑkã b tɑrɑ b keoor b Soɑbã nengẽ lɑ rɑbeem kɑ ne-bɑ b pɑ sãɑmd b sũy ye.",
+      "nqo": "ߒ߬ߓߊ߬ ߡߍ߲ ߠߎ߬ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߸ ߞߊ߬ ߛߊߟߌ ߟߐ߬ ߞߊ߬ ߖߞߊ ߘߌ߫ ߸ ߏ߬ ߟߎ߫ ߛߊ߬ߙߊ ߟߴߊ߬ߟߎ߬ ߦߋ߫ ߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߓߘߊ߸ ߛߌߟߊ߲߫ ߕߴߏ߬ ߟߎ߬ ߟߊ߫߸ ߛߎ߬ߣߎ߲߫ ߘߏ߲߬ ߕߍ߫ ߊ߬ߟߎ߫ ߡߊ߬"
     }
   },
   {
@@ -904,7 +1081,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আল্লাহৰ ওচৰত আকাশ আৰু পৃথিৱীৰ একোৱেই গোপন নহয়।",
       "ne": "निःसन्देह अल्लाहबाट पृथ्वी र आकाशको कुनै वस्तु लुकेको छैन ।",
       "si": "නියත වශයෙන් ම අල්ලාහ්(ගේ දැනුම)ට අහස්හි හෝ මහපොළොවේ හෝ ඇති කිසිවක් සැඟැවෙන්නේ නැත.",
-      "km": "ជាការពិតណាស់ គ្មានអ្វីមួយដែលនៅលើផែនដី ឬក៏នៅលើមេឃអាចលាក់បាំងពីអល់ឡោះជាម្ចាស់បានឡើយ។"
+      "km": "ជាការពិតណាស់ គ្មានអ្វីមួយដែលនៅលើផែនដី ឬក៏នៅលើមេឃអាចលាក់បាំងពីអល់ឡោះជាម្ចាស់បានឡើយ។",
+      "he": "הן, אללה אין דבר שנסתר ממנו לא בארץ ולא בשמים.",
+      "ka": "ჭეშმარიტად, ალლაჰისგან არაფერი იმალება — არც მიწაზე და არც ცაში.",
+      "lt": "Iš tiesų, niekas nėra paslėpta nuo Allaho, žemėje ar danguje.",
+      "mg": "Tena marina, fa tsy misy zavatra miafina amin’i Allah na dia kely aza, na eto an-tany na any an-danitra.",
+      "lg": "Allah tewali kintu kyonna kimwekweka mu nsi wadde mu ggulu.",
+      "rw": "Mu by’ukuri, Allah ntakimwihisha ku isi no mu kirere.",
+      "rn": "Mu vy’ukuri, ubumenyi bw’Imana Allah bukikije ibiremwa vyose, nta kintu na kimwe kw’isi canke mw’ijuru cinyegeje Imana Allah, n’aho coba akantu kanzunya.",
+      "ln": "Ya sôló eloko moko te ebombami epai na Allah. Ezala na nsé to na likolo.",
+      "dag": "Achiika! Naawuni, binshɛɣubi sɔɣiri ka chɛri O tiŋgbani ni, bee sagbana ni.",
+      "mos": "Ad Wẽnde bũmb pɑ solgd-A tẽngã pʋgẽ pɑ sɑɑsẽ wã.",
+      "aa": "Diggah Yallak Baaxol tanim kee Qaraanal taniimik tu-kaak ma- Qellitta.",
+      "mdh": "Saben-sabenal na su Allah na da makapagena sa lekanin a enggaisa sya sa lupa endu sya sa langit.",
+      "ak": "Nokorε sε, biribiara nsuma Nyankopͻn wͻ asase so anaasε ͻsoro.",
+      "ceb": "Sa pagkatinuod, ang Allāh, walay matago nga butang gikan Kaniya sa kayutaan ug sa mga kalangitan.",
+      "nqo": "ߊߟߊ߫ ߸ ߝߏߦߌ߬ ߕߍ߫ ߘߏ߲߰ ߠߴߊ߬ߟߋ ߡߊ߬ ߞߏߦߌ߫ ߸ ߘߎ߱ ߡߊ߬ ߥߟߊ߫ ߛߊ߲ ߘߐ߫"
     }
   },
   {
@@ -967,7 +1159,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই মাতৃগৰ্ভত যেনেকৈ ইচ্ছা তোমালোকৰ আকৃতি গঠণ কৰে। তেওঁৰ বাহিৰে আন কোনো সত্য ইলাহ নাই; (তেওঁ) প্ৰবল পৰাক্ৰমশালী, প্ৰজ্ঞাময়।",
       "ne": "ऊ आमाको गर्भमा जस्तो चाहन्छ तिम्रा रूपहरू बनाउँछ । उस सर्वशक्तिमान र बुद्धिमता सम्पन्न बाहेक  अरु कोहि वास्तविक पूज्य छैन ।",
       "si": "ගර්භාෂ තුළ නුඹලාව තමන් කැමති පරිදි හැඩ ගන්වන්නේ ඔහු ම ය. සර්ව බලධාරී සියුම් ඥානවන්ත වූ ඔහු හැර වෙනත් දෙවියෙක් නොමැත.",
-      "km": "ទ្រង់គឺជាអ្នកដែលបានបង្កើតរូបរាងពួកអ្នកនៅក្នុងផ្ទៃម្តាយទៅតាមអ្វីដែលទ្រង់មានចេតនា។ គ្មានព្រះជាម្ចាស់ណាផ្សេងដែលត្រូវគេគោរពសក្ការៈដ៏ពិតប្រាកដក្រៅពីទ្រង់ដែលមហាខ្លាំងពូកែ មហាគតិបណ្ឌិតនោះឡើយ។"
+      "km": "ទ្រង់គឺជាអ្នកដែលបានបង្កើតរូបរាងពួកអ្នកនៅក្នុងផ្ទៃម្តាយទៅតាមអ្វីដែលទ្រង់មានចេតនា។ គ្មានព្រះជាម្ចាស់ណាផ្សេងដែលត្រូវគេគោរពសក្ការៈដ៏ពិតប្រាកដក្រៅពីទ្រង់ដែលមហាខ្លាំងពូកែ មហាគតិបណ្ឌិតនោះឡើយ។",
+      "he": "הוא אשר עיצב אתכם ברחם (אימהותיכם) כרצונו, ואין אלוה מלבדו, והוא העזוז החכם.",
+      "ka": "(მხოლოდ) ის (ალლაჰი) არის, ვინც გაძლევთ ფორმას დედის საშვილოსნოში, როგორც ინებებს. არ არსებობს ღმერთი (თაყვანისცემის ღირსი) მის გარდა — ძლევამოსილი, ბრძენი.",
+      "lt": "Jis yra Tas, Kuris suformuoja jus gimdose taip, kaip Jis nori. La ilaha illa Huva (niekas neturi teisės būti garbinamas, tik Jis), Visagalis, Visa Išmanantis.",
+      "mg": "Izy no nanome Anareo endrika tao am-bohoka araka izay sitrany. Tsy misy Zanahary afa-tsy Izy, ilay Tsitoha, ilay be Fahendrena.",
+      "lg": "Allah Y'oyo abatondera mu bifaananyi byammwe mu nnabaana nga bw'aba ayagadde. Tewali kisinzibwa mu butuufu kyonna okuggyako Yye. Nnantakubwakumukono Mugobansonga.",
+      "rw": "Ni We ubagenera imiterere uko ashaka mukiri muri nyababyeyi. Nta yindi mana iriho ikwiye gusengwa uretse We. Ni Nyiricyubahiro bihebuje, Nyirubugenge buhambaye.",
+      "rn": "Ni Yo Yonyene Ibarema mu bitereko vy’abavyeyi banyu ukuntu Ishaka. Nta mana ibwirijwe gusengwa vy’ukuri atari Yo, Nyenintsinzi-Mutaneshwa, Intungane mu vyo Ikora.",
+      "ln": "Ye nde azali kopesa bino balolenge kowuta na mabumu ya bamama na bino yambo ete bobotama ndenge alingi. Nzambe mosusu azali te sé ye wa bokasi atonda bwányá.",
+      "dag": "Ŋuna (Naawuni) n-nyɛŊun tiri ya ŋmahiŋgbana (yi manim’) tolansi ni, ni Oni bɔri lishεm. Duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna. Ŋuna n-nyɛ Nyɛŋda, Yεmgoliŋgalana.",
+      "mos": "Yẽndɑ n nɑɑnd yãmb rog-wʋʋsẽ wã wɑlɑ A sẽn tʋlle, soɑb kɑ be sẽn tɩlgde rẽndɑ Yẽndɑ sẽn yɑɑ a Wilb Nɑɑbã n yɑɑ Bʋʋd-Mitã.",
+      "aa": "Yalla kinni sin inaanih maxaxal isih elle faxa innal sin gintaah weeloola Siinih taceem, kaak-sa cakkil yaqbuden Yalli mayan, Yalli mayso-li Naggaara.",
+      "mdh": "Sekanin (Allah) i papebpalas sa lekanu sya kanu manga wawatan (nu manga ina) sa panun i egkahandan nin, da kadenan ya tabya sekanin a labi a mapulu a mataw.",
+      "ak": "Ɔno ne Nea Ɔnwenee mo wͻ (mo maame nom) awodeε mu sεdeε Ɔpε; awurade foforͻ biara nni hͻ gyesε Ɔno nko ara, Ɔne Otumfoͻ no a Otumi ade nyinaa yε, na Ɔne Onyansafoͻ no.",
+      "ceb": "Siya Mao ang Naghulma kaninyo sulod sa mga sabakan sumala sa Iyang pagbuot; walay dios (nga angayan simbahon) gawas Kaniya, ang Hingpit nga Gamhanan, ang Hingpit nga Maalam.",
+      "nqo": "ߊ߬ߟߋ ߟߵߊߟߎ߫ ߝߊ߬ߘߌ߬ߡߦߊ߬ ߟߊ߫ ߘߋ߲ߛߏ ߟߎ߬ ߘߐ߫ ߊ߬ ߢߣߊ߫ ߢߊ ߡߊ߬ ( ߦߌߟߡߊ ߟߎ߬ ߘߐ߫ )، ߡߊ߰ߙߌ߬ ߛߌ߫ ߕߴߊ߬ߟߋ߬ ߞߐ߫، ߣߌ߬ߣߌ߬ߟߊ߫ ߟߋ߬ ߥߘߋ߬ߥߘߋ߬ߟߌ߬ߟߊ߫ ߟߋ߬"
     }
   },
   {
@@ -1022,7 +1229,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় মানৱজাতিৰ বাবে সৰ্বপ্ৰথম যিখন ঘৰ প্ৰতিষ্ঠিত হৈছিল, সেয়া মক্কাত অৱস্থিত, সেইখন হৈছে বৰকতময় আৰু বিশ্ববাসীৰ বাবে হিদায়ত।",
       "ne": "(अल्लाहको) पहिलो घर जुन मानिसहरूको निमित्त पूजाको लागि निर्धारित गरिएको थियो, त्यहि नै हो जुन मक्कामा अवस्थित छ, कल्याणकारी र पूर्ण विश्वको निम्ति मार्गदर्शक छ ।",
       "si": "ලෝ වැසියනට මඟ පෙන්වන්නක් හා සෞභාග්‍යක් ලෙස ජනයාට (නැමදුම සඳහා) තබනු ලැබූ ප්‍රථම ගෘහය බක්කා (හෙවත් මක්කා) වෙහි පිහිටා ඇත.",
-      "km": "ពិតប្រាកដណាស់ គេហដ្ឋានដំបូងគេដែលត្រូវគេដាក់សម្រាប់មនុស្សលោក(ដើម្បីធ្វើសក្ការៈចំពោះអល់ឡោះជាម្ចាស់)នោះ គឺស្ថិតនៅឯក្រុងម៉ាក្កះដែលប្រកបដោយពរជ័យ និងជាការចង្អុលបង្ហាញដល់ពិភពទាំងអស់ផងដែរ។"
+      "km": "ពិតប្រាកដណាស់ គេហដ្ឋានដំបូងគេដែលត្រូវគេដាក់សម្រាប់មនុស្សលោក(ដើម្បីធ្វើសក្ការៈចំពោះអល់ឡោះជាម្ចាស់)នោះ គឺស្ថិតនៅឯក្រុងម៉ាក្កះដែលប្រកបដោយពរជ័យ និងជាការចង្អុលបង្ហាញដល់ពិភពទាំងអស់ផងដែរ។",
+      "he": "הבית (הקדוש) הראשון שהוקם לבני האדם הוא זה אשר בבכה (העיר מכה), מבורך ובו הדרכה לכל העולמים.",
+      "lt": "Iš tiesų, pirmasis (garbinimo) Namas, paskirtas žmonijai, buvo tas Bekkoje (Mekkoje), pilnas palaimos ir teisingas vedimas Al-Alamyn (žmonijai ir džinams).",
+      "lg": "Mazima ddala ennyumba eyasooka okuteerwawo abantu (olw'okusinza Allah) y'eyo eri e Bakka (Makka) ya mikisa era nga kya kuluŋŋamya eri abantu bonna.",
+      "rw": "Mu by’ukuri, ingoro ya mbere yashyiriweho abantu (kugira ngo isengerwemo Allah) ni ya yindi iri i Baka (Maka); yuje imigisha ikaba n’umuyoboro ku biremwa.",
+      "ln": "Ya sôló, ndako ya yambo oyo etiamaki na mokili mpona bato, ezali ndako esantu ya Makkah, oyo epambolama, yango ezali nzela ya bokambi mpona mokili mobimba.",
+      "dag": "Achiika! Tuuli yili shɛli bɛ ni zaŋ zali ninsalinima (Naawuni jɛma zuɣu) n-nyɛ din be Makka la (Ka’aba), ka di nyɛla albarika shee, ka nyɛ dolsigu n-zaŋ ti binnamda.",
+      "mos": "Ad rãeenem roog b sẽn ning nebã yĩnga, yaa sẽn be Bakatã (Makã), tɩ bark be be, n leb n yaa kãndgr ne bõn-naandsã.",
+      "mdh": "Saben-sabenal na ya paganay a walay a inibetad kanu manga taw na su lu sa Makkah a barakat endu tutulu kanu sakalyan alam.",
+      "ak": "Nokorε sε, (Nyamesom) Fie a edikan a yεde sii hͻ maa adasamma ne deε εwͻ Bakata (Maka) no; εyε nhyira ne tenenee dema amansan nyinaa.",
+      "ceb": "Ang unang balay (sa pagsimba) nga gikatudlo alang sa katawhan mao ang Bakkah (Makkah), nga Gipanalanginan, ug usa ka Giya alang sa tanang kanasuran.",
+      "nqo": "ߞߏ߬ߞߏ߫ ߓߏ߲߫ ߝߟߐ ߡߍ߲ ߟߐ߬ ߘߊ߫ ߡߐ߱ ߟߎ߬ ߦߋ߫ ߏ߬ ߟߋ ߓߞߊ߫ ߕߊ ߘߌ߫، ߓߊ߲ߓߊ߲߫ ߦߙߐ ߟߋ߬ ߸ ߊ߬ ߣߌ߫ ߞߊ߲ߘߦߊ߫ ߦߙߐ ߟߋ߬ ߖߊ߯ߓߊ ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -1086,7 +1304,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে ঈমান্দাৰসকল! তোমালোকে যথাৰ্থভাৱে আল্লাহৰ তাক্বৱা অৱলম্বন কৰা আৰু তোমালোকে মুছলিম (পৰিপূৰ্ণ আত্মসমৰ্পণকাৰী) নোহোৱালৈকে মৃত্যুবৰণ নকৰিবা।",
       "ne": "हे मोमिनहरू ! अल्लाहसँग यति डर जति उसँग डर्नु पर्ने हो, र हेर मर्ने बेलासम्म मुसलमान नै रहनु ।",
       "si": "අහෝ විශ්වාස කළවුනි! නුඹලා අල්ලාහ්ට බිය බැතිමත් විය යුතු සැබෑ අයුරින් ම නුඹලා ඔහුට බිය බැතිමත් වනු. තවද නුඹලා අවනත වන්නන් ලෙස සිටිය දී මිස මරණයට පත් නො වනු.",
-      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកកោតខ្លាចអល់ឡោះជាម្ចាស់នូវការកោតខ្លាចមួយដ៏ពិតប្រាកដ។ ហើយពួកអ្នកមិនត្រូវស្លាប់ជាដាច់ខាត លើកលែងតែពួកអ្នកជាជនមូស្លីម។"
+      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកកោតខ្លាចអល់ឡោះជាម្ចាស់នូវការកោតខ្លាចមួយដ៏ពិតប្រាកដ។ ហើយពួកអ្នកមិនត្រូវស្លាប់ជាដាច់ខាត លើកលែងតែពួកអ្នកជាជនមូស្លីម។",
+      "he": "הוי, אלה אשר האמינו! יראו את אללה כיאה לו, ואל תמותו אלא בעודכם מוסלמים (מתמסרים לאללה),",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! გეშინოდეთ ალლაჰის ისეთი შიშით, როგორიც მას ეკადრება, და არ მოკვდეთ სხვა მდგომარეობაში, გარდა იმისა, რომ იყოთ სრულად მორჩილნი [მუსლიმები].",
+      "mg": "Ô Ianareo izay nino ! Matahora an’i Allah Ianareo amin’ny tena fatahorana Azy marina, ary aoka mba tsy ho faty raha tsy efa manaiky tanteraka an’i Allah Ianareo.",
+      "lg": "Abange mmwe Abakkiriza mutye Allah mu butuufu bw'okumutya era temufanga okuggyako nga muli Basiraamu.",
+      "rw": "Yemwe abemeye! Nimungandukire Allah uko bikwiye, kandi ntimuzapfe mutari Abayisilamu (nyakuri).",
+      "ln": "Eh bino baye bondimi! Bobanga Allah bobangi ya sôló, mpe liwa ekuta bino te sé bozali Na kati ya komisokia.",
+      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Zom ya Naawuni zobu ni yɛlimaŋli, ka miri ya ka yi kpi naɣila yi nyɛla Muslinnima.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! zoe-y Wẽnde, A zoees tεkẽ, la y ra wa ki, rẽndame tɩ y yaa sak-n-tũ rãmba;",
+      "aa": "Yeemeneh yan maraw Yallak Nummâ meesih meesitaay marabina isin muslimiinih Anuk Rabtan sin Akke waytek.",
+      "mdh": "Hay sekanu a namalityala (namangimbenal)! Ikagilek nu su Allah sa tidtu a gilek sa lekanin, endu di kanu den a benal matay ya tabya na sekanu na namedsangkup.",
+      "ak": "Mo a moagye adie, monsuro Nyankopͻn sεdeε Ɔfata sε yesuro no kͻpem biara; na monhwε yie na moanwu gyesε moyε Muslimifoͻ.",
+      "ceb": "Oh mga magtutuo, kahadloki ninyo ang Allah, uban sa labing tinuod nga pagkahadlok nga angay Kaniya; ug ayaw kamo kamatay gawas nga kamo mga Muslim (nagpasakop sa Kabubut-on sa Diyos).",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬ ߝߊ߲ߕߊ߲ߞߊߢߊ ߕߌ߯ߕߌ߮ ߟߊ߫، ߊߟߎ߫ ߞߣߊ߫ ߛߊ߬ ߝߋߎ߫ ߝߏ߫ ߊߟߎ߫ ߖߘߍ߬ߞߟߏ߬ߦߊ߬ߓߊ߰ߟߊ߬ߡߊ"
     }
   },
   {
@@ -1150,7 +1381,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশমণ্ডলত যি আছে আৰু পৃথিৱীত যি আছে সেই সকলো আল্লাহৰেই আৰু আল্লাহৰ ওচৰতেই সকলো প্ৰত্যাৱৰ্তিত হ’ব।",
       "ne": "जे जति आकाशहरूमा र पृथ्वीमा छन्, सबै अल्लाहकै हुन् र सबै कुरा (अन्तमा) अल्लाहतिर नै फर्कने छन् ।",
       "si": "අහස්හි ඇති දෑ ද මහපොළොවේ ඇති දෑ ද අල්ලාහ් සතු ය. තවද සියලු කරුණු නැවත යොමු කරනු ලබනුයේ අල්ලාහ් වෙත ය.",
-      "km": "ហើយអ្វីៗដែលនៅលើមេឃជាច្រើនជាន់ និងអ្វីៗដែលមាននៅលើផែនដី គឺជាកម្មសិទ្ធិរបស់អល់ឡោះជាម្ចាស់(តែមួយគត់)។ ហើយកិច្ចការទាំងអស់ គឺត្រូវគេនាំត្រឡប់ទៅកាន់អល់ឡោះ។"
+      "km": "ហើយអ្វីៗដែលនៅលើមេឃជាច្រើនជាន់ និងអ្វីៗដែលមាននៅលើផែនដី គឺជាកម្មសិទ្ធិរបស់អល់ឡោះជាម្ចាស់(តែមួយគត់)។ ហើយកិច្ចការទាំងអស់ គឺត្រូវគេនាំត្រឡប់ទៅកាន់អល់ឡោះ។",
+      "he": "לאללה כל אשר בשמים ואשר בארץ ואל אללה יוחזרו כל הדברים.",
+      "ka": "და (მხოლოდ ერთ) ალლაჰს ეკუთვნის ყველაფერი, რაც ცათა შინაა, და ყველაფერი, რაც მიწაზეა; და (მხოლოდ ერთ) ალლაჰს უბრუნდება ყოველი საქმე.",
+      "lt": "Ir Allahui priklauso viskas, kas yra danguose, ir viskas, kas yra žemėje. Ir visi reikalai sugrįžta (sprendimui) pas Allahą.",
+      "mg": "Ary an’i Allah avokoa izay rehetra any amin’ireo lanitra sy ety an-tany. Ary any amin’i Allah no hiverenan’ny zava-drehetra.",
+      "lg": "Era bya Allah ebiri mu ggulu omusanvu n'ebiri mu nsi era eri Allah ebintu byonna gye bizzibwa.",
+      "rw": "Kandi ibiri mu birere n’ibiri mu isi ni ibya Allah, ndetse kwa Allah ni ho ibintu byose bizasubizwa.",
+      "rn": "Imana Allah ni na Yo Rugaba Igaba Ikaganza ibiri mu majuru n’ibiri mw’isi n’ibiri hagati yavyo. Kandi rero ibiremwa vyose bizosubira kuri Yo kugira Ihembe kimwe cose ku rugero rw’ibigikwiye.",
+      "ln": "Mpe manso mazali olikolo mpe na nsé mazali ya Allah. Mpe Epai na Allah Makambo manso makozongisama.",
+      "dag": "Yaha! Naawuni n-nyɛŊun su din be sagbana ni, ni din be tiŋgbani ni. Yaha! Naawuni sani ka bɛ yɛn ti labsi yεllikam (Zaadali).",
+      "mos": "Lɑ Wẽnd n so sẽn be sɑɑsẽ lɑ tẽngẽ, lɑ yɑɑ Wẽnd nengẽ lɑ yεlã lebdɑ.",
+      "aa": "Yalli Qaranwal tanim kee Baaxö Bagul tanim dibuk usuk leeh ginö caagiida inkih Yallâ fanah gacsimta.",
+      "mdh": "Endu kanu Allah su nganin a sya kanu manga langit endu su nganin a sya kanu lupa endu lu kanu Allah makambalingan su manga galebekan.",
+      "ak": "Nyankopͻn na deε εwͻ soro ne deε εwͻ asaase so (nyinaa) yε Nedea. Nyankopͻn hͻ na nsεm no nyinaa san kͻ.",
+      "ceb": "Iya sa Allāh ang bisan unsa nga anaa sa mga langit, ug ang tanan nga anaa sa yuta; ug ngadto sa Allāh ang tanang butang igabalik (alang sa paghukom).",
+      "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߞߣߐ߫ ߝߋ߲ ߠߎ߬ ߘߌ߫ ߸ ߊ߬ ߣߌ߫ ߘߎ߱ ߞߣߐ߫ ߝߋ߲ ߠߎ߬، ߞߏ ߟߎ߫ ߘߏ߲߬ ߟߊߛߊ߬ߦߌ߬ߕߐ߫ ߊߟߊ߫ ߟߋ߫ ߡߊ߬"
     }
   },
   {
@@ -1214,7 +1460,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "এইবোৰ হৈছে মানুহৰ বাবে স্পষ্ট বৰ্ণনা আৰু মুত্তাক্বীসকলৰ বাবে হিদায়ত আৰু উপদেশ।",
       "ne": "सामान्य मानिसहरूको निम्ति यो (कुरआन) एउटा वक्तव्य हो र अल्लाहका सेवकहरूको लागि पथप्रदर्शन र नसीहत (उपदेश) हो ।",
       "si": "මෙය ජනයාහට වූ පැහැදිලි කිරීමකි. තවද දේව බිය බැතිමතුන්ට මඟපෙන්වීමක් හා උපදෙසකි.",
-      "km": "នេះគឺជាការបញ្ជាក់យ៉ាងច្បាស់ដល់មនុស្សលោក និងជាការចង្អុលបង្ហាញ ព្រមទាំងជាដំបូន្មានសម្រាប់បណ្តាអ្នកដែលកោតខ្លាច។"
+      "km": "នេះគឺជាការបញ្ជាក់យ៉ាងច្បាស់ដល់មនុស្សលោក និងជាការចង្អុលបង្ហាញ ព្រមទាំងជាដំបូន្មានសម្រាប់បណ្តាអ្នកដែលកោតខ្លាច។",
+      "he": "זוהי הצהרה לאנשים והדרכה ולקח ליראים.",
+      "ka": "ეს [ყურანი] არის განმარტება ადამიანებისთვის, გზამკვლევი და შეგონება ღვთისმოშიშთათვის.",
+      "lt": "Tai (Koranas) yra aiškus tvirtinimas žmonijai, teisingas vedimas ir nurodymas tiems, kurie yra Al-Mutakūn (dievobaimingieji – žr. ają 2:2).",
+      "mg": "Ity dia fanazavana ho an’ny Olombelona sy tari-dalàna, ary anatra ho an’ireo manam-patahorana.",
+      "lg": "(Kulaani eno) kwe kunnyonnyola okuweereddwa eri Abantu era buluŋŋamu era kwe kubuulirira eri abatya Allah.",
+      "rw": "Ibi (Qur’an) ni ibisobanuro ku bantu, bikaba umuyoboro n’inyigisho ku batinyamana.",
+      "rn": "Iyi Qor’ani, ni impanuro ku bantu bose bashaka kurongoka, ikaba n’uburongozi n’urwibutso ku bagamburukiramana.",
+      "dag": "Ŋɔ maa nyɛla kahigibu n-zaŋ ti ninsalinima, ni dolsigu, ka di lahi nyɛ wa’azu n-ti wuntizɔriba.",
+      "mos": "Wãnde yɑɑ vẽnegr ne nebã lɑ kãndgre lɑ sɑglgɑ ne Wẽnd-zoetbã.",
+      "aa": "Tama Qhuraan Sinaamah cakki gitih Baxxaqqaay tirto, usuk Yallak meesita marah kassiisi usun kaat yantifiqeenimih Sabbatah.",
+      "mdh": "Namba (su Qur’an), a pebpayag kanu manga taw, endu tutulu endu indawan kanu manga magilek.",
+      "ak": "(Qur’aan) woi yε nkyerεkyerεmu pefee dema adasamma, na εyε kwankyerε ne afutusεm dema Nyame-surofoͻ no.",
+      "nqo": "(ߡߊ߲߬ߞߕߎ߫ ߕߊ߬ߡߌ߲߬ߣߍ߲ ) ߣߌ߲߬ ߦߋ߫ ߟߊ߬ߛߋ߬ߒ߬ߞߊ߲߬ߠߊ ߟߋ߬ ߘߌ߫ ߡߐ߱ ߟߎ߫ ߡߊ߬، ߊ߬ ߣߌ߫ ߞߊ߲ߘߦߊ߫ ߣߌ߫ ߟߊ߬ߟߌ߬ߟߌ߫ ߟߋ߬ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -1267,7 +1526,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kn": "ಅಲ್ಲಾಹು ನಿಮಗೆ ಸಹಾಯ ಮಾಡಿದರೆ ನಿಮ್ಮನ್ನು ಸೋಲಿಸಲು ಯಾರಿಗೂ ಸಾಧ್ಯವಿಲ್ಲ. ಆದರೆ ಅವನೇನಾದರೂ ನಿಮ್ಮನ್ನು ಕೈಬಿಟ್ಟರೆ, ಅವನ ನಂತರ ನಿಮಗೆ ಸಹಾಯ ಮಾಡುವವರು ಯಾರು? ಸತ್ಯವಿಶ್ವಾಸಿಗಳು ಅಲ್ಲಾಹನಲ್ಲಿಯೇ ಭರವಸೆಯಿಡಲಿ.",
       "mr": "जर अल्लाह तुम्हाला मदत करील तर कोणीही तुमच्यावर वर्चस्वशाली ठरू शकत नाही आणि जर तो तुम्हाला सोडून देईल तर असा कोण आहे जो तुम्हाला मदत करील? आणि ईमान राखणाऱ्यांनी अल्लाहवरच भरोसा ठेवला पाहिजे.",
       "ne": "यदि अल्लाह तिम्रो मद्दत गर्दछ भने कसैले तिमीलाई पराजित गर्न सक्दैन । र यदि अल्लाहले तिमीलाई छोडिदिन्छ भने, को छ उसपछि जसले तिम्रो सहायता गर्न सकोस् ? तसर्थ मोमिनहरूलाई अल्लाहमाथि नै भरोसा गर्नुपर्दछ ।",
-      "si": "අල්ලාහ් නුඹලාට උදව් කරන්නේ නම් (එය) අබිබවා යන්නෙක් නුඹලාට නැත. තවද නුඹලාව ඔහු අතහැර දැමුවේ නම් ඉන් පසුව නුඹලාට උදව් කරන්නේ කවරෙක් ද? තවද විශ්වාස කළවුන් අල්ලාහ් වෙත ම (තම කටයුතු) භාර කළ යුතු ය."
+      "si": "අල්ලාහ් නුඹලාට උදව් කරන්නේ නම් (එය) අබිබවා යන්නෙක් නුඹලාට නැත. තවද නුඹලාව ඔහු අතහැර දැමුවේ නම් ඉන් පසුව නුඹලාට උදව් කරන්නේ කවරෙක් ද? තවද විශ්වාස කළවුන් අල්ලාහ් වෙත ම (තම කටයුතු) භාර කළ යුතු ය.",
+      "he": "אם יתמוך אללה בכם, אין מי שינצח אתכם. אך אם הוא יזניח אתכם, מי זה אשר יתמוך בכם מלבדו? ועל אללה המאמינים צריכים לסמוך.",
+      "ka": "თუ ალლაჰი დაგეხმარებათ, ვერავინ დაგამარცხებთ [ვერავინ დაგძლევთ]; ხოლო თუ იგი დაგტოვებთ (დახმარების გარეშე), მაშინ ვინ დაგეხმარებათ მის შემდეგ? დაე, მორწმუნეებმა მხოლოდ ალლაჰს მიენდონ (ყველა საქმეში).",
+      "lt": "Jei Allahas padeda jums, niekas negali jūsų įveikti. Ir jei Jis atsižada jūsų, - kas yra tas, kas po Jo gali jums padėti? Ir lai Allahu (Vieninteliu) tikintieji tepasitiki.",
+      "mg": "Raha manampy Anareo i Allah dia tsy hisy handresy Anareo mihitsy, fa raha mandao Anareo kosa Izy (Allah), dia iza indray no hanampy Anareo aoriany ? Ary aoka amin’i Allah no iankinan’ny mpino rehetra.",
+      "lg": "Allah singa abataasa teri ayinza kubawangula naye singa aba abaabulidde ani oyo ayinza okubataasa atali Yye? Allah Yekka Abakkiriza Gwe baba bassaamu obwesige.",
+      "rw": "Allah aramutse abatabaye ntawabatsinda, anabatereranye ni nde wundi utari We wabatabara? Bityo, abemera bajye biringira Allah (wenyine).",
+      "ln": "Soki Allah apesi bino lisungi, moko te akoki kolonga bino. Soki asundoli bino, nani mosusu sima naye akosunga bino? Epai ya Allah nde bandimi batia elikia.",
+      "dag": "Naawuni yi tin ya nasara, tɔ! So n-kani yɛn tooi nyεŋ ya. O mi yi filim ya, tɔ! So lahi kani n-yɛn tooi sɔŋ ya di nyaaŋa. Yaha! Ban ti yɛlimaŋli dalimmila Naawuni koŋko zuɣu.",
+      "mos": "Ad Wẽnd sã n sõng yãmba wind pɑ be ne yãmb ye, lɑ A sã n bɑs yãmb yɑɑ ãnd n nɑ n sõng yãmb t'A sã n yãk A toɑɑgɑ? Lɑ kõ-sɩd-rãmb bobl b mens ne Wẽnde.",
+      "mdh": "Amayka tabangan kanu nu Allah na da makataban sa lekanu endu amayka ibaba kanu nin na entayn san i makadtabang sa lekanu kanu ulyan nin, endu kanu Allah semalig su manga bamalityala (bamangimbenal).",
+      "ak": "Sε Nyankopͻn boa mo a, obiara ntumi nni moso nkonim, nasε Ɔpa moakyi a εneε Ɔno N’akyi hwan na ͻbεboa mo? Enti agyidiefoͻ no mfa wͻn ho nto Nyankopͻn so.",
+      "nqo": "ߣߌ߫ ߊߟߊ߫ ߞߵߊߟߎ߫ ߘߍ߬ߡߍ߲߬ ߸ ߛߋ߫ ߕߍ߫ ߞߍ߫ ߊߟߎ߫ ߟߊ߫ ߡߎ߬ߕߎ߲߬، ߞߏ߬ߣߌ߲߬ ߣߴߊ߬ ߞߵߊߟߎ߫ ߟߊߓߌ߬ߟߊ߬߸ ߖߍߣߍ߲ ߘߴߊߟߎ߫ ߘߍ߬ߡߍ߲߫ ߊ߬ߟߋ߬ ߞߐ߫ ߛߊ߫؟ ߒ߬ߓߊ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߴߊ߬ߟߎ߫ ߛߍ߲߬ߓߍ߬ ߊߟߊ߫ ߟߋ߬ ߟߊ߫"
     }
   },
   {
@@ -1320,7 +1591,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kn": "ಅಲ್ಲಾಹು ನಿಮಗೆ (ವಿಷಯಗಳನ್ನು) ಸ್ಪಷ್ಟಗೊಳಿಸಲು, ನಿಮ್ಮ (ನೀತಿವಂತ) ಪೂರ್ವಜರ ಚರ್ಯೆಗಳನ್ನು ತೋರಿಸಿಕೊಡಲು ಮತ್ತು ನಿಮ್ಮ ಪಶ್ಚಾತ್ತಾಪವನ್ನು ಸ್ವೀಕರಿಸಲು ಬಯಸುತ್ತಾನೆ. ಅಲ್ಲಾಹು ಎಲ್ಲವನ್ನೂ ತಿಳಿದವನು ಮತ್ತು ವಿವೇಕಪೂರ್ಣನಾಗಿದ್ದಾನೆ.",
       "as": "আল্লাহে তোমালোকৰ ওচৰত (তেওঁৰ বিধান) বিশদভাৱে বৰ্ণনা কৰিব বিচাৰে, আৰু তোমালোকৰ পূৰ্বৱৰ্তীসকলৰ ৰীতিনীতি তোমালোকক অৱহিত কৰিব বিচাৰে লগতে তোমালোকক ক্ষমা কৰিব বিচাৰে। আল্লাহ সৰ্বজ্ঞ, প্ৰজ্ঞাময়।",
       "si": "නුඹලාට (මේවා) පැහැදිලි කිරීමටත්, නුඹලාට පෙරවූවන්ගේ පිළිවෙත නුඹලාට පෙන්වා දීමටත්, නුඹලාට සමාව දීමටත් අල්ලාහ් අපේක්ෂා කරයි. තවද අල්ලාහ් සර්ව ඥානී ය; සර්ව ප්‍රඥාවන්ත ය.",
-      "km": "អល់ឡោះជាម្ចាស់មានបំណងបញ្ជាក់ប្រាប់ដល់ពួកអ្នក និងចង្អុលបង្ហាញពួកអ្នកនូវបណ្តាមាគ៌ារបស់អ្នកជំនាន់មុនពួកអ្នក និងទទួលយកការសារភាពកំហុសរបស់ពួកអ្នក។ ហើយអល់ឡោះមហាដឹង មហាគតិបណ្ឌិត។"
+      "km": "អល់ឡោះជាម្ចាស់មានបំណងបញ្ជាក់ប្រាប់ដល់ពួកអ្នក និងចង្អុលបង្ហាញពួកអ្នកនូវបណ្តាមាគ៌ារបស់អ្នកជំនាន់មុនពួកអ្នក និងទទួលយកការសារភាពកំហុសរបស់ពួកអ្នក។ ហើយអល់ឡោះមហាដឹង មហាគតិបណ្ឌិត។",
+      "he": "אללה רוצה להדריך אתכם בדרכם של אלה שקדמו לכם, ויקבל את חרטתכם הכנה, כי אללה הוא היודע החכם.",
+      "lt": "Allahas nori paaiškinti (kas yra leistina ir kas yra draudžiama) jums ir parodyti jums kelius tų, kurie buvo iki jūsų, ir priimti jūsų atgailą. Ir Allahas yra Visa Žinantis, Visa Išmanantis.",
+      "mg": "Tian’I Allah ny hanazava sy hitari-dalana anareo amin’ny làlan’ireo izay talohanareo, sy mba handraisany ny fibebahanareo. Ary I Allah dia Mahalala ny zava-drehetra sy be Fahendrena.",
+      "lg": "Allah ayagala abannyonnyole era abaluŋŋamye eri enkola y’abo abaabakulembera, era akkirize okwenenya kwa mmwe. Bulijjo Allah Mumanyi nnyo ate agoba nsonga.",
+      "rw": "Allah arashaka kubagaragariza (ibyo muziruriwe n’ibyo muziririjwe) no kubayobora inzira z’abababanjirije, ndetse no kwakira ukwicuza kwanyu; kandi Allah ni Umumenyi uhebuje, Nyirubugenge buhambaye.",
+      "ln": "Allah alingi kolimbolela bino, mpe alingi kokamba bino na nzela ya baye balekaki liboso na bino, mpe andima batubela na bino. Mpe Allah azali moyebi atonda bwanya.",
+      "dag": "Naawuni bɔrimi ni O kahigi ya, ka dolsi ya ninvuɣu shεba ban daa kana poi ni yinim’ maa soya, ka lahi deei yi tuuba. Yaha! Naawuni nyɛla Baŋda, Yεmgolinga lana.",
+      "mos": "Wẽnd tʋllɑme n nɑ n vẽneg yãmb lɑ A kãndg yãmb sẽn reng-b yãmb tɑoorã sor lɑ A reeg yãmb tuubgu, lɑ Wẽnd yɑɑ mitɑ, n yɑɑ Bʋʋd-Mitɑ.",
+      "mdh": "Ya kalinyan nu Allah na makapayag nin sa lekanu endu matutulu kanu nin sa kanu manga lalan nu silan a nangawna sa lekanu, endu matawbat kanu nin, endu su Allah na labi a mataw a mawngangen.",
+      "ak": "Nyankopͻn pεsε Ɔkyerεkyerε (ͻsom no ho mmra) mu pefee kyerε mo, na Ɔkyerε mo wͻn a w’ͻdii moanim kan no kwan no, na Ɔgye moadwen sakra. Onyankopͻn ne Onimdefoͻ, Ɔne Onyansafoͻ",
+      "nqo": "ߊߟߊ߫ ߦߴߊ߬ ߝߍ߬ ߞߊ߬ ߢߊߦߌߘߊߟߌ ߟߋ߬ ߞߍ߫ ߊߟߎ߫ ߟߊ߫، ߞߵߊߟߎ߫ ߞߊ߲ߘߴߊߟߎ߫ ߢߍߓߊ߯ ( ߢߌߡߊ ߟߎ߬ ) ߟߊ߫ ߛߌߟߊ ߟߎ߫ ߡߊ߬߸ ߊ߬ ߣߌ߫ ߞߊ߬ ߖߘߍ߬ߟߊ߬ߛߊߦߌ ߡߌ߬ߘߵߊߟߎ߫ ߦߋ߫ ( ߞߐߛߊߦߌ߲ ߘߐ߫ ߏ ߡߊ߬ )، ߓߊ ߊߟߊ߫߸ ߟߐ߲ߠߌ߲ߠߊ߫ ߥߘߋ߬ߥߘߋ߬ߟߊ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -1380,7 +1662,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আৰু আল্লাহে তোমালোকৰ তাওবা কবুল কৰিব বিচাৰে; আনহাতে যিসকলে কুপ্ৰবৃত্তিৰ অনুসৰণ কৰে সিহঁতে বিচাৰে যে, তোমালোকে প্ৰবলভাৱে (সত্য পথৰ পৰা) বিচ্যুত হোৱা।",
       "ne": "र अल्लाह चाहन्छ कि तिम्रो पश्चाताप स्वीकार गरोस् र जुन मानिसहरू आफ्नै स्वार्थपूर्ण चाहनाबाट दोषित हुन्छन्, तिनीहरू चाहन्छन् कि तिमी आफ्नो सत्य मार्गबाट धेरै विचलित भइहाल ।",
       "si": "තවද අල්ලාහ් නුඹලාට සමාව දීමටත් අපේක්ෂා කරයි. එහෙත් මනෝ ආශාවන් අනුගමනය කරන්නෝ නුඹලා සම්පූරණයෙන් ම (නොමඟට) නැඹුරු වීම අපේක්ෂා කරති.",
-      "km": "ហើយអល់ឡោះទ្រង់មានបំណងទទួលយកការសារភាពកំហុសរបស់ពួកអ្នក តែពួកដែលដើរតាមទំនើងចិត្តរបស់ខ្លួនវិញ ពួកគេចង់ឱ្យពួកអ្នក(អ្នកមានជំនឿ)ងាកចេញពីមាគ៌ាដ៏ត្រឹមត្រូវយ៉ាងឆ្ងាយបំផុត។"
+      "km": "ហើយអល់ឡោះទ្រង់មានបំណងទទួលយកការសារភាពកំហុសរបស់ពួកអ្នក តែពួកដែលដើរតាមទំនើងចិត្តរបស់ខ្លួនវិញ ពួកគេចង់ឱ្យពួកអ្នក(អ្នកមានជំនឿ)ងាកចេញពីមាគ៌ាដ៏ត្រឹមត្រូវយ៉ាងឆ្ងាយបំផុត។",
+      "he": "אללה רוצה לקבל את חרטתכם הכנה, אך אלה המשועבדים לתאוות רוצים כי תרחיקו לסטות (מדרך הישר).",
+      "ka": "და ალლაჰს სურს მიიღოს თქვენი სინანული [გაპატიოთ თქვენი ცოდვები], ხოლო ისინი, რომლებიც თავიანთ ვნებებს მისდევენ, სურთ, რომ თქვენ დიდი გადახრით გადაუხვიოთ (ჭეშმარიტი რწმენისგან).",
+      "lt": "Allahas nori priimti jūsų atgailą, tačiau tie, kurie seka savo geiduliais, trokšta, kad jūs (tikintieji) toli nukryptumėte (nuo Teisingo Kelio).",
+      "mg": "Ary I Allah dia mila handray ny fibebahanareo. Fa ireo izay manaraka ny hetahetam-pony kosa, dia mila anareo hirona tanteraka any amin’izany.",
+      "lg": "Era Allah ayagala akkirize okwenenya kwa mmwe, ate bo abagoberera okwagala kwabwe baagala muwuguke oluwuguka olunene ennyo.",
+      "rw": "Kandi Allah arashaka kwakira ukwicuza kwanyu, ariko ba bandi bakurikira irari ryabo bifuza ko (mwe abemera) mwatana bihambaye (mugata inzira igororotse).",
+      "rn": "Imana Allah Ishaka kubumvira ukwigaya kwanyu Iheze Ibababarire, mu gihe abatwarwa n’ivyipfuzo vyabo bashaka ko muhengama cane mugata inzira y’idini;",
+      "ln": "Mpe Allah alingi kondima tubela ya bino, kasi baye bazali kolanda bamposa na bango ya nzoto, bazali kolinga ete bobunga libunga moko ya monene.",
+      "dag": "Yaha! Naawuni bɔrimi ni O deei yi tuuba, ka ninvuɣu shεba ban doli Dunia kɔrsimaa mi bɔri ni yi gbilgi gbilgibu din galsi.",
+      "mos": "Lɑ Wẽnd tʋllɑme n nɑ n reeg yãmb tuubgu lɑ sẽn pʋgd-b yõor yɑmleedã tʋllɑme tɩ yãmb kɩll kɩllg tεkẽ.",
+      "aa": "Yalli kaal gacteenik Siinil gacaah dambi siinih cabam faxa, yahuud kee Nasaarak dalwa aba maray sinni Nafsi fayxi kataata isin cakkik kaxxam daggawtaanam siinik faxan.",
+      "mdh": "Endu su Allah na ya nin kalinyan na matawbat kanu nin, endu ya kalinyan nu silan a pebpatyunut sa kanu kyug na ginawa na makadsulamig kanu sa kadsulamig a masela.",
+      "ak": "Nyankopͻn pεsε Ɔgye moadwen sakra, nanso wͻn a wͻ’di akͻnnͻ akyire no hwehwε sε anka mobεmane (afri kwan tenenee no so) akͻ akyirikyiri paa.",
+      "ceb": "Ang Allah nakagusto sa pagdawat sa inyong paghinulsol, apan sila nga nagsunod (sa ilang) mga kaibog, nakagusto nga kamo (mga magtutuo) nga pagtipas sa bug-os (gikan sa Hustong Dalan sa Islam).",
+      "nqo": "ߊߟߊ߫ ߦߴߊ߬ ߝߍ߬ ߞߊ߬ ߖߘߍ߬ߟߊ߬ߛߊߦߌ ߟߋ߫ ߡߌ߬ߘߵߊߟߎ߫ ߡߊ߬، ߣߋ߬ߦߌ߬ ߟߊ߬ߓߊ߬ߕߏ߬ߟߊ ߟߎ߫ ߘߏ߲߬ ߦߴߊ߬ ߝߍ߬ ߟߋ߬ ߊߟߎ߫ ߦߋ߫ ߖߍ߲߬ߞߍ߫ ߖߍ߲߬ߞߍ߬ߟߌ߬ ߝߊ߯ߙߌ ߟߊ߫"
     }
   },
   {
@@ -1442,7 +1739,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তোমালোকক যি নিষেধ কৰা হৈছে, তাৰ মাজৰ পৰা যিবোৰ কবীৰা গুণাহ সেইবোৰৰ পৰা তোমালোকে যদি বিৰত থাকা, তেন্তে আমি তোমালোকৰ সৰু-সুৰা পাপসমূহ ক্ষমা কৰি দিম, আৰু তোমালোকক সন্মানজনক স্থানত প্ৰৱেশ কৰাম।",
       "ne": "यदि तिमीहरू यी ठूला–ठूला पापहरूबाट जुन तिम्रो लागि निषेधित गरिएका छन्, बच्ने गर्छौ भने हामी तिम्रा स–साना पापहरू माफ गरिदिनेछौं र तिमीलाई सम्मान र आदरको ठाउँमा प्रवेश गराउने छौं ।",
       "si": "කවර දෙයක් නුඹලාට තහනම් කරනු ලැබුවේ ද එවැනි මහා පාපයන්ගෙන් නුඹලා වැළකුණේ නම් අපි නුඹලාගේ (සුළු) පාපයන් නුඹලාගෙන් ඉවත් කරන්නෙමු. තවද නුඹලාව ගෞරවනීය පිවිසුම් ස්ථානයකට අපි ඇතුළත් කරන්නෙමු.",
-      "km": "ប្រសិនបើពួកអ្នក(ឱបណ្តាអ្នកមានជំនឿ)ជៀសវាងពីបាបកម្មធំៗនូវអ្វីដែលគេបានហាមឃាត់ពួកអ្នកនោះ យើងនឹងលុបលាងនូវអំពើអាក្រក់របស់ពួកអ្នក ហើយយើងនឹងបញ្ចូលពួកអ្នកទៅកាន់កន្លែងមួយដ៏ឧត្តុង្គឧត្តម(ឋានសួគ៌)។"
+      "km": "ប្រសិនបើពួកអ្នក(ឱបណ្តាអ្នកមានជំនឿ)ជៀសវាងពីបាបកម្មធំៗនូវអ្វីដែលគេបានហាមឃាត់ពួកអ្នកនោះ យើងនឹងលុបលាងនូវអំពើអាក្រក់របស់ពួកអ្នក ហើយយើងនឹងបញ្ចូលពួកអ្នកទៅកាន់កន្លែងមួយដ៏ឧត្តុង្គឧត្តម(ឋានសួគ៌)។",
+      "he": "אם תישמרו מפני החטאים הגדולים אשר נאסר עליכם לעשות, נכפר לכם על מעשיכם הרעים הקטנים, ונכניס אתכם למקום מכובד (בגן העדן).",
+      "ka": "თუ თქვენ თავს შეიკავებთ იმ დიდი (ცოდვებისგან), რომლებიც თქვენთვის აკრძალულია, — ჩვენ მოვაშორებთ თქვენგან თქვენს ცუდ საქმეებს [გაპატიებთ მცირე ცოდვებს] და შეგიყვანთ პატივცემულ ადგილას [სამოთხეში].",
+      "lt": "Jei jūs vengiate didžiųjų nuodėmių, kurios jums draudžiamos, Mes atleisime jums jūsų (mažąsias) nuodėmes, ir priimsime jus pro Didingą Įėjimą (t. y. į Rojų).",
+      "mg": "Raha manalavitra ireo fahotana lehibe izay norarana taminareo ianareo, dia ho fafanay ireo asa ratsy vitanareo, ary hampidirinay ao amin’ny toera-manan-kaja (Paradisa) ianareo.",
+      "lg": "Bwe muneewala ebyonoono ebinene bye mugaanibwa, tujja kubasangulako ebibi ebitonotono era tubayingize mu kifo ekirungi.",
+      "rw": "Nimuramuka mwirinze ibyaha bikomeye mubujijwe gukora, tuzabababarira ibyaha byanyu byoroheje, tunabinjize mu irembo ryubahitse (Ijuru).",
+      "ln": "Soki bomitie mosika na masumu ya minene na maye miye bapekisi bino yango, tokoboma masumu na bino mpe tokokotisa bino na ekoteli ya malamu.",
+      "dag": "Yiyi niŋ katiŋ’ ni tuumbekara shεŋabɛ ni mɔŋdi ya,tɔ! Ti (Tinim’ Naawuni) ni nyεhi yi taya din nyɛ zaɣibihi. Yaha! Ka Ti zaŋ ya kpεhi kpɛhili shee din mali jilma (Alizanda).",
+      "mos": "Ad y sã n zãɑgd zũnuub bεdã b sẽn gɩdgd yãmb n yi wã D nɑ bɑs tɩ loog yãmb yĩngɑ y yel-wẽnsã, lɑ D kẽes-y kõom zĩig sẽn yɑɑ wɑgle.",
+      "mdh": "Amayka edsanggilan nu i manga dusa a masela a ipedsapal sa lekanu na punasen nami sa lekanu su manga mawag nu endu paludepen nami sekanu sa kaludepan a mapulu (surga).",
+      "ak": "Sε motwe mo ho firi bͻne akεseε a y’abra mo no ho a, Y’εbεpepa mo bͻne afri mo so, na Yε’de mo akͻwura Animuonyam bea no mu.",
+      "ceb": "Kung kamo maglikay sa dagkong mga kasal-anan nga gidili kaninyo, Among wagtangon ang inyong ginagmay nga mga sala, ug pasudlon kamo sa usa ka Halangdon nga Pagsulod (Paraiso).",
+      "nqo": "ߣߴߊߟߎ߫ ߞߵߊߟߎ߫ ߡߊߓߐ߫ ߊߟߎ ߜߍ߲ߒߡߊߞߏ ߟߎ߬ ߘߐ߫ ߓߟߋ߬ߓߟߋ ߟߎ߬ ߟߊ߫߸ ߊ߲ ߘߴߊߟߎ߫ ߖߎ߯ߡߊ߲߫ ߞߍߣߐ ߟߎ߬ ߟߊߓߋ߬ ߊߟߎ߫ ߦߋ߫، ߞߵߊߟߎ߫ ߟߊߘߏ߲߬ ߘߏ߲߬ ߦߙߐ߬ ߢߌߡߊ߫ ߝߍ߬"
     }
   },
   {
@@ -1501,7 +1811,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আল্লাহে অণু পৰিমাণও অন্যায় নকৰে আৰু যদি সেয়া কোনো ধৰণৰ পূণ্য হয়, তেন্তে তেওঁ সেইটোক বহুগুণ বৃদ্ধি কৰি দিয়ে, আনকি নিজৰ ফালৰ পৰা মহাপ্ৰতিদান প্ৰদান কৰে।",
       "ne": "यसमा कुनै शंका छैन कि अल्लाह कसैसित अलिकति पनि अन्याय गर्दैन, यदि पुण्य कार्य गरिएको छ भने त्यसलाई दुई गुणा गरिदिन्छ र आफ्नो तर्फबाट ठूलो पुरस्कार प्रदान गर्दछ ।",
       "si": "සැබැවින් ම අල්ලාහ් අණුවක තරමක් වුව ද අපරාධයක් සිදු නො කරයි. එය යම් යහපතක් වූයේ නම් එය ඔහු ගුණ කරනු ඇත. තවද ඔහු වෙතින් අතිමහත් ප්‍රතිඵල ඔහු පිරිනමයි.",
-      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់មិនបំពាន(លើនរណាម្នាក់)ប៉ុនលំអងធូលីឡើយ។ ហើយប្រសិនបើជាទង្វើល្អ គឺទ្រង់នឹងបង្កើនផលបុណ្យរបស់វាទ្វេដង ព្រមទាំងបន្ថែមទៅលើផលបុណ្យទ្វេដងនោះនូវផលបុណ្យដ៏ធំធេងពីលើនោះទៀត។"
+      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់មិនបំពាន(លើនរណាម្នាក់)ប៉ុនលំអងធូលីឡើយ។ ហើយប្រសិនបើជាទង្វើល្អ គឺទ្រង់នឹងបង្កើនផលបុណ្យរបស់វាទ្វេដង ព្រមទាំងបន្ថែមទៅលើផលបុណ្យទ្វេដងនោះនូវផលបុណ្យដ៏ធំធេងពីលើនោះទៀត។",
+      "he": "אכן אללה לא יגרום עוול לאיש, אפילו לא כמשקל גרגר חול, ואם תהיה טובה, הוא יכפיל אותה, ויעניק גמול אדיר.",
+      "ka": "ჭეშმარიტად, ალლაჰი არავის მოექცევა უსამართლოდ მტვრის წონის ოდენობაზეც კი. და თუ იქნება (თუნდაც მცირე) კეთილი საქმე, იგი გაამრავლებს მას და თავისგან უბოძებს დიდ საზღაურს [სამოთხეს]!",
+      "lt": "Iš tiesų, Allahas nenuskriaudžia (nieko) net atomo svorio (arba mažos skruzdėlės), tačiau jei yra (padaryta) kas gero, Jis padvigubina tai ir suteikia iš Savęs didelį atlygį.",
+      "mg": "Tena marina fa I Allah dia tsy manambaka na dia mitovy amin’ny lanjan’ny atôma aza. Ary na dia asa tsara iray monja aza dia ampitomboiny avo heny izany, ary omeny valisoa lehibe avy Aminy izany.",
+      "lg": "Mazima Allah talyazaamaanya wadde ekigero ky'akasekerezi, bwe kiba kirungi akikubisaamu anti bulijjo awa okuva Gy'ali empeera ennene.",
+      "ln": "Ya sôló, Allah abubaka moto te na mosala naye ata moke lokola mbuma. Mpe soki ezali mosala ya malamu, (Allah) akobakisela bango mbala ebele. Mpe akopesa mbano enene kowuta epai naye.",
+      "dag": "Achiika! Naawuni bi diri zualinsi salinsaʒee pɔrlim kotomsi, amaa! Di yi nyɛla tuunviεlli, ka O (Naawuni) nabgi li, ka ti (ninsala) laara din galsi O sani.",
+      "mos": "Ad Wẽnd pɑ wẽgd bɑ sɑlensɑɑg bilgr ye, lɑ sã n yɑɑ neere A fãood-ɑ lɑme, lɑ A pɑɑs sẽn yi A nengẽ keoor sẽn yɑɑ zɩsgo.",
+      "aa": "Diggah Yalli hebeltô num mayadluma Abiteemik Qasxuuneyti gide Qilsak takkeh gide takkeway, maqaane Qasxuuneyti gide Qilsak takkeway Yalli tet dirribisaah isi xaquk kaxxa galto kaah yacee.",
+      "mdh": "Saben-sabenal na su Allah na di edsalimbut sa (apya) mana tepung, endu su amayka maaden sekanin (a mana tepung) sa mapya na takepen nin sekanin endu inggay nin ebpun sa lekanin i balas a masla.",
+      "ak": "Nokorε sε Nyankopͻn nsisi (obi) ketekete tesε aboboaa (a ani ntumi nhunu); sε papa bi (na obi bεyε a), Ɔde (n’akatua no) bͻ ho, na W’ama no akatua a efri Ne hͻ a εsom bo.",
+      "nqo": "ߊߟߊ߫ ߓߊ߬߸ ߊ߬ ߕߍ߫ ߝߕߌ߫ ߖߌߘߊ߲ ߢߐ߲߰ ߕߐ߬ߢߍ߮ ߞߍ߫ ߟߊ߫، ߣߴߏ߬ ߞߍ߫ ߘߊ߫ ߢߌ߬ߡߊ ߘߌ߫ ߝߊ߲߭߸ ߊ߬ ߦߴߏ߬ ߓߊߟߌ߫ ߟߊ߫ ߟߋ߬ ߸ ߊ߬ ߣߌ߫ ߞߊ߬ ߛߙߊ߬ߓߊ ߘߌ߫ ߞߊ߬ ߝߘߴߊ߬ ߖߍ߬ߘߍ ߟߊ߫"
     }
   },
   {
@@ -1554,7 +1876,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kn": "ಅಲ್ಲಾಹು! ಅವನ ಹೊರತು ಆರಾಧನೆಗೆ ಅರ್ಹರಾದ ಅನ್ಯ ದೇವರಿಲ್ಲ. ನಿಶ್ಚಯವಾಗಿಯೂ ಅವನು ನಿಮ್ಮೆಲ್ಲರನ್ನೂ ಪುನರುತ್ಥಾನ ದಿನಕ್ಕೆ ಒಟ್ಟುಗೂಡಿಸುವನು. ಅದರಲ್ಲಿ ಸಂದೇಹವೇ ಇಲ್ಲ. ಮಾತಿನಲ್ಲಿ ಅಲ್ಲಾಹನಿಗಿಂತಲೂ ಹೆಚ್ಚು ಸತ್ಯವಂತನು ಯಾರು?",
       "as": "আল্লাহ, তেওঁৰ বাহিৰে আন কোনো (সত্য) ইলাহ নাই; নিশ্চয় তেৱেঁই তোমালোকক ক্বিয়ামতৰ দিনা একত্ৰিত কৰিব, ইয়াত কোনো সন্দেহ নাই; আৰু কথাত আল্লাহতকৈ অধিক সত্যবাদী আৰু কোন হ’ব পাৰে?",
       "ne": "अल्लाह त्यो वास्तविक पालनहार हो जस बाहेक अरु कोही पूजा योग्य छैन । उसले निःसन्देह कियामतको दिन तिमी सबैलाई एकत्रित गर्नेछ जसको आउनुमा कुनै शंका छैन । र अल्लाहभन्दा बढी सच्चा को छ ?",
-      "si": "අල්ලාහ් වනාහි ඔහු හැර වෙනත් දෙවිඳෙකු නොමැත. එහි කිසිදු සැකයක් නොමැති මළවුන් කෙරෙන් නැගිටුවනු ලබන දිනයේ ඔහු නුඹලාව රැස් කරනු ඇත. අල්ලාහ්ට වඩා කතාවෙන් සත්‍යවාදී කවු ද?"
+      "si": "අල්ලාහ් වනාහි ඔහු හැර වෙනත් දෙවිඳෙකු නොමැත. එහි කිසිදු සැකයක් නොමැති මළවුන් කෙරෙන් නැගිටුවනු ලබන දිනයේ ඔහු නුඹලාව රැස් කරනු ඇත. අල්ලාහ්ට වඩා කතාවෙන් සත්‍යවාදී කවු ද?",
+      "he": "אללה, אין אלוה מלבדו, אין ספק, שהוא יקבץ אתכם ביום תחיית-המתים, כי אין דובר אמת יותר מאללה.",
+      "mg": "Allah ! Tsy misy Tompo afa-tsy Izy ! Havoriny tokoa ianareo amin’ny andro fitsanganana. Tsy misy fisalasalana ny amin’izany. Ary iza no marin-teny kokoa mihoatra an'I Allah ?",
+      "lg": "Allah Y'ateekeddwa okusinzibwa mu butuufu Yekka, mazima ddala agenda kubakuŋŋaanya ku Lunaku lw'Enkomerero, teruliimu kubuusabuusaa, ate bulijjo ani ayogera amazima okusinga Allah!",
+      "rw": "Allah! Nta yindi mana ikwiye gusengwa mu kuri uretse We. Rwose azabakoranyiriza hamwe ku munsi w’imperuka udashidikanywaho. None se ni nde wavuga ukuri kurusha Allah?",
+      "ln": "Allah, nzambe mosusu azali te sé ye. Akosangisa bino mokolo ya suka, wana ezali na tembe te, mpe nani yango aleki Allah na maloba ya bosembo?",
+      "dag": "Naawuni! Duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna. Achiika! O ni ti laɣim ya Zaadali ka zilsigu ka di puuni. Yaha! Ŋuni n­leei lahi yɛri yɛlimaŋli n-ti paai Naawuni?",
+      "mos": "Yaa Wẽnde, soɑb kɑe sẽn tũud n tɩlge rẽndɑ Yẽ, A nɑ n tigmɑ yãmb n peeg n tʋg dũni-yikr rãarã, sik kɑ be, lɑ ãnd goɑm sɩd n le yɩɩd Wẽnde?",
+      "mdh": "Su Allah, da kadenan ya tabya na sekanin, di ebplis na buligen kanu nin sa gay a mawli a dala kanduwa-duwa lun, endu entayn i labi a bantang kumin kanu Allah a bityala?",
+      "ak": "Onyankopͻn, Awurade foforͻ biara nni hͻ gyesε Ɔno nko ara. Nokorε sε Ɔbεboa moano wͻ Wusͻreε da no a akyinnyeε biara nni ho no mu; na hwan na na’sεm yε nokorε kyεn Nyankopͻn?",
+      "nqo": "ߊߟߊ߫߸ ߡߊ߰ߙߌ߬ ߜߘߍ߫ ߕߍ߫ ߊ߬ߟߋ߬ ߞߐ߫، ߊ߬ ߘߌߣߵߊߟߎ߫ ߟߊߘߍ߬ ߟߐ߬ߓߊ ߟߏ߲ ߘߐ߫ ߟߋ߬ ߘߍ߯ ߕߎ߲߬ߞߎ߬ߙߎ߲߬ ߛߌ߫ ߕߴߏ߬ ߘߐ߫، ߖߍߣߍ߲ ߘߏ߲߬ ߕߎ߬ߢߊ߬ ߊߟߊ߫ ߘߌ߫ ߞߎߡߊ ߘߐ߫؟"
     }
   },
   {
@@ -1613,7 +1945,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যিয়ে পৃথিৱীৰ প্ৰতিদান বিচাৰে তেন্তে (সি জানি লোৱা উচিত যে) পৃথিৱী আৰু আখিৰাতৰ পুৰস্কাৰ কেৱল আল্লাহৰ ওচৰতেই আছে; আৰু আল্লাহ সৰ্বশ্ৰোতা, সৰ্বদ্ৰষ্টা।",
       "ne": "यदि कुनै मानिस संसारिक लाभ प्राप्त गर्न चाहन्छ, भने अल्लाहसित संसार र परलोक (दुवै) को लागि पुरस्कार तयार छ । र अल्लाह धेरै सुन्ने र देख्नेवाला हो ।",
       "si": "කවරෙකු මෙලොව කුසල් අපේක්ෂා කරමින් සිටියේ ද එවිට (දැන ගනු) මෙලොව හා මතුලොව කුසල් අල්ලාහ් අබියස ය. තවද අල්ලාහ් සර්ව ශ්‍රාවක ය; සර්ව නිරීක්ෂක ය.",
-      "km": "ជនណាដែលចង់បានតែផលបុណ្យក្នុងលោកិយនោះ ជាការពិតណាស់ អល់ឡោះជាម្ចាស់ទ្រង់មានផលបុណ្យទាំងក្នុងលោកិយ និងបរលោក។ ហើយអល់ឡោះមហាឮ មហាឃើញបំផុត។"
+      "km": "ជនណាដែលចង់បានតែផលបុណ្យក្នុងលោកិយនោះ ជាការពិតណាស់ អល់ឡោះជាម្ចាស់ទ្រង់មានផលបុណ្យទាំងក្នុងលោកិយ និងបរលោក។ ហើយអល់ឡោះមហាឮ មហាឃើញបំផុត។",
+      "he": "כל הרוצה תגמול בעולם הזה, אצל אללה שמור תגמול העולם הזה והעולם הבא. אללה הוא הכול שומע הכול רואה.",
+      "ka": "ვინც თქვენგან ისურვებს მხოლოდ ამქვეყნიურ საზღაურს, — მაშინ (იცოდეთ, რომ) ალლაჰთანაა როგორც ამქვეყნიური, ისე მარადიული ცხოვრების საზღაური. და ჭეშმარიტად, ალლაჰი ყოვლისმსმენი, ყოვლისმხედველია.",
+      "lt": "Kas trokšta atlygio šiame žemiškajame gyvenime, tai pas Allahą (Vienintelį ir nieką kitą) yra atlygis šio žemiškojo gyvenimo ir Amžinybės. Ir Allahas yra Visada Visa Girdintis, Visa Matantis.",
+      "mg": "N’iza n’iza maniry ny valisoa eto an-tany, dia any amin’I Allah no misy ny valisoa eto an-tany sy ny any ankoatra. Ary I Allah dia Maheno sy Mahita ny zava-drehetra!",
+      "lg": "Omuntu ayagala empeera y’okunsi, Allah y'afuga empeera y’okunsi ne ney'Enkomerero, bulijjo Allah awulira era alaba nnyo.",
+      "rw": "Ushaka ibihembo byo ku isi, (azirikane ko) mu by’ukuri kwa Allah hari ibihembo by’isi n’imperuka. Kandi Allah ni Uwumva cyane, Ubona bihebuje.",
+      "ln": "Moto oyo akolinga lifuta ya bomoyi ya mokili, ayeba ete lifuta ya bomoyi ya mokili na ya mokolo ya suka ezali epai na Allah. Mpe Allah azali moyoki mpe momoni.",
+      "dag": "Ninvuɣu so ŋun bɔri Dunia sanyoo, tɔ! Naawuni sani ka Dunia ni Chiyaama sanyoo be. Yaha! Naawuni nyεla Wumda, Nyara.",
+      "mos": "Sẽn dɑtɑ dũni pʋɩɩre, ɑd dũni lɑ yɑoolem-rɑɑrã rolb bee Wẽnd nengẽ, lɑ Wẽnd yɩɩme n yɑɑ Wʋmdɑ n yɑɑ Netɑ.",
+      "aa": "Sinaamey Siinik Aba taamat dubuk Addunyâ galtó faxa Num, toysa Yallih xaqul Addunyâ galtoó kee Akeerâ galtó inkih tanik kaal esseritay, Yalli isi Naqoosah maxcooca yaabbi ken taamoomi yabali kinni.",
+      "mdh": "Entayn i ya nin kaaden i pegkyug sa balas sa dunya na lu kanu Allah i balas sa dunya endu gay a mawli, endu ya kaaden nu Allah na labi a pakakineg a pakailay.",
+      "ak": "Obi a ͻpε wiase mu akatua no, Nyankopͻn hͻ na wiase mu akatua ne Daakye no nyinaa wͻ. Onyankopͻn na Ɔte biribiara na Ohu biribiara nso.",
+      "ceb": "Bisan kinsa nga nagtinguha sa ganti niining kalibutana, nan anaa sa Allah ang ganti niini nga kalibutan ug sa Pikas Kinabuhi. Ang Allah mao ang Labing Makadungog, Labing Makakita.",
+      "nqo": "ߡߍ߲ ߓߊ߯ ߞߍ߫ ߘߎߢߊ߫ ߛߊ߬ߙߊ ߝߍ߬ ߸ ߒ߬ߓߊ߬ ߘߎߢߊ߫ ߛߊ߬ߙߊ ߣߌ߫ ߟߊߞߌߙߊ߫ ߕߊ ߓߍ߯ ߦߋ߫ ߊߟߊ߫ ߓߟߏ߫ ߘߋ߬ ߸ ߊߟߊ߫ ߘߏ߲߬ ߡߍ߲ߠߌ߲ߠߊ߫ ߦߋߟߌߟߊ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -1668,7 +2014,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "বেয়া কথা প্ৰকাশ কৰাক আল্লাহে পছন্দ নকৰে, কিন্তু যাৰ ওপৰত অত্যাচাৰ কৰা হৈছে তাৰ বিষয়টো সুকীয়া; আৰু আল্লাহ সৰ্বশ্ৰোতা সৰ্বজ্ঞানী।",
       "ne": "अन्याय भएको व्यक्ति बाहेक अरु (कसै) लाई नराम्रो कार्यको समर्थनमा आवाज उठाउनु अल्लाह मनपराउँदैनन् । र अल्लाह राम्ररी सुन्ने र जान्नेवाला छ ।",
       "si": "අපරාධයට ලක්වූවන් හැර වෙනත් කිසිවෙකු පරුෂ වදන් ප්‍රසිද්ධියේ පැවසීම අල්ලාහ් ප්‍රිය නො කරයි. තවද අල්ලාහ් සර්වශ්‍රාවක; සර්වඥානී ය.",
-      "km": "អល់ឡោះជាម្ចាស់ទ្រង់មិនពេញចិត្តចំពោះការលាតត្រដាងនូវពាក្យសម្តីអាក្រក់ឡើយ លើកលែងតែអ្នកដែលត្រូវបានគេបំពានប៉ុណ្ណោះ។ ហើយអល់ឡោះជាម្ចាស់មហាឮ មហាដឹងបំផុត។"
+      "km": "អល់ឡោះជាម្ចាស់ទ្រង់មិនពេញចិត្តចំពោះការលាតត្រដាងនូវពាក្យសម្តីអាក្រក់ឡើយ លើកលែងតែអ្នកដែលត្រូវបានគេបំពានប៉ុណ្ណោះ។ ហើយអល់ឡោះជាម្ចាស់មហាឮ មហាដឹងបំផុត។",
+      "he": "אללה אינו אוהב את המדברים בקול רם ברבים בגנות אחרים, אלא אם כן קופחו. אללה הוא הכול שומע הכול יודע.",
+      "ka": "ალლაჰს არ უყვარს, როდესაც ვინმე ხმამაღლა ამბობს ცუდს (ვიღაცის შესახებ), გარდა იმ შემთხვევისა, როცა ეს მოდის იმისგან, ვისაც უსამართლოდ აწყენინეს. და ალლაჰი — ყოვლისმსმენელი, ყოვლისმცოდნეა.",
+      "lt": "Allahas nemėgsta viešai sakomų blogybių, išskyrus to, kuris buvo nuskriaustas. Ir Allahas yra Visada Visa Girdintis, Visa Žinantis.",
+      "mg": "Allah dia tsy tia ny fanaborahana ny teny ratsy, afa tsy izay niharan’ny tsy rariny. Ary I Allah dia Maheno sy Mahalala ny zava-drehetra.",
+      "lg": "Allah tayagala kwatuukiriza kigambo kibi (ku muntu) okuggyako oyo aba alangiddwa obwereere, bulijjo Allah awulira era amanyi nnyo.",
+      "rw": "Allah ntakunda (ko umuntu) yigamba ibibi yakoze mu ruhame, uretse uwarenganyijwe (ushobora kuvuga ibibi by’uwamurenganyije). Kandi Allah ni Uwumva bihebuje, Umumenyi uhebuje.",
+      "ln": "Allah alingaka te basakola maloba ya mabe, sé soki na moto oyo abubami Allah azali oyo ayokaka atonda boyebi.",
+      "dag": "Naawuni bi bɔri yεltɔɣa biɛɣu polo ni yihibu, naɣila bɛ ni di so zualinsi. Yaha! Naawuni nyεla Wumda, Baŋda.",
+      "mos": "Wẽnd pɑ nong gom-beed vẽnegre, sã n pɑ b sẽn wẽg ɑ soɑbɑ, lɑ Wẽnd yɩɩme n yɑɑ wʋmd n yɑɑ mitɑ.",
+      "aa": "Yalli maxcoocak uma maxco fayya haanam makicni yundullume num kaa yudlume numih umaanet yaabam kaah xiqtam akke waytek, Yalli fayya heenim hinnay Ramma heenim yaabbi, Qellut Abeenim yaaxigi kinni.",
+      "mdh": "Di kalinyan nu Allah i kapayag sa mawag a kadtalu, ya tabya na entayn i sinalimbut, endu ya kaaden nu Allah na labi a pakakineg a mataw.",
+      "nqo": "ߊߟߊ߫ ߕߍ߫ ߞߎߡߊߖߎ߯ ߝߐ ߜߍߘߐߕߊ ߝߍ߬ ߝߋߎ߫، ߝߏ߫ ߣߌ߫ ߡߍ߲ ߕߐ߬ߢߍ߰ߣߍ߲ ߞߍ߫ ߘߊ߫ ( ߊ߬ ߕߐ߬ߢߍ߰ ߢߊ ߘߊ߲߬ߕߍ߰ ߟߊ߫ )، ߊߟߊ߫ ߘߏ߲߬ ߦߋ߫ ߡߍ߲ߠߌ߲ߠߊ߫ ߟߐ߲ߠߌ߲ߠߊ߫ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -1732,7 +2090,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যিসকলে ঈমান আনিছে আৰু সৎকৰ্ম কৰিছে, আল্লাহে তেওঁলোকক প্ৰতিশ্ৰুতি দিছে যে, তেওঁলোকৰ বাবে আছে ক্ষমা আৰু মহাপুৰস্কাৰ।",
       "ne": "जुन मानिसहरू ईमान ल्याउँछन् र असल कर्म गर्दछन्, तिनीहरूका लागि मुक्ति र ठूलो पुरस्कार प्रदान गर्ने अल्लाहको वाचा छ ।",
       "si": "විශ්වාස කොට යහකම් කළවුන් වනාහි ඔවුන්හට සමාව ද මහත් වූ ප්‍රතිඵල ද ඇතැයි අල්ලාහ් පොරොන්දු විය.",
-      "km": "អល់ឡោះជាម្ចាស់បានសន្យាចំពោះបណ្តាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសលនូវការអភ័យទោស និងផលបុណ្យដ៏ធំធេងបំផុត។"
+      "km": "អល់ឡោះជាម្ចាស់បានសន្យាចំពោះបណ្តាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសលនូវការអភ័យទោស និងផលបុណ្យដ៏ធំធេងបំផុត។",
+      "he": "אללה הבטיח לאלה אשר האמינו ועושים את הטובות סליחה וגמול אדיר (ביום הדין).",
+      "ka": "ალლაჰმა აღუთქვა მათ, ვინც ირწმუნა და აკეთებდა მართალ საქმეებს, რომ მათთვის იქნება მიტევება მათი ცოდვებისათვის და დიდი საზღაური [სამოთხე].",
+      "lt": "Allahas pažadėjo tiems, kurie tiki (Allaho Vienumu – islamiškuoju monoteizmu) ir daro teisingus darbus, kad jiems – atleidimas ir didis atlygis (t. y. Rojus).",
+      "mg": "Ary Allah dia nampanantena ireo izay mino sy manao ireo asa soa, fa ho azy ireo ny famelan-keloka sy ny valin-kasasarana lehibe.",
+      "lg": "Allah yalagaanyisa abo abakkiriza nebakola emirimu emirungi, nti balina ekisonyiwo nempeera ensukkulumu.",
+      "rw": "Allah yasezeranyije ba bandi bemeye bakanakora ibikorwa byiza, kuzabababarira no kuzabagororera ibihembo bihambaye.",
+      "ln": "Allah azali kopesa elaka na ba oyo bandimi mpe bazali kosala misala ya malamu, bazali na bolimbisi mpe lifuta linene.",
+      "dag": "Naawuni gbaai ninvuɣu shεba banti yεlimaŋli ka tum tuunsuma alikauli ni kadama bɛ mali chɛmpaŋ, ni laara din galsi (Zaadali).",
+      "mos": "Wẽnd pʋlma sẽn kõ-b sɩdã la b tʋm sõmã wã, tɩ b tara yaafg la keoor sẽn yaa bedre.",
+      "mdh": "Pibpasadan nu Allah su manga bamaginugut endu minggalebek sa manga mapya, kanilan su ampun endu balas a masla.",
+      "ak": "Nyankopͻn ahyε wͻn a wͻ’agye adie na wͻ’di dwuma pa no bͻ sε: “Wͻn wͻ bͻnefakyε ne akatua a εsoo paa”.",
+      "ceb": "Si Allah nagsaad niadtong mituo ug nagbuhat og mga maayo og nga sila kapasayloan ug dakong ganti.",
+      "nqo": "ߊߟߊ߫ ߓߘߊ߫ ߟߊߒߠߦߊߓߊ߯ ߢߌ߬ߡߊ߬ ߞߍ߬ߟߊ ߟߎ߬ ߦߟߌߡߊߘߌߦߊ߫ ߸ ߞߏ߫ ߡߊ߬ߞߕߏ߬ߟߌ ߣߌ߫ ߛߙߊ߬ ߓߟߋߓߟߋ ߟߴߊ߬ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -1788,7 +2159,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে ঈমান্দাৰসকল! তোমালোকে আল্লাহৰ তাক্বৱা অৱলম্বন কৰা আৰু তেওঁৰ নৈকট্য লাভৰ উপায় অন্বেষণ কৰা লগতে তেওঁৰ পথত জিহাদ কৰা, যাতে তোমালোকে সফল হ’ব পাৰা।",
       "ne": "मुस्लिमहरू हो ! अल्लाहसित डर मान्ने गर र उसको सामीप्य प्राप्त गर्ने उपायको खोजी गर र उसको बाटोमा जिहाद (धर्मयुद्ध) गर जसबाट तिम्रो भलो हुन सकोस् ।",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලා අල්ලාහ්ට බිය බැතිමත් වනු. තවද ඔහු වෙතට (සමීප වීමේ) මාධ්‍යයන් නුඹලා සොයනු. ඔහුගේ මාර්ගයේ නුඹලා අරගල කරනු. නුඹලාට ජය අත්පත් කර ගත හැකි ය.",
-      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកកោតខ្លាចអល់ឡោះជាម្ចាស់ និងត្រូវស្វែងរកផ្លូវទៅកាន់ទ្រង់ ព្រមទាំងតស៊ូ(ប្រយុទ្ធ)ក្នុងមាគ៌ារបស់ទ្រង់ សង្ឃឹមថាពួកអ្នកនឹងទទួលបានជោគជ័យ។"
+      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកកោតខ្លាចអល់ឡោះជាម្ចាស់ និងត្រូវស្វែងរកផ្លូវទៅកាន់ទ្រង់ ព្រមទាំងតស៊ូ(ប្រយុទ្ធ)ក្នុងមាគ៌ារបស់ទ្រង់ សង្ឃឹមថាពួកអ្នកនឹងទទួលបានជោគជ័យ។",
+      "he": "הוי, אלה אשר האמינו! יראו את אללה, וחפשו דרכים על מנת להתקרב לחסדו של אללה, והתאמצו בהקרבה בשביל שלו, למען תצליחו.",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! გეშინოდეთ ალლაჰის,\nეძიეთ მასთან დაახლოების გზა და იბრძოლეთ მის გზაზე, რათა მიაღწიოთ წარმატებას [რომ აღმოჩნდეთ სამოთხეში]!",
+      "lt": "O jūs, kurie tikite! Vykdykite savo pareigas Allahui ir bijokite Jo. Ir ieškokite būdų priartėti prie Jo ir stipriai stenkitės vardan Jo (kiek tik galite), kad būtumėte jūs sėkmingi.",
+      "mg": "O ianareo izay mpino! Matahora an’I Allah ianareo ary tadiavonareo ny fomba hanatonanareo Azy akaiky. Ary manaova ady masina amin’ny làlany ianareo. Angamba hahazoanareo fahombiazana.",
+      "lg": "Abange mmwe abakkiriza mutye Allah era munoonye ekkubo erituuka Gy'ali, era munyiikire nnyo mu kuweereza mu Kkubo lye, ekiribayamba okubeera mu balituuka ku buwanguzi (ku Lunaku lw’Enkomerero).",
+      "rw": "Yemwe abemeye! Mugandukire Allah munakore ibikorwa bituma mumwiyegereza, kandi muharanire inzira ye kugira ngo mukiranuke.",
+      "ln": "Eh bino bandimi! Bobanga Allah, mpe boluka kosala eloko oyo ekopusanisa bino penepene na Allah, mpe bobunda na nzela naye mpo ete bozua elonga.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawunni yεlimaŋli! Zom ya Naawuni, ka bon ya so’ shεŋa din yɛn zaŋ ya miri O. Yaha! Tuhimi ya O soli zuɣu, achiika! Yi nyɛla ban yɛn tilgi (Zaadali).",
+      "mos": "Yaa yãmb sɩd-kõtbɑ! Zoe-y Wẽnd lɑ y bɑo pẽnegr n tʋg A nengẽ lɑ y nidg pãng A sorã zugu, sãnd-sãnd y nɑ tɩlge.",
+      "aa": "Yeemeneh yan maraw Yallak meesitaay kay amri oggola, Yallat sin xayyossam gurrusaay kay gital ingicilliya kay jannatal yaffoofee mara takkeenimkeh.",
+      "mdh": "Hay sekanu a manga bamalityala (bamangimbenal)! Ikagilek nu su Allah endu pagapas nu i lalan a kasupeg nu sa Allah, endu en-jihad kanu sa lalan sa Allah ka malemu lemu sa lekanu i maka-untung kanu.",
+      "ak": "Mo a moagye adie, monsuro Nyankopɔn, na monhwehwε ͻkwan a εde mo bεbεn no, na momͻ moho mmɔden wͻ Ne kwan no so sεdeε mo bedi nkonim.",
+      "ceb": "Oh mga magtutuo, kahadloki ninyo ang Allah ug pangitaa ang paagi aron mahiduol Kaniya ug panlimbasog kamo ngadto sa Iyang Dalan aron kamo molampos.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬߸ ߊ߬ ߣߴߊߟߎ߫ ߦߴߊ߬ ߟߊߛߐ߬ߘߐ߲߬ ߛߌߟߊ ߢߌߣߌ߲߫ ( ߢߌ߬ߡߊ߬ ߞߍ ߟߊ߫ )߸ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߖߘߍ߬ߘߌ ߞߍ߫ ߊ߬ ߟߊ߫ ߛߌߟߊ ߞߊ߲߬ ߖߐ߲߰ߛߴߊߟߎ߫ ߘߌ߫ ߛߎߘߊ߲߫"
     }
   },
   {
@@ -1845,7 +2230,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "काय तुम्ही नाही जाणत की आकाशआंची व जमिनीची राज्य सत्ता केवळ अल्लाहकरिताच आहे? तो ज्याला इच्छितो अज़ाब (शिक्षा-यातना) देतो, आणि ज्याला इच्छितो माफ करतो. अल्लाह प्रत्येक गोष्टीचे सामर्थ्य बाळगतो.",
       "as": "তুমি নাজানা নেকি যে, আকাশসমূহ আৰু পৃথিৱীৰ সাৰ্বভৌমত্ব কেৱল আল্লাহৰেই? তেওঁ যাক ইচ্ছা কৰে শাস্তি দিয়ে আৰু যাক ইচ্ছা কৰে ক্ষমা কৰি দিয়ে আৰু আল্লাহ সকলো বস্তুৰ ওপৰত ক্ষমতাৱান।",
       "ne": "के तिमीलाई थाहा छैन कि आकाशहरू र पृथ्वीमा अल्लाहकै राज्य छ ? जसलाई चाहन्छ दण्डित गर्दछ र जसलाई चाहन्छ क्षमा गर्दछ । र अल्लाह प्रत्येक कुरामाथि शक्ति सम्पन्न छ ।",
-      "si": "අහස්හි හා මිහිතලයේ ආධිපත්‍යය සැබැවින් ම අල්ලාහ් සතු බව නුඹ නො දන්නෙහි ද? ඔහු අභිමත කරන අයට දඬුවම් කරයි. තවද ඔහු අභිමත කරන අයට සමාව දෙයි. තවද අල්ලාහ් සියලු දෑ කෙරෙහි ශක්තිවන්ත ය."
+      "si": "අහස්හි හා මිහිතලයේ ආධිපත්‍යය සැබැවින් ම අල්ලාහ් සතු බව නුඹ නො දන්නෙහි ද? ඔහු අභිමත කරන අයට දඬුවම් කරයි. තවද ඔහු අභිමත කරන අයට සමාව දෙයි. තවද අල්ලාහ් සියලු දෑ කෙරෙහි ශක්තිවන්ත ය.",
+      "he": "אינך יודע כי לאללה מלכות השמים והארץ? הוא מעניש את אשר ירצה ויסלח לאשר ירצה, ואללה הכול- יכול.",
+      "ka": "განა არ იცი (ო, მოციქულო), რომ ალლაჰს ეკუთვნის ცათა და მიწის მეუფება? ის სჯის, ვისაც ინებებს, და მიუტევებს, ვისაც ინებებს. და ალლაჰი ყოვლისშემძლეა ყველაფერზე.",
+      "lt": "Negi nežinote, kad Allahui (Vieninteliui) priklauso dangų ir žemės valdžia! Jis baudžia tą, ką Jis nori, ir Jis atleidžia tam, kam Jis nori. Ir Allahas Gali padaryti viską.",
+      "mg": "Moa ve tsy fantatrao fa an’I Allah ny fanjakana amin’ireo lanitra sy ny tany? Manasazy izay sitrany Izy ary mamela izay sitrany ihany koa. Ary I Allah dia Mahefa ny zava-drehetra.",
+      "lg": "Tomanyi nti mazima ddala obufuzi bw'eggulu (omusanvu) n'e nsi bwa Allah, abonereza gw'aba ayagadde ate n'asonyiwa gw'aba ayagadde, bulijjo Allah Muyinza ku buli kintu kyonna.",
+      "rw": "Ese ntuzi ko Allah afite ubwami bw’ibirere n’ubw’isi? Ahana uwo ashaka akanababarira uwo ashaka. Kandi Allah ni Ushobora byose.",
+      "ln": "Boye, oyebi te ete ya sôló, bokonzi bwa likolo na nsé bozali ya Allah? Apesaka etumbu na oyo alingi, mpe alimbisaka na oyo alingi? Mpe Allah azali na bokoki mpo ya biloko binso.",
+      "mos": "Fo pɑ bãng tɩ Wẽnd n so sɑɑs lɑ tẽng nɑɑmã la? N sɩbgd A sẽn tʋll ɑ soɑbɑ lɑ A yɑɑfd A sẽn tʋll ɑ soɑbɑ, lɑ Wẽnd yɑɑ tõod ne bũmbã fãɑ.",
+      "aa": "Nabiyow diggah Yalli Qaranwaa kee baaxo Reedaleeh, usuk isih faxa mara digaalaah isih faxa marah dambi cabam Maaxaginnitoo? Yalli ummaan iimih dudda-li kinni.",
+      "ak": "Wonnnim sε ͻsoro ne asaase so ahennie nyinaa wͻ Nyankopͻn? Ɔtwe obi a Ɔpε aso, εna Ɔde obi a Ɔpε nso bͻne kyε no. Onyankopͻn na Ɔwͻ biribiara so tumi.",
+      "nqo": "ߌ ߡߴߊ߬ ߟߐ߲߫ ߞߏ߫ ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫؟ ߊ߬ ߘߌ߫ ߡߐ߰ ߖߊ߲߰ߞߕߊ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫، ߊ߬ ߘߌ߫ ߡߐ߰ ߡߊߞߕߏ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫؟، ߓߊߏ߬ ߊ߬ߟߋ ߟߋ߬ ߛߋߣߍ߲߫ ߞߏ ߓߍ߯ ߟߊ߫"
     }
   },
   {
@@ -1901,7 +2297,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মুমিনসকল! আল্লাহে তোমালোকৰ বাবে উৎকৃষ্ট যিবোৰ বস্তু হালাল কৰিছে সেইবোৰক তোমালোকে হাৰাম নকৰিবা আৰু সীমালংঘন নকৰিবা। নিশ্চয় আল্লাহে সীমালংঘনকাৰীসকলক পছন্দ নকৰে।",
       "ne": "मोमिनहरू हो ! जुन पवित्र कुराहरू तिम्रो लागि अल्लाहले हलाल बनाएको छ तिनलाई त्याज्य नबनाऊ र सीमा ननाघ किनभने सीमा नाघ्नेलाई अल्लाहले मन पराउँदैन ।",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලාට අල්ලාහ් අනුමත කළ දැයින් යහපත් දෑ නුඹලා තහනම් කර නො ගනු. තවද නුඹලා සීමාව ඉක්මවා කටයුතු නො කරනු. සැබැවින් ම සීමාව ඉක්මවා කටයුතු කරන්නන්ව අල්ලාහ් ප්‍රිය නො කරයි.",
-      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿទាំងឡាយ! ចូរពួកអ្នកកុំដាក់បម្រាមនូវរបស់ល្អៗដែលអល់ឡោះបានអនុញ្ញាតដល់ពួកអ្នក និងមិនត្រូវបំពាន(ព្រំដែនរបស់អល់ឡោះ)ឡើយ។ ពិតប្រាកដណាស់ អល់ឡោះមិនស្រលាញ់ពួកដែលបំពានឡើយ។"
+      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿទាំងឡាយ! ចូរពួកអ្នកកុំដាក់បម្រាមនូវរបស់ល្អៗដែលអល់ឡោះបានអនុញ្ញាតដល់ពួកអ្នក និងមិនត្រូវបំពាន(ព្រំដែនរបស់អល់ឡោះ)ឡើយ។ ពិតប្រាកដណាស់ អល់ឡោះមិនស្រលាញ់ពួកដែលបំពានឡើយ។",
+      "he": "הוי אלה אשר האמינו! אל תאסרו(על עצמכם) את המאכלים הטובים אשר אללה הרשה לכם, אך אל תחצו (את גבול המורשה), כי אללה אינו אוהב את אלה שחוצים (את גבול המורשה).",
+      "mg": "Ianareo mpino kosa! Aza mandrara ireo tsara amin’izay tsy nampifadian’i Allah taminareo ianareo ary aza mandika lalàna. Tena marina fa Allah dia tsy tia ireo mpandika lalàna.",
+      "lg": "Abange mmwe abakkiriza temuzizanga ebirungi ebyo Allah bye yabakkiriza, mu ngeri y'emu temusukkanga ensalo z'ebyo Allah bye yabagaana, bulijjo mazima Allah tayagala basukka nsalo (z’Amateeka Ge).",
+      "rw": "Yemwe abemeye! Ntimukaziririze ibyiza Allah yabaziruriye, kandi ntimukarengere. Mu by’ukuri, Allah ntakunda abarengera.",
+      "ln": "Eh bino bandimi! Bopekisa te biloko ya malamu biye Allah apesi bino, mpe bolekisa ndelo te mpamba te Allah Alingaka balekisi ndelo te.",
+      "mos": "Yãmb a sɩd-kõtba! Ra gɩdg-y y mens ne bõn-yɩlem-nins Wẽnd sẽn kõ sor ne yãmbã ye, la y ra zʋʋg toadg ye, ad Wẽnd ka nong maan-n-zʋʋg-rãmb ye.",
+      "aa": "Yeemeneh yan maraw! Yalli meqeemik yakmeenih yaaqubeenim kee Agabuk siinih calalloysem sinnil ma- carammoysina, Yalli siinil carammoyseemit matatrina, diggah Yalli umaanet caddok tatra mara makicnik.",
+      "mdh": "Hay sekanu anan a manga bamamaginugut (babay-mama)! Di nu ipedsapal su manga mapya a ini-halal nu Allah sa lekanu endu di kanu pedsupak, su Allah na benal a di nin kalilinyan su manga taw a pedsupak.",
+      "ak": "Mo a moagye adie, monhwε na moammra nnepa a yama mo ho kwan wͻ ho no, na monhwε na moanto mmra. Nokorε sε, Nyankopͻn mpε mmra tofoͻ no asεm.",
+      "ceb": "Oh mga magtutuo, ayaw ninyo idili ang mga butang nga maayo, nga gihimo ni Allah nga gikatugot kaninyo. ug ayaw paglapas. Sa pagkatinuod, si Allāh wala mahigugma sa mga malapason.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߞߊߣߊ߬ ߝߋ߲߫ ߢߌߡߊ ߟߎ߬ ߟߊߕߣߊ߬ߡߊ߬ߦߊ߫ ߘߋ߬ ߊߟߊ߫ ߞߊ߬ ߡߍ߲ ߠߎ߬ ߟߊߘߤߵߊߟߎ߫ ߦߋ߫، ߊߟߎ߫ ߘߏ߲߬ ߞߣߊ߫ ߘߊ߲߬ߠߊ߬ߕߊߡߌ߲ ߞߍ߫ ߸ ߓߊߏ߬ ߘߊ߲߬ߠߕߊ߬ߡߌ߲߬ߠߊ ߟߎ߬ ߡߊ߲߫ ߘߌ߫ ߊߟߊ߫ ߦߋ߫"
     }
   },
   {
@@ -1952,7 +2359,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kn": "ಮದ್ಯ ಮತ್ತು ಜೂಜಿನ ಮೂಲಕ ನಿಮ್ಮ ನಡುವೆ ವೈರ ಹಾಗೂ ದ್ವೇಷವನ್ನು ಬಿತ್ತಲು ಮತ್ತು ನಿಮ್ಮನ್ನು ಅಲ್ಲಾಹನ ಸ್ಮರಣೆ ಹಾಗೂ ನಮಾಝ್‍ನಿಂದ ತಡೆಯಲು ಶೈತಾನನು ಬಯಸುತ್ತಾನೆ. ಆದ್ದರಿಂದ (ಇನ್ನಾದರೂ) ನೀವು ಅದನ್ನು ನಿಲ್ಲಿಸುವಿರಾ?",
       "mr": "सैतान तर इच्छितोच की मद्य आणि जुगाराद्वारे तुमच्या दरम्यान शत्रूता आणि द्वेष मत्सर निर्माण करावे आणि तुम्हाला अल्लाहच्या स्मरणापासून व नमाजपासून रोखावे, तेव्हा तुम्ही अशा कामांपासून दूर का राहात नाही?",
       "as": "চয়তানে তোমালোকৰ মাজত মদ আৰু জুৱাৰ দ্বাৰা শত্ৰুতা তথা বিদ্বেষ সঞ্চাৰ কৰিব বিচাৰে আৰু তোমালোকক আল্লাহৰ স্মৰণত লগতে ছালাতত বাধা প্ৰদান কৰিব বিচাৰে। তথাপিও তোমালোকে বিৰত নেথাকিবানে?",
-      "ne": "शैतान त यो चाहन्छ कि रक्सी र जुआको माध्यमबाट तिमीहरूबीच शत्रुता र बैरभावको सृजना गरिहालोस् र तिमीलाई अल्लाहको स्मरण र नमाजबाट रोकिदेओस् । यसकारण अहिले पनि (यी कर्महरूबाट) अलग रहने गर ।"
+      "ne": "शैतान त यो चाहन्छ कि रक्सी र जुआको माध्यमबाट तिमीहरूबीच शत्रुता र बैरभावको सृजना गरिहालोस् र तिमीलाई अल्लाहको स्मरण र नमाजबाट रोकिदेओस् । यसकारण अहिले पनि (यी कर्महरूबाट) अलग रहने गर ।",
+      "he": "אכן רוצה השטן להטיל בינכם עוינות ומשטמה על-ידי היין (שהאדם נהיה שיכור) וההימורים ולהרחיקכם מזכרו של אללה ומהתפילה. האם אתם מצייתים לאיסור?",
+      "lg": "Mazima ddala Sitaane eyagala okussa wakati wammwe obulabe n’obukyayi nga eyita mu mwenge ne zzaala, era ebawugule ku kutendereza Allah n’okusaala, abaffe ebikolwa ebyo munaabireka?",
+      "rw": "Mu by’ukuri, Shitani ashaka kubateza ubugome n’inzangano hagati yanyu akoresheje ibisindisha n’urusimbi, akanababuza kwibuka Allah ndetse no gusali. None se ubwo ntimukwiye kubireka?",
+      "ln": "Ya sôló, satana alingi kotia kati na bino koyinana mpe kosuana kowuta na masanga mpe masano ya mabe, mpe apekisa bino losambo mpe bokanisi Allah, boye bokotika yango?",
+      "dag": "Achiika! Shintaŋ bɔrimi ni o zaŋ dimli mini sujee niŋ yi sunsuuni n-zaŋ chaŋ dam nyubu mini chacha polo, ka taɣiri ya ni yi di teei Naawuni yɛla, ni jiŋli puhibu. Di ni bɔŋɔ, yi nyɛla ban yɛn chε?",
+      "mos": "Ad a Sʋtãan tʋllame n na n kẽes beem la gẽeg yãmb sʋka, rãamã la tentεεgã pʋgẽ, la a gɩd yãmb n yi Wẽnd yʋʋrã tẽegre la Pʋʋsgã, la rẽ yĩnga yãmb nɑ n basame bɩɩ?",
+      "ak": "Deε ͻbonsam pε ne sε, ͻbεfa nsa ne dehu toͻ so de ͻtan ne ahii ato montεm na w’asi mo Nyankopͻn nkaekaeε ne Nyame frε nso ho kwan, enti monntwe moho mfri (ho) anaa?",
+      "nqo": "ߜߍ߬ߘߍ ߦߴߊ߬ ߝߍ߬ ߞߊ߬ ߖߎ߯ߦߊ ߣߌ߫ ߞߐߣߌ߲ߧߊ ߟߋ߬ ߟߊߘߏ߲߬ ߊߟߎ߫ ߕߍ߫ ߘߐ߬ߟߐ ߣߌ߫ ߛߏ߬ߝߘߊ߬ߓߋ ߘߐ߫، ߊ߬ ߣߌ߫ ߞߵߊߟߎ߫ ߞߎ߲߬ߠߊߛߊ߬ߦߌ߬ ߊߟߊ߫ ߞߏߝߐ ߣߌ߫ ߛߊߟߌ ߡߊ߬، ߦߊ߯ߟߴߊߟߎ߫ ߓߘߊ߫ ߝߘߊ߫ ߏ߬ ߘߐ߫ ߓߊ߬؟"
     }
   },
   {
@@ -2013,7 +2428,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "জানি থোৱা, নিশ্চয় আল্লাহ শাস্তি দানত অতি কঠোৰ, আৰু আল্লাহ পৰম ক্ষমাশীল, পৰম দয়ালু।",
       "ne": "तिमी जानिराख कि अल्लाह कठोर सजाय दिनेवाला छ र यो (पनि) कि अल्लाह ठूलो क्षमादाता र कृपालु छ ।",
       "si": "සැබැවින් ම අල්ලාහ් දඬුවම් කිරීමෙහි ඉතා දැඩි බවත් සැබැවින් ම අල්ලාහ් අතික්ෂමාශීලී කරුණා ගුණයෙන් යුක්ත බවත් දැන ගනු.",
-      "km": "ចូរពួកអ្នក(ឱមនុស្សលោកទាំងឡាយ)ដឹងចុះថា ពិតប្រាកដណាស់ អល់ឡោះជាអ្នកដាក់ទណ្ឌកម្មដ៏ខ្លាំងក្លាបំផុត។ ហើយពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាអភ័យទោស មហាអាណិតស្រលាញ់។"
+      "km": "ចូរពួកអ្នក(ឱមនុស្សលោកទាំងឡាយ)ដឹងចុះថា ពិតប្រាកដណាស់ អល់ឡោះជាអ្នកដាក់ទណ្ឌកម្មដ៏ខ្លាំងក្លាបំផុត។ ហើយពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាអភ័យទោស មហាអាណិតស្រលាញ់។",
+      "he": "דעו אכן אללה מעניש בחומרה, ואכן אללה הוא הסלחן והרחום.",
+      "ka": "იცოდეთ (ო, ადამიანებო), რომ ალლაჰი ძლიერია სასჯელში (იმათ მიმართ, ვინც მას არ ემორჩილება) და რომ ალლაჰი არის შემნდობი, შემწყალებელია.",
+      "lt": "Žinokite, kad Allahas yra Rūstus bausdamas ir kad Allahas yra Dažnai Atleidžiantis, Gailestingiausiasis.",
+      "mg": "Fantaronareo fa I Allah dia tena mafy sazy ary koa I Allah dia be Famelan-keloka sy be Fiantrana.",
+      "lg": "Muteekeddwa okumanya nti mazima Allah Muyitirivu Wa Bibonerezo era nga ddala bulijjo Allah Musonyiyi Musaasizi.",
+      "rw": "Mumenye ko Allah ari Nyiribihano bikaze, kandi ko Allah ari Ubabarira ibyaha, Nyirimpuhwe.",
+      "rn": "Bantu! Nimumenye ko Imana Allah Ihana Igahasha ibigaba, n’uko Imana Allah ari Nyenimbabazi-ntangere ku bigaya, Nyenimbabazi ku batoni bayo.",
+      "ln": "Boyeba ete ya sôló, Allah apesaka etumbu ya makasi mpe ya sôló, Allah azali molimbisi atonda mawa.",
+      "dag": "Baŋmi ya ni Achiika! Naawuni nyɛla azaabakpeeni lana. Yaha! Naawuni nyɛla Chεmpaŋlana, Zaadali Nambɔzobonaa.",
+      "mos": "Bãng-y tɩ Wẽnd sɩbgrã yaa kεgenga, la Wẽnd yaa Yaafda n yaa Yolsda.",
+      "aa": "Sinaamey diggah Yalli isi Amri cine maral digaala kaak gibdih, diggah Yalli isi Amri oggoleeh kaal gace marah dambi cabti-li xuwaw- li kinnim ixiga.",
+      "mdh": "Sabuti nu su Allah na mapasang i siksa nin, na endu su Allah na bangampun a malimu.",
+      "ak": "Monhunu sε, nokorε Nyankopͻn asotwee ano yεden paa, nokorε nso sε Ɔne Bͻnefakyε Hene, na Ɔne Mmͻborͻhunufoͻ Hene.",
+      "ceb": "Hibaloi nga ang Allah mahugtanon sa pagsilot, ug ang Allah Labing Mapinasayluon, ang Labing Maluloy-on.",
+      "nqo": "ߊ߬ ߣߴߊߟߎ߫ ߦߴߊ߬ ߟߐ߲߫ ߸ ߞߏ߫ ߊߟߊ߫ ߦߋ߫ ߓߌ߲߬ߓߊ߬ߥߏ߬ ߜߍߟߍ߲ ߕߌ߰ ߘߌ߫ ߸ ߊ߬ ߣߌ߫ ߊߟߊ߫ ߦߋ߫ ߡߊ߬ߞߕߏ߬ߟߌ߬ߟߊ߫ ߤߌߣߟߊ߫ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -2076,7 +2506,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশমণ্ডল আৰু পৃথিৱী লগতে এই দুয়োৰে মাজত যি আছে সেই সকলোবোৰৰ ৰাজত্ব আল্লাহৰেই আৰু তেওঁ সকলো বস্তুৰ ওপৰত ক্ষমতাৱান।",
       "ne": "आकाशहरू र जमिन (पृथ्वी) र जे–जति तिनीहरूको बीचमा छ सबै अल्लाहको राज्य हो र ऊ प्रत्येक कुरामाथि शक्ति सम्पन्न छ ।",
       "si": "අහස්හි ද මිහිතලයෙහි ද ඒවායෙහි ඇති දෑහි ද ආධිපත්‍යය අල්ලාහ් සතු ය. ඔහු සියලු දෑ කෙරෙහි ශක්තිවන්ත ය.",
-      "km": "ការគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី និងអ្វីដែលមាននៅក្នុងវា គឺជាកម្មសិទ្ធិរបស់អល់ឡោះជាម្ចាស់(តែមួយគត់)។ ហើយទ្រង់មានអានុភាពលើអ្វីៗទាំងអស់។"
+      "km": "ការគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី និងអ្វីដែលមាននៅក្នុងវា គឺជាកម្មសិទ្ធិរបស់អល់ឡោះជាម្ចាស់(តែមួយគត់)។ ហើយទ្រង់មានអានុភាពលើអ្វីៗទាំងអស់។",
+      "he": "לאללה מלכות השמים והארץ וכל אשר בהם, והוא הכול-יכול.",
+      "ka": "ალლაჰს ეკუთვნის ცათა და მიწის სრული ძალაუფლება და ყველაფერი, რაც მათშია, და მხოლოდ იგია ყოვლისშემძლე.",
+      "lt": "Allahui priklauso dangų ir žemės bei viso, kas tarp jų, valdžia ir Jis Gali padaryti viską.",
+      "mg": "An’I Allah irery ihany ny fanjakana any amin’ireo lanitra sy ny tany sy izay rehetra ao aminy. Ary Izy no Mahefa ny zava-drehetra.",
+      "lg": "Obufuzi bw'eggulu omusanvu n'ensi n'ebirimu bwa Allah, era bulijjo Allah Musobozi Wa buli kintu.",
+      "rw": "Ubwami bw’ibirere n’ubw’isi n’ibibirimo byose ni ibya Allah, kandi ni we Ushobora byose.",
+      "rn": "Imana Allah ni Yo Nyenubwami Igaba Ikaganza amajuru n’isi n’ibiri muri vyo. Burya Imana Allah rero, ni na Yo Mushoboravyose.",
+      "ln": "Bokonzi ya likolo na ya nsé mpe maye mazuami na kati na yango mazali ya Allah. Mpe ye nde azali na bokoki likolo ya biloko binso.",
+      "dag": "Naawuni n-su din be sagbana mini tiŋgbani ni yiko, ni binshɛɣu kam din be di sunsuuni. Yaha! O (Naawuni) nyɛla Toora binshɛɣu kam zuɣu.",
+      "mos": "Wẽnd n so saas la tẽng naam la sẽn be b pʋgẽ wã, la A yaa Tõod ne bũmbã fãa.",
+      "aa": "Qaranwaa kee Baaxooy ken Nammayih Addal taniimih Reeda inkih Yalli-le, usuk ummaan iimih dudda-li kinni.",
+      "mdh": "Kanu Allah su manga langit endu su lupa endu su dalem nin, endu kagaga nin i langun enggagaisa.",
+      "ak": "Ɔsoro ne asaase ne deε εwͻ mu no nyinaa ahennie wͻ Nyankopͻn, na Ɔno na Ɔwͻ biribiara so tumi.",
+      "ceb": "Iya (ni) Allah ang ginharian sa manga kalangitan ug kalibutan, ug ang tanan nga manga anaa niini. Ug Siya bug-os ang gahom ibabaw sa tanang mga butang.",
+      "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߴߏ߬ ߟߎ߬ ߞߣߐ߫ ߸ ߓߊߏ߬ ߊ߬ߟߋ ߟߋ߬ ߛߋ߫ ߟߊ߫ ߞߏ ߓߍ߯ ߟߊ߫"
     }
   },
   {
@@ -2133,7 +2578,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "तोच अल्लाह तुमचा पालनकर्ता आहे, त्याच्याखेरीज कोणीही उपास्य (माबूद) नाही, प्रत्येक चीज-वस्तूचा रचयिता, यास्तव फक्त त्याचीच उपासना करा आणि तो प्रत्येक गोष्टीची देखभाल ठेवणारा आहे.",
       "as": "তেৱেঁই আল্লাহ, তোমালোকৰ প্ৰতিপালক; তেওঁৰ বাহিৰে আন কোনো সত্য ইলাহ নাই। তেৱেঁই সকলো বস্তুৰ স্ৰষ্টা; এতেকে তোমালোকে কেৱল তেওঁৰেই ইবাদত কৰা; তেৱেঁই সকলো বস্তুৰ তত্বাৱধায়ক।",
       "ne": "यो हो अल्लाह जुन तिम्रो पालनकर्ता हो, उस बाहेक अरु कोही सत्य पूजनीय छैन, उही नै प्रत्येक कुराको सृष्टिकर्ता हो । तसर्थ तिमी उसैको उपसना गर र उही सम्पूर्ण कुराहरूको सु–सञ्चालन गर्ने संयोजक हो ।",
-      "si": "ඔහුය නුඹලාගේ පරමාධිපති වන අල්ලාහ්. ඔහු හැර නැමදුම් ලබන්නට කිසිවකු නොමැත. සියලු දෑහි මැවුම්කරු ය. එබැවින් නුඹලා ඔහුට වන්දනාමාන කරනු. තවද සියලු දෑහි භාරකරු වන්නේද ඔහු ය."
+      "si": "ඔහුය නුඹලාගේ පරමාධිපති වන අල්ලාහ්. ඔහු හැර නැමදුම් ලබන්නට කිසිවකු නොමැත. සියලු දෑහි මැවුම්කරු ය. එබැවින් නුඹලා ඔහුට වන්දනාමාන කරනු. තවද සියලු දෑහි භාරකරු වන්නේද ඔහු ය.",
+      "he": "זה אללה ריבונכם, אין אלוה מלבדו, הוא בורא כול דבר, לכן עבדו אותו. על כול דבר הוא מגן.",
+      "ka": "ასეთია ალლაჰი — თქვენი უფალი; არ არსებობს სხვა ღმერთი, ღირსი თაყვანისცემისა, გარდა მისი. იგია ყოველი რამის შემქმნელი, ამიტომ ეთაყვანეთ მხოლოდ მას. და იგია ყოველივეს მფარველი [მზრუნველი და მოწმე].",
+      "mg": "Izany no Allah Tomponareo ! Tsy misy Zanahary hafa afa-tsy Izy ihany. Mpahary ny zava-drehetra, ka tompoinareo àry Izy. Ary Izy no misahana ny zava-drehetra",
+      "lg": "Oyo nno ye Allah Omulabirizi Wammwe, tewali kintu kyonna kisinzibwa mu butuufu okuggyako Yye Yekka, Omutonzi Wa buli kintu, kale nno Gwe muba musinza, era bulijjo Y’alina obuyinza ku buli kintu.",
+      "rw": "Uwo ni Allah Nyagasani wanyu! Nta yindi mana ikwiye gusengwa uretse We, Umuremyi wa byose. Ku bw’ibyo nimumusenge (wenyine), kandi ni We Muhagararizi wa byose.",
+      "ln": "Wana Allah Nkolo na bino, nzambe mosusu ya kobondela na bosóló azali te sé ye, mokeli ya biloko binso bobondela ye, mpe azali mobateli ya biloko binso.",
+      "dag": "Ŋumbɔŋɔ maa n-nyɛ Naawuni so Ŋun nyɛ yi Duuma maa, Duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna, Ŋuna n-nyɛŊun nam binshɛɣu kam, dinzuɣujεmmi ya O. Yaha! Ŋuna n-nyɛ binshɛɣu kam ni dalim So.",
+      "mos": "Soab-kãngã la yãmb Soabã, bɩ y tũ-A , la Yẽ la bũmbã fãa bobenda.",
+      "aa": "Korosey toh Yallaay sin gine Rabbi kinniih kaak-sa Qibaada Cakkisita Yalli mayan, usuk ummaanim ginek Toysa dibuk kaa uqbuda, usuk ummaanim dacrisaah isi ginóh caagiida dibuk gexsa.",
+      "mdh": "Sekanin a Allah a Kadenan nu, dala kadenan a salakaw sa lekanin, binaluy nin i langun a enggaga-isa, na simba nu, endu sekanin (Allah) kanu langun a enggaga-isa na pedtuganulen nin.",
+      "ak": "Mo Wura Nyankopͻn no ne no, awurade foforͻ biara nnihͻ, gyesε Ɔno (nko ara) Ɔne biribiara Bͻfo; enti monsom no. Ɔno na biribiara twere no.",
+      "nqo": "ߊߟߊ߫ ߏ߬ ߟߋ ߦߴߊߟߎ߫ ߡߊ߰ߙߌ ߘߌ߫ ߸ ߡߊ߰ߙߌ߬ ߛߌ߫ ߕߴߏ߬ ߞߐ߫، ߝߋ߲ ߓߍ߯ ߘߊ߲ߓߊ߮ ߞߊ߬ߣߌ߲߫، ߒ߬ߓߵߊߟߎ߫ ߦߴߏ߬ ߘߐߙߐ߲߫ ߠߋ߫ ߓߊ߬ߕߏ߫ ߘߋ߬، ߓߊ ߏ߬ ߟߋ ߟߐ߬ߣߍ߲߬ ߝߋ߲ ߓߍ߯ ߟߊ߫ ߞߏ ߟߊ߫"
     }
   },
   {
@@ -2197,7 +2654,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় তোমাৰ প্ৰতিপালক সেই ব্যক্তি সম্পৰ্কে অধিক অৱগত যিয়ে তেওঁৰ পথৰ পৰা বিপথগামী হয়। লগতে যিসকল সৎপথত আছে তেওঁলোকৰ বিষয়েও তেওঁ অধিক অৱগত।",
       "ne": "निःसन्देह तपार्इको पालनकर्ता तिनीहरूलाई राम्ररी जान्दछ कि को उसको बाटोबाट विचलित छ र तिनीहरूलाई पनि राम्ररी जान्दछ जो उसको बाटोमा हिंडिराखेका छन् ।",
       "si": "තම මාර්ගයෙන් නොමඟ යනවුන් කවුරුන් දැ? යි සැබැවින් ම නුඹගේ පරමාධිපති වන ඔහු මැනවින් දන්නා ය. තවද යහමඟ ලැබූවන් පිළිබඳව ද ඔහු මැනවින් දන්නා ය.",
-      "km": "ជាការពិតណាស់ ព្រះជាម្ចាស់របស់អ្នក(ឱអ្នកនាំសារមូហាំម៉ាត់)ទ្រង់ដឹងបំផុតចំពោះអ្នកដែលវង្វេងចេញពីមាគ៌ារបស់ទ្រង់ ហើយទ្រង់ដឹងបំផុតចំពោះអ្នកដែលទទួលបានការចង្អុលបង្ហាញ។"
+      "km": "ជាការពិតណាស់ ព្រះជាម្ចាស់របស់អ្នក(ឱអ្នកនាំសារមូហាំម៉ាត់)ទ្រង់ដឹងបំផុតចំពោះអ្នកដែលវង្វេងចេញពីមាគ៌ារបស់ទ្រង់ ហើយទ្រង់ដឹងបំផុតចំពោះអ្នកដែលទទួលបានការចង្អុលបង្ហាញ។",
+      "he": "אכן ריבונך הוא יודע היטב מי תועה משבילו, והוא המכיר את המודרכים.",
+      "ka": "ჭეშმარიტად, შენი უფალი (ისეთია, რომ) მან უკეთ იცის ისინი, ვინც მისი გზიდან ცდება; და მან უკეთ იცის სწორ გზაზე მავალნიც!",
+      "lt": "Iš tiesų, jūsų Viešpats! Tai Jis, Kuris geriausiai žino, kas nuklysta nuo Jo Kelio, ir Jis geriausiai žino teisingai vedamus.",
+      "mg": "Tena marina fa ny Tomponao no Mahalala izay miala amin’ny lalany, ary Izy ihany koa no Mahalala ireo izay voatari-dalana.",
+      "lg": "Mazima Mukama Omulabirizi Wo y'asinga okumanya oyo eyabula n'ava ku Kkubo lye, era nga bw'ali nti y'asinga okutegeera ebikwata ku baluŋŋama.",
+      "rw": "Mu by’ ukuri Nyagasani wawe ni We uzi neza abayobye inzira ye, kandi ni We Uzi neza abayobotse.",
+      "rn": "Mu vy’ukuri, Imana yawe Rurema Allah, ni Yo Izi bikwiye uwahuvye inzira yayo, ni na Yo Izi neza n'abagororotsi.",
+      "ln": "Ya solo Nkolo nayo ayebi banani babungi nzela naye mpe ayebi banani bakambami malamu.",
+      "dag": "Achiika! A Duuma (Naawuni) n-nyɛŊun mi ninvuɣu so ŋun bɔrgi ka chɛ O soli. Yaha! Ŋuna n-nyɛŊun mi ninvuɣu shεba ban dolsi.",
+      "mos": "Bãng tɩ fo Soabã, Yẽ n yɩɩd minim ne ned ning sẽn menem-a n bas A sorã, Yẽ n leb n yɩɩd minim ne kãndgdbã.",
+      "aa": "Diggah Nabiyow ku-Rabbi isi gitak makkootc marat siinik yayseeh keenik yayseh, usuk isi gital tirri iyye marat kulli marak yayseh.",
+      "mdh": "Saben-sabenal su Kadenan nengka i mataw sa kanu gatading kanu agama nin, endu sekanin bun i mataw sa natutulu.",
+      "ak": "(Nkͻmhyεni), nokorε sε wo Wura Nyankopͻn na Onim obi a w’ayera afri Ne kwan no soͻ, εna Onim obi nso a watene.",
+      "ceb": "Sa pagkatinuod, ang (Allah) nga imong Ginoo, siya ang matuod nga nasayud kun kinsa ang nahisalaag gikan sa sa Iyang Dalan, ug nasayod Siya kun kinsa ang husto nga nagiyahan.",
+      "nqo": "ߌ ߡߊ߰ߙߌ ߟߋ߫ ߞߊ߬ ߡߐ߰ ߟߐ߲߫ ߡߍ߲ ߦߋ߫ ߝߟߌ߬ ߟߴߊ߬ ߟߊ߫ ߛߌߟߊ ߡߊ߬߸ ߊ߬ߟߋ ߟߋ߫ ߞߊ߬ ߞߊ߲ߘߊߓߊ߯ߕߐ ߟߎ߬ ߝߣߊ߫ ߟߐ߲ߓߊ ߞߍ߫"
     }
   },
   {
@@ -2251,7 +2723,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kn": "ನಿಮ್ಮ ಪರಿಪಾಲಕನಿಂದ (ಅಲ್ಲಾಹನಿಂದ) ನಿಮಗೆ ಅವತೀರ್ಣವಾದುದನ್ನು ಅನುಸರಿಸಿರಿ. ಅವನ ಹೊರತು ಬೇರೆ (ಸ್ವಘೋಷಿತ) ರಕ್ಷಕರನ್ನು ಅನುಸರಿಸಬೇಡಿ. ನೀವು ಸ್ವಲ್ಪವೇ ಉಪದೇಶ ಪಡೆಯುತ್ತೀರಿ.",
       "mr": "जे (धर्मविधान) तुमच्या पालनकर्त्यातर्फे उतरविले गेले, त्याचे अनुसरण करा आणि त्याच्याखेरीज इतर दोस्तांचे अनुसरण करू नका. तुम्ही लोक फार कमी बोध प्राप्त करता.",
       "as": "তোমালোকৰ প্ৰতিপালকৰ তৰফৰ পৰা তোমালোকৰ ওচৰলৈ যি অৱতীৰ্ণ কৰা হৈছে, তোমালোকে তাৰ অনুসৰণ কৰা আৰু তেওঁৰ বাহিৰে আন কাকো অভিভাৱকৰূপে অনুসৰণ নকৰিবা। তোমালোকে খুব কমেই উপদেশ গ্ৰহণ কৰা।",
-      "si": "නුඹලාගේ පරමාධිපතිගෙන් නුඹලා වෙත පහළ කරනු ලැබූ දෑ නුඹලා අනුගමනය කරනු. තවද ඔහු හැර (වෙනත් දෑ) භාරකරුවන් ලෙස ගෙන නුඹලා අනුගමනය නො කරනු. ස්වල්ප වශයෙනි නුඹලා උපදෙස් ලබනුයේ."
+      "si": "නුඹලාගේ පරමාධිපතිගෙන් නුඹලා වෙත පහළ කරනු ලැබූ දෑ නුඹලා අනුගමනය කරනු. තවද ඔහු හැර (වෙනත් දෑ) භාරකරුවන් ලෙස ගෙන නුඹලා අනුගමනය නො කරනු. ස්වල්ප වශයෙනි නුඹලා උපදෙස් ලබනුයේ.",
+      "he": "לכו בעקבות מה שהורד אליכם מריבונכם, ואל תקבעו מלבדו אדונים לכם. מעט אלה הנזכרים.",
+      "ka": "მიჰყევით იმას, რაც ჩამოგეგზავნათ თქვენი უფლისგან, და ნუ მიჰყვებით მის ნაცვლად (სხვა) მფარველებს [შაიტნებს, მონაზვნებსა და მწიგნობრებს]. (და რა) ცოტა ისმენთ შეგონებებს!",
+      "mg": "Arahanareo izay nampidinina teo aminareo avy amin’ny Tomponareo, ary aza manaraka Mpiahy hafa ankoatrany ianareo. Nefa kely dia kely ny ahatsiarovanareo.",
+      "lg": "Mugoberere ebyo ebyassibwa gye muli nga biva ewa Mukama Omulabirizi Wammwe, naye temugobereranga abalala, wabula mujjukira kitono.",
+      "rw": "Nimukurikire ibyo mwahishuriwe biturutse kwa Nyagasani wanyu. Kandi ntimuzakurikire ibitari We mubigira abafasha. Ni gake mwibuka!",
+      "dag": "Doli ya bɛ ni siɣisi shɛli n-tin ya na yi Duuma (Naawuni) sani, ka di doli ya duuma shεba kapa ni Ŋuna, biɛla ka yi teeri Naawuni yɛla.",
+      "mos": "Tũ-y bũmb ning b sẽn sik n kõ yãmbã, sẽn yi y Soabã nengẽ wã, la y ra wa tũ lall-n-taas zẽms sẽn pa Yẽ ye. Paood yãmb sẽn tagsd n getẽ.",
+      "aa": "Sinaamey sin Rabbik siinil obsime kitab kee Nabii sunna (Nabii cadis kinnuk) kataataay Yallak kalah tanim awlah haysitteenih makataatina isin amahal kaskassowtaanam siinik dagoh.",
+      "mdh": "Unuti nu su initulun sa lekanu (Qur’an) ebpun sa Kadenan nu, na da kanu munut sa salakaw lun i kamalan nu, ka paydu i katadem nu ataw ka maka- indaw sa lekanu.",
+      "ak": "Monni deε yɛasiane afiri mo Wura Nyankopͻn hͻ aberε mo no akyi, na monhwε na moamfiri N’akyi ankodi akyitaafoͻ biara akyi, (nanso nnipa, anaa asεm no mu) kakraa bi na mokaeε.",
+      "ceb": "Sunda ninyo kung unsay gipadayag kaninyo gikan sa (Allah) nga inyong Ginoo, ug ayaw kamog sunod sa bisan unsa nga mini nga mga dios ug mga ginoo imbes nga Kaniya. Diyutay lang ang inyong pagtagad.",
+      "nqo": "ߊߟߎ߫ ߦߋ߫ ߝߋ߲߫ ߠߋ߬ ߟߊߓߊ߬ߕߏ߬ ߡߍ߲ ߠߊߖߌ߰ߣߴߊߟߎ߫ ߡߵߊߟߎ߫ ߡߊ߰ߙߌ ߓߟߏ߫، ߊߟߎ߫ ߞߣߊ߫ ߢߌ߲߬ ߜߘߍ߫ ߟߎ߫ ߟߊߓߊ߬ߕߏ߫ ߘߋ߬ ߞߵߏ߬ ߕߏ߫، ߞߏ߬ߣߵߊߟߎ߫ ߕߊ߰ߛߌ߬ߞߏ ߟߋ߬ ߦߊ߯ ߘߐ߯"
     }
   },
   {
@@ -2312,7 +2796,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে তাক্বৱা অৱলম্বন কৰিছে, তেওঁলোকক চয়তানে যেতিয়া কুমন্ত্ৰণা দিয়ে তেতিয়া তেওঁলোকে আত্মসচেতন হয়, আৰু লগে লগে তেওঁলোকৰ দৃষ্টি প্ৰকট হয়।",
       "ne": "निश्चय नै अल्लाहसित डराउनेहरूलाई जब कुनै खतराको संकेत आउँछ तब उनी जिक्र गर्न थाल्छन्, तसर्थ एक्कासी उनका आँखाहरू खुलिहाल्छन् ।",
       "si": "නියත වශයෙන් ම දේව බිය හැඟීමෙන් යුතුව කටයුතු කළවුන් වනාහි ඔවුනට ෂෙයිතාන්ගෙන් යම් බලපෑමක් ස්පර්ශ වූ විට ඔවුහු (අල්ලාහ් ව) මෙනෙහි කරති. එවිට ඔවුහු අවදි වී බලන්නන් වෙති.",
-      "km": "ជាការពិតណាស់ បណ្តាអ្នកដែលកោតខ្លាច(អល់ឡោះ) នៅពេលដែលមានក្រុមមួយនៃពួកស្ហៃតនមកញុះញង់ពួកគេ(អូសទាញឱ្យប្រព្រឹត្តបាបកម្ម) គឺពួកគេនឹកឃើញ(ដល់អល់ឡោះ)។ ពេលនោះ ពួកគេគឺជាអ្នកដែលមើលឃើញ(ប្រការត្រឹមត្រូវ)។"
+      "km": "ជាការពិតណាស់ បណ្តាអ្នកដែលកោតខ្លាច(អល់ឡោះ) នៅពេលដែលមានក្រុមមួយនៃពួកស្ហៃតនមកញុះញង់ពួកគេ(អូសទាញឱ្យប្រព្រឹត្តបាបកម្ម) គឺពួកគេនឹកឃើញ(ដល់អល់ឡោះ)។ ពេលនោះ ពួកគេគឺជាអ្នកដែលមើលឃើញ(ប្រការត្រឹមត្រូវ)។",
+      "he": "אכן אלה היראים את אללה, אם השטן ינסה לפתותם, נזכרים (תיכף), והנה הם רואים במו עיניהם (את דרך הישר).",
+      "ka": "ისინი, რომლებიც ერიდებიან (ალლაჰის სასჯელს), — როცა მათ შეეხება სატანის ცდუნება, ისინი იხსენებენ (რომ უნდა იყვნენ ალლაჰის მორჩილნი), და აი — ისინი ხედავენ (რა არის ჭეშმარიტება).",
+      "lt": "Iš tiesų, tie, kurie yra Al-Mutakūn (dievobaimingi – žr. ają 2:2), kai juos aplanko piktos mintys iš Šaitan (Šėtono), jie prisimena (Allahą) ir (iš tiesų) jie tada mato (teisingai).",
+      "mg": "Marina fa ireo manam-patahorana, raha misy fanapahan-kevitra avy amin’i Satana nahavoa azy ireo dia mahatsiaro (an’I Allah) izy ireo, ka indro izy ireo lasa nahiratra.",
+      "lg": "Mazima abo abatya Allah, bwe baba bafunye okubuzaabuzibwa okuva eri Sitaane, bajjukira (Allah), olwo nno ne balaba ekituufu.",
+      "rw": "Mu by’ukuri ba bandi batinya Allah, iyo igishuko cya shitani kibagezeho, bibuka (Allah) maze bakaba maso (bakitandunya n’ibyaha).",
+      "rn": "Mu vy’ukuri, abagamburukira Imana Allah iyo bakozweko n’inyoshambi za shetani, baca bagaruka ku Mana Allah bakigaya, bagashoka bavavanura n’ibicumuro.",
+      "ln": "Ya soló, baye bazali na bobangi Allah soki emoniseli ya satana ekoteli bango, bakanisi nsima, tala bango ndenge bakomi ekenge.",
+      "dag": "Achiika! Ninvuɣu shεba ban mali wuntia maa, shintaŋ laɣiŋgu yi ti yɛn shihi ba, ka bɛ teei Naawuni yεla,kaa nya ba ka bɛ nyɛla ban suhiri ne.",
+      "mos": "Bang tɩ wẽn-zoetbã, yɑm-yoob lɑ kɩllg sã n pɑɑm bãmbɑ sẽn yi ɑ sʋɩtãɑn nengẽ, lɑ b sẽn tẽegd Wẽnd yellã, tɩ b yɑmã yɑɑ sẽn be pukri.",
+      "aa": "Diggah Yallak meesita mara Sheytan waswasak tu ken xagtek Yallih digaalaa kee Yallih meqe galto kassitan, tokkel usun bagi intih Yallih cakki yableeniih Yalli Niqbaamak yaxxeereenih.",
+      "mdh": "Su manga taw a nagilekan sa Allah na amayka sinasat nu shaytan na tumadem silan sa Allah, na nakaimaman silan.",
+      "ak": "Wͻn a wͻsuro Nyankopͻn no, sε ͻbosam de adwen bͻne bi ma wͻn a, wͻkae Nyankopͻn, εba saa a, εma wͻn aniso da hͻ kann (kae Nyankopͻn asotwee ne N’adom a εwͻ hͻ Daakye).",
+      "ceb": "Kadtong nagmanggihadlukon Kang Allah; sa diha nga ang usa ka dautang hunghong muabot kanila gikan kang Satanas, sila nakahinumdom (sa Allah), ug sa pagkatinuod sila makakita (ug matarong).",
+      "nqo": "ߡߍ߲ ߠߎ߬ ߦߴߊ߬ߟߎ߬ ߝߊ߲ߕߊ߲߬ߞߊ߬ ߟߊ߫߸ ߣߌ߫ ߘߌߡߌ߲߫ ߞߏߣߍ߲߫ ߡߊ߰ ߘߴߊ߬ߟߎ߬ ߟߊ߫ ߞߊ߬ ߝߘߊ߫ ߜߍ߬ߘߍ ߟߊ߫ ߸ ߊ߬ߟߎ߬ ߘߴߊ߬ߟߎ߫ ߖߊ߲߬ߓߌ߬ߟߊ߬، ߘߊ߬ߡߊ߲߬ߛߊ߫ ߊ߬ߟߎ߬ ߘߴߏ߬ ߦߋ߫ ߊ߬ߟߎ߬ ߦߟߌ ߟߊ߫ ( ߞߊ߬ ߓߐ߫ ߝߌ߬ߟߌ ߘߐ߫ )"
     }
   },
   {
@@ -2368,7 +2867,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকল তোমাৰ প্ৰতিপালকৰ সান্নিধ্যত আছে, তেওঁলোকে তেওঁৰ ইবাদতৰ পৰা অহংকাৰ নকৰে; আৰু তেওঁলোকে কেৱল তেওঁৰেই তাছবীহ পাঠ কৰে আৰু কেৱল তেওঁকেই ছাজদা কৰে। (ছাজদাহ নং ১)",
       "ne": "निःसन्देह जो तिम्रो पालनकर्ताको समीपमा छन्, तिनीहरू उसको उपासनाबाट अभिमान गर्दैनन्, तिनीहरू त उसको महीमागान गर्दछन् र उसैलाई ढोग्दछन् ।",
       "si": "නියත වශයෙන් ම නුඹගේ පරමාධිපති අබියස සිටින්නවුන් වනාහි ඔවුහු ඔහුට ගැතිකම් කිරීමට උඩඟු නො වෙති. තවද ඔවුහු ඔහුව පිවිතුරු කරති. තවද නළල බිම තමා ඔහුට නැමදුම් කරති.",
-      "km": "ពិតប្រាកដណាស់ អ្នកដែលនៅជិតព្រះម្ចាស់របស់អ្នក(បណ្តាម៉ាឡាអ៊ីកាត់) ពួកគេមិនក្រអឺតក្រទមចំពោះការគោរពសក្ការៈទ្រង់ឡើយ។ ហើយពួកគេលើកតម្កើងទ្រង់ និងឱនស៊ូជោតចំពោះទ្រង់(តែមួយគត់)។"
+      "km": "ពិតប្រាកដណាស់ អ្នកដែលនៅជិតព្រះម្ចាស់របស់អ្នក(បណ្តាម៉ាឡាអ៊ីកាត់) ពួកគេមិនក្រអឺតក្រទមចំពោះការគោរពសក្ការៈទ្រង់ឡើយ។ ហើយពួកគេលើកតម្កើងទ្រង់ និងឱនស៊ូជោតចំពោះទ្រង់(តែមួយគត់)។",
+      "he": "אכן אלה (המלאכים) הנמצאים אצל ריבונך לא יתייהרו מכדי לעבוד אותו והם משבחים אותו ולו סוגדים תמיד.",
+      "ka": "ჭეშმარიტად, ისინი, ვინც შენს უფალთან არიან [ანგელოზები], არასდროს ამაღლდებიან ამპარტავნებით მისი მსახურებისგან; ისინი მუდმივად ადიდებენ მას და მის წინაშე საჯდაზე ემხობიან ۩.",
+      "lt": "Iš tiesų, tie, kurie yra su jūsų Viešpačiu (angelai), niekada nepasididžiuoja atlikti Jo garbinimo veiksmus, tačiau jie garbina Jo Šlovę ir lenkiasi priešais Jį.",
+      "mg": "Marina fa ireo izay anatrehan’ny Tomponao (ireo Anjely) dia tsy manambony tena amin’ny fanompoana Azy. Ary midera ny voninahiny sy miankohoka Aminy izy ireo.",
+      "lg": "Mazima abo abali ewa Mukama Omulabirizi Wo, tebeekuluntaza ne batamusinza, era bamutendereza, era nga Yye Yekka, Gwe bavunnamira.",
+      "rw": "Mu by’ukuri ba bandi bari kwa Nyagasani wawe (abamalayika) ntibajya bibona ngo bumve ko batamugaragira, ahubwo baramusingiza, bakaba ari na We (Allah) wenyine bubamira.",
+      "dag": "Achiika! Ban be a Duuma sani maa (Malaaikanima) bi tibgiri bɛ maŋ’ ka chɛ Ojεma, ka simsiri O, Ŋuna kabε lahi niŋdi suzuuda n-tira.",
+      "mos": "Bãng tɩ sẽn be-b fo Soɑbã nengẽ wã kɑ maɑnd wɑoog-m-meng n bɑsd A tũudmã ye, lɑ b le yɩlgd-A lɑme; lɑ b tiuund ( mɑɑn suguud) A yĩngɑ.",
+      "aa": "Diggah Nabiyow ku Rabbih xaqul yan mari (malayka kinnuk) kay Qibaadak ma kaxxamariinitan, usun kaa ceele waytaamak kaa Saytunnoysaanaah dibuk kaah kummaatan.",
+      "mdh": "Su manga malaikat lu sa Allah na di silan pemamasla sa kasimba sa Allah endu pedtasbih silan sa Allah endu pedsugyud silan sa Allah Ta’ala.",
+      "ak": "Nokorε sε, wͻn a wͻwͻ wo Wura Nyankopͻn hͻ (Soro abͻfoͻ) no, wͻnyε ahomasoͻ wͻ Nesom ho, na mmom wͻbͻ no abodin na Ɔno na wͻde wͻn anim butu fͻm ma no.",
+      "ceb": "Sa pagkatinuod, kadtong mga 'anghel` nga duol sa imong Ginoo 'Allāh' wala nagmapahitas-on sa pagsimba Kaniya. Sila naghimaya ug magdayeg Kaniya ug sila maghapa (ingon nga magatuman ngadto Kaniya).",
+      "nqo": "ߡߍ߲ ߠߎ߬ ߦߴߌ ߡߊ߰ߙߌ ߓߘߊ ( ߞߋ߲ߛߐ߲ ߠߎ߬ ߘߌ߫ )߸ ߏ߬ ߟߎ߬ ߕߴߊ߬ߟߎ߫ ߖߘߍ߬ߘߐߓߏ߲߬ߧߊ߬ ߟߴߊ߬ ߓߊ߬ߕߏ ߡߊ߬߸ ߊ߬ߟߎ߫ ߘߏ߲߬ ߦߴߊ߬ ߛߊߣߌ߲ߧߊ ߝߐ߫ ߟߊ߫߸ ߊ߬ ߣߴߊ߬ߟߎ߬ ߦߋ߫ ߕߌ߲ߓߌߘߌ߲ ߞߍ߫ ߟߴߊ߬ ߦߋ߫"
     }
   },
   {
@@ -2430,7 +2942,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আকাশসমূহ আৰু পৃথিৱীৰ ৰাজত্ব একমাত্ৰ আল্লাহৰেই; তেৱেঁই জীৱন দান কৰে আৰু তেৱেঁই মৃত্যু ঘটায়। আল্লাহৰ বাহিৰে তোমালোকৰ আন কোনো অভিভাৱকো নাই আৰু কোনো সহায়কাৰীও নাই।",
       "ne": "निःसंदेह अल्लाह नै हो जसलाई आकाशहरू र पृथ्वीमाथि अधिपत्य प्राप्त छ । उसैले जिन्दगी प्रदान गर्दछ र मृत्यु दिन्छ, अल्लाह बाहेक तिम्रो अरु कोही मित्र र सहायता दिनेवाला छैन ।",
       "si": "අහස්හි හා මහපොළොවෙහි ආධිපත්‍යය නියත වශයෙන් ම අල්ලාහ් වන ඔහු සතු ය. ඔහු ප්‍රාණය දෙයි. තවද මරණයට පත් කරයි. තවද අල්ලාහ්ගෙන් තොරව කිසිදු භාරකරුවකු හෝ උදව්කරුවකු හෝ නුඹලාට නොමැත.",
-      "km": "ពិតប្រាកដណាស់ អំណាចគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់អល់ឡោះ។ ទ្រង់ប្រទានជីវិត និងដកហូតជីវិត។ ហើយសម្រាប់ពួកអ្នក(ឱមនុស្សលោកទាំងឡាយ)គ្មានអ្នកគាំពារ និងគ្មានអ្នកជួយណាក្រៅពីអល់ឡោះឡើយ។"
+      "km": "ពិតប្រាកដណាស់ អំណាចគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់អល់ឡោះ។ ទ្រង់ប្រទានជីវិត និងដកហូតជីវិត។ ហើយសម្រាប់ពួកអ្នក(ឱមនុស្សលោកទាំងឡាយ)គ្មានអ្នកគាំពារ និងគ្មានអ្នកជួយណាក្រៅពីអល់ឡោះឡើយ។",
+      "he": "אכן אללה, לו מלכות השמים והארץ, והוא מחייה וממית, ואין לכם מלבד אללה אדון או מושיע.",
+      "ka": "ჭეშმარიტად, ალლაჰს ეკუთვნის ცათა და მიწის მეუფება. იგი აცოცხლებს და აკვდინებს. და თქვენ არ გყავთ ალლაჰის გარდა არც მფარველი და არც შემწე.",
+      "lt": "Iš tiesų, Allahas! Jam priklauso dangų ir žemės karalystė, Jis suteikia gyvenimą ir Jis sukelia mirtį. Ir be Allaho jūs neturite nei Vali (gynėjo arba globėjo), nei padėjėjo.",
+      "mg": "Tena marina fa an’i Allah ny fanjakana any amin’ireo lanitra sy ny tany, mamelona sy mamono Izy ka tsy misy afa-tsy i Allah irery ihany no Mpiahy sy Mpanavotra Anareo.",
+      "lg": "Mazima Allah bubwe obufuzi bw'eggulu (omusanvu) n'ensi, awa obulamu era natta, nga oggyeko Allah temulina mukuumi wadde omutaasa.",
+      "rw": "Mu by’ukuri Allah ni Nyirubwami bw'ibirere n'ubw’isi. Ni We utanga ubuzima n'urupfu. Kandi nta wundi murinzi cyangwa umutabazi mwagira utari Allah.",
+      "ln": "Ya sôló, Allah azali na bokonzi ya likolo mpe ya nsé, apesaka bomoyi mpe liwa, mpe bozali na mobateli te mpe mosungi te sé kaka Allah.",
+      "dag": "Achiika! Naawuni n-su sagbana mini tiŋgbani yiko, Ŋuna n-neeri ka kura. Yaha! Yi ka ŋun yɛn taɣi ya, bee ŋun yɛnsɔŋ ya ka pa ni Naawuni.",
+      "mos": "Ad Wẽnd n tɑr sɑɑs lɑ tẽng nɑɑm, Yẽ n kõt vɩɩm la a kʋʋda, yãmb pa tar lalld zẽng sẽn pɑ Wẽnde, y pa tar Sõngd me.",
+      "mdh": "Su Allah na lekanin su pitu lapis a langit endu lupa, banguyag a bangimatay, endu dala se lakanu i salakaw sa Allah i tumuldu endu dala tumabang sa lekanu.",
+      "ak": "Nokorε sε, Nyankopͻn na ͻsoro ne asaase so ahennie no wͻ no. Ɔno na Ɔma nkwa εna Ɔkum, na monni Okyitaafoͻ anaasε ͻboafoͻ biara wͻ Nyankopͻn akyi.",
+      "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫ ߸ ߊ߬ߟߋ ߟߋ߫ ߟߊ߬ߢߣߊ߬ߡߦߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߞߊ߬ ߛߊ߬ߟߌ ߝߣߊ߫ ߞߍ߫، ߣߌ߫ ߊߟߊ߫ ߕߍ߫ ߸ ߞߏߕߌ߯ ߛߌ߫ ߣߌ߫ ߘߍ߬ߡߍ߲߬ߓߊ߯ ߕߍ߫ ߊߟߎ߫ ߟߊ߫"
     }
   },
   {
@@ -2494,7 +3018,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মুমিনসকল! তোমালোকে আল্লাহৰ তাক্বৱা অৱলম্বন কৰা আৰু সত্যবাদীসকলৰ সংগী হোৱা।",
       "ne": "हे ईमानवालाहरू ! अल्लाहसित डर्दै रहनु  र सत्यवादीहरूको संगतमा नै रहनु ।",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලා අල්ලාහ්ට බිය බැතිමත් වනු. තවද නුඹලා සත්‍යවාදීන් සමඟ වනු.",
-      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកកោតខ្លាចអល់ឡោះ ហើយចូរពួកអ្នកស្ថិតនៅជាមួយបណ្ដាអ្នកដែលទៀងត្រង់។"
+      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកកោតខ្លាចអល់ឡោះ ហើយចូរពួកអ្នកស្ថិតនៅជាមួយបណ្ដាអ្នកដែលទៀងត្រង់។",
+      "he": "הוי אלה אשר האמינו! יראו מאללה, והיו עם אנשי הצדק.",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! გეშინოდეთ ალლაჰისა და იყავით მართალთან ერთად.",
+      "lt": "O jūs, kurie tikite! Bijokite Allaho ir būkite su tais, kurie yra teisingi (žodžiais ir veiksmais).",
+      "mg": "Oh Ianareo izay nino, matahora an’i Allah Ianareo ary miaraha amin’ireo Olo-marina.",
+      "lg": "Abange mmwe abakkiriza mutye Allah era mubeere wamu n'abaamazima.",
+      "rw": "Yemwe abemeye! Mujye mutinya Allah kandi mube hamwe n'abanyakuri.",
+      "rn": "Emwe bemeye Imana Allah n’Intumwa yayo bakubahiriza n’amabwirizwa yayo! Nimutinye Imana Allah mu kwubahiriza amabwirizwa yayo, kandi mwame na ntaryo muri kumwe n’imvugakuri.",
+      "ln": "Eh bino bandimi! Bobanga Allah mpe bozala elongo moko na bato ya bosembo.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yεlimaŋli! Zom ya Naawuni, ka leei ya ninvuɣu shɛba ban be niyεlimaŋli nima.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩda! Zoe-y Wẽnd la y yɩ n naag togs sɩd rãmbã.",
+      "mdh": "Sekanu a manga bamaginugut, ikagilek nu su Allah endu embenal kanu sa kadtalu, da kanu endalbut.",
+      "ak": "Mo a moagye adie, Monsuro Nyankopͻn na monka nokwafoͻ no ho.",
+      "ceb": "Oh mga magtutuo, magmahinadlukon kamo sa Allah ug mahimong kauban sa mga matinud-anon (sa pulong ug buhat).",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߞߍ߫ ߕߎ߬ߢߊ߬ߕߌ߮ ߟߎ߫ ߝߍ߬"
     }
   },
   {
@@ -2543,7 +3081,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "te": "(ఓ ప్రజలారా!) వాస్తవానికి, మీ వద్దకు మీలో నుంచే ఒక సందేశహరుడు (ముహమ్మద్) వచ్చి ఉన్నాడు; మీరు ఆపదకు గురి కావటం అతనికి కష్టం కలిగిస్తుంది; అతను మీ మేలు కోరేవాడు, విశ్వాసుల ఎడల కనికరుడు, కరుణామయుడు.",
       "kn": "ನಿಮ್ಮ ಬಳಿಗೆ ನಿಮ್ಮಿಂದಲೇ ಇರುವ ಒಬ್ಬ ಸಂದೇಶವಾಹಕರು ಬಂದಿದ್ದಾರೆ. ನೀವು ಕಷ್ಟ ಅನುಭವಿಸುವುದು ಅವರಿಗೆ ಸಂಕಟದಾಯಕವಾಗಿದೆ. ಅವರಿಗೆ ನಿಮ್ಮ ಬಗ್ಗೆ ಕಳಕಳಿಯಿದೆ. ಅವರು ಸತ್ಯವಿಶ್ವಾಸಿಗಳೊಡನೆ ಕೃಪೆ ಮತ್ತು ದಯೆಯುಳ್ಳವರಾಗಿದ್ದಾರೆ.",
       "as": "নিশ্চয় তোমালোকৰ ওচৰলৈ তোমালোকৰ মাজৰ পৰাই এজন ৰাছুল আহিছে, তোমালোকৰ যি দুখ-কষ্ট হয় তেওঁ তাৰ বাবে বৰ মনোকষ্ট পায়। তেওঁ তোমালোকৰ হিতাকাংক্ষী, মুমিনসকলৰ প্ৰতি তেওঁ কৰুণাশীল আৰু অতি দয়ালু।",
-      "ne": "(हे मानिसहरू हो !) तिमीहरूको माझमा तिमीहरूमध्येबाटै एउटा पैगम्बर आएका छन् । तिम्रो पीडाबाट उनी दुःखी हुन्छन् र तिम्रो भलोको निम्ति चिन्तित रहन्छन्, र ईमानवालाहरूलाई निकै मायाँ गर्ने र दयालु छन् ।"
+      "ne": "(हे मानिसहरू हो !) तिमीहरूको माझमा तिमीहरूमध्येबाटै एउटा पैगम्बर आएका छन् । तिम्रो पीडाबाट उनी दुःखी हुन्छन् र तिम्रो भलोको निम्ति चिन्तित रहन्छन्, र ईमानवालाहरूलाई निकै मायाँ गर्ने र दयालु छन् ।",
+      "he": "כבר בא אליכם שליח מקרבכם, והסבל שלכם מפריע לו, והוא דואג לכם, ומתייחס למאמינים בחמלה ורחמים,",
+      "ka": "და აი, მოგივიდათ თქვენ შუამავალი თქვენგანვე. მძიმეა მისთვის თქვენი ტანჯვა, ზრუნავს თქვენზე, და მორწმუნეთა მიმართ თანამგრძნობი, მოწყალეა.",
+      "mg": "Marina, fa tonga taminareo ny Iraka notsongaina avy aminareo, izay nivesatra ny fahasahirananareo, ka feno fiahiana anareo, ary mangoraka sy mamindra-fo ireo mpino.",
+      "lg": "Omubaka yabajjira nga ava mu mmwe mwennyini nga kimuzitoowerera nnyo ekyo ekibakaluubiriza abalumirwa nnyo, era eri Abakkiriza bonna Waakisa Musaasizi.",
+      "rw": "Mu by’ukuri mwagezweho n’Intumwa ibakomokamo; iremererwa n’ingorane muhura na zo, ibitaho (kugira ngo muyoboke by’ukuri), kandi ni Inyempuhwe nyinshi, ikaba n’Inyembabazi ku bemera.",
+      "rn": "Bemeramana! Mwarashikiriwe n’Intumwa ivuye muri mwebwe nyene, ituntuzwa n’ibibabangamira, yitwararika ko muba abemeramana koko, irangwa n’ikigongwe n’impuhwe nyinshi ku bemeramana.",
+      "mos": "Sɩd la hakɩɩka, ad Tẽn-tʋʋm b sẽn yiis yãmb pʋgẽ waa yãmb nengẽ, bũmb sẽn namsd yãmb fãa yaa zɩsg ne-a, n maand yão-bood ne yãmb (neere), n yaa nimbãan-zoεt la yoalsd ne sɩd-kõatba.",
+      "mdh": "Saben-sabenal a nakwma i sinugu ebpun sa lekanu a mapulu sa lekanin i makapasang kanu ummat nin a masagikel sa lekanu sa kagkapya nu, malasam a malimu kanu ummat nin.",
+      "nqo": "ߞߋߟߊ ߘߏ߫ ߓߘߊ߫ ߓߊ߲߫ ߣߊ߬ ߟߴߊߟߎ߫ ߡߊ߬ ߊߟߎ߫ ߖߍ߬ߘߍ ߘߐ߫ ߸ ߊߟߎ߫ ߕߙߐ߫ ߞߏ ߜߍ߬ߟߍ߲߬ߡߊ߲߫ ߊ߬ ߡߊ߬߸ ߊߟߎ߫ ߘߌߡߊ߲ߓߊ ߦߴߊ߬ ߦߋ߫، ߊ߰ ߞߌ߬ߣߌ߲߬ߞߌ߬ߣߌ߲߬ߓߊ߯ ߣߌ߫ ߤߌߣߟߊ߫ ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߟߊ߫"
     }
   },
   {
@@ -2603,7 +3150,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় দিন আৰু ৰাতিৰ পৰিবৰ্তনত আৰু আল্লাহে আকাশসমূহ আৰু পৃথিৱীত যি সৃষ্টি কৰিছে তাৰ মাজত বহুতো নিদৰ্শন আছে এনে সম্প্ৰদায়ৰ বাবে যিসকলে তাক্বৱা অৱলম্বন কৰে।",
       "ne": "निःसन्देह रात र दिनको एक अर्कापछि आगमन र जुन कुराहरू अल्लाहले आकाश र पृथ्वीमा सृष्टि गरेको छ सबैमा अल्लाहसँग डर मान्नेहरूको लागि निशानीहरू छन् ।",
       "si": "රාත්‍රිය හා දහවල (එකිනෙක) වෙනස් වීමෙහි ද අහස්හි හා මහාපොළොවේ අල්ලාහ් මැවූ දෑහි ද බියහැඟීමෙන් යුතුව කටයුතු කරන ජනයාට සංඥාවන් ඇත.",
-      "km": "ពិតប្រាកដណាស់ ការផ្លាស់ប្តូរគ្នារវាងពេលយប់និងពេលថ្ងៃ ហើយនិងអ្វីដែលអល់ឡោះបានបង្កើតនៅលើមេឃជាច្រើនជាន់និងផែនដី គឺជាសញ្ញាភស្តុតាងសម្រាប់ក្រុមដែលកោតខ្លាច(ទ្រង់)។"
+      "km": "ពិតប្រាកដណាស់ ការផ្លាស់ប្តូរគ្នារវាងពេលយប់និងពេលថ្ងៃ ហើយនិងអ្វីដែលអល់ឡោះបានបង្កើតនៅលើមេឃជាច្រើនជាន់និងផែនដី គឺជាសញ្ញាភស្តុតាងសម្រាប់ក្រុមដែលកោតខ្លាច(ទ្រង់)។",
+      "he": "אכן בחילוף הלילה והיום ובאשר ברא אללה בשמים ובארץ אותות לאנשים אשר יראים.",
+      "lg": "Mazima okwawukana kw'ekiro n'emisana n'ebyo Allah bye yatonda mu ggulu omusanvu n'ensi ddala mulimu obubonero eri abantu abatya Allah (obubayamba okutegeera ekitiibwa n'obuyinza bwa Allah).",
+      "rw": "Mu by’ukuri mu gusimburana kw’ijoro n’amanywa, ndetse n’ibyo Allah yaremye mu birere n’isi, harimo ibimenyetso ku bantu batinya (Allah).",
+      "dag": "Achiika! Yuŋ mini wuntaŋni taɣibu puuni, ni Naawuni ni nam shɛli sagbana mini tiŋgbana puuni, achiika! Di nyɛla Naawuni nam yɛlikpahinda n-zaŋ ti ninvuɣu shεba ban mali wuntia.",
+      "mos": "Ad bee yʋndã la wĩndsã sẽn ledsd taabã, la Wẽnd sẽn naan saasã la tẽngã, tagmase ne neb sẽn zoet Wẽnde.",
+      "aa": "Diggah bar kee laqó ittal abta ciggiltuu kee Yalli qaranwaa kee baaxól ginni heemit Yallak meesita marah kay dudda tascasse astooti tan.",
+      "mdh": "Su kapedsukeliya nu magabi endu malamag, endu su binaluy nu Allah kanu manga langit endu su lupa na manga tanda a kapeg-kagaga nu Allah kanu manga taw, ka endu silan kagilekan.",
+      "ak": "Nokorε sε abirabͻ a εwͻ adesaeε ne adekyeε mu, ne nneεma a Nyankopͻn abͻ a εwͻ soro ne asaase soͻ no (nyinaa) yε nsεnkyerεnee dema amanfoͻ a wͻsuro Nyame yε ahwεyie.",
+      "nqo": "ߛߎ ߣߌ߫ ߕߟߋ߬ߘߐ߬ߟߊ ߟߊ߫ ߓߐߢߐ߲߰ߡߊ ߣߌ߫ ߊߟߊ߫ ߟߊ߫ ߝߋ߲߫ ߘߊ߲ߣߍ߲ ߡߍ߲ ߠߎ߬ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߐ߫ ߸ ߕߊ߰ߛߌ߬ߞߏ߫ ߟߴߏ߬ ߟߎ߬ ߘߌ߫ ߡߌ߬ߙߌ߲߬ߘߌ߬ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -2664,7 +3220,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আল্লাহে মানুহৰ প্ৰতি কোনো অন্যায় নকৰে, বৰং মানুহে নিজেই নিজৰ প্ৰতি অন্যায় কৰি থাকে।",
       "ne": "यो निश्चित (वास्तविक) कुरा हो कि अल्लाह त मानिसहरूमाथि केही अत्याचार गर्दैन, तर मानिसहरू आफूले नै आफूमाथि अत्याचार गर्दछन् ।",
       "si": "නියත වශයෙන් ම අල්ලාහ් ජනයාට කිසිවකින් හෝ අපරාධ නො කරයි. එනමුත් නියත වශයෙන් ම ජනයා තමන්ට ම අපරාධ කර ගනිති.",
-      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មិនបំពានលើមនុស្សលោកបន្តិចណាឡើយ។ ក៏ប៉ុន្តែ មនុស្សលោកវិញទេដែលបំពានលើខ្លួនឯងនោះ។"
+      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មិនបំពានលើមនុស្សលោកបន្តិចណាឡើយ។ ក៏ប៉ុន្តែ មនុស្សលោកវិញទេដែលបំពានលើខ្លួនឯងនោះ។",
+      "he": "אללה אינו מקפח את האנשים בכלום, אך הם מקפחים את עצמם.",
+      "ka": "ჭეშმარიტად, ალლაჰი ადამიანების მიმართ ოდნავადაც არ იქცევა უსამართლოდ, არამედ ადამიანები თავად იქცევიან უსამართლოდ საკუთარი თავის მიმართ!",
+      "lt": "Iš tiesų, Allahas neklaidina žmonijos niekame, tačiau žmonija klaidina pati save.",
+      "mg": "Marina fa i Allah dia tsy miangatra amin’ny Olona na dia kely aza, fa ny Olona ihany kosa no manao ny tsy rariny amin’ny tenany.",
+      "lg": "Mazima Allah talyazaamaanya bantu mu kintu kyonna, naye abantu bo bennyini be beeryazaamaanya.",
+      "rw": "Mu by’ukuri Allah ntacyo ajya ahuguza abantu, ahubwo abantu ni bo bihemukira ubwabo.",
+      "rn": "Mu vy’ukuri Imana Allah, nta na kimwe Irenganyako abantu mu kurengerezwa urugero rw’ibihano canke kugabanywa indishi, ariko abantu ni bo nyene birenganya mu guca kubiri n’amabwirizwa y’Imana Allah.",
+      "ln": "Ya soló, Allah abubaka bato na eloko te, bato bango moko nde bazali komibuba.",
+      "dag": "Achiika! Naawuni bi diri ninsalinim’ zualinsi ni shɛli, amaa! Ninsalinima nnyɛ ban diri bɛ maŋ’ zualinsi.",
+      "mos": "Sɩd la hakɩɩka, Wẽnd pa wẽgd nebã ye, ad yaa nebã bal n wẽgd b mense.",
+      "aa": "Diggah Yalli sinam tut mayadluma umaane keenit ossee kee hinnay maqaane keenik daggoyse yakkeemit, kinnih immay sinam isi nafsi isih tadlume koroosannuu kee Yallih amri cinaanamat.",
+      "mdh": "Saben-sabenal su Allah na di nin dupangen su manga taw sa apiya paydu, ugayd na su manga taw bun i pendupang sa ginawa nilan.",
+      "ak": "Nokorε sε, Nyankopͻn nsisi nnipa wͻ hwee ho, na mmom nnipa no ara na wͻsisi wͻn ho.",
+      "ceb": "Sa pagkatinuod, si Allah wala maglapas sa hustisya taliwala sa mga tawo sa bisan unsa apan ang mga tawo sa ilang kaugalingon naglapas sa hustisya 'pinaagi sa pagsupak sa ilang Magbubuhat'.",
+      "nqo": "ߒ߬ߓߵߊߟߊ߫ ߕߍ߫ ߡߐ߱ ߟߎ߫ ߕߐ߬ߢߍ߰ ߟߊ߫ ߝߏߦߌ߬ ߟߊ߫ ߘߋ߬ ߸ ߡߐ߱ ߟߎ߫ ߟߴߊ߬ߟߎ߫ ߖߍ߬ߘߍ߫ ߕߐ߬ߢߍ߰ ߟߊ߫"
     }
   },
   {
@@ -2726,7 +3297,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "জানি থোৱা! আকাশসমূহ আৰু পৃথিৱীত যি যি আছে সেই সকলোবোৰ আল্লাহৰেই। জানি থোৱা! আল্লাহৰ প্ৰতিশ্ৰুতি সত্য, কিন্তু সিহঁতৰ অধিকাংশই নাজানে।",
       "ne": "सुनिराखः कि जे जति आकाशहरू र पृथ्वीमा छन्, सबै अल्लाहकै साम्राज्य हुन् । र यो पनि सुनिराख कि अल्लाहको वचन साँचो छ, तर तिनीहरूमध्ये धेरैजसोले बुझ्दैनन् ।",
       "si": "අහස්හි හා පොළොවේ ඇති දෑ නියත වශයෙන් ම අල්ලාහ් සතු බව දැන ගනු මැනව. නියත වශයෙන් ම අල්ලාහ්ගේ ප්‍රතිඥාව ද සැබෑවක් බව දැන ගනු මැනව. එනමුත් ඔවුන්ගෙන් බහුතරයක් දෙනා (ඒ බව) නො දනිති.",
-      "km": "តើពុំមែនទេឬដែលរាល់អ្វីៗដែលមាននៅលើមេឃជាច្រើនជាន់ និងលើផែនដី គឺជាម្ចាស់កម្មសិទ្ធិរបស់អល់ឡោះជាម្ចាស់(តែមួយគត់)នោះ? ហើយតើពុំមែនទេឬដែលការសន្យារបស់អល់ឡោះ គឺជាការពិតនោះ? ក៏ប៉ុន្តែភាគច្រើននៃពួកគេ គឺមិនដឹងឡើយ។"
+      "km": "តើពុំមែនទេឬដែលរាល់អ្វីៗដែលមាននៅលើមេឃជាច្រើនជាន់ និងលើផែនដី គឺជាម្ចាស់កម្មសិទ្ធិរបស់អល់ឡោះជាម្ចាស់(តែមួយគត់)នោះ? ហើយតើពុំមែនទេឬដែលការសន្យារបស់អល់ឡោះ គឺជាការពិតនោះ? ក៏ប៉ុន្តែភាគច្រើននៃពួកគេ គឺមិនដឹងឡើយ។",
+      "he": "רק לאללה כל אשר בשמים ובארץ. והבטחת אללה צדק היא, ואולם רובם אינם יודעים.",
+      "ka": "ო, დიახ! ჭეშმარიტად, მხოლოდ ალლაჰს ეკუთვნის ყველაფერი, რაც ცათა შინა და დედამიწაზეა! ო, დიახ! უეჭველად, ალლაჰის აღთქმა ჭეშმარიტებაა, მაგრამ მათ უმეტესობამ არ იცის!",
+      "lt": "Nėr abejonės, iš tiesų, viskas, kas yra danguose ir žemėje, priklauso Allahui. Nėr abejonės, iš tiesų Allaho Pažadas yra tiesa. Tačiau dauguma iš jų nežino.",
+      "mg": "Tena marina, fa an’i Allah izay rehetra any amin’ireo lanitra sy ny tany. Moa va tsy marina ihany koa ny fampanantenan’i Allah ? Ka nefa ny ankamaroan’izy ireo dia tsy mahalala izany.",
+      "lg": "Abange, mazima bya Allah, ebiri mu ggulu omusanvu ne mu nsi, abange mazima Endagaano ya Allah ya mazima, naye mazima abantu abasinga obungi tebamanyi.",
+      "rw": "Nta gushidikanya ko mu by’ukuri ibiri mu birere n’ibiri mu isi byose ari ibya Allah. Nta gushidikanya ko mu by’ukuri isezerano rya Allah ari ukuri. Nyamara abenshi muri bo ntibabizi.",
+      "ln": "Maye manso mazali kati na likolo na mabele, mazali ma Allah. Elaka ya Allah ezali solo, kasi ebele kati na bango bazali koyeba te.",
+      "dag": "Wumma! Binshɛɣu din be sagbana mini tiŋgbani ni nyɛla Naawuni dini. Wumma! Achiika! Naawuni daalikauli nyɛla yεlimaŋli. Amaa! Ninsalinim’ pam bi mi.",
+      "mos": "Sɩd la hakɩɩka, ad sẽn be saasẽ la tẽngẽ yaa Wẽnd n so, ad Wẽnd pʋlengã yaa sɩda, la nebã sẽn waoog fãa pa mi ye.",
+      "mdh": "Saben-sabenal a kanu Allah su pitu lapis a langit endu su lupa, saben-sabenal kanu pasad nu Allah na haqq, ugayd na ya madakel kanilan i di nilan katawan.",
+      "ak": "Hwε, nokorε sε, deε εwͻ soro ne asaase so (nyinaa) wͻ Nyankopͻn. Hwε, nokorε sε, Onyankopͻn bͻhyε yε nokorε, nanso nnipa pii nnim.",
+      "ceb": "Sigurado, ngadto Kang Allah ang pagpanag-iya sa tanan nga anaa sa kalangitan ug kayutaan. Sigurado, ang Saad sa Allah tinuod. Apan ang kadaghanan kanila wala makabalo.",
+      "nqo": "ߤߊߕߍ߫ ߸ ߞߏ߬ߞߏ߫ ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߣߐߝߋ߲ ߘߌ߫ ߞߍ߬؟ ߤߊߕߍ߫ ߸ ߞߏ߬ߞߏ߫ ߊߟߊ߫ ߟߊ߫ ߦߟߌߡߊߘߌߦߊ ߦߋ߫ ߕߎ߬ߢߊ߫ ߟߋ߬ ߘߌ߫ ߞߍ߬؟ ߞߏ߬ߣߌ߲߬ ߊ߬ ߝߊ߲߬ߓߊ ߟߋ߬ ߕߍ߫ ߊ߬ ߟߐ߲߫"
     }
   },
   {
@@ -2789,7 +3373,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই জীৱন দান কৰে আৰু তেৱেঁই মৃত্যু প্ৰদান কৰে আৰু তেওঁৰ ওচৰতেই তোমালোকক ওভতাই নিয়া হ’ব।",
       "ne": "उसैले जीवन दिन्छ, र उसैले प्राण निकाल्छ, र तिमीहरू सबै उसैतिर ल्याइनेछौ ।",
       "si": "ඔහු ජීවය දෙයි. තවද මරණයට පත් කරයි. තවද නුඹලා නැවත යොමු කරනු ලබන්නේ ඔහු වෙතට ය.",
-      "km": "ទ្រង់ជាអ្នកផ្ដល់ជីវិត និងជាអ្នកដកយកជីវិត។ ហើយគេនឹងនាំពួកអ្នកត្រឡប់ទៅកាន់ទ្រង់(តែមួយគត់)។"
+      "km": "ទ្រង់ជាអ្នកផ្ដល់ជីវិត និងជាអ្នកដកយកជីវិត។ ហើយគេនឹងនាំពួកអ្នកត្រឡប់ទៅកាន់ទ្រង់(តែមួយគត់)។",
+      "he": "הוא (אללה) מחייה וממית ואליו תושבו.",
+      "ka": "ის აცოცხლებს და აკვდინებს და მასთან იქნებით დაბრუნებულნი.",
+      "lt": "Tai Jis, Kuris suteikia gyvenimą ir sukelia mirtį, ir pas Jį jūs (visi) sugrįšite.",
+      "mg": "Izy no mamelona sy mamono ary tsy maintsy any Aminy no hamerenana Anareo.",
+      "lg": "Yye Allah y'awa obulamu era yatta ate Gy'ali gye bagenda okuzzibwa.",
+      "rw": "Ni We utanga ubuzima n’urupfu, kandi iwe ni ho (mwese) muzasubizwa.",
+      "rn": "Imana Allah, ni Yo Itanga ubuzima, ni na Yo Yaka ubuzima; impera n'imperuka rero ni kuri Yo muzosubizwa nimwazuka.",
+      "ln": "Ye nde apesaka bomoyi mpe liwa, mpe epai naye nde bokozonga.",
+      "dag": "Ŋuna n-nyɛ Ŋun neeri ka kura. O mi sani ka bɛ yɛn ti labsi ya.",
+      "mos": "Yaa Yẽ n kõt vɩɩm, leb n yaa Yẽ n kõt kũum, yaa Yẽ nengẽ la y na n lebe",
+      "aa": "Diggah Yalli yaynuwweeh qidah, isin rabteeniik lakal kaâ fanah gacsimtaanaah taamak abba hayteenimil sin gaițele.",
+      "mdh": "Sekanin i banguyag-bangimatay, endu sekanin i gauliyan.",
+      "ak": "Ɔno na Ɔma nkwa εna Ɔkum, na Nehͻ na mobεsan akͻ.",
+      "ceb": "Siya lamang ang naghatag ug kinabuhi, ug hinungdan sa kamatayon, ug kamong tanan ngadto Kaniya mubalik 'alang sa Paghukom'.",
+      "nqo": "‹ ߊߟߊ߫ › ߟߋ߫ ߟߊ߬ߣߌ߬ߡߦߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߞߊ߬ ߛߊ߬ߟߌ ߞߍ߫، ߊ߬ ߣߴߊߟߎ߫ ߟߊߛߊ߬ߦߌ߬ߕߐ߫ ߊ߬ߟߋ ߟߋ߫ ߡߊ߬"
     }
   },
   {
@@ -2843,7 +3442,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kn": "ಓ ಮನುಷ್ಯರೇ! ನಿಮಗೆ ನಿಮ್ಮ ಪರಿಪಾಲಕನಿಂದ (ಅಲ್ಲಾಹನಿಂದ) ಒಂದು ಉಪದೇಶವು ಬಂದಿದೆ. ಅದು ಹೃದಯಗಳಲ್ಲಿರುವ ರೋಗಕ್ಕೆ ಉಪಶಮನವಾಗಿದೆ ಮತ್ತು ಸತ್ಯವಿಶ್ವಾಸಿಗಳಿಗೆ ಸನ್ಮಾರ್ಗ ಹಾಗೂ ದಯೆಯಾಗಿದೆ.",
       "as": "হে মানৱ! তোমালোকৰ প্ৰতি তোমালোকৰ প্ৰতিপালকৰ তৰফৰ পৰা উপদেশ আৰু অন্তৰত যি (ব্যাধি) আছে তাৰ প্ৰতিষেধক লগতে মুমিনসকলৰ বাবে হিদায়ত আৰু ৰহমত আহিছে।",
       "ne": "हे मानिसहरू ! तिम्रो पासमा पालनकर्ताको तर्फबाट उपदेश र हृदयका रोगहरूको निम्ति उपचार र मोमिनहरूको लागि मार्गदर्शन र दया आइपुगेको छ ।",
-      "si": "අහෝ ජනයිනි! නුඹලාගේ පරමාධිපතිගෙන් වූ අනුශාසනයක් ද නුඹලාගේ හදවත් තුළ ඇති දෑට සුවයක් ද දේවත්වය විශ්වාස කරන්නන්ට මඟ පෙන්වීමක් හා දයාවක් ද සැබැවින් ම නුඹලා වෙත පැමිණ ඇත."
+      "si": "අහෝ ජනයිනි! නුඹලාගේ පරමාධිපතිගෙන් වූ අනුශාසනයක් ද නුඹලාගේ හදවත් තුළ ඇති දෑට සුවයක් ද දේවත්වය විශ්වාස කරන්නන්ට මඟ පෙන්වීමක් හා දයාවක් ද සැබැවින් ම නුඹලා වෙත පැමිණ ඇත.",
+      "he": "הוי, האנשים! כבר באה לכם הספה (הקוראן) מריבונכם, ובה רפואה ללב, והדרכה, ורחמים למאמינים.",
+      "ka": "ჰეი, ადამიანებო! უეჭველად, მოგივიდათ თქვენ შეგონება თქვენი უფლისგან და განკურნება იმისა, რაც გულებშია, ასევე ხელმძღვანელობა და წყალობა მორწმუნეთათვის.",
+      "mg": "Ry olombelona! Tonga taminareo ny fananarana avy amin’ny Tomponareo, sy fanasitranana izay ao an-tratranareo, ary tari-dàlana sy famindram-po ho an’ireo mpino.",
+      "lg": "Abange mmwe abantu okubuulirira kubajjidde okuvudde eri Mukama Omulabirizi Wammwe era nga kyakuvumula eri ebyo byonna ebiri mu bifuba, era nga buluŋŋamu era nga kusaasira eri Abakkiriza.",
+      "mos": "Yaa yãmb neba! Hakɩɩka, waazʋ waa yãmba, waazʋ sẽn yi y Soabã nengẽ, n yaa tɩpg ne bũmb ning sẽn be yãmb sũyẽ wã, la kãndagr, la yolsg ne sɩd-kõatbã.",
+      "mdh": "Sekanu a manga taw nakawma sa lekanu su indawan ebpun sa kanu Kadenan nu, endu gamut kanu dalem nu manga laleb nu, endu tutulu endu limu kanu manga mu'min.",
+      "ak": "Adasamma, ampa sε Afutusεm ne akoma mu (yadeε ho) ayaresa ne kwankyerε, ne ahummͻborͻ dema agyidiefoͻ no, firi mo Wura Nyankopͻn hͻ aba mo hͻ.",
+      "ceb": "Oh katawhan! Miabot kaninyo ang maayong pagpanambag (Qur’an) gikan sa inyong Ginoo, ug usa ka kaayuhan (sa balatian) nga anaa sa inyong mga dughan - usa ka Giya ug Kaluoy alang sa mga magtutuo.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߡߐ߱ ߟߎ߬ ߸ ߟߊ߬ߟߌ߬ߟߌ߬ߞߊ߲ ߓߘߊ߫ ߣߵߊߟߎ߫ ߡߊ߬ ߞߊ߬ ߝߘߴߊߟߎ߫ ߡߊ߰ߙߌ ߟߊ߫ ߸ ߊ߬ ߣߌ߫ ߓߊߛߌ ߛߌߛߌ ߘߐ߫ ߞߏ ߟߎ߬ ߞߊߡߊ߬، ߊ߬ ߣߌ߫ ߞߊ߲ߘߦߊ ߣߌ߫ ߤߌߣߊ ߟߋ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -2907,7 +3515,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে ঈমান আনিছে আৰু সৎকৰ্ম কৰিছে লগতে নিজ প্ৰতিপালকৰ প্ৰতি বিনীত হৈছে; তেওঁলোকেই হ’ব জান্নাতৰ অধিবাসী, তাত তেওঁলোক চিৰকাল থাকিব।",
       "ne": "निःसन्देह जुन मानिसहरूले ईमान ल्याए र सत्कर्म गरे र आफ्नो पालनकर्ताको अगाडि क्षमायाचना गरे, यिनै स्वर्गमा जानेहरू हुन्, र सधैं त्यसमा रहनेछन् ।",
       "si": "නියත වශයෙන් ම දේවත්වය විශ්වාස කර, යහකම් කොට තවද තම පරමාධිපති වෙත යටහත් වූවන් වනාහි ඔවුහු මය ස්වර්ගවාසීහු. ඔවුහු එහි සදාතනිකයෝ වෙති.",
-      "km": "ពិតប្រាកដណាស់ បណ្តាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសល ហើយពួកគេបន្ទាបខ្លួនទៅចំពោះព្រះជាម្ចាស់របស់ពួកគេនោះ អ្នកទាំងនោះហើយគឺជាអ្នកឋានសួគ៌។ ពួកគេនឹងស្ថិតនៅក្នុងវាជាអមតៈ។"
+      "km": "ពិតប្រាកដណាស់ បណ្តាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសល ហើយពួកគេបន្ទាបខ្លួនទៅចំពោះព្រះជាម្ចាស់របស់ពួកគេនោះ អ្នកទាំងនោះហើយគឺជាអ្នកឋានសួគ៌។ ពួកគេនឹងស្ថិតនៅក្នុងវាជាអមតៈ។",
+      "he": "אלה אשר האמינו והעושים את הטובות והנכנעים בפני ריבונם, אלה הם שוכני גן העדן, ולנצח יהיו בו.",
+      "ka": "უეჭველად, რომელთაც ირწმუნეს, და კეთილი საქმეები აკეთეს, და მორჩილნი იყვნენ თავიანთი ღმერთის წინაშე, სწორედ ისინი არიან სამოთხის მკვიდრნი. ისინი იქ სამუდამოდ დარჩებიან.",
+      "mg": "Marina tokoa fa izay nino sy nanao asa soa kosa, dia izy ireny no olon'ny Paradisa ary hitoetra ao mandrakizay izy ireny.",
+      "lg": "Mazima abo Abakkiriza ne bakola emirimu emirongoofu ne bamenyekera Mukama Omulabirizi Waabwe abo be bannannyini Jjana, bo mu yo baakutuulamu bugenderevu.",
+      "rw": "Mu by’ukuri ba bandi bemeye bakanakora ibikorwa byiza, ndetse bakanicisha bugufi kuri Nyagasani wabo; bazaba mu Ijuru ubuziraherezo.",
+      "ln": "Ya soló, baye bandimaki mpe basalaki misala milamu, mpe babangaki Nkolo wa bango, bango nde bato ya lola, bakozalaka libela o kati na yango.",
+      "dag": "Achiika! Ninvuɣu shεba ban ti Naawuni yεlimaŋli ka tum tuunviεla, ka filim bɛ maŋa n-ti bɛ Duuma (Naawuni), tɔ! Bannim’ maa n-nyɛ Alizanna bihi, ka bɛ nyɛla ban yɛn ti kpalim di puuni.",
+      "mos": "Ad neb nins sẽn kõ sɩd la b tʋm sõmã wã la b sikd b mens ne b Soabã, bãmbã la arzãn koɑmbã, b na n duuma beenẽ.",
+      "aa": "Diggah Yallaa kee kay farmoyta nummayseeh meqe taamoomi abbaasiteeh sinni Rabbih yuqunxee mari, woo mari usun Jannatti maraay usun kaal waaran.",
+      "mdh": "Su manga mu'min endu minggalebek sa manga mapya, endu linemumping kanu Kadenan nilan na silan i kigkuwan kanu surga, na silan na dala den kalyu nilan sa surga.",
+      "ak": "Nokorε sε, wͻn a wͻagye adie na wͻdi dwuma pa, na wͻbrε wͻn ho ase ma wͻn Wura Nyankopͻn no, saa nkorͻfoͻ no ne Soro aheman no mu foͻ no, na emu na wͻbεtena afe bͻͻ.",
+      "nqo": "ߡߍ߲ ߠߎ߬ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߛߊ߫߸ ߊ߬ ߣߌ߫ ߞߵߊ߬ߟߎ߫ ߖߘߍ߬ߡߊߖߌ߰ ߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߦߋ߫ ߸ ߏ߬ ߟߎ߫ ߟߋ߬ ߡߍ߲ߘߌߦߊ߫ ߡߊ߲߬ߕߎ߬ߙߋ ߟߎ߬ ߘߌ߫ ߸ ߏ߬ ߟߎ߬ ߕߏߕߐ߫ ߦߋ߲߬ ߠߋ߬ ߞߘߊߎ߫"
     }
   },
   {
@@ -2957,7 +3577,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mk": "Јас се потпирам на Аллах, мојот и вашиот Господар! Нема ниту едно живо суштество, а да не е во Негова власт; Господарот мој навистина е на Правиот пат.",
       "te": "నిశ్చయంగా నాకూ మరియు మీకూ ప్రభువైన అల్లాహ్ నే నేను నమ్ముకున్నాను! ఏ ప్రాణి జుట్టు కూడా ఆయన చేతిలో లేకుండా లేదు. నిశ్చయంగా, నా ప్రభువే ఋజుమార్గంపై (సత్యంపై) ఉన్నాడు.",
       "kn": "ನಾನು ನನ್ನ ಮತ್ತು ನಿಮ್ಮ ಪರಿಪಾಲಕನಾದ ಅಲ್ಲಾಹನಲ್ಲಿ ಭರವಸೆಯಿಟ್ಟಿದ್ದೇನೆ. ಎಲ್ಲಾ ಜೀವರಾಶಿಗಳ ಮಂದಲೆಯು ಅವನ ಹಿಡಿತದಲ್ಲಿದೆ. ನಿಶ್ಚಯವಾಗಿಯೂ ನನ್ನ ಪರಿಪಾಲಕನು (ಅಲ್ಲಾಹು) ಸರಿಯಾದ ಮಾರ್ಗದಲ್ಲಿದ್ದಾನೆ.",
-      "ne": "म अल्लाहमाथि भरोसा गर्दछु, जो मेरो र तिमी सबैको पालनकर्ता हो । पृथ्वीमा रहेका सबै प्रणीहरूको टाउको उसैले थामेको छ । निःसन्देह मेरो पालनकर्ता सत्य बाटोमा छ ।"
+      "ne": "म अल्लाहमाथि भरोसा गर्दछु, जो मेरो र तिमी सबैको पालनकर्ता हो । पृथ्वीमा रहेका सबै प्रणीहरूको टाउको उसैले थामेको छ । निःसन्देह मेरो पालनकर्ता सत्य बाटोमा छ ।",
+      "he": "אני סומך על אללה, ריבוני וריבונכם, שאין ברוא אחד בעולם אשר בו הוא אינו שולט. ריבוני מוביל אל הדרך הישר.",
+      "lt": "Aš pasitikiu Allahu, savo Viešpačiu ir jūsų Viešpačiu! Nėra judančio (gyvo), kurio garbanos Jis nesugriebtų. Iš tiesų, mano Viešpats yra Teisingame Kelyje (tiesa).",
+      "mg": "Apetrako amin’i Allah, ilay Tompoko sy Tomponareo ny fitokisana. Tsy misy zava-manan’aina izay tsy ho eo ambany fahefany. Tena marina fa ny Tompoko dia amin’ny làla-mahitsy.",
+      "rw": "“Mu by’ukuri njye niringiye Allah, Nyagasani wanjye akaba na Nyagasani wanyu. Nta kiremwa na kimwe gifite ubugingo Allah atagenga. Rwose, Nyagasani wanjye ni We ufite inzira igororotse.”",
+      "dag": "“Achiika! Mani dalimla Naawuni so Ŋun nyɛ n Duuma ni yi gba Duuma. Biŋkob’ so n-ka tiŋgbani yaaŋa zuɣu naɣila Ŋuna (Naawuni) n-nyɛŊun gbibi di gbetaa. Achiika! N Duuma nyɛla Ŋun be sochibgu zuɣu.",
+      "mos": "Ad mam bobla m meng ne Wẽnde, sẽn yaa maam la yãmb Soabã. Bõn-vɩt ka be rẽndame t'A wõr-ɑ lame t'ɑ be A soolmẽ wã. Ad mam Soabã bee tẽeg-tɩrg zugu.",
+      "nqo": "ߒߠߋ ߓߘߊ߫ ߒ ߛߍ߲߬ߓߍ߬ ߊߟߊ߫ ߟߊ߫߸ ߒ ߡߊ߰ߙߌ ߣߴߊߟߎ߫ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫، ߓߊ ߡߊ߬ߛߍ߲߬ߛߍ߲߬ߓߊ߰ ߛߌ߫ ߕߍ߫ ߣߌ߫ ߡߍ߲ ߕߋ߲ߛߌ ߕߴߊ߬ ߓߟߏ߫، ߤߊ߲߫߸ ߒ ߡߊ߰ߙߌ ߦߋ߫ ߛߌߟߊ߫ ߕߋߟߋ߲ߣߍ߲ ߠߋ߫ ߞߊ߲߬ ߘߋ߬"
     }
   },
   {
@@ -3018,7 +3645,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তোমালোকৰ মাজৰ যিয়ে গোপনে কথা কয় আৰু যিয়ে প্ৰকাশ্যভাৱে কথা কয়, ৰাতিত যিয়ে আত্মগোপন কৰে আৰু দিনত যিয়ে প্ৰকাশ্যৰূপে বিচৰণ কৰে, (আল্লাহৰ জ্ঞানত) সিহঁত সকলোৱে সমান।",
       "ne": "तिमीमध्ये कसैले आफ्नो कुरोलाई लुकाएर भनोस् अथवा ठूलो स्वरमा भनोस् र जुन रात्रीमा लुकेको छ र जुन दिउँसोमा भइरहेको छ, सबै अल्लाहको लागि एकैनास छन् ।",
       "si": "නුඹලා අතරින් ප්‍රකාශය සඟවන්නා ද එය හෙළි කරන්නා ද තවද රාත්‍රියෙහි සැඟවෙන්නා ද දහවල් කාලයේ සැරිසරන්නා ද (අල්ලාහ් ඉදිරියේ) එක සමාන ය.",
-      "km": "ក្នុងចំណោមពួកអ្នក មិនថាអ្នកដែលនិយាយលាក់លៀម ឬនិយាយដោយបើកចំហ មិនថាអ្នកដែលបិទបាំង(ទង្វើរបស់ខ្លួន)នៅពេលយប់ និងអ្នកដែលបង្ហាញ(នូវទង្វើរបស់ខ្លួន)នៅក្នុងពេលថ្ងៃ(ក៏ទ្រង់ដឹង)ដូចតែគ្នាដែរ។"
+      "km": "ក្នុងចំណោមពួកអ្នក មិនថាអ្នកដែលនិយាយលាក់លៀម ឬនិយាយដោយបើកចំហ មិនថាអ្នកដែលបិទបាំង(ទង្វើរបស់ខ្លួន)នៅពេលយប់ និងអ្នកដែលបង្ហាញ(នូវទង្វើរបស់ខ្លួន)នៅក្នុងពេលថ្ងៃ(ក៏ទ្រង់ដឹង)ដូចតែគ្នាដែរ។",
+      "he": "בעיניו (של אללה) כולכם שווים, מי שמסתיר סוד או מגלה אותו, וזה המסתתר בחשיבת הלילה או מתהלך לאור",
+      "lt": "(Jam) tas pats ar kuris iš jūsų nuslepia savo kalbą ar atskleidžia ją atvirai, ar jis bus paslėptas nakties ar išlįs laisvai dieną.",
+      "mg": "Mitovy ihany (eo Aminy), Aminareo : izay manafina ny teniny na izay mampiely ankarihary, na izay miafina amin’ny alina na izay miseho mazava amin’ny antoandro.",
+      "lg": "Kye kimu (ewa Allah) mu mmwe oyo aba akwese ekigambo n'oyo akyatula, n'oyo akukuta ekiro, n'oyo assa ebibye mu musana.",
+      "rw": "(Kuri Allah) uhisha imvugo n’uyigaragaza muri mwe, uwitwikira ijoro ndetse n’ugaragara ku manywa, bose ni bamwe.",
+      "rn": "Ni co kimwe rero kuri Yo, uwugize ico avuga muri mwebwe mw’ibanga canke ku mugaragaro, n’uwugize ico akora yikinze agahumbezi k’ijoro canke ku murango izuba riva, Imana Allah Irabimenya.",
+      "ln": "Bakeseni te epai naye oyo azali kobomba maloba naye, mpe oyo mosusu azali kobimisa ya ye polele, oyo azali komibomba na butu, mpe oyo azali komibimisa na moyi.",
+      "dag": "Di nyɛla yim, yi puuni ŋun sɔɣiyεltɔɣali ni ŋun yihi li polo ni, ni ŋun sɔɣiri yuŋ, ni ŋun yihi omaŋ’ polo ni wuntaŋ’ ni.",
+      "mos": "Zema taab Yẽ nengẽ, ned ning sẽn solg a koεεg lɑ sẽn vẽneg-ɑ, lɑ sẽn solg ɑ meng yʋngo lɑ sẽn rɑeeda ne ɑ tʋʋm wĩndga.",
+      "mdh": "Magidsan su ipedsulen nin i kadtalu nin ebpun sa lekanu ataw ka su ipebpayag in, endu su ibagena nin kanu magabi endu su ipembuyayang in (ipebpayag nin) sa malamag.",
+      "ak": "Sε momu bi de n’asεm suma o, anaasε ͻda no adi o, anaasε osie anadwo o, anaa opie awia o, εyε asεm korͻ (ma Nyankopͻn sε Onim biribiara).",
+      "ceb": "Kini managsama ngadto ˹Kaniya˺ bisan kinsa kaninyo nga nagsulti sa tago o sa dayag, kon ang usa nagtago sa kangitngit sa kagabhion o naglakaw sa kahayag sa adlaw.",
+      "nqo": "ߊߟߎ߫ ߡߍ߲ ߓߊ߯ ߞߎߡߊ ߜߎ߲߬ߘߎ߫ ߊ߬ ߣߌ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߟߊ߲ߞߣߍߡߊ߫߸ ߊ߬ ߣߴߊߟߎ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߢߡߊߘߏ߲߰ ߛߎ ߘߐ߫ ߊ߬ ߣߌ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߖߘߍ߬ߟߊߓߐ߫ ߕߋ߬ߟߋ ߘߐ߫ ߸ ߏ߬ ߓߍ߯ ߞߢߊߡߊ߲߫ ߠߋ߬ ߖߐ߲"
     }
   },
   {
@@ -3061,7 +3701,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "सर्वश्रेष्ठ अल्लाह ज्याची रोजी (आजिविका) इच्छितो वाढवितो आणि ज्याची इच्छितो घटवितो. हे लोक तर ऐहिक जीवनातच मग्न झालेत. वास्तविक हे जग, आखिरतच्या तुलनेत अगदी तुच्छ सामुग्री आहे.",
       "as": "আল্লাহে যাক ইচ্ছা কৰে তাৰ বাবে জীৱনোপকৰণ বৃদ্ধি কৰি দিয়ে আৰু সংকুচিত কৰে; কিন্তু ইহঁত পাৰ্থিৱ জীৱনক লৈয়ে আনন্দিত, অথচ পাৰ্থিৱ জীৱন হৈছে আখিৰাতৰ তুলনাত ক্ষণস্থায়ী ভোগমাত্ৰ।",
       "ne": "अल्लाहले जसको रोजी चाहन्छ बढाउँछ र जसको चाहन्छ घटाइदिन्छ । यिनी त सांसरिक जीवनमा मस्त भइहाले । अतः दुनियाँ त अन्तिम प्रतिफलको तुलनामा अत्यन्तै तुच्छ छ ।",
-      "si": "අල්ලාහ් ඔහු අභිමත කරන අයට ජීවන පහසුකම් දිගු හරියි. තවද ඔහු (එය) සීමා කරයි. තවද ඔවුහු මෙලොව ජීවිතය පිළිබඳව සතුටු වෙති. තවද මෙලොව ජීවිතය මතු ලොවෙහි (ස්වල්ප) භුක්ති විඳීමක් මිස වෙනකක් නො වේ."
+      "si": "අල්ලාහ් ඔහු අභිමත කරන අයට ජීවන පහසුකම් දිගු හරියි. තවද ඔහු (එය) සීමා කරයි. තවද ඔවුහු මෙලොව ජීවිතය පිළිබඳව සතුටු වෙති. තවද මෙලොව ජීවිතය මතු ලොවෙහි (ස්වල්ප) භුක්ති විඳීමක් මිස වෙනකක් නො වේ.",
+      "he": "אללה מפרנס ביד רחבה או בהפחתה את מי שירצה. ונהנו מהעולם הזה, אך חיי העולם הזה הם רק הנאה חולפת לעומת העולם הבא.",
+      "dag": "Naawuni yεlgirila arzichi n-tiri O ni bɔri so, ka mirsiri O ni bɔri so. Yaha! Bɛ (chεfurinim’ maa) niŋla suhupεlli ni Dunia bεhigu. Dunia bεhigu mi pala shɛli Chiyaama puuni naɣila nyɛɣisim biɛla.",
+      "mos": "Wẽnd n yalgd rɩtlã n kõ A sẽn rat ned ninga la A weoogdẽ, la kɩfr-dãmbã kɩdemdɑ ne dũni vɩɩmã, la dũni vɩɩmã pa fʋɩ yɑoolem rɑɑrã taoor rẽndame tɩ yaa wʋm-noog sẽn yɑɑ gɩrg bɑlɑ.",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫، ߊ߬ ߣߴߊ߬ ߘߴߊ߬ ߘߐߜߙߐ߬ ߟߊ߫، ߊ߬ߟߎ߬ ߓߘߊ߫ ߛߍߥߊ߫ ߘߎߢߊ߫ ߢߣߊߡߦߊ ߟߊ߫߸ ߘߎߢߊ߫ ߢߣߊߡߦߊ ߘߏ߲߬ ߕߍ߫ ߝߏߦߌ߬ ߘߌ߫ ߛߎ߬ߟߊ߫ ( ߕߊ ߘߊߝߍ߬ ) ߝߏ߫ ߘߊ߰ߡߎ߲߬ߣߍ߲߫"
     }
   },
   {
@@ -3110,7 +3754,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "काय तुम्ही नाही पाहिले की सर्वश्रेष्ठ अल्लाहने पवित्र गोष्टीचे उदाहरण एका पवित्र वृक्षासमान सांगितले, ज्याचे मूळ मजबूत आहे आणि ज्याच्या फांद्या आकाशात आहेत.",
       "as": "তুমি লক্ষ্য কৰা নাইনে, আল্লাহে কেনেকৈ উপমা দাঙি ধৰিছে? কলিমা তায়্যিবা (সৎবাক্য)ৰ উপমা হৈছে উৎকৃষ্ট গছৰ দৰে, যাৰ মূল সুদৃঢ় আৰু যাৰ শাখা-প্ৰশাখা হৈছে আকাশত বিস্তৃত,",
       "ne": "के तपाईंले देख्नु भएन कि महान अल्लाहले पवित्र कुरोको उदाहरण कुन किसिमले वर्णन गरेको छ ? एउटा पवित्र वृक्षको जस्तै जसको जरो बलियो छ र जसका हाँगाहरू अकाशमा छन् ।",
-      "si": "යහපත් වදනට අල්ලාහ් උපමාවක් ගෙන හැර දක්වා ඇත්තේ කෙසේ දැ? යි නුඹ නො දුටුවෙහි ද? එය සාරවත් ගසක් මෙනි. එහි මුල ස්ථාවර ය. එමෙන් ම එහි අතු අහසෙහි (විහිදී) ඇත."
+      "si": "යහපත් වදනට අල්ලාහ් උපමාවක් ගෙන හැර දක්වා ඇත්තේ කෙසේ දැ? යි නුඹ නො දුටුවෙහි ද? එය සාරවත් ගසක් මෙනි. එහි මුල ස්ථාවර ය. එමෙන් ම එහි අතු අහසෙහි (විහිදී) ඇත.",
+      "he": "הלא תראה שאללה משווה מילה טובה לעץ טוב? שורשיו נטועים עמוק וענפיו פונים לשמיים,",
+      "lt": "Argi nematote, kaip Allahas nustatė palyginimus? Gražus žodis kaip gražus medis, kurio šaknys tvirtai įtaisytos ir kurio šakos (siekia) dangų (t. y. labai aukštai).",
+      "mg": "Tsy hitanao va ahoana no nanaovan’i Allah fanoharana ny teny tsara ? Dia mitovy amin’ny hazo tsara iray, izay miorina tsara ny fakany, ary ny rantsany dia manakatra ny habakabaka.",
+      "ln": "Boye, ozali kornona te ete: Allah apeși ndakisa ya liloba lilamu lizali lokola nzete elamu eye misisa mia yango mikangama malamu, mpe bitape bia yango bibimi na likolo?",
+      "dag": "(Yaa nyini ŋun gbilsiri tibli)! Di nibɔŋɔ, a bi nya Naawuni ni ti ŋmahinli ni yεltɔɣa suŋ, di ŋmanila ti’ shεli din viεla, ka di nyεbli mali yaa tiŋgbani ni, ka di wula be zuɣusaa.",
+      "mos": "Rẽ yĩnga fo pa bãng Wẽnd sẽn rɩk bilgri, gom-sõng wẽnda wala tɩ-sõngo, a yẽgrã sudɑme t'a wuilã tão n tees saasẽ wã.",
+      "mdh": "Dala nengka katawi i pinambuat nu Allah i upaman nu kadtalu a mapya (laa ilaaha illa Allah), na mana bun kayu a midtakena i dalidin (sya sa lupa) endu panganin (sapak) na lu sa langit.",
+      "ceb": "Wala ba kamo makakita kung giunsa sa Allah paghimo sa usa ka panag-ingnan sa maayong pulong (nga) sama sa maayong kahoy, kansang gamut lig-on, ug kansang mga sanga padulong ngadto sa langit,",
+      "nqo": "ߌ ߡߴߊ߬ ߦߋ߫ ߊߟߊ߫ ߣߊ߬ ߛߊ߲߬ߘߊ ߟߊ߫ ߟߊ߫ ߢߊ ߡߍ߲ ߸ ߞߏ߫ ߞߎߡߊ߫ ߢߌߡߊ ߦߋ߫ ߟߋ߬ ߦߏ߫ ߦߙߌ߫ ߢߌߡߊ߸ ߡߍ߲ ߖߎ߭ ߓߊ߲ߓߊ߲ߣߍ߲߫ ߜߡߊ߫߸ ߊ߬ ߓߏߟߏ߲ ߦߋ߫ ߛߊ߲ߘߐ߫"
     }
   },
   {
@@ -3163,7 +3816,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kn": "ಈ ಕುರ್‌ಆನ್ ಸಂಪೂರ್ಣ ಮನುಕುಲಕ್ಕೆ ಒಂದು ಸೂಚನಾಪತ್ರವಾಗಿದೆ. ಇದರ ಮೂಲಕ ಅವರಿಗೆ ಎಚ್ಚರಿಕೆ ನೀಡುವುದಕ್ಕಾಗಿ, ಏಕೈಕ ದೇವನು ಅಲ್ಲಾಹು ಮಾತ್ರವೆಂದು ಅವರು ತಿಳಿಯುವುದಕ್ಕಾಗಿ ಮತ್ತು ಬುದ್ಧಿವಂತರು ಉಪದೇಶ ಸ್ವೀಕರಿಸುವುದಕ್ಕಾಗಿ.",
       "as": "এইটো হৈছে মানুহৰ বাবে এটা বাৰ্তা, যাতে ইয়াৰ দ্বাৰা সিহঁতক সতৰ্ক কৰা হয় আৰু যাতে সিহঁতে জানিব পাৰে যে, কেৱল তেৱেঁই একক সত্য ইলাহ, লগতে যাতে বিবেকসম্পন্ন লোকসকলে উপদেশ গ্ৰহণ কৰিব পাৰে।",
       "ne": "यो (कुरआन) समस्त मानिसहरूलाई जानकारी पत्र हो कि यसको माध्यमबाट उसले उनीहरूलाई सावधान गरोस् र राम्रोसंग जानिलेउन्, कि अल्लाह मात्र एउटै मअ्बूद (पूजनीय) छ र त्यसबाट ज्ञानीहरूले सोचसमझ गर्न सकुन् ।",
-      "si": "මෙය ජනයා වෙත කෙරෙන දැනුම් දීමකි. තවද එමඟින් ඔවුන් අවවාද ලබනු පිණිස ද නියත වශයෙන් ම ඔහු ඒකීය දෙවිඳුන් යැයි ඔවුන් දැන ගනු පිණිස ද බුද්ධිය ඇත්තවුන් මෙනෙහි කරනු පිණිස ද වේ."
+      "si": "මෙය ජනයා වෙත කෙරෙන දැනුම් දීමකි. තවද එමඟින් ඔවුන් අවවාද ලබනු පිණිස ද නියත වශයෙන් ම ඔහු ඒකීය දෙවිඳුන් යැයි ඔවුන් දැන ගනු පිණිස ද බුද්ධිය ඇත්තවුන් මෙනෙහි කරනු පිණිස ද වේ.",
+      "he": "זהו כרוז לאנשים על מנת שיוזהרו בה ויכירו שאלוה אחד הוא ועל מנת שייזכרו אנשי התבונה",
+      "ka": "ეს [ყურანი] განცხადებაა (გაცნობიერებაა) ხალხისთვის, და რათა მისით იქნენ გაფრთხილებულნი, და რათა იცოდნენ, რომ ის ერთადერთი ღმერთია, და რათა გონიერებმა ყურადღება მიაქციონ [და სარგებელი მიიღონ მისგან]!",
+      "lg": "Kuno kutuusa (Obubaka) eri abantu era babe nga balabulwa na bwo (ebyaziyizibwa), era babe nga bamanya nti mazima Yye ali Omusinzibwa omu, kale nno abalina amagezi beebuulirire.",
+      "rw": "Iyi (Qur’an) ni ubutumwa ku bantu, kugira ngo bukoreshwe mu kubaburira, no kugira ngo banamenye ko (Allah) ari We Mana imwe rukumbi, ndetse no kugira ngo abafite ubwenge babikuremo isomo.",
+      "dag": "Ŋɔ maa nyɛla tuuntali n-zaŋ ti ninsalinima, domin bɛ (Naawuni) zaŋ li kpɛhi ba dabiɛm, ka bɛ lahi baŋ ni achiika! O (Naawuni) nyɛla Duuma yino, ka haŋkayanim’ lahi zaŋ li teei Naawuni yɛla.",
+      "mos": "Ad woto (Alkʋrãanã) yaa taasg ne nebã, lɑ sẽn na yɩl tɩ b bugs b mensã ne-a, la sẽn na yɩl tɩ b bãng t'A yaa Soɑb a yembr tãa, lɑ yam-bεεl rãmbã tall n tẽege.",
+      "mdh": "Namba i pinasampay kanu manga taw endu ipapegkagilek kanilan, ka endu nilan katawan i satiman bu su Allah, endu ma-indaw su aden manga pusungin na makatadem.",
+      "ak": "(Qur’aan) woi yε asεm no ho dawubͻ dema adasamma sεdeε wͻde bεbͻ wͻn ho kͻkͻ, na wͻ’de behunu sε Ɔne Awurade Baako, na nnipa mu mmadwemmafoᴐ no nso de bεto wͻn adwene mu.",
+      "nqo": "ߣߌ߲߬ ߦߋ߫ ߟߊ߬ߛߋ߬ߟߌ߫ ߟߋ߬ ߘߌ߫ ߡߐ߱ ߟߎ߫ ߡߊ߬ ߛߴߊ߬ߟߎ߬ ߘߌ߫ ߡߊߛߌߟߊ߲߫ ߊ߬ ߟߊ߫ ، ߊ߬ ߣߌ߫ ߛߴߊ߬ߟߎ߬ ߘߴߊ߬ ߟߐ߲߫ ߞߏ߫ ߊ߬ߟߋ ߟߋ߫ ߡߊ߰ߙߌ߬ ߞߋߟߋ߲ ߘߌ߫ ߸ ߊ߬ ߣߌ߫ ߖߐ߲߰ߛߊ߫ ߦߟߌߡߊ ߟߎ߬ ߘߌ߫ ߦߟߌߟߊߓߌ߬ߟߊ߬"
     }
   },
   {
@@ -3219,7 +3881,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আমিয়েই কোৰআন অৱতীৰ্ণ কৰিছোঁ আৰু নিশ্চয় আমিয়েই ইয়াৰ সংৰক্ষক।",
       "ne": "(निःसन्देह) हामीले नै कुरआनलाई उतारेका छौं र हामीनै यसको संरक्षक हौं ।",
       "si": "නියත වශයෙන්ම අපමය මෙම මෙනෙහි කිරීම (අල් කුර්ආනය) පහළ කළේ. තවද නියත වශයෙන්ම අපි එයට ආරක්ෂකයෝ වෙමු.",
-      "km": "ពិតប្រាកដណាស់ យើងជាអ្នកដែលបានបញ្ចុះគម្ពីរគួរអាន ហើយពិតប្រាកដណាស់ យើងគឺជាអ្នកដែលថែរក្សាវា។"
+      "km": "ពិតប្រាកដណាស់ យើងជាអ្នកដែលបានបញ្ចុះគម្ពីរគួរអាន ហើយពិតប្រាកដណាស់ យើងគឺជាអ្នកដែលថែរក្សាវា។",
+      "he": "אכן, אנחנו אלה אשר הורדנו את הזכר (הקוראן), ואנחנו ודאי נשמור עליו.",
+      "mg": "Tena marina fa Izahay tokoa no nampidina ny Fampahatsiahivana (Koro’âny), ary Izahay ihany no Mpiaro Azy.",
+      "lg": "Mazima Ffe, Ffe twassa ekijjukiza (Kulaani) era mazima Ffe tujja kugikuuma.",
+      "rw": "Mu by’ukuri ni twe twahishuye urwibutso (Qur’an), kandi rwose ni natwe tuzarurinda.",
+      "dag": "Achiika! Ti (Tinim’ Naawuni) n-siɣisi teebu (Alkur’aani) na. Yaha! Achiika! Tinim’ n-nyɛ ban yɛn guli li.",
+      "mos": "Ad yaa Tõnd n sik Alkʋrãanã, la ad yaa Tõnd n gũud-a.",
+      "aa": "Diggah Nabii Mucammadal ﷺ Qhuraan oobissem Nee, diggah kaa (Qhuraan kinnuk) dacrissam nee tu kaat ossaanaah tu kaak daggoysaanamak.",
+      "mdh": "(Tig nu Allah): saben-sabenal a sekami na initulun nami su Qur’an, endu sekami bun i pebparihala lun. (sa di kawmanan-dikakulangan).",
+      "ak": "Nokorε sε, Yεn na Yɛ sianee (Qur’aan) Afutusεm no, na nokorε sε, Yεn na Yεbεbͻ ho ban.",
+      "ceb": "Sa pagkatinuod Kami , Kami mao ang nagpadayag sa Pahinumdom (Qur’an) ug Kami sa pagkatinuod magabantay ug magatipig niini (gikan sa tanang pagtuis).",
+      "nqo": "ߒ߬ߠߎ߫ ߟߋ߫ ߣߊ߬ ߞߊ߬ߥߊ߲߬ߘߌ ߟߊߖߌ߰ ߟߊ߫߸ ߒ߬ߠߎ߫ ߟߋ߫ ߘߏ߲߬ ߦߴߊ߬ ߞߣߐ߬ߜߍ߲߬ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
   },
   {
@@ -3282,7 +3955,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় তোমাৰ প্ৰতিপালক, তেৱেঁই হৈছে মহাস্ৰষ্টা, মহাজ্ঞানী।",
       "ne": "यसमा कुनै शंका छैन कि तिम्रो पालनकर्ता नै सृष्टि गर्नेवाला सर्वज्ञाता छ ।",
       "si": "නියත වශයෙන් ම නුඹගේ පරමාධිපති වන ඔහු මය සර්ව ඥානී මහා මැවුම්කරු.",
-      "km": "ជាការពិតណាស់ ព្រះជាម្ចាស់របស់អ្នក(ឱអ្នកនាំសារមូហាំម៉ាត់) គឺជាអ្នកបង្កើត(អ្វីទាំងអស់) និងមហាដឹងបំផុត។"
+      "km": "ជាការពិតណាស់ ព្រះជាម្ចាស់របស់អ្នក(ឱអ្នកនាំសារមូហាំម៉ាត់) គឺជាអ្នកបង្កើត(អ្វីទាំងអស់) និងមហាដឹងបំផុត។",
+      "he": "אכן ריבונך הוא הבורא והיודע.",
+      "ka": "ჭეშმარიტად, შენი ღმერთი – იგია ყოვლისგამჩენი, ყოვლისმცოდნე.",
+      "lt": "Iš tiesų, tavo Viešpats yra Visa Žinantis Kūrėjas.",
+      "mg": "Tena marina fa ny Tomponao, dia ilay Mpahary Lehibe, ilay Mpahalala ny zava-drehetra.",
+      "lg": "Mazima Mukama Omulabirizi Wo Yye Ye Mutonzi amanyi ennyo.",
+      "rw": "Mu by’ukuri Nyagasani wawe ni We Muremyi, Umumenyi uhebuje.",
+      "rn": "Mu vy’ukuri Imana yawe Rurema Allah, ni Yo Nyenukurema Yaremye ikintu ico ari co cose, Nyenubumenyikurivyose.",
+      "ln": "Ya sólo, Nkolo wayo azali mokeli mpe moyebi.",
+      "dag": "Achiika! (Yaa nyini Annabi)! A Duuma (Naawuni) n-nyɛ Namda, Baŋda.",
+      "mos": "Ad fo Soabã la Naanda, n yaa minim Naaba.",
+      "aa": "Diggah Nabiyow ku Rabbi ummaanim gineeh isi naqoosah caaloota yaaxigi kinni.",
+      "mdh": "Benal su Kadenan nengka i bamaluy a mataw.",
+      "ak": "Nokorε sε, wo Wura Nyankopͻn ne Ɔbͻͻ adeε no, Ɔne Onimdefo no.",
+      "ceb": "Sa pagkatinuod ang 'Allah' imong Ginoo mao ang Magbuluhat sa tanang butang, ang Labing Nakahibalo sa Tanan.",
+      "nqo": "ߌ ߡߊ߰ߙߌ ߟߋ߬ ߘߊ߲ߠߌ߲ߠߊ߫ ߞߎߛߊ߲ ߘߌ߫ ߘߋ߬ ߸ ߞߟߊ߬ߡߊ߬ߓߊ߮ ߟߋ߬"
     }
   },
   {
@@ -3345,7 +4033,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই যথাযথভাৱে আকাশসমূহ আৰু পৃথিৱীক সৃষ্টি কৰিছে; সিহঁতে যি অংশীদাৰ স্থাপন কৰে তেওঁ তাৰ পৰা (বহু) উৰ্দ্ধত।",
       "ne": "उसैले आकाशहरूलाई र पृथ्वीलाई बुद्धिमत्ताले सृष्टि गरेको छ । ऊ त्यसबाट मुक्त छ जुन मुश्रिकहरूले गर्दछन् ।",
       "si": "සත්‍යයෙන් යුතුව, අහස් හා මහපොළොව ඔහු මැව්වේ ය. ඔවුන් ආදේශ කරන දැයින් ඔහු උත්තරීතර ය.",
-      "km": "ទ្រង់បានបង្កើតមេឃជាច្រើនជាន់ និងផែនដីដោយពិតប្រាកដ។ ទ្រង់មហាខ្ពង់ខ្ពស់បំផុតពីអ្វីដែលពួកគេបានធ្វើស្ហ៊ីរិក។"
+      "km": "ទ្រង់បានបង្កើតមេឃជាច្រើនជាន់ និងផែនដីដោយពិតប្រាកដ។ ទ្រង់មហាខ្ពង់ខ្ពស់បំផុតពីអ្វីដែលពួកគេបានធ្វើស្ហ៊ីរិក។",
+      "he": "הוא ברא את השמים ואת הארץ על יסוד הצדק, והוא יתעלה מעל כל האלילים אשר ישתפו.",
+      "ka": "გააჩინა ცანი და დედამიწა ჭეშმარიტებით. ამაღლებულია იმაზე, რასაც თანაზიარად უდგენენ.",
+      "lt": "Jis sukūrė dangus ir žemę su tiesa. Aukštas yra Jis, Išaukštintas virš visko, ką jie priskiria Jam į partnerius.",
+      "mg": "Nahary ireo lanitra sy ny tany am-pahamarinana Izy. Ambony noho izay atambatr’izy ireo Aminy Izy.",
+      "lg": "Yatonda eggulu omusanvu n'ensi lwa nsonga, Musukkulumu nnyo ku ebyo bye bamugattako.",
+      "rw": "Yaremye ibirere n’isi ku mpamvu z’ukuri. Ubutagatifu ni ubwe kandi nta ho ahuriye n’ibyo bamubangikanya na byo.",
+      "ln": "Akela likolo na mabele na bosóló, azali likolo lia baye bazali kosangisa (ye).",
+      "dag": "O namla sagbana mini tiŋgbani ni yεlimaŋli, O nam duya ka chɛ bɛ ni laɣindi O mini shɛli n-jεmdi maa.",
+      "mos": "A naana saasã la tẽngã ne sɩda, A Naam yɩ wagell n yi b sẽn maand-A lagem-n-taar ne wã.",
+      "aa": "Qaranwaa kee baaxo cakkil gine Rabbi agleh kaat hayya haanamak saytunnooweeh, fayya iyyeeh nabah.",
+      "mdh": "Binaluy nin su manga langit endu lupa sa haqq, (benal) mapulu su Allah kanu (langun) a ipedsakutu nilan.",
+      "ak": "Ɔde nokorε no na abͻ soro ne asaase, Ɔyε Okokuroko korͻn paa kyεn deε wͻde bata Ne ho no.",
+      "ceb": "Gibuhat sa Allah ang mga langit ug ang yuta sa tinuod nga katuyuan, Labing Halangdon Siya, labaw sa tanan nga ilang gipakig-uban Kaniya (sa mga diyosdiyos).",
+      "nqo": "ߊߟߊ߫ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲߫ ߕߎ߬ߢߊ߫ ߟߋ߬ ߟߊ߫، ߊ߬ ߞߘߐߕߊ߬ߣߍ߲߫ ߊ߬ߟߎ߬ ߟߊ߫ ߜߙߊ߬ߢߐ߲߮ ߠߎ߫ ߡߊ߬"
     }
   },
   {
@@ -3406,7 +4108,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই আকাশৰ পৰা পানী বৰষায়। তাত তোমালোকৰ বাবে আছে পানীয় আৰু তাৰ পৰাই জন্মায় উদ্ভিদ, যাৰ মাজত তোমালোকে পশুচাৰণ কৰা।",
       "ne": "उसैले आकाशहरूबाट तिम्रो फाइदाको लागि पानी बर्षायो जसलाई तिमीले पिउँछौं र त्यसबाट उब्जेका रुखहरूबाट तिमी आफ्ना चौपायाहरू चराउँछौं ।",
       "si": "අහසින් ජලය පහළ කළේ ඔහු ම ය. ඉන් නුඹලාට පානය ඇත. තවද එහි නුඹලා (සතුන්ට) බුදින්නට දෙන ගස් ද ඇත.",
-      "km": "ទ្រង់ជាអ្នកបញ្ចុះទឹកភ្លៀងពីលើមេឃ។ តាមរយៈទឹកភ្លៀងនេះ គឺសម្រាប់ពួកអ្នកអាចទទួលទាន និងសម្រាប់រុក្ខជាតិ(លូតលាស់)ដើម្បីឲ្យពួកអ្នកអាចឃ្វាលសត្វ(នៅកន្លែងនោះ)បានផងដែរ។"
+      "km": "ទ្រង់ជាអ្នកបញ្ចុះទឹកភ្លៀងពីលើមេឃ។ តាមរយៈទឹកភ្លៀងនេះ គឺសម្រាប់ពួកអ្នកអាចទទួលទាន និងសម្រាប់រុក្ខជាតិ(លូតលាស់)ដើម្បីឲ្យពួកអ្នកអាចឃ្វាលសត្វ(នៅកន្លែងនោះ)បានផងដែរ។",
+      "he": "והוא אשר הוריד לכם מן השמים מים לכם, להשקיה וממנו יצמחו עצים אשר ביניהם תרעו(את המקנה שלכם).",
+      "ka": "იგია, რომელმაც ზეციდან წყალი ჩამოავლინა; მისგან გაქვთ სასმელი [წყალი] და (ის აღმოაცენს) მისგან (მცენარეებსა და) ხეებს, სადაც თქვენ მწყემსავთ (თქვენს პირუტყვს).",
+      "lt": "Tai Jis, Kuris nuleidžia vandenį (lietų) iš dangaus. Iš jo jūs geriate ir iš jo (auga) augmenija, į kurią jūs siunčiate savo galvijus ganytis.",
+      "mg": "Izy izay nampidina, avy an-danitra, ny rano izay ampiasainareo ho fisotro, ary avy amin’izany no hampitsiry ireo zava-maniry hamahananareo ireo biby fiompinareo.",
+      "lg": "Yye y'Oyo abatonnyeseza enkuba okuva waggulu, ku nkuba eyo kwe munywa, era ku nkuba eyo emiti kwe gimerera nga ku gyo kwe muliisa ensolo zammwe.",
+      "rw": "Ni We umanura amazi (imvura) aturutse mu kirere, mukayanywa ndetse akanameza ibimera muragiramo amatungo yanyu.",
+      "dag": "Ŋuna n-nyɛŊun siɣisi kom na zuɣusaa, ka di shɛli nyɛ binnyurgu n-tin ya, ka tihi lahi binda di puuni, ka yi mali li n-guli yi biŋkobri.",
+      "mos": "Yẽnd n sikd koom saasẽ wã yãmb yũub yĩnga, la A yiisd tɩɩs ne koomã tɩ yãmb wãbend y rũmsi.",
+      "aa": "Sinaamey Yalla kinni Qaraanak lee (rob kinnuk) siinih oobissem, taaquben lee teetik siinih heeh, cooxuy sinni lac elle taylooleeni siinih edde yuysubuke.",
+      "mdh": "Su Allah i napatulun ebpun sa langit (i ig) a lekanu lu ba i baginumen nu, endu bagetu su kayu a pegken nu binatang nu.",
+      "ak": "Ɔno na Ɔsane nsuo firi soro a emu bi na monom, εna ebi nso na yεdema nnua a mo nyεmmoa die no nso (nyini),",
+      "ceb": "Siya (Allah) mao ang nagpakanaog sa ulan gikan sa panganod; gikan niini kamo nagainom, ug pinaagi niini (mitubo) ang mga tanom diin kamo nagasibsib (sa inyong mga hayopan).",
+      "nqo": "ߊ߬ߟߋ ߟߋ߫ ߞߊ߬ ߖߌ ߟߊߖߌ߰ ߞߊ߬ ߓߐ߫ ߡߐ߲ߕߐ߲ ߘߐ߫ ، ߡߌ߲߬ߖߌ ߦߴߊߟߎ߫ ߦߋ߫ ߊ߬ ߘߐ߫ ߸ ߦߙߌ ߟߎ߬ ߦߋ߫ ߝߍߘߍ߲߫ ߠߴߏ߬ ߟߋ ߘߐ߫ ߸ ߊߟߎ߫ ߦߋ߫ ߓߌߦߊ߲ ߠߎ߬ ߘߡߊߢߌߣߌ߲߫ ߠߊ߫ ߡߍ߲ ߠߎ߬ ߘߐ߫"
     }
   },
   {
@@ -3459,7 +4174,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "याच्याचद्वारे तो तुमच्यासाठी शेती आणि जैतून आणि खजूर आणि द्राक्ष व सर्व प्रकारची फळे उगवितो. निःसंशय, चिंतन करणाऱ्या लोकांसाठी यात मोठ्या निशाण्या आहेत.",
       "as": "ইয়াৰ মাধ্যমত তেৱেঁই তোমালোকৰ বাবে উৎপন্ন কৰে শস্য, যায়তুন, খেজুৰ গছ, আঙ্গুৰ আৰু নানা ধৰণৰ ফলমূল। নিশ্চয় ইয়াত আছে চিন্তাশীল সম্প্ৰদায়ৰ বাবে নিদৰ্শন।",
       "ne": "त्यही पानीबाट उसले तिम्रो निम्ति बाली र जैतून, खजूर र अंगूर र प्रत्येक प्रकारको फल उमार्छ निःसन्देह सोच र बिचार गर्नेहरूको निमित्त यसमा ठूलो निशानी छ ।",
-      "si": "ඔහු නුඹලාට එමඟින් ගොයම ද, ඔලිව් ද, ඉඳි ද, මිදි ද තවත් සියලු බවභෝගවලින් ද හට ගන්වයි. සිතා බලන ජනයාට නියත වශයෙන් ම එහි සංඥාවක් ඇත."
+      "si": "ඔහු නුඹලාට එමඟින් ගොයම ද, ඔලිව් ද, ඉඳි ද, මිදි ද තවත් සියලු බවභෝගවලින් ද හට ගන්වයි. සිතා බලන ජනයාට නියත වශයෙන් ම එහි සංඥාවක් ඇත.",
+      "he": "ויצמיח לכם בהם תבואות, זיתים, ועצי תמר, וגפנים, ומכל הפירות. בכל אלה יש אותות לאנשים אשר חושבים.",
+      "ka": "მისით აღმოგიცენებთ ყანებს, ზეთისხილს, ფინიკს, ყურძენს და ყოველგვარ ნაყოფს. ჭეშმარიტად, ამაში მართლაც სასწაულია მოაზროვნე ხალხისთვის.",
+      "lt": "Juo Jis priverčia užaugti jums javus, alyvuoges, datulių palmes, vynuoges ir visų rūšių vaisius. Iš tiesų, tame tikrai yra aiškus įrodymas ir akivaizdus ženklas žmonėms, kurie mąsto.",
+      "lg": "Abamereza nayo ebirimwa n'emizeyituuni n'emitende n'enzabbibu na buli bibala byonna, mazima mu ekyo mulimu akabonero (akalaga obuyinza) bwa Allah eri abantu abafumiitiriza.",
+      "rw": "Ayameresha ibihingwa, imizeti, imitende, imizabibu ndetse na buri bwoko bw’imbuto. Mu by’ukuri muri ibyo harimo inyigisho ku bantu batekereza.",
+      "dag": "Ka O mali li yihiri bimbila n-tiri ya, ni zaituuni mini dobino, ni inabi (sinsaba), n-ti pahi binwola balibu kam. Achiika! Ŋɔ maa puuni mali kpahimbu n-ti ninvuɣu shεbu ban tεhira.",
+      "mos": "A bulsda ne-ɑ koodã lɑ zaetʋʋnã la tɑmar tɩɩsã la sib-rãmbã lɑ tɩ-biisã buud fãɑ, ad bee rẽ pʋgẽ tagmas ne neb sẽn tagsde.",
+      "ak": "(Ɔsan nso) de ma mfudeε ne ngo nnua ne akyiresua nnua, ne bobe ne nnuaba ahodoͻ nyini ma mo. Nokorε sε, nsεnkyerεnee wͻ wei nom mu dema nnipa a wͻdwen.",
+      "ceb": "Siya nagpatubo niini alang kaninyo sa mga tanom, mga olibo, mga palmera, mga ubas, ug sa tanang mga bunga; sa pagkatinuod adunay Timaan niini alang sa katawhan nga namalandong.",
+      "nqo": "ߊ߰ ߛߣߍ߬ߝߋ߲ ߠߎ߬ ߟߊߝߍߘߍ߲߫ ߠߴߊߟߎ߫ ߦߋ߫ ߊ߬ ߟߊ߫ ߸ ߊ߬ ߣߌ߫ ߛߏߞߏ߬ߘߏ ߣߌ߫ ߕߌ߲߬ߖߐ߲ ߣߌ߫ ߖߐ߬ߓߌ߬ߙߋ߲ ߠߎ߬ ، ߊ߬ ߣߌ߫ ߦߙߌߘߋ߲ ߛߎ߮ ߓߍ߯ ߘߏ߫ ، ߕߐ߰ߡߊ߬ߛߙߋ߫ ߟߴߏ߬ ߘߐ߫ ߡߌ߬ߙߌ߲߬ߘߌ߬ ߛߌߡߟߊ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
   },
   {
@@ -3516,7 +4241,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "तुम्हा सर्वांचा माबूद (उपास्य) केवळ अल्लाह एकटा आहे, आणि आखिरतवर ईमान न राखणाऱ्यांची मने भ्रष्ट आहेत. आणि ते स्वतः गर्विष्ठ आहेत.",
       "as": "তোমালোকৰ ইলাহ কেৱল এজন ইলাহ, এতেকে যিসকলে আখিৰাতৰ প্ৰতি ঈমান পোষণ নকৰে সিহঁতৰ অন্তৰ হৈছে অস্বীকাৰকাৰী আৰু সিহঁত হৈছে অহংকাৰী।",
       "ne": "तिमी सबैको पूजनीय एक मात्र अल्लाह हो, जो आखिरतमाथि ईमान राख्दैनन् तिनीहरूका हृदय अवज्ञाकारी छन् र तिनीहरू स्वयम् घमन्डी भइराखेका छन् ।",
-      "si": "නුඹලාගේ දෙවිඳු එක ම දෙවිඳා ය. එහෙයින් පරමාන්ත දිනය පිළිබඳව විශ්වාස නො කරන්නන් වන ඔවුන්ගේ හදවත් (එය විශ්වාස කිරීමට) පිළිකුල් කරයි. තවද ඔවුහු අහංකාරකම් පාන්නෝ වෙති."
+      "si": "නුඹලාගේ දෙවිඳු එක ම දෙවිඳා ය. එහෙයින් පරමාන්ත දිනය පිළිබඳව විශ්වාස නො කරන්නන් වන ඔවුන්ගේ හදවත් (එය විශ්වාස කිරීමට) පිළිකුල් කරයි. තවද ඔවුහු අහංකාරකම් පාන්නෝ වෙති.",
+      "he": "אלוהכם הוא האחד והיחיד. ואלה שאינם מאמינים בעולם הבא, ליבם מסרב להכיר בצדק והם גאוותנים.",
+      "ka": "ღმერთი თქვენი – ერთი ღმერთია. ხოლო ისინი, ვისაც არ სწამთ საიქიოსი, მათი გულები უარმყოფელია და ისინი ამპარტავნები არიან.",
+      "mg": "Ny Zanaharinareo dia Zanahary tokana.Fa ireo izay tsy mino ny any an-koatra kosa, ny Fon’izy ireo dia feno fandavana (ny Zanahary tokana), no sady manambony tena izy ireo.",
+      "lg": "Allah Wammwe ali Allah Omu, abo abatakkiriza Lunaku lwa Nkomerero emitima gyabwe gikiwakanya era nga bo beekuza.",
+      "rw": "Imana yanyu ni Imana imwe. Ariko ba bandi batemera imperuka, imitima yabo ihakana (ubumwe bwa Allah), kandi babaswe n’ubwibone.",
+      "ln": "Nzambe wa bino (Allah) azali Nzambe sé moko ya kobondela na bosôló, mpe baye bazali kondima na mokolo mwa suka te, mitema mia bango miboya bomoko bwa Allah, mpe batondi na lolendo.",
+      "dag": "Yi Duuma (Naawuni) nyɛla Duuma yino, amaa! Ninvuɣu shεba ban bi ti Chiyaama yεlimaŋli maa, bɛ suhiri nyɛla din zaɣisira (Naawuni gaŋsibu), ka bɛ lahi nyɛla ban tibgi bɛ maŋa.",
+      "mos": "Yãmb Soabã yaa Soɑb yεnga, lɑ neb nins sẽn pa kõt sɩd ne yɑoolem rɑɑrã, b sũyã kɩɩsda rẽ tɩ b yaa waoog-m-mens rãmba.",
+      "aa": "Sinaamey sin Yallay dubuk qibaada cakkisita usuk inki Yalla, tokkel ellecaboh Ayro nummayse waa mari ken lubbitte Yallih inkittinaanc tangaddch, usun cakki oggolaanamak kaxxamariinitak.",
+      "mdh": "Su Kadenan nu na satiman bu na su di bangimbenal sa gay a mawli na pedsupak i atay nilan, endu silan na pemamasla silan.",
+      "ak": "Mo Nyankopͻn no yε Awurade baako. Wͻn a wͻnnye Daakye no nnie no, wͻn akoma kyiri (sε wͻbεte sε Nyankopͻn yε baako), na wͻyε ahomasoͻ.",
+      "nqo": "ߊߟߎ߫ ߡߊ߰ߙߌ ߦߋ߫ ߡߊ߰ߙߌ߬ ߞߋߟߋ߲߫ ߔߋ߫ ߟߋ߬ ߘߌ߫ ، ߡߍ߲ ߠߎ߬ ߕߍ߫ ߟߊ߫ ߟߊ߫ ߛߎ߬ߟߊ߬ߞߏ ߟߊ߫ ߸ ߏ߬ ߟߎ߫ ߟߋ߫ ߛߣߐ߬ߡߍ ߟߎ߫ ߖߘߍ߬ߘߐ߬ߓߦߊ߬ߕߐ ߦߋ߫ ߡߊ߬ߛߐ߬ߛߐ߬ߟߌ ߟߊ߬"
     }
   },
   {
@@ -3571,7 +4308,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সিহঁতে আল্লাহে সৃষ্টি কৰা বস্তুৰ প্ৰতি লক্ষ্য নকৰে নেকি, যাৰ ছাঁ সোঁফালে আৰু বাওঁফালে আল্লাহৰ প্ৰতি ছাজদাৱনত হৈ ঢলি পৰে, আৰু সেইবোৰ একান্ত বিনীত?",
       "ne": "के तिनीहरूले अल्लाहका प्राणीहरूमध्ये कसैलाई पनि देखेनन्, जसका छाँयाहरू दाँयाबाट र बाँयाबाट झुकेर अल्लाहको अगाडि ढोग्छन् र आफ्नो व्याकुलता प्रदर्शन गर्दछन् ।",
       "si": "අල්ලාහ් කවර දෙයක් මැව්වේ ද (ඒ) කිසිවක් දෙස ඔවුහු අවධානයෙන් නො බැලුවෝ ද? එහි සෙවණැල්ල දකුණතට හා වම්පැතිවලට නැඹුරු වී යටහත් පහත්ව අල්ලාහ්ට සිරස නමා වැඳ වැටෙයි.",
-      "km": "តើពួកគេ(ពួកដែលបដិសេធ)មិនមើលទៅកាន់អ្វីដែលអល់ឡោះបានបង្កើតទេឬ? ស្រមោលរបស់វាម្តងរេទៅខាងស្តាំ ម្តងទៅខាងឆ្វេងដោយវា(ស្រមោល)ឱនស៊ូជោតចំពោះអល់ឡោះ ខណៈដែលពួកវាជាអ្នកដែលគោរពតាម(បទបញ្ជា)។"
+      "km": "តើពួកគេ(ពួកដែលបដិសេធ)មិនមើលទៅកាន់អ្វីដែលអល់ឡោះបានបង្កើតទេឬ? ស្រមោលរបស់វាម្តងរេទៅខាងស្តាំ ម្តងទៅខាងឆ្វេងដោយវា(ស្រមោល)ឱនស៊ូជោតចំពោះអល់ឡោះ ខណៈដែលពួកវាជាអ្នកដែលគោរពតាម(បទបញ្ជា)។",
+      "he": "האם רואים כי כל מה שאללה יצר, יטיל את צלו פעם לימין ופעם לשמאל, וסוגדים לאללה בהכנעה?",
+      "lt": "Argi jie nepastebėjo dalykų, kuriuos Allahas sukūrė: (kaip) jų šešėliai palinksta į dešinę ir į kairę, nusižemindami prieš Allahą, ir jie yra kuklūs?",
+      "mg": "Tsy hitan’izy ireo ve izay zavatra noharian’i Allah, fa ny alok’izy ireny dia mirona miankavanana sy miankavia, amim-piankohofana eo anatrehan’i Allah, amim-panetre-tena ?",
+      "lg": "Abaffe tebatunuulira ne balaba ebintu Allah bye yatonda, ebisiikirize by'abo engeri gye bikyukamu ku ddyo ne ku kkono nga bivunnamira Allah era nga bimugondera?",
+      "rw": "Ese ntibabona uko ibicucucucu by’ibintu Allah yaremye bibogamira iburyo n’ibumoso byumvira Allah, ndetse binicisha bugufi (ku mategeko ye)?",
+      "ln": "Boye bazali kornona te ete maye manso Allah akela, bililingi na yango bitelama alima na ngambu ya loboko ya mobali mpe na loboko ya mwasi, nyoso bizali kofukamela Allah na limemia mpe nakomikitisa?",
+      "mos": "Rẽ yĩnga b pa yãnd tɩ bũmb fãa Wẽnd sẽn nɑɑnã maasem yɑɑ sẽn kɩlld goɑbg lɑ rɩdgo, n maand suguud ne Wẽnde, tɩ b yɑɑ sẽn sik b mense?",
+      "mdh": "Ngintu dala nilan mailay su binaluy nu Allah a enggaga-isa a pakandulay-dulay su alung-alungin sa biwang-kawanan sa ipedsugyud nilan sa Allah endu silan na bangalimbaban sa Allah.",
+      "ak": "Anaasε wͻnhunuu nneεma a Nyankopͻn abͻ; sεdeε ne sunsum dane kͻ nifa so ne benkum so, brε ne ho ase ma Nyankopͻn wͻ ahobraseε paa mu?",
+      "nqo": "ߊ߬ ߝߐ߫ ߊ߬ߟߎ߬ ߡߴߊ߬ ߡߊߝߟߍ߫ ߓߊ߬ ߊߟߊ߫ ߞߊ߬ ߝߋ߲ ߡߍ߲ ߓߍ߯ ߘߊ߲߫߸ ߏ߬ ߟߎ߬ ߘߎߟߋ߲ ߠߎ߬ ߦߴߊ߬ߟߎ߬ ߕߊ߯ߣߌߛߊ߬ߦߌ߬ ߟߊ߫ ߞߌߣߌ߲ ߣߌ߫ ߣߎߡߊ߲ ߠߎ߫ ߝߍ߬ ߕߌ߲ߓߌߘߌ߲ ߘߌ߫ ߊߟߊ߫ ߦߋ߫ ߸ ߊ߬ ߣߌ߫ ߖߘߍ߬ߘߐ߯ߦߊ ߘߌ߫"
     }
   },
   {
@@ -3623,7 +4370,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সিহঁতে লক্ষ্য কৰা নাইনে আকাশৰ শূন্য গৰ্ভত নিয়ন্ত্ৰণাধীন চৰাই-চিৰিকটিৰ প্ৰতি? আল্লাহৰ বাহিৰে আন কোনেও সেইবোৰক ধৰি নাৰাখে। নিশ্চয় ইয়াত মুমিন সম্প্ৰদায়ৰ বাবে আছে নিদৰ্শন।",
       "ne": "के तिनीहरूले चराहरूलाई देखेनन् जो आज्ञाकारी भएर आकाशको हावामा घेरिएर (उडिराख्दछन्) तिनीहरूलाई मात्र अल्लाहले नै थामिराखेको छ । निःसन्देह ईमान भएकाहरूको लागि यसमा ठूला निशानीहरू छन् ।",
       "si": "අහස් ගැබෙහි වසඟ කරනු ලැබූ පක්ෂීන් දෙස ඔවුහු නො බැලුවෝ ද? අල්ලාහ් හැර වෙනත් කිසිවකු උන් රඳවා තබන්නේ නැත. නියත වශයෙන් ම දේවත්වය විශ්වාස කරන ජනයාට එහි සංඥා ඇත.",
-      "km": "តើពួកគេ(ពួកមុស្ហរីគីន)មិនបានសម្លឹងមើលទៅកាន់សត្វបក្សីដែលហោះហើរយ៉ាងងាយស្រួលនៅលើអាកាសទេឬ? គ្មាននរណាអាចទប់វា(មិនឱ្យធ្លាក់) ក្រៅពីអល់ឡោះឡើយ។ ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាភស្តុតាងសម្រាប់ក្រុមដែលមានជំនឿ។"
+      "km": "តើពួកគេ(ពួកមុស្ហរីគីន)មិនបានសម្លឹងមើលទៅកាន់សត្វបក្សីដែលហោះហើរយ៉ាងងាយស្រួលនៅលើអាកាសទេឬ? គ្មាននរណាអាចទប់វា(មិនឱ្យធ្លាក់) ក្រៅពីអល់ឡោះឡើយ។ ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាភស្តុតាងសម្រាប់ក្រុមដែលមានជំនឿ។",
+      "he": "האם לא יראו את העוף הכפוף לרצונו של אללה במרום השמיים? רק אללה יחזיקו שם, ובזאת יש אכן אותות לאנשים אשר מאמינים.",
+      "lg": "Abaffe tebatunuulira ebinyonyi nga byagondezebwa (okubuuka) waggulu mubbanga tewali abiwanirira okuggyako Allah. Mazima mw'ekyo mulimu obubonero eri abantu abakkiriza.",
+      "rw": "Ese ntibabona ko inyoni zoroherejwe kuguruka mu kirere nta kindi kizifashe kitari Allah? Mu by’ukuri muri ibyo harimo inyigisho ku bantu bemera.",
+      "ln": "Boye bozali kornona te ete! Ba ndeke baye bazali kopumbwa o likolo, eloko ya kosimba bango ezali te sé Allah? Ya sólo, wana ezali elembo mpo bato bakoka kondima.",
+      "mos": "Rẽ yĩnga yãmb pa get luiili wã tɩ yɑɑ sẽn nom tɩ b be sɑɑsã ween-n-vɩʋʋgẽ, tɩ bũmb pa gãd-ba, rẽnda Wẽnd bala, ad bee woto pʋga sẽn yɑɑ tagmas-rãmb ne neb nins sẽn kõt sɩdã.",
+      "ak": "Enti wͻnhunuu nnomaa a wͻtu nenam mframa mu wͻ ewiem no? Obiara nni hͻ a ɔkuta wͻn mu, na mmom Onyankopͻn. Nokorε sε nsεnkyerεnee wͻ wei mu dema nnipa a wͻgye die no.",
+      "ceb": "Wala ba nila (mga manlilimod) makita ang mga langgam, nga nagalupad-lupad sa kawanangan? Walay nagpaluyo kanila gawas sa Allah; sa pagkatinuod adunay mga Timailhan niini alang sa mga tawo nga mituo.",
+      "nqo": "ߊ߬ߟߎ߬ ߕߍ߫ ߞߐ߬ߣߐ ߟߎ߬ ߞߟߏߣߍ߲ ߦߋ߫ ߟߊ߫ ߛߊ߲ ߝߏ߬ߟߏ߲߬ߝߊ߬ߟߊ߲߬ߕߍ ߘߐ߫ ߓߊ߬؟ ߝߏߦߌ߬ ߕߴߏ߬ ߟߎ߬ ߘߐߡߌ߬ߘߊ߬ ߟߊ߫ ߝߏ߫ ߊߟߊ߫ ، ߕߊ߰ߛߌ߬ߞߏ߫ ߟߎ߫ ߟߴߏ߬ ߘߐ߫ ߡߌ߬ߙߌ߲߬ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
   },
   {
@@ -3665,7 +4420,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sr": "Аллах, заиста, наређује правду, доброчинство и помагање ближњих, а разврат, све што је одвратно и насиље забрањује; Он вас саветује како бисте узели поуку.",
       "ja": "本当にアッラーは、公正と善行と近親への贈与をご命じになり、醜行と悪事と侵害を禁じ給う。かれはあなた方が教訓を受けるよう、あなた方を戒められるのだ。",
       "bg": "Наистина, Аллах повелява справедливост и благодетелност, и поддържане на връзките с роднините. Той възбранява покварата и порицаваното, и гнета. Наставлява ви Той, за да се поучите.",
-      "mk": "Аллах бара да се почитува сечие право, да се прави добро, и на блиските да им се дава, а развратот и сè што е лошо и одвратно и насилството го забранува; да примите поука, Тој ве советува."
+      "mk": "Аллах бара да се почитува сечие право, да се прави добро, и на блиските да им се дава, а развратот и сè што е лошо и одвратно и насилството го забранува; да примите поука, Тој ве советува.",
+      "he": "אכן אללה מצווה לעשות צדק, לגמול חסד ולעזור לקרוב המשפחה (הנזקק), הוא אוסר את התועבה, ואת המגונה, והקיפוח, והוא מזהירכם למען היזכרו.",
+      "lg": "Mazima Allah alagira obwenkanya, n'okuyisa, obulungi n'okugabira ab'oluganda olw'okumpi. Era aziza eby'obuwemu n'empisa embi n'okwewaggula, ababuulirira mube nga mujjukira.",
+      "mos": "Ad Wẽnd sagenda ne tẽeg-tɩrg la manegre, la rog-pẽts sõngre, la A gɩdgd tʋʋm yood la yel-kiti la wẽgbo, A sagenda yãmb tɩ sãnd-sãnde y na tags n gese.",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߟߐ߬ ߞߍ߫ ߟߊ߫ ߕߋߟߋ߲ ߣߌ߫ ߢߊ߬ߟߌ ߣߌ߫ ߡߊ߬ߛߎ߬ߘߎ߲߬ߧߊ߬ߓߊ߮ ߟߎ߬ ߛߐ ߟߋ߬ ߟߊ߫ ߸ ߞߊ߬ ߜߍ߲ߠߌ߲ ߞߍ߫ ߞߏߙߏ߲ߧߊ ߣߌ߫ ߞߐ߲ߞߏ ߣߌ߫ ߓߊ߰ߒߡߊ ߡߊ߬ ، ߊ߬ ߦߴߊߟߎ߫ ߞߊ߬ߥߊ߲߬ߘߌ߬ ߟߊ߫ ߟߋ߬ ߛߴߊߟߎ߫ ߘߴߊߟߎ߫ ߕߊ߰ߛߌ߫"
     }
   },
   {
@@ -3720,7 +4479,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তোমালোকৰ ওচৰত যি আছে সেয়া নিঃশেষ হ’ব আৰু আল্লাহৰ ওচৰত যি আছে সেয়া হৈছে স্থায়ী। সেয়ে যিসকলে ধৈৰ্য্য ধাৰণ কৰিছে, নিশ্চয় আমি তেওঁলোকক তেওঁলোকে যি কৰিছিল তাতোকৈ শ্ৰেষ্ঠ প্ৰতিদান দান কৰিম।",
       "ne": "जे जति तिम्रो पासमा छ, त्यो खतम भइहाल्छ, र जे अल्लाहलको पासमा छ, त्यो बाँकी रहन्छ र धैर्यधारण गर्ने जुन मानिसहरू छन् तिनीहरूलाई हामीले उनीहरूका कर्महरूको राम्रो पुरस्कार अवश्य दिनेछौं ।",
       "si": "නුඹලා සතුව ඇති දෑ ශූන්‍ය වී යනු ඇත. එහෙත් අල්ලාහ් සතුව ඇති දෑ ඉතිරිව පවතින්නකි. ඉවසා දරා ගත් අයට ඔවුන් සිදු කරමින් සිටි දෑට ඉතා යහපත් අයුරින් ඔවුන්ගේ ප්‍රතිඵල අපි පිරිනමන්නෙමු.",
-      "km": "អ្វីដែលមាននៅជាមួយពួកអ្នកគឺនឹងបាត់បង់ទៅវិញ។ តែអ្វីដែលនៅជាមួយអល់ឡោះ គឺនៅគង់វង្សជានិច្ច។ ហើយយើងពិតជានឹងតបស្នងដល់បណ្តាអ្នកដែលអត់ធ្មត់នូវផលបុណ្យរបស់ពួកគេដែលល្អប្រសើរលើសពីអ្វីដែលពួកគេបានសាងទៅទៀត។"
+      "km": "អ្វីដែលមាននៅជាមួយពួកអ្នកគឺនឹងបាត់បង់ទៅវិញ។ តែអ្វីដែលនៅជាមួយអល់ឡោះ គឺនៅគង់វង្សជានិច្ច។ ហើយយើងពិតជានឹងតបស្នងដល់បណ្តាអ្នកដែលអត់ធ្មត់នូវផលបុណ្យរបស់ពួកគេដែលល្អប្រសើរលើសពីអ្វីដែលពួកគេបានសាងទៅទៀត។",
+      "he": "כל מה שיש לכם יאזול, ורק מה שאצל אללה יישאר, ואנו נגמול לבעלי הסבלנות את הגמול הטוב ביותר על מעשיהם.",
+      "ka": "რაც თქვენთანაა, წარმავალია, ხოლო რაც ალლაჰთანაა, მარადიულია. და ჩვენ, უეჭველად, მივაგებთ მათ, ვინც ითმენდა მათ საზღაურს საუკეთესოდ იმაზე, რასაც აკეთებდნენ.",
+      "lt": "Kas yra su jumis – išseks, o kas yra su Allahu (iš gerų darbų) – išliks. Ir tiems, kurie kantrūs, Mes, be abejonės, atlyginsime proporcingai už geriausią, ką jie darydavo.",
+      "mg": "Izay rehetra Anananareo dia ho ritra, fa ny eo amin’i Allah kosa dia maharitra. Ary tena omenay valisoa mendrika nohon'ny asa tsara izay nataony ireo izay nanam-paharetana.",
+      "lg": "Byemulina biggwawo ate ebiri ewa Allah bya kusigalawo, abo abagumiikiriza tugenda kubasasulira ddala empeera yaabwe nga baweebwa ekisinga obulungi ku lw'ebyo bye baakolanga.",
+      "rw": "Ibyo mutunze bizashira, ariko ibiri kwa Allah bizahoraho. Kandi rwose, ba bandi bihanganye tuzabagororera ibihembo byabo byiza kurusha ibyo bakoraga.",
+      "mos": "Bũmb ning sẽn be yãmb nengẽ wã satame, la sẽn be Wẽnd nengẽ wã n paade, la ad Tõnd na n rola sug-maandbã b keoor neerem sẽn yɩɩd b sẽn da tʋmdã.",
+      "mdh": "Ka langun a san sa lekanu na gadala, langun a lu sa Allah i gasama, endu balasan nami su manga taw a midsabar kanu balasin, sa ya pan mapya kanu penggalebeken nilan (sya sa dunya).",
+      "ak": "Deε εwͻ mo nkyεn no bɛtwam, na deε εwͻ Nyankopͻn hᴐ no deε εwͻ hͻ daa. Nokorε sε, wͻn a wͻsii aboterε no dwumadi pa a wͻdiiε no, yεbεma wͻn ho akatua pa paa.",
+      "nqo": "ߝߋ߲ ߡߍ߲ ߦߴߊߟߎ߫ ߓߟߴߏ߬ ߦߋ߫ ߓߊ߲߫ ߠߊ߫ ߟߋ߬ ߸ ߡߍ߲ ߦߋ߫ ߊߟߊ߫ ߓߟߏ߫ ߛߊ߫߸ ߏ߬ ߦߋ߫ ߕߏߟߴߊ߬ ߡߊ߬ ߟߋ߬ ، ߊ߲ ߣߊ߬ߕߐ߫ ߟߋ߫ ߡߎ߬ߢߎ߲߬ߓߊ߮ ߟߎ߬ ߛߐ߫ ߟߴߊ߬ߟߎ߫ ߛߊ߬ߙߊ ߟߊ߫ ߞߵߊ߬ ߓߍ߲߬ ߊ߬ߟߎ߬ ߗߋߥߊߟߌ ߘߐ߫ ߢߌ߬ߡߊ ߡߊ߬ ߛߎߋ߫"
     }
   },
   {
@@ -3782,7 +4551,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আল্লাহ তেওঁলোকৰ লগত আছে যিসকলে তাক্বৱা অৱলম্বন কৰিছে আৰু যিসকল সৎকৰ্মপৰায়ণ।",
       "ne": "निश्चित मान कि जो आत्मसंयमी र असल छन्, अल्लाह मात्र उनीसँग छ ।",
       "si": "නියත වශයෙන් ම අල්ලාහ් බිය හැඟීමෙන් යුතුව කටයුතු කළවුන් හා දැහැමිව කටයුතු කළවුන් වන ඔවුන් සමඟ ය.",
-      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់នៅជាមួយបណ្តាអ្នកដែលកោតខ្លាច(ទ្រង់) ហើយនិង(នៅជាមួយ)បណ្តាអ្នកដែលសាងអំពើល្អទាំងឡាយ។"
+      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់នៅជាមួយបណ្តាអ្នកដែលកោតខ្លាច(ទ្រង់) ហើយនិង(នៅជាមួយ)បណ្តាអ្នកដែលសាងអំពើល្អទាំងឡាយ។",
+      "he": "כי אללה הוא עם אלה היראים ואלה אשר מיטיבים.",
+      "ka": "ჭეშმარიტად, ალლაჰი იმათთანაა, ვისაც ღმერთის შიში აქვს და ვინც არიან სიკეთისმქნელნი.",
+      "lt": "Iš tiesų, Allahas yra su tais, kurie bijo Jo (vykdo savo pareigas Jam), ir tais, kurie yra al-Muhsinūn (gera darantys).",
+      "mg": "Marina fa i Allah dia miaraka amin’ireo izay matahotra (Azy), sy ireo mpanao asa soa.",
+      "lg": "Mazima Allah ali wamu n'abo abamutya, era abo abalongoosa.",
+      "rw": "Mu by’ukuri Allah ari kumwe na ba bandi bamugandukira, ndetse na ba bandi bakora ibyiza.",
+      "ln": "Ya sólo, Allah azali elongo na babangi mpe basali bolamu.",
+      "dag": "Achiika! Naawuni mini ninvuɣu shɛba ban zɔri Ŋun’ Naawuni m-be, n-ti pahi ninvuɣu shεba ban viɛlgiri bɛ tuma",
+      "mos": "Ad Wẽnd bee ne neb nins sẽn zoet-A wã la neb nins sẽn yaa manegdbã.",
+      "aa": "Diggah Yalli isik meesita maraa kee isi taama yaymaaqe mará luk yan catoo kee qokoluh.",
+      "mdh": "Saben-sabenal su Allah na salta kanu manga taw a magilek sa lekanin, endu silan a pebpiyapiya.",
+      "ak": "Nokorε sε, Nyankopͻn ka wͻn a wͻsuro Nyame, ne wͻn a wͻyε ayεmyε no ho.",
+      "ceb": "Sa pagkatinuod si Allāh uban kanila nga nagmanggihadlukon ngadto Kaniya ug naglikay sa dautan ug nagbuhat ug maayo.",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߫ ߟߋ߫ ߝߍ߬ ߘߋ߬ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߠߎ߬ ߦߋ߫ ߢߊ߬ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
   },
   {
@@ -3845,7 +4628,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহৰ লগত আন কোনো ইলাহ সাব্যস্ত নকৰিবা, এনে কৰিলে তুমি নিন্দিত আৰু লাঞ্ছিত হৈ বহি পৰিবা।",
       "ne": "अल्लाहको साथमा अन्य कसैलाई पूजनीय नठान, अन्यथा तिमी अन्तमा अपमानित र निःसहाय भएर बस्ने छौ ।",
       "si": "අල්ලාහ් සමඟ වෙනත් දෙවියකු නො ගනු. එසේ කළහොත් නුඹ නින්දාවටත් අසරණ බවටත් පත්වනු ඇත.",
-      "km": "ចូរអ្នក(ឱខ្ញុំបម្រើរបស់អល់ឡោះ)កុំបង្កើតព្រះផ្សេង(មកគោរពសក្ការៈ)រួមជាមួយនឹងអល់ឡោះជាម្ចាស់ឱ្យសោះ ដែលជាហេតុនាំឱ្យអ្នកទទួលរងនូវការស្ដីបន្ទោស និងភាពបរាជ័យ។"
+      "km": "ចូរអ្នក(ឱខ្ញុំបម្រើរបស់អល់ឡោះ)កុំបង្កើតព្រះផ្សេង(មកគោរពសក្ការៈ)រួមជាមួយនឹងអល់ឡោះជាម្ចាស់ឱ្យសោះ ដែលជាហេតុនាំឱ្យអ្នកទទួលរងនូវការស្ដីបន្ទោស និងភាពបរាជ័យ។",
+      "he": "אל תיקח לך אל אחר עם אללה, למען לא תהיה מושפל ומנודה.",
+      "ka": "ნუ დაიდგენ (ო, ადამიანო) ალლაჰთან ერთად სხვა ღვთაებას (არ ჩაიდინო მრავალღმერთიანობა), თორემ დარჩები (ალლაჰის დახმარების გარეშე) განკიცხული, დაკნინებული.",
+      "lt": "(Žmogau,) nepriskirk Allahui jokio kito ilah (dievo)! (Ši eilutė skirta Pranašui Muchammedui ﷺ , tačiau jos prasmė yra bendra visai žmonijai), arba tu nusileisi peikiamas, apleistas (Pragare).",
+      "mg": "Aza atao mihitsy ny mampitambatra an'I Allah amin’ny zanahary hafa raha tsy izany dia hipetraka ho voaheso sy hilaozana ianao.",
+      "lg": "Allah tomussangako ebisinzibwa ebirala, olwo nno ne kikufuula avumirirwa aboolebwa.",
+      "rw": "Ntukagire ikindi ubangikanya na Allah, utazavaho uba ikivume cyatereranywe.",
+      "rn": "Muntu! Ntukabangikanye Imana Allah n’iyindi mana, ngo wisange utewe ivyatsi n’Imana Allah, wongere unagirirwe n’umwikomo na Yo maze uteterwe.",
+      "ln": "Kosangisa Allah na nzambe mosusu te, noki te okomikuta o kati ya baboyami mpe bakweisami.",
+      "dag": "(Yaa nyini ninsala)! Di bo Duuma so m-pahi Naawuni zuɣu, ka tileei bɛ ni galindi so, ni ŋun filiŋ.",
+      "mos": "Ra wa tũ soɑb zẽng n lagem Wẽnd ye, tɩ fo wat n bɑɑsɑme n yɑɑ b sẽn sabs a soaba, b sẽn bas a soabɑ.",
+      "aa": "Kee seehadaytow Yallâ luk aka Yalla agleh kaat mahin qibaadal, toysa atu Yallih xaqul sahtimeeh wacarriysime num akkettok.",
+      "mdh": "Da ka mumbal sa isa a kadenan a lyu sa Allah, ka maka-ayan ka sa kalusak i mabpalas nengka.",
+      "ak": "Hwε na wanfa awurade foforͻ bi anka Nyankopͻn ho, anhwε a watena ase (wͻ Amanehunu gyem wͻ) animguaseε ne ahokyere mu.",
+      "ceb": "Ayaw pagbutang ug kauban sa Allah sa bisan unsa nga laing dios, aron dili ka magpabilin (maglingkod) nga gipakaulawan, ug gibiyaan.",
+      "nqo": "ߌ ߞߊߣߊ߬ ߡߊ߰ߙߌ߬ ߜߘߍ߫ ߞߍ߫ ߊߟߊ߫ ߝߍ߬ ߘߋ߬ ، ߌ ߡߊ߲߬ߜߏߡߊ߲߫ ߟߊߓߌߟߊ߬ߣߍ߲ ߘߴߌ ߛߌ߰ ߏ߬ ߘߐ߫"
     }
   },
   {
@@ -3901,7 +4699,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "निःसंशय, तुमचा पालनकर्ता, ज्याला इच्छितो रोजी (आजिविका) विस्तृत करतो आणि ज्याच्यासाठी इच्छितो संकुचित (तंग) करतो. निःसंशय, तो आपल्या दासांची पुरेपूर खबर राखतो आणि खूप चांगल्या प्रकारे पाहणारा आहे.",
       "as": "নিশ্চয় তোমাৰ প্ৰতিপালকে যাক ইচ্ছা কৰে তাৰ জীৱিকা বৃদ্ধি কৰি দিয়ে আৰু যাক ইচ্ছা কৰে সীমিত কৰি দিয়ে; নিশ্চয় তেওঁ নিজ বান্দাসকলৰ বিষয়ে সম্যক পৰিজ্ঞাত, সৰ্বদ্ৰষ্টা।",
       "ne": "निःसन्देह तिम्रो पालनकर्ताले जसको जीविका चाहन्छ विस्तृत गरिदिन्छ, र जस्को चाहन्छ संकुचित पारिदिन्छ । निःसन्देह उसले आफ्ना भक्तहरूलाई बेस्सरी जान्दछ र राम्ररी हेरिराखेको हुन्छ ।",
-      "si": "නියත වශයෙන් ම නුඹගේ පරමාධිපති ඔහු අභිමත කරන අයට පෝෂණය විස්තීරණය කරයි. එමෙන් ම ඔහු සීමා ද කරයි. නියත වශයෙන් ම ඔහු තම ගැත්තන් පිළිබඳ මනා ඥානය ඇති සර්ව නිරීක්ෂක විය."
+      "si": "නියත වශයෙන් ම නුඹගේ පරමාධිපති ඔහු අභිමත කරන අයට පෝෂණය විස්තීරණය කරයි. එමෙන් ම ඔහු සීමා ද කරයි. නියත වශයෙන් ම ඔහු තම ගැත්තන් පිළිබඳ මනා ඥානය ඇති සර්ව නිරීක්ෂක විය.",
+      "he": "אכן ריבונך שולח פרנסה בשפע או בדלילות לאשר ירצה, כי הוא מכיר היטב את עבדיו ורואה את מעשיהם.",
+      "ka": "ჭეშმარიტად, შენი ღმერთი გულუხვად აძლევს სარჩოს, ვისაც ინებებს და უმცირებს [ვისაც ინებებს]. ჭეშმარიტად, იგი თავის მსახურთა მცოდნეა, მხედველია.",
+      "lt": "Iš tiesų, tavo Viešpats padidina išlaikymą tiems, kam Jis nori, ir apriboja (tam, kam Jis nori). Iš tiesų, Jis yra Visada Visa Žinantis, Visa Matantis Savo vergus.",
+      "mg": "Tena marina fa ny Tomponao dia mizara malalaka ny anjara fivelomana amin’izay sitrany ary mametra izany ihany koa. Tena mahalala sy mahita ireo mpanompony Izy.",
+      "lg": "Mazima Mukama Omulabirizi Wo ayanjululiza obugabirizi oyo gw'aba ayagadde, n'awa mu ngeri y'empola (eri omulala) anti mazima Yye bulijjo amanyidde ddala ebikwata ku baddu Be era alaba.",
+      "rw": "Mu by’ukuri Nyagasani wawe atuburira amafunguro uwo ashaka, akanatubiriza (uwo ashaka). Mu by’ukuri azi kandi abona byimazeyo iby’abagaragu be.",
+      "ln": "Ya soló, Nkolo wayo apesaka bozui na oyo alingi mpe akutolaka. Mpe ya sólo, azali na sango mpe amonaka bawumbu naye.",
+      "dag": "Achiika! A Duuma (Naawuni) yεrgirila arzichi tiri O ni bɔri so, ka tahiri miisim na n-ti tiri O ni bɔri so. Achiika! O nyɛla Ŋunmidin sɔɣi O daba tuuntumsa ni, ka lahi nyɛ Nyara.",
+      "mos": "Ad yaa fo Soabã n yalgd rɩtlã n kõt A sẽn rat ɑ soab la A weoogd A sẽn tʋll ɑ soɑb zugu. Ad A yaa Mit n yɑɑ Net ne A yembsã.",
+      "aa": "Diggah seehadaytow ku Rabbi isih kah faxa marah rizqhi farakka haah, isih kah faxa maral kaa ceyissi haa, diggah usuk isi naqoosak adda yaaxigi yabali kinni.",
+      "mdh": "Saben-sabenal su Kadenan nengka na belatenin i rizki nin kanu kagkahanda nin endu simpitanin, ka sekanin a Allah kanu manga ulipenin na katawanin na gailay nin.",
+      "ak": "Nokorε sε, wo Wura Nyankopͻn bae akͻnhoma no mu dema obi a Ɔpε, εna Osusu (nso ma obi a Ɔpε). Nokorε sε N’ani tua Nenkoa (dwumadie) na Ohu nso..",
+      "nqo": "ߌ ߡߊ߰ߙߌ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߘߋ߬ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫ ، ߊ߬ ߣߴߊ߬ ߦߴߊ߬ ߜߟߍ߬ߦߊ߬ ߟߊ߫ ، ߊ߬ ߘߏ߲߬ ߞߍߣߍ߲߫ ߘߎ߰ߙߋ߲߫ ߦߋߟߌߓߊ߯ ߟߋ߬ ߘߌ߫ ߊ߬ ߟߊ߫ ߖߐ߲߭ ߠߎ߬ ߟߊ߫"
     }
   },
   {
@@ -3961,7 +4772,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই তোমালোকৰ প্ৰতিপালক, যিজনে তোমালোকৰ বাবে সাগৰত নৌযান পৰিচালিত কৰায়, যাতে তোমালোকে তেওঁৰ অনুগ্ৰহ সন্ধান কৰিব পাৰা। নিশ্চয় তেওঁ তোমালোকৰ প্ৰতি পৰম দয়ালু।",
       "ne": "तिम्रो पालनकर्ता त्यो नै हो, जसले तिम्रो निम्ति समुद्रमा डुँङ्गा सञ्चालित गर्दछ, जसबाट तिमीले उसको कृपाले जीविका खोज्न सक, ऊ तिमीमाथि धेरै दयावान छ ।",
       "si": "නුඹලා ඔහුගේ භාග්‍යය සෙවීම පිණිස නුඹලා වෙනුවෙන් මුහුදෙහි නැව් යාත්‍රා කරවනුයේ නුඹලාගේ පරමාධිපති ය. නියත වශයෙන් ම ඔහු නුඹලාට මහා කාරුණික විය.",
-      "km": "ព្រះជាម្ចាស់របស់ពួកអ្នក(ឱមនុស្សលោក) គឺជាអ្នកដែលធ្វើឱ្យសំពៅធ្វើដំណើរលើផ្ទៃសមុទ្រសម្រាប់ពួកអ្នក ដើម្បីពួកអ្នកស្វែងរកលាភសក្ការៈរបស់ទ្រង់។ ពិតប្រាកដណាស់ ទ្រង់មហាអាណិតស្រលាញ់បំផុតចំពោះពួកអ្នក។"
+      "km": "ព្រះជាម្ចាស់របស់ពួកអ្នក(ឱមនុស្សលោក) គឺជាអ្នកដែលធ្វើឱ្យសំពៅធ្វើដំណើរលើផ្ទៃសមុទ្រសម្រាប់ពួកអ្នក ដើម្បីពួកអ្នកស្វែងរកលាភសក្ការៈរបស់ទ្រង់។ ពិតប្រាកដណាស់ ទ្រង់មហាអាណិតស្រលាញ់បំផុតចំពោះពួកអ្នក។",
+      "he": "ריבונכם הוא אשר מושיט למענכם את האוניות בים, כדי שתבקשו לכם פרנסה מחסדו. הוא תמיד היה כלפיכם רחום.",
+      "ka": "თქვენი უფალი [ალლაჰი], [ის] რომელიც გადაადგილებს ხომალდებს ზღვაში, რათა [თქვენ] ეძიოთ მისი სიკეთე. ჭეშმარიტად, თქვენი ღმერთი მწყალობელია.",
+      "lt": "Jūsų Viešpats yra Tas, Kuris gena jums laivus jūra, tam kad jūs prašytumėte Jo Dosnumo. Iš tiesų, Jis yra Visada Gailestingiausiasis jums.",
+      "mg": "Ny Tomponareo izay mampisosa ho anareo ny sambo eny amin’ny ranomasina, mba hitadiavanareo ny fahasoavany.Tena marina fa Izy dia tena be Indrafo aminareo.",
+      "lg": "Mukama Katonda Wammwe Ye Oyo abatambuliza amaato ku nnyanja musobole okunoonya ebimu ku bigabwa Bye, mazima Yye ku mmwe Musaasizi nnyo.",
+      "rw": "Nyagasani wanyu ni We ubagenzereza amato mu nyanja, kugira ngo mushakishe ingabire ze. Mu by’ukuri ni Nyirimpuhwe kuri mwe.",
+      "dag": "Yi Duuma (Naawuni) n-nyɛŊun chɛ ka ŋarim chani kom ni (ka di nyɛ anfaani) n-tin ya, domin yi bo O pini puuni. Achiika! O (Naawuni) nyɛla Nambɔzobonaa n-zaŋ tin ya.",
+      "mos": "Yãmb Soabã n kẽnesd kogendã mogrã zug sẽn na yɩl tɩ yãmb bao A kũunã, ad A yɩɩme n yaa Yoalsd ne yãmba.",
+      "aa": "Sinaamey Sin Rabbiy qibaada cakkisita kinni badal dawaanik siinih gexissam kay rizqhi edde gurrusuttaanamkeh, diggah usuk (Yalla kinnuk) siinih xuwaw li kinni.",
+      "mdh": "Su Kadenan nu i pabpagiseg sa lekanu kanu bageda nu sya sa lagat ka mapangilay nu su limu nin, ka sekanin a Allah na malimu gayd sa lekanu.",
+      "ak": "Mo Wura Nyankopͻn no na Ɔma nsuo mu hyεn kͻ yͻͻ mamo wͻ ͻpo so sεdeε mode bεhwehwε N’adom. Nokorε sε Onyankopͻn hu mo mmͻbͻ.",
+      "nqo": "ߊߟߎ߫ ߡߊ߰ߙߌ ߟߋ߬ ߞߎߟߎ߲ ߛߊ߬ߡߊ߲߬ ߠߴߊߟߎ߫ ߦߋ߫ ߟߌ߲ߓߊ߲ ߞߊ߲߬ ߛߴߊߟߎ߫ ߘߴߊ߬ ߟߊ߫ ߢߊ߬ߒߡߊ߭ ߘߏ߫ ߢߌߣߌ߲߫ ، ߓߊߏ߬ ߊ߬ ߞߍߣߍ߲߫ ߤߌߣߟߊ߫ ߟߋ߬ ߘߌ߫ ߊߟߎ߫ ߟߊ߫"
     }
   },
   {
@@ -4023,7 +4846,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় ভূ-পৃষ্ঠত যি যি আছে আমি সেইবোৰক ইয়াৰ শোভা কৰি দিছোঁ, মানুহক এই পৰীক্ষা কৰাৰ বাবে যে, সিহঁতৰ মাজত কোনে শ্ৰেষ্ঠ আমল কৰে।",
       "ne": "जुन कुरो धर्तीमा छ, हामीले त्यसलाई धर्तीको निम्ति शोभाको कुरो बनाएका छौं, ताकि मानिसहरूको परीक्षा गर्न सकौं, कि तिनीहरूमध्ये को राम्रो कर्म गर्नेवाला छ ।",
       "si": "ඔවුන් අතරින් ක්‍රියාවෙන් වඩාත් අලංකාර වනුයේ කවුරුන් දැ? යි අපි ඔවුන් පරීක්ෂා කරනු පිණිස මහපොළොව මත ඇති දෑ එයට අලංකරණයක් ලෙස ඇති කළෙමු.",
-      "km": "ពិតប្រាកដណាស់ យើងបានបង្កើតអ្វីៗដែលមាននៅលើផែនដីជាការលម្អសម្រាប់វា(ផែនដី) ដើម្បីយើងនឹងសាកល្បងពួកគេ(មនុស្សលោក) ថាតើអ្នកណាក្នុងចំណោមពួកគេដែលសាងទង្វើបានប្រសើរជាងគេ។"
+      "km": "ពិតប្រាកដណាស់ យើងបានបង្កើតអ្វីៗដែលមាននៅលើផែនដីជាការលម្អសម្រាប់វា(ផែនដី) ដើម្បីយើងនឹងសាកល្បងពួកគេ(មនុស្សលោក) ថាតើអ្នកណាក្នុងចំណោមពួកគេដែលសាងទង្វើបានប្រសើរជាងគេ។",
+      "he": "את כל אשר על הארץ עשינו כהדר לה, כדי לבחון אותם מי יעשה מעשים טובים יותר.",
+      "ka": "ჭეშმარიტად, ჩვენ ვქმენით ის, რაც მიწაზეა მის სამკაულად, რათა გამოვცადოთ ისინი [ადამიანები], თუ ვინ არის მათგან უკეთესი საქმეებით.",
+      "mg": "Marina fa nataonay izay rehetra eto ambonin’ny tany ho haingony, mba hitsapanay azy ireo hoe iza amin’izy ireo no tena mpanao ny asa soa.",
+      "lg": "Mazima Ffe twassa ku nsi ebigiriko nga bya kuginyiriza olwo nno tubagezese ani asinga okukola ebirungi.",
+      "rw": "Mu by’ukuri ibiri ku isi twabigize umutako wayo kugira ngo (abantu) tubagerageze, maze tugaragaze abarusha abandi gukora ibikorwa byiza.",
+      "ln": "Ya soló, maye mazuami o likolo ya mabele, totiyaki yango ezala na bonzenga na yango mpo été ezala bomekami epai ya bato mpe totala nani kati na bango akosala bolamu.",
+      "dag": "Achiika! Ti (Tinim’ Naawuni) zaŋla dinbe tiŋgbani yaaŋa zuɣu leei naɣachinsi n-ti li, domin Ti dahim ba (bɛ ninsalinima) ka nya bɛ puuni ŋuni n-yɛnvεlgi o tuma.",
+      "mos": "Ad Tõnd maana sẽn be tẽngã zugã tɩ yɑɑ faas-teed ne-ɑ sẽn na yɩl n zarb-b n ges ned ning sẽn yɩɩda ne tʋʋm sõmblem.",
+      "aa": "Nanu diggah baaxô bagul eneyyi ittam baaxoh bila abneeh teetil yan marah tuxxiq abne, mcqc taamah keenik yayse maraa kee uma taamah keenik gaca mara keenik mokkorraah naaxigemkeh.",
+      "mdh": "Saben-sabenal sa lekami na binaluy nami kanu lupa i namangetu a mapya i palasin, ka endu nami gabatalu u entayn i mapya i galebekin.",
+      "ak": "Nokorε sε, Yɛayε deε εwͻ asaase soͻ no afεɛfεdeε ama (asaase) no, sεdeε Yεde bεyε nnipa nsͻhwε, (agyina so ahwε) wͻn mu obi a odi dwuma pa.",
+      "ceb": "Sa pagkatinuod Kami (Allah) nagbuhat sa unsay anaa sa yuta ingon nga usa ka dayandayan alang niini, aron Among sulayan sila kon kinsa kanila ang labing maayo sa pamatasan ug sa buhat.",
+      "nqo": "ߒ߬ߠߎ߫ ߣߊ߬ ߘߎ߱ ߞߊ߲߬ߝߋ߲ ߠߎ߬ ߞߍ߫ ߟߴߊ߬ ߡߊ߬ߢߍ߯ߙߍ ߘߌ߫ ߟߋ߬ ߸ ߞߵߊ߬ ߟߊߥߌ߬ߟߌ߫ ߊ߬ߟߎ߬ ߞߘߐߓߐ ߡߵߊ߬ߟߎ߬ ߡߍ߲ ߗߋߥߊߟߌ ߞߊ߫ ߢߌ߲߬ ߓߊ߯ ߞߍ߫"
     }
   },
   {
@@ -4086,7 +4922,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে ঈমান আনিছে আৰু সৎকৰ্ম কৰিছে – নিশ্চয় আমি উত্তমৰূপে কৰ্ম সম্পাদন কৰা ব্যক্তিৰ শ্ৰমফল বিনষ্ট নকৰোঁ।",
       "ne": "निश्चितरूपले जसले ईमान ल्याए र असल कर्म पनि गरे, भने हामीले सत्कर्म गर्नेहरूको पुरस्कार खेर जान दिंदैनौं ।",
       "si": "නියත වශයෙන් ම විශ්වාස කොට යහකම් කළවුන් වනාහි, ක්‍රියාවෙන් වඩාත් යහපත් දෑ කළවුන්ගේ ප්‍රතිඵල සැබැවින් ම අපි අපතේ නො හරින්නෙමු.",
-      "km": "ជាការពិតណាស់ បណ្ដាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសលនោះ ពិតប្រាកដណាស់ យើងនឹងមិនបំបាត់នូវផលបុណ្យរបស់អ្នកដែលបានសាងអំពើល្អឡើយ។"
+      "km": "ជាការពិតណាស់ បណ្ដាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសលនោះ ពិតប្រាកដណាស់ យើងនឹងមិនបំបាត់នូវផលបុណ្យរបស់អ្នកដែលបានសាងអំពើល្អឡើយ។",
+      "he": "אכן אלה אשר האמינו ועשו את הטוב, אולם לא נקפח את גמולם של אלה אשר היטיבו לעשות.",
+      "ka": "რომელთაც ირწმუნეს და კეთილი საქმე აკეთეს, – ჭეშმარიტად, არ დავუკარგავთ საზღაურს იმათ, ვინც კარგი საქმე აკეთა.",
+      "lt": "Iš tiesų, tiems, kurie patikėjo ir darė gerus darbus, be abejonės, Mes nepadarysime nė vieno, kuris darė savo (teisingus) darbus tobuliausiu būdu, atlygio pamesto.",
+      "mg": "Marina fa ireo izay mino sy manao asa soa, tena marina fa Izahay dia tsy hanary ny valin’asan’ireo izay manao ny tsara.",
+      "lg": "Mazima abo abakkiriza ne bakola emirimu emirongoofu mazima Ffe tetugenda butasasula mpeera y'oyo eyalongoosa emirimu.",
+      "rw": "Mu by’ukuri ba bandi bemeye bakanakora ibikorwa byiza, rwose ntituzaburizamo ibihembo by’uwakoze ibikorwa bye neza.",
+      "dag": "Achiika! Ninvuɣu shεba ban ti Naawuni yεlimaŋli, ka tum tuunvεla, tɔ! Ti (Tinim’ Naawuni) ku chɛ ka ninvuɣu shεba ban tum tuunsuma sanyoo bahi yoli.",
+      "mos": "Ad neb nins sẽn kõ-b sɩdã la b tʋm tʋʋm-sõmã wã, ad Tõnd pa yeebd ned ning sẽn maneg a tʋʋmd keoor ye.",
+      "aa": "Diggah yeemeneeh meqe taamoomi abbaasite mari kaxxa galto-le, diggah nanu taama yeymeeqe marih galto mabayisna.",
+      "mdh": "Saben-sabenal su manga taw menem a manga mu'min a minggalebek sa manga mapya na di nami dadagen su balas nu entayn imapya i galebekin.",
+      "ak": "Nokorε sε wͻn a wͻagye adie na wͻdi dwuma pa no, nokorε sε, Yεmma wͻn a wͻdi dwuma pa no akatua nnyε kwa.",
+      "ceb": "Kadtong mituo ug nagbuhat ug matarong nga mga maayong buhat, Kami dili mag-usik-usik sa ganti niadtong nagbuhat ug maayong buhat.",
+      "nqo": "ߡߍ߲ ߠߎ߫ ߞߏ߬ߣߌ߲ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ، ߊ߲ߠߎ߫ ߞߏ߬ߣߌ߲ ߸ ߒ߬ ߕߍ߫ ߡߐ߱ ߛߊ߬ߙߊ ߕߌߢߍ߫ ߟߊ߫ ߡߍ߲ ߞߊ߬ ߗߋߥߊߟߌ ߟߊߢߊ߬"
     }
   },
   {
@@ -4148,7 +4997,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় পৃথিৱী আৰু ইয়াৰ ওপৰত যি যি আছে সেই সকলোবোৰৰ চূড়ান্ত মালিকানাস্বত্ব কেৱল আমাৰেই, আৰু আমাৰ ওচৰতেই সিহঁতে প্ৰত্যাৱৰ্তন কৰিব লাগিব।",
       "ne": "हामी नै पृथ्वी र त्यसमा बस्नेहरू सबैको वारिस हुनेछौं र सबै मानिसहरू हामीतिर नै फर्काएर ल्याइने छन् ।",
       "si": "නියත වශයෙන් ම අපි මහපොළොව හා ඒ මත සිටිනවුන් උරුම කර ගන්නෙමු. තවද ඔවුන් නැවත යොමු කරනු ලබනුයේ ද අප වෙත ම ය.",
-      "km": "ពិតប្រាកដណាស់ យើង(អល់ឡោះ)នឹងទទួលមរតកផែនដី និងអ្វីៗទាំងអស់ដែលនៅលើផែនដី។ ហើយពួកគេនឹងត្រូវគេនាំត្រឡប់មកកាន់យើង(តែមួយគត់)។"
+      "km": "ពិតប្រាកដណាស់ យើង(អល់ឡោះ)នឹងទទួលមរតកផែនដី និងអ្វីៗទាំងអស់ដែលនៅលើផែនដី។ ហើយពួកគេនឹងត្រូវគេនាំត្រឡប់មកកាន់យើង(តែមួយគត់)។",
+      "he": "אכן אנחנו נירש את הארץ ומה שעליה ואלינו יושבו.",
+      "ka": "ჭეშმარიტად, ჩვენ დავიმკვიდრებთ მიწას და იმათ, ვინც მასზეა, და ისინი ჩვენთან იქნებიან დაბრუნებულნი [განკითხვის დღეს].",
+      "lt": "Iš tiesų, Mes paveldėsime žemę ir viską, kas joje. Ir pas Mus jie bus sugrąžinti.",
+      "mg": "Tena marina fa Izahay tokoa no handova ny tany sy izay rehetra ao aminy, ary any Aminay no hamerenana azy ireo.",
+      "lg": "Mazima Ffe, Ffe tulisikira ensi n'abagiriko era Gyetuli gye balizzibwa.",
+      "rw": "Mu by’ukuri tuzazungura isi n’ibiyiriho kandi iwacu ni ho bose bazagarurwa.",
+      "rn": "Mu vy’ukuri, ni Twebwe Allah Tuzotorana isi n’ibiri kuri yo, ni no kuri Twebwe Allah ibiremwa vyose bizogaruka kugira Tubihembere ivyo vyakoze.",
+      "ln": "Ya sólo, biso nde tozali na bokitani ya mabele, mpe baye banso bazali o likolo na yango, mpe epai na biso nde banso bakozonga.",
+      "dag": "Achiika! Ti (Tinim’ Naawuni) n-diri tiŋgbani fali, ni din kam be di zuɣu. Yaha! Ti sani ka bɛ yɛn ti labsi ba (binnamda na) na.",
+      "mos": "Ad yaa Tõnd n rɩkd tẽngã faad la bũmb nins sẽn be a zugã fãa faado, la b lebgr zĩig me yaa Tõnd nengẽ.",
+      "aa": "Diggah Nanu baaxoo kee baaxô bagul tanim inkih nanu nagarraah usun cisab kee galtoh nee fan gacsiman.",
+      "mdh": "(Tig nu Allah) benal a sekami i mawaris kanu lupa endu su dalemin, endu syabun makambalingan sa lekami.",
+      "ak": "Nokorε sε, Yεn na Yɛbɛdi adeε wͻ asaase no soͻ na Yεn hͻ na wͻn (nyinaa) bεsan aba.",
+      "ceb": "Sa pagkatinuod Kami (Allah) makapanunod sa yuta ug sa tanan nga ania niini, ug nganhi Kanamo (Allah) sila (sa kataposan) ibalik (alang sa Paghukom).",
+      "nqo": "ߒ߬ߠߎ߫ ߞߊ߬ߣߌ߲ ߸ ߊ߲ߠߎ߫ ߟߋ߫ ߘߎ߱ ߗߍߕߊ߬ ߟߊ߫ ߊ߬ ߣߴߊ߬ ߞߊ߲߬ ߡߐ߮، ߊ߬ߟߎ߬ ߟߊߛߊ߬ߦߌ߬ߕߐ߫ ߒ߬ߠߎ߫ ߟߋ߫ ߡߊ߬"
     }
   },
   {
@@ -4211,7 +5075,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "মানুহে স্মৰণ নকৰে নেকি যে, নিশ্চয় আমিয়েই তাক ইয়াৰ পূৰ্বে সৃষ্টি কৰিছোঁ, যেতিয়া সি একোৱেই নাছিল?",
       "ne": "के यो मानिस यति पनि स्मरण गर्दैन कि हामीले उसलाई पहिले पनि सृष्टि गरेका थियौं जबकि ऊ केही पनि थिएन ।",
       "si": "මීට පෙර කිසිවක් ලෙස නො පැවති තත්ත්වයෙන් සැබැවින් ම අපි ඔහුව මැවූ බව මිනිසා මෙනෙහි කළ යුතු නො වේ ද?",
-      "km": "តើមនុស្សមិននឹកឃើញទេឬថា៖ ជាការពិតណាស់ យើងបានបង្កើតរូបគេកាលពីមុន ខណៈដែលរូបគេមិនទាន់មានអ្វីសោះនោះ?"
+      "km": "តើមនុស្សមិននឹកឃើញទេឬថា៖ ជាការពិតណាស់ យើងបានបង្កើតរូបគេកាលពីមុន ខណៈដែលរូបគេមិនទាន់មានអ្វីសោះនោះ?",
+      "he": "האם הבן אדם אינו זוכר שכבר בראנו אותו כאשר הוא לא היה כלום?",
+      "ka": "ნუთუ არ გაიხსენებს ადამიანი, რომ ჩვენ შევქმენით იგი ადრე, მაშინ როცა მანამდე იგი საერთოდ არ არსებობდა?",
+      "lt": "Argi žmogus neprisimena, kad Mes jį sukūrėme prieš tai, kai jis buvo niekas?",
+      "mg": "Moa ve tsy tadidin’ny Olombelona, fa Izahay tokoa no nahary Azy tany aloha, fony izy mbola tsy nisy ?",
+      "lg": "Abaffe omuntu tajjukira nti mazima Ffe twamutonda omulundi ogwasooka nga yali tabangako kintu kyonna.",
+      "rw": "Ese umuntu ntiyibuka ko mbere y’ibyo, ari twe twamuremye kandi nta cyo yari cyo?",
+      "rn": "Mbega umuntu w'umugarariji yibagiye ico ari co! Burya ntiyibuka ko Twebwe Allah Twamuremye ubwa mbere kandi atari bwabeho!",
+      "ln": "Boye moto azali kokanisa te ndenge tokelaki ye liboso mpe ye azalaki eloko te?",
+      "dag": "Di ni bɔŋɔ, ninsala bi teeri kadama Ti (Tinim’ Naawuni) n-daa nam o ka o pa shεli pɔi ni lala?",
+      "mos": "Rẽ yĩnga ninsaal pa tẽr tɩ Tõnd naan-a-lɑ sẽn dɑ looge, t'a ra pa baa fʋɩ?",
+      "aa": "A-seehadaytuy tamah iyya nanu diggah naharsi adda usuk tuh suge kalah kaa ginnem makassitaa?",
+      "mdh": "Ngintu di katademan nu manga manusya (kafir) i binaluy nami sekanin sa unan a dala pan mabaluy na dala (bun) sekanin?",
+      "ak": "Enti onipa nkae sε, nokorε sε Yɛdii kan bͻͻ no aberε a na ͻnyε hwee?",
+      "ceb": "Wala ba makahinumdom ang tawo nga Kami (Allah) naglalang kaniya kaniadto, sa diha nga siya wala pay bisan unsa.",
+      "nqo": "ߊ߬ ߕߍ߫ ߊ߬ ߦߟߌߓߌ߬ߟߊ߬ ߟߊ߫ ߓߊ߬ ߞߏ߫ ߒ߬ߠߎ߫ ߟߋ߫ ߞߵߊ߬ ߘߊ߲߫ ߞߘߐ߬ߡߊ߲߫ ߞߵߊ߬ ߛߐ߬ߘߐ߲߬ ߊ߬ ߕߍ߫ ߝߏߦߌ߬ ߘߌ߫؟"
     }
   },
   {
@@ -4274,7 +5153,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশসমূহ আৰু পৃথিৱীত এনেকুৱা কোনো নাই যিয়ে ৰহমানৰ ওচৰত বান্দাৰূপে উপস্থিত নহ’ব।",
       "ne": "आकाशहरू र धरतीमा जो पनि छन् सबै अल्लाहका दासका रूपमा आउनेवाला छन् ।",
       "si": "අහස්හි හා මහපොළොවේ සිටින සෑම කෙනෙකුම මහා කරුණාන්විතයාණන් වෙත ගැත්තකු ලෙස ම පැමිණෙන්නේ ම ය.",
-      "km": "រាល់អ្នកដែលនៅលើមេឃជាច្រើនជាន់ និងនៅលើផែនដី គឺសុទ្ធតែត្រឡប់ទៅកាន់ព្រះជាម្ចាស់ដ៏មហាសប្បុរស(នៅថ្ងៃបរលោក)ក្នុងនាមជាខ្ញុំបម្រើ(របស់ទ្រង់)ទាំងអស់។"
+      "km": "រាល់អ្នកដែលនៅលើមេឃជាច្រើនជាន់ និងនៅលើផែនដី គឺសុទ្ធតែត្រឡប់ទៅកាន់ព្រះជាម្ចាស់ដ៏មហាសប្បុរស(នៅថ្ងៃបរលោក)ក្នុងនាមជាខ្ញុំបម្រើ(របស់ទ្រង់)ទាំងអស់។",
+      "he": "כי כל שוכני השמים והארץ יבואו אל הרחמן עבדים.",
+      "ka": "უეჭველად, ყველა, ვინც ცათა შინაა [ყველა ანგელოზი] და ვინც დედამიწაზეა [ყველა ჯინი და ადამიანი], მოწყალე ალლაჰთან (სამსჯავროს დღეს) მხოლოდ მის მონად წარდგება.",
+      "lt": "Nėra nieko danguose ar žemėje, kas nebūtų Maloningiausiojo (Allaho) vergu.",
+      "mg": "Tsy inona akory izay rehetra any amin’ireo lanitra sy ety an-tany, afa-tsy mpanompo, eo anatrehan’Ilay be Fiantrana.",
+      "lg": "Tewali kitonde kiri mu ggulu musanvu n'ensi okuggyako nga kigenda kujja ewa Allah Omusaasizi nga kiri mu ngeri ya buddu.",
+      "rw": "Nta na kimwe mu biri mu birere no ku isi kizagera imbere ya (Allah) Nyirimpuhwe kitari umugaragu (uciye bugufi).",
+      "rn": "Ibiremwa biri mu majuru mu bamalayika, n’ibiremwa biri kw’isi mu bantu n’amajini, vyose bizosubira kuri Nyenimpuhwe Allah, ari abaja bicisha bugufi kuri Yo.",
+      "ln": "Baye banso bazali o likolo mpe o nsé bakoya epaî ya Ar-Rahmân bazali bawumbu.",
+      "dag": "So n-ka sagbana mini tiŋgbani ni naɣilao yɛn kala Nambɔzobonaa (Naawuni) sani na ka nyɛ dabli.",
+      "mos": "Ad bũmb ning sẽn be saasẽ wã la tẽngẽ wã fãa wata yolsg Naab nengẽ tɩ b yaa yembse n gãneg b mense.",
+      "aa": "Yallih ginok Hebelttô ginoy qaranwaa kee baaxol tani matan külli num keenik Racmaan kinni Rabbi fanah naqasuy Ramma iyyaah xixxibaanc-lih yanih yamaate kaa akke waytek Qhiyaamah ayro.",
+      "mdh": "Ka dala kanu dalem nu langit endu su lupa a di kena ulipen nu Allah.",
+      "ak": "Deε εwͻ soro ne asaase so no mu biara ba Ahummͻborͻ Hene no hͻ wͻ akoa din mu.",
+      "ceb": "Walay bisan kinsa sa mga langit ug sa yuta apan moduol ni (Allah) ang Labing Madagayaon ingon nga usa ka ulipon (mapainubsanon ingon nga siya gibuhat sa sinugdanan).",
+      "nqo": "ߣߌߡߊ߫ ߛߌ߫ ߕߍ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߊ߲߬ ߝߴߏ߬ ߖߐ߲߬ߠߊ߬ߡߊ ߦߋ߫ ߣߊ߬ ߤߌߣߊߒߕߋ ߕߘߍ߬"
     }
   },
   {
@@ -4336,7 +5230,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশসমূহ, পৃথিৱী আৰু এই দুয়োৰে মাজত যি যি আছে লগতে ভূ-গৰ্ভত যি আছে সেই সকলো তেওঁৰেই।",
       "ne": "जे जति आकाशहरूमा छ र जे जति धरतीमा छ र जे जति यी दुवैको बीचमा छ, र जे जति धरतीको (माटो) मुनि छ, सबै उसैको हो ।",
       "si": "අහස්හි ඇති දෑ ද මහපොළොවෙහි ඇති දෑ ද ඒ දෙක අතර ඇති දෑ ද පස් යට ඇති දෑ ද ඔහු සතු ය.",
-      "km": "អ្វីដែលនៅលើមេឃជាច្រើនជាន់ អ្វីដែលនៅលើផែនដី អ្វីដែលនៅចន្លោះវាទាំងពីរ ហើយនិងអ្វីដែលនៅក្រោមដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។"
+      "km": "អ្វីដែលនៅលើមេឃជាច្រើនជាន់ អ្វីដែលនៅលើផែនដី អ្វីដែលនៅចន្លោះវាទាំងពីរ ហើយនិងអ្វីដែលនៅក្រោមដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។",
+      "he": "לו כל אשר בשמים וכל אשר בארץ, וכל מה שמתחת לקרקע.",
+      "ka": "მას ეკუთვნის ყველაფერი, რაც ცათა შინაა და რაც ქვეყანასა ზედაა, რაც ამათ შორისაა, და რაც მიწის ქვეშაა,",
+      "lt": "Jam priklauso viskas, kas yra danguose, ir viskas, kas yra žemėje, ir viskas, kas yra tarp jų, ir viskas, kas yra po dirva.",
+      "mg": "Ary Azy avokoa izay any amin’ireo lanitra, sy ety an-tany, ary izay eo anelanelan’izy ireo, sy izay any ambanin’ny tany.",
+      "lg": "Bibye ebyo ebiri mu ggulu omusanvu n'ebyo ebiri mu nsi, n'ebyo ebiri wakati wa byombi, n'ebyo ebiri wansi w'ettaka.",
+      "rw": "Ibiri mu birere n’ibiri mu isi, n’ibiri hagati yabyo ndetse n’ibiri munsi y’ubutaka ni ibye.",
+      "rn": "Ni We Rugaba Agaba Akaganza ibiri mu majuru n’ibiri mw’isi n’ibiri hagati yavyo, hamwe n’ibiri mu kuzimu.",
+      "dag": "Ŋuna n-su din be sagbana ni, ni din be tiŋgbani ni, n-ti pahi din be di suusuuni, ni din be taŋkpaɣu gbinni.",
+      "mos": "Yẽnd n so bũmb ning sẽn be sãasẽ wã la tẽngẽ wã la sẽn be b yiibã sʋka la sẽn be tẽn-tomã tẽngrã.",
+      "aa": "Qaranwal taniimiiy baaxol tanim, kaadu ken nammayih fanal taniimiiy baaxok gubat tanim inkih Yalli Íe.",
+      "mdh": "Lekanin a (Allah) su dalem nu pitu lapis a langit endu lupa endu su pageletan nin, endu su kababan nu lupa.",
+      "ak": "Deε εwͻ soro ne deε εwͻ asaase so, ne deε εwͻ ne mmienu mfinifii ne deε εwͻ asaase ase nyinaa yε Ne dea.",
+      "ceb": "Iya ang tanang anaa sa mga kalangitan ug ang tanan anaa sa kayutaan ug ang anaa sa taliwala niining duha ug ang anaa sa ilalom sa yuta.",
+      "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߝߋ߲ ߘߌ߫ ߡߍ߲ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߞߣߐ߫ ߸ ߡߍ߲ ߦߋ߫ ߘߎ߱ ߞߣߐ߫ ߸ ߡߍ߲ ߦߴߏ ߝߌ߬ߟߊ ߕߍ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߋ߫ ߓߎ߰ߘߌ߬ ߦߌߟߌ߲ߣߍ߲ ߞߘߐ߫"
     }
   },
   {
@@ -4399,7 +5307,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহ, তেওঁৰ বাহিৰে আন কোনো সত্য ইলাহ নাই, সুন্দৰ নামসমূহ কেৱল তেওঁৰেই।",
       "ne": "उही अल्लाह हो, जस बाहेक अरु कोही सत्य पूज्य छैन । उसका नामहरू धेरै राम्रा छन् ।",
       "si": "අල්ලාහ්, ඔහු හැර වෙනත් දෙවිඳෙකු නොමැත. ඔහුට අලංකාර නාමයන් ඇත.",
-      "km": "អល់ឡោះ(តែមួយគត់)គ្មានព្រះជាម្ចាស់ឯណាដែលត្រូវគេគោរពសក្ការៈដ៏ពិតប្រាកដក្រៅពីទ្រង់ឡើយ។ ទ្រង់មានព្រះនាមដ៏ល្អប្រពៃជាច្រើន។"
+      "km": "អល់ឡោះ(តែមួយគត់)គ្មានព្រះជាម្ចាស់ឯណាដែលត្រូវគេគោរពសក្ការៈដ៏ពិតប្រាកដក្រៅពីទ្រង់ឡើយ។ ទ្រង់មានព្រះនាមដ៏ល្អប្រពៃជាច្រើន។",
+      "he": "אללה, אין עוז אלוה מלבדו, והוא בעל השמות היאים ביותה",
+      "ka": "არ არის ღვთაება [თაყვანისცემის ღირსი], გარდა მისი (ალლაჰისა)! მას ეკუთვნის უმშვენიერესი სახელები!",
+      "lt": "Allahas! La ilaha illa Huva (niekas neturi teisės būti garbinamas, išskyrus Jį)! Jam priklauso Geriausi Vardai.",
+      "mg": "Allah ! Tsy misy Zanahary hafa afa-tsy Izy ! Azy ireo anarana tsara indrindra.",
+      "lg": "Allah tewali kisinzibwa kya mazima okuggyako Yye y'alina amannya agasinga obulungi.",
+      "rw": "Allah! Nta yindi mana iriho ikwiye gusengwa by’ukuri uretse We. Afite amazina meza.",
+      "rn": "Allah ni Yo Mana ata yindi mana ibwirijwe gusengwa atari Yo, Ifise amazina meza cane n’amatazirano ayiranga.",
+      "ln": "Allah, nzambe mosusu azali te ya kobondela na bosóló sé ye, mpe azali na bankombo ya kitoko koleka.",
+      "dag": "Naawuni, duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna, O malila yuli vɛla.",
+      "mos": "Wẽnde, Soab ka be rẽnda Yẽnda, yʋ-yɩlems yaa Yẽnd n so.",
+      "mdh": "Su Allah-da kadenan a wagib a simban ya tabiya na sekanin a manga mapya i ngala nin.",
+      "ak": "Onyankopͻn, awurade foforͻ biara nnihͻ gyesε Ɔno nko ara. Ɔno na abodin pa nyinaa wͻ no.",
+      "ceb": "Si Allah - walay dios (nga angayan simbahon) gawas Kaniya; ngadto Kaniya ang iya sa Labing Nindot nga mga Ngalan.",
+      "nqo": "ߊߟߊ߫ ߞߏ߬ߣߌ߲ ߸ ߡߊ߰ߙߌ߬ ߛߌ߫ ߕߍ߫ ߊ߬ߟߋ߬ ߞߐ߫ ، ߕߐ߯ ߢߌߡߊ ߟߎ߬ ߦߴߊ߬ߟߋ ߟߋ߬ ߟߊ߫"
     }
   },
   {
@@ -4461,7 +5383,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আমি তোমালোকক মাটিৰ পৰাই সৃষ্টি কৰিছোঁ, তালৈকেই তোমালোকক ওভতাই দিম আৰু তাৰ পৰাই তোমালোকক পুনৰ উলিয়াই আনিম।",
       "ne": "यसै धरतीबाट हामीले तिम्रो सृष्टि गर्यौं र यसैमा तिमीलाई फेरि फर्काउने छौं र यसैबाट अर्कोपल्ट तिमीहरू सबैलाइ निकाल्ने छौं ।",
       "si": "(මහපොළොව වන) එයින්ය අප නුඹලා මැව්වේ. තවද ඒ තුළටය අප නුඹලා නැවත යොමු කරනුයේ. තවද යළිත් වරක් එයින්ය අප නුඹලා බැහැර කරනුයේ.",
-      "km": "អំពីដីនេះហើយដែលយើងបានបង្កើតពួកអ្នក ហើយយើងនឹងឱ្យពួកអ្នកត្រឡប់ទៅក្នុងដីវិញ។ ហើយអំពីដីនេះដែរ យើងនឹងបញ្ចេញពួកអ្នកសាជាថ្មីម្ដងទៀត(នៅថ្ងៃបរលោក)។"
+      "km": "អំពីដីនេះហើយដែលយើងបានបង្កើតពួកអ្នក ហើយយើងនឹងឱ្យពួកអ្នកត្រឡប់ទៅក្នុងដីវិញ។ ហើយអំពីដីនេះដែរ យើងនឹងបញ្ចេញពួកអ្នកសាជាថ្មីម្ដងទៀត(នៅថ្ងៃបរលោក)។",
+      "he": "ממנה (מהאדמה) בראנו אתכם, ואליה נחזירכם, וממנה נוציא אתכם עוד פעם.",
+      "ka": "მიწისგან შეგქმენით თქვენ [ო, ადამიანნო], მასში დაგაბრუნებთ [სიკვდილის შემდეგ] და მისგან გამოგიყვანთ კიდევ ერთხელ [აღდგომის დღეს].",
+      "lt": "Iš jos (žemės) Mes sukūrėme tave, ir į ją Mes tave sugrąžinsime ir iš jos Mes išvesime tave dar kartą.",
+      "mg": "Avy aminy (tany) no naharianay Anareo, ary avy Aminy no hamerenanay Anareo, ary avy aminy ihany koa no hamoahanay Anareo indray.",
+      "lg": "Mu lyo (ettaka) mwe twabatonda era mu lyo mwe tubazza era mu lyo mwe tulibaggya omulundi omulala.",
+      "rw": "Twabaremye tubakomoye mu gitaka, ni na cyo tubasubizamo (igihe mwapfuye), ndetse ni na cyo tuzongera kubavanamo ku yindi nshuro (igihe cyo kuzurwa).",
+      "rn": "Bantu! Ni mw’ivu Twabaremye, ni na ryo nyene Tuzobasubizamwo mumaze gupfa, ni na ryo nyene kandi Tuzobazuramwo ku musi w’izuka kugira muharurirwe, muheze muhemberwe ivyo mwakoze.",
+      "ln": "Tokelaki bino kowuta na yango (mabele) mpe kati na yango nde tokozongisa bino, mpe tokobimisa bino lisusu okati na yango mbala mosusu.",
+      "dag": "Di (tiŋgbani) puuni ka Ti (Tinim’ Naawuni) nam ya, di puuni ka Ti lahi labsiri ya (yi gbala ni). Yaha! Di puuni ka Ti ti lahi yɛn ti yihi ya na wokati shεli yaha (Zaadali).",
+      "mos": "(Tẽn-gãngã) zug la D naan yãmba, la yaa be la D na n lebs yãmba, leb n yaa beenẽ la D na n yik yãmb yik-zẽng yεsa.",
+      "aa": "Sinaamey baaxok sin ginneeh, teetit sin gacisna rabteeniik lakat, kaadu teetik sin nayyaaqe aka adda Qhiyaamah ayro cisab kee galtoh.",
+      "mdh": "Nakebpun kanu sa lupa, makambalingan kanu bun sa lupa, endu pambuwaten nami bun sekanu ebpaluman kanu kabangkit sa dunya.",
+      "ak": "{Asaase} mu na Yεbͻͻ mo firiiɛ, na emu na Yεbεma moasan akͻ, na emu na Yεbεsan ama mo apue afri wͻ εberε a εtͻso bio (no mu).",
+      "ceb": "Gikan sa yuta Among gibuhat kamo, ug ngadto niini Kami mobalik kaninyo, ug gikan niini Kami modala kaninyo pag-usab (alang sa Paghukom).",
+      "nqo": "ߊ߲ ߞߵߊߟߎ߫ ߘߊ߲߫ ߊ߬ߟߋ ߟߋ߬ ߘߐ߫ ߸ ߊ߲ ߞߍߕߐ߫ ߊߟߎ߫ ߟߊߛߊ߬ߦߌ߬ ߟߴߊ߬ߟߋ ߟߋ߬ ߘߐ߫ ، ߊ߲ ߣߊ߬ߕߐ߫ ߊߟߎ߫ ߟߊߓߐ߫ ߟߴߊ߬ߟߋ ߟߋ߬ ߘߐ߫ ߛߋ߲߬ߢߊ߬ ߜߘߍ߫"
     }
   },
   {
@@ -4522,7 +5459,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশসমূহ আৰু পৃথিৱীত যি আছে সেই সকলো তেওঁৰেই; আৰু তেওঁৰ সান্নিধ্যত যিসকল আছে তেওঁলোকে অহংকাৰ কৰি তেওঁৰ ইবাদতৰ পৰা বিমুখ নহয় আৰু তেওঁলোকে বিৰক্তি বোধো নকৰে।",
       "ne": "आकाशहरू र जमिनमा जे छन्, सबै उसैको (अल्लाहको) हो । र जो उसको समीपमा छन् तिनीहरू उसको सेवा–भक्तिबाट न अट्टेरिपना गर्छन् र नत थाकछन् ।",
       "si": "තවද අහස්හි හා මහපොළොවෙහි සිටින්නන් ද ඔහු අබියස සිටින්නන් ද ඔහු සතු ය. ඔහුට වන්දනාමානය කිරීම සම්බන්ධයෙන් ඔවුහු උඩඟු නො වෙති. තවද ඔවුහු විඩාවට පත් නො වෙති.",
-      "km": "ហើយអ្នកដែលនៅលើមេឃជាច្រើនជាន់ និងនៅលើផែនដី គឺជាកម្មសិទ្ធិរបស់អល់ឡោះ(តែមួយគត់)។ ហើយអ្នកដែលនៅក្បែរទ្រង់(ម៉ាឡាអ៊ីកាត់) ពួកគេមិនក្រអឺតក្រទមក្នុងការគោរពសក្ការៈចំពោះទ្រង់ឡើយ ហើយពួកគេក៏មិនមានការនឿយណាយនោះដែរ។"
+      "km": "ហើយអ្នកដែលនៅលើមេឃជាច្រើនជាន់ និងនៅលើផែនដី គឺជាកម្មសិទ្ធិរបស់អល់ឡោះ(តែមួយគត់)។ ហើយអ្នកដែលនៅក្បែរទ្រង់(ម៉ាឡាអ៊ីកាត់) ពួកគេមិនក្រអឺតក្រទមក្នុងការគោរពសក្ការៈចំពោះទ្រង់ឡើយ ហើយពួកគេក៏មិនមានការនឿយណាយនោះដែរ។",
+      "he": "ולו כל אשר בשמים ובארץ, וכל הקרובים אליו (המלאכים) אינם מתייהרים מכדי לעובדו, ואינם מתעייפים.",
+      "lt": "Jam priklauso viskas, kas yra danguose ir žemėje. Ir tie, kurie yra arti Jo (t. y. angelai) nesididžiuoja garbinti Jį, nei jie nuvargsta (dėl Jo garbinimo).",
+      "mg": "Ho Azy irery avokoa izay rehetra any amin’ireo lanitra sy ny tany. Ireo izay eo akaikiny (ireo Anjely) dia tsy manambony tena amin’ny fanompoana Azy, ary tsy mba sasatra izy ireo.",
+      "lg": "Bibye ebyo byonna ebiri mu ggulu ne mu nsi, n'abo abali w'ali tebeekuluntaza ku kumusinza era tebakaluubirirwa.",
+      "rw": "Abari mu birere no ku isi ni abe. Kandi abari iwe (abamalayika) ntibagira ubwibone ngo bumve ko batamusenga ndetse ntibananirwa.",
+      "dag": "Yaha! Ŋuna n-su ŋun be sagbana ni tiŋgbani ni. Yaha! Ban (Malaaikanim’) be O sani maa bi tibgiri bɛ maŋ’ ka chɛ O jɛma, di mi bi wumdi ba.",
+      "mos": "Yẽ n so sẽn be saasẽ la tẽngẽ, la sẽn be b Yẽ nengẽ wã b pa maan waoog-m-meng ne A tũudmã ye, b yamã leb n pa lakd me ye.",
+      "aa": "Kaadu Qaranwaa kee baaxól tanim inkih Yalli-le, kaadu Malaykak Kay xaqul yan mari Kay qibaadak makaxxa-mariinitaay, mataqba (manakura).",
+      "mdh": "Endu kanu Allah su dalem nu manga langit endu su lupa endu su malaikat na di silan pemamasla sa simba nilan sa Allah endu di silan gasemu na di galugat.",
+      "ceb": "Iya ang tanan nga anaa sa kalangitan ug kalibutan. Ug kadtong mga (anghel) nga haduol Kaniya dili mapahitas-on sa pagsimba Kaniya, ni sila kapuyan (sa pagsimba Kaniya).",
+      "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߣߌ߫ ߘߎ߱ ߣߌߡߊ ߘߌ߫ ، ߡߍ߲ ߠߎ߬ ߦߴߊ߬ ߕߍ߰ߟߊ ߘߐ߫ ߏ߬ ߟߎ߬ ߕߍ߫ ߊ߬ߟߎ߫ ߖߘߍ߬ߘߐߓߏ߲߬ߧߊ߬ ߟߴߊ߬ ߓߊ߬ߕߏ ߡߊ߬ ߸ ߊ߬ߟߎ߫ ߘߏ߲߬ ߕߍ߫ ߛߍ߰ ߟߊ߫"
     }
   },
   {
@@ -4575,7 +5523,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যদি এই দুয়োৰে (আকাশ আৰু পৃথিৱীৰ) মাজত আল্লাহৰ বাহিৰে বহু ইলাহ থাকিলহেঁতেন, তেন্তে উভয়েই বিশৃংখল হৈ গ’লহেঁতেন। এতেকে সিহঁতে যি বৰ্ণনা কৰে তাৰ পৰা আৰছৰ অধিপতি আল্লাহ অতি পৱিত্ৰ।",
       "ne": "यदि आकाश र धरतीमा अल्लाह बाहेक अरु कोही पूज्य भएको भए यी दुवैको व्यवस्था अस्तब्यस्त हुने थियो, अतः महान् र उच्च छ अल्लाह, सत्तासनको स्वामी, ती कुराहरूबाट पवित्र छ जुन यी मुश्रिकहरूले वर्णन गर्दछन्",
       "si": "ඒ දෙකෙහි අල්ලාහ් හැර තවත් දෙවියකු සිටියේ නම් ඒ දෙකම අර්බුදයට පත්වනු ඇත. එහෙයින් ඔවුන් වර්ණනා කරන දැයින් (අර්ෂ් හෙවත්) රාජධානියේ හිමිපාණන් වූ අල්ලාහ් සුවිශුද්ධ ය.",
-      "km": "ប្រសិនបើនៅលើមេឃជាច្រើនជាន់និងនៅលើផែនដីមានព្រះច្រើនក្រៅពីអល់ឡោះនោះ វាទាំងពីរ(មេឃនិងផែនដី)ច្បាស់ជាអន្តរាយជាមិនខាន។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់នៃអារ៉ស្ហនោះ ទ្រង់មហាស្អាតស្អំអំពីអ្វីដែលពួកគេចោទប្រកាន់។"
+      "km": "ប្រសិនបើនៅលើមេឃជាច្រើនជាន់និងនៅលើផែនដីមានព្រះច្រើនក្រៅពីអល់ឡោះនោះ វាទាំងពីរ(មេឃនិងផែនដី)ច្បាស់ជាអន្តរាយជាមិនខាន។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់នៃអារ៉ស្ហនោះ ទ្រង់មហាស្អាតស្អំអំពីអ្វីដែលពួកគេចោទប្រកាន់។",
+      "he": "אך לו היו בהם אלים מלבד אללה, כי אז היו (השמים והארץ) מושחתים. אללה ישתבח שמו, ריבון כס-המלכות, ויתעלה מעל התארים אשר בהם יתארוהו.",
+      "lt": "Jei tame (danguose ir žemėje) būtų aliha (dievų) šalia Allaho, tada tikrai abu būtų sugriauti. Pašlovintas yra Allahas, Sosto Viešpats, (Aukštai yra Jis) virš viso to (blogio, kurį) jie Jam priskiria!",
+      "lg": "Singa (ensi n'eggulu) byalimu ebisinzibwa atali Katonda omu byombi byandyonoonese, (ekyo nno kikulage nti) Allah yasukkuluma Nnannyini Arishi kw'ebyo bye boogera.",
+      "ln": "Soki o kati ya likolo na o nsé ezalaka na banzambe mosusu elongo na Allah, mbele mobulu ekotaki kati na yango (mapata na mabele), mpe nkembo na Allah kolo ya ngwende na maye bazali kokokisa.",
+      "dag": "Duuma shεba yi di be di (sagbana mini tiŋgbani) ni ka pa ni Naawuni, tɔ! Di naan saɣim. Dinzuɣu, Naawuni nam niŋ kasi, Ŋuna n-nyɛ Al’arshi Duuma ka chɛ bɛ ni mali O ŋmahindi shεli maa.",
+      "mos": "Soab-zẽms sẽn pa Wẽnd sã n da beẽ saagẽ wã bɩ tẽngã zugu, b yiibã (saagã la tẽngã) fãa ra na sãame, yɩleng be ne Wẽnd, sẽn yaa Al-ʿars wagellã Naaba, n yi bãmb sẽn sɩfdã.",
+      "aa": "Qaranwaa kee baaxól Yallak kalah yallitte aninnay, ken nammay bayak yen, tokkel Qarshi Rabbi usun Kaa edde weelossu haanamak saytunih.",
+      "mdh": "U naduwa timan bu i kadenan atawa aden bu manga kadenan a salakaw sa Allah na nabinasa su dunya, mahasuti su Allah a Kadenan nu Ar'sh kanu langun nu kadtalu nu manga mushrik.",
+      "ak": "Sε anyame bi wͻ soro ne asaase so ka Nyankopͻn ho a anka (ͻsoro ne asaase) mmienu (nyinaa) asεe. Kronkron Hene ne Nyankopͻn, Animuonyam ahennie Wura no, Ɔso kyεn sεdeε wͻde susu no no.",
+      "nqo": "ߣߌ߫ ߡߊ߰ߙߌ߬ ߜߘߍ߫ ߟߎ߫ ߕߎ߲߬ ߞߍ߫ ߘߊ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߐ߫ ߣߌ߫ ߊߟߊ߫ ߕߍ߫ ߸ ߊ߬ߟߎ߫ ߕߎ߲߬ ߘߌ߫ ߕߌߢߍ߫ ߟߋ߬ ߘߍ߯ ، ߒ߬ߓߵߊߟߊ߫ ߛߊߣߌ߲ߡߊ߲߫߸ ߛߍ߬ߡߍ ߕߌ߱ ߞߊ߬ߣߌ߲߫ ߞߊ߬ ߓߐ߫ ߊ߬ߟߎ߬ ߟߊ߫ ߡߊ߲߬ߞߕߎ߬ߒ߬ߞߊ߲߬ߠߊ ߟߎ߫ ߡߊ߬"
     }
   },
   {
@@ -4616,7 +5574,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "bg": "Не виждат ли неверниците, че небесата и земята бяха съединени, а Ние ги разделихме? И сътворихме всяко живо същество от водата. Не ще ли повярват?",
       "mk": "Зарем не знаат неверниците дека небесата и Земјата беа една целина, па Ние ги распарчивме, и дека Ние од вода сè живо создаваме? Па зарем нема да веруваат?",
       "kn": "ಭೂಮ್ಯಾಕಾಶಗಳು ಪರಸ್ಪರ ಅಂಟಿಕೊಂಡಿದ್ದವು ಮತ್ತು ನಾವು ಅವುಗಳನ್ನು ಬೇರ್ಪಡಿಸಿದೆವು ಎಂದು ಸತ್ಯನಿಷೇಧಿಗಳು ನೋಡುವುದಿಲ್ಲವೇ? ಜೀವವಿರುವ ಎಲ್ಲ ವಸ್ತುಗಳನ್ನೂ ನಾವು ನೀರಿನಿಂದ ಉಂಟು ಮಾಡಿದೆವು. ಆದರೂ ಅವರು ವಿಶ್ವಾಸವಿಡುವುದಿಲ್ಲವೇ?",
-      "si": "නියත වශයෙන් ම අහස් හා පොළොව එකට (ස්කන්ධයක් ව) තිබුණි. පසුව අපි ඒ දෙක වෙන් කළ බවත් තවද ජීවමාන සෑම දෙයක් ම ජලයෙන් ඇති කළ බවත් ප්‍රතික්ෂේප කළවුන් නො දුටුවෝ ද? එහෙයින් ඔවුහු විශ්වාස කළ යුතු නො වේ ද?"
+      "si": "නියත වශයෙන් ම අහස් හා පොළොව එකට (ස්කන්ධයක් ව) තිබුණි. පසුව අපි ඒ දෙක වෙන් කළ බවත් තවද ජීවමාන සෑම දෙයක් ම ජලයෙන් ඇති කළ බවත් ප්‍රතික්ෂේප කළවුන් නො දුටුවෝ ද? එහෙයින් ඔවුහු විශ්වාස කළ යුතු නො වේ ද?",
+      "he": "האם לא ראו אלה אשר כפרו, כי השמים והארץ היו מרותקים יחד ואנו הפרדנו ביניהם, ויצרנו מן המים את כל הדברים החיים? האם לא יאמינו?",
+      "lt": "Argi tie, kurie netiki, nežinojo, kad dangūs ir žemė buvo sujungti kartu į vieną nedalomą dalį, tada Mes padalinome juos? Ir Mes sukūrėme iš vandens kiekvieną gyvą dalyką. Argi tada jie netikės?",
+      "lg": "Abo abatakkiriza tebakiraba nti mazima eggulu omusanvu n'ensi byali kitole ne tubyabuluzaamu era ne tuggya mu mazzi buli kintu ekiramu, abaffe tebakkiriza!",
+      "rw": "Ese abahakanye ntibabonye ko ibirere n’isi byari bifatanye nyuma tukabitandukanya, kandi ko buri kinyabuzima cyose twakiremye mu mazi? Ese ubwo ntibemera?",
+      "ln": "Boye bapengwi bazali kornona te, ete likolo na mabele bizalaki ya kokangama mpe to fungoli yango? Mpe tokela bomoyi nyonso kowuta na mayi? Boye bazali kondima te?",
+      "mos": "Rẽ yĩnga kɩfr-rãmbã pa yã tɩ saasã la tẽngã rag n taba taaba? Tɩ Tõnd welg b yiibã, la Tõnd maana bõn-vɩɩl fãa n yi koomẽ, b pa kõt sɩd la?",
+      "ak": "Enti (Kaafirfoͻ) boniayεfoͻ no nhunuu sε na anka ͻsoro ne asaase bͻ mu (baako) εna Yεpaee mu? Ɛna adeε a εwͻ nkwa biara Yεde nsuo na εyͻeε, enti wͻnnye nni anaa?",
+      "nqo": "ߊ߬ ߝߐ߫ ߓߊ߲߬ߓߊ߮ ߟߎ߬ ߡߴߊ߬ ߦߋ߫ ߓߊ߬ ߞߏ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߣߙߊߣߍ߲߫ ߠߋ߫ ߕߘߍ߬ ߢߐ߲߮ ߠߊ߫ ߒ߬ߠߎ߫ ߟߋ߫ ߞߵߊ߬ߟߎ߫ ߥߊ߬ߟߏ߲߬ ߢߐ߲߮ ߠߊ߫ ߸ ߊ߬ ߣߴߊ߲ ߞߊ߬ ߝߋ߲߫ ߣߌߡߊ ߓߍ߯ ߘߊ߲߫ ߖߌ ߟߋ߬ ߘߐ߫، ߊ߬ ߝߐ߫ ߊ߬ߟߎ߬ ߕߍ߫ ߟߊ߫ ߟߴߏ߬ ߟߊ߫ ߟߋ߫ ߓߊ߬؟"
     }
   },
   {
@@ -4676,7 +5642,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "প্ৰতিটো জীৱই মৃ্ত্যুৰ সোৱাদ গ্ৰহণ কৰিব; আমি তোমালোকক ভাল আৰু বেয়াৰ দ্বাৰা বিশেষভাৱে পৰীক্ষা কৰি থাকোঁ, আৰু আমাৰ ওচৰতেই তোমালোকে উভতি আহিব লাগিব।",
       "ne": "प्रत्येक जीवले मृत्युको स्वाद चाख्नुपर्नेछ र हामीले राम्रो नराम्रो परिस्थितिहरूमा पारेर तिमी सबैको परीक्षा लिन्छौ । अन्ततः तिमी सबैले हामीतिरै फर्केर आउनु छ ।",
       "si": "සෑම ආත්මයක් ම මරණයේ සුවය විඳවන්නකි. තවද පරීක්ෂණයක් ලෙස අපි නපුරෙන් හා යහපතින් නුඹලා පිරික්සන්නෙමු. තවද නුඹලා නැවත යොමු කරනු ලබනුයේ අප වෙත ම ය.",
-      "km": "រាល់ជីវិតទាំងអស់ គឺនឹងត្រូវភ្លក់រសជាតិនៃសេចក្តីស្លាប់។ ហើយយើងនឹងសាកល្បងពួកអ្នក(ឱមនុស្សលោក)ដោយប្រការអាក្រក់ និងប្រការល្អ។ ហើយពួកអ្នកនឹងត្រូវគេនាំត្រឡប់មកកាន់យើង(តែមួយគត់)។"
+      "km": "រាល់ជីវិតទាំងអស់ គឺនឹងត្រូវភ្លក់រសជាតិនៃសេចក្តីស្លាប់។ ហើយយើងនឹងសាកល្បងពួកអ្នក(ឱមនុស្សលោក)ដោយប្រការអាក្រក់ និងប្រការល្អ។ ហើយពួកអ្នកនឹងត្រូវគេនាំត្រឡប់មកកាន់យើង(តែមួយគត់)។",
+      "he": "כל נפש תטעם את המוות, ונעמידכם בניסיונו של הרע והטוב, ואלינו תושבו.",
+      "ka": "ყოველი [ქმნილება] სული [ყოველი ადამიანი, ჯინი, ანგელოზი, ცხოველი და სხვა] იგემებს სიკვდილს, და ჩვენ გცდით სიავითა და სიკეთით. და ჩვენთან იქნებით დაბრუნებულნი.",
+      "lt": "Kiekvienas paragaus mirties, ir Mes padarysime išbandymą jums blogiu ir gėriu. Ir pas Mus jūs būsite sugrąžinti.",
+      "mg": "Ny zava-manan'aina rehetra dia samy hanandrana fahafatesana. Hosedrainay amin’ny ratsy sy amin’ny tsara ianareo mba ho fitsapana. Ary aty Aminay no hamerenana anareo.",
+      "lg": "Buli muntu wa kukomba ku kufa era tubagezesa n'obubi n'obulungi nga kikemo era Gyetuli gye mujja okudda.",
+      "rw": "Buri wese azasogongera ku rupfu, kandi tuzabagerageresha ibibi n’ibyiza. Ndetse iwacu ni ho muzagarurwa.",
+      "ln": "Molimo nyoso mokomeka liwa (moto nyoso akokufaka), mpe tokomeka bino na mabe mpe na malamu mpe epai na biso nde bokozongisama.",
+      "dag": "Nyɛvuli kam nyɛla din yɛn lam kum. Yaha! Ti (Tinim’ Naawuni) dahindi ya mi ni din be mini din vεla, ka di shiri nyɛla dahimbu. Yaha! Ti sani ka bɛ yɛn ti labsi ya na.",
+      "mos": "Yõor fãa na n lemba kũum, la D na n zarba yãmb ne sõng la wẽnga, la yaa Tõnd nengẽ la y na n lebg n wa.",
+      "aa": "Ummaan nafsi raba tammoysele! Umaanée (gibdaabina kinnuk) kee maqaanél (niqmoota kinnuk) mokkoroh (aqayyaare kinnuk) sin mokkorennooh, cisab kee galtóh Nee fanah gacsimetton.",
+      "mdh": "Langun na barangyawa na makananam sa kapatay endu pembatalun nami sekanu sa mapasang endu mapya (sya sa dunya) endu siya kanu bun makambalingan sa laki.",
+      "ak": "Ɔkra biara bεka owuo ahwε. Yεde bͻne ne papa nso bεsͻ mo ahwε, na Yεhͻ na mobεsan aba.",
+      "ceb": "Ang Matag kalag mokatilaw sa kamatayon. Ug Kami magsulay kaninyo pinaagi sa daotan ug sa maayo (nga kahimtang) ingon nga pagsulay; ug ngadto sa (Allah) kamong tanan mubalik (alang sa Paghukom).",
+      "nqo": "ߣߌߡߊ ߓߍ߯ ߘߌ߫ ߛߊ߬ߦߊ ߡߊߜߙߏ߬ ، ߊ߲ ߧߴߊߟߎ߫ ߞߘߐߓߐ߫ ߟߊ߫ ߜߊ߬ߟߏ ߣߌ߫ ߤߙߊ ߟߊ߫ ߘߐ߬ߜߍ߬ߟߌ ߟߋ߫ ߡߊ߬ ، ߊߟߎ߫ ߛߊ߬ߦߌ߲߬ߕߐ߫ ߒ߬ߠߎ߫ ߟߋ߫ ߡߊ߬"
     }
   },
   {
@@ -4733,7 +5713,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে ঈমান আনিছে আৰু সৎকৰ্ম কৰিছে আল্লাহে তেওঁলোকক জান্নাতত প্ৰৱেশ কৰাব, যাৰ পাদদেশত নদীসমূহ প্ৰবাহিত; নিশ্চয় আল্লাহে যি ইচ্ছা কৰে সেইটোৱেই কৰে।",
       "ne": "आस्थावान र असल कर्म गर्ने मानिसहरूलाई अल्लाह यस्ता बगैंचाहरूमा प्रवेश गराउनेछ, जसमुनि नहरहरू बगिराखेका हुनेछन् निःसन्देह अल्लाहले जे चाहन्छ त्यो गर्दछ ।",
       "si": "නියත වශයෙන් ම අල්ලාහ් විශ්වාස කොට යහකම් කළවුන් ඊට යටින් ගංගා ගලා බස්නා (ස්වර්ග) උයන් වෙත ඇතුළත් කරයි. නියත වශයෙන් ම අල්ලාහ් තමන් සිතන දෑ සිදු කරයි.",
-      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់នឹងបញ្ចូលបណ្តាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសលទៅក្នុងឋានសួគ៌ដែលមានទន្លេជាច្រើនហូរកាត់ពីក្រោមវា។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់ធ្វើនូវអ្វីដែលទ្រង់មានបំណង។"
+      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់នឹងបញ្ចូលបណ្តាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសលទៅក្នុងឋានសួគ៌ដែលមានទន្លេជាច្រើនហូរកាត់ពីក្រោមវា។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់ធ្វើនូវអ្វីដែលទ្រង់មានបំណង។",
+      "he": "אללה יכניס את אלה אשר האמינו ועושי הטוב אל גני עדן שנהרות זורמים מתחתיהם. אללה עושה מה שהוא רואה לנכון.",
+      "mg": "Marina fa I Allah no mampiditra ireo izay mino sy ireo izay manao asa soa ao amin’ny Paradisa, izay misy renirano mikoriana ao ambaniny. Marina fa I Allah dia manao izay tiany.",
+      "lg": "Mazima Allah aliyingiza Ejjana abo abaakola emirimu emirungi, nga emigga gikulukutira wansi waazo, mazima Allah akola ekyo ky'aba ayagadde.",
+      "rw": "Mu by’ukuri ba bandi bemeye bakanakora ibikorwa byiza, Allah azabinjiza mu busitani butembamo imigezi (Ijuru), kuko rwose Allah akora ibyo ashaka.",
+      "ln": "Ya soló, Allah akokotisa bandimi baye bazalaki kosala misala ya malamu na lola oyo ezali kolekisa na nsé na yango mingala. Ya soló, Allah asalaka oyo alingi.",
+      "dag": "Achiika! Naawuni nyɛla Ŋun yɛn kpεhi ninvuɣu shεba ban ti yεlimaŋli ka tum tuunvεla Alizanda yili shεŋa kulibɔna ni yɛn tizɔri gindi di gbinni. Achiika! Naawuni tumdila O ni bɔri shεli.",
+      "mos": "Ad Wẽnd kẽesda neb nins sẽn kõ sɩda la b tʋm tʋʋm-sõmsã arzãna, tɩ kʋɩls zoet a tẽngrã, ad Wẽnd maanda A sẽn rate.",
+      "mdh": "Benal su Allah na paludepen nin su manga mu'min a minggalebek sa manga mapya sa manga surga a belagilay sa kababan nin i manga pulangi, su Allah na enggalebekenin i kahanda nin.",
+      "ak": "Nokorε sε Nyankopͻn de wͻn a wͻagye adie na wͻdi dwuma pa no bewura Aheman a nsubͻnten nenam aseε no mu. Nokorε sε, Nyankopͻn deε Ɔyε deε Ɔpε.",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߟߊߒߠߦߊߓߊ߯ ߢߌ߬ߡߊ߬ ߞߍ߬ߟߊ ߟߎ߫ ߟߋ߬ ߟߊߘߏ߲߬ ߠߊ߫ ߣߊߞߐ ߟߎ߬ ߘߐ߫ ߸ ߞߐ߬ߢߊ ߟߎ߬ ߦߋ߫ ߥߦߏ߬ ߟߊ߫ ߡߍ߲ ߠߎ߬ ߞߘߐߟߊ ߟߎ߬ ߘߐ߫ ، ߊߟߊ߫ ߦߋ߫ ߞߏ߫ ߟߋ߬ ߞߍ߫ ߟߊ߫ ߘߋ߬ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫"
     }
   },
   {
@@ -4796,7 +5786,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আল্লাহে মুমিনসকলক (তেওঁলোকৰ শত্ৰুৰ পৰা) প্ৰতিৰক্ষা দি থাকে, নিশ্চয় তেওঁ কোনো বিশ্বাসঘাতক, অকৃতজ্ঞ ব্যক্তিক পছন্দ নকৰে।",
       "ne": "(हे पैगम्बर !) सुनिराख सच्चा मोमिनहरूबाट शत्रुलाई स्वयम् अल्लाहले हटाइराख्दछ । अल्लाहले कदापि कुनै विश्वासघाती, कृतध्नलाई मनपराउँदैन ।",
       "si": "විශ්වාස කළවුන්ගෙන් (ඔවුනට අත් වන හානිය) නියත වශයෙන් ම අල්ලාහ් වළක්වාලනු ඇත. නියත වශයෙන් ම අල්ලාහ් ගුණමකු වූ සෑම ද්‍රෝහියෙකුවම ප්‍රිය නො කරනු ඇත.",
-      "km": "ពិតប្រាកដណាស់ អល់ឡោះការពារបណ្តាអ្នកដែលមានជំនឿ។ ពិតប្រាកដណាស់ អល់ឡោះទ្រង់មិនស្រលាញ់រាល់អ្នកដែលក្បត់ និងរមិលគុណឡើយ។"
+      "km": "ពិតប្រាកដណាស់ អល់ឡោះការពារបណ្តាអ្នកដែលមានជំនឿ។ ពិតប្រាកដណាស់ អល់ឡោះទ្រង់មិនស្រលាញ់រាល់អ្នកដែលក្បត់ និងរមិលគុណឡើយ។",
+      "he": "הן, אללה מגן על אלה אשר האמינו. הן, אללה אינו אוהב כל בוגד וכופר מושבע.",
+      "lt": "Iš tiesų, Allahas gina tuos, kurie tiki. Iš tiesų, Allahas nemėgsta išdavikiškų nedėkingų Allahui žmonių [tų, kurie nepaklūsta Allahui, tačiau paklūsta Šaitan (Šėtonui)].",
+      "mg": "Allah dia tena miaro tokoa ireo izay mino. Tena marina fa Allah dia tsy mitia ireo mpamadika, tsy mpankasitraka.",
+      "lg": "Mazima Allah alwanirira abo abakkiriza, mazima Allah tayagala oyo yenna omukumpanya omuwakanyi.",
+      "rw": "Mu by’ukuri Allah arengera abemeye. Rwose Allah ntakunda umuhemu wese w’umuhakanyi (w’indashima).",
+      "rn": "Mu vy’ukuri Imana Allah, Irakingira abemeramana akadenderezo k’abagarariji; mu vy’ukuri Imana Allah, ntikunda namba umuhemu atubahiriza isezerano ryayo, yihakana inema zayo.",
+      "ln": "Ya soló, Allah abundelaka bandimi, ya solo, Allah alingaka te mokosi oyo nyoso azanga botondi.",
+      "dag": "Achiika! Naawuni taɣirila ninvuɣu shεba ban tiyεlimaŋli (ka chɛ chɛfurinim’ barina). Achiika! Naawuni bi bɔri bilkɔŋsilana kam, ni gutulunsi lana.",
+      "mos": "Ad Wẽnd sõngda neb nins sẽn kõ sɩda, ad Wẽnd pa nong zãmb soab fãa sẽn yɑɑ yel-sõm-zɩt ye.",
+      "aa": "Diggah Yalli isi nummayse mara cataah koros umaané keenik gutqaah waasah, diggah Yalli ummaan ganoliy amaanoota makay Yallih niqmat yangaddee makicna.",
+      "mdh": "Benal su Allah na pangalawanin sa makagkayd su manga mu'min, su Allah na di nin kyugan su di kasaligan.",
+      "ak": "Nokorε sε Nyankopͻn bͻ wͻn a wͻagye adie no ho ban. Nokorε sε Nyankopͻn mpε (onipa) biara a odi hwammͻ, na wͻ’yε boniayεni no asεm.",
+      "ceb": "Sa pagkatinuod ang Allah nagdepensa ug manalipod niadtong mituo (sa Kamatuoran); sa pagkatinuod ang Allah dili makagusto sa bisan kinsa nga dili matinud-anon, ug dili mapasalamaton (manmilimod).",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߡߊߞߊ߲ߞߊ߲߫ ߠߊ߫ ߟߋ߫ ߘߋ߬ ، ߓߊ ߖߊ߲߬ߝߊ߬ߒߕߋ߫ ߝߌߕߙߌߥߊߟߋ ߘߊ߬ߡߊ ߡߊ߲߫ ߘߌ߫ ߊߟߊ߫ ߦߋ߫"
     }
   },
   {
@@ -4858,7 +5862,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশসমূত যি আছে আৰু পৃথিৱীত যি আছে সেই সকলো তেওঁৰেই। নিশ্চয় আল্লাহ, তেৱেঁই অভাৱমুক্ত, পৰম প্ৰশংসিত।",
       "ne": "उसैको हो जे आकाशहरूमा र जेजति धरतीमा छन् । निःसन्देह अल्लाह नै निष्पृह र प्रशंसनीय छ ।",
       "si": "අහස් තුළ ඇති දෑ ද, මහපොළොව තුළ ඇති දෑ ද ඔහු සතු ය. තවද නියත වශයෙන් ම අල්ලාහ් වන ඔහු මය අවශ්‍යතාවන්ගෙන් තොර, ප්‍රශංසාලාභී වනුයේ.",
-      "km": "អ្វីៗដែលនៅលើមេឃជាច្រើនជាន់ និងអ្វីៗដែលនៅលើផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។ ហើយពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាមានលើសលប់ ជាអ្នកដែលត្រូវបានគេកោតសរសើរបំផុត។"
+      "km": "អ្វីៗដែលនៅលើមេឃជាច្រើនជាន់ និងអ្វីៗដែលនៅលើផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។ ហើយពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាមានលើសលប់ ជាអ្នកដែលត្រូវបានគេកោតសរសើរបំផុត។",
+      "he": "לו כל אשר בשמיים ואשר בארץ, ואכן אללה העשיר (אינו נזקק) המהולל.",
+      "ka": "მისია [ყველაფერი], რაც ცათა შინაა და რაც ქვეყანასა ზედაა. და ჭეშმარიტად, ალლაჰი მდიდარი, ყოვლადქებულია.",
+      "lt": "Jam priklauso viskas, kas yra danguose, ir viskas, kas yra žemėje. Ir iš tiesų, Allahas - Jis yra Turtingas (Nepriklausomas nuo jokių poreikių), Vertas visos šlovės.",
+      "mg": "Ary Azy izay rehetra any amin’ireo lanitra sy ety an-tany ; ary Allah irery ihany Ilay Manana ny ampy, Ilay Mendri-piderana.",
+      "lg": "Bibye Yekka ebyo ebiri mu ggulu omusanvu n'ebyo ebiri mu nsi era ddala Allah Yye y'atalina kye yeetaaga atenderezebwa.",
+      "rw": "Ibiri mu birere n’ibiri mu isi ni ibye. Kandi mu by’ukuri Allah ni Uwihagije, Ukwiye gushimwa.",
+      "dag": "Ŋuna n-su din be sagbana ni, ni din be tiŋgbani ni. Yaha! Baŋmi ni kadama achiika! Naawuni n-nyɛ Bundana, Duuma paɣirigu.",
+      "mos": "Yẽ n so bũmb ning sẽn be saasẽ la tẽngẽ, la ad Wẽnd seka A meng (n yi bõn-naandsã) n yaa pẽgr Naaba.",
+      "aa": "Qaranwal taniimiiy, baaxól tanim inkih Yalli Íe, kaadu diggah Yalli usuk gaddaliy tuk ceytewaay, kulli caalatal faylali kinni.",
+      "mdh": "Lekanin a (Allah) su dalem na pitu lapis a langit endu lupa, endu su Allah i kawasa a pebpugin.",
+      "ak": "Adeε a εwͻ soro ne adeε a εwͻ asaase so (nyinaa) yε Nedea. Nokorε sε Nyankopͻn ne (Otumfoͻ a) Wanya Neho a Onhia obiara biribiara, na Ɔno ne Ayeyie Wura no.",
+      "ceb": "Iya sa (Allah lamang) ang tanan nga anaa sa kalangitan ug ang tanan nga anaa sa kayutaan. Sa pagkatinuod ang Allah mao ang Igo sa Kaugalingon, ang Dalaygon.",
+      "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߞߣߐߝߋ߲ ߣߌ߫ ߘߎ߱ ߞߣߐߝߋ߲ ߘߌ߫ ، ߊ߬ ߣߌ߫ ߞߏ߫ ߊߟߊ߫ ߸ ߊ߬ߟߋ ߟߋ߬ ߞߊ߯ߙߌߓߊ߮ ߘߌ߫ ߸ ߕߊ߲߬ߘߏ߬ߕߊ ߟߋ߬"
     }
   },
   {
@@ -4916,7 +5933,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহে ফিৰিস্তাসকলৰ মাজৰ পৰা আৰু মানুহৰ মাজৰ পৰা ৰাছুল মনোনীত কৰে। নিশ্চয় আল্লাহ সৰ্বশ্ৰোতা, সম্যক দ্ৰষ্টা।",
       "ne": "अल्लाहले फरिश्ताहरूमध्येबाट र मानिसहरूमध्येबाट सन्देशबाहक रोज्दछ । निश्चय नै अल्लाह सबै कुरा सुन्दछ, देख्दछ ।",
       "si": "මලක්වරුන් අතරින් හා ජනයා අතරින් අල්ලාහ් දූතවරුන් තෝරා ගත්තේ ය. නියත වශයෙන් ම අල්ලාහ් සර්ව ශ්‍රාවක ය; සර්ව නිරීක්ෂක ය.",
-      "km": "អល់ឡោះទ្រង់បានជ្រើសរើសមួយចំនួនពីម៉ាឡាអ៊ីកាត់ និងមួយចំនួនពីមនុស្សលោកឲ្យធ្វើជាអ្នកនាំសារ។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាឮ មហាឃើញបំផុត។"
+      "km": "អល់ឡោះទ្រង់បានជ្រើសរើសមួយចំនួនពីម៉ាឡាអ៊ីកាត់ និងមួយចំនួនពីមនុស្សលោកឲ្យធ្វើជាអ្នកនាំសារ។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាឮ មហាឃើញបំផុត។",
+      "he": "אללה בוחר שליחים מקרב המלאכים ומקרב האנשים. אכן, אללה הכול שומע והכול רואה.",
+      "ka": "ალლაჰმა ამოარჩია ანგელოზთაგან შუამავლები და ხალხისაგან [რომლებიც გადასცემენ ალლაჰის ზეშთაგონებას სხვა ადამიანებს]. ჭეშმარიტად, ალლაჰი ყოვლისმსმენი, ყოვლისმხედველია.",
+      "lt": "Allahas pasirenka Pasiuntinius iš angelų ir iš žmonių tarpo. Iš tiesų, Allahas yra Visa Girdintis, Visa Matantis.",
+      "mg": "Allah dia nisafidy iraka tamin’ireo Anjely sy tamin’ireo olombelona. Tena marina fa Allah dia Maheno sy Mahita ny zava-drehetra.",
+      "lg": "Allah alonda mu Bamalayika Ababaka, bw'atyo ne mu bantu, mazima Allah awulira nnyo era alaba nnyo.",
+      "rw": "Allah atoranya Intumwa mu bamalayika no mu bantu. Mu by’ukuri Allah ni Uwumva cyane, Ubona bihebuje.",
+      "dag": "Naawuni gahindila tuun’ shɛba Malaaikanim’ puuni, ka lahi gahindi ninsalinim’ puuni. Achiika! Naawuni nyɛla Wumda, Nyara.",
+      "mos": "Wẽnd n tũusd Malεgsã n maand Tẽn-tʋʋm-rãmba, la nebã sʋk me (Wẽnd n tũusd n maan Tẽn-tʋʋm-rãmba) ad Wẽnd yaa wʋmd n yaa neta.",
+      "mdh": "Su Allah i bamili kanu malaikat sa manga sinugu, endu sya kanu manga taw, su Allah i pakakineg a pakailay.",
+      "ak": "Nyankopͻn yi asomafoͻ fri Soro abͻfoͻ mu, εna nnipa mu nso (saa ara). Nokorε sε Nyankopͻn na Ɔte biribiara, na Ohunu biribiara.",
+      "ceb": "Ang Allah nagpili ug mga mensahero gikan sa mga anghel ug gikan sa mga tawo; sa pagkatinuod ang Allah mao ang Labing Nakadungog sa Tanan, Labing Nakakita.",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߞߋߟߊ ߘߏ߫ ߟߎ߫ ߛߎߥߊ߲ߘߌ߫ ߟߊ߫ ߞߋ߲ߛߐ߲ ߠߎ߬ ߘߐ߫ ߊ߬ ߣߌ߫ ߡߐ߱ ߟߎ߬ ߘߐ߫ ، ߊߟߊ߫ ߦߋ߫ ߡߍ߲ߠߌ߲ߠߊ߫ ߦߋߟߌߟߊ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬"
     }
   },
   {
@@ -4975,7 +6004,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মুমিনসকল! তোমালোকে ৰুকু কৰা, ছাজদাহ কৰা আৰু তোমালোকৰ প্ৰতিপালকৰ ইবাদত কৰা, লগতে সৎকৰ্ম কৰা, যাতে তোমালোকে সফল হ’ব পাৰা।(ছাজদাহ)",
       "ne": "हे मोमिनहरू नतमस्तक हुने र ढोग्ने गर र आफ्नो पालनकर्ताको उपासनामा लागिरहनेगर र भलो कार्य गर्नेगर ताकि तिमीलाई सफलता प्राप्त होस् ।",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලා (නැවී) රුකූඋ කරනු. තවද (නළල බිම තබා) සුජූද් කරනු. තවද නුඹලාගේ පරමාධිපතිට නැමදුම් කරනු. තවද යහකම් සිදු කරනු. නුඹලා ජය ලැබිය හැකි වනු පිණිස.",
-      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកឱនរូកុ និងក្រាបស៊ូជោត ហើយនិងគោរពសក្ការៈចំពោះព្រះជាម្ចាស់របស់ពួកអ្នក ព្រមទាំងសាងអំពើល្អ សង្ឃឹមថាពួកអ្នកនឹងទទួលបានជោគជ័យ។"
+      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកឱនរូកុ និងក្រាបស៊ូជោត ហើយនិងគោរពសក្ការៈចំពោះព្រះជាម្ចាស់របស់ពួកអ្នក ព្រមទាំងសាងអំពើល្អ សង្ឃឹមថាពួកអ្នកនឹងទទួលបានជោគជ័យ។",
+      "he": "הוי, אלה אשר האמינו! כרעו וסגדו ועבדו את ריבונכם ועשו את הטוב למען תצליחו.",
+      "lt": "Jūs, kurie patikėjote, nusilenkite ir suklupkite kniūbsčiomis, ir garbinkite savo Viešpatį, ir darykite gerą, kad būtumėte jūs sėkmingi.",
+      "mg": "Ry ianareo izay nino, miondreha, miankohofa, ary manompoa ny Tomponareo ianareo ; ka manaova ny soa. Angamba ahazo fahombiazana ianareo !",
+      "lg": "Abange mmwe abakkiriza mukutame (nga mukutte ku maviivi) era muvunname, musinze Mukama Omulabirizi Wammwe, era mukole obulungi musobole okutuuka ku buwanguzi.",
+      "rw": "Yemwe abemeye! Nimwuname, mwubame, kandi mugaragire Nyagasani wanyu, ndetse munakore ibyiza kugira ngo muzahirwe.",
+      "ln": "Eh bino bandimi! Bongumbama, bofukama mpe bobondela Nkolo na bino mpe bosala malamu mpo ete bolonga.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yεlimaŋli! Kurummi ya ka ŋmε gbiεɣu n-ti Naawuni, ka jεm ya yi Duuma (Naawuni), ka tum ya din viɛla, achiika! Yi nyɛla ban yɛn tilgi.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩda! Maan-y ruku, la suguudu la tũ-y y Soabã, la y maan tʋʋm-sõma, tɩ tõe tɩ y tɩlge.",
+      "aa": "Yeemene maraw salat abtan waqdi Salaatat rukuuq kee sujuud abaay, sinni Rabbi uqbuda qibaadá kaah caglisak, kaadu maqaanc aba! Jannatal taffoofeeniih Ruffu ittaanamkeh.",
+      "mdh": "Sekanu a manga mu'min ruku' kanu endu sugyud kanu, endu simba nu su Kadenan nu, endu enggalebek nu i mapya, ka malemu sa lekanu i makauntung kanu.",
+      "ak": "Mo a moagye adie, momͻ momu ase, na monfa moanim mmutu fͻm, na monsom mo Wura Nyankopͻn, na monyε papa sεdeε mobedi nkonim.",
+      "ceb": "Mga magtutuo, iyukbo ug ihapa ang inyong mga kaugalingon ug simbaha ang inyong Ginoo (Allah lamang), ug buhata ang maayo - aron kamo mouswag.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߞߐߡߊߓߌߘߌ߲ ߞߍ߫ ߞߊ߬ ߕߌ߲ߓߌߘߌ߲ ߞߍ߫ ߞߵߊߟߎ߫ ߡߊ߰ߙߌ ߓߊ߬ߕߏ߬ ߸ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߤߙߊ߫ ߟߋ߬ ߞߍ߫ ߖߐ߲߬ߛߴߊߟߎ߫ ߘߌ߫ ߛߎߘߊ߲߫"
     }
   },
   {
@@ -5037,7 +6079,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহেই ৰাতি আৰু দিনৰ আৱৰ্তন ঘটায়, নিশ্চয় ইয়াত অন্তৰ্দৃষ্টিসম্পন্ন ব্যক্তিসকলৰ বাবে আছে শিক্ষা।",
       "ne": "अल्लाहले नै राती र दिनलाई फेर्दछ । निश्चय नै देख्ने आँखाहरूका निम्ति यसमा ठूलो शिक्षा छ ।",
       "si": "අල්ලාහ් රාත්‍රිය හා දහවල පෙරළයි. නියත වශයෙන් ම දෘෂ්ටීන් ඇත්තන්හට එහි පාඩමක් ඇත.",
-      "km": "អល់ឡោះទ្រង់ផ្លាស់ប្តូររវាងពេលយប់និងពេលថ្ងៃ។ ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាមេរៀនមួយសម្រាប់អ្នកដែលមានការឈ្វេងយល់។"
+      "km": "អល់ឡោះទ្រង់ផ្លាស់ប្តូររវាងពេលយប់និងពេលថ្ងៃ។ ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាមេរៀនមួយសម្រាប់អ្នកដែលមានការឈ្វេងយល់។",
+      "he": "אללה מחליף ביניהם את הלילה והיום במחזוריות, ובזאת מוסר השכל לאנשים המבינים.",
+      "ka": "[მხოლოდ] ალლაჰი ანაცვლებს დღესა და ღამეს. ჭეშმარიტად, ამაში შეგონებაა მხედველთათვის [გონიერთათვის].",
+      "mg": "Mampifandimby ny alina sy ny andro I Allah. Tena marina fa amin’izany dia misy ny fisintonan-tsaina handinika ho an’ireo izay manam-paharetana.",
+      "lg": "Allah akyusakyusa ekiro n'emisana, mazima mu ekyo mulimu eky'okuyiga eri abalina amaaso.",
+      "rw": "Allah asimburanya ijoro n’amanywa. Mu by’ukuri muri ibyo harimo isomo ku bashishoza.",
+      "dag": "O (Naawuni) lebgirila yuŋ mini wuntaŋa, achiika! Ŋɔ maa puuni mali kpahimbu n-zaŋ ti ninvuɣu shɛba ban mali haŋkaya.",
+      "mos": "Wẽnd n leebd yʋngã la wĩndgã, ad tags-n-ges bee yel-kãngã pʋgẽ ne pʋ-tẽ-nin rãmba.",
+      "aa": "Yallih dudda tascasse astootik tanim, Yalli bar kee laqot aba korankorsiyya ken nammayak tiiy tiil keenik ciggiilisak, diggah tohut bagi inti-le marah kas edde geyaanam tan.",
+      "mdh": "Papegkelid-keliden nu Allah su magabi endu malamag, nakadalem lu ba su tanda a kapegkagaga nu Allah kanu manga taw a aden pusungin.",
+      "ak": "Nyankopͻn di adesaeε ne adekyeε adane-adanee. Nokorε sε, adesua wͻ woi mu ma wͻn a wͻn wͻ ani (dehwε adeε).",
+      "ceb": "Ang Allah nagpapulipuli sa gabii ug sa adlaw, sa pagkatinuod adunay usa ka pagtulun-an niini alang niadtong adunay panan-aw.",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߛߎ ߣߌ߫ ߕߟߋ߬ߘߐ߬ߟߊ ߦߟߍ߬ߡߊ߲߬ ߠߊ߫ ߢߐ߲߮ ߞߐ߫ ߸ ߕߊ߰ߛߌ߬ߟߌ߫ ߟߴߏ߬ ߘߐ߫ ߢߟߊߞߊ ߕߌ߰ߟߊ߬ߡߐ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
   },
   {
@@ -5099,7 +6153,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আমিয়েই সুস্পষ্ট আয়াতসমূহ অৱতীৰ্ণ কৰিছোঁ, আৰু আল্লাহে যাক ইচ্ছা কৰে সৰল-সঠিক পথত পৰিচালিত কৰে।",
       "ne": "कुनै संदेह र शंका बेगैर हामीले नै स्पष्ट आयतहरू अवतरित गरेका हौं र अल्लाहले जसलाई चाहन्छ सोझो बाटोतिर मार्गदर्शन गर्दछ ।",
       "si": "තවද අපි පැහැදිලි වදන් සැබැවින් ම පහළ කළෙමු. තවද අල්ලාහ් ඔහු අභිමත කරන අයට ඍජු මාවත වෙත මග පෙන්වනු ඇත.",
-      "km": "ជាការពិតណាស់ យើងបានបញ្ចុះនូវសញ្ញាភស្តុតាងជាច្រើនដ៏ច្បាស់លាស់។ ហើយអល់ឡោះទ្រង់ចង្អុលបង្ហាញជនណាដែលទ្រង់មានចេតនាទៅកាន់មាគ៌ាដ៏ត្រឹមត្រូវ។"
+      "km": "ជាការពិតណាស់ យើងបានបញ្ចុះនូវសញ្ញាភស្តុតាងជាច្រើនដ៏ច្បាស់លាស់។ ហើយអល់ឡោះទ្រង់ចង្អុលបង្ហាញជនណាដែលទ្រង់មានចេតនាទៅកាន់មាគ៌ាដ៏ត្រឹមត្រូវ។",
+      "he": "אנו הורדנו אותות ברורים, ואללה ידריך את אשר ירצה אל דרך הישר.",
+      "ka": "ჩვენ გადრმოგივლინეთ განმარტებული აიათები, და ალლაჰი დაადგენს სწორ გზაზე იმას, ვისაც ინებებს.",
+      "mg": "Efa nampidininay tokoa ireo fanambarana mazava, ary I Allah dia mitari-dalana izay sitrany mankany amin’ny lalana mahitsy.",
+      "lg": "Mazima twassa obubonero obunnyonnyola, bulijjo Allah aluŋŋamya gw'aba ayagadde ku kkubo eggolokofu.",
+      "rw": "Kandi rwose twabahishuriye amagambo asobanutse. Kandi Allah ayobora uwo ashaka mu nzira igororotse.",
+      "rn": "Ni ukuri Twebwe Allah, Twaramanuye muri Qor’ani ivyemezo bitomoye vyerekana ukuri. Burya Imana Allah, Irongora mw’idini ryayo rigororotse ry’ubwislamu uwo Ishatse mu baja bayo ku bugamburutsi bwiwe.",
+      "ln": "Tosilaki kokitisa mikapo miye mizali polele. Mpe Allah akambaka oyo alingi o nzela ya semba.",
+      "dag": "Achiika! Ti (Tinim’ Naawuni) siɣisila dalirinim’ na polo ni. Yaha! Naawuni dolsirila O ni bɔriso zaŋ chaŋ sochibga.",
+      "mos": "Ad Tõnd sika Aayay vẽenese, la yaa Wẽnd n kãndgd A sẽn rat a soab n tʋg so-tɩrga.",
+      "aa": "Nummah A-Qhuraanih addal baxxaqqa itta Aayootay cakki baxxaqqa hayta oobisne, Yalli isi naqoosak isih faxa mara massa-le gitâ (islaamaninanâ di i ni kinnuk) fanah tirri haa.",
+      "mdh": "Saben-sabenal a initulun nami su manga ayat a mapayag, endu su Allah i pedtutulu sa magkahanda nin sa lalan a matidtu.",
+      "ceb": "Sa pagkatinuod Kami nagpakanaog ug Tin-aw nga mga Bersikulo, ug ang Allah mugiya sa kinsay Iyang gusto ngadto sa Matul-id nga Dalan (sa Islam).",
+      "nqo": "ߊ߲ ߓߘߊ߫ ߟߝߊߙߌ߫ ߘߐߞߣߍߣߍ߲ ߠߎ߬ ߟߊߖߌ߰ ߸ ߒ߬ߞߵߊߟߊ߫ ߦߋ߫ ߡߐ߰ ߟߋ߬ ߞߊ߲ߘߊ߫ ߟߊ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫ ߛߌߟߊ߫ ߕߋߟߋ߲ߣߍ߲ ߞߊ߲߬"
     }
   },
   {
@@ -5145,7 +6212,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mk": "Кога верниците пред Аллах и Неговиот Пратеник биваат повикани, за Тој да им пресуди, само велат: „Слушаме и се покоруваме!“ – тие ќе успеат.",
       "kn": "ಸತ್ಯವಿಶ್ವಾಸಿಗಳನ್ನು—ಅವರ ನಡುವೆ ತೀರ್ಪು ನೀಡಲು—ಅಲ್ಲಾಹು ಮತ್ತು ಸಂದೇಶವಾಹಕರ ಕಡೆಗೆ ಆಮಂತ್ರಿಸಲಾದರೆ, “ನಾವು ಕೇಳಿದ್ದೇವೆ ಮತ್ತು ಅನುಸರಿಸಿದ್ದೇವೆ” ಎಂದು ಅವರು ಹೇಳುತ್ತಾರೆ. ಅವರೇ ಯಶಸ್ವಿಯಾದವರು.",
       "as": "মুমিনসকলক যেতিয়া তেওঁলোকৰ মাজত বিচাৰ-মীমাংসা কৰি দিয়াৰ বাবে আল্লাহ আৰু তেওঁৰ ৰাছুলৰ পিনে আহ্বান কৰা হয়, তেতিয়া তেওঁলোকে কেৱল এই কথাকে কয় যে, ‘আমি শুনিলোঁ আৰু আনুগত্য কৰিলোঁ’। তেওঁলোকেই হৈছে সফলকাম।",
-      "si": "ඔවුන් අතර තීන්දු දීම පිණිස අල්ලාහ් හා ඔහුගේ දූතයාණන් වෙත ඔවුන් ඇරයුම් කරනු ලැබූ විට දේවත්වය විශ්වාස කරන්නන්ගේ ප්‍රකාශය වූයේ අපි සවන් දුනිමු, අවනත වූයෙමු යන්න ය. තවද ජය ලබන්නෝ ඔවුහු ම ය."
+      "si": "ඔවුන් අතර තීන්දු දීම පිණිස අල්ලාහ් හා ඔහුගේ දූතයාණන් වෙත ඔවුන් ඇරයුම් කරනු ලැබූ විට දේවත්වය විශ්වාස කරන්නන්ගේ ප්‍රකාශය වූයේ අපි සවන් දුනිමු, අවනත වූයෙමු යන්න ය. තවද ජය ලබන්නෝ ඔවුහු ම ය.",
+      "he": "אך, המאמינים מתי שנקראים לפנות אל אללה ושליחו על מנת שישפוט ביניהם, עליהם להגיד: “נשמע ונציית”. ואלה הם המצליחים.",
+      "ka": "მორწმუნეთა პასუხი, როდესაც მათ ალლაჰისა და მისი მოციქულისკენ მოუწოდებენ, რათა მან მათ შორის განსაჯოს, მხოლოდ ის არის, რომ ამბობენ: «მოვისმინეთ და დავემორჩილეთ!» და სწორედ ისინი არიან წარმატებულნი.",
+      "mg": "Ny teny tokan’ireo mpino, raha antsoina mankany amin’I Allah sy ny Irany, mba hitsarany azy ireo dia ny hoe : “ Henonay sy ankatoavinay ”, izy ireny no hahazo fahombiazana.",
+      "rw": "Mu by’ukuri imvugo y’abemeye igihe bahamagariwe kugana Allah n’Intumwa ye kugira ngo babakiranure, ni ukuvuga bati “Turumvise kandi turumviye.” Abo ni bo bakiranutsi (bazaba mu Ijuru ubuziraherezo).",
+      "ln": "Ya soló, liloba ya bandimi ezalaka soki babengi bango epai ya Allah na motindami waye mpo akata (makambo) kati na bango, bakoloba: Toyoki mpe totosi, mpe baye wana nde balongi.",
+      "mos": "Ad sɩd-kõtbã koees ra yɩɩme, tɩ b sã n bool-ba, n tʋg Wẽnd la A Tẽn-tʋʋmã nengẽ, n na n tɩ bʋ b sʋka, b yetame: \"d wʋmame la d sakame\"; la yaa bãmbã-rãmbã la tɩlgdba.",
+      "mdh": "Benal su manga mu'min na ya nilan kadtalu amayka enggaten silan sa kukuman nu Allah endu su sinugu nin, ka endu makukum silan na tig nilan: nakineg nami endu naginugut kami, endu silan i namakauntung.",
+      "ak": "Agyidiefoͻ no deε sε yεfrε wͻn kͻ Nyankopͻn ne Ne somafoͻ no hͻ sε yεrekͻ bu wͻn ntεm atεn a, deε wͻka ne sε: “Yɛate na yεbɛdi so“. Saa nkorͻfoͻ no ne nkonimdifoͻ no.",
+      "nqo": "ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߟߊ߫ ߞߎߡߊ ߞߍߣߍ߲߫ ߡߍ߲ ߘߌ߫ ߊ߬ߟߎ߬ ߞߟߌ߫ ߕߎߡߊ ߊߟߊ߫ ߣߴߊ߬ ߟߊ߫ ߞߋߟߊ ߡߊ߬ ߞߴߏ߬ ߦߋ߫ ߞߕߌ߫ ߊ߬ߟߎ߬ ߕߍ߫ ߸ ߏ߬ ߟߴߊ߬ ߝߐ ߘߌ߫ ߞߏ߫ ߊ߲ ߓߘߴߊ߬ ߡߍ߲߫ ߞߵߊ߬ ߡߌ߬ߘߊ߬ ، ߒ߬ߓߊ߬ ߏ߬ ߟߎ߫ ߟߋ߬ ߛߎߘߊ߲ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
   },
   {
@@ -5206,7 +6282,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "অতি বৰকতময় সেই সত্ত্বা যিজনে নভোমণ্ডলত সৃষ্টি কৰিছে বিশাল নক্ষত্ৰৰাজি আৰু তাত স্থাপন কৰিছে প্ৰদীপ (সূৰ্য), লগতে আলো বিকিৰণকাৰী চন্দ্ৰ।",
       "ne": "त्यो बडो कल्याणकारी छ, जसले आकाशमा बुर्ज (नक्षत्र) बनायो र त्यसमा एउटा सूर्य र एउटा टल्किराखेको चन्द्र बनायो ।",
       "si": "අහසෙහි තාරකා මණ්ඩල ඇති කළ ඔහු උත්කෘෂ්ට විය. තවද පහන (හෙවත් සූර්යයා) ද ආලෝකය විහිදු වන සඳු ද ඔහු එහි ඇති කළේ ය.",
-      "km": "ទ្រង់មហាមានពរជ័យដែលបានបង្កើតនូវតារានិករជាច្រើននៅលើមេឃ និងបានបង្កើតនៅលើមេឃនោះផងដែរនូវព្រះអាទិត្យ និងព្រះចន្ទដែលបញ្ចេញពន្លឺ(ដែលទទួលបានពីព្រះអាទិត្យ)។"
+      "km": "ទ្រង់មហាមានពរជ័យដែលបានបង្កើតនូវតារានិករជាច្រើននៅលើមេឃ និងបានបង្កើតនៅលើមេឃនោះផងដែរនូវព្រះអាទិត្យ និងព្រះចន្ទដែលបញ្ចេញពន្លឺ(ដែលទទួលបានពីព្រះអាទិត្យ)។",
+      "he": "יתברך מי ששם בשמים כוכבים עם מנורה (השמש) וירח מאיר.",
+      "ka": "კურთხეულია ალლაჰი, ვინც ცაში მოაწყო თანავარსკვლავედი, მოაწყო იქ ნათურა [მზე] და კაშკაშა მთვარე.",
+      "lt": "Palaimintas yra Tas, Kuris įtvirtino danguje didžiules žvaigždes, ir įtvirtino jame didžiulį šviestuvą (saulę), ir mėnulį, suteikiantį šviesą.",
+      "mg": "Ankalazaina anie Ilay nametraka ireo antokon-kintana eny amin’ny lanitra, ary nametraka jiro eo aminy sy volana mpanazava.",
+      "lg": "Musukkulumu Oyo eyateeka ku ggulu ebifo ebibeeramu emmunyeenye, era n'ateekako ettaala (enjuba eyaka) n'omwezi oguwa ekitangaala.",
+      "rw": "Ubutagatifu ni ubw’uwashyize inyenyeri nini mu kirere, akanashyiramo itara ryaka (izuba) ndetse n’ukwezi kumurika.",
+      "rn": "Harakubahwa Nyenimigisha-ntangere, Imana Allah Ibeshejeho ibiremwa, Yo Yaremye mu kirere c’ijuru, inyenyeri amahanga zifise inzira-ntasobwa, Ishira muri nya kirere izuba ryaka n’ukwezi kumurika.",
+      "ln": "Mapamboli naye oyo atia olikolo minzoto mpe ati moyi mpe sanza ya kongenga.",
+      "dag": "Duuma so Ŋun zaŋ saŋmar’ kara niŋ sagbana ni, ka zaŋ furila (wuntaŋa) niŋ di puuni, n-ti pahi goli din neeri pam.",
+      "mos": "Naab ning sẽn ninga ãdsã saasẽ wã yɩ wagelle, la A maan fɩtl (wĩntoogo) beenẽ la kiuug sẽn vẽene.",
+      "mdh": "Mahasuti su Allah a binaluy nin sya sa langit i manga lalan nu bitun, endu binaluy nin i senang endu ulan-ulan a pedsigay.",
+      "ak": "Nhyira ne Nea Wayε nsoromma akεseε wͻ soro, εna Wayε (awia sε) kanea wͻ mu, εna bosome nso εma nhyerεnee.",
+      "ceb": "Himayaon Siya (Allah) maoy nagbutang sa langit ug dagkong mga bituon ug nagbutang niini ug (nagdilaab) nga suga (ang adlaw) ug usa ka nagdan-ag nga bulan.",
+      "nqo": "ߒ߬ߓߊ߬ߘߍ ߦߋ߫ ߡߍ߲ ߦߋ߫ ߸ ߏ߬ ߟߋ ߞߊ߬ ߛߘߍߟߏߟߏ ߟߎ߬ ߞߍ߫ ߛߊ߲ ߡߊ߬ ߞߊ߬ ߕߊߘߎ߲ ߞߍ߫ ߊ߬ ߞߣߐ߫ ߸ ߊ߬ ߣߌ߫ ߞߊߙߏ߫ ߦߋߟߋ߲ߠߊ"
     }
   },
   {
@@ -5268,7 +6358,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় তেওঁ সৰ্বশ্ৰোতা, সৰ্বজ্ঞ।",
       "ne": "ऊ सबै सुन्नेवाला जान्नेवाला छ ।",
       "si": "නියත වශයෙන් ම ඔහු මය සර්ව ශ්‍රාවක සර්ව ඥානී.",
-      "km": "ពិតប្រាកដណាស់ ទ្រង់មហាឮ មហាដឹងបំផុត។"
+      "km": "ពិតប្រាកដណាស់ ទ្រង់មហាឮ មហាដឹងបំផុត។",
+      "he": "כי אכן הוא השומע הכול והיודע הכול.",
+      "ka": "ჭეშმარიტად, იგი ყოვლისმსმენი, ყოვლისმცოდნეა.",
+      "lt": "Iš tiesų, Jis, tik Jis, yra Visa Girdintis, Visa Žinantis.",
+      "mg": "Izy no Ilay tena Maheno sy Mahalala .",
+      "lg": "Mazima Yye Awulira nnyo Omumanyi.",
+      "rw": "Mu by’ukuri (Allah), ni Uwumva bihebuje, Umumenyi uhebuje.",
+      "rn": "Mu vy’ukuri Iyo Mana Allah, ni Yo Nyenukwumva, Irumva igisomwa, ininahaza n’itaziramana vyawe; Nyenubumenyikurivyose, Irazi neza ivyo ukora n’ivyo uzirikana.",
+      "ln": "Ya soló, ye azali moyoki mpe moyebi.",
+      "dag": "Achiika! Ŋuna (Naawuni) n-nyɛ Wumda, Baŋda.",
+      "mos": "Ad A yaa Wʋmd n yaa Mita.",
+      "aa": "Diggah Yalli usuk yaabbi yaaxigi kinni.",
+      "mdh": "Ka sekanin i pakakineg endu mataw.",
+      "ak": "Nokorε sε, Ɔne Otiefoͻ no a Ɔte biribiara, na Ɔne Onimdefoͻ no.",
+      "ceb": "Sa pagkatinuod Siya mao ang Labing Makadungog sa Tanan, ang Nakahibalo sa Tanan.",
+      "nqo": "ߊߟߊ߫߸ ߏ߬ ߟߋ ߡߍ߲ߠߌ߲ߠߊ ߘߌ߫ ߸ ߟߐ߲ߠߌ߲ߠߊ ߟߋ߬"
     }
   },
   {
@@ -5321,7 +6426,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সিহঁতে দেখা নাইনে যে, আমিয়েই সিহঁতৰ বাবে ৰাতি সৃষ্টি কৰিছোঁ, যাতে সিহঁতে বিশ্ৰাম লব পাৰে আৰু দিনক কৰিছোঁ দৃশ্যমান? নিশ্চয় ইয়াত নিদৰ্শন আছে এনে সম্প্ৰদায়ৰ বাবে যিসকলে ঈমান পোষণ কৰে।",
       "ne": "के उनीहरूले देखेनन् कि हामीले रातलाई बनाएका छौं ताकि यसमा तिनीहरूले आराम गरुन्, र दिनलाई उज्यालो बनाएका छौं । र निःसन्देह यसमा त्यस समुदायहरूको लागि जो ईमान र विश्वास राख्दछन् निशानीहरू छन् ।",
       "si": "ඔවුන් එහි වාසය කරනු පිණිස රාත්‍රිය හා පෙනෙන්නක් ලෙස දහවල නියත වශයෙන් ම අපි ඇති කළ බව ඔවුහු නො දුටුවෝ ද? නියත වශයෙන් ම එහි දේවත්වය විශ්වාස කරන ජනයාට සංඥා ඇත.",
-      "km": "តើពួកគេមិនបានឃើញទេឬថា ពិតប្រាកដណាស់ យើងបានបង្កើតពេលយប់ដើម្បីឱ្យពួកគេសម្រាកនៅក្នុងវា និង(បានបង្កើត)ពេលថ្ងៃដើម្បីឱ្យពួកគេអាចមើលឃើញ។ ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាសញ្ញាភស្តុតាងសម្រាប់ក្រុមដែលមានជំនឿ។"
+      "km": "តើពួកគេមិនបានឃើញទេឬថា ពិតប្រាកដណាស់ យើងបានបង្កើតពេលយប់ដើម្បីឱ្យពួកគេសម្រាកនៅក្នុងវា និង(បានបង្កើត)ពេលថ្ងៃដើម្បីឱ្យពួកគេអាចមើលឃើញ។ ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាសញ្ញាភស្តុតាងសម្រាប់ក្រុមដែលមានជំនឿ។",
+      "he": "האם לא יחזו, כי אנו קבענו את הלילה למרגוע, ואת היום עם אור למחייה? אכן, באלה אותות לאנשים המאמינים.",
+      "ka": "ნუთუ მათ [მორწმუნეებმა] ვერ დაინახეს, რომ დავადგინეთ ღამე, რათა მოესვენათ მასში, და დღე ხილულად? ჭეშმარიტად, მათშია სასწაულები მორწმუნე ხალხისათვის.",
+      "lt": "Argi jie nemato, kad Mes padarėme naktį poilsiui jiems, o dieną – matymui? Iš tiesų, tame yra Ajat (įrodymai, įkalčiai, eilutės, pamokos, ženklai, apreiškimai ir t. t.) žmonėms, kurie tiki.",
+      "rw": "Ese ntibabona ko twabashyiriyeho ijoro kugira ngo bariruhukemo, n’amanywa kugira ngo babashe kubona (bityo bashake ibibabeshaho)? Mu by’ukuri muri ibyo harimo ibimenyetso ku bantu bemera.",
+      "mos": "Rẽ yĩnga b pa yã tɩ Wẽnd naana yʋngã tɩ b vʋʋs a pʋgẽ la wĩndgã tɩ yaa vẽenega, ad bee woto pʋga tagmas ne neb sẽn kõt sɩda.",
+      "mdh": "Ngintu da nilan katawi i binaluy nami su magabi sa kanilan a ibangintelenan nilan endu su malamag a kailay nilan, nadalem samba su manga tanda a kapegkagaga nu Allah kanu manga taw a bamaginugut.",
+      "ak": "Enti wͻnhunuu sε Yɛayε anadwo ama wͻn a wͻde gye wͻn ahome, εna adekyeε nso wͻde hunu adeε (de hwehwε akͻnhoma)? Nokorε sε nsεnkyerεnee wͻ woi mu ma amanfoͻ a wͻgye die.",
+      "nqo": "ߊ߬ߟߎ߬ ߕߍ߫ ߊ߬ ߦߋ߫ ߟߊ߫ ߓߊ߬ ߞߏ߫ ߒ߬ߠߎ߫ ߞߊ߬ ߛߎ ߞߍ߫ ߟߋ߬ ߛߴߊ߬ߟߎ߬ ߘߴߊ߬ߟߎ߬ ߡߝߊ߫ ߏ߬ ߘߐ߫؟ ߞߊ߬ ߕߟߋ߬ߘߐ߬ߟߊ ߞߍ߫ ߦߋߟߌ߫ ߕߎߡߊ߫ ߘߌ߫؟ ߕߊ߰ߛߌ߬ߟߌ߫ ߟߴߏ߬ ߘߐ߫ ߡߌ߬ߙߌ߲߬ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -5379,7 +6492,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যিয়ে সৎকৰ্ম লৈ আহিব তেওঁ তাতকৈও উৎকৃষ্ট প্ৰতিফল পাব আৰু সেইদিনা তেওঁলোক ভীতিকৰ অৱস্থাৰ পৰা নিৰাপদ থাকিব।",
       "ne": "जुन व्यक्तिले असल कर्म लिएर आउनेछ, उसको निम्ति उसलाई त्यसभन्दा राम्रो प्रतिफल मिल्नेछ, र यस्ता मानिसहरू त्यस दिनको घबराहटबाट निश्चिन्त हुनेछन् ।",
       "si": "කවරෙකු යහපත රැගෙන එන්නේ ද එවිට ඔහුට ඊට වඩා ශ්‍රේෂ්ඨත්වයක් ඇත. තවද ඔවුහු එදින තැතිගැනීමෙන් සුරක්ෂිතයෝ ය.",
-      "km": "ជនណាដែលបាននាំមកនូវប្រការល្អ សម្រាប់រូបគេនឹងទទួលបាននូវអ្វីដែលប្រសើរជាងនោះ។ ហើយពួកគេជាអ្នកដែលមានសុវត្ថិភាពបំផុតពីការភ័យរន្ធត់នៅថ្ងៃនោះ។"
+      "km": "ជនណាដែលបាននាំមកនូវប្រការល្អ សម្រាប់រូបគេនឹងទទួលបាននូវអ្វីដែលប្រសើរជាងនោះ។ ហើយពួកគេជាអ្នកដែលមានសុវត្ថិភាពបំផុតពីការភ័យរន្ធត់នៅថ្ងៃនោះ។",
+      "he": "מי שעושה מעשה טוב , יקבל גמול טוב יותר, והוא יהיה בבטחה מחרדה באותו יום (הדיו).",
+      "ka": "ვინც მოვა სიკეთით, მისთვის იქნება მასზე უკეთესი, და ისინი იმ დღეს ყოველგვარი შიშისგან უსაფრთხოდ იქნებიან.",
+      "lt": "Kas atneš gerą darbą (t. y. Tikėjimą Allaho Vienumą kartu su visais teisingais darbais), turės geriau nei tai verta. Ir jie bus saugūs nuo Tos Dienos siaubo.",
+      "mg": "Na iza na iza tonga miaraka amin’ny asa soa, dia ahazo tsara kokoa noho izany izy, ary amin’izany andro izany, dia ho voaaro amin’ny tahotra izy ireo.",
+      "lg": "Oyo yenna alijja n'ekirungi agenda kuweebwa ekirungi ekikisingako, era abo baliwona entiisa y'Olunaku olwo.",
+      "rw": "(Kuri uwo munsi) uzaba yarakoze icyiza (ku isi) azabona icyiza kikiruta, kandi kuri uwo munsi bazaba batekanye, nta bwoba bafite.",
+      "ln": "Oyo akoyaka na bolamu moko, akozalaka na bolamu koleka wana. Mpe mokolo wana bakozala mosika na bobangi.",
+      "dag": "Ŋun ti kana (Zaadali) ni tuunviεlli, tɔ! O mali (sanyoo) din viεla n­gari lala, ka bɛ nyɛla banyɛn ti be suhudoo ni ka chɛ dindali maa suhudamli.",
+      "mos": "Ned ning sẽn waa ne yel-sõmde, a tara yel-sõmd sẽn yɩɩd rẽnda, la ra-kãng raare b paamda bas-m-yam n yi raarã wẽnga.",
+      "aa": "Maqaane luk yemeete num (iimaan kee meqe taama kinnuk) Qhiyaamah ayró, usuk teetik kayrih tayse galtó le Yallih xaqul (jannat kinnuk), kaadu usun woo ayró meesii kee wariggak (Saayah) amaanah yanin.",
+      "mdh": "Su taw a mapya i napananggit nin, na muna pan i kapya na balas a makwa nin endu di silan katekawan (makalesing) kanu kayup kanu sanggakala.",
+      "ak": "Obi a ͻde papa bi bεba no ͻwͻ ho nhyira a εkyεn saa, na wͻn na saa Da no hubͻ no mu no wͻbɛnya ahotᴐ.",
+      "ceb": "Bisan kinsa nga moabut uban sa maayo nga buhat, siya makabaton ug mas maayo pa kay niini; ug sila luwas gikan sa katalagman nianang Adlaw 'sa Pagkabanhaw'.",
+      "nqo": "ߡߍ߲ ߓߊ߯ ߣߊ߬ ߢߌ߬ߡߊ߬ ߘߌ߫ ߸ ߝߋ߲߫ ߘߌ߫ ߞߍ߫ ߏ߬ ߦߋ߫ ߡߍ߲ ߦߋ߫ ߝߌ߬ߛߊ߫ ߏ߬ ߘߌ߫ ߸ ߏ߬ ߟߎ߫ ߞߎ߲߬ߠߊ߬ߝߎߟߋ߲ߣߍ߲߫ ߠߋ߫ ߞߊ߬ ߓߐ߫ ߟߏ߲ ߏ߬ ߞߎ߲߬ߡߊ߬ߜߊ߲ ߡߊ߬"
     }
   },
   {
@@ -5435,7 +6562,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "এইটো আখিৰাতৰ সেই আবাস, যিটো আমি নিৰ্ধাৰিত কৰোঁ তেওঁলোকৰ বাবে যিসকলে পৃথিৱীত উদ্ধত আৰু বিপৰ্যয় সৃষ্টি কৰিব নিবিচাৰে; আৰু শুভ পৰিণাম কেৱল মুত্তাক্বীসকলৰ বাবেই (নিৰ্ধাৰিত)।",
       "ne": "त्यो आखिरतको राम्रो घर हामीले ती मानिसहरूको निम्ति तयार गरेका छौं, जसले धरतीमा आफूलाई ठूलो देखाउने काम तथा उपद्रव र घमण्ड गर्दैनन् संयमीहरूको लागि अत्यन्त राम्रो परिणाम छ ।",
       "si": "ඒ මතු ලොව නිවහන මහපොළොවේ උද්දාමය හෝ කලහකාරිත්වය හෝ ප්‍රිය නො කරන්නන්හට අපි ඇති කළෙමු. අවසානය බිය බැතිමතුන්හට ය.",
-      "km": "លំនៅឋាននៅថ្ងៃបរលោកនោះ គឺយើងបានបង្កើតវាសម្រាប់បណ្តាអ្នកដែលគ្មានបំណងក្រអឺតក្រទម និងបង្កវិនាសកម្មនៅលើផែនដីឡើយ។ ហើយលទ្ធផលចុងក្រោយ គឺសម្រាប់បណ្តាអ្នកដែលកោតខ្លាច(អល់ឡោះ)។"
+      "km": "លំនៅឋាននៅថ្ងៃបរលោកនោះ គឺយើងបានបង្កើតវាសម្រាប់បណ្តាអ្នកដែលគ្មានបំណងក្រអឺតក្រទម និងបង្កវិនាសកម្មនៅលើផែនដីឡើយ។ ហើយលទ្ធផលចុងក្រោយ គឺសម្រាប់បណ្តាអ្នកដែលកោតខ្លាច(អល់ឡោះ)។",
+      "he": "זה מעון העולם הבא אנו קובעים רק לאלה שאינם רוצים להתייהר על פני אחרים בעולם הזה ולא להשחית, והאחרית (הגמול הטוב) ליראים (את אללה).",
+      "mg": "Ny fiainana any ankoatra, dia nataonay ho an’ireo izay tsy mitady fahamboniana eto an-tany, sy tsy manao asa fanimbana. Ary ny fiafarana sambatra dia ho an’ireo izay manam-patahorana.",
+      "lg": "Eyo ennyumba ey'Enkomerero (Ejjana) tugiteerawo abo abatayagala kwesukkulumya mu nsi wadde okwonoona, era enkomerero ennungi y'abo abatya Allah.",
+      "rw": "Ubwo buturo bwa nyuma (Ijuru) twabugeneye ba bandi badashaka kwishyira hejuru cyangwa ngo bakore ubwononnyi ku isi. Kandi iherezo ryiza ni iry’abagandukira Allah.",
+      "dag": "Chiyaama yili maa, Ti (Tinim’ Naawuni) zaŋ li mi zali, ka di nyε ninvuɣu shεba ban bi bɔri bɛ maŋ’ tibgibu tiŋgbani yaaŋa zuɣu dini, ka mi bi bɔri saɣiŋgu. Yaha! Bahindisuŋ nyɛla wuntizɔriba dini.",
+      "mos": "Woto yaa yaoolem Roogã, D maand-a lame n kõ neb nins sẽn ka rat zẽk-m-meng la sãang tẽngã zugu. La ad yaoolem tɩlgrã bee ne Wẽn-zoεtbã.",
+      "aa": "Too akeerâ dabqih niqmat, baaxô bagul cakkik kaxxamariinite waah teetil umaané abam faxe waa marah kaa abna, kaadu ellecabó dabqay (jannat kinnuk) fayla-le Yallak meesita mari-le.",
+      "mdh": "Su surga sa gay a mawli na baluyn nami a kanu manga taw a da sa ginawa nilan i kabpapulu endu da sa kanilan i makabinasa, ya bun mapya i mawli nin su manga gilek sa Allah.",
+      "ak": "Saa Daakye asetena no, Yɛayε de ama wͻn a wͻnnyε ahomasoͻ wͻ asaase no soͻ, na wͻnni nsεmͻnee. Na awieε (pa) no deε εwͻ Nyame-surofoͻ no.",
+      "nqo": "ߛߎ߬ߟߊ߫ ߛߏ ߝߟߍ߫ ߣߌ߲߬ ߸ ߊ߲ ߧߴߏ߬ ߞߍ߫ ߟߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߠߎ߬ ߕߍ߫ ߖߘߍ߬ߕߊ߬ ߞߍ߫ ߟߊ߫ ( ߕߐ߭ ߟߎ߫ ߡߊ߬ )߸ ߊ߬ߟߎ߫ ߘߏ߲߬ ߕߍ߫ ߕߌߢߍߟߌ߫ ߢߌߣߌ߲߫ ߠߊ߫ ߘߎ߱ ߞߊ߲߬ ، ߟߊ߬ߓߊ߲ ߦߋ߫ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߫ ߟߋ߬ ߦߋ߫"
     }
   },
   {
@@ -5496,7 +6633,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "মানুহে ভাবিছে নেকি যে, ‘আমি ঈমান আনিছোঁ’ এই বুলি ক’লেই সিহঁতক পৰীক্ষা নকৰাকৈয়ে এনেই এৰি দিয়া হ’ব?",
       "ne": "के मानिसहरूले यो ठानेका छन्, कि (मात्र) यो भन्नाले कि हामीले ईमान ल्यायौं, तिनीहरूको परीक्षा गरिने छैन ?",
       "si": "මිනිසා තමන් පරීක්ෂාවට ලක් කරනු නො ලැබ, අපි විශ්වාස කළෙමු යැයි පැවසීමෙන් පමණක් තමන් අතහැර දමනු ලබනු ඇතැයි සිතුවේ ද?",
-      "km": "តើមនុស្សលោកគិតស្មានថា គេនឹងបណ្តោយឲ្យពួកគេនិយាយថា “ពួកយើងមានជំនឿហើយ” ដោយពួកគេមិនត្រូវគេបានសាកល្បងឬ?"
+      "km": "តើមនុស្សលោកគិតស្មានថា គេនឹងបណ្តោយឲ្យពួកគេនិយាយថា “ពួកយើងមានជំនឿហើយ” ដោយពួកគេមិនត្រូវគេបានសាកល្បងឬ?",
+      "he": "האם חושבים האנשים כי יעזבו באומרם: “האמנו”, ולא יועמדו לניסיון?",
+      "ka": "ნუთუ ფიქრობენ ადამიანები, რომ ისინი დარჩებიან ისე, რომ თქვეს: «ჩვენ ვირწმუნეთ» — და არ გამოიცდებიან [თავისი ქონებითა და სიცოცხლით)?",
+      "lt": "Argi žmonės galvoja, kad jie bus palikti vieni, nes sako: „Mes tikime“ ir nebus išbandomi.",
+      "mg": "Moa ve mihevitra ny olombelona fa havela fotsiny izy ireo hiteny hoe : “Mino izahay !”, nefa tsy ho tsapaina izy ireo ?",
+      "lg": "Abaffe abantu basuubira okulekebwa babe nga bagamba nti tukkirizza nga nabo tebagezesebwa?",
+      "rw": "Ese abantu bibaza ko bazabaho batageragezwa kubera ko bavuze bati “Twaremeye?”",
+      "rn": "Mbega abantu bibaza ko mu gihe bavuze bati: “Twemeye”, borekwa gutyo gusa batabanje kugeragezwa mw’iyubahirizwa ry’amabwirizwa y’Imana Allah!",
+      "ln": "Bato bakanisi ete bakotika bango baloba ete tondimi, mpe bamekama te?",
+      "dag": "Di ni bɔŋɔ, ninsalinim’ tεhimi ni bɛ kuli yɛn chɛ bami, kabɛ yεli ni bɛ ti Naawuni yεlimaŋli,ka bɛ bi dahim shεba (ka nya bɛ iimaansili)?",
+      "mos": "Rẽ yĩngɑ nebã tẽedɑme tɩ b nɑ n bɑs-b-lɑ woto b sẽn yeele:\"tõnd kõo sɩda\". Tɩ b kɑ zɑrb-b n gese?",
+      "aa": "Sinam cabbimtu waytam takkalce neemeneh iyyaanamal, usun woo iimaanal mokkorime kalah?",
+      "mdh": "Antapan nu taw i da den manggula nin (sya sa dunya) amayka nangimbenal den sa di den mafitna.",
+      "ak": "Enti nnipa dwen sε yεbɛgyae wͻn sε, wͻn aka sε: Yɛagye adi, wͻ aberε a yεnsͻ wͻn nhwε?",
+      "ceb": "Naghunahuna ba ang mga tawo nga pasagdan sila 'lamang' sa pag-ingon: \"Kami mituo,\" samtang sila wala gisulayan?",
+      "nqo": "ߊ߬ ߦߋ߫ ߡߐ߱ ߟߎ߬ ߢߣߊ߫ ߟߋ߫ ߓߊ߬ ߞߏ߫ ߊ߬ߟߎ߬ ߦߋ߫ ߕߏ߫ ߦߋ߲߬ ߕߋ߲߬ ߊ߬ߟߎ߬ ߦߴߊ߬ ߝߐ߫ ߜߊ߲ߛߊ߲߫ ߞߏ߫ ߊ߲ ߓߘߊ߫ ߞߍ߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߵߊ߬ ߕߘߍ߬ ߊ߬ߟߎ߬ ߕߍ߫ ߞߘߐߓߐ߫ ߟߊ߫؟"
     }
   },
   {
@@ -5554,7 +6706,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যিয়ে আল্লাহৰ সাক্ষাৎ কামনা কৰে তেওঁ জানি থোৱা উচিত যে, আল্লাহৰ নিৰ্ধাৰিত সময় নিশ্চিতভাৱে আহিবই; আৰু তেওঁ সৰ্বশ্ৰোতা, সৰ্বজ্ঞ।",
       "ne": "जुन व्यक्तिहरूले अल्लाहसँगको भेटको आशा गर्दछन्, त अल्लाहको निर्धारित समय (कियामत) त आउने नै छ । र ऊ सबै कुरा सुन्दछ, जान्दछ ।",
       "si": "කවරෙකු අල්ලාහ්ගේ හමුව අපේක්ෂා කරන්නේ ද එවිට නියත වශයෙන් ම අල්ලාහ්ගේ නියමිත කාලය පැමිණෙන්නකි. (යැයි දැන ගනු) තවද ඔහු සර්ව ශ්‍රාවක ය; සර්ව ඥානී ය.",
-      "km": "ជនណាដែលរំពឹងថានឹងបានជួបអល់ឡោះ(នៅថ្ងៃបរលោក)នោះ ពិតប្រាកដណាស់ កាលកំណត់អល់ឡោះប្រាកដជានឹងមកដល់ជាមិនខាន។ ហើយទ្រង់មហាឮ មហាដឹងបំផុត។"
+      "km": "ជនណាដែលរំពឹងថានឹងបានជួបអល់ឡោះ(នៅថ្ងៃបរលោក)នោះ ពិតប្រាកដណាស់ កាលកំណត់អល់ឡោះប្រាកដជានឹងមកដល់ជាមិនខាន។ ហើយទ្រង់មហាឮ មហាដឹងបំផុត។",
+      "he": "מי שהיה מקווה למפגש אללה, אז אכן מועד אללה מגיע, והוא השומע הכול היודע הכול.",
+      "ka": "ვინც იმედოვნებს ალლაჰთან შეხვედრას — მაშ, ჭეშმარიტად, ალლაჰის მიერ დადგენილი ვადა უეჭველად დადგება. და იგი ყოვლისმსმენი, ყოვლისმცოდნეა.",
+      "lt": "Kas tikisi Susitikimo su Allahu, tada Allaho Terminas tikrai ateina ir Jis yra Visa Girdintis, Visa Žinantis.",
+      "mg": "N'iza n'iza manantena ny fihaonana amin’I Allah, dia ho tonga tokoa ny fe-potoana izay notondroin’I Allah. Ary Izy no Ilay Maheno sy Mahalala ny zava-drehetra.",
+      "lg": "Oyo yenna asuubira okusisinkana Allah mazima ekiseera kya Allah (okumusisinkana) kijja, era Yye ye Muwulizi ennyo Omumanyi ennyo.",
+      "rw": "Uwizera kuzahura na Allah, mu by’ukuri igihe ntarengwa Allah yagennye kizagera nta kabuza. Kandi We ni Uwumva bihebuje, Umumenyi uhebuje.",
+      "ln": "Oyo azali kolikia kokutana na Allah, ya solo elaka ya Allah ekoyaka. Mpe azali moyoki atonda boyebi.",
+      "dag": "Ninvuɣu so ŋun niŋdi kore ni Naawuni laɣimbu, tɔ! Achiika! Naawuni (laɣimbu) saha nyɛla din yɛn kana. Yaha! Ŋuna n-nyɛ Wumda, Baŋda.",
+      "mos": "Ned ning sẽn tẽed Wẽnd sεgbã, bɩ ɑ bãng tɩ Wẽnd sɑsɑ wã wɑtɑme, lɑ Yẽndã la Wʋmda la Bãngda.",
+      "aa": "Yallih angaaraw qaagitaah, kay galtóh sangeela num, tokkel diggah Yalli isi ginóh ugtiyyah xagana kah hee wakti amaatele, kaadu usuk isi ginóh maxcoocá yaabbi, ken taamoomi yaaxigi.",
+      "mdh": "Su taw a bagingarap sa kabaratemu sa Allah na su ajal (lumpakan) na makawma endu sekanin (Allah) i pakakineg endu mataw.",
+      "ak": "Obi a ͻwͻ Nyankopͻn Nhyiamu no ho anidaasoͻ no, nokorε sε Nyankopͻn berε a Wahyε no reba. Ɔne Otiefoͻ no a Ɔte biribiara, na Ɔne Onimdefoͻ no a Ɔnim biribiara no.",
+      "ceb": "Bisan kinsa nga naglaum alang ang panagtagbo uban ni Allah, ˹ipahibalo sila nga˺ ang tinudlong panahon ni Allah siguradong moabot. Ug Siya ang Hingpit nga Nakadungog, ang Hingpit nga Nakahibalo.",
+      "nqo": "ߡߍ߲ ߓߊ߯ ߞߍ߫ ߊߟߊ߫ ߓߍ߲߬ߢߐ߲߰ߦߊ߬ߞߏ ߖߌ߰ ߟߊ߫ ߸ ߊߟߊ߫ ߟߊ߫ ߛߕߊ ߣߊ߬ߕߐ߫ ߟߋ߫ ߘߋ߬ ، ߊ߬ߟߋ ߟߋ߬ ߡߍ߲ߠߌ߲ߠߊ ߘߌ߫ ߸ ߟߐ߲ߠߌ߲ߠߊ ߟߋ߬"
     }
   },
   {
@@ -5613,7 +6779,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সিহঁতে লক্ষ্য কৰা নাইনে, আল্লাহে কেনেকৈ সৃষ্টিক অস্তিত্ব দান কৰে? তাৰ পিছত তেওঁ ইয়াৰ পুনৰাবৃত্তি কৰিব। নিশ্চয় এইটো আল্লাহৰ বাবে অতি সহজ।",
       "ne": "के उनीहरूले देखेनन्, कि अल्लाह कुन प्रकारले सृष्टिको आरम्भ गर्दछ ? फेरि उसको पुनरावृत्ति गर्नेछ ? निःसन्देह यो अल्लाहको निम्ति अत्यन्त सरल छ ।",
       "si": "අල්ලාහ් මැවීම් ප්‍රථමෝත්පාදනය කර පසුව ඔහු එය නැවත ගෙන එන්නේ කෙසේ දැ? යි ඔවුහු නො දුටුවෝ ද? නියත වශයෙන් ම එය අල්ලාහ් වෙත පහසු කාර්යයකි.",
-      "km": "តើពួកទាំងនោះមិនបានឃើញទេឬថា តើអល់ឡោះទ្រង់ផ្តើមបង្កើតសត្វលោក បន្ទាប់មក ទ្រង់បង្កើតវាជាថ្មីម្តងទៀតយ៉ាងដូចម្តេច? ពិតប្រាកដណាស់ រឿងទាំងនោះគឺងាយស្រួលបំផុតចំពោះអល់ឡោះ។"
+      "km": "តើពួកទាំងនោះមិនបានឃើញទេឬថា តើអល់ឡោះទ្រង់ផ្តើមបង្កើតសត្វលោក បន្ទាប់មក ទ្រង់បង្កើតវាជាថ្មីម្តងទៀតយ៉ាងដូចម្តេច? ពិតប្រាកដណាស់ រឿងទាំងនោះគឺងាយស្រួលបំផុតចំពោះអល់ឡោះ។",
+      "he": "הלא ידעו כיצד אללה יצר לראשונה את הבריאה ולאחר מכן בורא אותה שוב? אכן, הדבר הזה הוא פשוט עבור אללה.",
+      "ka": "ნუთუ მათ არ უნახავთ, როგორ ქმნის ალლაჰი ქმნილებას [პირველად] [არარსებობიდან], შემდეგ კი მას იმეორებს [მისი გაქრობის შემდეგ]? ჭეშმარიტად, ეს ალლაჰისთვის ადვილია!",
+      "lt": "Argi jie nemato, kaip Allahas duoda pradžią kūriniams, tada pakartoja tai. Iš tiesų, tai lengva Allahui.",
+      "mg": "Moa ve tsy hitan’izy ireo ahoana no nanombohan’I Allah ny fahariana, avy eo dia mamerina izany indray Izy ? Tena marina fa mora amin’I Allah izany.",
+      "lg": "Abaffe tebalaba engeri Allah gy'atandikamu ebitonde (ne bivaawo) oluvannyuma n'abizzaawo, mazima ekyo kyangu nnyo ku Allah.",
+      "rw": "Ese (abahakanyi) ntibabona uko Allah yaremye ibiremwa (bitari biriho) hanyuma akazanabigarura (nyuma yo gupfa)? Mu by’ukuri ibyo kuri Allah biroroshye.",
+      "dag": "Di ni bɔŋɔ,bɛ (chεfurinim’ maa) bi nya Naawuni ni piindi nama shεm, din nyaaŋa kaOyɛn ti labsi li na (Zaadali). Achiika! Lala maa nyɛla soochi n-zaŋ ti Naawuni.",
+      "mos": "Rẽ yĩngɑ bãmb kɑ yã Wẽnd sẽn sɩngd naanegã to-to lɑ A leb n wɑ vʋʋg-ɑ wã lɑ? Ad wã yɑɑ yol-yol ne Wẽnde.",
+      "aa": "Kaadu mayablaanaa! Yalli ginó aneewaytik elle qimbisaah, rabteek lakat elle tet gacsanna. Diggah toh Yallal xabcinih.",
+      "mdh": "Ngintu da nu katawi u panun i kabpagebpun nu Allah sa kabpamaluy nin, mawli na pauliten nin sa ulyan na kapatay, malemu gayd (intu) sa kanu Allah.",
+      "ak": "Anaasε wͻ’nhunuu sεdeε Nyankopͻn hyεε abͻdeε aseε na Ɔsan de (foforͻ) ba bio? Nokorε sε, εno deε εyε (adeε a εyε) mmrε ma Nyankopͻn.",
+      "ceb": "Wala ba nila lantawa kun giunsa pagsugod sa Allah ang paglalang, unya banhawon kini? Sa pagkatinuod kini sayon lang sa Allah.",
+      "nqo": "ߊ߬ߟߎ߬ ߕߍ߫ ߊ߬ ߦߋ߫ ߟߊ߫ ߓߵߊߟߊ߫ ߦߋ߫ ߘߊ߲ߠߌ߲ ߠߊߝߟߐ߫ ߟߊ߫ ߢߊ ߡߍ߲ ߞߊ߬ ߓߊ߲߫ ߞߵߊ߬ ߡߊߛߊ߬ߦߌ߬؟ ߏ߬ ߣߐ߲߰ߡߊ߲߬ߓߊ ߟߋ߬ ߊߟߊ߫ ߡߊ߬"
     }
   },
   {
@@ -5659,7 +6838,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kn": "ಅಲ್ಲಾಹನನ್ನು ಬಿಟ್ಟು ಬೇರೆಯವರನ್ನು ರಕ್ಷಕರನ್ನಾಗಿ ಸ್ವೀಕರಿಸಿದವರ ಉದಾಹರಣೆಯು ಒಂದು ಜೇಡದಂತೆ. ಅದು ಒಂದು ಮನೆಯನ್ನು ಕಟ್ಟಿತು. ಮನೆಗಳಲ್ಲೇ ಅತ್ಯಂತ ದುರ್ಬಲ ಮನೆಯು ಜೇಡನ ಮನೆಯಾಗಿದೆ. ಅವರು ತಿಳಿಯುವವರಾಗಿದ್ದರೆ!",
       "as": "যিসকলে আল্লাহৰ বাহিৰে আনক অভিভাৱক হিচাপে গ্ৰহণ কৰে, সিহঁতৰ দৃষ্টান্ত মকৰাৰ নিচিনা, যিয়ে ঘৰ বনায়। নিশ্চয় ঘৰৰ মাজত আটাইতকৈ দুৰ্বল ঘৰ হৈছে মকৰাৰ ঘৰ, হায়! যদি সিহঁতে জানিলেহেঁতেন।",
       "si": "අල්ලාහ් හැර භාරකරුවන් ලෙස ගත්තවුන්ගේ උපමාව නිවසක් තනා ගත් මකුළුවාගේ උපමාව මෙනි. නියත වශයෙන් ම නිවෙස් අතරින් වඩාත් දුර්වල වනුයේ මකුළුවාගේ නිවසයි. ඔවුන් දැන සිටියාහු නම්.",
-      "km": "ការប្រៀបធៀបពួកដែលយកអ្នកផ្សេងក្រៅពីអល់ឡោះធ្វើជាអ្នកគាំពារ ប្រៀបដូចទៅនឹងសត្វពីងពាងដែលបានធ្វើសំបុកដូច្នោះដែរ។ ពិតប្រាកដណាស់ សំបុកដែលអន់ជាងគេបំផុត គឺសំបុកសត្វពីងពាងហ្នឹងឯង ប្រសិនបើពួកគេបានដឹង។"
+      "km": "ការប្រៀបធៀបពួកដែលយកអ្នកផ្សេងក្រៅពីអល់ឡោះធ្វើជាអ្នកគាំពារ ប្រៀបដូចទៅនឹងសត្វពីងពាងដែលបានធ្វើសំបុកដូច្នោះដែរ។ ពិតប្រាកដណាស់ សំបុកដែលអន់ជាងគេបំផុត គឺសំបុកសត្វពីងពាងហ្នឹងឯង ប្រសិនបើពួកគេបានដឹង។",
+      "he": "משלם של אלה אשר עבדו אלילים באדונים מלבד אללה, כמשל העכביש העושה את ביתו, ואכן, הרופף שבבתים הוא בית העכביש, אילו היו יודעים.",
+      "mg": "Ireo izay nandray mpiaro hafa ankoatr’I Allah dia mitovy amin’ny hala izay miantehitra amin’ny tranony. Marina fa ny trano tena marefo indrindra dia ny tranon-kala, raha toa ka mba fantatr’izy ireo !",
+      "lg": "Ekifaananyi ky'abo abeeteerawo abataasa ne baleka Allah, bali nga nnabbubi eyeezimbira ennyumba ate nga ennyumba esinga obunafu y’ennyumba ya nnabbubi singa baali bamanyi.",
+      "ln": "Ndakisa ya baye bazui babateli na botiki Allah, ezali lokola limpulututu oyo atongi ndako ya motawu, nzoka nde ndako oyo ezali motawu koleka, ezali ndako ya limpulututu. Soki solo bazali koyeba.",
+      "mos": "Neb nins sẽn dɩk zẽng sẽn kɑ Wẽnd n mɑɑn b lɑll-n-tɑɑsã bilgr yɑɑ wɑlɑ sʋlg sẽn wʋg ɑ roogo, lɑ ad roog sẽn yɩɩd vɑleng yɑɑ sʋlg roogo, tɩ b sã n da miime.",
+      "ak": "Wͻn a wͻ’fri Nyankopͻn akyi fa akyitaafoͻ no mfatoho tesε ananse a wasi fie (ama neho). Nokorε sε efie a enni ahoͻden koraa ne ananse fie, sε anka wͻ’nim ampa a”.",
+      "nqo": "ߡߍ߲ ߠߎ߫ ߣߵߊ߬ߟߎ߬ ߓߟߏߞߍ߫ ߟߊ߫ ߞߏߕߌ߯ ߜߘߍ߫ ߟߎ߫ ߟߊ߫ ߞߵߊߟߊ߫ ߕߏ߫ ߸ ߏ߬ ߟߎ߬ ߟߊߒߡߊ ߟߋ߬ ߦߏ߫ ߕߊߟߏ߲ߕߊߟߏ߲ߓߊ ߦߋ߫ ߢߊ ߡߍ߲ ߊ߬ ߟߊ߫ ߓߏ߲ߕߌ߯ߦߊ ߘߐ߫ ߸ ߓߏ߲ ߠߎ߬ ߓߍ߯ ߘߐ߫ ߖߐ߲ߝߐ߲ߣߍ߲ ߠߋ߬ ߕߊߟߏ߲ߕߊߟߏ߲ߓߊ ߕߊ ߘߌ߫ ߣߴߊߟߎ߫ ߓߍ߫ ߊ߬ ߟߐ߲߫ ߠߊ߫"
     }
   },
   {
@@ -5720,7 +6906,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহেই যথাযথভাৱে আকাশসমূহ আৰু পৃথিৱী সৃষ্টি কৰিছে; নিশ্চয় ইয়াত আছে মুমিনসকলৰ বাবে নিদৰ্শন।",
       "ne": "अल्लाहले आकाशहरू र धरतीलाई सत्यताको साथ सृष्टि गरेको छ । निश्चय नै यसमा ईमानवालाहरूको निम्ति ठुलो निशानी छ ।",
       "si": "අල්ලාහ් අහස් සහ මහපොළොව සත්‍යයෙන් යුතුව මැව්වේ ය. නියත වශයෙන් ම දේවත්වය විශ්වාස කරන්නන්හට එහි සංඥාවක් ඇත.",
-      "km": "អល់ឡោះទ្រង់បានបង្កើតមេឃជាច្រើនជាន់និងផែនដីដោយពិតប្រាកដ។ ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាសញ្ញាភស្តុតាងមួយសម្រាប់បណ្តាអ្នកដែលមានជំនឿ។"
+      "km": "អល់ឡោះទ្រង់បានបង្កើតមេឃជាច្រើនជាន់និងផែនដីដោយពិតប្រាកដ។ ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាសញ្ញាភស្តុតាងមួយសម្រាប់បណ្តាអ្នកដែលមានជំនឿ។",
+      "he": "יצר אללה את השמים ואת הארץ בצדק, הן יש בזה אות למאמינים.",
+      "ka": "ალლაჰმა შექმნა ცანი და დედამიწა ჭეშმარიტებით. უეჭველად, მასში სასწაულია მორწმუნეთათვის.",
+      "lt": "(Allahas sako savo Pranašui Muchammedui ﷺ): „Allahas (Vienintelis) sukūrė dangus ir žemę iš tiesų (ir niekas nesidalino su Juo jų kūrime).“ Iš tiesų, tame tikrai yra ženklas tiems, kurie tiki.",
+      "mg": "Nahary ireo lanitra sy tany tamim-pahamarinana I Allah. Marina fa ao anatin’izany dia misy porofo ho an’ireo mpino.",
+      "lg": "Allah yatonda eggulu omusanvu, n'ensi mu ngeri entuufu, mazima mu ekyo mulimu eky'okuyiga eri Abakkiriza.",
+      "rw": "Allah yaremye ibirere n’isi mu kuri. Mu by’ukuri muri ibyo harimo ikimenyetso ku bemera.",
+      "dag": "Naawuni namla sagbana mini tiŋgbani ni yεlimaŋli. Achiika! Ŋɔ maa puuni mali kpahimbu n-zaŋ ti ninvuɣu shεba ban ti Naawuni yεlimaŋli.",
+      "mos": "Wẽnd nɑɑnɑ sɑɑsã lɑ Tẽngã sɩd yĩngɑ, ad wãnde pʋgẽ wã yel-soalem bee beenẽ sɩd-kõtbã yĩngɑ.",
+      "aa": "Yalli qaranwaa kee baaxó nummal gine, diggah tohut Yallal yeemene marah astá tan.",
+      "mdh": "Binaluy nu Allah su manga langit endu su lupa sa haqq, saben-sabenal a nakadalem kanu namba i tanda (kapegkagaga) sya kanu manga bamamaginugut.",
+      "ak": "Nokorε na Nyankopͻn debͻͻ soro ne asaase. Nokorε sε nsεnkyerεnee wͻ woi mu dema agyidiefoͻ no.",
+      "ceb": "Ang Allah ang naglalang sa mga kalangitan ug kayutaan lamang nga adunay tinuod katuyoan. Sa pagkatinuod adunay usa ka timaan niini alang sa mga magtotoo.",
+      "nqo": "ߊߟߊ߫ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲߫ ߕߎ߬ߢߊ߫ ߟߋ߬ ߟߊ߫ ، ߕߊ߰ߛߌ߬ߟߌ߫ ߟߴߏ߬ ߘߐ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
   },
   {
@@ -5780,7 +6979,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মোৰ মুমিন বান্দাসকল! নিশ্চয় মোৰ পৃথিৱীখন বহুত প্ৰশস্ত, এতেকে তোমালোকে কেৱল মোৰেই ইবাদত কৰা।",
       "ne": "‘‘हे मेरा ईमानवाला सेवकहरू, मेरो धरती धेरै विस्तृत छ, अतः मेरै उपासना गर ।",
       "si": "අහෝ විශ්වාස කළ මාගේ ගැත්තනි! නියත වශයෙන් ම මාගේ භූමිය විශාල ය. එහෙයින් නුඹලා මට ම නැමදුම් කරනු.",
-      "km": "ឱបណ្តាខ្ញុំបម្រើទាំងឡាយរបស់យើងដែលមានជំនឿ! ពិតប្រាកដណាស់ ផែនដីរបស់យើងគឺទូលំទូលាយណាស់។ ដូច្នេះ ចូរពួកអ្នកគោរពសក្ការៈមកចំពោះយើងតែមួយគត់។"
+      "km": "ឱបណ្តាខ្ញុំបម្រើទាំងឡាយរបស់យើងដែលមានជំនឿ! ពិតប្រាកដណាស់ ផែនដីរបស់យើងគឺទូលំទូលាយណាស់។ ដូច្នេះ ចូរពួកអ្នកគោរពសក្ការៈមកចំពោះយើងតែមួយគត់។",
+      "he": "הוי עבדיי אשר האמינו בי! אדמתי רחבה, לכן רק אותי עיבדו!",
+      "ka": "ო, ჩემი მონებო, რომელთაც ირწმუნეთ! ჭეშმარიტად, ჩემი მიწა ფართოა, მაშ მხოლოდ მე მეთაყვანეთ.",
+      "lt": "Mano vergai, kurie tikite, be abejonės, plati yra Mano žemė. Taigi garbinkite Mane (Vienintelį).“",
+      "mg": "Ô ry Mpanompoko izay nino ! Tena marina fa ny taniko dia midadasika. Ka aoka Izaho irery ihany no ho tompoinareo !",
+      "lg": "Abange mmwe abaddu Bange Abakkiriza (bwe muba nga muli mu kunyigirizibwa) mazima ensi Yange ngazi (musenguke munsinzize awalala), era Nze Nzekka Nze gwe muba musinza.",
+      "rw": "Yemwe bagaragu banjye bemeye! (Niba mubuzwa kugaragira Allah, muzimuke kuko) mu by’ukuri isi yanjye ni ngari. Bityo, mube ari Njye musenga Njyenyine.",
+      "ln": "Eh bawumbu na ngai! Baye bandimelaki ngai! Ya sólo mabele na ngai mazali monene, bobondela ngai.",
+      "dag": "“Yaa yinim’ N dab’ shεba ban ti yεlimaŋli: “Achiika! N (Mani Naawuni) tiŋgbani nyɛladin yɛlimma, dinzuɣu, jεmmi ya Ma (luɣulikam yi ni be).”",
+      "mos": "Yaa yãmb M yembs nins sẽn kõ sɩdɑ! Ad Mɑm Tẽngã yɑlmɑme, bɩ y tũ Mɑɑm bɑlɑ.",
+      "mdh": "Sekanu a manga ulipen ku a nangimbenal, su lupa ku na mawlad, saki nu i simba.",
+      "ak": "Menkoa a moagye adie, M’asaase no trε; enti Menko ara na monsom Me.",
+      "ceb": "Oh Akong mga ulipon (sa katawhan ug jinn) nga mituo (sa Kamatuoran), kasigurohan nga ang Akong yuta lapad, busa simbaha Ako lamang (niini).",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߒ ߠߊ߫ ߖߐ߲߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߒ ߠߊ߫ ߘߎ߰ߞߟߏ ߘߐߥߙߊ߬ߣߍ߲߬ߓߊ ߟߋ߬ ߸ ߒ߬ߓߵߊߟߎ߫ ߒߠߋ ߟߋ߫ ߓߊ߬ߕߴߏ߬ ߘߐ߫ ߘߋ߬"
     }
   },
   {
@@ -5841,7 +7053,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "প্ৰতিটো জীৱই মৃত্যুৰ সোৱাদ গ্ৰহণ কৰিব, তাৰ পিছত তোমালোকে আমাৰ ওচৰলৈকেই প্ৰত্যাৱৰ্তিত হ’বা।",
       "ne": "प्रत्येक जीवले मृत्युको स्वाद चाख्नेवाला छ, अनि तिमी सबै हामीतिरै फर्काइनेछौ ।",
       "si": "සෑම ආත්මයක් ම මරණයේ සුවය විඳින්නකි. පසුව නුඹලා අප වෙත යොමු කරනු ලබන්නෙහු ය.",
-      "km": "រាល់ជីវិតទាំងអស់នឹងត្រូវភ្លក់រសជាតិនៃសេចក្តីស្លាប់។ បន្ទាប់មក ពួកអ្នកនឹងត្រូវគេនាំត្រឡប់មកកាន់យើងវិញ។"
+      "km": "រាល់ជីវិតទាំងអស់នឹងត្រូវភ្លក់រសជាតិនៃសេចក្តីស្លាប់។ បន្ទាប់មក ពួកអ្នកនឹងត្រូវគេនាំត្រឡប់មកកាន់យើងវិញ។",
+      "he": "סופו של כל אחד לטעום את המוות, ואלינו מושבים!",
+      "ka": "ყოველი სული იგემებს სიკვდილს. შემდეგ კი ჩვენთან იქნებით დაბრუნებულნი.",
+      "lt": "Visi paragaus mirties. Tada pas Mus jūs būsite sugrąžinti.",
+      "mg": "Ny manan’aina rehetra dia samy hanandrana ny fahafatesana. Avy eo, atỳ Aminay no hamerenana anareo.",
+      "lg": "Buli mwoyo gwonna gwa gukomba ku kufa, oluvannyuma Gyetuli gye mujja okuzzibwa.",
+      "rw": "Buri roho izasogongera ku rupfu. Hanyuma iwacu ni ho muzasubizwa.",
+      "rn": "Zina-kiremwa cose gifise ubuzima, kizohonja urupfu; hanyuma muheze musubizwe iwacu Twebwe Allah, kugira muhemberwe ivyo mwakoze.",
+      "ln": "Molimo nyoso mokomekaka liwa, sima bokozongisama epai na biso.",
+      "dag": "Nyɛvuli kam nyɛla din yɛn lam kum, din nyaaŋa Ti (Tinim’ Naawuni) sani ka bɛ yɛn ti labsi ya na.",
+      "mos": "Yõor fãɑ nɑ n lembɑ kũum, rẽ poorẽ yɑɑ Tõnd nengẽ lɑ b nɑ n lebs yãmbɑ.",
+      "aa": "Ummaan nafsiy nuwwi raba tammoysele tohuk lakal Nee fan gacsimtan cisab kee galtóh.",
+      "mdh": "Uman isa na makananam sa kapatay, entupan a makambalingan kanu sa laki.",
+      "ak": "Ɔkra biara bεka owuo ahwε, na afei Yεn hͻ na mobεsan aba.",
+      "ceb": "Ang matag kalag makatilaw sa kamatayon, ug unya ngadto sa Allah kamo (tanan) ibalik (alang sa Paghukom).",
+      "nqo": "ߣߌߡߊ ߞߋ߬ߟߋ߲߬ߞߋ߬ߟߋ߲߬ߠߊ ߘߌ߫ ߛߊ߬ߦߊ ߡߊߜߊ߬ߙߏ߫ ߟߋ߬ ߕߘߋ߫ ، ߏ߬ ߟߋ ߞߐ߫ ߊߟߎ߫ ߘߌ߫ ߛߊ߬ߦߌ߫ ߒ߬ߠߎ߫ ߡߊ߬"
     }
   },
   {
@@ -5903,7 +7130,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহে তেওঁৰ বান্দাসকলৰ মাজৰ পৰা যাক ইচ্ছা কৰে তাৰ জীৱিকা বৃদ্ধি কৰি দিয়ে আৰু যাক ইচ্ছা কৰে সীমিত কৰি দিয়ে। নিশ্চয় আল্লাহ সকলো বস্তু সম্পৰ্কে সম্যক অৱগত।",
       "ne": "अल्लाहले आफ्नो भक्तहरूमध्ये जसको निम्ति चाहन्छ जीविका विस्तृत गरिदिन्छ र जसको लागि चाहन्छ संकुचित गरिदिन्छ । निःसन्देह अल्लाह प्रत्येक कुरा जान्दछ ।",
       "si": "අල්ලාහ් තම ගැත්තන් අතරින් තමන් අභිමත කරන අයට පෝෂණ සම්පත් ව්‍යාප්ත කරයි. තවද ඔහු ඔහුට (ඒවා) සීමා කරයි. නියත වශයෙන් ම අල්ලාහ් සියලු දෑ පිළිබඳව සර්ව ඥානී ය.",
-      "km": "អល់ឡោះទ្រង់បើកទូលាយ និងត្បិតត្បៀតលាភសក្ការៈ(របស់ទ្រង់)ចំពោះជនណាដែលទ្រង់មានចេតនា។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់ដឹងបំផុតនូវរាល់អ្វីៗទាំងអស់។"
+      "km": "អល់ឡោះទ្រង់បើកទូលាយ និងត្បិតត្បៀតលាភសក្ការៈ(របស់ទ្រង់)ចំពោះជនណាដែលទ្រង់មានចេតនា។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់ដឹងបំផុតនូវរាល់អ្វីៗទាំងអស់។",
+      "he": "אללה מגדיל ומקטין את פרנסתו של אשר ירצה מעבדיו, כי אללה יודע הכול.",
+      "ka": "ალლაჰი გააფართოებს [ზრდის] საზრდოს თავის მონათაგან, ვისაც ისურვებს და ამცირებს მისთვის (ვისთვისაც სურს). ჭეშმარიტად, მან უწყის ყოველივეს შესახებ.",
+      "lt": "Allahas padidina išlaikymą tam, kam Jis nori iš Savo vergų, ir apriboja jį tam (kam Jis nori). Iš tiesų, Allahas yra Visa Žinantis apie viską.",
+      "mg": "Allah no manome an-kalalahana ny anjara amin’izay sitrany amin’ireo mpanompony, sy mametra izany ihany koa eo aminy. Tena marina fa Allah dia Mahalala ny zava-drehetra.",
+      "lg": "Allah agaziyiza omuntu gw'aba ayagadde ebyenfuna mu baddu Be ate n'afundiza oyo gw'aba (ayagadde), mazima Allah ku buli kintu Mumanyi nnyo.",
+      "rw": "Allah yongerera amafunguro uwo ashaka mu bagaragu be akanayagabanya ku wo ashaka. Mu by’ukuri Allah ni Umumenyi wa byose.",
+      "ln": "Allah apesaka bozui na oyo alingi mpe abotoloko yango na oyo alingi kati ya bawumbu naye. Ya soló, Allah azali na boyebi ya biloko binso.",
+      "dag": "Naawuni yεlgirila arzichi n-tiri O ni bɔri so O daba puuni, ka kpaŋsiri bɛhigu n-tiri O. Achiika! Naawuni nyɛla Ŋun mi binshɛɣu kam.",
+      "mos": "Wẽnd yɑlgdɑ rɩtlã n kõt A sẽn dɑt-b rãmb A yembsã pʋgẽ lɑ A weoogd A sẽn dɑt-b rãmbɑ; ad Wẽnd yɑɑ Mit ne bũmb fãɑ.",
+      "aa": "Yalli isi naqoosak isih kah faxa marah rizqhi (quusi) farakka haah, isih kah faxa maral keenik ceyissi haa, diggah Yalli ummaanimil ixxiga-li.",
+      "mdh": "Su Allah i papegkakalag sa rizki nu kagkahanda nin kanu manga ulipen nin endu pedsimpitan nin, su Allah kanu langun na enggaga-isa na katawan nin.",
+      "ak": "Nyankopͻn ma akͻnhoma no bu Nenkoa no mu nea Ɔpε so, εna (Nenkoa a Ɔpε nso) Osusu dema wͻn. Nokorε sε Nyankopͻn ne biribiara ho Nimdefoͻ.",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߴߊ߬ ߟߊ߫ ߖߐ߲߭ ߠߎ߬ ߘߐ߫ ߊ߬ ߣߴߊ߬ ߘߴߊ߬ ߘߐߜߙߐ߬ ، ߊߟߊ߫ ߦߋ߫ ߝߋ߲ ߓߍ߯ ߟߐ߲ߓߊ߮ ߟߋ߬ ߘߌ߫ ߘߋ߬"
     }
   },
   {
@@ -5963,7 +7203,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহেই সৃষ্টিৰ সূচনা কৰে, তাৰ পিছত তেৱেঁই ইয়াৰ পুনৰাবৃত্তি কৰিব, তাৰ পিছত তোমালোকক তেওঁৰ ওচৰতেই প্ৰত্যাৱৰ্তন কৰোৱা হ’ব।",
       "ne": "अल्लाहले नै सृष्टिको आरम्भ गर्दछ । अनि त्यसैले उसको पुनराबृत्ति गर्नेछ । अनि उसैतिर तिमी फर्कनेछौ ।",
       "si": "අල්ලාහ් මැවීම් පළමු වතාවට උත්පාදනය කරයි. පසුව එය නැවත නිර්මාණය කරයි. පසුව ඔහු වෙතට මය නුඹලා නැවත යොමු කරනු ලබනුයේ.",
-      "km": "អល់ឡោះជាម្ចាស់ទ្រង់ផ្តើមបង្កើតសត្វលោក។ បន្ទាប់មក ទ្រង់បានបង្កើតវាឡើងវិញ។ ក្រោយមក ពួកអ្នកនឹងត្រូវគេនាំត្រឡប់ទៅកាន់ទ្រង់វិញ។"
+      "km": "អល់ឡោះជាម្ចាស់ទ្រង់ផ្តើមបង្កើតសត្វលោក។ បន្ទាប់មក ទ្រង់បានបង្កើតវាឡើងវិញ។ ក្រោយមក ពួកអ្នកនឹងត្រូវគេនាំត្រឡប់ទៅកាន់ទ្រង់វិញ។",
+      "he": "אללה הוא זה אשר ברא את הבריאה תחילה מלא כלום, והוא זה אשר יברא אותה שוב, ואליו אתם תושבו.",
+      "ka": "ალლაჰი იწყებს გაჩენას [არარაობიდან ქმნის], შემდეგ კვლავ იმეორებს მას [ხელახლა ქმნის], ხოლო ბოლოს თქვენ მასთანვე დაბრუნდებით!",
+      "lt": "Allahas (Vienintelis) duoda pradžią kūrimui, tada Jis pakartos tai, tada pas jį Jūs būsite sugrąžinti.",
+      "mg": "Allah no nanomboka ny fahariana; ary Izy ihany no mamerina azy indray; ary any Aminy no hamerenana anareo.",
+      "lg": "Allah y'atandika ebitonde oluvannyuma agenda kubizzaawo ate oluvanyuma Gy'ali gye mulizzibwa.",
+      "rw": "Allah ni We wahanze ibiremwa bitari biriho, akazanabigarura (abizura), hanyuma Iwe ni ho muzasubizwa.",
+      "ln": "Allah nde abandaka bokeli mpe sima azongeli yango, mpe epai naye nde bokozongisama.",
+      "dag": "Naawuni n-nyɛŊun piindi nambu, din nyaaŋa ka O labsiri li (di kpibu nyaaŋa), din nyaaŋa Osanikabɛ yɛn ti labsi ya na (Zaadali).",
+      "mos": "Wẽnd n sɩngd naoonegã, rẽ poorẽ n lebs n yɩlm-ɑ, rẽ poorẽ yɑɑ Yẽ nengẽ lɑ y nɑ n lebe.",
+      "aa": "Yalli ginó dibuk qimbisaah, tohuk lakat tet gacsah rabeeniik lakat, tohuk lakat cisab kee galtóh kaa fan gacsimtan.",
+      "mdh": "Su Allah i minebpun sa kinabaluy sa manusya mawli na paulitan nin menem mawli na makambalingan tanu sa lekanin.",
+      "ak": "Nyankopͻn na Ɔhyεε abͻdeε aseε, εna Ɔsan bͻ no bio, afei Ne hͻ na mo bεsan akͻ.",
+      "ceb": "Ang Allah maoy nagpasiugda sa paglalang ug Iya kining sublion (banhawon kini pag-usab human mamatay), ug ngadto Kaniya kamo (tanan) ibalik (alang sa Paghukom).",
+      "nqo": "ߊߟߊ߫ ߟߋ߬ ߘߊ߲ߠߌ߲ ߠߊߝߟߐ߫ ߟߊ߫ ߞߊ߬ ߓߊ߲߫ ߞߵߊ߬ ߡߊߛߊ߬ߦߌ߬ ، ߏ߬ ߟߋ ߞߐ߫ ߊߟߎ߫ ߘߌߣߊ߬ ߟߊߛߊ߬ߦߌ߲߫ ߊ߬ ߡߊ߬"
     }
   },
   {
@@ -6026,7 +7280,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশসমূহ আৰু পৃথিৱীত যি যি আছে সেই সকলো আল্লাহৰেই; নিশ্চয় আল্লাহ, তেৱেঁই অভাৱমুক্ত, চিৰপ্ৰশংসিত।",
       "ne": "जे जति आकाश र धरतीमा छ सबै अल्लाहकै हो निःसन्देह अल्लाह ठूलो निस्पृह, र प्रशंसित छ ।",
       "si": "අහස්හි හා මහපොළොවේ ඇති දෑ අල්ලාහ් සතු ය. නියත වශයෙන් ම අල්ලාහ්, ඔහු මය අවශ්‍යතාවන්ගෙන් තොර ය; ප්‍රශංසාලාභී ය.",
-      "km": "អ្វីៗដែលនៅលើមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់អល់ឡោះ(តែមួយគត់)។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាមានលើសលប់ ជាទីកោតសរសើរបំផុត។"
+      "km": "អ្វីៗដែលនៅលើមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់អល់ឡោះ(តែមួយគត់)។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាមានលើសលប់ ជាទីកោតសរសើរបំផុត។",
+      "he": "לאללה כל אשר בשמים ובארץ, אללה אינו זקוק לבריותיו, כי הוא העשיר המהולל.",
+      "ka": "ალლაჰს ეკუთვნის ის, რაც ცაშია და რაც მიწაზეა. ჭეშმარიტად, ალლაჰი მდიდარი, ქებულია.",
+      "lt": "Allahui priklauso viskas danguose ir žemėje. Iš tiesų, Allahas, Jis yra Al-Ghani (Turtingas, Nepriklausantis nuo jokių poreikių), Vertas visos šlovės.",
+      "mg": "An’i Allah izay rehetra any amin’ireo lanitra sy ny eto an-tany. Marina fa i Allah Ilay manana ny ampy, Ilay mendri-piderana !",
+      "lg": "Bya Allah ebyo ebiri mu ggulu omusanvu n'ensi, mazima Allah Yye y'atalina kye yeetaaga (era) atenderezebwa.",
+      "rw": "Ibiri mu birere n’ibiri mu isi ni ibya Allah. Mu by’ukuri Allah ni We Uwihagije, Ushimwa cyane.",
+      "rn": "Imana Allah, ni Yo Rugaba w’ibiri mu majuru n’isi. Mu vy’ukuri Imana Allah, ni Uwikenuye Yikenuye muri vyose, Nyenugushimwa, Ishimwa ku mazina, ku matazirano no ku bikorwa vyayo mu bihe vyose.",
+      "ln": "Manso mazali o likolo mpe o nsé mazali ya Allah. Ya soló, Allah atonda bomengo atonda masanzoli.",
+      "dag": "Naawuni n-su din kam be sagbana mini tiŋgbani ni, achiika ! Naawuni nyɛla Bundana, Duuma paɣrigu.",
+      "mos": "Lɑ sẽn be sɑɑsẽ lɑ Tẽngẽ yɑɑ Wẽnd soolem, ad Wẽnde, Yẽ lɑ sek-m-meng Soɑb n yɑɑ pẽgr Soɑbɑ.",
+      "aa": "Qaranwaa kee baaxól tanim Yalli- le, diggah Yalli Usuk isi ginók gadda-li, kulli caalatal faylá-li.",
+      "mdh": "Kanu Allah su dalem nu manga langit endu lupa, sekanin (Allah) i kawasa a pebpugin.",
+      "ceb": "Iya sa Allah (lamang) ang bisan unsa nga anaa sa mga langit ug sa yuta; sa pagkatinuod ang Allah mao ang Igo sa Kaugalingon, ang Dalaygon.",
+      "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߣߐߝߋ߲ ߘߌ߫ ، ߊߟߊ߫ ߓߊ߬߸ ߞߊ߯ߙߌߓߊ߯ ߟߴߊ߬ ߘߌ߫ ߸ ߕߊ߲߬ߘߏ߬ߕߊ߫ ߟߋ߬"
     }
   },
   {
@@ -6078,7 +7346,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "কেৱল তেওঁলোকেই আমাৰ আয়াতসমূহৰ প্ৰতি বিশ্বাস স্থাপন কৰে, যিসকলে ইয়াৰ দ্বাৰা উপদেশ প্ৰাপ্ত হ’লে ছাজদাত পৰি যায় আৰু নিজ প্ৰতিপালকৰ প্ৰশংসাৰ সৈতে পৱিত্ৰতা আৰু মহিমা ঘোষণা কৰে, আৰু তেওঁলোকে অহংকাৰ নকৰে।",
       "ne": "हाम्रा आयतहरूमा उनैले ईमान ल्याउने गर्दछन् जसलाई जब उपदेश गरिन्छ तब सज्दामा (ढोगमा) जान्छन् र आफ्नो पालनकर्ताको प्रशंसाका साथ उसको गुणगान गर्दछन् र घमण्ड गर्दैनन् ।",
       "si": "අපගේ වදන් විශ්වාස කරනුයේ ඒවා ඔවුනට මෙනෙහි කරනු ලබන විට (සිරස බිම තබා) සුජූද් කරමින් බිම වැටී ඔවුන්ගේ පරමාධිපතිගේ ප්‍රශංසාව තුළින් සුවිශුද්ධ කළ අය වෙති. තවද ඔවුහු උඬගු නො වෙති.",
-      "km": "ជាការពិតណាស់ អ្នកដែលមានជំនឿនឹងបណ្តាវាក្យខណ្ឌទាំងឡាយរបស់យើង នៅពេលណាគេរំលឹកពួកគេនឹងវាក្យខណ្ឌទាំងនោះ គឺពួកគេលំឱនកាយស៊ូជោត និងលើកតម្កើងដោយការកោតសរសើរចំពោះព្រះជាម្ចាស់របស់ពួកគេ ហើយពួកគេមិនក្រអឺតក្រទមឡើយ។"
+      "km": "ជាការពិតណាស់ អ្នកដែលមានជំនឿនឹងបណ្តាវាក្យខណ្ឌទាំងឡាយរបស់យើង នៅពេលណាគេរំលឹកពួកគេនឹងវាក្យខណ្ឌទាំងនោះ គឺពួកគេលំឱនកាយស៊ូជោត និងលើកតម្កើងដោយការកោតសរសើរចំពោះព្រះជាម្ចាស់របស់ពួកគេ ហើយពួកគេមិនក្រអឺតក្រទមឡើយ។",
+      "he": "אלה אשר בצדק מאמינים אותותינו, הם אלה אשר סוגדים כאשר מזכירים להם אותם, ומשבחים ומהללים את ריבונם, ואינם מתייהרים.",
+      "ka": "ჩვენს სასწაულებს [აიათებს] მხოლოდ ისინი ირწმუნებენ, რომლებიც, როდესაც შეახსენებენ მათ, მყისვე სუჯუდზე ვარდებიან [ალლაჰის წინაშე მორჩილებით] და დიდებას აღუვლენენ თავიანთ უფალს და არ ამპარტავნობენ.",
+      "lg": "Mazima abakkiriza Ebigambo Byaffe, beebo nga buli lwe baba babuuliriddwa nabyo beeyala wansi ne bavunnama era ne batendereza amatendo ga Mukama Omulabirizi Waabwe, era bulijjo bo tebeekuza.",
+      "rw": "Mu by’ukuri abemera amagambo yacu, ni ba bandi baca bugufi bakubama igihe bayibukijwe, basingiza ishimwe n’ikuzo bya Nyagasani wabo, kandi batibona.",
+      "ln": "Ya soló, baye bandimaka na mikapo mia biso nde baye bazalaka soki bakundoleli bango yango, bakiti na bogumbami mpe bakumisi lokumu ya Nkolo wa bango, mpe bakosalaka lolendo te.",
+      "mos": "Ad sẽn kõt-b sɩd ne Tõnd goɑmã yɑɑ neb nins tɩ b sã n tẽeg-b ne-a lɑ b sẽn lʋɩt n yɑɑ tukdb lɑ b yɩlgd b Soɑbã yʋʋr ne pẽgr lɑ b kɑ mɑɑnd wɑoog-m-meng ye.",
+      "aa": "Cagalah Ni-aayoota nummaysa mari, teetil (Qhuraan aayoota kinnuk) ken kassiisan waqdi sujuuduh gomboh radan kaadu sinni Rabbi saytunnoysak faylisan usun Kaa yaqbudeenimik kaxxa- mariinitekal.",
+      "mdh": "Ya bu mangimbenal kanu manga ayatan nami na su manga taw a amayka patademen silan na sumugyud endu tumasbih sa pugi nilan kanu Kadenan nilan, endu di silan mamasela.",
+      "ak": "Wͻn a wͻgye Yε nsεm no die no ne wͻn a sε yεde Yε nsεm no tu wͻn fo a, wͻde wͻn ho kͻ fͻm de wͻn anim butu fͻm, na wͻbͻ wͻn Wura Nyankopͻn abodin kamfo no, na wͻnyε ahomasoͻ.",
+      "ceb": "Kadto lamang ang nagtuo sa Among mga bersikulo sa dihang gipahinumdoman, sila mohapa ug maghimaya uban sa pagdayeg sa ilang Ginoo samtang sila dili mapahitas-on.",
+      "nqo": "ߡߐ߰ ߟߎ߫ ߟߋ߬ ߟߊߣߍ߲߫ ߒ߬ ߠߊ߫ ߟߝߊߙߌ ߟߎ߬ ߟߊ߫ ߡߍ߲ ߠߎ߬ ߓߊ߯ ߞߊ߬ߥߊ߲߬ߘߌ߫ ߊ߬ ߟߊ߫ ߊ߬ߟߎ߬ ߘߴߊ߬ߟߎ߫ ߓߋ߬ ߕߌ߲ߓߌߘߌ߲ ߘߌ߫ ߞߊ߬ ߛߊߣߌ߲ߧߊ ߞߍ߫ ߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߕߊ߲߬ߘߏ ߘߌ߫ ߸ ߊ߬ߟߎ߫ ߘߏ߲߬ ߕߍ߫ ߊ߬ߟߎ߫ ߖߘߍ߬ ߘߐߓߏ߲߬ߧߊ߬ ߟߊ߫"
     }
   },
   {
@@ -6141,7 +7420,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যদি তোমালোকে কিবা প্ৰকাশ কৰা অথবা গোপন কৰা (তেন্তে জানি থোৱা) নিশ্চয় আল্লাহ সৰ্ব বিষয়ে সৰ্বজ্ঞ।",
       "ne": "तिमीले चाहे कुनै कुरालाई व्यक्त गर वा त्यसलाई लुकाऊ, अल्लाहलाई त हरेक कुराको ज्ञान छ ।",
       "si": "නුඹලා යමක් හෙළි කර සිටිය ද එසේ නැතහොත් නුඹලා එය සඟවා සිටිය ද නියත වශයෙන් ම අල්ලාහ් සියලු දෑ පිළිබඳ සර්වඥානී ය.",
-      "km": "ទោះបីជាពួកអ្នកលាតត្រដាងអ្វីមួយ ឬក៏ពួកអ្នកលាក់បាំងវាក៏ដោយ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាដឹងបំផុតនូវរាល់អ្វីៗទាំងអស់។"
+      "km": "ទោះបីជាពួកអ្នកលាតត្រដាងអ្វីមួយ ឬក៏ពួកអ្នកលាក់បាំងវាក៏ដោយ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាដឹងបំផុតនូវរាល់អ្វីៗទាំងអស់។",
+      "he": "בין אם תגלו דבר-מה או תסתירוהו, אכן אללה הוא היודע הכול.",
+      "ka": "გინდ გამოაჩენდეთ რამეს, გინდ ფარავდეთ, ჭეშმარიტად, ალლაჰი ყველაფრის მცოდნეა.",
+      "lt": "Ar jūs atskleisite ką nors, ar nuslėpsite tai, iš tiesų, Allahas yra Visa Žinantis apie viską.",
+      "mg": "Raha maneho zavatra ianareo na koa manafina izany, Allah no tena Mahalala ny zava-drehetra.",
+      "lg": "Ka mube nga mwolesezza ekintu kyonna oba nga mukikwese mazima Allah bulijjo amanyidde ddala ekifa ku buli kintu.",
+      "rw": "Mwagira icyo mugaragaza (nk’umugambi wo kurongora abagore b’Intumwa nyuma y’uko itabarutse) cyangwa mukagihisha, mu by’ukuri Allah ni Umumenyi wa byose.",
+      "ln": "Oyo bozali komonisa polele na oyo bozali kobomba yango, ya solo Allah azali moyebi wa biloko binso.",
+      "dag": "Yi yi yihi shɛli polo ni, bee ka yi sɔɣi li, tɔ! Achiika! Naawuni nyɛla Ŋunmi yɛllikam.",
+      "mos": "Yãmb sɑ n vẽneg bũmb bɩ y soɑlg-ɑ lɑme, ad Wẽnd yɩɩme n yɑɑ bũmb fãɑ Mitɑ.",
+      "aa": "Sinaamey Nabii adá abba haytaamak-tu tuybulleenik hinnay qellisseenik, toysa diggah Yalli ummaanim yaaxigi kinni kaak qellittam matan.",
+      "mdh": "Amayka aden ipebpayag nu atawaka ipedsulen nu na su Allah na langun na enggaga-isa na katawan nin.",
+      "ak": "Sε moda biribi adi o, anaasε mode suma o, nokorε sε Nyankopͻn ne biribiara ho Nimdefoͻ.",
+      "ceb": "Bisan ikaw nagpadayag sa usa ka butang o nagtago niini, sa pagkatinuod ang Allah adunay hingpit nga Kahibalo sa tanan nga mga butang.",
+      "nqo": "ߣߴߊߟߎ߫ ߞߊ߬ ߞߏ ߘߏ߫ ߟߊ߲ߞߣߍߡߊ߫ ߓߊ߬ ߸ ߥߟߴߊߟߎ߫ ߞߵߊ߬ ߘߏ߲߰ ߸ ߊߟߊ߫ ߞߏ߬ߣߌ߲ ߞߍߣߍ߲߫ ߞߏ ߓߍ߯ ߟߐ߲ߓߊ߮ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -6194,7 +7487,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আল্লাহে নবীৰ প্ৰতি অনুগ্ৰহ কৰে আৰু তেওঁৰ ফিৰিস্তাসকলেও নবীৰ বাবে দুআ আৰু ইছতিগফাৰ কৰে। হে ঈমান্দাৰসকল! তোমালোকেও নবীৰ প্ৰতি দৰুদ পাঠ কৰা আৰু তেওঁক যথাযথভাৱে ছালাম জনোৱা।",
       "ne": "अल्लाह र उसका फरिश्ताहरू यस नबीमाथि रहमत (सलाम–शान्ति) पठाउँदछन् । हे ईमानवालाहरू तिमी पनि उनीमाथि धेरै सलाम र दरूद पठाउने गर ।",
       "si": "නියත වශයෙන් ම අල්ලාහ් ද ඔහුගේ මලක්වරුන් ද නබිවරයාණන්ට ආශිර්වාද කරති. අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලා ද ඔහුට ප්‍රාර්ථනා කරනු. තවද නුඹලා සාමය පතනු.",
-      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ និងម៉ាឡាអ៊ីកាត់ទាំងឡាយរបស់ទ្រង់សឡាវ៉ាតលើព្យាការី(មូហាំម៉ាត់)។ ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកសឡាវ៉ាត និងឲ្យសាឡាមទៅលើគាត់ចុះ។"
+      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ និងម៉ាឡាអ៊ីកាត់ទាំងឡាយរបស់ទ្រង់សឡាវ៉ាតលើព្យាការី(មូហាំម៉ាត់)។ ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកសឡាវ៉ាត និងឲ្យសាឡាមទៅលើគាត់ចុះ។",
+      "he": "אכן אללה ומלאכיו מברכים את הנביא. הוי אלה אשר האמינו! התפללו בעדו וברכו אותו בשלום.",
+      "ka": "ჭეშმარიტად, ალლაჰი და მისი ანგელოზები ლოცავენ შუამავალს. ჰეი, თქვენ, რომელთაც ირწმუნეთ, დალოცეთ იგი და მიესალმეთ მას მშვიდობით.",
+      "mg": "Tena marina fa Allah sy ireo Anjeliny dia mitahy an’ny Mpaminany; ô ianareo izay mino! Mangataha fitahiana ho azy, ary mangataha fiadanana ho azy ianareo.",
+      "lg": "Mazima Allah ne Bamalayika Be basaasira Nnabbi, abange mmwe Abakkiriza mumusabirenga era mumulamuse olulamusa (olumuwa ekitiibwa).",
+      "rw": "Mu by’ukuri Allah ahundagaza impuhwe ze ku Muhanuzi (Muhamadi) ndetse n’Abamalayika bakazimusabira. Yemwe abemeye! Nimumusabire impuhwe munamwifurize amahoro.",
+      "mos": "Ad Wẽnd ne A Malεgsã pʋʋsda Nabiyaamã, yãmb ɑ neb nins sẽn kõ sɩdɑ! Pʋʋs-y-yã-a lɑ y kos tɩlgr sẽn yɑɑ kẽoong n kõ-a.",
+      "mdh": "Saben-sabenal su Allah endu su malaikat na pedsalawatan nilan su rasul, na sekanu a manga bamaginugut na salawati nu su rasul endu lepas a malilintad.",
+      "nqo": "ߊߟߊ߫ ߣߴߊ߬ ߟߊ߫ ߞߋ߲ߛߐ߲ ߠߎ߬ ߦߋ߫ ߕߌ߲ߞߌ߫ ߠߊ߫ ߟߊ߬ߝߐ߬ߓߊ߮ ߦߋ߫ ߟߋ߫ ߞߍ߬ߣߍ߲ ، ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߊߟߎ߫ ߝߣߊ߫ ߕߌ߲ߞߌ ߞߍ߫ ߊ߬ ߦߋ߫ ߸ ߊ߬ ߣߴߊߟߎ߫ ߦߴߊ߬ ߝߏ߬ ߟߋ߬ ߘߏ߲߯"
     }
   },
   {
@@ -6256,7 +7557,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে ঈমান্দাৰসকল! তোমালোকে আল্লাহৰ তাক্বৱা অৱলম্বন কৰা আৰু সঠিক কথা কোৱা;",
       "ne": "हे आस्थावानहरू ! अल्लाहसित डर मान्नेगर र सोझो सोझो साँचो कुरा भन्नेगर ।",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලා අල්ලාහ්ට බැතිමත් වනු. තවද නිවැරදි ප්‍රකාශය ම කතා කරනු.",
-      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកកោតខ្លាចអល់ឡោះជាម្ចាស់ និងត្រូវនិយាយនូវពាក្យសម្តីដែលត្រឹមត្រូវ"
+      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកកោតខ្លាចអល់ឡោះជាម្ចាស់ និងត្រូវនិយាយនូវពាក្យសម្តីដែលត្រឹមត្រូវ",
+      "he": "הוי אלה אשר האמינו! יראו את אללה ודברו רק את הצדק",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! ერიდეთ (ალლაჰის რისხვას) და თქვით (ყველა შემთხვევაში) სწორი სიტყვა [ის, რაც ჭეშმარიტებას შეესაბამება].",
+      "lt": "O jūs tikintieji, vykdykite savo pareigą Allahui ir baiminkitės Jo, ir kalbėkite (visada) tiesą.",
+      "mg": "Ô ianareo izay mino! Matahora an’i Allah ianareo, ary mitenena teny marina ianareo",
+      "lg": "Abange mmwe Abakkiriza mutye Allah era mwogere ebigambo ebituufu.",
+      "rw": "Yemwe abemeye! Nimugandukire Allah kandi mujye muvuga imvugo z’ukuri.",
+      "rn": "Emwe bemeye Imana Allah n’Intumwa yayo bakubahiriza n’amabwirizwa yayo! Nimugamburukire Imana Allah mu kwubahiriza amabwirizwa yayo, maze muvuge amajambo aroranye mu bihe vyose;",
+      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Zom ya Naawuni, ka yεli ya yεltɔɣa din tuhi.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩdɑ! Zoe-y Wẽnd lɑ y yeel gom-tɩrse.",
+      "aa": "Kee yeemene maraw! Yallak meesitaay, massah tan maxcóy dirab kee deedalak tu-edde aneewayta ixxica.",
+      "mdh": "Hay sekanu anan a bamaginugut! Ikagilek nu su Allah endu edtalu kanu sa kadtalu a bantang-matidtu.",
+      "ak": "Mo a moagye adie, monsuro Nyankopͻn na (εberε biara mu no) monka kasa pa.",
+      "ceb": "Oh mga magtutuo, kahadloki ang Allah, likayi ang daotan, ug isulti ang pulong nga husto, tinuod, ug makiangayon,",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬ ߸ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߞߎߡߊ߫ ߖߐ߲ߖߐ߲ ߝߐ߫"
     }
   },
   {
@@ -6315,7 +7630,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেওঁ জানে মাটিত যি প্ৰৱেশ কৰে আৰু তাৰ পৰা যি ওলায়, লগতে আকাশৰ পৰা যি অৱতীৰ্ণ হয় আৰু যি তালৈ আৰোহণ কৰে। তেওঁ পৰম দয়ালু, অতি ক্ষমাশীল।",
       "ne": "जे धरतीमुनि जान्छ र जे त्यसबाट बाहिर निस्कन्छ र जेजति आकाशबाट तल झर्छ, र जे जति त्यसमाथि चढ्छ (उक्लन्छ) ऊ सबै जान्दछ, र ऊ अत्यन्त दयालु क्षमाशील छ ।",
       "si": "මහපොළොව තුළට පිවිසෙන දෑ ද ඉන් බැහැර වන දෑ ද අහසින් පහළ වන දෑ ද එහි ආරෝහණය වන දෑ ද ඔහු දනී. තවද ඔහු මහාකරුණාන්විත ය; අතික්ෂමාශීලී ය.",
-      "km": "ទ្រង់ដឹងនូវអ្វីដែលចូលទៅក្នុងដី និងអ្វីដែលចេញពីដី អ្វីដែលចុះមកពីលើមេឃ ហើយនិងអ្វីដែលឡើងទៅលើមេឃវិញ។ ហើយទ្រង់មហាអាណិតស្រលាញ់ មហាអភ័យទោសបំផុត។"
+      "km": "ទ្រង់ដឹងនូវអ្វីដែលចូលទៅក្នុងដី និងអ្វីដែលចេញពីដី អ្វីដែលចុះមកពីលើមេឃ ហើយនិងអ្វីដែលឡើងទៅលើមេឃវិញ។ ហើយទ្រង់មហាអាណិតស្រលាញ់ មហាអភ័យទោសបំផុត។",
+      "he": "יודע מה שחודר אל תוך האדמה ומה שיוצא מתוכה, ואת אשר יירד מן השמים ואת אשר יעלה אליהם, והוא הרחום והסולח.",
+      "lt": "Jis Žino tai, kas įeina į žemę, ir tai, kas išeina iš jos, ir tai, kas nusileidžia iš dangaus, ir tai, kas pakyla į jį. Ir Jis yra Gailestingiausiasis, Visa Atleidžiantis.",
+      "mg": "Fantany izay miditra amin’ny tany sy izay mivoka avy ao, ary koa, izay midina avy eny amin’ny lanitra sy izay miakatra eny. fa Izy no ilay be indrafo, ilay mpamela heloka.",
+      "lg": "Amanyi ebyo ebiyingira mu nsi n'ebigifuluma, n'ebyo ebikka okuva mu ggulu n'ebyambuka mu lyo, era Yye Ye Musaasizi Omusonyiyi.",
+      "rw": "Azi ibyinjira mu butaka n’ibibusohokamo, ibimanuka mu kirere ndetse n’ibikizamukamo. Kandi ni Nyirimpuhwe, Nyir’ukubabarira ibyaha.",
+      "ln": "Ayebi maye mazali kokota na mabele na maye mazali kobima o kati na yango, mpe maye mazali kokita kowuta na likolo mpe na maye mazali komata. Azali wa ngolu atonda bolimbisi.",
+      "dag": "O mila din kpεri tiŋgbani ni, ni din yiri di puuni na, ka mi din yiri zuɣusaa na, ni din duri di puuni. Ŋuna lahi n-nyɛ Zaadali Nambɔzobonaa, Chεmpaŋlana.",
+      "mos": "A mii sẽn kẽed Tẽngã pʋgẽ lɑ sẽn yit ɑ pʋgẽ; lɑ sẽn yit sɑɑgẽ lɑ sẽn dʋʋd ɑ pʋgẽ; lɑ Yẽ lɑ Yolsd lɑ Yaafda.",
+      "aa": "Yalli baaxót cullu ittam kee teetik bukku ittam yaaxigeh, kaadu qaraanak obbu ittam kee kaa fan eweqqi ittam yaaxigeh, Usuk xuwawli, dambi cabti-li.",
+      "mdh": "Katawan nin i peludep kanu lupa endu belyu lun, endu su pedtulun ebpun sa langit endu su pebpapulu endu sekanin a malimu a bangampun.",
+      "ak": "Onim deε εkͻ asaase mu, ne deε epue firi mu, ne deε esane firi soro ne deε εforo kͻ hͻ, Ɔne Mmͻborͻhunufoͻ Hene no, Bͻnefakyε Wura no.",
+      "nqo": "ߊ߬ ߞߵߊ߬ ߟߐ߲߫ ߡߍ߲ ߦߋ߫ ߘߏ߲߬ ߠߊ߫ ߘߎ߱ ߘߐ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߋ߫ ߓߐ߫ ߟߴߊ߬ ߘߐ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߋ߫ ߖߌ߰ ߟߊ߫ ߞߊ߬ ߓߐ߫ ߛߊ߲ ߘߐ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߋ߫ ߦߟߍ߬ ߟߴߊ߬ ߘߐ߫ ، ߊߟߋ ߟߋ߫ ߡߊ߬ߤߌ߬ߣߊ߬ߟߊ ߘߌ߫ ߸ ߡߊ߬ߞߕߏ߬ߟߌ߬ߟߊ ߟߋ߬"
     }
   },
   {
@@ -6363,7 +7690,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "अल्लाह जो दया - कृपा (द्वार) लोकांकरिता उघड करील तर त्यास कोणी बंद करणारा नाही आणि ज्याच्यासाठी बंद करील तर त्यानंतर त्यास कोणी सुरू करणारा (उघडणारा) नाही आणि तोच जबरदस्त हिकमतशाली आहे.",
       "as": "আল্লাহে মানুহৰ বাবে যি অনুগ্ৰহ মুকলি কৰি দিয়ে তাক ৰোধ কৰিবলৈ কোনো নাই, আনহাতে তেওঁ যিটোক ৰোধ কৰে সেইটোক মুকলি কৰিবলৈও কোনো নাই। তেওঁ পৰাক্ৰমশালী, প্ৰজ্ঞাময়।",
       "ne": "अल्लाहले आफ्नो दया मानिसहरूको लागि खोलिदिन्छ भने त्यसलाई बन्द गर्नेवाला कोही छैन् र यदि बन्द गरिदिन्छ भने ऊ पश्चात त्यसलाई कोही खोल्नेवाला छैन । ऊ अधिपत्यशाली, तत्वदर्शी छ ।",
-      "si": "අල්ලාහ් (තම) දයාවෙන් මිනිසාට විවෘතව ප්‍රධානය කළේ නම්, එය වළක්වන කිසිවෙකු නැත. තවද ඔහු (තම දායාදයන්) වළක්වන්නේ නම් ඉන් පසුව ඒවා ඔහුට එවන්නෙකු ද නැත. තවද ඔහු සර්ව බලධාරි ය; මහා ප්‍රඥාවන්ත ය."
+      "si": "අල්ලාහ් (තම) දයාවෙන් මිනිසාට විවෘතව ප්‍රධානය කළේ නම්, එය වළක්වන කිසිවෙකු නැත. තවද ඔහු (තම දායාදයන්) වළක්වන්නේ නම් ඉන් පසුව ඒවා ඔහුට එවන්නෙකු ද නැත. තවද ඔහු සර්ව බලධාරි ය; මහා ප්‍රඥාවන්ත ය.",
+      "he": "אין מונע את הרחמים שאללה שולח לאנשים. ואת אשר הוא ימנע אין איש יכול להרשות, והוא העזוז והחכם.",
+      "lt": "Ką iš gailestingumo (t. y. gėrio) Allahas gali suteikti žmonijai, niekas negali to sulaikyti; o ką Jis gali sulaikyti, niekas po to negali to suteikti. Ir Jis yra Visa Galingas, Visa Išmintingas.",
+      "lg": "Okusaasira kw'aba agguliddewo abantu tewali ayinza kukulemesa, ate okwo kw'alemesa tewali ayinza kukuleeta atali Yye, era Yye Ye Nnantakubwakumukono Mugobansonga.",
+      "rw": "Ibyo Allah aha abantu mu mpuhwe (ze mu byiza n’ibindi) nta wabikumira, ndetse n’ibyo yahagaritse nta wabirekura usibye We. Kandi ni We Munyembaraga zihebuje, Nyirubugenge buhambaye.",
+      "dag": "Naawuni ni yolsi ninsalinim’ shɛli O nambɔzɔbo puuni, tɔ! So n­kani yɛn tooi mɔŋ ba li.O mi ni mɔŋ ba shɛli, to so n-kaniyɛn tooi yolsi ba li O nyaaŋa. Yaha! Ŋuna n-nyɛ Nyɛŋda, Yεmgoliŋga lana.",
+      "mos": "Wẽnd sẽn pɑkd sẽn yi A yolsgẽ wã n kõ nebã, gɩdgd kae ye; A sẽn mong me, kõt kɑ be ɑ loogr poor ye, lɑ Yẽ lɑ Zɩsg lɑ bʋʋd minim Soaba.",
+      "aa": "Yalli racmatak (rizqhiiy, roobuuy, niqmootak) sinaamah fakem toysa tet tabbixeeh cintam matan kaadu Usuk yibbixeeh waasem taceem matan kaak wadir, Yalli Usuk mayso-li, naggaara.",
+      "nqo": "ߊߟߊ߫ ߓߊ߯ ߤߌߣߊ ߡߍ߲ ߘߊߦߍ߬ߟߍ߫ ߡߐ߱ ߟߎ߬ ߦߋ߫ ߘߐ߬ߡߌ߬ߘߊ߬ߓߊ߯ ߕߍ߫ ߏ߬ ߟߊ߫ ، ߊ߬ ߓߊ߯ ߡߍ߲ ߝߣߊ߫ ߘߐߡߌ߬ߘߊ߬ ߟߊ߬ߓߌ߬ߟߊ߬ߓߊ߯ ߕߍ߫ ߏ߬ ߟߴߊ߬ߟߋ߬ ߞߐ߫ ، ߓߊ ߊ߬ߟߋ ߟߋ߫ ߣߌ߬ߣߌ߬ߟߊ ߘߌ߫ ߸ ߥߘߋ߬ߥߘߋ߬ߟߌ߬ߟߊ ߟߋ߬"
     }
   },
   {
@@ -6420,7 +7755,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মানৱ! নিশ্চয় আল্লাহৰ প্ৰতিশ্ৰুতি সত্য; সেয়ে পাৰ্থিৱ জীৱনে যেন তোমালোকক কেতিয়াও প্ৰতাৰিত কৰিব নোৱাৰে আৰু সেই প্ৰতাৰকেও (চয়তানেও) যেন তোমালোকক আল্লাহৰ বিষয়ে প্ৰতাৰণা কৰিব নোৱাৰে।",
       "ne": "हे मानिसहरू ! अल्लाहको वचन सत्य छ । अतः सांसारिक जीवनले तिमीलाई धोकामा नपारोस् र न त्यस धोकेबाज शैतानले अल्लाहको विषयमा तिमीलाई धोकामा पारोस् ।",
       "si": "අහෝ ජනයිනි! නියත වශයෙන් ම අල්ලාහ්ගේ ප්‍රතිඥාව සැබෑවකි. එහෙයින් මෙලොව ජීවිතය නුඹලා රවටා නො දැමිය යුතු ය. තවද මහා රැවටිලිකරු ද අල්ලාහ් ගැන නුඹලාව නො රැවටිය යුතු ය.",
-      "km": "ឱមនុស្សលោកទាំងឡាយ! ពិតប្រាកដណាស់ ការសន្យារបស់អល់ឡោះ គឺជាការពិត។ ដូច្នេះ ចូរកុំឱ្យឆាកជីវិតលោកិយបោកបញ្ឆោតពួកអ្នក និងចូរកុំឱ្យមេបោកបញ្ឆោតទាំងឡាយ(ស្ហៃតន) បោកបញ្ឆោតពួកអ្នកពីអល់ឡោះឱ្យសោះ។"
+      "km": "ឱមនុស្សលោកទាំងឡាយ! ពិតប្រាកដណាស់ ការសន្យារបស់អល់ឡោះ គឺជាការពិត។ ដូច្នេះ ចូរកុំឱ្យឆាកជីវិតលោកិយបោកបញ្ឆោតពួកអ្នក និងចូរកុំឱ្យមេបោកបញ្ឆោតទាំងឡាយ(ស្ហៃតន) បោកបញ្ឆោតពួកអ្នកពីអល់ឡោះឱ្យសោះ។",
+      "he": "הוי האנשים, אכן הבטחת אללה צדק היא. אל יתעוכם חיי העולם הזה, ואל יתעה אתכם המתעה (השטן) בדבר אללה.",
+      "ka": "ჰეი, ადამიანებო! ჭეშმარიტად, ალლაჰის დაპირება ჭეშმარიტებაა. მაშ, არ მოგატყუოთ ამქვეყნიურმა ცხოვრებამ, და ნუ მოგატყუებთ ალლაჰის შესახებ მაცდუნებელი [სატანა].",
+      "lt": "Žmonės, iš tiesų, Allaho Pažadas yra tiesa. Taigi neleiskite dabartiniam gyvenimui apgauti jus, ir neleiskite vyriausiajam apgavikui (Šėtonui) apgauti jus dėl Allaho.",
+      "mg": "Ry olombelona! Marina ny fampanantenan’i Allah. Ka aza avela hamitaka anareo ny fiainana an-tany, ary aoka tsy hahavoafitaka anareo ihany koa ilay mpamitaka mikasika an’i Allah.",
+      "lg": "Abange mmwe abantu mazima Endagaano ya Allah ya mazima, obulamu bw'ensi tebubagayaazanga era ebigayaaza byonna tebibaggyanga ku Allah.",
+      "rw": "Yemwe bantu! Mu by’ukuri isezerano rya Allah ni ukuri. Bityo rero ubuzima bw’isi ntibuzabarangaze, kandi rwose Shitani ntizabashuke (ngo ibakure mu nzira ya) Allah.",
+      "dag": "Yaa yinim’ ninsalinima! Achiika! Naawuni daalikauli nyɛla yεlimaŋli, dinzuɣu,di chɛn ya ka Dunia biεhigu yɔhim ya. Yaha! Di chɛn ya ka yɔhim lana (shintaŋ)yɔhim ya.",
+      "mos": "Yaa yãmb nebɑ! Ad Wẽnd pʋlengã yɑɑ sɩda, bɩ y rɑ bɑs tɩ dũni wã vɩɩm belg yãmb n tõog ye, lɑ y rɑ wɑ sɑk tɩ bεlgdã me wɑ belg yãmb n tõog ye.",
+      "aa": "Kee a-sinaamey diggah Yallih xagni numma, toysa addunyâ mano sin duquuruse waytay kaadu Yallak sin duquuruse waay duquuruseyni (sheetan kinnuk).",
+      "mdh": "Hay sekanu anan a bamaginugut na saben-sabenal na su pasad nu Allah na benal a matuman, na da kanu mapasimpang sa kapaguyag sa dunya, endu da kanu mapasimpang lu sa Allah kanu manga shaytan.",
+      "ak": "Adasamma, ampa sε Onyankopͻn bͻhyε yε nokorε, enti momma wiase asetena yi nnaadaa mo, na momma nnaadaafoͻ hene (bonsam) no nnaadaa mo fa Onyankopͻn ho",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߡߐ߱ ߟߎ߬ ߸ ߊߟߊ߫ ߟߊ߫ ߛߘߊߡߊߒߞߊ߲ߠߊ ߦߋ߫ ߕߎ߬ߢߊ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬، ߒ߬ߓߊ߬ ߘߎߢߊ߫ ߢߣߊߡߦߊ ߞߊߣߵߊߟߎ߫ ߜߍߙߍ߲ߞߍ߫ ߸ ߜߍߙߍ߲ߞߍߟߓߊ ߘߏ߲߬ ߞߊߣߵߊߟߎ߫ ߜߍߙߍ߲ߞߍ߫ ߊߟߊ߫ ߡߊ߬"
     }
   },
   {
@@ -6481,7 +7828,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় চয়তান হৈছে তোমালোকৰ শত্ৰু; এতেকে তাক শত্ৰু বুলিয়েই মনত ৰাখিবা। সি তাৰ দলক এইকাৰণে আহ্বান কৰে যাতে সিহঁতে প্ৰজ্জলিত জুইৰ অধিবাসী হ’ব পাৰে।",
       "ne": "यादराख शैतान तिम्रो शत्रु हो । तिमीले उसलाई शत्रु नै ठान । त्यसले त आफ्नो गिरोहलाई केवल यसकारणले बोलाइराखेको छ कि उनीहरू नर्कको आगोमा शम्मिलित हुनेछन् ।",
       "si": "නියත වශයෙන් ම ෂෙයිතාන් නුඹලාට සතුරු ය. එහෙයින් නුඹලා ඔහු සතුරකු ලෙසින් ම ගනු. නියත වශයෙන් ම ඔහු ඔහුගේ කණ්ඩායම ඇරයුම් කරනුයේ ඔවුන් ඇවිළෙන ගින්නේ සගයින් අතරට පත් වීමට ය.",
-      "km": "ពិតប្រាកដណាស់ ស្ហៃតនគឺជាសត្រូវរបស់ពួកអ្នក(ឱមនុស្សលោក)។ ដូច្នេះ ចូរពួកអ្នកចាត់ទុកវាជាសត្រូវចុះ។ តាមពិត វាអំពាវនាវអ្នកដែលដើរតាមវាដើម្បីឱ្យពួកគេស្ថិតក្នុងចំណោមពួកឋាននរកដែលឆេះឆាប។"
+      "km": "ពិតប្រាកដណាស់ ស្ហៃតនគឺជាសត្រូវរបស់ពួកអ្នក(ឱមនុស្សលោក)។ ដូច្នេះ ចូរពួកអ្នកចាត់ទុកវាជាសត្រូវចុះ។ តាមពិត វាអំពាវនាវអ្នកដែលដើរតាមវាដើម្បីឱ្យពួកគេស្ថិតក្នុងចំណោមពួកឋាននរកដែលឆេះឆាប។",
+      "he": "אכן השטן הוא אויבכם, על כן התייחסו אליו כאויב, כי אכן יקרא למחנהו שיהיו מאנשי האש (הגיהינום).",
+      "ka": "ჭეშმარიტად, შაიტანი [სატანა თქვენთვის [ჰეი, ადამიანებო] არის მტერი, [ამიტომ] ის მტრად მიიჩნიეთ! ის უხმობს თავის პარტიას მხოლოდ იმისთვის, რომ ისინი ცეცხლის [ჯოჯოხეთის] ბინადარნი გახდნენ.",
+      "lt": "Tikrai, Šaitan (Šėtonas) yra jūsų priešas, taigi laikykite (elkitės su juo) jį priešu. Jis tik kviečia savo hizb (pasekėjus) tam, kad jie taptų liepsnojančios Ugnies gyventojais.",
+      "mg": "Fahavalonareo tokoa ny devoly, koa raiso ho fahavalo tanteraka izy. Tsy manao afa-tsy ny miantso ireo mpanaraka azy izy, mba ho lasa olon’ny afo mamaivay",
+      "lg": "Mazima Sitaane mulabe wammwe kale (na mmwe) mumufuule mulabe. Anti mazima akoowoola ekibiina kye balyoke babeere mu bantu b'okuyingira Omuliro Sa-iri.",
+      "rw": "Mu by’ukuri Shitani ni umwanzi wanyu; bityo nimumufate nk’umwanzi. Ahamagarira abambari be kugira ngo babe mu bantu bo mu muriro ugurumana.",
+      "ln": "Ya sólo, satana azali monguna na bino, bozua ye mpe monguna. Ya sólo, azali kobenga bato naye sé mpo bazala balongani ya moto ya lifelo.",
+      "dag": "Achiika! Shintaŋ nyɛla dim’ zaŋ tin ya, dinzuɣugbibi ya o ka o nyɛ yi dima, achiika! O boondila o laɣiŋguni bɛ ti pahi Sa’iir buɣum bihi ni.",
+      "mos": "Ad Sʋɩtãanã yɑɑ bε yãmb yĩngɑ, bɩ y rɩk-ɑ n mɑɑn y bε, ad a boondɑ a sullã bʋɩl yĩng lɑ b nɑ nɑɑg Bugum rãmbẽ wã bɑlɑ.",
+      "aa": "Diggah sheetanti siinik naqboytak toysa naqboytah kaa haysita, cagalah isi cizbiy isi kataate makoh fan seeca saqiir deqsitta urta giráh mara yakkeenî gidah.",
+      "mdh": "Kagina saben-sabenal su shaytan na satru nu (kuntra nu) na baluy nu a satru nu, bangenggat (su shaytan) sa tagapeda nin ka endu silan makalu sa naraka a pegkalaw-kalaw.",
+      "ak": "Nokorε sε ͻbonsam yε ͻtamfo ma mo, enti momfa no nyε motamfo. Deε ͻrefrε nenkorͻfoͻ no akͻ ara ne sε deε wͻbεyε Ogya no mu foͻ.",
+      "ceb": "Sa pagkatinuod, si Satanas maoy dayag nga kaaway batok kaninyo, busa tagda siya ingon nga usa ka kaa-way, siya nagdapit lamang sa iyang mga panon ngadto sa nag-silaob nga kalayo sa Imperno.",
+      "nqo": "ߜߍ߬ߘߍ ߦߴߊߟߎ߫ ߖߎ߮ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߒ߬ߓߵߊߟߎ߫ ߝߣߊ߫ ߦߴߊ߬ ߡߌ߬ߘߊ߬ ߖߎ߮ ߘߌ߫ ، ߊ߬ߟߋ ߘߏ߲߬ ߦߴߊ߬ ߟߊ߫ ߞߙߎߞߊ ߟߎ߬ ߞߟߌ߫ ߟߊ߫ ߟߋ߬ ߛߴߊ߬ߟߎ߬ ߘߌ߫ ߞߍ߫ ߖߌ߯ߖߌ߮ ߘߏ߲߬ߞߏ ߟߎ߬ ߘߏ߫ ߘߌ߫"
     }
   },
   {
@@ -6543,7 +7904,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মানৱ! তোমালোকেহে আল্লাহৰ মুখাপেক্ষী; আৰু আল্লাহ, তেৱেঁই অভাৱমুক্ত, প্ৰশংসিত।",
       "ne": "हे मानिसहरू! तिमी अल्लाहको मुखापेक्षी (भिखारी) हौ र अल्लाह त निष्पृह, र सर्वगुणवान छ ।",
       "si": "අහෝ ජනයිනි! නුඹලා අල්ලාහ් වෙත යැපෙන්නෝ ය. තවද අල්ලාහ් වන ඔහු මය අවශ්‍යතාවන්ගෙන් තොර; ප්‍රශංසාලාභීයා.",
-      "km": "ឱមនុស្សលោកទាំងឡាយ! ពួកអ្នកគឺជាអ្នកដែលត្រូវការបំផុតទៅកាន់អល់ឡោះជាម្ចាស់។ ចំណែកឯអល់ឡោះជាម្ចាស់វិញ ទ្រង់មហាមានលើសលប់ ជាអ្នកដែលត្រូវគេកោតសរសើរបំផុត។"
+      "km": "ឱមនុស្សលោកទាំងឡាយ! ពួកអ្នកគឺជាអ្នកដែលត្រូវការបំផុតទៅកាន់អល់ឡោះជាម្ចាស់។ ចំណែកឯអល់ឡោះជាម្ចាស់វិញ ទ្រង់មហាមានលើសលប់ ជាអ្នកដែលត្រូវគេកោតសរសើរបំផុត។",
+      "he": "הוי האנשים! אתם אלה אשר נזקקים לאללה, ואללה הוא העשיר והמהולל.",
+      "ka": "ჰეი, ადამიანებო! თქვენ ალლაჰზე ხართ დამოკიდებულნი, ხოლო ალლაჰი მდიდარი [ის არავის და არაფერს არ საჭიროებს], ყოვლადქებულია.",
+      "lt": "Žmonės, tai jūs, kuriems reikia Allaho. Tačiau Allahas yra Turtingas (Laisvas nuo bet kokių poreikių), Vertas visų šlovių.",
+      "mg": "Ry olombelona! Mahantra mila an’i Allah ianareo, fa Allah kosa, Izy no Tompon’ny harena, Ilay mendri-piderana.",
+      "lg": "Abange mmwe abantu, mmwe beetaavu eri Allah ate Yye Allah talina bwetaavu atenderezebwa ennyo.",
+      "rw": "Yemwe bantu! Muri abakene imbere ya Allah. Ariko Allah niwe Uwihagije, Ushimwa cyane.",
+      "ln": "Eh bino bato! Bozali babola epai ya Allah, mpe Allah nde atonda bomengo mpe akumama.",
+      "dag": "Yaa yinim’ ninsalinima! Yi nyɛla ban mali bukaata zaŋ chaŋ Naawuni sani. Yaha! Naawuni nyɛla Bundana, Duuma paɣirigu.",
+      "mos": "Yãmb ɑ nebã! Yãmb lɑ tʋlsem dãmb ne Wẽnde, lɑ Wẽnde, Yẽ lɑ Sek-m-meng Soɑb n yɑɑ pẽgr Naaba.",
+      "aa": "Kaadu sin finqisaah, qusba ginó baaham Yallal magibdi.",
+      "mdh": "Hay sekanu anan a manga manusya! Sekanu i faqeer lu sa Allah, endu su Allah na sekanin i kawasa a pebpugin.",
+      "ak": "Adasamma, mo na mohia Nyankopͻn, na Onyankopͻn deε Ɔne Ͻdefoᴐ no, Ɔne Ayɛyie Wura no.",
+      "ceb": "Oh katawhan, kamo ang nanginahanglan sa Allah (Dios), apan ang Allah, Siya ang Igo sa Kaugalingon, ang Labing Dalaygon.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߡߐ߱ ߟߎ߬ ߸ ߊߟߎ ߟߋ߫ ߡߊ߬ߞߏ ߦߋ߫ ߊߟߊ߫ ߟߴߊߟߊ߫ ߟߋ߬ ߞߊ߯ߙߌߓߊ߮ ߘߌ߫ ߸ ߕߊ߲߬ߘߏ߬ߕߊ ߟߋ߬"
     }
   },
   {
@@ -6605,7 +7980,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেওঁ ইচ্ছা কৰিলে তোমালোকক অপসাৰিত কৰিব পাৰে আৰু এটা নতুন সৃষ্টি লৈ আহিব পাৰে।",
       "ne": "यदि उसले चाहने हो भने तिमीलाई मेटाउन सक्छ र एउटा नयाँ सृष्टि बनाउन सक्छ ।",
       "si": "ඔහු අභිමත කරන්නේ නම් නුඹලා පහකර, නව මැවීමක් ගෙන එනු ඇත.",
-      "km": "ប្រសិនបើទ្រង់មានចេតនា ទ្រង់នឹងបំផ្លាញពួកអ្នក ហើយនាំមកនូវភាវៈថ្មី(មកជំនួសពួកអ្នក)ជាមិនខាន។"
+      "km": "ប្រសិនបើទ្រង់មានចេតនា ទ្រង់នឹងបំផ្លាញពួកអ្នក ហើយនាំមកនូវភាវៈថ្មី(មកជំនួសពួកអ្នក)ជាមិនខាន។",
+      "he": "אם ירצה, יעבירכם מן העולם ויביא במקומכם ברואים חדשים.",
+      "ka": "თუ ის ისურვებს, გაგანადგურებთ თქვენ, და მოიყვანს ახალ ქმნილებას [სხვებს, რომლებიც სრულად დაემორჩილებიან მას].",
+      "lt": "Jei jis panorėtų, Jis galėtų sunaikinti jus ir išvesti naują kūriniją.",
+      "mg": "Raha sitrany, dia ho naringany ianareo, ka namboatra zava-boahary vaovao indray Izy.",
+      "lg": "(N'olwekyo) singa aba ayagadde asobola okubaggyawo n'aleeta ebitonde ebipya.",
+      "rw": "Abishatse yabakuraho maze akazana ibindi biremwa bishya (bimwumvira kubarusha).",
+      "rn": "Ishatse rero, Yobahonya mukagenda mwese amazimayongo, Igaheza Ikazana ibindi biremwa biyumvira bikayisenga Yo Yonyene Itabangikanywa.",
+      "ln": "Soki alingi, akolimwisa bino mpe akoya na bikelamu ya sika, (bato)",
+      "dag": "O (Naawuni) yi bɔra, kaO nyεhi ya, ka tahi binnamdi pala na.",
+      "mos": "A sã n dɑtɑ A loogdɑ ne yãmb lɑ A wɑ ne bõn-nɑɑnds pɑɑlɑ.",
+      "mdh": "Amayka ya kyug nu Allah i dalang kanu nin na pambuwaten nin i bagu a binaluy nin.",
+      "ak": "Sε Ɔpε a Ɔbɛyi mo afiri hͻ na Ɔde abɔdeε foforͻ aba (abɛsi moanan mu).",
+      "ceb": "Kon Siya mobuot, mahimo Niyang wagtangon kamo, ug magpagula ug bag-ong binuhat.",
+      "nqo": "ߣߴߊ߬ ߞߵߊ߬ ߘߌߦߊ߫ ߸ ߊ߬ ߘߴߊߟߎ߫ ߟߊߕߊ߯ ߞߊ߬ ߣߊ߬ ߘߊ߲ߠߌ߲߫ ߞߎߘߊ߫ ߘߌ߫"
     }
   },
   {
@@ -6634,7 +8023,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "gu": "શું તમે જોતા નથી કે અલ્લાહ તઆલાએ આકાશ માંથી પાણી વરસાવે છે, પછી અમે તેના વડે અલગ-અલગ પ્રકારના ફળો ઊપજાવીએ છીએ અને પર્વતોમાં પણ એવા ટુકડા છે, જે સફેદ, લાલ અને કાળા રંગના અલગ-અલગ હોય છે.",
       "bg": "Нима не виждаш, че Аллах изсипва вода от небето! Чрез нея вадим плодове с различни цветове и [прокарваме] сред планините пътища-бели и червени, с различни цветове, и гарвановочерни.",
       "mk": "Зарем не знаеш дека Аллах од небото спушта вода и дека Ние преку неа создаваме плодови од различни видови; а постојат планини со бели и со црвени патеки, со различни бои, и сосема црни.",
-      "as": "তুমি দেখা নাইনে, আল্লাহে আকাশৰ পৰা পানী বৰ্ষণ কৰে, তাৰ পিছত আমি তাৰ দ্বাৰা বিভিন্ন ৰঙৰ ফলমূল উৎপন্ন কৰোঁ। পাহাৰৰ মাজতো আছে বিভিন্ন বৰ্ণৰ স্তৰ, শুভ্ৰ, ৰঙা আৰু গাঢ় ক’লা।"
+      "as": "তুমি দেখা নাইনে, আল্লাহে আকাশৰ পৰা পানী বৰ্ষণ কৰে, তাৰ পিছত আমি তাৰ দ্বাৰা বিভিন্ন ৰঙৰ ফলমূল উৎপন্ন কৰোঁ। পাহাৰৰ মাজতো আছে বিভিন্ন বৰ্ণৰ স্তৰ, শুভ্ৰ, ৰঙা আৰু গাঢ় ক’লা।",
+      "he": "האם לא ראית שאללה מוריד מים מן השמים ומוציא צמחים שונים? ומן ההרים יש כאלה עם דרכים לבנות ואדומות בצבעים וגוונים שונים, ואף (הרים) שחורים כעורב?",
+      "ka": "ნუთუ არ გინახავს, რომ ალლაჰმა ციდან წყალი გარდმოავლინა, რომლის მეშვეობითაც ჩვენ გამოვიყვანეთ სხვადასხვა ფერის ნაყოფები? და მთებში არის გზები — თეთრი, წითელი — სხვადასხვა ფერის, და ძალიან, ძალიან შავი.",
+      "lt": "Argi jūs nematote, kad Allahas nuleidžia vandenį (lietų) iš dangaus ir Mes pagaminame juo įvairių spalvų vaisius, ir tarp kalnų yra balti ir raudoni ruožai, įvairių spalvų ir (kiti) labai juodi.",
+      "lg": "Abaffe tolaba nti Allah assa amazzi okuva waggulu ne tumeza nago ebibala ebya langi ez'enjawulo nga ne mu nsozi mulimu amakubo ameeru n'amamyufu nga langi zaago njawukamu n'amaddugavu ttibittibi.",
+      "mos": "Fo kɑ yã tɩ Wẽnd sikɑ koom tɩ yi sɑɑsẽ wã tɩ Tõnd tɑll-ɑ n yiis tɩ-biis kõbg sẽn yõs tɑɑbɑ. Bee tãmsã pʋgẽ, soay sẽn yɑɑ miid lɑ pεεla tɩ b kõbgã yõs tɑɑbɑ, lɑ soɑy sɑblem sẽn tar pãnga.",
+      "aa": "Diggah Yallih kitab (Qhuraan kinnuk) yakriyeeh, salat le-waktil soolisaah, rizhqik keenih neceemik qellisak ayballuk yacee mari, inkinnah finqite wayta tellemmo qaagitan Yallak.",
+      "ak": "Wonhunuu sε Onyankopͻn sane nsuo firi soro, dema nnuaba puepue a εho sononko-sononko, εna mmepͻ mu nso akwan fufuo ne kͻkͻͻ a egu sononko-sononko wͻ mu, (ebi) nso yε tuntum."
     }
   },
   {
@@ -6696,7 +8092,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আল্লাহ আকাশসমূহ আৰু পৃথিৱীৰ গায়েব সম্পৰ্কে অৱগত। নিশ্চয় অন্তৰত যি আছে সেই বিষয়েও তেওঁ সম্যক পৰিজ্ঞাত।",
       "ne": "निःसन्देह अल्लाह आकाशहरू र धरतीमा लुकेका अदृश्य कुरा जान्नेवाला छ । उसले त हृदयभित्रको कुरासम्म पनि जान्दछ ।",
       "si": "නියත වශයෙන් ම අල්ලාහ් අහස් හා මහපොළොවේ ගුප්ත දෑ දන්නා ය. නියත වශයෙන් ම ඔහු හදවත් සතු දෑ පිළිබඳ සර්වඥ ය.",
-      "km": "ពិតប្រាកដណាស់ អល់ឡោះទ្រង់ជាអ្នកដឹងបំផុតនូវអាថ៌កំបាំងនៃមេឃជាច្រើនជាន់និងផែនដី។ ពិតប្រាកដណាស់ ទ្រង់មហាដឹងបំផុតនូវអ្វីដែលនៅក្នុងដួងចិត្ត។"
+      "km": "ពិតប្រាកដណាស់ អល់ឡោះទ្រង់ជាអ្នកដឹងបំផុតនូវអាថ៌កំបាំងនៃមេឃជាច្រើនជាន់និងផែនដី។ ពិតប្រាកដណាស់ ទ្រង់មហាដឹងបំផុតនូវអ្វីដែលនៅក្នុងដួងចិត្ត។",
+      "he": "אללה יודע את כל נסתרות השמים והאיץ. הוא גם יודע היטב את אשר יש בלבבות.",
+      "ka": "ჭეშმარიტად, ალლაჰია მცოდნე [ყოველი] დაფარულისა ცათა და მიწისა. ჭეშმარიტად, მან უწყის, რაც გულებშია.",
+      "lt": "Iš tiesų, Allahas yra Visa Žinantis apie Nematomą danguose ir žemėje. Iš tiesų, Jis yra Visa Žinantis apie tai, kas yra krūtinėse.",
+      "mg": "Fantatr’i Allah ny zava-miafin’ny lanitra sy ny tany, ary fantany izay raiketin’ny fo.",
+      "lg": "Mazima Allah amanyi ebyekusifu by'omuggulu omusanvu n'ensi, mazima ddala Yye amanyidde ddala ebiri mu bifuba.",
+      "rw": "Mu by’ukuri Allah ni Umumenyi w’ibitagaragara byo mu birere no mu isi. Rwose ni We Mumenyi uhebuje w’ibiri mu bituza (by’abantu).",
+      "ln": "Ya soló, Allah azali moyebi ya mabombami ya likolo na ya nsé. Ya sólo, ayebi maye manso mazali o kati ya mitema.",
+      "dag": "Achiika! Naawuni n-nyɛŊun mi din sɔɣi sagbana mini tiŋgbani ni. Achiika! O nyɛla Ŋun mi din be suhiri ni.",
+      "mos": "Ad Wẽnd yaa saas la Tẽng yel-soalem Mita, ad Yẽ yaa Bãngd ne sẽn be sũyẽ wã.",
+      "mdh": "Saben-sabenal su Allah na katawan nin su gayb kanu dalem nu manga langit endu lupa na katawan nin pan su dalem nu pusung nu.",
+      "ceb": "Si Allah mao ang Nakahibalo sa unsay dili makita sa mga langit ug sa yuta; Siya adunay bug-os nga Kahibalo sa unsay anaa sa mga dughan (sa katawhan).",
+      "nqo": "ߊߟߊ߫ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߏߘߏ߲߰ߣߍ߲ ߟߐ߲ߓߊ߮ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߸ ߊ߬ߟߋ ߟߋ߬ ߛߌߛߌ ߟߎ߬ ߘߐߞߏ ߟߐ߲ߓߊ߮ ߘߌ߫"
     }
   },
   {
@@ -6744,7 +8152,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fil": "Tunay na Kami ay nagbibigay-buhay sa mga patay at nagtatala ng anumang ipinauna nila at mga bakas nila [na maganda at masagwa]. Sa bawat bagay ay nag-isa-isa Kami sa isang talaang malinaw.",
       "te": "నిశ్చయంగా, మేము మృతులను సజీవులుగా చేస్తాము. మరియు మేము వారు చేసి పంపిన మరియు తమ వెనుక విడిచిన చిహ్నాలను కూడా వ్రాసి పెడుతున్నాము. మరియు ప్రతి విషయాన్ని మేము స్పష్టమైన గ్రంథంలో వ్రాసిపెడుతున్నాము.",
       "as": "নিশ্চয় আমিয়েই মৃতক জীৱিত কৰোঁ আৰু লিখি ৰাখোঁ সিহঁতে যি আগলৈ প্ৰেৰণ কৰে আৰু যি সিহঁতে পিছত এৰি যায়। আমি প্ৰত্যেক বস্তুকেই সুস্পষ্ট কিতাবত সংৰক্ষণ কৰি ৰাখিছোঁ।",
-      "si": "නියත වශයෙන් ම අපි මළවුන්ට ජීවය දෙන්නෙමු. ඔවුන් පෙර කළ දෑ ද ඔවුන්ගේ සලකුණු ද අපි සටහන් කරන්නෙමු. තවද සියලු දෑ අපි එය පැහැදිලි ලේඛනයක සටහන් කර ඇත්තෙමු."
+      "si": "නියත වශයෙන් ම අපි මළවුන්ට ජීවය දෙන්නෙමු. ඔවුන් පෙර කළ දෑ ද ඔවුන්ගේ සලකුණු ද අපි සටහන් කරන්නෙමු. තවද සියලු දෑ අපි එය පැහැදිලි ලේඛනයක සටහන් කර ඇත්තෙමු.",
+      "he": "אכן אנחנו נחיה את המתים. ואנו מתעדים את כל המעשים אשר שלחו לפניהם ואת מה שהם השאירו אחריהם,",
+      "ka": "ჭეშმარიტად, ჩვენ გავაცოცხლებთ (ყველა) მკვდარს (აღდგომის დღეს) და ვიწერთ იმას, რაც მათ წინასწარ მოამზადეს, და მათ კვალს, და ყოველი რამ ჩვენ აღვრიცხეთ ნათელ წიგნში [დაცულ ფირფიტაზე].",
+      "lt": "Iš tiesų, Mes suteikiame gyvybę mirusiems, ir Mes užrašome tai, ką jie siuntė prieš (juos), ir jų pėdsakus ir viską Mes įrašome skaičiais (kaip įrašą) Aiškioje Knygoje.",
+      "mg": "Hamafisina, fa Izahay tokoa no manangana ireo maty, ary manoratra izay nataon’izy ireo amin’ny fiainany any an-koatra, sy ny vokatr’izany. Ary noraiketinay an-tsoratra ny zava-drehetra.",
+      "lg": "Mazima ffe tuliramusa abafu era tuwandiika ebyo bye baakulembeza ne bye baagoberezaako nga na buli kintu twakikomeka mu Kitabo ekikulu ekigenda okulaga buli kimu.",
+      "rw": "Rwose ni twe tuzura abapfuye, tukanandika ibyo bakoze n’ibyo basize (ibyiza n’ibibi), kandi buri kintu twakibaruye mu gitabo gisobanutse.",
+      "mos": "Ad Tõnd n vʋʋgd kũ-rãmbã, la D gʋlsd bũmb ning b sẽn tʋm tɩ reng taoorã, la b vũunã, la bũmbã fãa Tõnd tigim-a-la gaf-vẽeneg pʋgẽ.",
+      "aa": "Diggah nanu rabtem inkih naynuwweeh, addunyal maqaanék umaanék uysukummu heenim kee ken raatitte naktubeh, kaadu ummaanim baxxaqqa-le kitaabal (lowcal macfuuz kinnuk) lowsisne (ixxisne).",
+      "ak": "Nokorε sε, Yεn na Yɛnyane awufoͻ no, na Yεtwerε deε (adasamma ayε) de ato (wͻn) anim ne (faako a) wͻn anamͻn (anante akͻduru biara), na Yɛasese biribiara wͻ Nwoma pefee no mu.",
+      "nqo": "ߒ߬ߠߎ߫ ߸ ߊ߲ߠߎ߫ ߞߊ߬ߣߌ߲߫ ، ߊ߲ ߧߋ߫ ߛߎ߭ ߟߎ߬ ߟߊߣߌߡߦߊ߫ ߟߊ߫ ߸ ߊ߬ ߣߴߊ߲ ߧߴߊ߬ߟߎ߬ ߟߊ߫ ߓߊ߯ߙߊ߫ ߢߍߓߌ߬ߟߊ߬ߣߍ߲ ߠߎ߬ ߛߓߍ߫ ߟߊ߫ ߸ ߊ߬ ߣߴߊ߬ߟߎ߫ ߝߏ߲߬ߝߏ߲ ߠߎ߬ ، ߊ߲ ߣߊ߬ ߝߋ߲ ߓߍ߯ ߡߊߘߊ߲߫ ߠߊ߫ ߟߋ߬ ߟߍߙߊ߫ ߘߐߜߍ ߞߣߐ߫ ߞߐߘߍ߫"
     }
   },
   {
@@ -6805,7 +8223,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সূৰ্যৰ পক্ষে সম্ভৱ নহয় চন্দ্ৰক লগ পোৱা, আৰু ৰাতিৰ পক্ষেও সম্ভৱ নহয় দিনক অতিক্ৰম কৰা, আৰু প্ৰত্যেকেই নিজ নিজ কক্ষপথত ভাহিঁ আছে।",
       "ne": "न सूर्यबाट नै यो हुनसक्छ कि उसले चाँदलाई गएर समातिहालोस् र न रात नै दिनभन्दा पहिला आउन सक्छ । र सबै आफ्नो परिधिमा निरन्तर घुमिराखेका छन् ।",
       "si": "සඳු වෙත ළඟා වන්නට හිරුට අවශ්‍යතාවක් නැත. තවද දහවල අබිබවා යන්නක් සේ රාත්‍රිය ද නැත. තවද සියල්ල (නියමිත) කක්ෂය තුළ පාවෙති.",
-      "km": "ព្រះអាទិត្យមិនអាចធ្វើដំណើរទៅទាន់ព្រះចន្ទនោះឡើយ ហើយពេលយប់ក៏មិនអាចមកដល់មុនពេលថ្ងៃនោះដែរ។ ហើយរាល់អ្វីៗទាំងនោះ គឺសុទ្ធតែធ្វើចលនាតាមគន្លងរបស់វារៀងៗខ្លួន។"
+      "km": "ព្រះអាទិត្យមិនអាចធ្វើដំណើរទៅទាន់ព្រះចន្ទនោះឡើយ ហើយពេលយប់ក៏មិនអាចមកដល់មុនពេលថ្ងៃនោះដែរ។ ហើយរាល់អ្វីៗទាំងនោះ គឺសុទ្ធតែធ្វើចលនាតាមគន្លងរបស់វារៀងៗខ្លួន។",
+      "he": "השמש לא תוכל לעקוף את הירח, והלילה לא יוכל לעבור את היום, מפני שכל אחד מהם נע במסלול שנקבע לו",
+      "ka": "მზეს არ შეშვენის [არ შეუძლია], რომ დაეწიოს მთვარეს, და ვერც ღამე დაასწრებს დღეს, და თითოეული [მზე, მთვარე და ვარსკვლავები] თავის ორბიტაზე დაცურავს [მოძრაობს].",
+      "lt": "Tai ne saulei pasivyti mėnulį, nei naktis aplenkia dieną. Jie visi plaukia, kiekvienas orbita.",
+      "mg": "Tsy afaka hahatratra ny volana ny masoandro, na handeha hialoha ny andro ny alina, fa samy misosa amin’ny zotra misy azy avy ny tsirairay.",
+      "lg": "Tekisoboka njuba kusisinkana mwezi era n'ekiro tekigenda kukulembera misana na buli kimu ku byombi kiri mu bbanga kiwuga.",
+      "rw": "Izuba ntirishobora guhurirana n’ukwezi cyangwa ngo ijoro rize mu mwanya w’amanywa. Kandi byose byogoga mu myanya yabyo.",
+      "ln": "Moyi mokutaka sanza te, mpe butu elekaka mokolo te. Mpe nyoso ezali kotambola na nzela na yango.",
+      "dag": "Wuntaŋ’ bi tu kamaata ni di yi goli zuɣu, yuŋ mi bi tu kamaata nidi yɛɣi wuntaŋ’ zuɣu. Yaha! Di zaa bela bobyinsi puuni n-ginda.",
+      "mos": "Pa segd ne Wĩndtoogã t'a paam Kiuugã, yʋngã me pa rengd wĩndgã; la b fãa be ween-n-vɩɩgẽ n rugda.",
+      "aa": "Ayróh matakka alsá eleltam, kaadu barah matakka laqók yaakumem, ummaan tiya keenik isi maroh addal giirissa.",
+      "mdh": "Dala kanu senang i sumenang kanu magabi na dala bun kanu ulan-ulan, endu dala kanu magabi i egkagabi sa malamag, maytu bun ba su malamag, uman isa na bagukit sa kanu lalan nin.",
+      "ceb": "Dili itugot nga ang adlaw makaabot sa bulan, ni ang kagabhion makaapas sa adlaw, apan ang matag usa, sa usa ka orbito, naglangoy.",
+      "nqo": "ߊ߬ ߕߍ߫ ߓߍ߲߬ ߕߋ߬ߟߋ ߡߊ߬ ߞߊ߬ ߞߍ߫ ߞߊߙߏ ߘߐ߫ ߸ ߥߟߊ߫ ߛߎ ߦߋ߫ ߞߐ߲߰ ߕߟߋ߬ߘߐ߬ߟߊ ߢߍ߫ ، ߓߊ ߊ߬ ߓߍ߯ ߦߋ߫ ߞߊߡߊ߲ ߠߋ߬ ߞߣߐ߫ ߞߎߟߎ߲ߞߎߟߎ߲ ߠߊ߬"
     }
   },
   {
@@ -6866,7 +8297,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যিজনে আকাশসমূহ আৰু পৃথিৱী সৃষ্টি কৰিছে, তেওঁ সিহঁতৰ অনুৰূপ পুনৰ সৃষ্টি কৰিবলৈ সক্ষম নহয়নে? নিশ্চয় সক্ষম। তেওঁ মহাস্ৰষ্টা, সৰ্বজ্ঞ।",
       "ne": "जसले आकाशहरू र जमिनलाई सृष्टि गरेको छ, उसलाई सामथ्र्य छैन कि उनीहरू जस्तै फेरि सृष्टि गरिदेओस् ? किन होइन, जब कि त्यो महान् स्रष्टा अत्यन्त ज्ञानवान छ ।",
       "si": "අහස් හා මහපොළොව මැවූ අය ඔවුනට සමාන දෑ මැවීමට ශක්තිය ඇත්තකු නො වේ ද? එසේ නො ව; ඔහුය සර්වඥානී මහා මැවුම්කරු.",
-      "km": "តើអ្នកដែលបានបង្កើតមេឃជាច្រើនជាន់និងផែនដី ពុំមែនជាអ្នកដែលមានសមត្ថភាពអាចបង្កើតឲ្យដូចពួកគេ(ម្តងទៀត)ទេឬ? ពិតមែនហើយ ទ្រង់គឺជាអ្នកបង្កើត(ភាវៈទាំងអស់) មហាដឹងបំផុត។"
+      "km": "តើអ្នកដែលបានបង្កើតមេឃជាច្រើនជាន់និងផែនដី ពុំមែនជាអ្នកដែលមានសមត្ថភាពអាចបង្កើតឲ្យដូចពួកគេ(ម្តងទៀត)ទេឬ? ពិតមែនហើយ ទ្រង់គឺជាអ្នកបង្កើត(ភាវៈទាំងអស់) មហាដឹងបំផុត។",
+      "he": "האם אין בכוחו של זה אשר ברא את השמים ואת הארץ לברוא דומים להם? ודאי שכן! כי הוא הבורא היודע הכול!",
+      "ka": "ნუთუ ის, ვინც შექმნა ცანი და მიწა არაფრიდან, ვერ შეძლებს მათ მსგავსის [ადამიანთა] შექმნას?! დიახ, რა თქმა უნდა შეძლებს, და ის არის ყოვლის შემოქმედი, ყოვლისმცოდნე!»",
+      "lt": "Argi Tas, Kuris sukūrė dangus ir žemę, negali sukurti panašių į juos? Tai, iš tiesų, Jis yra Visa Žinantis Aukščiausiasis Kūrėjas.",
+      "mg": "Moa tsy afaka hahary mitovy amin’izy ireo ve Ilay nahary ny lanitra sy ny tany ? Mifanohitra amin’izany tokoa, fa Izy no Ilay Mpahary tonga lafatra, Ilay mahalala ny zava-drehetra.",
+      "lg": "Abaffe Oyo eyatonda eggulu omusanvu n'ensi tasobola kutonda bintu (birala) biri nga byo? Weewaawo (asobolera ddala) era ddala Yye Ye Mutonzi Omumanyi ennyo.",
+      "rw": "Ese uwaremye ibirere n’isi ntiyashobora kurema abameze nka bo? Ni byo koko! Kandi ni We Muremyi, Umumenyi uhebuje.",
+      "ln": "Boye oyo akeli mapata na mabele akoki te kokela basusu lokola bango? Iyo, ya soló azali mokeli monene koleka bango mpe azali moyebi.",
+      "dag": "Di nibɔŋɔ, Ŋun nam sagbana mini tiŋgbani ka yiko ni o nam bɛ tatabo? Wumma! Ŋuna n-nyɛ Namda, Baŋda.",
+      "mos": "Rẽ yĩnga Soab ning sẽn naana saasã pa tõe n naan b bilgr sɩda? A toeeme! La Yẽnda la naaneg tõog Soaba n yaa Mita.",
+      "aa": "Kaadu qaranwaa kee baaxó gine Rabbi seehadah innah tanim ginaah gacsam ma-duudaa? Yeey, Usuk duudah. Kaadu Usuk ummaanim giné, ummaanim yaaxigi.",
+      "mdh": "Su Allah i minaluy sa pitu lapis a manga langit endu lupa sa kagaga nin i mamaluy pamun sa pagidsan nin, su Allah i bamaluy a mataw.",
+      "ak": "Enti Nea Ɔbͻͻ soro ne asaase no, Onni tumi sε Ɔtumi bͻ ne sε so? Aane; Ɔne Ɔbͻͻ Adeε, Nimdefoͻ no.",
+      "ceb": "Dili ba Siya (ang Allah) nga naglalang sa kalangitan ug kalibutan, makahimo sa paglalang sa sama kanila? Oo, ug Siya mao ang Magbuluhat (sa tanan), ang Labing Nahibalo.",
+      "nqo": "ߊ߬ ߝߐ߫ ߡߍ߲ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲߫ ߏ߬ ߕߍ߫ ߛߴߊ߬ߟߎ ߢߐ߲߰ ߘߊ߲߫ ߠߊ߫ ߓߊ߬؟ ߏ߬ ߘߌ߫ ߛߋ߫ ߏ߬ ߟߊ߫ ߞߍ߬ ߸ ߓߊ ߏ߬ ߟߋ ߦߋ߫ ߘߊ߲ߠߌ߲ߠߓߊ ߘߌ߫ ߸ ߟߐ߲ߠߌ߲ߠߊ ߟߋ߬"
     }
   },
   {
@@ -6930,7 +8375,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেওঁৰ বিষয়টো এনেকুৱা যে, তেওঁ যেতিয়া কোনো বস্তুৰ ইচ্ছা কৰে, তেতিয়া কেৱল কয়, ‘হ’, ফলত সেইটো হৈ যায়।",
       "ne": "उसको गरिमा यो हो कि जब उसले कुनै कुराको (सृष्टि गर्ने) इच्छा गर्दछ तब उसले यति भन्नु पर्याप्त हुन्छ कि, ‘‘भइहाल’’ ! अनि त्यो भइहाल्छ ।",
       "si": "නියත වශයෙන් ම ඔහුගේ නියෝගය වනුයේ ඔහු යමක් (නිර්මාණය කිරීමට) අදහස් කළ විට එයට ‘වනු’ යැයි පැවසීම පමණ ය. එවිට එය සිදු වනු ඇත.",
-      "km": "តាមពិត កិច្ចការរបស់ទ្រង់ នៅពេលណាដែលទ្រង់មានចេតនាចង់ឱ្យអ្វីមួយកើតឡើងនោះ ទ្រង់គ្រាន់តែមានបន្ទូលទៅកាន់វាថា៖ “ចូរកើតចុះ” វានឹងកើតឡើងភ្លាម។"
+      "km": "តាមពិត កិច្ចការរបស់ទ្រង់ នៅពេលណាដែលទ្រង់មានចេតនាចង់ឱ្យអ្វីមួយកើតឡើងនោះ ទ្រង់គ្រាន់តែមានបន្ទូលទៅកាន់វាថា៖ “ចូរកើតចុះ” វានឹងកើតឡើងភ្លាម។",
+      "he": "אמנם זה הוא אשר אם ירצה דבר הוא רק מצווה ״ היה!” ואז נהיה,",
+      "lt": "Iš tiesų, Jo Įsakymas, kai Jis nori ko nors, yra tik tai, kad Jis sako tam: „Būk“ ir jis yra.",
+      "mg": "Raha milaza zavatra iray Izy, dia mibaiko amin’ny teny manao hoe: “Misia”,dia misy tokoa izany.",
+      "lg": "Mazima Ekiragiro Kye bw'aba ayagadde ekintu (kibeewo) agamba bugambi nti: Ba ne kiba.",
+      "rw": "Mu by’ukuri itegeko rye iyo ashaka ko ikintu kiba, arakibwira ngo “Ba, nuko kikaba!”",
+      "rn": "Ni ukuri, iyo Imana Allah Ishatse ikintu ico ari co cose ko kiba, Ikibwira gusa Iti: “Ba” kigaca kiba ubwo nyene.",
+      "ln": "Ya sólo soki alingi (kosala) eloko akolobaka se, zala, mpe ezalisami.",
+      "dag": "Achiika! O (Naawuni) nam zaligu ni nyɛ shεli, Oyi ti yu shɛli, O yɛri li mi: “Leema,” ka di shiri leei.”",
+      "mos": "Ad A sã n rat bũmbu, yaa A yeel-a bala: \"yɩ\" . T'a be yɩɩbẽ.",
+      "aa": "Yalli tu-abam faxa waqdi cagalah kay amri wohiimik tik-iyyaama, edde luk wohim edde takke!",
+      "mdh": "Saben-sabenal su Allah na amayka aden pegkahanda nin na ya nin bu edtalun na pangaden ka na maaden.",
+      "ak": "Nokorε, sε Ɔpεsε Ɔyε biribi a, N’ahyεdeε ara ne sε Ɔbεka sε: “ Yε!” Na ayε.",
+      "ceb": "Ang Iyang sugo, sa diha nga Siya magbuot sa usa ka butang, mao ang pag-ingon lamang niini: \"Mahimo,\" unya kini mahitabo.",
+      "nqo": "ߊ߬ ߟߊ߫ ߟߐ߬ߟߌ ߦߋ߫ ߟߋ߬ ߸ ߣߴߊ߬ ߞߊ߬ ߞߏ ߘߏ߫ ߟߊߢߌߣߌ߲߫ ߸ ߊ߬ ߦߴߊ߬ ߝߐ߫ ߏ ߡߊ߬ ߘߐߙߐ߲߫ ߞߏ߫ ߞߍ߫ ߸ ߏ߬ ߘߌ߫ ߞߍ߫ ߌߞߘߐ߫"
     }
   },
   {
@@ -6994,7 +8453,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সিহঁতে যি আৰোপ কৰে, তাৰ পৰা তোমাৰ প্ৰতিপালক পৱিত্ৰ আৰু মহান, তেৱেঁই সকলো ক্ষমতাৰ অধিকাৰী।",
       "ne": "पवित्र छ तपाईको पालनकर्ता जो धेरै सम्मानित र मुक्त छ ती कुराहरूबाट जुन यिनीहरूले वर्णन गर्दछन् ।",
       "si": "ගෞරවය හිමි ඔබේ පරමාධිපති ඔවුන් වර්ණනා කරන දැයින් සුවිශුද්ධ ය.",
-      "km": "ព្រះជាម្ចាស់របស់អ្នក ជាព្រះជាម្ចាស់ដ៏មហាខ្លាំងពូកែ ទ្រង់ស្អាតស្អំបំផុតពីអ្វីដែលពួកគេពិពណ៌នា(ចំពោះទ្រង់)។"
+      "km": "ព្រះជាម្ចាស់របស់អ្នក ជាព្រះជាម្ចាស់ដ៏មហាខ្លាំងពូកែ ទ្រង់ស្អាតស្អំបំផុតពីអ្វីដែលពួកគេពិពណ៌នា(ចំពោះទ្រង់)។",
+      "he": "ישתבח שם ריבונך, רב הכוח, הנעלה מעל לכל אשר מיחסים לו,",
+      "ka": "დიდებულია შენი უფალი, სიდიადის უფალი, და უზენაესია იგი იმაზე, რასაც ისინი [ურწმუნოები] მას მიაწერენ!",
+      "lt": "Pagerbtas jūsų Viešpats, Garbės ir Galios Viešpats. (Laisvas Jis) nuo visko, ką jie Jam priskiria.",
+      "mg": "Voninahitra anie ho an’ny Tomponao, Ilay Tompon’ny Hery noho izay hamaritan’izy ireo Azy.",
+      "lg": "Mukama Omulabirizi Wo wo, Nnannyini buyinza Musukkulumu ku ebyo bye boogera.",
+      "rw": "Ubutagatifu ni ubwa Nyagasani wawe, Nyagasani Nyiricyubahiro! Nta ho ahuriye n’ibyo bamwitirira!",
+      "rn": "Nihaninahazwe rero Imana yawe Rurema Allah, Nyenicubahiro c’iteka mu buryo burengeye cane ivyo ababangikanyamana bayomekera.",
+      "dag": "A Duuma (Naawuni) nam simsiya, Ŋuna n-nyɛ nyɛŋsim Duuma ka chɛ bɛ (chεfurinim’) ni mali O ŋmahindi shεli maa.",
+      "mos": "Fo Soabã yɩlgame, sẽn yaa zɩslem Soabã n yi bũmb ninga b sẽn bilgdã.",
+      "aa": "Nabiyow ku-Rabbi saytunnoowch maysó-le Rabbi, kaa ceele waytaamay kaa cdde weelossu haanak.",
+      "mdh": "Mahasuti su Allah a Kadenan nengka a Kadenan a mapulu kanu langun nu kadtalu nilan a kadusan a masela.",
+      "ak": "Kronkron Hene ne wo Wura Nyankopͻn, Tumi ne Animuonyam Wura ne no (Ne ho te sen) sεdeε wͻsusu no no.",
+      "ceb": "Himayaon ang imong Ginoo 'Allāh' —ang Ginoo sa Kadungganan ug Gahom—labaw sa unsay ilang giangkon!",
+      "nqo": "ߌ ߡߊ߰ߙߌ ߛߊߣߌ߲ߡߊ߲߫ ߸ ߜߟߌߦߊ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫ ߞߊ߬ ߓߐ߫ ߊ߬ߟߎ߬ ߟߊ߫ ߡߊ߲߬ߞߕߎ߬ߒ߬ߞߊ߲߬ߠߊ ߟߎ߫ ߡߊ߬"
     }
   },
   {
@@ -7050,7 +8523,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সিহঁতে নাজানে নেকি যে, আল্লাহে যাৰ বাবে ইচ্ছা কৰে তাৰ বাবে জীৱিকা প্ৰশস্ত কৰি দিয়ে আৰু সংকুচিতও কৰি দিয়ে? নিশ্চয় ইয়াত বহুতো নিদৰ্শন আছে এনে সম্প্ৰদায়ৰ বাবে, যিসকলে ঈমান পোষণ কৰে।",
       "ne": "के उनीहरूलाई यो थाहा छैन कि अल्लाहले नै जसको निम्ति चाहन्छ जीविका प्रशस्त गरिदिन्छ र जसको निम्ति चाहन्छ सीमित गरिदिन्छ ? यसमा ईमान ल्याउनेहरूको निम्ति ठूला निशानीहरू छन् ।",
       "si": "නියත වශයෙන් ම අල්ලාහ් තමන් අභිමත කරන අයට පෝෂණ සම්පත් ව්‍යාප්ත කර දෙන බවත් එමෙන් ම ඔහු එය සීමා කර දෙන බවත් ඔවුහු නො දන්නෝ ද? නියත වශයෙන් ම විශ්වාස කරන ජනයාට එහි සාධක ඇත.",
-      "km": "តើពួកគេមិនបានដឹងទេឬថា ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់បើកទូលាយ និងត្បិតត្បៀតលាភសក្ការៈចំពោះជនណាដែលទ្រង់មានចេតនានោះ? ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាភស្តុតាងសម្រាប់ក្រុមដែលមានជំនឿ។"
+      "km": "តើពួកគេមិនបានដឹងទេឬថា ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់បើកទូលាយ និងត្បិតត្បៀតលាភសក្ការៈចំពោះជនណាដែលទ្រង់មានចេតនានោះ? ពិតប្រាកដណាស់ នៅក្នុងរឿងនោះ គឺជាភស្តុតាងសម្រាប់ក្រុមដែលមានជំនឿ។",
+      "he": "האינם יודעים, כי אללה מרחיב ומצמצם את הפרנסה למי שירצה? ויש בזה לקח לאנשים המאמינים.",
+      "ka": "განა არ იციან, რომ ალლაჰი ვისაც სურს, გაუზრდის საზრდოს და ვისაც სურს, შეუზღუდავს? უეჭველად, ამაში ნიშნებია მორწმუნე ხალხისთვის.",
+      "lt": "Argi jie nežino, kad Allahas padidina aprūpinimą tam, kam Jis nori, ir apriboja jį (tam, kad Jis nori). Iš tiesų, tame yra ženklai liaudžiai, kuri tiki.",
+      "mg": "Moa tsy fantatr’izy ireo ve, fa mizara an-kalalahana ny fanomezany (Anjaramasoandro) amin’izay sitrany I Allah, na mametra izany ? Ary hamafisina, fa misy porofo tokoa ho an’ireo vahoaka izay mpino.",
+      "lg": "Abaffe tebamanyi nti mazima Allah ayanjuluza ebigabibwa eri oyo gw'aba ayagadde ate oluusi n'afunza, mazima mu ekyo mulimu eby'okuyiga eri abantu abakkiriza.",
+      "rw": "Ese ntibazi ko Allah yongerera amafunguro uwo ashaka akanayagabanyiriza uwo ashaka? Mu by’ukuri muri ibyo hari ibimenyetso ku bantu bemera.",
+      "ln": "Boye bazali koyeba te ete ya soló, Allah apesaka bozui na oyo alingi mpe akutolaka? Wana ezali bilembo mpo bato bakoka kondima.",
+      "mos": "Rẽ yĩnga, b ka mi tɩ yaa Wẽnd n yεdgd rɩtlã n kõt A sẽn rat a soaba, la A yõbgdẽ? Ad bee woto pʋgẽ, tagmas-rãmb ne neb sẽn kõt sɩda.",
+      "aa": "Kaadu a-mari maaxaginnoonuu? diggah Yalli rizqhi isih kah faxa marah farakka haah, isih kah faxa maral keenik ceyissi haam? Diggah tohut astooti tan Yallih amri nummaysa marah.",
+      "mdh": "Di nilan gatawan su Allah na pagkalagen nin sa rizki su pegkyugan nin endu pedsimpitan nin (su pegkyugan nin), na nakadalem lu ba i manga tanda kanu manga taw a bangimbenal.",
+      "ak": "Enti wͻnnim sε Nyankopͻn bae akyεdeε no mu ma obi a Ɔpε, εna Osusu nso (de ma obi a Ɔpε?) Nokorε sε nsεnkyerεnee wͻ woi mu de ma amanfoͻ a wͻgye die.",
+      "nqo": "ߊ߬ߟߎ߬ ߡߴߊ߬ ߟߐ߲߫ ߓߊ߬ ߞߏ߫ ߊߟߊ߫ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫ ߸ ߊ߬ ߘߴߊ߬ ߘߐߜߙߐ߬ ߝߣߊ߫؟، ߕߊ߰ߛߌ߬ߟߌ߫ ߟߴߏ߬ ߘߐ߫ ߡߌ߬ߙߌ߲߬ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
   },
   {
@@ -7114,7 +8599,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহেই সকলো বস্তুৰ স্ৰষ্টা আৰু তেৱেঁই সকলো বস্তুৰ তত্ত্বাৱধায়ক।",
       "ne": "अल्लाह हरेक कुराको स्रष्टा हो र उही नै हरेक कुराको संरक्षक हो ।",
       "si": "අල්ලාහ් සියලු දෑහි මැවුම්කරු ය. තවද ඔහු සියලු දෑ කෙරෙහි භාරකරු ය.",
-      "km": "អល់ឡោះជាម្ចាស់ជាអ្នកដែលបង្កើតរាល់អ្វីៗទាំងអស់។ ហើយទ្រង់ជាអ្នកថែរក្សានូវរាល់អ្វីៗទាំងអស់។"
+      "km": "អល់ឡោះជាម្ចាស់ជាអ្នកដែលបង្កើតរាល់អ្វីៗទាំងអស់។ ហើយទ្រង់ជាអ្នកថែរក្សានូវរាល់អ្វីៗទាំងអស់។",
+      "he": "אללה ברא כל דבר, והוא האחראי לכול,",
+      "ka": "ალლაჰია ყოველივეს შემქმნელი და ის არის ყოველივეს განმგებელი.",
+      "lt": "Allahas yra visų dalykų Kūrėjas, ir Jis yra Vakil (Patikėtojas, visų reikalų Tvarkytojas, Saugotojas) viskam.",
+      "mg": "Mpahary ny zava-drehetra I Allah, ary Izy no mpiantoka azy ireo.",
+      "lg": "Allah, Ye Mutonzi wa buli kintu era Yye, Ye Mutambuza Wa buli kintu.",
+      "rw": "Allah ni Umuremyi wa buri kintu, kandi ni na We muhagararizi wa buri kintu.",
+      "rn": "Imana Allah, ni Yo Rurema Ikaba n’Umugabe Yaremye ibintu vyose, ni na Yo Muhagarikizi Itunganiriza ibiremwa;",
+      "ln": "Allah nde mokeli wa biloko binso, mpe azali Nkolo ya nionso.",
+      "dag": "Naawuni n-nyɛŊun nam binshɛɣu kam. Yaha! Ŋuna n-nyɛ bɛ ni mali yɛllikam n-dalindi so zuɣu.",
+      "mos": "Wẽnd la bũmbã fãa Naanda, Yẽ me la bũmb fãa bobl a meng ne-A.",
+      "aa": "Yalli ummaanim ginéey, Usuk (Yalli) ummaanimih wakiili (dacayri-li).",
+      "mdh": "Su Allah i minaluy sa langun, endu sekanin i pedtuldu lun.",
+      "ak": "Nyankopͻn ne biribiara Bͻfo, na Ɔne biribiara Kyitaafoᴐ.",
+      "ceb": "Si Allāh mao ang Magbubuhat ug Tigsalig sa tanang butang, ug Siya ang (bugtong) Magbalantay ug Tigdumala sa mga kalihokan (sa Iyang mga linalang).",
+      "nqo": "ߊߟߊ߫ ߟߋ߬ ߝߋ߲ ߓߍ߯ ߘߊ߲ߓߊ߮ ߘߌ߫ ߸ ߊ߬ߟߋ ߟߋ߫ ߘߏ߲߬ ߟߐ߬ߣߍ߲߬ ߝߋ߲ ߓߍ߯ ߟߊ߫ ( ߞߏ ߟߊ߫ )"
     }
   },
   {
@@ -7174,7 +8674,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশসমূহ আৰু পৃথিৱীৰ চাবিসমূহ তেওঁৰ ওচৰতেই। যিসকলে আল্লাহৰ আয়াতসমূহক অস্বীকাৰ কৰে, সিহঁতেই হৈছে ক্ষতিগ্ৰস্ত।",
       "ne": "उसैको पासमा आकाशहरू र धरतीका साँचोहरू छन् । जस जसले अल्लाहका आयतहरूलाई इन्कार गरे, तिनैहरू नै घाटामा छन् ।",
       "si": "අහස් හා මහපොළොවේ යතුරු ඔහු සතු ය. අල්ලාහ්ගේ වදන් ප්‍රතික්ෂේප කළ ඔවුහු මය පරාජිතයෝ.",
-      "km": "កូនសោ(ឃ្លាំង)នៃមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។ ហើយពួកដែលប្រឆាំងនឹងវាក្យខណ្ឌទាំងឡាយរបស់អល់ឡោះ ពួកទាំងនោះហើយគឺជាពួកដែលខាតបង់។"
+      "km": "កូនសោ(ឃ្លាំង)នៃមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។ ហើយពួកដែលប្រឆាំងនឹងវាក្យខណ្ឌទាំងឡាយរបស់អល់ឡោះ ពួកទាំងនោះហើយគឺជាពួកដែលខាតបង់។",
+      "he": "לו מפתחות השמים והארץ, ואלה שהתכחשו לאותות של אללה יהיו הם המפסידים",
+      "ka": "მას ეკუთვნის ცათა და მიწის გასაღებნი. ხოლო რომელთაც არ ირწმუნეს ალლაჰის აიათები, სწორედ ისინი არიან წაგებულნი.",
+      "lt": "Jam priklauso dangų ir žemės raktai. Ir tie, kurie netiki Allaho Ajat (įrodymus, įkalčius, eilutes, ženklus, apreiškimus ir t. t.), tokie yra tie, kurie bus pralaimėtojai.",
+      "mg": "Izy no mitazona ny fanalahidin’ny lanitra sy ny tany, fa izay tsy mino ireo famantarana avy amin’I Allah kosa, dia izy ireny no ho matiantoka.",
+      "lg": "Era y'alina ebiyimiriddeko entambula y'eggulu omusanvu n'ensi, ate abo abaawakanya Ebigambo bya Allah, abo be b'okufaafaaganirwa.",
+      "rw": "Ni We nyir’imfunguzo z’ibiri mu birere no mu isi. Naho ba bandi bahakanye ibimenyetso bya Allah, ni bo bazaba abanyagihombo.",
+      "ln": "Azali na bafungola ya likolo na mabele, mpe baye baza kopengwa na mikapo mia Allah, bango nde bazangi.",
+      "dag": "Ŋuna n-su sagbana mini tiŋgbani daarzichi saafenima. Ninvuɣu shεba mi ban niŋ chεfuritali ni Naawuni aayanima, bana n­nyɛ ninvuɣu shεba ban kɔhi lu.",
+      "mos": "A soo saas la Tẽng kʋɩlen-biisi, la neb nins sẽn kɩfl ne Wẽnd Aaya-rãmbã, bãmb la bõn rãmba.",
+      "aa": "Yalli qaranwaa kee baaxô mafaatic- le. Yallih aayootal koroosite marii, woo mari usun finqiteeh kasaarite mara addunyaay akeeral.",
+      "mdh": "Lekanin a Allah su bengawan nu langit endu lupa, su manga kafir na simupak kanu ayatan nu Allah, na nalugi silan.",
+      "ak": "Ɔsoro ne asaase so akoradeε (nyinaa) yε Ne dea; wͻn a wͻnnye Nyankopͻn Nsεm no nnie no, saa nkorᴐfoᴐ no ne berεguofoͻ no.",
+      "ceb": "Kaniya (lamang) ang mga bahandi sa mga langit ug sa yuta. Kadtong naglimod sa mga timaan sa Allah, sila mao kadtong mga pildero.",
+      "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߏ߲ߢߌ߲ ߠߎ߬ ߘߌ߫، ߡߍ߲ ߠߎ߫ ߓߊ߲߬ߣߍ߲߬ ߊߟߊ߫ ߟߊ߫ ߟߝߊߙߌ ߟߎ߬ ߘߐ߫ ߛߊ߫߸ ߏ߬ ߟߎ߫ ߟߋ߫ ߓߣߐ߬ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
   },
   {
@@ -7236,7 +8750,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "চকুসমূহৰ বিশ্বাসঘাতকতা আৰু অন্তৰসমূহে যি গোপন কৰে সেয়াও তেওঁ জানে।",
       "ne": "उसले आँखामा लुकेको धोकेबाजी जान्दछ र जुन (कुराहरू) छातीभित्र लुकेका हुन्छन् (उनलाई पनि) ।",
       "si": "ඇස්වලින් සිදු කරන වංචාව හා හදවත් සඟවන දෑ ද ඔහු (අල්ලාහ්) දනී.",
-      "km": "អល់ឡោះដឹងនូវភាពក្បត់នៃកែវភ្នែក(លួចមើលដោយស្ងាត់ៗ) ហើយនិងអ្វីដែលលាក់បាំងនៅក្នុងដួងចិត្ត។"
+      "km": "អល់ឡោះដឹងនូវភាពក្បត់នៃកែវភ្នែក(លួចមើលដោយស្ងាត់ៗ) ហើយនិងអ្វីដែលលាក់បាំងនៅក្នុងដួងចិត្ត។",
+      "he": "(אללה) יודע ממבט עיניהם את אשר הם מתכוונים, לעשות ומה שחבוי בלבבות,",
+      "ka": "მან იცის თვალთა ღალატი [უწყის, როდის შეჰყურებს ადამიანი აკრძალულს] და რასაც მალავენ გულები.",
+      "lt": "Allahas žino akių apgavystę, ir viską, ką krūtinės slepia.",
+      "mg": "Mahafantatra ny fitaky ny maso Izy (Allah), sy izay afenin’ny tratra (fo).",
+      "lg": "(Allah) amanyi amaaso agatali meesimbu era nga bw'amanyi ebyo ebifuba bye bikweka.",
+      "rw": "(Allah) azi neza amaso yuzuye uburyarya ndetse n’ibyo imitima ihishe.",
+      "rn": "Imana Allah Irazi neza agahemo k’amaso, Irazi n’ibihishijwe mu mishaha; yaba ineza canke inabi;",
+      "ln": "(Allah) ayebaka mabe oyo miso esalaka, mpe manso maye mabombami o mitema. (mia bato)",
+      "dag": "O (Naawuni) mi nimbihi bilkɔŋsil, ni suhiri ni sɔɣiri shɛli.",
+      "mos": "A mii nin sẽn zãmbde, la bũmb ning yãad sẽn solgde.",
+      "aa": "Yalli yaaxigeh ganó wagitto abta intiitaa kee alilwa qellissi haytam maqaanée kee umaanék.",
+      "mdh": "Katawan nu Allah su kadupang nu pipilek endu su dalem nu pusung.",
+      "ak": "Nyankopͻn Nim hwammͻ a (onipa) ani die, ne deε (onipa) akoma desie (nyinaa).",
+      "ceb": "Siya (Allah) nasayod sa malimbongon nga mga mata, ug ang mga tinagoan sa mga kasing-kasing.",
+      "nqo": "‹ ߊߟߊ߫ › ߞߊ߬ ߢߊ ߟߎ߬ ߟߊ߫ ߖߊ߲߬ߝߊ ߟߐ߲߫ ߊ߬ ߣߌ߫ ߛߌߛߌ ߟߎ߬ ߦߋ߫ ߡߍ߲ ߘߏ߲߰ ߠߊ߫"
     }
   },
   {
@@ -7300,7 +8829,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "‘হে মোৰ সম্প্ৰদায়! এই পাৰ্থিৱ জীৱন হৈছে কেৱল অস্থায়ী ভোগ-সামগ্ৰী। নিশ্চয় আখিৰাত, সেইটোহে হৈছে স্থায়ী আবাস।",
       "ne": "हे मेरा कौमका मानिसहरू ! यो संसारिक जीवन त मात्र अस्थायी हो । संतुष्टिको साथ स्थायीरूपले बस्ने घर त आखिरत नै हो ।",
       "si": "“අහෝ මාගේ ජනයිනි! නියත වශයෙන් ම මෙලොව මේ ජීවිතය සුළු භුක්ති විඳීමක් පමණි. තවද නියත වශයෙන් ම මතු ලොව සදා නිවහනයි.”",
-      "km": "ឱក្រុមរបស់ខ្ញុំ! តាមពិតឆាកជីវិតលោកិយនេះ គ្រាន់តែជាការសោយសុខ(មួយរយៈពេលខ្លី)ប៉ុណ្ណោះ។ រីឯបរលោកទៅវិញទេ ទើបជាទីកន្លែងដែលអមតៈ។"
+      "km": "ឱក្រុមរបស់ខ្ញុំ! តាមពិតឆាកជីវិតលោកិយនេះ គ្រាន់តែជាការសោយសុខ(មួយរយៈពេលខ្លី)ប៉ុណ្ណោះ។ រីឯបរលោកទៅវិញទេ ទើបជាទីកន្លែងដែលអមតៈ។",
+      "he": "הוי בני עמי! חיי העולם-הזה הם רק הנאה חולפת, אן העולם הבא הוא המשכן התמידי.",
+      "ka": "ო, ჩემო ერო! ეს მიწიერი ცხოვრება მხოლოდ (დროებითი) სარგებელია, ხოლო ჭეშმარიტად, მარადიული სიცოცხლე მუდმივობის სამყოფელია.",
+      "lt": "Mano žmonės, tikrai, šis pasaulio gyvenimas yra niekas, tik (greitai praeinantis) malonumas, ir tikrai, Amžinybė yra namai, kurie išliks amžinai.“",
+      "mg": "“ Ry vahoakako! Hamafisina, fa fahafinaretana mandalo ihany ity fiainana eto an-tany ity, fa ny any ankoatra kosa no fonenana maharitra ”.",
+      "lg": "Abange bantu bange mazima obulamu bw'ensi buno bwa kiyitamulujja, era mazima Enkomerero, y’enyumba ey'olubeerera.",
+      "rw": "“Yemwe bantu banjye! Mu by’ukuri ubu buzima bw’isi ni umunezero w’igihe gito, kandi rwose (ubuzima bw’) imperuka ni bwo buturo buzahoraho.”",
+      "dag": "“Yaa yinim’ n niriba! Achiika! Dunia ŋɔ maa biεhigu nyɛla nyεɣisim biɛla, amaa! Chiyaama n-nyɛ kpaliŋkpaa yili.”",
+      "mos": "Mam nebã! Ad dũni wã vɩ-kãngã yaa wʋm-noogo, la ad laahrã, yẽ la tablg roogo.",
+      "aa": "Yi-maraw addunyâ manó cagalah dago duyyê (afeynâ) baxay gaba kaltaay, diggaluk akeera is-waar dabqa.",
+      "mdh": "Hay sekanu a manga pagali ku, saben-sabenal su kabpaguyag sa dunya na pegkakalinyan bu, su akhirat i dalpa a dayun sa dayun.",
+      "ak": "Menkorͻfoͻ, nokorε sε, wiase asetena yi deε εyε anigyesεm bi kwa, na nokorε sε Daakye no ne asetena a εwͻ hͻ daa.",
+      "ceb": "Oh akong katawhan, kini nga kinabuhi sa kalibutan usa lamang ka (lumalabay nga) mga kalipay 'nga maputol', ug sa pagkatinuod ang Pikas Kinabuhi mao ang Puloy-anan nga magpabilin sa kahangturan;",
+      "nqo": "ߊ߬ ߞߏ߫ ߒ ߡߌ߬ߙߌ߲߬ߘߌ ߸ ߘߎߢߊ߫ ߢߣߊߡߦߊ ߣߌ߲߬ ߦߋ߫ ߘߊ߰ߡߎ߲߬ ߘߐߙߐ߲߫ ߠߋ߬ ߘߌ߫ ߸ ߛߎ߬ߟߊ߫ ߟߋ߬ ߡߊ߬ߝߊ ߛߏ ߘߌ߫ ߖߙߌ߫"
     }
   },
   {
@@ -7358,7 +8900,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আকাশসমূহ আৰু পৃথিৱীৰ সৃষ্টি, মানৱ সৃষ্টিতকৈও ডাঙৰ বিষয়, কিন্তু অধিকাংশ মানুহেই সেয়া নাজানে।",
       "ne": "निःसन्देह आकाशहरू र धरतीहरूको सृष्टि गर्नु, मानिसहरूको सृष्टि गर्नुभन्दा धेरै ठूलो काम हो । तर धेरै मानिसले जान्दैनन् ।",
       "si": "මිනිසා මැවීමට වඩා අහස් හා මහපොළොව මැවීම අතිමහත් ය. එහෙත් ජනයාගෙන් බහුතරයක් දෙනා (ඒ බව) නො දනිති.",
-      "km": "ការបង្កើតមេឃជាច្រើនជាន់និងផែនដី គឺពិតជាធំធេង(អស្ចារ្យ)ជាងការបង្កើតមនុស្សលោកទៅទៀត។ ក៏ប៉ុន្តែ មនុស្សលោកភាគច្រើនមិនបានដឹងឡើយ។"
+      "km": "ការបង្កើតមេឃជាច្រើនជាន់និងផែនដី គឺពិតជាធំធេង(អស្ចារ្យ)ជាងការបង្កើតមនុស្សលោកទៅទៀត។ ក៏ប៉ុន្តែ មនុស្សលោកភាគច្រើនមិនបានដឹងឡើយ។",
+      "he": "אכן בריאת השמים והארץ גדולה מבריאת האנשים, ואולם רוב האנשים אינם יודעים.",
+      "ka": "უთუოდ, ცათა და მიწის შექმნა უფრო დიდია, ვიდრე ადამიანთა შექმნა, მაგრამ ადამიანთა უმრავლესობამ არ იცის.",
+      "lt": "Dangų ir žemės sukūrimas tikrai yra didingesnis nei žmonijos sukūrimas, Ir vis tiek dauguma žmonių to nežino.",
+      "mg": "Lehibe kokoa noho ny fahariana ny olombelona ny fahariana ny lanitra sy ny tany. Nefa tsy mahafantatra izany ny ankamaroan’ny olombelona.",
+      "lg": "Ddala, okutonda eggulu omusanvu n'ensi kinene okusinga okutonda abantu, naye abantu abasinga obungi tebamanyi.",
+      "rw": "Rwose iremwa ry’ibirere n’isi ni ryo rikomeye kuruta iremwa ry’abantu (no kubazura); nyamara abenshi mu bantu ntibabizi.",
+      "ln": "Bokelami ya likolo na ya mabele eleki bokelami ya bato, kasi ebele ya bato bazali koyeba te.",
+      "dag": "Achiika! Sagbana mini tiŋgbani nambu n-nyɛ din bara n-gari ninsalinim’ nambu. Amaa! Ninsalinim’ pam bi mi.",
+      "mos": "Saasã la Tẽngã naaneg bedrem n yɩɩd nebã naanego, la ad nebã wʋsg fãa pa mi ye.",
+      "aa": "Yalli qaranwaa kee baaxdt abe gind sinaamat abe ginok nabah, kinnih immay woh sinaamak maggo mari ma-yaaxiga.",
+      "mdh": "Kinabaluy sa manga langit endu lupa na ya malgen sa kinabaluy sa manusya, ugayd na ya madakel sa kanu manusya na di nilan katawan.",
+      "ak": "Nokorε sε, ͻsoro ne asaase mmͻeε no so kyεn nnipa mmͻeε nanso nnipa pii nnim.",
+      "ceb": "Sa pagkatinuod ang paglalang sa mga langit ug sa yuta mas dako pa kay sa paglalang sa mga tawo, apan kasagaran sa mga tawo wala mahibalo.",
+      "nqo": "ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲ ߠߋ߫ ߜߍ߬ߟߍ߲߬ߡߊ߲߫ ߡߐ߱ ߟߎ߬ ߘߊ߲ ߘߌ߫ ߔߊߎ߲߫ ߸ ߞߏ߬ߣߌ߲߬ ߡߐ߱ ߝߊ߲߬ߓߊ ߟߋ߬ ߕߍ߫ ߟߐ߲ߠߌ߲߫ ߞߍ߫ ߟߊ߫"
     }
   },
   {
@@ -7421,7 +8977,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় কিয়ামত অৱশ্যম্ভাৱী, ইয়াত কোনো সন্দেহ নাই; কিন্তু অধিকাংশ লোকেই বিশ্বাস নকৰে।",
       "ne": "कियामत त आउनेवाल नै छ, यसमा कुनै शंका छैन । तर अधिकांश मानिसहरूले ईमान ल्याएका छैनन् ।",
       "si": "නියත වශයෙන් ම අවසන් හෝරාව පැමිණෙන්නක්ම ය. එහි කිසිදු සැකයක් නැත. එහෙත් ජනයාගෙන් බහුතරයක් දෙනා (එය) විශ්වාස නො කරති.",
-      "km": "ជាការពិតណាស់ ថ្ងៃបរលោកប្រាកដជានឹងមកដល់ដោយគ្មានការសង្ស័យចំពោះវាឡើយ។ ក៏ប៉ុន្តែ មនុស្សលោកភាគច្រើនមិនជឿឡើយ។"
+      "km": "ជាការពិតណាស់ ថ្ងៃបរលោកប្រាកដជានឹងមកដល់ដោយគ្មានការសង្ស័យចំពោះវាឡើយ។ ក៏ប៉ុន្តែ មនុស្សលោកភាគច្រើនមិនជឿឡើយ។",
+      "he": "אכן “השעה” תבוא ללא כל ספק, אבל רוב האנשים אינם מאמינים",
+      "ka": "უეჭველად, საათი [განკითხვის დღე] აუცილებლად დადგება — არანაირი ეჭვი არ არის ამაში, მაგრამ ადამიანთა უმრავლესობას არ სწამს!",
+      "lt": "Iš tiesų, Valanda (Teismo Diena) tikrai ateina, nėr abejonės dėl to, tačiau vis tiek dauguma žmonių netiki.",
+      "mg": "Hamafisina, fa ho avy tokoa ilay ora, tsy misy hisalasalana ny amin’izany, nefa ny ankamaroan’ny olona dia tsy mino izany.",
+      "lg": "Mazima Olunaku lw’Enkomerero lwa kutuuka teruliimu kubuusabuusa, naye ddala abantu abasinga obungi tebakkiriza.",
+      "rw": "Mu by’ukuri imperuka izaza nta kuyishidikanyaho, ariko abenshi mu bantu ntibabyemera.",
+      "dag": "Achiika! Saha (Chiyaama yiɣisibu) nyɛla din yɛn kana ka bεhim ka di ni, amaa! Ninsalinim’ pam bi tiri Naawuni yεlimaŋli.",
+      "mos": "Ad dũni wã yikr watame, sik ka a pʋgẽ ye, la ad nebã wʋsg pa kõt sɩd ye.",
+      "aa": "Diggah Qhiyaamah ayro amaatc- le, tet mamut agay waaga mali, kinnih immay sinaamak maggo mari (koros kinnuk) tet mamut ma- nummaysa.",
+      "mdh": "Su gay a mawli na dili ebplis na makawma, ugayd na ya madakel kanu manga taw na di bangimbenal.",
+      "ak": "Nokorε sε Dͻnhwere no reba a akyinnyeε biara nni ho, nanso nnipa pii nnye nni.",
+      "ceb": "Sa pagkatinuod, ang Takna (ang Adlaw sa Pagkabanhaw ug Paghukom) moabotay, walay pagduhaduha niini, apan kadaghanan sa mga tawo dili motuo.",
+      "nqo": "ߟߐ߬ߓߊ ߕߎ߬ߡߊ ߣߊ߬ߕߐ߫ ߟߋ߬ ߸ ߕߎ߲߬ߞߎ߬ߙߎ߲߬ ߛߌ߫ ߕߍ߫ ߊ߬ ߘߐ߫ ߞߏ߬ߣߌ߲߬ ߡߐ߱ ߝߊ߲߬ߓߊ ߟߋ߬ ߕߍ߫ ߟߊ߫ ߟߴߊ߬ ߟߊ߫"
     }
   },
   {
@@ -7480,7 +9049,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "हाच अल्लाह आहे तुम्हा सर्वांचा पालनपोषण करणारा. प्रत्येक वस्तूंचा रचयिता, त्याच्याखेरीज कोणीही सच्चा उपास्य (माबूद) नाही, मग तुम्ही कोणत्या बाजूला भटकविले जात आहात?",
       "as": "তেৱেঁই আল্লাহ, তোমালোকৰ প্ৰতিপালক, সকলো বস্তুৰ স্ৰষ্টা; তেওঁৰ বাহিৰে আন কোনো সত্য ইলাহ নাই। এতেকে তোমালোকক ক’লৈ ওভোতাই নিয়া হৈছে?",
       "ne": "यही अल्लाह तिमी सबैको पालनकर्ता हो, प्रत्येक कुराको स्रष्टा हो । ऊ बाहेक अरु कोही सत्य पूज्य छैन । अनि तिमी कहाँ भौंतारिरहेका छौ ?",
-      "si": "එයයි නුඹලාගේ පරමාධිපති වූ අල්ලාහ්. (ඔහු) සියලු දෑහි මැවුම්කරු ය. ඔහු හැර වෙනත් දෙවියකු නැත. එසේ නම් නුඹලා (මුළා කරනු ලැබ) වෙනතකට යොමු කරනු ලබනුයේ කෙසේ ද?"
+      "si": "එයයි නුඹලාගේ පරමාධිපති වූ අල්ලාහ්. (ඔහු) සියලු දෑහි මැවුම්කරු ය. ඔහු හැර වෙනත් දෙවියකු නැත. එසේ නම් නුඹලා (මුළා කරනු ලැබ) වෙනතකට යොමු කරනු ලබනුයේ කෙසේ ද?",
+      "he": "זה אללה ריבונכם בורא כל דבר, אין אלוה זולתו. אז מדוע אתם סוסים מהדרך?",
+      "ka": "აი, ასეთია ალლაჰი, თქვენი უფალი, ყოვლისშემქმნელი. არ არსებობს ღვთაება მის გარდა. მაშ, როგორღა აქცევთ ზურგს (ჭეშმარიტებას)?",
+      "lt": "Tai yra Allahas, jūsų Viešpats, visko Kūrėjas. La ilaha illa huva (niekas neturi teisės būti garbinamas tik Jis). Kaip yra tada, kad jūs nusigręžiate (nuo Allaho, garbindami kitus vietoj Jo)?’",
+      "mg": "Toy izany I Allah Tomponareo, Ilay mpahary ny zava-drehetra. Tsy misy zanahary hafa ankoatra Azy. Ka nahoana áry ianareo no miala amin’ny lalana mahitsy?",
+      "lg": "Oyo nno ye Allah Omulabirizi Wammwe, Omutonzi wa buli kintu, tewali kisinzibwa mu butuufu okuggyako Yye ate muwugulwa mutya?",
+      "rw": "Uwo ni Allah Nyagasani wanyu, Umuremyi wa buri kintu, nta yindi mana ibaho itari We. Ese ni gute mureka ukuri (mugasenga ibitari Allah)?",
+      "rn": "Uwabagiriye ivyo vyiza rero, ni Yo Mana yanyu Rurema Allah, Yaremye ibintu vyose, nta mana yindi ibwirijwe gusengwa vy’ukuri atari Yo. None, ni gute muyibangikanya ha kuyisenga ari Imwe Rudende!",
+      "dag": "Ŋuna n-nyɛ Naawuni yi Duuma, Ŋun nam binshɛɣu kam, duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna, ka bo n-leei chɛ ka bɛ ŋmalgiri ya (ka chεri yɛlimaŋli)?",
+      "mos": "Woto yaa Wẽnde, yẽnda la y Soab hakɩɩka, bũmbã fãa Naandã, Soab kae tɩ sã n pa Yẽ ye. La yaa bõe tɩ y wẽnemsdẽ?",
+      "aa": "Toh siinih abtem Yalla, sin Rabbi, ummaanim giné. Qibaadá cakkisita Yalli mayan kaak sah, toysa iimaanak mannal daggawtaanaah Yallak kalihim taqbuden waqdi?",
+      "mdh": "Entu ba su Allah a Kadenan nu a minaluy kanu engaga-isa, dala kadenan ya tabya na su Allah, na panun i kapapendalbut nu?",
+      "ak": "Wei ne mo Wura Nyankopͻn no, Adeε nyinaa Bͻfo no, awurade foforͻ biara nnihͻ gyesε Ɔno nko ara. Na εhen na moredane moho korͻ yi?",
+      "nqo": "ߏ߬ ߟߋ ߊߟߊ߫ ߘߌ߫ ߊߟߎ߫ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫ ߸ ߝߋ߲ ߓߍ߯ ߘߊ߲ߓߊ߮ ߟߋ߬ ߸ ߡߊ߰ߙߌ߬ ߛߌ߫ ߕߍ߫ ߝߏ߫ ߊ߬ߟߋ߬ ߸ ߊߟߎ߫ ߦߋ߫ ߞߕߐߡߊߛߊ߬ߦߌ߬ ߟߊ߫ ߘߌ߬ ߓߏ߲߰؟"
     }
   },
   {
@@ -7544,7 +9126,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে ঈমান আনিছে আৰু সৎকৰ্ম কৰিছে, তেওঁলোকৰ বাবে আছে নিৰৱচ্ছিন্ন পুৰস্কাৰ।",
       "ne": "बिना शंका जसले ईमान ल्याए र राम्रा कर्म गरे, उनीहरूको निम्ति यस्तो पुरस्कार छ जसको क्रम टुट्दैन (जुन समाप्त हुँदैन) ।’’",
       "si": "නියත වශයෙන් ම විශ්වාස කොට යහකම් කළවුන් වන ඔවුනට අවසන් නො වන (නිත්‍ය) ප්‍රතිඵලයක් ඇත.",
-      "km": "ពិតប្រាកដណាស់ បណ្តាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសល សម្រាប់ពួកគេនឹងទទួលបាននូវផលបុណ្យដែលគ្មានទីបញ្ចប់ឡើយ។"
+      "km": "ពិតប្រាកដណាស់ បណ្តាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសល សម្រាប់ពួកគេនឹងទទួលបាននូវផលបុណ្យដែលគ្មានទីបញ្ចប់ឡើយ។",
+      "he": "אכן אלה אשר האמינו ועשו את הטוב, להם גמול בלתי מוגבל.",
+      "ka": "ჭეშმარიტად, რომელთაც ირწმუნეს და ჰქმნეს კეთილი საქმენი, მათთვისაა საზღაური უწყვეტი.",
+      "lt": "Tikrai, tie, kurie tiki (Allaho Vienumą ir Jo Pasiuntinį Muchammedą ﷺ – islamiškąjį monoteizmą) ir daro teisingus gerus darbus, jiems bus nesibaigiantis atlygis, kuris niekad neišseks (t. y. Rojus).",
+      "mg": "Hamafisina, fa ireo izay mino sy manatanteraka ny asa soa kosa, dia ho azy ireo ny valisoa tsy hanana fahataperana.",
+      "lg": "Mazima abo abakkiriza ne bakola emirimu emirongoofu balina empeera etaggwaawo.",
+      "rw": "Mu by’ukuri ba bandi bemeye bakanakora ibikorwa byiza bazagororerwa ibihembo bihoraho.",
+      "rn": "Mu vy’ukuri abemeye Imana Allah, Intumwa yayo n’Ibitabu vyayo, bagakora n’ivyiza bitegetswe ku bw’Imana Allah, barategekanirijwe impembo ihambaye yamaho.",
+      "ln": "Ya soló, baye bandimaki mpe basalaki misala milamu, bakozalaka na lifuta liye likokatanaka te.",
+      "dag": "Achiika! Ninvuɣu shεba ban ti Naawuni yεlimaŋli, ka tum tuunviεla, bɛ mali laara din bi ŋmaara.",
+      "mos": "Ad neb nins sẽn kõ-b sɩd la b tʋm sẽn sõmbã, b tara keoor sẽn pa wãagde.",
+      "aa": "Diggah yeemcneeh mcqc taamoomi abbaasite mari Yallah tet caglisak aggiriqqe sinni galtd-lon Yallih garil.",
+      "mdh": "Saben-sabenal na su manga bamaginugut endu minggalebek sa manga mapya na aden sa kanilan i balas a dala pinda nin.",
+      "ak": "Nokorε sε, wͻn a wͻagye adie na wͻredi dwuma pa no wͻ akatua a εtoͻ ntwa da.",
+      "ceb": "Sa pagkatinuod sila nga mituo 'kang Allāh ug sa Iyang mga mensahero' ug nagbuhat ug maayong mga buhat, sila sa pagkatinuod makabaton ug ganti nga dili gayud matapos \"Paraiso\".",
+      "nqo": "ߡߍ߲ ߠߎ߫ ߞߏ߬ߣߌ߲ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߓߊ߲߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߸ ߛߙߊ߬ ߓߟߏߕߍ߰ߓߊߟߌ ߟߴߏ߬ ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -7604,7 +9201,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যিয়ে সৎকৰ্ম কৰে তেওঁ নিজৰ কল্যাণৰ বাবেই কৰে আৰু কোনোবাই অসৎকৰ্ম কৰিলে তাৰ প্ৰতিফল সি নিজেই ভোগ কৰিব। তোমাৰ প্ৰতিপালকে নিজ বান্দাসকলৰ প্ৰতি কদাপিও অন্যায় নকৰে।",
       "ne": "जसले असल कर्म गर्नेछ उसले आफ्नो फाइदाको लागि र जसले नराम्रो काम गर्नेछ त त्यसको हानि पनि उसैलाई हुनेछ । तपाईंको पालनकर्ताले भक्तहरूमाथि अत्याचार गर्दैन ।",
       "si": "කවරෙකු යහකමක් සිදු කළේ ද එය ඔහු වෙනුවෙන් ම ය. තවද කවරෙකු නපුරක් කළේ ද එය ඔහුට එරෙහිව ම ය. ඔබේ පරමාධිපති ගැත්තන්හට අපරාධ කරන්නෙකු නො වේ.",
-      "km": "ជនណាដែលបានសាងទង្វើកុសល វាគឺសម្រាប់ខ្លួនគេផ្ទាល់។ ហើយជនណាដែលបានសាងអំពើអាក្រក់ វាក៏នឹងធ្លាក់លើរូបគេដូចគ្នា។ ហើយព្រះជាម្ចាស់របស់អ្នកមិនមែនជាអ្នកបំពានលើខ្ញុំបម្រើទាំងឡាយ(របស់ទ្រង់)ឡើយ។"
+      "km": "ជនណាដែលបានសាងទង្វើកុសល វាគឺសម្រាប់ខ្លួនគេផ្ទាល់។ ហើយជនណាដែលបានសាងអំពើអាក្រក់ វាក៏នឹងធ្លាក់លើរូបគេដូចគ្នា។ ហើយព្រះជាម្ចាស់របស់អ្នកមិនមែនជាអ្នកបំពានលើខ្ញុំបម្រើទាំងឡាយ(របស់ទ្រង់)ឡើយ។",
+      "he": "העושה טוב מיטיב לעצמו והעושה רע מזיק לעצמו ואין ריבונך מקפח את עבדיו.",
+      "lt": "Kas daro teisingus gerus darbus, tai dėl jo paties (naudos), o kas daro blogą, tai prieš jį patį. Ir jūsų Viešpats nėra neteisingas (Savo) vergams.",
+      "mg": "Fa izay manao asa soa, dia manao izany ho an’ny tenany ihany, fa izay manao ny asa ratsy kosa, dia fahavoazana ho azy irery ihany izany, ary ny Tomponao dia tsy miangatra velively amin’ny mpanompony.",
+      "lg": "Oyo akola omulimu omulongoofu akolera mwoyo gwe, ate oyo ayonoona akabi k'ekyo kadda ku gwo, ate nga Mukama Omulabirizi Wo si mulyazaamaanyi eri abaddu (Be).",
+      "rw": "Ukoze igikorwa cyiza aba acyikoreye, ndetse n’ukoze ikibi aba acyikoreye. Kandi Nyagasani wawe ntarenganya abagaragu be.”",
+      "ln": "Oyo akosala malamu, ezali mpona ye moko, mpe oyo akobebisa ezali sé mpona ye moko. Kasi Nkolo wayo abubaka kati kati ya bawumbu naye te.",
+      "dag": "Ninvuɣu so ŋun tum tuunviεlli, tɔ! O maŋ’ zuɣu ka o tum, ŋun mi tum tuumbεɣu, tɔ! O maŋ’ zuɣu ka o lahi tum. Yaha! A Duuma (Naawuni) pala Ŋun diri daba zualinsi.",
+      "mos": "Ned ning sẽn tʋma sẽn sõmbe yaa a meng yĩnga, la ned ning sẽn wẽnga be ne-a, f Soabã pa yɩ n yaa wẽgd baɑ bilfu ne A yembsã ye.",
+      "aa": "Maqaané abita num isi nafsih abitaah, umaané aba num isi nafsil abaah, ku-Rabbi naqoosa yadlumi hinna.",
+      "mdh": "Su taw enggalebek sa mapya na kanu ginawa nin bun, su taw menem a enggalebek sa malat na maytu bun, ka su Allah na di dumupang kanu manga ulipen nin.",
+      "ak": "Obi a ͻyε papa no, ͻyε ma ne ho, na nea ͻyε bͻne no nso etia ͻno ara. Wo Wura Nyankopͻn deε Ɔnni Nenkoa amim.",
+      "nqo": "ߡߍ߲ ߓߊ߯ ߢߌ߬ߡߊ߬ ߞߍ߫ ߏ߬ ߦߴߊ߬ ߖߍ߬ߘߍ߫ ߟߋ߬ ߦߋ߫ ߏ߬ ߘߐ߫ ߸ ߣߌ߫ ߡߍ߲ ߞߊ߬ ߖߎ߯ߦߊ߫ ߞߍ߫ ߏ߬ ߦߴߏ߬ ߞߍ߫ ߟߴߊ߬ ߖߍ߬ߘߍ߫ ߟߋ߬ ߟߊ߫ ߸ ߌ ߡߊ߰ߙߌ ߞߏ߬ߣߌ߲߬ ߕߍ߫ ߓߊ߰ ߟߊ߫ ߖߐ߲߭ ߠߎ߫ ߡߊ߬"
     }
   },
   {
@@ -7659,7 +9268,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশসমূহ আৰু পৃথিৱীৰ চাবি-কাঠি তেওঁৰেই ওচৰত। তেওঁ যাৰ বাবে ইচ্ছা কৰে তাৰ জীৱিকা বৃদ্ধি কৰি দিয়ে আৰু সংকুচিতও কৰে। নিশ্চয় তেওঁ সকলো বস্তু সম্পৰ্কে সৰ্বজ্ঞ।",
       "ne": "आकाशहरू र धरतीका साँचोहरू उसैको हातमा छन् । उसले जसको निम्ति चाहन्छ, जीविका फराकिलो पार्दछ र जसको निम्ति चाहन्छ संकुचित गरिदिन्छ । निःसन्देह उसले हरेक कुरो जान्दछ ।",
       "si": "අහස් හා මහපොළොවේ (පෝෂණ සම්පත් හි) යතුරු ඔහු සතු ය. ඔහු අභිමත කරන අයට පෝෂණ සම්පත් ව්‍යාප්ත කරයි. තවද ඔහු සීමා ද කරයි. නියත වශයෙන් ම ඔහු සියලු දෑ පිළිබඳව සර්ව ඥානී ය.",
-      "km": "កូនសោ(ឃ្លាំង)នៃមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។ ទ្រង់បើកទូលាយ និងត្បិតត្បៀតលាភសក្ការៈ(របស់ទ្រង់)ចំពោះជនណាដែលទ្រង់មានចេតនា។ ពិតប្រាកដណាស់ ទ្រង់មហាដឹងបំផុតនូវរាល់អ្វីៗទាំងអស់។"
+      "km": "កូនសោ(ឃ្លាំង)នៃមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។ ទ្រង់បើកទូលាយ និងត្បិតត្បៀតលាភសក្ការៈ(របស់ទ្រង់)ចំពោះជនណាដែលទ្រង់មានចេតនា។ ពិតប្រាកដណាស់ ទ្រង់មហាដឹងបំផុតនូវរាល់អ្វីៗទាំងអស់។",
+      "he": "לו מפתחות השמים והארץ, והוא ייתן פרנסה בשפע, ויצמצם, לכל אשר ירצה. והוא יודע הכול בכול דבר.",
+      "ka": "მას ეკუთვნის ცათა და მიწის გასაღებნი. იგი უხვად ანიჭებს სარჩოს, ვისაც ინებებს, და ამცირებს (წილს) (ვისაც მოისურვებს). უეჭველად, მან ყოველივე იცის.",
+      "lt": "Jam priklauso dangų ir žemės raktai. Jis padidina išlaikymą tiems, kam Jis nori, ir sumažina (tai tiems, kuriems Jis nori). Iš tiesų, Jis yra Visa Žinantis apie viską.",
+      "mg": "Manana ireo fanalahidin’ny lanitra sy ny tany Izy. Mizara an-kalalahana ny FanomezaNy amin’izay sitrany Izy, na mametra izany. Mahafantatra ny zavatra rehetra tokoa Izy.",
+      "lg": "Yekka y'alina ebisumuluzo by'amawanika g'eggulu omusanvu n'ensi, ayanjuluza ebyenfuna eri oyo gw'aba ayagadde, ate n'afunza (kw'oyo gw'aba ayagadde) mazima Yye Ye Mumanyi ennyo ku buli kintu.",
+      "rw": "Afite imfunguzo z’ibiri mu birere no mu isi. Atuburira amafunguro uwo ashaka akanayatubiriza uwo ashaka. Mu by’ukuri ni Umumenyi wa byose.",
+      "ln": "Bafungola ya bomengo ya likolo na ya mabele bizali bia ye, apesaka bozui na oyo alingi mpe akutolaka na oyo alingi. Azali na boyebi ya biloko binso.",
+      "dag": "Ŋuna (Naawuni) n-su sagbana mini tiŋgbani saafenima, ka O yεlgiri arzichi tiri O ni bɔri so, ka kirsiri biɛhigu tiri O ni bɔri so. Achiika! O shiri nyɛla binshɛɣu kam Baŋda.",
+      "mos": "A soo saas la Tẽng kʋɩlen-biisi, A yεdgda rɩtlã ne A sẽn rat a soaba, la A kẽgsd ne A sẽn rat a soaba, ad A yaa Mit ne bũmbã fãa gilli.",
+      "aa": "Qaranwaa kee baaxô reedá Yalli leeh, racmat kee rizqhi mafaatic kay gabal yan, isih kah faxa marah rizqhi farakka haah, isih kah faxa maral ceyissi haa, Usuk diggaluk ummaanimil ixxiga-li.",
+      "mdh": "Lekanin a Allah su gunsi nu manga langit endu su lupa, kalagan nin sa rizki su pegkyugan nin, pakasimpitan nin su pegkyugan nin, sekanin a Allah i mataw sa langun na enggaga-isa.",
+      "ak": "Ɔsoro ne asaase so akoradeε safoa wͻ no, Ɔbae N’adom no mu ma obi a Ɔpε, εna Ɔsusu nso (ma obi a Ɔpε). Nokorε sε Ɔne biribiara ho Nimdefoͻ.",
+      "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߏ߲ߧߌ߲ ߠߎ߬ ߘߌ߫ ߸ ߊ߬ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫ ߸ ߊ߬ ߦߴߊ߬ ߘߐߜߙߐ߬ ߟߊ߫ ߝߣߊ߫ ߸ ߓߊ ߊ߬ߟߋ ߟߋ߬ ߞߏ ߓߍ߯ ߟߐ߲ߓߊ߮ ߘߌ߫"
     }
   },
   {
@@ -7715,7 +9337,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই আল্লাহ, যিজনে সত্য সহকাৰে কিতাব আৰু মীজান অৱতীৰ্ণ কৰিছে। তুমি কেনেকৈ জানিবা! সম্ভৱতঃ কিয়ামত অতি নিকটৱৰ্তী?",
       "ne": "अल्लाहले नै सत्यको साथ किताब अवतरित गर्यो र तराजू पनि, र तपाईलाई के थाहा कदाचित् कियामत (महाप्रलय) को समय नजिक आइपुगेको होस् ।",
       "si": "සත්‍යයෙන් යුතුව ධර්ම ග්‍රන්ථය හා (ෂරීආව නම්) තුලාව පහළ කළේ අල්ලාහ් ය. අවසන් හෝරාව සමීපයෙන් විය හැකි යැයි නුඹව දැනුවත් කරනුයේ කුමක් ද?",
-      "km": "អល់ឡោះជាម្ចាស់ទ្រង់ជាអ្នកដែលបានបញ្ចុះគម្ពីរទាំងឡាយដោយពិតប្រាកដ ហើយនិងជញ្ជីងនៃភាពយុត្តិធម៌។ ហើយតើអ្វីដែលធ្វើឲ្យអ្នកដឹងថា ថ្ងៃបរលោក ជិតនឹងមកដល់នោះ?"
+      "km": "អល់ឡោះជាម្ចាស់ទ្រង់ជាអ្នកដែលបានបញ្ចុះគម្ពីរទាំងឡាយដោយពិតប្រាកដ ហើយនិងជញ្ជីងនៃភាពយុត្តិធម៌។ ហើយតើអ្វីដែលធ្វើឲ្យអ្នកដឹងថា ថ្ងៃបរលោក ជិតនឹងមកដល់នោះ?",
+      "he": "אללה הוא אשר הוריד את הספר עם הצדק ומאזני הצדק. ומה יגרום לך להבין שהשעה (יום הדין) אכן קרובה?",
+      "ka": "ალლაჰია ის, რომელმაც გარდმოავლინა წიგნი ჭეშმარიტებით და სასწორი. და რა იცი (ო, შუამავალო), იქნებ საათი [განკითხვის დღე] (უკვე) ახლოსაა!",
+      "lt": "Tai Allahas, Kuris nuleido Knygą (Koraną) su tiesa, ir Svarstykles (t. y. teisingumą). Ir kas gali priversti jus sužinoti, kad galbūt Valanda yra arti čia pat?",
+      "mg": "Allah no nampidina ny Boky tamim-pahamarinana, toy izany koa ny fandanjana.Koa inona no fantatrao ny amin’izany ?Angamba efa akaiky ilay Ora ?",
+      "lg": "Allah Y'oyo eyassa Ebitabo nga bya mazima n’obwenkanya. Yye omanyira kuki oba olyawo Olunaku lw’Enkomerero nga luli kumpi.",
+      "rw": "Allah ni We wahishuye igitabo gikubiyemo ukuri n’ubutabera. Ese ni iki cyakubwira ko imperuka itari hafi?",
+      "ln": "Allah nde akitisa buku na bosôló, mpe na emekelo. Mpe yo oyebi te tango mosusu ngonga yango ebelemi.",
+      "dag": "Naawuni n-nyɛŊun siɣisi litaafi (Alkur’aani) na yɛlimaŋli mini aadalsi. (Yaa nyini ŋun wumda)! Ka bo n-leei yɛn chɛ ka a baŋ kadama diyi pa shɛli ka Chiyaama yiɣisibu be yoma?",
+      "mos": "Wẽnd la Soab ning sẽn sika gafã ne sɩd la tẽeg-tɩrga. Lɑ bõe n wilgd foo tɩ dũni yikr pɑ pẽ?",
+      "aa": "Yalla kinni Qhuraan kee raqqate kitooba cakkil oobissem kaadu miidaan (qadli kinnuk) cakkil oobise sinam fan massal kaal meklaanam keh kaadu nabiyow iyyi koo yiysixxigeeh qhiyaamah uddur xayi way.",
+      "mdh": "Su Allah i napatulun kanu kitab (Qur’an) a haqq endu timbangan, endu di nengka katawan (Muhammad) na tabya bun ka masupeg den i gay a mawli.",
+      "ak": "Nyankopͻn na Ɔde nokorε no asane Nwoma no, εne nsania. Na deεn na εbεkyerε wo sε ebia Dͻnhwere no abεn?",
+      "ceb": "Siya ang Allah Maoy nagpakanaog sa Libro (Qur’an) sa kamatuoran ug sa Timbangan, ug unsa ba ang makapahibalo kaninyo nga tingali ang Takna (sa kalaglagan) haduol na?",
+      "nqo": "ߊߟߊ߫ ߟߋ߫ ߞߊ߬ ߟߍߙߊ ߟߊߖߌ߰ ߕߎ߬ߢߊ ߟߊ߫ ߊ߬ ߣߌ߫ ߖߊ߭ ߸ ߖߍߣߍ߲ ߘߴߌߟߋ ߟߊߟߐ߲ߣߌ߲߫ ߕߎ߬ߡߊ߬ߘߐ߫ ߞߏ߫ ߟߐ߬ߓߊ ߓߘߊ߫ ߛߎ߬ߘߎ߲߬ߧߊ߫؟"
     }
   },
   {
@@ -7778,7 +9414,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আমি ইয়াক কোৰআন হিচাপে আৰবী ভাষাত অৱতীৰ্ণ কৰিছোঁ, যাতে তোমালোকে বুজিব পাৰা।",
       "ne": "हामीले यसलाई अरबी भाषाको कुरआन बनायौं ताकि तिमीहरू बुझ्नसक ।",
       "si": "නුඹලා වටහා ගත හැකි වනු පිණිස අරාබි බසින් වූ පාරායනයක් බවට නියත වශයෙන් ම අපි එය පත් කළෙමු.",
-      "km": "ពិតប្រាកដណាស់ យើងបានបញ្ចុះគម្ពីរគួរអានជាភាសាអារ៉ាប់ សង្ឃឹមថាពួកអ្នកចេះគិតពិចារណា។"
+      "km": "ពិតប្រាកដណាស់ យើងបានបញ្ចុះគម្ពីរគួរអានជាភាសាអារ៉ាប់ សង្ឃឹមថាពួកអ្នកចេះគិតពិចារណា។",
+      "he": "אנו עשינו אותו קוראן בערבית כדי שתוכלו להבין אותו.",
+      "ka": "ჭეშმარიტად, ჩვენ ის [წიგნი] ვქმენით არაბულ ყურანად (არაბულ ენაზე), რათა დაფიქრდეთ (რათა მიხვდეთ მის მნიშვნელობას).",
+      "lt": "Iš tiesų, Mes padarėme tai Koranu arabų kalba tam, kad jūs galėtumėte suprasti (jo reikšmes ir jo perspėjimus).",
+      "mg": "Nataonay ny Koroany amin’ny fiteny arabo izany, mba hisainanareo",
+      "lg": "Mazima Ffe twagissa Kulaani nga eri mu Luwalabu oba olyawo ne mutegeera.",
+      "rw": "Mu by’ukuri (icyo gitabo) twakigize Qur’an iri mu rurimi rw’Icyarabu kugira ngo mubashe gusobanukirwa.",
+      "rn": "Mu vy’ukuri Twebwe Allah, Twakimanuye mu rurimi rw’icarabu kugira mutahure, muzirikane, muheze munyurwe n’ivyemezo vyaco;",
+      "ln": "Ya sôló, totiaki yango kurani na lokota ya arabo mpo ete bokanisa.",
+      "dag": "Achiika! Ti (Tinim’ Naawuni) siɣisili mi ka di nyɛ bɛ ni karindi shɛli Larbu zinli zuɣu, domin achiika! Yi (Larbunim’) niŋ haŋkali.",
+      "mos": "Tõnd maan-a lame t'a yaa Alkʋrãan sẽn yaa larabiindu, sãnd-sãnde y na tall yam.",
+      "aa": "Nanu diggah Qhuraan Nabii Mucammadal ﷺ Qarab afat oobisne kaa taaxigeeniih kay maqna cubbussaanamkeh.",
+      "mdh": "Saben-sabenal a binaluy nami sa basa Arab, ka malemu-lemu i katagwan silan na akal.",
+      "ak": "Nokorε, Yɛayε Qur’aan no wͻ Arab kasa mu sεdeε mobεte aseε.",
+      "ceb": "Sa pagkatinuod, Kami naghimo niini nga perpekto nga Qur’an sa Arabik (nga pinulongan), aron kamo makasabut.",
+      "nqo": "ߒ߬ߠߎ߫ ߟߋ߫ ߣߵߊ߬ ߞߍ߫ ߟߊ߫ ߘߐߛߊߙߌߕߊ ߘߌ߫ ߊߙߊߓߎ ߘߐ߫ ߛߴߊߟߎ߫ ߘߴߊ߬ ߤߊ߲ߞߟߌߡߦߊ߫"
     }
   },
   {
@@ -7841,7 +9492,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সিহঁতে যিবোৰ বিষয় আৰোপ কৰে সেইবোৰৰ পৰা আকাশসমূহ আৰু পৃথিৱীৰ প্ৰতিপালক তথা মহা আৰছৰ অধিপতি (মহান আল্লাহ) অতি পৱিত্ৰ-মহান।",
       "ne": "यिनीहरूले जे–जति वर्णन गर्दछन्, आकाशहरू र धरती र अर्शको स्वामी त्यसभन्दा धेरै उच्च र पवित्र छ ।’’",
       "si": "අහස්හි හා මහපොළොවේ හිමිපාණන් වන එමෙන් ම අර්ෂ්හි හිමිපාණන් (වන ඔහු) ඔවුන් වර්ණනා කරන දැයින් සුවිශුද්ධ ය.",
-      "km": "ព្រះជាម្ចាស់នៃមេឃជាច្រើនជាន់និងផែនដី និងជាព្រះជាម្ចាស់នៃអារ៉ស្ហនោះទ្រង់មហាស្អាតស្អំបំផុតអំពីអ្វីដែលពួកគេចោទប្រកាន់។"
+      "km": "ព្រះជាម្ចាស់នៃមេឃជាច្រើនជាន់និងផែនដី និងជាព្រះជាម្ចាស់នៃអារ៉ស្ហនោះទ្រង់មហាស្អាតស្អំបំផុតអំពីអ្វីដែលពួកគេចោទប្រកាន់។",
+      "he": "ישתבח שמו, ריבון השמים והארץ, ריבון כס- המלכות, הוא נעלה מעל לכול מה שהם מייחסים לו”.",
+      "ka": "წმინდა არის ცათა და მიწის უფალი, ტახტის უფალი, იმისგან, რასაც ისინი მიაწერენ (ალლაჰს).",
+      "lt": "Pagerbtas lai būna dangų ir žemės Viešpats, Sosto Viešpats. Išaukštintas Jis virš visko ką jie (Jam) priskiria.",
+      "mg": "Voninahitra ho an’Ilay Tompon’ny lanitra sy ny tany, ary Tompon’ny Seza Fiandrianana; Ambonin’izay foronin’izy ireo Izy.",
+      "lg": "Mukama Omulabirizi W'eggulu omusanvu n'ensi (era) Omulabirizi wa Arishi, Musukkulumu nnyo kw'ebyo bye bamujwetekako.",
+      "rn": "Nihaninahazwe rero Imana Rurema Allah, Yaremye amajuru n’isi Ikarema n'Ubuhangamo buhambaye, mu buryo burengeye cane ivyo ababangikanyamana bayomekera”.",
+      "ln": "Lokumu na Nkolo ya likolo na ya mabele, Nkolo ya ngwende na maye bazali koloba.",
+      "dag": "Sagbana mini tiŋgbani, n-ti pahi Al’arshi Duuma nam simsiya ka chɛ bɛ ni mali O ŋmahindi shɛli maa.",
+      "mos": "Yɩlgemd be ne saas la Tẽng Naabã sẽn yaa Al-ʿars Naabã n yi bũmb ning bãmb sẽn sɩfdã.",
+      "aa": "Qaranwaa kee baaxó Rabbiiy, Qarshi Rabbi saytunnooweh koros kaa edde weelossu haytaamak.",
+      "mdh": "Mahasuti su Kadenan nu manga langit endu su lupa a Kadenan nu Arsh sa kanu langun na pedtalun nu manga mushrik.",
+      "ak": "Kronkron Hene ne ͻsoro ne asaase Wura Nyankopͻn, Tumi Ahennwa Wura no Ɔkorͻn, so kyεn deε wͻde susu no no.",
+      "ceb": "Ang Himaya (ug Kadungganan) maanaa sa (Allah) ang Ginoo sa mga langit ug sa yuta, ug Ginoo sa Trono, layo labaw sa tanan (kabakakan) ang ilang gipahinungod Kaniya.",
+      "nqo": "ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߰ߙߌ ߛߊߣߌ߲ߡߊ߲߫ ߸ ߛߍ߬ߡߍ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫ ߞߊ߬ ߓߐ߫ ߊ߬ߟߎ߬ ߟߊ߫ ߡߊ߲߬ߞߕߎ߬ߒ߬ߞߊ߲߬ߠߊ ߡߊ߬"
     }
   },
   {
@@ -7905,7 +9570,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেওঁৰ বাহিৰে আন কোনো সত্য ইলাহ নাই, তেৱেঁই জীৱন দান কৰে আৰু তেৱেঁই মৃত্যু ঘটায়; তেৱেঁই তোমালোকৰ প্ৰতিপালক আৰু তোমালোকৰ পিতৃ-পুৰুষসকলোৰো প্ৰতিপালক।",
       "ne": "उस बाहेक अन्य कोही सत्य पूज्य छैन, उसैले जीवित गर्दछ र मार्दछ, त्यही तिम्रो र तिम्रा बाबु बाजेको पालनकर्ता हो ।",
       "si": "ඔහු හැර වෙනත් දෙවිඳෙකු නැත. ඔහු ජීවත් කරවයි. තවද මරණයට පත් කරයි. නුඹලාගේ පරමාධිපති ය. තවද නුඹලාගේ ප්‍රාරම්භක මුතුන් මිත්තන්ගේ ද පරමාධිපති ය.",
-      "km": "គ្មានព្រះជាម្ចាស់ឯណាដែលត្រូវគោរពសក្ការៈដ៏ពិតប្រាកដក្រៅពីទ្រង់ឡើយ។ ទ្រង់ជាអ្នកផ្តល់ជីវិត និងជាអ្នកដកយកជីវិត ជាព្រះជាម្ចាស់របស់ពួកអ្នក និងជាព្រះជាម្ចាស់នៃជីដូនជីតារបស់ពួកអ្នកជំនាន់មុនៗ។"
+      "km": "គ្មានព្រះជាម្ចាស់ឯណាដែលត្រូវគោរពសក្ការៈដ៏ពិតប្រាកដក្រៅពីទ្រង់ឡើយ។ ទ្រង់ជាអ្នកផ្តល់ជីវិត និងជាអ្នកដកយកជីវិត ជាព្រះជាម្ចាស់របស់ពួកអ្នក និងជាព្រះជាម្ចាស់នៃជីដូនជីតារបស់ពួកអ្នកជំនាន់មុនៗ។",
+      "he": "אין אלוה זולתו, המחיה והממית, והוא ריבונכם וריבון אבותיכם שמימי קדם.",
+      "ka": "არ არსებობს ღვთაება მის გარდა. ის აცოცხლებს და აკვდინებს, თქვენი უფალი და თქვენი წინაპარი მამების უფალი.",
+      "lt": "La ilaha illa Huva (niekas neturi teisės būti garbinamas, tik Jis). Tai Jis, Kuris suteikia gyvenimą ir sukelia mirtį – jūsų Viešpats ir jūsų protėvių Viešpats.",
+      "mg": "Tsy misy tompo hafa, afa-tsy Izy. Izy no mamelona sy mamono, ary Izy no Tomponareo sy Tompon’ireo razambenareo taloha.",
+      "lg": "Tewali kirina kusinzibwa okuggyako Yye, awa obulamu era y'abuggyawo. Mukama Omulabirizi Wammwe era Omulabirizi Wa bakadde bammwe abaasooka.",
+      "rw": "Nta yindi mana iriho itari We (Allah). Ni we utanga ubuzima n’urupfu. Ni Nyagasani wanyu akaba ari na We Nyagasani w’abakurambere banyu.",
+      "rn": "Nta yindi mana ibwirijwe gusengwa atari Yo. Ni Yo Itanga ubuzima Ikanabwaka. Ni Yo Mana yanyu Rurema, Ikaba n’Imana ya ba so bo hambere yanyu, nimuyisenge rero mutayibangikanya na kimwe mu biremwa.",
+      "ln": "Nzambe mosusu azali te ya kobondela na bosóló sé ye apesaka bomoyi na liwa, Nkolo wa bino mpe Nkolo ya bankoko na bino wa yambo.",
+      "dag": "Duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna, O neeri mi ka kura. Yi Duuma, ni yi banim’ ban daŋ tooni maa Duuma.",
+      "mos": "Soab ka be sẽn na n tũ n tɩlg tɩ pa Yẽ ye, A kʋʋdame la A vʋʋgdẽ, yaa yãmb Soaba, yaa y baaba-rãmb sẽn reng taoor me Soaba.",
+      "aa": "Yallak sah cakkil yaqbuden Yalli mayan Usuk yaynuwweeh qidaah sin Rabbiiy, siinik naharsi abbobtih Rabbi kinnik kaa inkittoysaay kaa uqbuda sinaamey.",
+      "mdh": "Da kadenan ya tabya su Allah, a banguyag a bangimatay, a Kadenan nu endu su manga lukes nu nangawna.",
+      "ak": "Awurade foforͻ biara nni hͻ gyesε Ɔno nko ara, Ɔma nkwa εna Ɔkum; (Ɔne) mo Wura Nyankopͻn ne moagyanom tetefoͻ no nso Wura Nyankopͻn no.",
+      "ceb": "Walay dios (nga takos simbahon) gawas Kaniya 'Allāh'. Siya ang naghatag ug kinabuhi ug nagpahinabog kamatayon, (Siya ang) inyong Ginoo, ug ang Ginoo sa inyong mga katigulangan.",
+      "nqo": "ߡߊ߰ߙߌ߬ ߜߘߍ߫ ߕߍ߫ ߊ߬ߟߋ ߞߐ߫ ߸ ߊ߬ߟߋ ߟߋ߫ ߟߊ߬ߣߌ߬ߡߦߊ߬ߟߌ ߣߌ߫ ߟߊ߬ߣߌ߬ߒ߬ߕߊ߲߬ߧߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߸ ߊߟߎ߫ ߡߊ߰ߙߌ ߣߴߊߟߎ߫ ߝߊ߬ ߝߟߐ ߟߎ߫ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫"
     }
   },
   {
@@ -7969,7 +9649,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আকাশসমূহ আৰু পৃথিৱীত মুমিনসকলৰ বাবে আছে বহুতো নিদৰ্শন।",
       "ne": "निःसन्देह आकाशहरू र धरतीमा ईमानवालाहरूका निम्ति धेरै निशानीहरू छन् ।",
       "si": "නියත වශයෙන්ම අහස් හා මහපොළොවෙහි දේවත්වය විශ්වාස කරන්නන්හට සංඥා ඇත.",
-      "km": "ពិតប្រាកដណាស់ នៅក្នុងការបង្កើតមេឃជាច្រើនជាន់និងផែនដី គឺជាសញ្ញាភស្តុតាងសម្រាប់បណ្តាអ្នកដែលមានជំនឿ។"
+      "km": "ពិតប្រាកដណាស់ នៅក្នុងការបង្កើតមេឃជាច្រើនជាន់និងផែនដី គឺជាសញ្ញាភស្តុតាងសម្រាប់បណ្តាអ្នកដែលមានជំនឿ។",
+      "he": "בשמים ובארץ ישנם אותות למאמינים.",
+      "ka": "ჭეშმარიტად, ზეცასა და მიწაზე მორწმუნეებისთვის აშკარა სასწაულებია!",
+      "lt": "Iš tiesų, danguose ir žemėje yra ženklai tikintiesiems.",
+      "mg": "Misy porofo ho an’ireo mpino tokoa eny amin’ny lanitra sy ety an-tany.",
+      "lg": "Mazima mu (ggulu omusanvu n'ensi mulimu obubonero obwenkukunala (obulaga obuyinza bwa Allah) eri Abakkiriza.",
+      "rw": "Mu by’ukuri, mu birere no mu isi harimo ibimenyetso ku bemeramana.",
+      "dag": "Achiika! Sagbana mini tiŋgbani puuni nyεla yεlikpahinda n-zaŋ ti ninvuɣu shɛba ban ti Naawuni yεlimaŋli.",
+      "mos": "Ad be saasẽ la Tẽngã zugu, yel-soalem-dãmbɑ ne sɩd-kõtba.",
+      "aa": "Diggah qaranwaa kee baaxô ginooy, ken nammayih addal ginoonak taniimit yeemenc marah Yallih nabnaa kee dudda tascasse astooti tan.",
+      "mdh": "Saben-sabenal kanu manga langit endu su lupa na manga tanda (nu kaisa-isa nu Allah) kanu manga taw a manga bamaginugut.",
+      "ak": "Nokorε sε nsεnkyerεnee wͻ ͻsoro ne asaase so de ma agyidiefoͻ no.",
+      "ceb": "Sa pagkatinuod (dinha) sa mga langit ug sa yuta adunay mga Timaan (sa Pagkausa sa Diyos) alang sa mga magtotoo.",
+      "nqo": "ߕߊ߰ߛߌ߬ߞߏ߫ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߐ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
   },
   {
@@ -8028,7 +9721,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "अल्लाहच आहे ज्याने तुमच्यासाठी समुद्राला ताबेदार बनविले, यासाठी की त्याच्या आदेशाने त्यात नौका चालाव्यात आणि तुम्ही त्याच्या कृपेचा शोध घ्यावा आणि यासाठी की तुम्ही त्याच्याशी कृतज्ञ व्हावे.",
       "ne": "त्यो अल्लाह नै हो जसले समुन्द्रलाई तिम्रो वशीभूत गरिदिएको छ, ताकि उसको आदेशले त्यसमा डुङ्गाहरू चलुन्, र ताकि तिमीले उसको उदार अनुग्रह खोजः र यसकारण कि तिमी कृतज्ञता देखाऊ ।",
       "si": "නුඹලා කෘතවේදී විය හැකි වනු පිණිසත් ඔහුගේ නියෝගය අනුව නැව් එහි යාත්‍රා කරනු පිණිසත් ඔහුගේ භාග්‍යයන් නුඹලා සොයනු පිණිසත් නුඹලා වෙනුවෙන් මුහුද වසඟ කර දුන්නේ අල්ලාහ් ය.",
-      "km": "អល់ឡោះជាអ្នកដែលបានបង្កើតសមុទ្រសម្រាប់ពួកអ្នក(ឱមនុស្សលោក)ដើម្បីឱ្យសំពៅទាំងឡាយធ្វើដំណើរនៅលើវាទៅតាមបទបញ្ជារបស់ទ្រង់ និងដើម្បីឱ្យពួកអ្នកស្វែងរកការប្រោសប្រទានរបស់ទ្រង់ សង្ឃឹមថាពួកអ្នកនឹងដឹងគុណ។"
+      "km": "អល់ឡោះជាអ្នកដែលបានបង្កើតសមុទ្រសម្រាប់ពួកអ្នក(ឱមនុស្សលោក)ដើម្បីឱ្យសំពៅទាំងឡាយធ្វើដំណើរនៅលើវាទៅតាមបទបញ្ជារបស់ទ្រង់ និងដើម្បីឱ្យពួកអ្នកស្វែងរកការប្រោសប្រទានរបស់ទ្រង់ សង្ឃឹមថាពួកអ្នកនឹងដឹងគុណ។",
+      "he": "אללה הוא זה אשר הכניע עבורכם את הים, כדי שישוסו בו הספינות על פי פקודתו, וכדי שתבקשו לכם פרנסה בחסדו, וכדי שהודו לו.",
+      "ka": "ალლაჰი – ის არის, რომელმაც ზღვა დაგიმორჩილათ, რათა გემებმა მასზე იცურონ მისი ბრძანებით, თქვენ კი მისი სიუხვის ძიებაში იყოთ მადლიერნი.",
+      "lt": "Allahas, tai Tas, Kuris pavergė jums jūrą, kad laivai galėtų plaukti ja Jo Įsakymu, ir kad jūs siektumėte Jo Dosnumo, ir kad jūs būtumėte dėkingi.",
+      "mg": "Allah, Izy no nametraka ny ranomasina teo ambany fifehezanareo, mba handehanan’ireo sambo avy amin’ny baikony, ka hitadiavanareo ny fahasoavany, mba hahaizanareo mankasitraka.",
+      "lg": "Allah y'Oyo eyabagondeza ennyanja, amaato gabe nga gatambulirako olw'Ekiragiro Kye, era mube nga musobola okunoonya mu bigabwa Bye, era musobole okwebaza.",
+      "rw": "Allah ni We waborohereje inyanja kugira ngo amato ayigendemo ku itegeko rye, no kugira ngo mushakishe ingabire ze ndetse munabashe gushimira.",
+      "dag": "Naawuni n-nyɛ Ŋun balgi teeku n-tin ya, domin ŋarim chani di puuni ni O zaligu. Yaha! Domin yi (ninsalinim’) bo arzichi O pini puuni, domin achiika! Yi nyɛla ban yɛn paɣi (Naawuni).",
+      "mos": "۞Wẽnd la Soab ning sẽn wõr mogrã n kõ yãmbã, bʋɩl yĩng tɩ koom kogendã na zoe a zug ne A sagelle, la y sẽn na paam A kũunã yĩnga, tɩ sãnd-sãnde y na pʋʋs barka.",
+      "aa": "Yalla kinni bad siinih qanteeh xabbacossem kay amrih dawaanik elle gexuuy, kay rizqhi elle gurrusuttoonu kaadu isin wohul kaa faatittoonu.",
+      "mdh": "Su Allah na pinandaya nin sa lekanu su lagat ka endu makapalalaguy su bagedan nu sa kahanda nu Allah ka endu nu mapangilay su limu nu Allah endu kanu makadsukur.",
+      "ak": "Onyankopͻn na Wabrε ͻpo ase ama mo, sεdeε nsuom hyεn bεnante so wͻ Ne tumi mu, ne sεdeε mobεhwehwε N’adom, ne sεdeε mobɛyi (no) ayε.",
+      "ceb": "Si Allāh maoy naghimo sa dagat nga nagpasakop kaninyo aron ang mga barko makalawig niini pinaagi sa Iyang Pagmando, ug aron kamo mangita sa Iyang kadagaya ug magmapasalamaton (Kaniya).",
+      "nqo": "ߊߟߊ߫ ߟߋ߫ ߞߊ߬ ߓߊ ߞߟߏ߫ ߊߟߎ߫ ߦߋ߫ ߛߊ߫ ߞߎߟߎ߲ ߘߌ߫ ߞߎߟߎ߲ߞߎߟߎ߲߫ ߊ߬ ߞߊ߲߬ ߊ߬ ߟߊ߫ ߥߊߟߌߢߊ ߟߊ߫ ߸ ߊ߬ ߣߌ߫ ߛߴߊߟߎ߫ ߘߴߊ߬ ߟߊ߫ ߢߊ߬ߒߡߊ߭ ߘߏ߫ ߢߌߣߌ߲߫ ߊ߬ ߣߌ߫ ߛߴߊߟߎ߫ ߘߌ߫ ߞߏߢߌߡߊߟߐ߲ ߞߍ߫"
     }
   },
   {
@@ -8088,7 +9794,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "যিয়ে সৎকৰ্ম কৰে সি নিজৰ কল্যাণৰ বাবেই কৰে, আৰু কোনোবাই অসৎকৰ্ম কৰিলে তাৰ প্ৰতিফল সি নিজেই ভোগ কৰিব। তাৰ পিছত তোমালোকক তোমালোকৰ প্ৰতিপালকৰ ওচৰলৈ প্ৰত্যাৱৰ্তিত কৰা হ’ব।",
       "ne": "जसले राम्रो कर्म गर्दछ, त्यसले आफ्नो निम्ति गर्नेछ र जसले नराम्रो कर्म गर्दछ त त्यसको हानि त्यसैले बेहोर्नु पर्नेछ, अनि तिमी आफ्नो पालनकर्तातिर फर्कनेछौ ।",
       "si": "කවරෙකු යම් යහපතක් සිදු කළේ ද එය ඔහු වෙනුවෙනි. තවද කවරෙකු නපුරක් සිදු කළේ ද (එය) ඔහුට එරෙහිව ය. පසුව නුඹලාගේ පරමාධිපති වෙත නුඹලා නැවත යොමු කරනු ලබනු ඇත.",
-      "km": "ជនណាដែលសាងទង្វើកុសល ពិតណាស់ វាគឺសម្រាប់ខ្លួនគេផ្ទាល់។ ហើយជនណាដែលសាងទង្វើអាក្រក់ ពិតណាស់ វាក៏ធ្លាក់លើរូបគេដូចគ្នា។ ក្រោយមក ពួកអ្នកនឹងត្រូវគេនាំត្រឡប់ទៅកាន់ព្រះជាម្ចាស់របស់ពួកអ្នកវិញ។"
+      "km": "ជនណាដែលសាងទង្វើកុសល ពិតណាស់ វាគឺសម្រាប់ខ្លួនគេផ្ទាល់។ ហើយជនណាដែលសាងទង្វើអាក្រក់ ពិតណាស់ វាក៏ធ្លាក់លើរូបគេដូចគ្នា។ ក្រោយមក ពួកអ្នកនឹងត្រូវគេនាំត្រឡប់ទៅកាន់ព្រះជាម្ចាស់របស់ពួកអ្នកវិញ។",
+      "he": "העושה טוב מיטיב לעצמו, והעושה רע מזיק לעצמו, ואז אל ריבונכם תושבו.",
+      "ka": "ვინც სიკეთეს იქმს, ის საკუთარი თავის სასიკეთოდ იქმს; ხოლო ვინც ბოროტებას იქმს, ის საკუთარი თავის საზიანოდ იქმს. შემდეგ კი თქვენს უფალთან დაბრუნდებით.",
+      "lt": "Kas daro gerą darbą, tai dėl savęs pačio, o kas daro blogą – tai prieš (save patį). Tada pas savo Viešaptį jūs būsite priversti sugrįžti.",
+      "lg": "Oyo akola emirimu emirungi akolera mwoyo gwe, ate oyo ayonoona (akabi k'okwonoona kwe) kadda eri mwoyo gwe, oluvanyuma eri Mukama Omulabirizi Wammwe gye mulizzibwa.",
+      "rw": "Ukoze ibikorwa byiza aba abyikoreye, ndetse n’ukoze ikibi aba acyikoreye. Hanyuma kwa Nyagasani wanyu ni ho muzasubizwa.",
+      "dag": "Ŋun tum tuunviεlli, tɔ! O maŋ’ zuɣu ka o tum, ŋun mi tum tuumbiεɣu, tɔ! O maŋ’ zuɣu ka o lahi tum, din nyaaŋa yi Duuma (Naawuni) sani ka bɛ yɛn ti labsi ya.",
+      "mos": "Sẽn tʋma sõama, yaa a meng yĩnga, la sẽn wẽnga me yaa a meng zugu; rẽ poorẽ yaa y Soabã nengẽ la b na n lebs yãmbã.",
+      "aa": "Meqe taamá abe num isi nafsih sabbatah abaah, uma taamá abe num isi nafsik-tu kala, sinaamey sarra sinni Rabbí fan gacsimetton qhiyaamah ayró.",
+      "mdh": "Su taw a enggalebek sa mapya na lekanin bun, su mawag menem na maytu bun ba, mawli na lu kanu bun makambalingan sa Allah.",
+      "ak": "Obia ͻbɛdi dwuma pa no εwͻ ͻno ara kraa, na obi nso a ͻbɛdi dwuma bͻne no nso etia ͻno ara kraa; na εno akyiri no, mo Wura Nyankopͻn hͻ na mobεsan akͻ.",
+      "nqo": "ߡߍ߲ ߓߊ߯ ߢߌ߬ߡߊ߬ ߞߍ߫ ߏ߬ ߦߴߊ߬ ߖߍ߬ߘߍ߫ ߟߋ߬ ߦߋ߫ ߸ ߡߍ߲ ߓߊ߯ ߖߎ߯ߦߊ߫ ߏ߬ ߦߴߏ߬ ߖߍ߬ߘߍ߫ ߟߋ߫ ߡߊ߬ ، ߏ߬ ߓߍ߯ ߞߐ߫ ߊߟߎ߫ ߟߊߛߊ߬ߦߌ߬ߕߐ߫ ߊߟߎ߫ ߡߊ߰ߙߌ ߟߋ߫ ߡߊ߬"
     }
   },
   {
@@ -8152,7 +9869,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "এইখন (কোৰআন) হৈছে মানৱ জাতিৰ বাবে আলোকবৰ্তিকা, আৰু নিশ্চিত বিশ্বাসী সম্প্ৰদায়ৰ বাবে হিদায়ত তথা ৰহমত।",
       "ne": "यो (कुरआन) मानिसहरूको निम्ति हिक्मतको कुरा हो, जसले विश्वास गर्दछन् उनीहरूको निम्ति मार्गदर्शन र दयालुता हो ।",
       "si": "මෙය මිනිස් සංහතිය සඳහා වූ පැහැදිලි සාධක වෙයි. තවද තරයේ විශ්වාස කරන ජනයාට මග පෙන්වීමක් හා ආශිර්වාදයකි.",
-      "km": "(គម្ពីរគួរអាន)នេះ គឺជាការបំភ្លឺសម្រាប់មនុស្សលោក ជាការចង្អុលបង្ហាញ និងជាក្តីមេត្តាករុណាសម្រាប់ក្រុមដែលជឿជាក់។"
+      "km": "(គម្ពីរគួរអាន)នេះ គឺជាការបំភ្លឺសម្រាប់មនុស្សលោក ជាការចង្អុលបង្ហាញ និងជាក្តីមេត្តាករុណាសម្រាប់ក្រុមដែលជឿជាក់។",
+      "he": "זה, אותות גלויים לבני אדם והדרכה ורחמים לאנשים הבטוחים באמונתם.",
+      "ka": "ეს [ყურანი] არის ნათელი ნიშანი [მტკიცებულება] ადამიანებისთვის, (ჭეშმარიტი) სახელმძღვანელო და წყალობა ხალხისთვის, რომლებიც დარწმუნებულნი არიან.",
+      "lt": "Šis (Koranas) yra aiški įžvalga ir įrodymas žmonijai ir teisingas vedimas, ir gailestingumas žmonėms, kurie turi užtikrintą Tikėjimą.",
+      "mg": "Loharanom-pahazavana ho an’ny olombelona izy ity (Koroany), tari-dalana sy famindram-po ho an’ireo olona mino tanteraka.",
+      "lg": "Eno (Kulaani) kitangaala eri abantu, era buluŋŋamu na kusaasira eri abantu abatya Allah abannamaddala.",
+      "rw": "Iyi (Qur’an) ni urumuri ku bantu, ikaba umuyoboro n’impuhwe ku bizera badashidikanya.",
+      "dag": "Ŋɔ maa (Alkur’aani) nyɛla zalikpana din neera n-zaŋ ti ninsalinima, ni dolsigu mini nambɔzɔbo n-zaŋ ti ninvuɣu shεba ban dihitabli (ni Chiyaama yiɣisibu).",
+      "mos": "Wãnde yaa vẽenem ne nebã la kãndgr la yolsg ne bãng-n-wãak rãmba.",
+      "aa": "Nabiyow a-Qhuraanay kol oobisne sinaamah sorkocobbaxi intiitaay, tirtooy, xuwaw kinni, yaamineeh yasmite marah.",
+      "mdh": "Namba (su Qur’an) i palitan nu manga taw, endu tutulu, endu limu kanu manga taw a natagu sa ginawa nin su gay a mawli.",
+      "ak": "(Qur’aan) woi yε anibue (Nwoma) de ma adasamma, na εsan yε kwan kyerε ne ahummͻborͻ de ma amanfoͻ a wͻgye die.",
+      "ceb": "Kini ang tin-aw mga Pamatuod alang sa mga tawo, ug usa ka Giya ug Kalooy alang sa usa katawhan nga adunay Pagtoo uban sa kasigurohan.",
+      "nqo": "ߣߌ߲߬ ߦߋ߫ ߢߟߊߞߊߞߏ߫ ߟߎ߫ ߟߋ߬ ߘߌ߫ ߡߐ߱ ߟߎ߬ ߦߋ߫ ߸ ߊ߬ ߣߌ߫ ߞߊ߲ߘߦߊ ( ߘߐ߬ߛߊߙߌ ) ߣߌ߫ ߤߌߣߊ ߟߋ߫ ߡߌ߬ߙߌ߲߬ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -8205,7 +9935,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "आम्ही आकाशांना आणि धरतीला आणि त्या दोघांच्या दरम्यानच्या समस्त वस्तूंना अति उत्तम योजनेसह निर्धारित अवधीकरिता बनविले आहे आणि काफिर लोकांना ज्या गोष्टीचे भय दाखविले जाते तिच्यापासून तोंड फिरवितात.",
       "as": "আকাশমণ্ডল, পৃথিৱী আৰু এই দুয়োৰে মাজত থকা সকলো বস্তু আমি যথাযথভাৱে আৰু নিৰ্দিষ্ট সময়ৰ বাবে সৃষ্টি কৰিছোঁ; কিন্তু যিসকলে কুফৰী কৰিছে, সিহঁতক যি বিষয়ে সতৰ্ক কৰা হৈছে তাৰ পৰা সিহঁতে বিমুখ হয়।",
       "si": "සත්‍යය හේතුවක් හා නියමිත කාලයක් සඳහා මිස අහස් හා මහපොළොව ද ඒ දෙක අතර ඇති දෑ ද අපි නො මැව්වෙමු. තවද ප්‍රතික්ෂේප කළවුන් ඔවුනට අවවාද කරනු ලැබූ දෑ පිටුපාන්නන් ය.",
-      "km": "យើង(អល់ឡោះ)មិនបានបង្កើតមេឃជាច្រើនជាន់និងផែនដី ហើយនិងអ្វីៗដែលនៅរវាងវាទាំងពីរនោះឡើយ លើកលែងតែដោយការពិត និងពេលកំណត់យ៉ាងច្បាស់លាស់។ ចំណែកឯពួកគ្មានជំនឿ គឺជាពួកដែលងាកចេញពីអ្វីដែលគេបានដាស់តឿនព្រមានពួកគេ។"
+      "km": "យើង(អល់ឡោះ)មិនបានបង្កើតមេឃជាច្រើនជាន់និងផែនដី ហើយនិងអ្វីៗដែលនៅរវាងវាទាំងពីរនោះឡើយ លើកលែងតែដោយការពិត និងពេលកំណត់យ៉ាងច្បាស់លាស់។ ចំណែកឯពួកគ្មានជំនឿ គឺជាពួកដែលងាកចេញពីអ្វីដែលគេបានដាស់តឿនព្រមានពួកគេ។",
+      "he": "לא בראנו את השמיים ואת הארץ ואת כל אשר ביניהם אלא בצדק, ועד מועד מסוים, ואלה אשר כפרו פונים עורף מהדבר אשר ממנו הם הוזהרו.",
+      "ka": "ჩვენ შევქმენით ცანი და მიწა და ის, რაც მათ შორისაა, მხოლოდ ჭეშმარიტებით [და არა უბრალოდ] და განსაზღვრული ვადით. მაგრამ ისინი, რომლებიც გახდნენ ურწმუნონი ზურგს აქცევენ იმას, რისგანაც აფრთხილებდნენ.",
+      "lt": "Mes sukūrėme dangus ir žemę ir tai, kas tarp jų, su tikslu, ir apibrėžtam laikui. Bet tie, kurie netiki, nusisuka nuo to, kuo yra perspėjami.",
+      "mg": "Tsy noharianay ny lanitra sy ny tany sy izay eo anelanelany raha tsy tamim-pahamarinana, ary ho amin'ny fotoana voafetra.Tsy miraharaha amin'izay nampitandremana azy ireo ny tsy mpino.",
+      "rw": "Ntitwaremye ibirere n’isi n’ibiri hagati yabyo bitari ku mpamvu z’ukuri, ndetse binagenerwa igihe ntarengwa (bizabaho). Nyamara ba bandi bahakanye, ibyo baburirwa barabyirengagiza.",
+      "ln": "Tokelaki likolo na mabele na maye manso mazali otei na yango nyoso mibale na bosóló na tango eye eyebani. Bapengwi bazali koboya na maye bazali kokebisa bango.",
+      "mos": "Tõnd pa naan saasã la Tẽngã la bũmb nins sẽn be b yiibã sʋka, rẽnda ne sɩd la wakat sẽn tar tεka, la neb nins sẽn kɩfl-bã yaa balldb n yit bũmb ning b sẽn bugsd-ba.",
+      "aa": "Qaranwaa kee baaxooy ken nammayih fanat tanim magininnino cakkii kee muggaqsimeh yan waktih (udduruh) akkewaytek. Kaadu koroosite mari ken akak mcesiiseenimit (takkaawiseenimit) derre cabe.",
+      "mdh": "Da kinabaluy nami kanu manga langit endu lupa endu su pageletan nin ya tabya na bantang endu mawa bun, endu su manga kafir na pimbalwagan nilan su inipakagilek sa kanilan.",
+      "ak": "Yεde nokorε no na abͻ ͻsoro ne asaase ne deε εwͻ mfinfii no, εna yɛahyehyε εberε ato ho. Wͻn a wͻnnye (Nokorε no) nnie no dane wͻn ho firi deε yεrebͻ wͻn kͻkͻ wͻ ho no ho.",
+      "nqo": "ߊ߲ ߡߊ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߣߴߏ ߝߌ߬ߟߊ ߕߍߝߋ߲ ߠߎ߬ ߘߊ߲߫ ߝߏߦߌ߬ ߟߊ߫ ߝߏ߫ ߕߎ߬ߢߊ ߣߌ߫ ߛߕߊ߫ ߟߐ߯ߟߊߣߍ߲ ߸ ߡߍ߲ ߠߎ߫ ߓߊ߲߬ߓߊ߰ߦߊ߬ߣߍ߲߫ ߛߊ߫ ߏ߬ ߟߎ߬ ߞߐߘߏ߲߬ߣߍ߲߫ ߖߊ߬ߛߙߋ߬ߡߊ߬ߟߌ߬ߞߊ߲߫ ߟߐ߬ߣߍ߲ ߠߴߊ߬ߟߎ߫ ߡߊ߬ ߟߋ߬"
     }
   },
   {
@@ -8247,7 +9988,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "gu": "શું તેઓ જોયું નથી કે અલ્લાહએ આકાશો અને ધરતીઓનું સર્જન કર્યુ અને તેઓના સર્જન કરવાથી તે ન થાકયો, શું તે મૃતકોને જીવિત કરવા પર શક્તિ ધરાવે છે? કેમ નહી તે તો દરેક વસ્તુ પર કુદરત ધરાવે છે.",
       "bg": "Не виждат ли, че Аллах, Който сътвори небесата и земята, и не се умори от тяхното сътворяване, има сила да съживи мъртвите? Да, Той над всяко нещо има сила.",
       "mk": "Зарем не знаат дека Аллах – Кој небесата и Земјата ги создаде и Кој не се измори создавајќи ги – е кадарен да ги оживее мртвите? Да, Тој може сè.",
-      "si": "නියත වශයෙන් ම අහස් හා මහපොළොව මවා, ඒවා මැවීමෙන් නිරායාසයට පත් නො වූ අල්ලාහ් මළවුන්ට යළි ජීවය දෙන්නට ශක්තිය ඇත්තා බව ඔවුහු නො දුටුවෝ ද? එසේය, නියත වශයෙන් ම ඔහු සියලු දෑ කෙරෙහි ශක්තිය ඇත්තා ය."
+      "si": "නියත වශයෙන් ම අහස් හා මහපොළොව මවා, ඒවා මැවීමෙන් නිරායාසයට පත් නො වූ අල්ලාහ් මළවුන්ට යළි ජීවය දෙන්නට ශක්තිය ඇත්තා බව ඔවුහු නො දුටුවෝ ද? එසේය, නියත වශයෙන් ම ඔහු සියලු දෑ කෙරෙහි ශක්තිය ඇත්තා ය.",
+      "he": "הלא יראו כי אללה, אשר ברא את השמים ואת הארץ, ולא התעייף בבריאתם, יוכל גם להחיות את המתים? אמנם כן, הוא הכל-יכול.",
+      "lt": "Argi jie nesupranta, kad Allahas, Kuris sukūrė dangus ir žemę, ir nebuvo nuo to nuvargintas, gali prikelti mirusius? Taip, iš tiesų Jis gali padaryti bet ką.",
+      "rw": "Ese ntibabona ko Allah waremye ibirere n’isi akaba atarananijwe no kubirema, ko ari We ushobora guha ubuzima abapfuye? Yego! Rwose ni We ufite ubushobozi kuri buri kintu.",
+      "mos": "Rẽ yĩnga bãmb pa yã tɩ Wẽnd ning sẽn naana saasã la Tẽngã n pa yε ne b naanegã, A yaa Tõogd ne A na vʋʋg kũ-rãmba. Yaa sɩda, ad Yẽnda, A yaa Tõod ne bũmb fãa.",
+      "aa": "Diggah yallay qaranwaa kee baaxo gine ken ginot taqbewee rabtcm yaynuwweemih duddalem ma yaaxigaanaa? Yeey, Yalli woh duudah, diggaluk usuk ummaanimih abtol dudda-li.",
+      "ak": "Enti wͻnhunuu sε Onyankopͻn no a Ɔbͻͻ soro ne asaase, na Wammerε wͻ ne mmͻeε no ho no wͻ tumi sε Ɔnyane awufoͻ? Aane! Nokorε sε Ɔwͻ tumi wͻ biribiara so.",
+      "nqo": "ߊ߬ߟߎ߬ ߡߴߊ߬ ߦߋ߫ ߓߊ߬ ߞߏ߫ ߊߟߊ߫ ߡߍ߲ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲߫ ߊ߬ ߘߏ߲߬ ߡߊ߫ ߛߍ߰ ߏ߬ ߟߎ߬ ߘߊ߲ ߘߐ߫ ߸ ߞߴߏ߬ ߘߌ߫ ߛߋ߫ ߞߊ߬ ߛߎ߭ ߟߎ߬ ߟߊߞߎߣߎ߲߫؟ ߤߊ߯ߟߌ߫ ߸ ߏ߬ ߟߋ ߦߋ߫ ߞߏ ߓߍ߯ ߣߐ߬ ߟߊ߫ ߘߋ߬"
     }
   },
   {
@@ -8308,7 +10056,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মুমিনসকল! যদি তোমালোকে আল্লাহক সহায় কৰা তেন্তে তেওঁ তোমালোকক সহায় কৰিব আৰু তোমালোকৰ ভৰি সুদৃঢ় ৰাখিব।",
       "ne": "हे ईमानवालाहरू ! यदि तिमिले अल्लाहको धर्मको मद्दत गर्नेछौ भने उसले पनि तिम्रो मद्दत गर्नेछ र तिम्रो पाइलालाई सुदृढ बनाउने छ ।",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලා අල්ලාහ්ට උදව් කළේ නම් ඔහු නුඹලාට උදව් කරනු ඇත. තවද නුඹලාගේ පාද ඔහු ස්ථීර කරනු ඇත.",
-      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ប្រសិនបើពួកអ្នកជួយ(សាសនា)អល់ឡោះ នោះទ្រង់់នឹងជួយពួកអ្នកវិញ ព្រមទាំងពង្រឹងជំហររបស់ពួកអ្នក។"
+      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ប្រសិនបើពួកអ្នកជួយ(សាសនា)អល់ឡោះ នោះទ្រង់់នឹងជួយពួកអ្នកវិញ ព្រមទាំងពង្រឹងជំហររបស់ពួកអ្នក។",
+      "he": "הוי אלה אשר האמינו! אם תעזרו לדרך של אללה הוא יעזור לכם וייתן לכם כוח וחוזק.",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! თუ თქვენ ალლაჰს შეეწევით, ისიც შეგეწევათ თქვენ და გაგიმყარებთ ტერფებს [მოგცემთ მხარდაჭერას] (ბრძოლაში).",
+      "lt": "O jūs, kurie tikite! Jeigu remsite Allaho (tikslą), Jis parems jus, ir padarys jūsų žingsnius tvirtais.",
+      "mg": "Ianareo mpino ! Raha ampandresenareo izay mikasika an’I Allah, dia hataony mpandresy ianareo, ka ho hamafisiny ny dianareo.",
+      "lg": "Abange mmwe abakkiriza singa mutaasa Allah, ajja kubataasa, era anyweze ebigere byammwe (abagumye).",
+      "rw": "Yemwe abemeye! Nimuharanira inzira ya Allah, azabatabara anabakomereze igihagararo.",
+      "ln": "Oh bino baye bondima (na Allah)! soki bosalisi Allah, akolongisa bino mpe akolendisa matambi na bino.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yεlimaŋli! Yiyi sɔŋ Naawuni, O ni sɔŋ ya, ka ba yi naba zali.",
+      "mos": "Yãmb ɑ neb nins sẽn kõ sɩd ne Wẽnde! Y sã n sõng Wẽnde, A sõngd-y lame, la A tabl y nao-kadma.",
+      "aa": "Kee yalla nummayse maraw! Yalla qokolten sin tekkek (Yallih diinil), usuk qokle sin leeh, sin dadooba daabisele.",
+      "mdh": "Hay sekanu anan a bamaginugut! Amayka edtabangan nu (su agama nu) Allah, na edtabangan kanu nin (idsabek kanu nin) endu tigel nin su manga ay nu sekanu.",
+      "ak": "Mo a moagye adie, sε moboa Nyankopͻn a Ɔno nso bεboa mo, na Wama moagyina moanan so pintin.",
+      "ceb": "Oh mga magtutuo, kon kamo motabang (sa Kawsa sa) Allah, Siya usab motabang kaninyo, ug mopalig-on sa inyong mga tiil (nga mahimong malig-on).",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߣߴߊߟߎ߫ ߞߵߊߟߊ߫ ߘߍ߬ߡߍ߲߬ ߊ߬ ߘߴߊߟߎ߫ ߘߍ߬ߡߍ߲߫ ߞߵߊߟߎ߫ ߛߋ߲߭ ߠߎ߬ ߓߊ߲ߓߊ߲߫"
     }
   },
   {
@@ -8370,7 +10132,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে মুমিনসকল! তোমালোকে আল্লাহৰ আনুগত্য কৰা আৰু ৰাছুলৰ আনুগত্য কৰা, আৰু তোমালোকে নিজৰ আমলসমূহক বিনষ্ট নকৰিবা।",
       "ne": "हे ईमानवालाहरू ! अल्लाहको आज्ञापालन गर, र रसूलले भनेको मान र आफ्ना कर्महरूलाई नष्ट नपार ।",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලා අල්ලාහ්ට අවනත වනු. තවද රසූල්වරයාට ද අවනත වනු. තවද නුඹලාගේ ක්‍රියාවන් නිෂ්ඵල කර නො ගනු.",
-      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកប្រតិបត្តិតាមអល់ឡោះ និងប្រតិបត្តិតាមអ្នកនាំសារ(របស់ទ្រង់) ហើយចូរកុំធ្វើឱ្យខូចនូវទង្វើកុសលទាំងឡាយរបស់ពួកអ្នកឱ្យសោះ។"
+      "km": "ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកប្រតិបត្តិតាមអល់ឡោះ និងប្រតិបត្តិតាមអ្នកនាំសារ(របស់ទ្រង់) ហើយចូរកុំធ្វើឱ្យខូចនូវទង្វើកុសលទាំងឡាយរបស់ពួកអ្នកឱ្យសោះ។",
+      "he": "הוי אלה אשר האמינו! צייתו לאללה וצייתו לשליח, ואל תתנו למעשיכם להיות לשווא.",
+      "lt": "O jūs kurie tikite! Pakluskite Allahui ir pakluskite Pranašui (Muchammedui ﷺ) ir neleiskite savo darbams tapti beverčiais.",
+      "mg": "Oh ianareo mpino ! Aoka ianareo hankatoa an’I Allah, ary aoka ihany koa hankatoa ny iraka, fa aza avela ho very maina ny asanareo.",
+      "lg": "Abange mmwe abakkiriza mugondere Allah, era mugondere Omubaka, era temwonoonanga emirimu gyammwe.",
+      "rw": "Yemwe abemeye! Nimwumvire Allah, munumvire Intumwa (Muhamadi). Kandi ibikorwa byanyu ntimukabigire imfabusa.",
+      "ln": "Oh bino baye bondima! Botosa Allah mpe botosa motindami (na ye) kasi bobebisa misala mia bino te.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yεlimaŋli! Doli ya Naawuni, ka doli O tumo (Annabi Muhammadu), ka di saɣim ya yi tuuntumsa.",
+      "mos": "Yãmb neb nins sẽn kõ sɩd ne Wẽnde! Tũ-y Wẽnde, la y tũ Tẽn-tʋʋmã la y ra sãam y tʋʋm ye.",
+      "aa": "Kee nummayse maraaw! Yalla oggolaay, Yallih-farmoyta oggolaay, taamoomi sinnik mabaysina.",
+      "mdh": "Hay sekanu anan manga bamaginugut! Paginugunuti nu su Allah endu paginuguti nu su sinugu nin, endu dili nu pembatala su galebek nu.",
+      "ak": "Mo a moagye adie, monyε sotie mma Nyankopͻn ne ne Somafoͻ no, na monhwε na moansεe mo nnwuma.",
+      "ceb": "Oh mga magtutuo, tumana ang Allah ug tumana ang Mensahero (Muhammad), ug ayaw himoa nga makawang ang inyong (maayo) nga mga buhat.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߋ߫ ߊߟߊ߫ ߞߊ߲ߡߌ߬ߘߊ߬ ߞߊ߬ ߞߋߟߊ ߞߊ߲ߡߌ߬ߘߊ߬ ߸ ߊߟߎ߫ ߞߊߣߵߊߟߎ߫ ߟߊ߫ ߓߊ߯ߙߊ ߟߎ߬ ߕߌߢߍ߫ ߘߋ߬"
     }
   },
   {
@@ -8425,7 +10200,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "वस्तुतः या जगाचे जीवन तर खेळ तमाशा आहे आणि जर तुम्ही ईमान राखाल आणि अल्लाहचे भय (तकवा) अंगीकाराल, तर अल्लाह तुम्हाला तुमच्या कर्मांचा मोबदला प्रदान करील आणि तो तुमच्याकडून तुमची धन-दौलत मागत नाही.",
       "as": "পাৰ্থিৱ জীৱন হৈছে কেৱল খেল-ধেমালি আৰু অৰ্থহীন কথা-বতৰাহে। যদি তোমালোকে ঈমান পোষণ কৰা আৰু তাক্বৱা অৱলম্বন কৰা তেন্তে আল্লাহে তোমালোকক তোমালোকৰ পুৰস্কাৰ প্ৰদান কৰিব। তেওঁ তোমালোকৰ ধন-সম্পদ নিবিচাৰে।",
       "ne": "वास्तवमा यो सांसारिक जीवन त मात्र खेल तमाशा हो । र यदि तिमी ईमान ल्याउँछौ र संयम अपनाउँछौ भने अल्लाहले तिमीलाई प्रतिफल दिनेछ । र उसले तिमीसँग तिम्रो धन माँग्दैन ।",
-      "si": "නියත වශයෙන් ම මෙලොව ජීවිතය කෙළි සෙල්ලමකි. විනෝදයකි. තවද නුඹලා විශ්වාස කර, බිය බැතිමත් වන්නෙහු නම් නුඹලාගේ කුලිය ඔහු නුඹලාට පිරිනමනු ඇත. තවද නුඹලාගේ ධනය ඔහු නුඹලාගෙන් ඉල්ලා නො සිටියි."
+      "si": "නියත වශයෙන් ම මෙලොව ජීවිතය කෙළි සෙල්ලමකි. විනෝදයකි. තවද නුඹලා විශ්වාස කර, බිය බැතිමත් වන්නෙහු නම් නුඹලාගේ කුලිය ඔහු නුඹලාට පිරිනමනු ඇත. තවද නුඹලාගේ ධනය ඔහු නුඹලාගෙන් ඉල්ලා නො සිටියි.",
+      "he": "חיי העולם הזה הם רק משחק ושעשוע. אם תאמינו ותיראו את אללה, ייתן לכם את שכרכם ולא ישאל מכם את רכושכם.",
+      "ka": "ჭეშმარიტად, ამქვეყნიური ცხოვრება მხოლოდ თამაში და გართობაა. და თუ ირწმუნებთ და ღვთისმოშიშნი იქნებით, ის მოგცემთ თქვენს საზღაურს და არ მოგთხოვთ თქვენს ქონებას.",
+      "lt": "Šis gyvenimas tėra žaidimas ir pramoga. Bet jeigu jūs tikite (Allaho Vienumą), ir bijote Allaho, bei vengiate blogio, Jis atlygins jums, ir neprašys viso jūsų turto (labdarai).",
+      "mg": "Lalao sy fialam-boly ihany ny fiainana eto an-tany, kanefa raha mino sy matahotra an’I Allah ianareo, dia omeny valisoa ianareo, ary tsy hangataka ny fanananareo Izy.",
+      "lg": "Mazima obulamu bw'ensi muzannyo na binyumu, naye bwe mukkiriza era ne mutya Allah, ajja kubawa empeera yammwe, ate nga tabasabye mmaali yammwe.",
+      "ln": "Ya soló, bomoyi ya mokili ezali sé lisano mpe liseki. Soki bondimi mpe bobangi, (Allah) akopesa bino bolamu na bino mpe akosenga bino bomengo te.",
+      "dag": "Achiika! Dunia biεhigu nyɛla diɛma mini kpεrigu. Yaha! Yi yi ti Naawuni yεlimaŋli ka mali wuntia, tɔ! O ni tin ya yi tuunviεla sanyoo, O mi ku bɔhi ya yi daarzichi yεla.",
+      "mos": "Ad Dũni wã vɩɩmã yaa wɩsg la reem. La yãmb sã n kõ sɩd la y zoe Wẽnde, A kõta yãmb y keoorã, la A pa modgd yãmb y arzεkẽ wã ye.",
+      "aa": "Diggah addunyâ manó cagalah digiriiy, cantalbaka (duquurisiyya). Teemeneeniih Yallak meesitteenik, sin galtoota siinih aceeleeh, sin maalu inkih sin Messera.",
+      "mdh": "Saben-sabenal su kabpaguyag sa dunya na kandadalemet bu, kadsimpang, na amayka mangimbenal kanu endu magilek kanu na inggay nin sa lekanu su balas nu endu di kanu nin pangenyan sa tamuk.",
+      "ak": "Wiase asetena yi yε agorͻ ne ahurusie; na sε mogye di na mosuro Nyame a, Ɔde moakatua bεma mo, na Ɔmmisa mo moagyapadeε.",
+      "nqo": "ߘߎߢߊ߫ ߢߣߊߡߦߊ ߦߋ߫ ߕߏߟߏ߲߫ ߣߌ߫ ߣߊ߰ߣߊ߯ ߟߋ߬ ߘߌ߫ ߸ ߣߴߊߟߎ߫ ߞߍ߫ ߘߊ߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߛߊ߫ ߞߵߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߊ߫ ߸ ߊ߬ ߘߴߊߟߎ߫ ߛߊ߬ߙߊ ߟߎ߬ ߘߴߊߟߎ߫ ߡߊ߬ ، ߊ߬ ߘߏ߲߬ ߕߍ߫ ߊߟߎ߫ ߟߊ߫ ߣߊ߲߬ߝߟߏ ߟߎ߬ ߢߌߣߌ߲߫ ߊߟߎ߫ ߟߊ߫"
     }
   },
   {
@@ -8484,7 +10271,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "तोच होय, ज्याने आपल्या पैगंबराला मार्गदर्शन आणि सत्य धर्मासह पाठविले, यासाठी की त्याला प्रत्येक धर्मावर वर्चस्वशाली करावे, आणि साक्ष देण्यासाठी अल्लाह पुरेसा आहे.",
       "as": "তেৱেঁই নিজ ৰাছুলক পথনিৰ্দেশ আৰু সত্য দ্বীন সহকাৰে প্ৰেৰণ কৰিছে, আন সকলো দ্বীনৰ ওপৰত ইয়াক জয়যুক্ত কৰিবলৈ; আৰু সাক্ষী হিচাপে আল্লাহেই যথেষ্ট।",
       "ne": "उही हो जसले आफ्नो रसूललाई मार्गदर्शन र सत्यधर्मको साथ पठायो, ताकि उसलाई समस्त धर्महरूमाथि अधिपत्य प्रदान गरोस् र साक्षीको हैसियतले अल्लाह प्रयाप्त छ ।",
-      "si": "ඔහු වනාහි, යහමග හා සත්‍යය දහම සමඟ ඔහුගේ දූතයාණන් එව්වේ ය. එය ඒ සියලු දහම්වලට ඉහළින් පිහිටීම පිණිස ය. තවද අල්ලාහ් සාක්ෂිකරුවෙකු වශයෙන් ප්‍රමාණවත් ය."
+      "si": "ඔහු වනාහි, යහමග හා සත්‍යය දහම සමඟ ඔහුගේ දූතයාණන් එව්වේ ය. එය ඒ සියලු දහම්වලට ඉහළින් පිහිටීම පිණිස ය. තවද අල්ලාහ් සාක්ෂිකරුවෙකු වශයෙන් ප්‍රමාණවත් ය.",
+      "he": "הוא אשר שלח את שליחו עם ההדרכה ועם האמונה האמתית (האסלאם) למען ישליטה על כל האמונות, ואללה מספיק כעד!",
+      "ka": "იგია (ალლაჰი), რომელმაც მოავლინა თავისი შუამავალი სწორი გზითა და ჭეშმარიტი სარწმუნოებით, რათა იგი ყველა სხვა სარწმუნოებაზე აღამაღლოს. და საკმარისია ალლაჰი მოწმედ.",
+      "lt": "Tai Jis, kuris siuntė Savo Pranašą (Muchammedą ﷺ) su teisingu vedimu ir tiesingu tikėjimu, kad jis padarytų (Islamą) viršiausiu tikėjimu. Ir Allahas yra Pakankamas kaip Liudytojas.",
+      "mg": "Izy no nandefa ny irany miaraka amin’ny tari-dalana sy ny finoana marina, mba hametrahany azy ho ambonin’ny finoana hafa rehetra. Ampy hahita (ny zava-drehetra)I Allah.",
+      "lg": "(Allah) Yye, y'Oyo eyatuma Omubaka We n'aleeta obuluŋŋamu n'Eddiini eyaamazima abe ng'alaga ekifo kyayo ekyawaggulu ku madiini gonna, kimala okuba nti Allah Ye Mujulizi (kw'ekyo).",
+      "rw": "Ni We wohereje Intumwa ye (Muhamadi) izanye umuyoboro (Qur’an) n’idini by’ukuri, kugira ngo arisumbishe andi madini yose. Kandi Allah arahagije kuba umuhamya.",
+      "dag": "Ŋuna (Naawuni) n-nyɛŊun tim O tumo (Annabi Muhammadu) na ni dolsigu mini yεlimaŋli daadiini, domin O chɛ ka di nyɛ nasara adiini kam zuɣu. Yaha! Naawuni saɣi Shɛhiradira.",
+      "mos": "Yẽ la Naab ning sẽn tʋms A Tẽn-tʋʋmã ne kãndgr la sɩd dĩini, bʋɩl yĩng t'A na wils-a Dĩin-rãmbã fãa zugu, la kaset seka ne Wẽnde.",
+      "aa": "Yalla kinni isi farmoyta Mucammad tirtoo kee cakki diinil rubtem, ummaan diinik iró (amol) kaa raaqisuh, kaadu Yalli sumaaqah koo duudah nabiyow.",
+      "mdh": "Sekanin (Allah) i simugu kanu (Muhammad) sa tutulu endu agama a benal, ka endu nin mapayag kanu langun nu manga agama, endu su Allah i mapya gayd a saksi.",
+      "ak": "Ɔno na Ɔde tenenee no ne nokorε som no asoma ne Somafoͻ no, sεdeε Ɔbεma no akata ͻsom biara soͻ. Onyankopͻn som bo sε Ɔdansefoͻ.",
+      "nqo": "ߊ߬ߟߋ ߟߋ߫ ߞߵߊ߬ ߟߊ߫ ߞߋߟߊ ߗߋ߫ ߞߊ߲ߘߦߊ ߣߌ߫ ߣߊߡߎ߲߫ ߕߎ߬ߢߊ߬ߡߊ ߘߌ߫ ߛߴߊ߬ ߘߴߏ߬ ߟߊߦߟߍ߬ ߣߊߡߎ߲ ߓߍ߯ ߞߊ߲߬ ، ߊߟߊ߫ ߞߊ߬ ߥߛߊ߬ ߞߍ߫ ߛߙߋ߫ ߘߌ߫"
     }
   },
   {
@@ -8525,7 +10324,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "gu": "હે ઇમાનવાળાઓ! જો તમને કોઇ પાપી ખબર આપે તો તમે તેને સારી રીતે તપાસ કરી લો, એવું ન થાય કે અજાણમાં કોઇ કોમને નુકસાન પહોંચાડી દો, પછી તમને પોતાના કર્યા પર પસ્તાવો થાય.",
       "bg": "О вие, които повярвахте! Ако нечестивец ви донесе вест, проучете я, за да не засегнете някои [невинни] хора от неведение, та за онова, което сте извършили, да съжалявате!",
       "mk": "О, верници, ако некој грешник ви донесе некаква вест, добро проверете ја, не знаејќи некому зло да не му направите, па, заради тоа што сте го сториле да се покаете.",
-      "kn": "ಸತ್ಯವಿಶ್ವಾಸಿಗಳೇ! ಒಬ್ಬ ದುಷ್ಕರ್ಮಿ ಒಂದು ಮಾಹಿತಿಯೊಂದಿಗೆ ನಿಮ್ಮ ಬಳಿಗೆ ಬಂದರೆ ನೀವು ಅದರ ಬಗ್ಗೆ ಸರಿಯಾಗಿ ತನಿಖೆ ಮಾಡಿರಿ. ನೀವು ಅಜ್ಞಾನದಿಂದ ಯಾರಿಗಾದರೂ ತೊಂದರೆ ಮಾಡಿ ನಂತರ ಅದರ ಕಾರಣದಿಂದ ನೀವು ವಿಷಾದ ಪಡದಿರುವುದಕ್ಕಾಗಿ."
+      "kn": "ಸತ್ಯವಿಶ್ವಾಸಿಗಳೇ! ಒಬ್ಬ ದುಷ್ಕರ್ಮಿ ಒಂದು ಮಾಹಿತಿಯೊಂದಿಗೆ ನಿಮ್ಮ ಬಳಿಗೆ ಬಂದರೆ ನೀವು ಅದರ ಬಗ್ಗೆ ಸರಿಯಾಗಿ ತನಿಖೆ ಮಾಡಿರಿ. ನೀವು ಅಜ್ಞಾನದಿಂದ ಯಾರಿಗಾದರೂ ತೊಂದರೆ ಮಾಡಿ ನಂತರ ಅದರ ಕಾರಣದಿಂದ ನೀವು ವಿಷಾದ ಪಡದಿರುವುದಕ್ಕಾಗಿ.",
+      "he": "הוי אלה אשר האמינו! בבוא אליכם אדם מופקר למסור לכם ידיעה על מישהו, עליכם לחקור היסב את אמתותה לבל תפגעו בשוגג באנשים חפים מפשע, ותתחרטו על כל שעשיתם.",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! თუ უზნეო მოგიტანთ რაიმე ამბავს, გადაამოწმეთ იგი, რათა უმეცრებით არ ავნოთ ხალხს და შემდეგ არ ინანოთ თქვენი ნამოქმედარი.",
+      "lt": "O jūs, kurie tikite! Jeigu Fasik (melagis, piktas žmogus) ateina pas jus su žinia, patvirtinkite ją, kad nepakenktumėte žmonėms nežinodami, ir nesigailėtumėte to, ką padarėte.",
+      "lg": "Abange mmwe abakkiriza singa omwononefu abaleetera amawulire muteekwa okwetegereza, mube nga temutuusa kabi ku bantu mu butamanya, olwo nno ne mukeesa nga mwejjusa olw'ekyo kye mwakoze.",
+      "rw": "Yemwe abemeye! Inkozi y’ibibi niramuka ibazaniye inkuru, mujye mushishoza kugira ngo mudahohotera abantu mutabizi, maze mukaza kwicuza ibyo mwakoze.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! Dĩin yit sã n wa yãmb nengẽ ne kibare, bɩ y bao vẽenem, la y ra rʋʋg neb ne zɩɩlem tɩ yãmb lebg n maan mims ne yãmb sẽn tʋm bũmb ningã ye.",
+      "mdh": "Hay sekanu anan a bamaginugut! Amayka pinanudtulan kanu na taw a faasiq na pagamada kanu ka basi makapanggula nu i taw sa di nu katawan, mawli na makadsendit kanu sa kanu galebek nu.",
+      "ak": "Mo a moagye adie, sε onipa bͻnefoͻ bi de amaneε bi bεbͻ mo a, monhwehwε mu yie (ansa na moatu ho anamͻn), na moanfa agyimisεm so ankͻ ha amanfoͻ bi, ankͻnu mo ho wͻ deε moayε no ho.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߣߌ߫ ߔߊߟߊ߲ߞߊߓߊ߯ ߣߊ߬ ߘߴߊߟߎ߫ ߡߊ߬ ߖߊ߲߬ߖߏ߲ ߘߏ߫ ߘߌ߫ ߸ ߊߟߎ߯ ߊ߬ ߘߐߜߍߦߊ߫ ߘߋ߬ ߊߟߎ߫ ߞߣߊ߫ ߛߋ߫ ߡߌ߬ߙߌ߲߬ߘߌ ߘߏ߫ ߡߊ߬ ߞߏߟߐ߲ߓߊߟߌߦߊ ߘߌ߫ ߸ ߊߟߎ߫ ߦߋ߫ ߓߊ߲߫ ߞߊ߬ ߣߡߌߛߴߊߟߎ߫ ߟߊ߫ ߞߏ߫ ߞߍߣߍ߲ ߡߊ߬"
     }
   },
   {
@@ -8587,7 +10395,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "মুমিনসকল পৰস্পৰে ভাই-ভাই; সেয়ে তোমালোকে নিজ ভাতৃসকলৰ মাজত আপোচ-মীমাংসা কৰি দিয়া। লগতে আল্লাহৰ তাক্বৱা অৱলম্বন কৰা, যাতে তোমালোকে অনুগ্ৰহপ্ৰাপ্ত হোৱা।",
       "ne": "सबै आस्थावानहरू एक अर्काका भाइ–भाइ हुन्, तसर्थ आफ्ना दुई भाइहरूमा मेलमिलाप गराउने गर । र अल्लाहसित डर मानिराख ताकि तिमीमाथि दया गरियोस् ।",
       "si": "නියත වශයෙන් ම දේවත්වය විශ්වාස කරන්නෝ සහෝදරයෝ ය. එහෙයින් නුඹලාගේ (විවාද කරන) සහෝදරයින් අතර සමථය කරනු. තවද නුඹලා කරුණාව ලැබිය හැකි වනු පිණිස අල්ලාහ්ට බිය බැතිමත් වනු.",
-      "km": "តាមពិត បណ្តាអ្នកដែលមានជំនឿ គឺជាបងប្អូននឹងគ្នា(ក្នុងសាសនា)។ ហេតុនេះ ចូរពួកអ្នកផ្សះផ្សាររវាងបងប្អូនពួកអ្នកចុះ។ ហើយចូរពួកអ្នកកោតខ្លាចអល់ឡោះ សង្ឃឹមថាពួកអ្នកនឹងត្រូវបានគេអាណិតស្រលាញ់។"
+      "km": "តាមពិត បណ្តាអ្នកដែលមានជំនឿ គឺជាបងប្អូននឹងគ្នា(ក្នុងសាសនា)។ ហេតុនេះ ចូរពួកអ្នកផ្សះផ្សាររវាងបងប្អូនពួកអ្នកចុះ។ ហើយចូរពួកអ្នកកោតខ្លាចអល់ឡោះ សង្ឃឹមថាពួកអ្នកនឹងត្រូវបានគេអាណិតស្រលាញ់។",
+      "he": "אכן המאמינים אחים הם, על כן השכינו שלום בין אחיכם ויראו את אללה למען תרוחמו.",
+      "ka": "ჭეშმარიტად, მორწმუნენი ძმები არიან, ამიტომ შეარიგეთ თქვენი ორი ძმა. და გეშინოდეთ ალლაჰის, ეგების მოგენიჭოთ წყალობა (ალლაჰისგან).",
+      "lt": "Iš tiesų, tikintieji yra broliai (Islame). Todėl sutaikykite savo brolius, ir bijokite Allaho, kad sulauktumėte Jo Malonės.",
+      "mg": "Mpirahalahy tokoa ireo mpino. Koa aoka ianareo hanatsara ny fifandraisana misy eo amin’ireo rahalahinareo, ary matahora Allah mba hahazoanareo ny famindram-po.",
+      "lg": "Ddala abakkiriza ba luganda n’olwekyo mulongoose (mutabaganye) wakati wa baganda bammwe, era mutye Allah mube nga musaasirwa.",
+      "rw": "Mu by’ukuri abemeramana ni abavandimwe. Bityo, mujye mwunga abavandimwe banyu (igihe bashyamiranye), kandi mugandukire Allah kugira ngo mugirirwe impuhwe.",
+      "rn": "Ni ukuri abemeramana, ni abavukanyi mw’idini, muraheza rero munywanishe hagati y’abavukanyi banyu baramutse batase, maze mutinye Imana Allah muri ukwo kunywanisha kugira mugirirwe impuhwe na Yo.",
+      "ln": "Ya soló, bandimi bazali bandeko, mpe bobongisa bondeko kati na bino. Mpe bobanga Allah mpo ete bozua ngolu naye.",
+      "dag": "Achiika! Ninvuɣu shεba ban ti Naawuni yεlimaŋli (Muslinnim’) nyɛla mabihili, dinzuɣu malimi ya yi mabihili maa sunsuuni. Yaha! Zom ya Naawuni, achiika! Yi nyɛla bɛ ni yɛn zo shɛba nambɔɣu.",
+      "mos": "Ad Muumin-rãmbã yaa ma-biisi, bɩ y maneg-y ma-biirã ne taab sʋka, la y zoe Wẽnde, ti sãnd-sãnde, b na yols yãmba.",
+      "aa": "Cagalah moominiin toobokok, sin namma toobokoh fan bicisaay, Yallak meesita, Yalli siinih xuwaawankeeh.",
+      "mdh": "Saben-sabenal su manga bamaginugut na ebpagalya, na pagkapya nu su pagali nu, endu ikagilek nu su Allah ka malemu sa lekanu su limu sa lekanu.",
+      "ak": "Agyediefoͻ no yε anuanom, enti monsisie mo nuanom ntεm, na monsuro Nyankopͻn sεdeε ebia yɛbɛhu mo mmͻbͻ.",
+      "ceb": "Ang mga magtutuo maoy tinuod nga managsoon, busa himoa ang kalinaw taliwala sa inyong mga igsoon, ug pagtuman sa mga Kasugoan sa Allāh, aron kamo mapanalanginan sa lyang Kaluoy.",
+      "nqo": "ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߓߊߘߋ߲ߡߊ ߟߎ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߸ ߒ߬ߓߵߊߟߎ߯ ߕߍߘߐߓߍ߲ ߠߋ߬ ߞߍ߫ ߊߟߎ߫ ߓߊߘߋ߲ߡߊ ߟߎ߬ ߕߍ߫ ߊ߬ ߣߌ߫ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬ ߛߊ߫ ߤߌߣߊ߫ ߘߌ߫ ߞߍ߫ ߊߟߎ߫ ߟߊ߫"
     }
   },
   {
@@ -8651,7 +10474,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আল্লাহ আকাশসমূহ আৰু পৃথিৱীৰ গায়েব সম্পৰ্কে অৱগত। লগতে তোমালোকে যি কৰা আল্লাহে তাৰ সম্যক দ্ৰষ্টা।",
       "ne": "विश्वास गर अल्लाह आकाशहरू र धरतीमा लुकेका कुराहरू जान्दछ र जे जति तिमीले गर्दछौ त्यसलाई देखिरहेको छ ।",
       "si": "නියත වශයෙන් ම අල්ලාහ් අහස්හි හා මහපොළොවේ අදෘශ්‍යමාන දෑ පිළිබඳව දනී. තවද නුඹලා සිදු කරන දෑ පිළිබඳව අල්ලාහ් සර්ව නිරීක්ෂක ය.",
-      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់ដឹងបំផុតនូវអាថ៌កំបាំងនៃមេឃជាច្រើនជាន់និងផែនដី។ ហើយអល់ឡោះមហាឃើញបំផុតនូវអ្វីដែលពួកអ្នកប្រព្រឹត្ត។"
+      "km": "ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់ទ្រង់ដឹងបំផុតនូវអាថ៌កំបាំងនៃមេឃជាច្រើនជាន់និងផែនដី។ ហើយអល់ឡោះមហាឃើញបំផុតនូវអ្វីដែលពួកអ្នកប្រព្រឹត្ត។",
+      "he": "אכן אללה יודע כל נסתרות השמיים והארץ, ואללה רואה את מעשיכם.",
+      "ka": "უეჭველად, ალლაჰმა იცის ცათა და მიწის დაფარული. და ალლაჰი მხედველია იმისა, რასაც თქვენ აკეთებთ.",
+      "lt": "Iš tiesų, Allahas žino Nematomą danguose ir žemėje. Allahas yra Visa Matantis tai, ką jūs darote.",
+      "mg": "Fantatr’I Allah ny zava-miafiana any an-danitra sy ety an-tany, ary mahita izay ataonareo Allah.",
+      "lg": "Mazima Allah amanyi ebyekusifu by'omuggulu omusanvu n'ensi, era Allah alabira ddala ebyo bye mukola.",
+      "rw": "Mu by’ukuri Allah azi ibitagaragara byo mu birere no mu isi. Kandi Allah ni Ubona bihebuje ibyo mukora.",
+      "rn": "Mu vy’ukuri Imana Allah, Irazi neza ibinyegejwe ibiremwa mu majuru n’isi. Burya Imana Allah, ni Nyenukubona, Irabona neza ivyo mukora kandi Izobibahembera.",
+      "dag": "Achiika! Naawuni mi din sɔɣi sagbana mini tiŋgbani ni. Yaha! Naawuni nyɛla Ŋun nyari yi tuuntumsa.",
+      "mos": "Ad Wẽnd mii saasẽ yel-soondɩ la Tẽng zug yel-soondɩ. Wẽnd yaa Mit ne bũmb ning yãmb sẽn tʋmdã.",
+      "aa": "Diggah Yalli qaranwaa kee baaxot qellitti ittam yaaxige kaadu Yalli isin abba haytaanam yabali wohuk tu-kaak maqellitaay sin elle galatele.",
+      "mdh": "Saben-sabenal su Allah na katawan nin i gayb kanu langun nu langit endu su lupa, endu su Allah na gailay nin i langun na penggalebeken nu.",
+      "ak": "Nokorε sε Nyankopͻn Nim ͻsoro ne asaase so ahuntasεm (nyinaa). Onyankopͻn deε N’ani tua dwuma a modie (nyinaa).",
+      "ceb": "Sa pagkatinuod, ang Allah nahibalo sa dili makita nga mga butang sa mga langit ug sa yuta. Ang Allah kanunay nga Nakakita sa unsay inyong gibuhat (nga maayo o dautan).",
+      "nqo": "ߊߟߊ߫ ߟߋ߫ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߏߘߏ߲߰ߣߍ߲ ߟߐ߲߫ ߘߋ߬ ߸ ߊߟߊ߫ ߘߏ߲߬ ߦߴߊߟߎ߫ ߗߋߥߊߟߌ ߟߎ߬ ߟߊߛߊ߬ߓߊ߮ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -8713,7 +10550,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সিহঁতে সিহঁতৰ ওপৰত অৱস্থিত আকাশৰ পিনে লক্ষ্য নকৰে নেকি, কেনেকৈ আমি সেয়া নিৰ্মাণ কৰিছোঁ আৰু ইয়াক সুশোভিত কৰিছোঁ আৰু তাত কোনো ধৰণৰ ফাটও মেলা নাই?",
       "ne": "के उनीहरूले आफूमाथि आकाशतिर हेरेनन् ? कि हामीले त्यसलाई कसरी बनाएका छौं र कसरी सुसज्जित गरेका छौं र त्यसमा कहीँ पनि चिरा (प्वाल) छैन ?",
       "si": "ඔවුනට ඉහළින් ඇති අහස දෙස අපි එය ඉදි කර ඇත්තේ කෙසේ දැ? යි ද තවද අපි එය අලංකාර කර ඇත්තේ කෙසේ දැ? යි ද ඔවුහු නො බැලුවෝ ද? තවද පලුදු කිසිවක් එයට නැත.",
-      "km": "តើពួកទាំងនោះមិនបានមើលទៅកាន់មេឃដែលនៅពីលើពួកគេទេឬ ថាតើយើងបានសាងសង់វា និងបានតុបតែងលម្អវា ព្រមទាំងគ្មានការប្រេះស្រាំអ្វីសោះយ៉ាងដូចម្តេច?"
+      "km": "តើពួកទាំងនោះមិនបានមើលទៅកាន់មេឃដែលនៅពីលើពួកគេទេឬ ថាតើយើងបានសាងសង់វា និងបានតុបតែងលម្អវា ព្រមទាំងគ្មានការប្រេះស្រាំអ្វីសោះយ៉ាងដូចម្តេច?",
+      "he": "האם לא רואים כיצד בנינו מעליהם את השמיים לא בקעים? וכיצד עיטרנו אותם?",
+      "ka": "განა არ შეუხედავთ მათ მაღლა არსებულ ცას, როგორ ავაშენეთ და შევამკეთ იგი, და რომ მას არანაირი ნაპრალი არ გააჩნია?",
+      "lt": "Argi jie nematė dangaus virš jų, ir kaip Mes jį pastatėme ir išpuošėme? Ir padarėme jį tobulu?",
+      "mg": "Tsy mba nojeren’izy ireo va ny lanitra eo amboniny, ahoana ny fomba nanorenanay sy nampihaingonay azy ary ahoana izy no tsy misy mitriatra ?",
+      "lg": "Abaffe tebatunula ku ggulu waggulu waabwe (ne balaba) nga bwe twalizimba era ne tulinyiriza nga teririna bituli.",
+      "rw": "Ese ntibitegereza ikirere kiri hejuru yabo uko twacyubatse maze tukanagitaka, kikaba nta n’imyenge gifite?",
+      "rn": "Mbega aho bahakana izurwa ry’ibiremwa, ntibabona ijuru rihanitse hejuru yabo, ukuntu Twebwe Allah Twaryubatse riringaniye, Turaheza Turishariza n’inyenyeri zakaka, ata n’akanenge woribonamwo!",
+      "ln": "Boye bazali kornona likolo te lolenge nini tokela mpe topesaki yango bonzenga? Tokembisaki yango ezala kopasuka te.",
+      "dag": "Di ni bɔŋɔ,bɛ bi yuli n-zaŋ chaŋ sagbana, Ti (Tinim’ Naawuni) ni me li shɛm, ka dihi li nachinsi, ka di ka luɣushɛli polo din tahibɔɣi.",
+      "mos": "Rẽ yĩnga bãmb pa get n tʋgd saagã bãmb zugẽ wã, wãn-wãn la Tõnd me-a la D nags-a, t'a pa tar pãrgre?",
+      "aa": "Keenik iró yan qaraanâ fan mawagitaanaa? kaa elle xisneeh kaa elle bilqisne inna, usuk foxooxa aalle waak.",
+      "mdh": "Ngintu di nilan gadsuliman su langit kanu pulu nilan upama manan i kinambalay nami lun? Endu dala manga pesu nin dala palos nin.",
+      "ak": "Enti wͻn nhwε ͻsoro a εwͻ wͻn apampamu no, sεdeε Yεsi abͻ no, asiesie no a tokuro anaa apaepaeε biara nni mu?",
+      "ceb": "Wala ba sila makalantaw sa kala-ngitan ibabaw kanila, kun giunsa Namo sa pag-pahimutang ug gidayandayanan kini (sa mga bitoon), ug wala kiniy mga liki?",
+      "nqo": "ߊ߬ߟߎ߬ ߕߍ߫ ߛߊ߲ ߡߊߝߟߍ߫ ߟߴߊ߬ߟߎ߫ ߞߎ߲߬ߘߐ߫ ߓߊ߬ ߸ ߊ߲ ߞߵߏ ߟߐ߬ ߢߊ ߡߍ߲ ߞߵߊ߬ ߡߊߛߌ߬ߘߌ߬ ߥߏ߬ߘߊ߫ ߟߎ߫ ߖߘߍ߬ ߕߍ߫ ߊ߬ ߟߊ߫"
     }
   },
   {
@@ -8776,7 +10628,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সি যি কথাই উচ্চাৰণ নকৰক কিয় তাৰ ওচৰত সদায় উপস্থিত থাকে সংৰক্ষণকাৰী (লেখক ফিৰিস্তা)।",
       "ne": "मानिसले कुनै कुरा भन्दैन तर त्यसको पासमा एउटा निरीक्षक तयार रहन्छ ।",
       "si": "කිසිදු වදනක් ඔහු උච්චාරණය කළ ද (සියල්ල) නිරීක්ෂා කරන සටහන් කරන්නෙකු ඔහු අසලින් සිටින්නේ ම ය.",
-      "km": "រាល់ពាក្យសម្តីដែលគេនិយាយចេញមក គឺសុទ្ធតែមានអ្នកឃ្លាំមើល និងកត់ត្រាដែលនៅជាមួយគេជានិច្ច។"
+      "km": "រាល់ពាក្យសម្តីដែលគេនិយាយចេញមក គឺសុទ្ធតែមានអ្នកឃ្លាំមើល និងកត់ត្រាដែលនៅជាមួយគេជានិច្ច។",
+      "he": "לא יוצא הגה מבלי אשר יהיה אצלו משגיח מוכן.",
+      "ka": "არც ერთ სიტყვას არ წარმოთქვამს, რომ მასთან არ იყოს მზადმყოფი მეთვალყურე.",
+      "lt": "Nėra nė vieno žodžio, kurį jis (arba ji) ištaria, išskyrus tai, jog prie jo yra stebėtojas, pasiruošęs (jį užrašyti).",
+      "mg": "Tsy mamoaka teny na iray izy, ka tsy hisy mpanara-maso azy eo akaikiny, vonona hanoratra izany.",
+      "lg": "Olwo nno (omuntu) tayatula kigambo kyonna okuggyako nga aliko omulondoozi amubeerako buli kiseera.",
+      "rw": "(Umuntu) nta jambo na rimwe yavuga ngo habure umugenzuzi umuri hafi (uryandika).",
+      "rn": "Nta n’ijambo na rimwe riva mu kanwa kiwe, kiretse ko aba afise umumalayika amucungereye aheza akaryandika, akaba ari na co gusa ajejwe;",
+      "ln": "Akoloba liloba moko te kino ekozala pembeni naye oyo azali kotala mpe azali kokoma.",
+      "dag": "O (ninsala) bi yɛri yεltɔɣali, naɣila o malila gula (Malaaika so ŋun guli o), ka be o sani (ni o sabi li zali).",
+      "mos": "A pa be sẽn na yeel gomde, rẽndame tɩ gũusd n sεgl a meng n be a zugu.",
+      "aa": "Inki qangara maqida seehadayti dacrisey (namma malaykattu kinnuk) wohuh massoyseeni kay garil yanih akke waytek.",
+      "mdh": "Da kadtalu nu taw a di kena kadtulikan nilan a pakasulat.",
+      "ak": "Asεm a εbefri n’ano aba biara no ͻwεnfoͻ wͻhͻ (a ͻretwerε asεm a ͻbεka biara).",
+      "ceb": "Siya (ang tawo) walay isulti nga (bisan) usa ka pulong gawas kon adunay usa ka tigpaniid (nga anghel) sa iyang kiliran nga gipahinungod (sa pagtala sa iyang sa mga pulong ug mga buhat).",
+      "nqo": "ߊ߬ ߕߍ߫ ߞߎߡߊ߫ ߛߌ߫ ߝߐ߫ ߝߏ߫ ߛߓߍߓߊ߯ ߘߐߓߍ߲߬ߣߍ߲߫ ߦߋ߫ ߞߍ߫ ߏ߬ ߞߊߡߊ߬"
     }
   },
   {
@@ -8838,7 +10705,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আমি প্ৰতিটো বস্তু এটা নিৰ্ধাৰিত পৰিমাপত সৃষ্টি কৰিছোঁ।",
       "ne": "निश्चय नै हामीले हरेक कुरालाई निर्धारित नाप र अनुमानमा सृष्टि गरेका छौं ।",
       "si": "නියත වශයෙන් ම අපි සෑම දෙයක් ම ප්‍රමාණයකින් යුතුව මවා ඇත්තෙමු.",
-      "km": "ពិតប្រាកដណាស់ រាល់អ្វីៗទាំងអស់ គឺយើងបានបង្កើតវាទៅតាមការកំណត់(អំពីយើង)។"
+      "km": "ពិតប្រាកដណាស់ រាល់អ្វីៗទាំងអស់ គឺយើងបានបង្កើតវាទៅតាមការកំណត់(អំពីយើង)។",
+      "he": "אכן אנו כל דבר בראנו לפי מידה מוגדרת.",
+      "ka": "ჭეშმარიტად, ჩვენ ყველაფერი შევქმენით წინასწარი განსაზღვრით.",
+      "lt": "Iš tiesų, Mes sukūrėme viską su Kadar (išankstiniu numatymu, planu, lemtimi, kuri prieš sukūrimą buvo užrašyta Lemties Knygoje Al-Lauh Al-Mahfuz).",
+      "mg": "Nahary ny zavatra rehetra amin’ny antony Izahay.",
+      "lg": "Mazima Ffe buli kintu twakitonda mu ngeri nga bwe kisaana okuba.",
+      "rw": "Mu by’ukuri buri kintu twakiremye ku rugero twagennye (igeno ryacyo).",
+      "rn": "Mu vy’ukuri Twebwe Allah, ikintu cose Twakiremye ku rugero rwagezwe kandi ruzwi mu Gitabu nyezina canditswemwo ivyagezwe n’ishirwa mu ngiro ryavyo “Lawhu Mahfuudhw”.",
+      "ln": "Ya soló, tokelaki biloko binso na bokoki.",
+      "dag": "Achiika! Ti (Tinim’ Naawuni) nam la binshɛɣu kam ka di doli Ti zaligu.",
+      "mos": "Ad Tõndo, bũmbã fãa D naan-a-la ne geelgo.",
+      "aa": "Diggah nanu ummaanim Íe caddol mekelleh ginne.",
+      "mdh": "Saben-sabenal a binaluy nami su langun na enggaga-isa sa aden ukul nin.",
+      "ak": "Nokorε sε Yεde nhyehyεeε na abͻ biribiara.",
+      "nqo": "ߊ߲ߠߎ߫ ߘߏ߲߬ ߣߊ߬ ߝߋ߲ ߓߍ߯ ߘߊ߲߫ ߠߊ߫ ߘߡߊ߬ߦߌߙߊ ߟߋ߬ ߟߊ߫"
     }
   },
   {
@@ -8901,7 +10782,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "উত্তম কামৰ প্ৰতিদান উত্তমৰ বাহিৰে আৰুনো কি হ’ব পাৰে?",
       "ne": "भलाईको बदला भलाई बाहेक अरु के हुनेछ ?",
       "si": "යහපතට යහපත මිස වෙනත් ප්‍රතිඵලයක් තිබේ ද?",
-      "km": "តើពុំមែនទេឬដែលការតបស្នងចំពោះអ្នកដែលសាងអំពើល្អ គឺគ្មានអ្វីក្រៅពីប្រការល្អនោះ?"
+      "km": "តើពុំមែនទេឬដែលការតបស្នងចំពោះអ្នកដែលសាងអំពើល្អ គឺគ្មានអ្វីក្រៅពីប្រការល្អនោះ?",
+      "he": "האם יתוגמל הטוב בדבר אחר מלבד הטוב?",
+      "ka": "განა სიკეთის საზღაური (ამქვეყნად) სიკეთე არ არის (საიქიოში)?",
+      "lt": "Ar yra kitas atlygis gėriui, išskyrus gėrį?",
+      "mg": "Moa misy valisoa hafa ho an’ny tsara va ankoatrany ny tsara ?",
+      "lg": "Abaffe empeera y’okukola obulungi (eyinza okuba ekintu ekirala kyonna) okugyyako okusasulwa obulungi?!",
+      "rw": "Ese hari igihembo cy’ibyiza kitari ibyiza?",
+      "rn": "Mbega ineza ntiyiturwa iyindi! Indishi y’ubugwaneza rero ni uguhabwa Ubwami bw’ijuru!",
+      "ln": "Boye bolamu efutamaka te sé na bolamu?",
+      "dag": "Di ni bɔŋɔ, viɛnyɛla mali sanyoo m-pahila vεnyɛla?",
+      "mos": "Rẽ yĩnga manegr tara rolb tɩ sã n pa manegre?",
+      "aa": "Addunyal maqaanc abe marih galto akeeral jannatak sa macaay?",
+      "mdh": "Dala balas nu mapya a di kena mapya.",
+      "ak": "Enti εnyε papa akatua ne papa?",
+      "nqo": "ߡߎ߲߬ ߜߘߍ߫ ߟߋ߬ ߢߌ߬ߡߊ ߛߊ߬ߙߊ ߘߌ߫ ߣߌ߫ ߢߌ߬ߡߊ ߕߍ߫"
     }
   },
   {
@@ -8965,7 +10860,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "বৰকতময় তোমাৰ প্ৰতিপালকৰ নাম, যিজন মহামহিম আৰু মহানুভৱ।",
       "ne": "ठूलै बरकतवाला (कल्याणकारी) नाम हो तिम्रो गरिमामय र उदार पालनकर्ताको ।",
       "si": "තේජාන්විතභාවයෙන් හා ගෞරවාන්විතභාවයෙන් යුත් නුඹගේ පරමාධිපතිගේ නාමය අතිඋත්කෘෂ්ට විය.",
-      "km": "មហាពរជ័យព្រះនាមនៃព្រះជាម្ចាស់របស់អ្នកដែលពោរពេញទៅដោយភាពថ្កុំថ្កើង និងភាពសប្បុរស។"
+      "km": "មហាពរជ័យព្រះនាមនៃព្រះជាម្ចាស់របស់អ្នកដែលពោរពេញទៅដោយភាពថ្កុំថ្កើង និងភាពសប្បុរស។",
+      "he": "יתברך שם ריבונך בעל ההוד והכבוד הרב.",
+      "ka": "კურთხეულია სახელი შენი უფლისა, დიდებისა და პატივის მფლობელისა!",
+      "lt": "Tegul Palaimintas būna tavo Viešpaties, Didybės ir Garbės Turėtojo, (Allaho) Vardas.",
+      "mg": "Hamasinina anie ny Anaran’ny Tomponao, izay feno fahamboniana sy fahamendrehana !",
+      "lg": "Sukkulumu erinnya lya Mukama Omulabirizi Wo Nnannyini kugulumizibwa n’okuweebwa ekitiibwa.",
+      "rw": "Izina rya Nyagasani wawe, Nyirubuhambare n’icyubahiro, ryuje ubutungane n’imigisha.",
+      "rn": "Harakubahwa rero izina ry’Imana yawe Rurema, Nyenimigisha-ntangere ku biremwa, Nyenicubahiro kirengeye vyose, Nyenubugwaneza.",
+      "ln": "Tika ete epambolama nkombo ya Nkolo nayo oyo atonda lokumu mpe boboto.",
+      "dag": "A Duuma So Ŋun nyɛ Jilma mini Tibginsim lana yuli nyɛla din tibgi.",
+      "mos": "Fo Soabã yʋʋr tar barka, sẽn yaa Waooglem la Waoogr Naaba.",
+      "aa": "Ku Rabbih migaq saytuniih, kay kayri maggoh, usuk dudda le nabna leeh, kaal yeemene marah mattaccoo leeh, konnaba le.",
+      "mdh": "Mahasuti su ngala nu Kadenan nengka a mapulu a malimu.",
+      "ak": "Nhyira ne wo Wura Nyankopͻn din, Ɔno na Kεseyε ne Animuonyam yε Ne dea.",
+      "ceb": "Bulahan ang Ngalan sa (Allah) imong Ginoo, nga nanag-iya sa tanang Kahalangdon, Pasidungog, ug Grasya.",
+      "nqo": "ߌ ߡߊ߰ߙߌ ߕߐ߮ ߓߘߊ߫ ߟߊߜߍ߫ ߸ ߏ߬ ߡߍ߲ ߞߟߊ߬ߒ߬ߞߋ߬ߦߊ ߕߌ߱ ߣߌ߫ ߞߊ߬ߡߙߊ߬ߒ߬ߞߋ߬ߦߊ ߕߌ߱ ߘߌ߫"
     }
   },
   {
@@ -9029,7 +10939,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় এইখন মহিমান্বিত কোৰআন,",
       "ne": "निश्चय नै यो धेरै प्रतिष्ठित कुरआन हो,",
       "si": "නියත වශයෙන් ම එය ගෞරවනීය කුර්ආනයකි.",
-      "km": "ពិតប្រាកដណាស់ វាជាគម្ពីរគួរអានដ៏ឧត្តុង្គឧត្តម"
+      "km": "ពិតប្រាកដណាស់ វាជាគម្ពីរគួរអានដ៏ឧត្តុង្គឧត្តម",
+      "he": "שזה אכן קוראן מבורך,",
+      "ka": "ჭეშმარიტად, ეს [რაც წაგიკითხეს] უეჭველად პატივცემული ყურანია.",
+      "lt": "Iš tiesų, tai yra garbingas (Korano) recitavimas.",
+      "mg": "Ary tena Koroany mendrika.",
+      "lg": "Okuba nti ddala yo Kulaani yaakitiibwa.",
+      "rw": "Ko mu by’ukuri (iyi) ari Qur’an Ntagatifu,",
+      "rn": "Mu vy’ukuri, iyi Qor’ani yahishuriwe Muhamadi (nyakugira amahoro n’impuhwe z’Imana Allah), ni Qor’ani yubashwe, irimwo ubumenyi n’ivyiza vyinshi;",
+      "ln": "Ya soló, kurani oyo ezali na lokumu,",
+      "dag": "Achiika! Di (Alkur’aani) nyɛla bɛ ni karindi shεli, ka di mali jilma.",
+      "mos": "Ad a yaa Alkʋrãan wagelle.",
+      "aa": "Diggah, ta Qhuraan Nabii Mucammadal ﷺ oobisne, Qhuraanay nabay maqaane maggo kinni.",
+      "mdh": "Saben-sabenal su Qur’an na mapulu.",
+      "ak": "Nokorε sε, εyε Qur’aan animuonyam (Nwoma) noa,",
+      "ceb": "Sa pagkatinuod kini usa ka Pinasidunggan nga Qur'an,",
+      "nqo": "‹ ߞߎ߬ߙߊ߬ߣߊ › ߦߋ߫ ߘߐ߬ߛߊ߬ߙߌ߬ ߞߟߊߒߞߋ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬"
     }
   },
   {
@@ -9093,7 +11018,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশমণ্ডল আৰু পৃথিৱীৰ সৰ্বময় কৰ্তৃত্ব তেওঁৰেই; তেৱেঁই জীৱন দান কৰে আৰু তেৱেঁই মৃত্যু প্ৰদান কৰে; আৰু তেৱেঁই সকলো বস্তুৰ ওপৰত ক্ষমতাৱান।",
       "ne": "आकाशहरू र धरतीको सत्ता उसैको हो, उसैले जीवन दिन्छ र मृत्यु पनि र ऊ प्रत्येक कुरामा सामथ्र्य सम्पन्न छ ।",
       "si": "අහස්හි හා මහපොළොවේ ආධිපත්‍යය ඔහු සතු ය. ඔහු ප්‍රාණය දෙන්නේ ය. තවද මරණයට පත් කරන්නේ ය. තවද ඔහු සියලු දෑ කෙරෙහි ශක්තිය ඇත්තා ය.",
-      "km": "ការគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។ ទ្រង់ផ្តល់ជីវិត និងដកយកជីវិត។ ហើយទ្រង់មានអានុភាពលើអ្វីៗទាំងអស់។"
+      "km": "ការគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់(តែមួយគត់)។ ទ្រង់ផ្តល់ជីវិត និងដកយកជីវិត។ ហើយទ្រង់មានអានុភាពលើអ្វីៗទាំងអស់។",
+      "he": "לו מלכות השמים והארץ, הוא המחייה והממית, והוא הכול-יכול.",
+      "ka": "მას ეკუთვნის ცათა და მიწის ხელმწიფება. იგი აცოცხლებს და აკვდინებს. და იგი ყოველისშემძლეა.",
+      "lt": "Jam priklauso dangų ir žemės karalystė. Jis duoda gyvybę, ir suteikia mirtį. Ir Jis yra Galintis viską padaryti.",
+      "mg": "Azy ny fanjakan’ny lanitra sy ny tany. Izy no mamelona, ary no mamono, fa mahefa ny zava-drehetra Izy.",
+      "lg": "Bubwe Yekka obufuzi bw'eggulu omusanvu n'ensi, awa obulamu era n'atta, era Ye Muyinza ku buli kintu.",
+      "rw": "Ubwami bw’ibirere n’ubw’isi ni ubwe. Ni We utanga ubuzima n’urupfu. Kandi ni We ufite ubushobozi bwa buri kintu.",
+      "rn": "Nyenubwami, Igaba Ikaganza amajuru n’isi n’ibiri muri vyo, Itanga ubuzima Ikanabwaka. Ni na Yo rero Mushoboravyose.",
+      "ln": "Ye nde Nkolo ya bokonzi ya likolo na ya mabele, apesaka bomoyi mpe liwa, mpe azali na bokoki ya nyoso.",
+      "dag": "Ŋuna n-su sagbana mini tiŋgbani yiko, O neeri mi ka kura. Yaha! Ŋuna nnyɛ Toora binshɛɣu kam zuɣu.",
+      "mos": "Saas la Tẽng naam yaa Yẽ n so, A vɩɩmsdame la A kʋʋda, Yẽ n leb n yaa Tõod ne bũmbã fãa gilli.",
+      "aa": "Yalli qaranwaa kee baaxó mulki-le (reeda-le), usuk yaynuwweeh qidah kaadu Usuk ummaanimil qamal geyto-li (xiqto li).",
+      "mdh": "Lekanin (Allah) su manga langit endu su lupa endu banguyag a bangimatay, endu kagaga nin su langun na enggaga-isa.",
+      "ak": "Ɔno na ͻsoro ne asaase so ahennie yε Ne dea. Ɔno na Ɔma nkwa εna Ɔma (obi) wuo, na Ɔno na Ɔwͻ biribiara so tumi.",
+      "ceb": "Iya ang Ginharian sa langit ug sa yuta; Siya naghatag ug kinabuhi ug nagpahinabog kamatayon; ug Siya (Allah) adunay gahom sa tanang butang.",
+      "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫ ߸ ߊ߬ ߦߋ߫ ߟߊ߬ߣߌ߬ߡߦߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߸ ߊ߬ ߦߋ߫ ߟߊ߬ߣߌ߬ߒ߬ߕߊ߲߬ߧߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߸ ߊ߬ ߣߴߊ߬ߟߋ ߟߋ߬ ߦߋ߫ ߛߋ߫ ߟߊ߫ ߞߏ ߓߍ߯ ߟߊ߫"
     }
   },
   {
@@ -9157,7 +11097,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশমণ্ডল আৰু পৃথিৱীৰ সকলো কৰ্তৃত্ব তেওঁৰেই আৰু আল্লাহৰ ফালেই সকলো বিষয় প্ৰত্যাবৰ্তিত হয়।",
       "ne": "आकाशहरू र धरतीको सत्ता उसैको हो र अल्लाहतिर नै सबै कुरा फर्काइन्छन् ।",
       "si": "අහස්හි හා මහපොළොවේ ආධිපත්‍යය ඔහු සතු ය. තවද සියලු කරුණු යොමු කරනු ලබනුයේ අල්ලාහ් වෙත ය.",
-      "km": "ការគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់។ ហើយកិច្ចការទាំងឡាយ នឹងត្រូវគេនាំត្រលប់ទៅកាន់ទ្រង់វិញ(តែមួយគត់)។"
+      "km": "ការគ្រប់គ្រងមេឃជាច្រើនជាន់និងផែនដី គឺជាកម្មសិទ្ធិរបស់ទ្រង់។ ហើយកិច្ចការទាំងឡាយ នឹងត្រូវគេនាំត្រលប់ទៅកាន់ទ្រង់វិញ(តែមួយគត់)។",
+      "he": "לו מלכות השמים והארץ ואליו יוחזרו כל הדברים.",
+      "ka": "მას ეკუთვნის მეუფება ცათა და მიწისა და ალლაჰთან ბრუნდება ყოველი საქმე.",
+      "lt": "Jam priklauso dangų ir žemės karalystė. Ir pas Allahą sugrįžta visi reikalai (jų sprendimui).",
+      "mg": "Azy ny fanjakana any an-danitra sy ety an-tany ary any amin’I Allah no hiverenan’ny zava-drehetra.",
+      "lg": "Bubwe yetkka obufuzi bw'eggulu omusanvu n'ensi era eri Allah ebintu byonna gye bizzibwa.",
+      "rw": "Ubwami bw’ibirere n’isi ni ubwe. Kandi kwa Allah ni ho ibintu byose bisubizwa.",
+      "rn": "Nyenubwami, Igaba Ikaganza amajuru n’isi n’ibiri muri vyo. Kandi ibiremwa vyose bizosubira kuri Yo, kugira Ihembe kimwe cose ku rugero rw’ibigikwiye.",
+      "ln": "Bokonzi ya likolo na ya mabele bozali bwa ye. Mpe makambo nyoso makozongisama nde epai ya Allah.",
+      "dag": "Ŋuna n-su sagbana mini tiŋgbani yiko. Yaha! Naawuni sani ka bɛ labsiri yεllikam.",
+      "mos": "Saas la Tẽng naam yaa Yẽ n so, la Wẽnd nengẽ la b lebsd yεlã.",
+      "aa": "Qaranwaa kee baaxó mulki-le (reeda-le), ginó caagiida inkih Yallâ fanah gacta.",
+      "mdh": "Endu sekanin (Allah) na gamilikan nin su manga langit endu su lupa, endu lu bun sa lekanin i kadsunudan u langun nu pakarajan nin.",
+      "ceb": "Iya ang gingharian sa langit ug sa yuta; ug ngadto sa Allah ang (tanang) mga butang ibalik (alang sa Paghukom).",
+      "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊߘߌ߫ ߞߏ ߓߍ߯ ߘߏ߲߬ ߦߋ߫ ߛߊ߬ߦߌ߬ ߟߴߊߟߊ߫ ߟߋ߫ ߡߊ߬"
     }
   },
   {
@@ -9219,7 +11173,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই ৰাতিক দিনৰ ভিতৰত প্ৰৱেশ কৰায় আৰু দিনক ৰাতিৰ ভিতৰত প্ৰৱেশ কৰায়; আৰু তেৱেঁই অন্তৰৰ বিষয়সমূহ সম্পৰ্কে সম্যক অৱগত।",
       "ne": "उसैले रातलाई दिनमा प्रविष्ट गराउँदछ र दिनलाई रातमा प्रविष्ट गराउँदछ । ऊ छातीमा लुकेका कुराहरू पनि जान्दछ ।",
       "si": "ඔහු රාත්‍රිය දහවලෙහි ඇතුළු කරයි. තවද දහවල රාත්‍රියෙහි ඇතුළු කරයි. තවද ඔහු හදවත් තුළ පවතින දෑ පිළිබඳ සර්ව ඥානී ය.",
-      "km": "ទ្រង់បញ្ចូលពេលយប់ទៅក្នុងពេលថ្ងៃ និងបញ្ចូលពេលថ្ងៃទៅក្នុងពេលយប់។ ហើយទ្រង់មហាដឹងបំផុតនូវអ្វីដែលនៅក្នុងដួងចិត្ត។"
+      "km": "ទ្រង់បញ្ចូលពេលយប់ទៅក្នុងពេលថ្ងៃ និងបញ្ចូលពេលថ្ងៃទៅក្នុងពេលយប់។ ហើយទ្រង់មហាដឹងបំផុតនូវអ្វីដែលនៅក្នុងដួងចិត្ត។",
+      "he": "יכניס את הלילה בתוך היום ואת היום בתוך הלילה, והוא יודע מה שבלבבות.",
+      "ka": "მას შეჰყავს ღამე დღეში და დღე შეჰყავს ღამეში [წელიწადის სეზონების მიხედვით დღის და ღამის ხანგრძლივობას ცვლის], და მან იცის ისიც, რაც გულებშია.",
+      "lt": "Jis sulieja naktį į dieną (t. y. sumažina nakties valandų skaičių ir padaugina dienos trukmę), ir sulieja dieną į naktį (t. y. sumažina dienos valandas ir padaugina nakties trukmę).",
+      "mg": "Asosony amin’ny andro ny alina, ary asosony amin’ny alina ny andro.Ary fantany tanteraka izay raiketin’ny fo.",
+      "lg": "Abuliza ekiro mu musana, era naabuliza omusana mu kiro, era Yye amanyidde ddala ebiri mu bifuba.",
+      "rw": "Yinjiza ijoro mu manywa, akaninjiza amanywa mu ijoro. Kandi ni We Mumenyi uhebuje w’ibiri mu bituza (by’abantu).",
+      "rn": "Yinjiza igice c’ijoro mu murango, maze umurango ukaba muremure; Ikinjiza igice c’umurango mw’ijoro, maze ijoro rikaba rirerire. Ni Yo rero Izi n’ibihishijwe mu mishaha.",
+      "ln": "Akotisaka butu na mokolo, mpe akotisaka mokolo na butu. Mpe azali moyebi ya maye mabombami o kati ya mitema.",
+      "dag": "Ozaŋdila yuŋ kpεhiri wuntaŋ’ ni, ka zaŋdi wuntaŋ’ kpεhiri yuŋ puuni. Yaha! O nyɛla Ŋun mi din be suhiri ni.",
+      "mos": "A kẽesda yʋng wĩndg pʋgẽ, la A kẽesd wĩndg yʋng pʋgẽ, la Yẽnda me yaa Mit ne bũmb ning sẽn be yãadẽ.",
+      "aa": "Yalli bar laqot culsaah, laqó barat çulsa, kaadu Usuk isi naqoosah alilwah addat tanim yaaxigi.",
+      "mdh": "Paludepen su magabi kanu malamag, endu paludepen nin su malamag kanu magabi, endu sekanin (Allah) na katawan nin su gatagu kanu laleb nu.",
+      "ak": "Ɔma adesaeε wura adekyeε mu, εna Ɔma adekyeε nso wura adesaeε mu. Ɔno na Onim deε εwͻ akoma mu.",
+      "ceb": "Iyang gipasulod ang kagabion sa adlaw, ug Iya usab nga gipasulod ang adlaw ngadto sa kagabion, ug Siya adunay hingpit nga Kahibalo sa bisan unsa nga anaa sa mga dughan (sa katawhan).",
+      "nqo": "ߊ߬ ߦߋ߫ ߛߎ ߟߊߘߏ߲߬ ߠߊ߫ ߕߟߋ߬ߘߐ߬ߟߊ ߘߐ߫ ߸ ߞߊ߬ ߕߟߋ߬ߘߐ߬ߟߊ ߝߣߊ߫ ߟߊߘߏ߲߬ ߛߎ ߘߐ߫ ߸ ߊ߬ ߣߴߊߟߋ ߟߋ߬ ߛߌߛߌ ߟߎ߬ ߘߐߞߏ ߟߎ߬ ߟߐ߲ߓߊ߯ߓߊ ߘߌ߫"
     }
   },
   {
@@ -9273,7 +11242,18 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mr": "तो (अल्लाह) च आहे, जो आपल्या दासावर स्पष्ट आयती अवतरित करतो, यासाठी की त्याने तुम्हाला अंधाराकडून उजेडाकडे न्यावे. निःसंशय अल्लाह तुमच्यावर स्नेह, दया करणारा आहे.",
       "as": "তেৱেঁই নিজ বান্দাৰ প্ৰতি সুস্পষ্ট আয়াতসমূহ অৱতীৰ্ণ কৰে, তোমালোকক অন্ধকাৰৰ পৰা পোহৰলৈ আনাৰ বাবে; আৰু নিশ্চয় আল্লাহ তোমালোকৰ প্ৰতি কৰুণাময়, পৰম দয়ালু।",
       "ne": "उही अल्लाह हो जसले आफ्नो भक्तहरूमाथि स्पष्ट आयतहरू अवतरित गरिरहेको छ ताकि उसले तिमीलाई अन्धकारहरूबाट प्रकाशतिर ल्याओस् । वास्तविकता यो छ कि अल्लाह तिमीमाथि अत्यन्त करुणामय र दयावान छ ।",
-      "si": "ඔහු වනාහි නුඹලාව අන්ධකාරයන්ගෙන් ආලෝකය වෙත බැහැර කරනු පිණිස පැහැදිලි සංඥා තම ගැත්තා වෙත පහළ කරයි. තවද නියත වශයෙන් ම අල්ලාහ් නුඹලාට සෙනෙහෙවන්ත ය. මහා කාරුණික ය."
+      "si": "ඔහු වනාහි නුඹලාව අන්ධකාරයන්ගෙන් ආලෝකය වෙත බැහැර කරනු පිණිස පැහැදිලි සංඥා තම ගැත්තා වෙත පහළ කරයි. තවද නියත වශයෙන් ම අල්ලාහ් නුඹලාට සෙනෙහෙවන්ත ය. මහා කාරුණික ය.",
+      "he": "הוא אשר מוריד על עבדו אותות בהירים, כדי להוציא אתכם מהחושך אל האור, כי אללה אתכם בחמלה וברחמים.",
+      "lt": "Tai Jis, Kuris siunčia aiškius įrodymus Savo vergui (Muchammedui ﷺ), kad ištrauktų jus iš tamsos į šviesą. Ir iš tiesų, Allahas yra apstus malonės jums, Pats Gailestingiausias.",
+      "mg": "Izy no mampidina ireo andininy mazava amin’ilay mpanompony, mba hamoahany anareo avy ao amin’ny haizina ho ao amin’ny hazavana; ary hamafisina fa be fangorahana aminareo Allah sady be indra fo.",
+      "lg": "Yye y'Oyo assa ku muddu We (Muhammadi) Ebigambo ebinnyonnyofu, abe nga abaggya mu bizikiza mudde eri ekitangaala, era mazima Allah Mukwatampola ku mmwe, Musaasizi nnyo.",
+      "rw": "Ni We uhishurira umugaragu we (Muhamadi) amagambo asobanutse, kugira ngo abakure mu mwijima abaganisha ku rumuri. Rwose Allah ni Umunyempuhwe nyinshi kuri mwe, Umunyembabazi.",
+      "ln": "Ye nde akitisaka mikapo ya polele epai ya mowumbu naye, mpo elongola bino na molili (bökende) na bongengi. Mpe ya soló, Allah azali na mawa mingi mpona bino atonda boboto.",
+      "mos": "Yẽ la Soab ning sẽn sik yãmb zug Aayay-vẽenesã, t'a na yiis yãmb ligsẽ wã n tʋg vẽenmẽ wã, la Wẽnd yaa ninbãan-zoεt n yaa yoalsd ne yãmba.",
+      "aa": "Yalla kinni isi naqsu Nabii Mucammadal ﷺ Qhuraan aayootay baxxaqqa itta oobissam, wohul koroosanni diteetak iimaan noorï fanah sin yayyaaqe gidah. Kaadu diggah Yalli xuwaw li nacrur li.",
+      "mdh": "Sekanin (Allah) i papedtulun kanu ulipen nin kanu manga ayat a mapayag, ka endu nin makapalyu kanu malibuteng lu kanu sigay, endu su Kadenan nu na malasem endu malimu sa lekanu.",
+      "ak": "Ɔno na Ɔsiane nsεnkyerεnee pefee ma N’akoa sεdeε ɔbɛyi mo afiri esum no mu akͻ εhyεn no mu. Nokorε sε, Nyankopͻn yε ayεmyε hene ma mo, na Ɔne Mmͻborͻhunufoͻ.",
+      "nqo": "ߊ߬ߟߋ ߟߋ߬ ߟߝߊߙߌ߫ ߘߐߞߣߍߣߍ߲ ߠߎ߬ ߟߊߖߌ߰ ߟߴߊ߬ ߟߊ߫ ߖߐ߲߭ ߡߊ߬ ߛߴߊ߬ ߘߴߊߟߎ߫ ߟߊߓߐ߫ ߘߌ߬ߓߌ ߟߎ߬ ߘߐ߫ ߞߊ߬ ߕߊ߯ ߦߋߟߋ߲ ߡߊ߬ ، ߤߊ߲߫ ߸ ߊߟߊ߫ ߦߋ߫ ߞߌ߬ߣߌ߲߬ߞߌ߬ߣߌ߲߬ߠߊ߫ ߤߌߣߟߊ߫ ߟߋ߬ ߘߴߊߟߎ߫ ߟߊ߫ ߘߋ߬"
     }
   },
   {
@@ -9329,7 +11309,19 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় দানশীল পুৰুষ আৰু দানশীলা নাৰী আৰু যিসকলে আল্লাহক উত্তম ঋণ দিয়ে, তেওঁলোকক (ইয়াৰ বিনিময়ত) বহু গুণ বৃদ্ধি কৰি (প্ৰতিদান) দিয়া হ’ব আৰু তেওঁলোকৰ বাবে আছে সন্মানজনক পুৰস্কাৰ।",
       "ne": "निःसंदेह खैरात (दान) गर्नेवाला, पुरुषहरू र स्त्रीहरू र जसले अल्लाहलाई राम्रो ऋण दिन्छन्, त्यसलाई उनको निम्ति कैयौं गुणा प्रदान गरिनेछ र उनीहरूको निम्ति सम्मानित प्रतिफल छ ।",
       "si": "නියත වශයෙන් ම දානමය කටයුතු කරන්නන් ද දානමය කටයුතු කරන්නියන් ද අලංකාර ණයක් ලෙසින් අල්ලාහ්ට ණය දුන් අය ද වනාහි ඔවුනට එය ගුණ කර දෙනු ලැබේ. තවද ඔවුනට ගෞරවනීය ප්‍රතිඵල ඇත.",
-      "km": "ប្រាកដណាស់ បណ្តាអ្នកដែលបរិច្ចាគទាន ទាំងប្រុសទាំងស្រី និងបានឲ្យអល់ឡោះខ្ចីនូវកម្ចីមួយដ៏ប្រសើរ ទ្រង់នឹងប្រទានទ្វេដងដល់ពួកគេ ហើយសម្រាប់ពួកគេនឹងទទួលបានផលបុណ្យដ៏ប្រពៃ(ឋានសួគ៌)។"
+      "km": "ប្រាកដណាស់ បណ្តាអ្នកដែលបរិច្ចាគទាន ទាំងប្រុសទាំងស្រី និងបានឲ្យអល់ឡោះខ្ចីនូវកម្ចីមួយដ៏ប្រសើរ ទ្រង់នឹងប្រទានទ្វេដងដល់ពួកគេ ហើយសម្រាប់ពួកគេនឹងទទួលបានផលបុណ្យដ៏ប្រពៃ(ឋានសួគ៌)។",
+      "he": "אכן התורמים צדקה והתורמות צדקה, ואשר הלוו אל אללה מלווה טוב , מובטח להם שהונם יוכפל, ולהם גמול שופע.",
+      "ka": "ჭეშმარიტად, მოწყალების გამცემ კაცებსა და ქალებს, რომელთაც ალლაჰს ასესხეს მშვენიერი სესხი, მათთვის ეს სიკეთეები გამრავლდება და მათთვის იქნება ძვირფასი ჯილდო [სამოთხე],",
+      "lt": "Iš tiesų, tie, kurie duoda Sadaka (t. y. Zakat ir išmaldą), vyrai ir moterys, ir paskolina Allahui gerą paskolą, tai bus padauginta (jiems), ir jie turės (šalimais) didį atlygį (t. y. Rojų).",
+      "mg": "Hamafisina, fa izay lehilahy na vehivavy manao fanomezana, ka nanao fampindramana an-tsitsam-po tamin’I Allah, dia hampitomboina avo heny ho azy ireo izany, ka hahazo valisoa sesehena izy ireo.",
+      "lg": "Mazima abasajja abasaddaaka, n'abakyala abasaddaaka, era ne bawola Allah oluwola olulungi, (bye bawaayo) Allah abibakubisizaamu, era balina empeera eyeekitiibwa.",
+      "rw": "Mu by’ukuri ba bandi batanga amaturo b’abagabo n’abagore, bakanaguriza Allah inguzanyo nziza, (Allah azabishyura) abakubiye inshuro nyinshi, ndetse azanabagororera ibihembo bihebuje.",
+      "ln": "Ya soló, baye kati ya mibali mpe ya basi bazali kosala bolamu mpe bakotiseli Allah nyongo ya malamu, bakobakisela bango yango mpe bakozua lifuta lilamu.",
+      "dag": "Achiika! Ninvuɣu shεba ban tiri sara dobba ni paɣaba, ka paŋ Naawuni paŋdi suŋ,tɔ! (Naawuni) ni nabgi li n-ti ba, ka bɛ lahi mali laara din galsi.",
+      "mos": "Bãng-y tɩ sãrã maandb-roapã, la sãrã maandb-pogsã la nins sẽn peng Wẽnd pengr sẽn be neerã, b fãoodame n kõ bãmba, bãmb leb n tara keoor sẽn bedme.",
+      "mdh": "Saben-sabenal su mama-babay a midsadaqah, endu pinautang nilan su Allah sa mapya, na takepen sa kanilan (su rizki) endu aden pan balas sa kanilan a mapulu.",
+      "ak": "Nokorε sε mmarima a wͻyε adͻeε ne mmaa a wɔyε adͻeε na wͻbͻ Nyankopͻn bosea pa no, yεde bεbͻ ho ama wͻn, na wͻn wͻ animuonyam akatua (da hͻ Daakye).",
+      "nqo": "ߕߎ߬ߢߊ߬ߒ߬ߕߋ߬ߦߊ߬ߟߊ ߗߍ߬ߡߊ߲ ߠߎ߬ ߣߴߊ߬ ߡߛߏ߬ߡߊ߲ ߠߎ߫ ߓߊ߬ ߸ ߊ߬ ߣߴߊ߬ߟߎ߫ ߞߵߊߟߊ߫ ߘߐ߲ߘߐ߫ ߘߐ߲ߘߐߟߌ߫ ߢߌߡߊ߫ ߟߊ߫ ߸ ߊ߬ ߘߌ߫ ߓߊߟߌߟߌ ߞߍ߫ ߏ߬ ߟߎ߬ ߦߋ߫ ߟߋ߬ ߘߍ߯ ߛߙߊ߬ ߞߟߊߒߞߋ߫ ߟߋ߬ ߝߣߴߊ߬ߟߎ߬ ߦߋ߫"
     }
   },
   {
@@ -9392,7 +11384,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহে লিখি ৰাখিছে যে, ‘মই আৰু মোৰ ৰাছুলসকলেই নিশ্চিতভাৱে বিজয়ী হ’ম’। নিশ্চয় আল্লাহ মহাশক্তিমান, মহাপৰাক্ৰমশালী।",
       "ne": "अल्लाहले लेखिसकेको छ कि निःसंदेह म र मेरा रसूल नै विजयी रहनेछौं । निःसन्देह अल्लाह शक्तिमान र अधिपत्यशाली छ ।",
       "si": "සැබැවින් ම මම අබිබවා යමි. මාගේ දූතයාණන් ද (එලෙසය) යැයි අල්ලාහ් නියම කළේ ය. නියත වශයෙන් ම අල්ලාහ් බලසම්පන්න ය; සර්ව බලධාරී ය.",
-      "km": "អល់ឡោះបានកត់ត្រារួចទៅហើយថា៖ យើង និងបណ្តាអ្នកនាំសាររបស់យើង ពិតជានឹងទទួលបានជ័យជម្នះ។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាខ្លាំងក្លា មហាខ្លាំងពូកែ។"
+      "km": "អល់ឡោះបានកត់ត្រារួចទៅហើយថា៖ យើង និងបណ្តាអ្នកនាំសាររបស់យើង ពិតជានឹងទទួលបានជ័យជម្នះ។ ពិតប្រាកដណាស់ អល់ឡោះជាម្ចាស់មហាខ្លាំងក្លា មហាខ្លាំងពូកែ។",
+      "he": "אללה קבע, “אכן אני אהיה המנצח, אני ושליחיי”, כי אללה הוא העזוז והחזק.",
+      "ka": "ალლაჰმა ჩაიწერა (ზეციურ ფირფიტაზე, ანუ დაადგინა რომ): «ჭეშმარიტად, მე და ჩემი შუამავლები გავიმარჯვებთ!» ჭეშმარიტად, ალლაჰი ყოვლისშემძლე, დიდებულია!",
+      "lt": "Allahas užrašė (t. y. nusprendė): „Aš tikrai nugalėsiu, Aš ir Mano pasiuntiniai.“ Iš tiesų, Allahas yra Visa Stiprus, Visagalis.",
+      "mg": "Nametraka didy Allah hoe : handresy tokoa Aho sy ireo Irako;tena marina fa matanjaka sy tsitoha I Allah.",
+      "lg": "(Allah) yakakasa dda nti nze Allah n'Ababaka bange tuli baakuwangula anti Allah Waamaanyi. Nnantakubwakumukono.",
+      "rw": "Allah yaciye iteka agira ati “Rwose, njye n’Intumwa zanjye tuzatsinda.” Mu by’ukuri Allah ni Umunyembaraga, Umunyacyubahiro bihebuje.",
+      "rn": "Imana Allah, Yaramaze guca iteka, Iti: “Ni ukuri, Nzotsinda Jewe Allah hamwe n’Intumwa zanje”. Mu vy’ukuri Imana Allah, ni Yo Nyeninguvu, Nyenintsinzi-Mutaneshwa.",
+      "ln": "Allah asila kokana été: Nakolonga ngai na batindami na ngai. Ya sólo Allah azali makasi atonda nguya.",
+      "dag": "Naawuni zali zaligu (ka yεli): “Achiika! M (Mani Naawuni) mini N tuumba n-nyɛ ban yɛn nyɛŋ. Achiika! Naawuni nyɛla Kpεŋlana, Nyεŋda.",
+      "mos": "Wẽnd gʋlsame: \"M na wil neer-neere, Maam ne M Tẽn-tʋʋmbã, ad Wẽnd yaa pãng Soaba, n yaa zɩslem Naaba.",
+      "aa": "Yalli lawcal macfuuzul madqeeh mekleh, diggah Yoo kee Yi farmoytit aysenno iyyaanam, diggah Yalli Qande li, Mayso li.",
+      "mdh": "Inimasad nu Allah lu sa Lawh al-Mahfudh i saki (Allah) endu su manga sinugu ku i temalaw, saben-sabenal su Allah i mabagel a mapulu.",
+      "ak": "Nyankopͻn ahyehyε sε: “Ampa sε Me ne M’asomafoͻ no bɛdi nkonim”. Nokorε sε Nyankopͻn Ne Ɔhoͻdenfoͻ, na Ɔne Otumfoͻ a Otumi ade nyinaa yε.",
+      "ceb": "Si Allāh Nagmando: \"Ako sa pagkatinuod modaog, Ako ug ang Akong mga mensahero\"; sa pagkatinuod si Allāh maoy Kusgan, Labing Gamhanan.",
+      "nqo": "ߊߟߊ߫ ߓߘߴߊ߬ ߛߓߍ߫ ߞߏ߫ ߒߠߋ ߘߌߣߊ߬ ߛߋ߫ ߟߋ߬ ߘߍ߯ ߊ߬ ߣߌ߫ ߒ ߠߊ߫ ߞߋߟߊ ߟߎ߬ ߸ ߊߟߊ߫ ߦߋ߫ ߝߊ߲߬ߞߊ߬ߡߊ߫ ߣߌ߬ߣߌ߬ߟߊ ߟߋ߬ ߘߌ߫ ߘߋ߬"
     }
   },
   {
@@ -9437,7 +11444,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ja": "信仰する者たちよ、アッラーを畏れ、自分自身が明日のために成したことをよく考えよ。そしてアッラーを畏れるのだ。本当にアッラーは、あなた方が行うことに通暁されるお方なのだから。",
       "gu": "હે ઇમાનવાળાઓ! અલ્લાહથી ડરતા રહો અને દરેક વ્યક્તિ જોઇ લે કે તેણે કાલ (કયામત) માટે શું (સંગ્રહ) કર્યું છે. અને (દરેક સમયે) અલ્લાહથી ડરતા રહો, અલ્લાહ તમારા દરેક કાર્યોથી ખબરદાર છે.",
       "bg": "О вие, които повярвахте, бойте се от Аллах! И нека всяка душа съзре, какво си е приготвила за утрешния ден! И бойте се от Аллах! Наистина, Аллах е Сведущ в това, което вършите!",
-      "mk": "О, верници, плашете се од Аллах, и секој човек нека гледа што подготвил за утре и плашете се од Аллах, бидејќи Тој добро знае што правите."
+      "mk": "О, верници, плашете се од Аллах, и секој човек нека гледа што подготвил за утре и плашете се од Аллах, бидејќи Тој добро знае што правите.",
+      "he": "אתם המאמינים! יראו מאללה! על כל נפש לבחון ולבדוק מה הכינה למחר. ויראו את אללה, כי אללה יודע את כל אשר אתם עושים.",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! გეშინოდეთ ალლაჰის და დაე, დაუკვირდეს ყოველი სული, რა გაამზადა ხვალინდელი დღისთვის. და გეშინოდეთ ალლაჰის. უეჭველად, ალლაჰმა უწყის, რასაც თქვენ აკეთებთ.",
+      "lt": "O jūs, kurie patikėjote! Bijokite Allaho! Ir lai kiekviena siela pažvelgia į tai, ką ji paruošė rytojui. Ir bijokite Allaho! Iš tiesų, Allahas yra Visa Žinantis apie tai, ką jūs darote.",
+      "mg": "Ianareo mpino ! Matahora an’I Allah ianareo. Aoka samy handinika tsara izay nataony ho an’ny rahampitso ny tsirairay ary matahora an’I Allah ianareo, fa mahafantatra tanteraka izay ataonareo Allah.",
+      "lg": "Abange mmwe abakkiriza mutye Allah, era omuntu atunule mu by'ategekedde olunaku lw'enkya. Bulijjo muteekwa okutya Allah, anti mazima Allah amanyidde ddala buli kye mukola.",
+      "rw": "Yemwe abemeye! Nimugandukire Allah kandi buri muntu arebe ibyo yiteganyirije ejo. Munatinye Allah, mu by’ukuri Allah azi neza ibyo mukora.",
+      "mos": "Yãmb ɑ neb nins sẽn kõ sɩd ne Wẽnde! Zoe-y Wẽnde, la yõor fãa ges bũmb ning a sẽn tʋm tɩ reng taoor beoog yĩnga, la y zoe Wẽnde, ad Wẽnd yaa kiba-Mit ne bũmb ning yãmb sẽn tʋmdã.",
+      "mdh": "Hay sekanu anan a bamaginugut ikagilek nu su Allah endu uman isa na ilayn nin u ngin ba i galebek nin a makwa nin namag, ikagilek nu su Allah ka langun na galebek nu na katawan nin.",
+      "ak": "Mo a moagye adie, monsuro Nyankopͻn, na ͻkra biara (ntwa n’ani) nhwε dwuma a (wadi) de ato hͻ ama (ne ho) ͻkyena; na monsuro Nyankopͻn. Nokorε sε Nyankopͻn ne dwuma a modie nyinaa ho amane bͻ Wura."
     }
   },
   {
@@ -9501,7 +11517,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "জাহান্নামৰ অধিবাসীসকল আৰু জান্নাতৰ অধিবাসীসকল কেতিয়াও সমান নহয়। প্ৰকৃত সফলতাৰ অধিকাৰী কেৱল জান্নাতৰ অধিবাসীসকলহে।",
       "ne": "नर्कवाला र स्वर्गवालाहरू समान छैनन् । स्वर्गवाला त सफलता प्राप्त गर्नेवाला हुन् (र नर्कवालाहरू असफल हुन) ।",
       "si": "(නිරා) ගින්නේ වාසීහු හා (ස්වර්ග) උයනේ වාසීහු සමාන නො වෙති. ස්වර්ග උයනේ වාසීහු වන ඔවුහු මය ජයග්‍රාහකයෝ.",
-      "km": "មិនស្មើគ្នាឡើយ(រវាង)ពួកឋាននរក និងបណ្ដាអ្នកឋានសួគ៌នោះ។ បណ្ដាអ្នកឋានសួគ៌ ពួកគេ គឺជាអ្នកដែលទទួលជោគជ័យ។"
+      "km": "មិនស្មើគ្នាឡើយ(រវាង)ពួកឋាននរក និងបណ្ដាអ្នកឋានសួគ៌នោះ។ បណ្ដាអ្នកឋានសួគ៌ ពួកគេ គឺជាអ្នកដែលទទួលជោគជ័យ។",
+      "he": "לא שווים הם שוכני האש ושוכני גן העדן, שהרי שוכני גן העדן הם המנצחים.",
+      "ka": "არ არიან თანასწორნი ცეცხლის [ჯოჯოხეთის] მკვიდრნი და სამოთხის მკვიდრნი. სამოთხის მკვიდრნი — სწორედ ისინი არიან წარმატებულნი.",
+      "lt": "Nelygūs yra Ugnies kompanjonai ir Rojaus kompanjonai. Rojaus kompanjonai – jie yra sėkmingieji.",
+      "mg": "Tsy hitovy ireo olon’ny afo, sy ireo olon’ny Paradisa, ireo olon'ny Paradisa no mpandresy.",
+      "lg": "Abantu boomu Muliro tebenkana na bantu ba mu Jjana, abo abaliyingira Ejjana be bookwesiima.",
+      "rw": "(Mumenye ko) abantu bo mu muriro n’abantu bo mu Ijuru badahwanye. Abantu bo mu Ijuru ni bo bazatsinda.",
+      "rn": "Abantu bari mu bihano vyo mu muriro udahera, si nk’abari mu nema zo mu Bwami bw’ijuru. Abari mu nema zo mu Bwami bw’ijuru, ni bo benintsinzi.",
+      "ln": "Bato ya moto mpe bato ya lola bakozalaka lolenge moko te. Kasi bato ya lola nde balongi.",
+      "dag": "Buɣum bihi mini Alizanda bihi ku niŋ yim, Alizanda bihi n-nyɛ ninvuɣu shεba ban nyɛ tarli.",
+      "mos": "Bugum koamb ne arzãn rãmb pa makd taab ye; arzãn koambã, bãmb la pʋɩɩr paamdba.",
+      "aa": "Girä maraa kee jannatti mara Mamassowta, jannatti mari usun yisillimeeh yessemeqqe mara (limaye mara).",
+      "mdh": "Di makapagidsan su taw sa naraka endu su taw sa surga, su taw sa surga na sa kanilan a badtugan a mapya.",
+      "ak": "Amanehunu gya no mu foͻ no ne ͻsoro aheman no mu foͻ no nnsε. Ɔsoro aheman no mu foͻ no wͻne nkonimdifoͻ no.",
+      "ceb": "Dili managsama ang mga pumoluyo sa Imperno ug ang mga pumoluyo sa Paraiso, ang mga pumoluyo sa Paraiso mao ang mga nakakab-ot (sa dakong Kalamposan ug kadaugan).",
+      "nqo": "ߕߊ ߘߏ߲߬ߞߏ ߟߎ߬ ߣߌ߫ ߡߍ߲ߘߌߦߊ߫ ߘߏ߲߬ߞߏ ߟߎ߬ ߕߍ߫ ߞߢߊ߫ ߸ ߡߍ߲ߘߌߦߊ߫ ߘߏ߲߬ߞߏ ߟߎ߫ ߟߋ߫ ߣߌ߬ ߛߐ߬ߘߐ߲߬ߠߊ ߟߎ߬ ߘߌ߫"
     }
   },
   {
@@ -9544,7 +11575,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mk": "Ако го објавиме овој Куран на некој рид, ти би видел како е полн со стравопочит и како би се распаднал од страв пред Аллах. Такви примери им наведуваме на луѓето за да размислат.",
       "kn": "ನಾವು ಈ ಕುರ್‌ಆನನ್ನು ಒಂದು ಪರ್ವತದ ಮೇಲೆ ಅವತೀರ್ಣಗೊಳಿಸುತ್ತಿದ್ದರೆ ಅಲ್ಲಾಹನ ಭಯದಿಂದ ಅದು ವಿನಮ್ರವಾಗಿ ಒಡೆದು ಚೂರಾಗುವುದನ್ನು ನೀವು ಕಾಣುತ್ತಿದ್ದಿರಿ. ನಾವು ಜನರಿಗೆ ಈ ಉದಾಹರಣೆಗಳನ್ನು ವಿವರಿಸಿಕೊಡುತ್ತೇವೆ. ಅವರು ಆಲೋಚಿಸುವುದಕ್ಕಾಗಿ.",
       "as": "যদি আমি এই কোৰআনখনক কোনো পৰ্বতৰ ওপৰত অৱতীৰ্ণ কৰিলোঁহেঁতেন তেন্তে তুমি ইয়াক আল্লাহৰ ভয়ত বিনীত বিদীৰ্ণ অৱস্থাত দেখিলাহেঁতেন, আৰু আমি এইবোৰ উদাহৰণ বৰ্ণনা কৰোঁ মানুহৰ বাবে যাতে সিহঁতে চিন্তা-গৱেষণা কৰে।",
-      "si": "මෙම කුර්ආනය අපි කන්දක් මතට පහළ කළෙමු නම් අල්ලාහ් ගැන වූ බිය හේතුවෙන් එය දෙදරා යමින් යටහත් වනු නුඹ දකිනු ඇත. එම උපමාවන් ජනයා වටහා ගත හැකි වනු පිණිස ඒවා අපි ඔවුනට ඉදිරිපත් කරන්නෙමු."
+      "si": "මෙම කුර්ආනය අපි කන්දක් මතට පහළ කළෙමු නම් අල්ලාහ් ගැන වූ බිය හේතුවෙන් එය දෙදරා යමින් යටහත් වනු නුඹ දකිනු ඇත. එම උපමාවන් ජනයා වටහා ගත හැකි වනු පිණිස ඒවා අපි ඔවුනට ඉදිරිපත් කරන්නෙමු.",
+      "he": "אילו הורדנו את הקוראן הזה על הר, היית רואה אותו(את ההר) נכנע ונבקע לרסיסים מיראת אללה. ואת המשלים האלה (אנו, אללה) מושלים לבני-האדם, למען יזכו בדעת.",
+      "lt": "Jei Mes būtume nuleidę šį Koraną ant kalno, tu būtum matęs jį nusižeminusį ir skylantį iš baimės Allahui. Ir šiuos pavyzdžius Mes suteikiame žmonėms tam, kad galbūt jie susimąstys.",
+      "lg": "Singa twassa Kulaani eno ku nsozi wandizirabye nga zigonze, era nga zimerenguse olw'okutya Allah. Ebifaananyi ng'ebyo tubikubira abantu bibasoboseze okufumiitiriza (bategeere Allah).",
+      "rw": "Iyo iyi Qur’an tuza kuyimanurira ku musozi, wari kuwubona wibombaritse ndetse ukanasatagurika kubera gutinya Allah. Izo ni ingero duha abantu kugira ngo batekereze.",
+      "mos": "Tõnd sã n da sikẽ Alkʋrãan-kãngã tãng zugu, fo na yãẽ-a t'a yaa sẽn boog n sãeeg Wẽnd yaeesg keelem. La yel-bũn-kãensã Tõnd wẽed-b-la ne nebã, sãnd-sãnde bãmb na tagsd n gεtẽ.",
+      "mdh": "Upama bu ka initulun nami su Qur’an sa palaw na mailay nengka su palaw a malupet magugul sa gilek nin sa Allah endu entu ba na upaman a inenggay nami sa manga taw, ka endu silan makapamikir.",
+      "ak": "Sε Yɛsianee saa Qur’aan yi maa bepͻ a, anka wobɛhunu sε (bepͻ no) de ahobraseε redwidwa εnam Nyankopͻn ho suro nti. Yεreyε saa mfatoho yi ama nnipa sεdeε wͻbεfa adwen.",
+      "ceb": "Kon Kami nagpakanaog niini nga Qur'an sa usa bukid, makita nimo kini nga nagpaubos ug nag-uwang tungod sa kataha Kang sa Allāh. Kini mao ang Among sambingay alang sa katawhan, aron sila mamalandong.",
+      "nqo": "ߣߴߊ߲ ߕߎ߲߬ ߞߊ߬ ߘߐ߬ߛߊߙߌ ߣߌ߲߬ ߠߊߖߌ߰ ߞߎ߬ߙߎ ߘߏ߫ ߡߊ߬ ߌ ߕߘߍ߬ ߘߴߏ߬ ߢߍ߬ߣߍ߲߬ߕߐ ߛߍ߲ߞߍߕߐ ߦߋ߫ ߊߟߊ߫ ߢߍߢߍߣߍ߲ ߡߊ߬ ، ߒ߬ߓߊ߬ ߞߏߟߊߒߞߏߡߊ ߟߎ߫ ߟߋ߬ ߣߌ߲߬ ߊ߲ ߧߴߏ߬ ߟߊ߫ ߟߊ߫ ߡߐ߱ ߟߎ߬ ߦߋ߫ ߟߋ߬ ߛߴߊ߬ߟߎ߬ ߘߴߊ߬ߟߎ߬ ߞߣߐߘߐߡߙߌ߫"
     }
   },
   {
@@ -9608,7 +11648,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে ঈমান্দাৰসকল! তোমালোকে যিটো নকৰা সেইটো কিয় কোৱা?",
       "ne": "हे मोमिनहरू ! तिमीले यस्ता कुरा किन भन्ने गर्दछौ जो गर्दैनौ ?",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලා සිදු නො කරන දෙයක් නුඹලා පවසනුයේ ඇයි?",
-      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿ! ហេតុអ្វីបានជាពួកអ្នកនិយាយនូវអ្វីដែលពួកអ្នកមិនបានធ្វើ?"
+      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿ! ហេតុអ្វីបានជាពួកអ្នកនិយាយនូវអ្វីដែលពួកអ្នកមិនបានធ្វើ?",
+      "he": "הוי אלה אשר האמינו! למה אתם אומרים מה שאתם לא עושים?",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! რატომ ამბობთ იმას, რასაც არ აკეთებთ?",
+      "lt": "O jūs, kurie patikėjote! Kodėl sakote tai, ko nedarote?",
+      "mg": "Ianareo mpino ! Nahoana ianareo no milaza izay tsy ataonareo ?",
+      "lg": "Abange mmwe abakkiriza lwaki mwogera ebyo bye mutakola.",
+      "rw": "Yemwe abemeye! Kuki muvuga ibyo mudakora?",
+      "ln": "Oh bino bandimi! Mpona nini bolobaka maye bosalaka te?",
+      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Bozuɣu ka yiyεriyi ni bi mali shɛli n-tumdi tuma?",
+      "mos": "yãmb ɑ neb nins sẽn kõ sɩd ne Wẽnde! Yaa bõe tɩ y yet bũmb ning y sẽn pa tʋmde?",
+      "aa": "Yallaa kee kay farmoyta nummayse maraw! Xaganay duuduse waytoonu waytaanaa kee hinnay abinat asse waytoonu waytan maxco macah ittaanaa?",
+      "mdh": "Hay sekanu anan a bamaginugut! Ngintu ka pedtalun nu na di nu penggalebeken.",
+      "ak": "Mo a moagye adie, adεn nti na moka asεm a monnyε?",
+      "ceb": "Oh mga magtutuo, Ngano nga kamo nagsulti (o nagwali) sa dili ninyo buhaton?",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߡߎ߲߬ ߠߴߊߟߎ߫ ߦߋ߫ ߝߋ߲߫ ߝߐ߫ ߟߴߊߟߎ߫ ߕߍ߫ ߡߍ߲ ߞߍ߫ ߟߊ߫؟"
     }
   },
   {
@@ -9672,7 +11726,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তোমালোকে যিটো নকৰা সেইটো তোমালোকে কোৱাটো আল্লাহৰ দৃষ্টিত বৰ অসন্তোষজনক।",
       "ne": "तिमी जुन गर्दैनौ त्यो भन्नु अल्लाहलाई धेरै अप्रिय छ ।",
       "si": "නුඹලා සිදු නො කරන දෙයක් ගැන පැවසීම අල්ලාහ් අබියස කෝපයෙන් ඉමහත් විය.",
-      "km": "អល់ឡោះទ្រង់់ស្អប់ខ្ពើមបំផុតចំពោះការដែលពួកអ្នកនិយាយនូវអ្វីដែលពួកអ្នកមិនបានធ្វើបែបនេះ។"
+      "km": "អល់ឡោះទ្រង់់ស្អប់ខ្ពើមបំផុតចំពោះការដែលពួកអ្នកនិយាយនូវអ្វីដែលពួកអ្នកមិនបានធ្វើបែបនេះ។",
+      "he": "גרוע מאוד אצל אללה, שאינכם עושים את אשר אתם אומרים.",
+      "ka": "დიდად საძულველია ალლაჰის წინაშე, რომ ამბობთ იმას, რასაც არ აკეთებთ!",
+      "lt": "Allaho didžiai nekenčiama yra tai, kad sakote tai, ko nedarote.",
+      "mg": "Zavatra mamoa-pady eo anatrehan’I Allah tokoa ny fitenenanareo izay tsy ataonareo.",
+      "lg": "Kisunguwalirwa nnyo ewa Allah okwogera bye mutakola.",
+      "rw": "Ibyo Allah abyanga bikomeye kuba muvuga ibyo mudakora!",
+      "rn": "Birashavuza cane Imana Allah kuvuga ivyo mudakora.",
+      "ln": "(Kosala bongo) ezali lisumu monene epai ya Allah, koloba maye bozali kosalela te.",
+      "dag": "Di nyɛla din sujee galsi Naawuni sani, ni yi yεriyini bi mali shɛli tumdi tuma.",
+      "mos": "Gẽeb yɩ bedr Wẽnd nengẽ ne yãmb sẽn na n yet bũmb ning yãmb sẽn pa tʋmde.",
+      "aa": "Tama taamay abe waytoonu waytaana Yallih garil naqabuh tembeh.",
+      "mdh": "Masla gayd a kadusan lu sa Allah i pedtalun nu na di nu penggalebeken.",
+      "ak": "Ɛyε abufusεm kεse wͻ Nyankopͻn anim sε mobεka asεm na monyε.",
+      "ceb": "Kini labing gikasilagan sa panan-aw sa Allāh nga kamo mosulti (o magsangyaw) sa unsay wala ninyo buhata.",
+      "nqo": "ߝߋ߲߫ ߝߐ ߊߟߎ߫ ߓߟߏ߫ ߊߟߎ߫ ߕߍ߫ ߡߍ߲ ߞߍ߫ ߟߊ߫ ߸ ߏ߬ ߦߋ߫ ߕߍ߰ߒ߬ߛߏ߬ߦߊ߬ߓߊ߫ ߟߋ߬ ߘߌ߫ ߊߟߊ߫ ߓߘߊ"
     }
   },
   {
@@ -9734,7 +11803,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "হে ঈমান্দাৰসকল! তোমালোকৰ ধন-সম্পদ আৰু সন্তান-সন্ততিয়ে যাতে তোমালোকক আল্লাহৰ স্মৰণৰ পৰা উদাসীন নকৰে; আৰু যিসকলে এনেকৈ উদাসীন হ’ব সিহঁতেই হৈছে ক্ষতিগ্ৰস্ত।",
       "ne": "हे मोमिनहरू ! तिम्रा माल, सम्पत्ति र सन्तानले तिमीलाई अल्लाहको स्मरणबाट गाफिल (अचेत) नबनाइदेओस् र जसले यस्तो गर्नेछ त्यसले घाटा बेहोर्ने छ ।",
       "si": "අහෝ දේවත්වය විශ්වාස කළවුනි! නුඹලාගේ වස්තුව හෝ නුඹලාගේ දරුවන් අල්ලාහ් මෙනෙහි කිරීමෙන් නුඹලා වෙනතකට යොමු නො කරත්වා! කවරෙකු එය සිදු කරන්නේ ද එවිට ඔවුහු මය අලාභවන්තයෝ.",
-      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿ! ចូរកុំឱ្យទ្រព្យសម្បត្ដិរបស់ពួកអ្នក និងកូនចៅរបស់ពួកអ្នករំខានពួកអ្នកពីការរំលឹកចំពោះអល់ឡោះឲ្យសោះ។ ជនណាហើយដែលធ្វើដូច្នោះ ពួកទាំងនោះហើយ គឺជាពួកដែលខាតបង់។"
+      "km": "ឱបណ្ដាអ្នកដែលមានជំនឿ! ចូរកុំឱ្យទ្រព្យសម្បត្ដិរបស់ពួកអ្នក និងកូនចៅរបស់ពួកអ្នករំខានពួកអ្នកពីការរំលឹកចំពោះអល់ឡោះឲ្យសោះ។ ជនណាហើយដែលធ្វើដូច្នោះ ពួកទាំងនោះហើយ គឺជាពួកដែលខាតបង់។",
+      "he": "הוי אלה אשר האמינו! אל תתנו לממונכם ולילדיכם להשכיח מכם להלל את אללה, אלה שעושים כך, הם המפסידים.",
+      "ka": "ჰეი, თქვენ, რომელთაც ირწმუნეთ! ნუ მოგაცდენთ თქვენი ქონება და შვილები ალლაჰის ხსენებისგან. და ვინც ამას ჩაიდენს, სწორედ ისინი არიან წაგებულნი.",
+      "lt": "O jūs, kurie patikėjote! Neleiskite savo turtui ir savo vaikams atitraukti jus nuo Allaho prisiminimo. Ir kas taip elgiasi – tada jie pralaimėtojai.",
+      "mg": "Fa ianareo mpino ! Aoka tsy hanelingelina anareo amin’ny fahatsiarovana an’Allah ny fanananareo sy ny zanakareo.Ary na iza na iza manao izany dia izy ireo no maty antoka.",
+      "lg": "Abange mmwe abakkiriza, ebyobugagga byamwe n'abaana bammwe tebibawugulanga ne bibaggya ku kwogera ku Allah, oyo yenna akikola, abo nno be bookufaafaaganirwa.",
+      "rw": "Yemwe abemeye! Imitungo yanyu n’abana banyu ntibikabarangaze ngo bibabuze kwibuka Allah. Abakora ibyo ni bo bazaba abanyagihombo.",
+      "ln": "Eh bino baye bondima! Misolo na bana na bino mibosanisa bino bokundoli ya Allah te. Mpe oyo akosala yango baye wana nde bazangi.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! Yãmb arzεk ra wa maan yãmb soagla, la yãmb koamb ra maan yãmb soagl tɩ y bɑs Wẽnd yʋʋr tẽegr ye. Ned ning sẽn wa n maanda rẽnda, ad bãmbã, bãmb la bõn rãmba.",
+      "mdh": "Hay sekanu anan a bamaginugut! Da kanu mapasimpang kanu manga tamuk nu endu manga wata nu kanu tadem ku Allah, ka su taw a enggalebeken nin su entuba na silan i nalugi.",
+      "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߟߊ߫ ߣߊ߲߬ߝߟߏ ߟߎ߬ ߣߴߊߟߎ߫ ߘߋ߲ ߠߎ߬ ߞߊߣߵߊߟߎ߫ ߓߟߏߞߘߐߜߊ߬ ߊߟߊ߫ ߞߏߝߐ ߡߊ߬ ߘߋ߬ ، ߡߍ߲ ߓߊ߯ ߏ߬ ߞߍ߫ ߸ ߏ߬ ߟߎ߫ ߟߋ߫ ߓߣߐ߬ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
   },
   {
@@ -9795,7 +11874,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই তোমালোকক সৃষ্টি কৰিছে। তাৰ পিছত তোমালোকৰ মাজত কিছুমান হৈছে কাফিৰ আৰু কিছুমান হৈছে মুমিন; আৰু তোমালোকে যি আমল কৰা সেই সম্পৰ্কে আল্লাহ সম্যক দ্ৰষ্টা।",
       "ne": "उसैले तिमीलाई सृष्टि गर्यो, अनि तिमीमध्ये केही इन्कार गर्नेवाला छन् र केही ईमानवाला छन् र तिमीले जे गर्दछौ अल्लाह त्यसलाई राम्ररी जान्दछ ।",
       "si": "ඔහු වනාහි නුඹලා මැව්වේ ය. තවද නුඹලා අතරින් දේවත්වය ප්‍රතික්ෂේප කරන අය ද නුඹලා අතරින් දේවත්වය විශ්වාස කරන අය ද සිටිති. තවද අල්ලාහ් නුඹලා සිදු කරන දෑ පිළිබඳ සර්ව නිරීක්ෂක ය.",
-      "km": "ទ្រង់ជាអ្នកដែលបានបង្កើតពួកអ្នក។ ក៏ប៉ុន្តែ មួយចំនួននៃពួកអ្នក ជាអ្នកដែលគ្មានជំនឿ។ ហើយមួយចំនួនទៀតនៃពួកអ្នក គឺជាអ្នកដែលមានជំនឿ។ ហើយអល់ឡោះមហាឃើញបំផុតនូវអ្វីដែលពួកអ្នកប្រព្រឹត្ដ។"
+      "km": "ទ្រង់ជាអ្នកដែលបានបង្កើតពួកអ្នក។ ក៏ប៉ុន្តែ មួយចំនួននៃពួកអ្នក ជាអ្នកដែលគ្មានជំនឿ។ ហើយមួយចំនួនទៀតនៃពួកអ្នក គឺជាអ្នកដែលមានជំនឿ។ ហើយអល់ឡោះមហាឃើញបំផុតនូវអ្វីដែលពួកអ្នកប្រព្រឹត្ដ។",
+      "he": "זה אשר ברא אתכם. בינכם יש כופרים ובינכם גם יש מאמינים, ואללה רואה את כל מה שאתם עושים.",
+      "lt": "Tai Jis, Kuris sukūrė jus. Ir tarp jūsų yra netikintysis ir tarp jūsų yra tikintysis. Ir Allahas yra Visa Matantis, ką jūs darote.",
+      "mg": "Izy no nahary anareo, misy aminareo ny tsy mpino ary misy aminareo ny mpino, fa hitan’Allah izay ataonareo.",
+      "lg": "Yye y'Oyo eyabatonda nga mu mmwe mulimu abawakanya Allah n'Abakkiriza. Lubeerera Allah alaba bye mukola.",
+      "rw": "Ni We wabaremye, ariko bamwe muri mwe ni abahakanyi, abandi bakaba abemeramana. Kandi Allah ni Ubona bihebuje ibyo mukora.",
+      "rn": "Ni Yo Yonyene Yabaremye, gutyo muri mwebwe havamwo umuhakanyi n’umwemeramana (umwe wese ku co yahisemwo). Imana Allah na Yo, ni Nyenukubona, Irabona neza ivyo mukora, kandi Izobibahembera.",
+      "ln": "Ye nde akela bino, basusu okati na bino bandimi, mpe basusu bapengwi. Allah azali kornona maye bozali kosala.",
+      "dag": "Ŋuna n-nyɛŊun nam ya, ka chɛfura be yi ni, ka ŋun ti Naawuni yɛlimaŋli gba be yi ni. Yaha! Naawuni nyɛla Ŋun nyari yi tuuntumsa.",
+      "mos": "Yẽ la Soab ning sẽn naana yãmba : kɩfr bee yãmb pʋgẽ, muumin me bee yãmb pʋgẽ. Wẽnde, A yaa Mit ne yãmb sẽn tʋm bũmb ningã.",
+      "mdh": "Sekanin (Allah) na binaluy nin i aden kafir sa lekanu endu aden bamaginugut, su Allah na katawan nin i manga galebek nu.",
+      "ak": "Ɔno na Ɔbͻͻ mo, εna mo mu bi yε agyidiefoͻ, εna mo mu bi nso yε (Kaafirfoͻ) boniayεfoͻ. Onyankopͻn deε Ohu deε moyε nyinaa.",
+      "ceb": "Siya mao ang naglalang kaninyo, unya ang uban kaninyo mga manlilimod ug ang uban mga magtutuo; ug ang Allah Labing Naka-kita sa tanan ninyong mga buhat.",
+      "nqo": "ߊߟߋ ߟߋ߫ ߞߵߊߟߎ߫ ߘߊ߲߫ ߸ ߓߊ߲߬ߓߊ߯ ߦߴߊߟߎ߫ ߘߐ߫ ߟߊߒߠߦߊߓߊ߯ ߦߴߊߟߎ߫ ߘߐ߫ ߸ ߊߟߊ߫ ߘߏ߲߬ ߦߴߊߟߎ߫ ߗߋߥߊߟߌ ߟߎ߬ ߟߊߛߊ߬ߓߊ߮ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -9856,7 +11948,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আকাশমণ্ডলত আৰু পৃথিৱীত যি আছে সকলো তেওঁ জানে আৰু তোমালোকে যি গোপন কৰা আৰু যি প্ৰকাশ কৰা সেয়াও তেওঁ জানে; আৰু অন্তৰসমূহত যি আছে সেই বিষয়ে আল্লাহ সম্যক জ্ঞানী।",
       "ne": "जे–जति आकाशहरूमा र जमिनमा छन् उसले सबै जान्दछ । र जे–जति तिमीले लुकाउँछौ र खुल्ला गर्दछौ, सबै जान्दछ । र अल्लाह त छातीभित्रको कुरा पनि जान्दछ ।",
       "si": "අහස්හි හා මහපොළොවෙහි ඇති දෑ ඔහු දනී. තවද නුඹලා සඟවන දෑ ද නුඹලා හෙළි කරන දෑ ද ඔහු දනී. තවද අල්ලාහ් හදවත් සතු දෑ පිළිබඳව සර්වඥානී ය.",
-      "km": "ទ្រង់ដឹងបំផុតនូវអ្វីដែលមាននៅលើមេឃជាច្រើនជាន់និងផែនដី។ ហើយទ្រង់ក៏ដឹងបំផុតផងដែរចំពោះអ្វីដែលពួកអ្នកលាក់បាំង និងអ្វីដែលពួកអ្នកលាតត្រដាង។ ហើយអល់ឡោះមហាដឹងបំផុតនូវអ្វីដែលនៅក្នុងដួងចិត្ដ។"
+      "km": "ទ្រង់ដឹងបំផុតនូវអ្វីដែលមាននៅលើមេឃជាច្រើនជាន់និងផែនដី។ ហើយទ្រង់ក៏ដឹងបំផុតផងដែរចំពោះអ្វីដែលពួកអ្នកលាក់បាំង និងអ្វីដែលពួកអ្នកលាតត្រដាង។ ហើយអល់ឡោះមហាដឹងបំផុតនូវអ្វីដែលនៅក្នុងដួងចិត្ដ។",
+      "he": "יודע מה שבשמים ומה שבארץ, ויודע את אשר אתם מסתירים ואת אשר אתם מגלים, כי הוא יודע את מה שבלבבות.",
+      "ka": "მან იცის, რაც არის ცათა შინა და ქვეყანასა ზედა, და იცის, რასაც მალავთ და რასაც აცხადებთ. და ალლაჰმა იცის, რაც გულებშია (კარგი განზრახვა იქნება თუ ცუდი).",
+      "lt": "Jis žino, kas yra danguose ir žemėje, ir žino, ką jūs paslepiate ir ką atskleidžiate. Ir Allahas yra Visa Žinantis, kas jūsų krūtinėse.",
+      "mg": "Fantany izay any an-danitra sy ety an-tany, ary fantany ihany koa izay afeninareo sy izay abaribarinareo, ary fantatr’ Allah tsara izay raketin’ny fo.",
+      "lg": "Amanyi ebiri mu ggulu ne mu nsi, era nga bw'amanyi bye mukweka ne bye mwolesa. Anti Allah amanyi ebiri mu bifuba.",
+      "rw": "Azi ibiri mu birere n’isi, akanamenya ibyo muhisha n’ibyo mugaragaza; kandi Allah ni Umumenyi uhebuje w’ibiri mu bituza (by’abantu).",
+      "rn": "Bantu! Imana Allah Irazi ibiri mu majuru no mw’isi, Iranazi ivyo mugirira mw’ibanga n’ivyo mugirira ku mugaragaro. Kandi burya Imana Allah, Irazi n'ibinyegejwe mu mishaha.",
+      "ln": "Ayebi nyoso oyo ezali na likolo na oyo ezali na mabele, mpe ayebi maye bobombaka na maye bomonisaka polele. Mpe Allah ayebi oyo ebombami okati ya mitema.",
+      "dag": "O mila din be sagbana mini tiŋgbani ni, ka mi yi ni sɔɣiri shɛli, ni yi ni yihiri shɛli polo ni. Yaha! Naawuni nyɛla Ŋun mi din be suhiri ni.",
+      "mos": "A mii bũmb ning sẽn be saasẽ la Tẽngẽ, la A mi bũmb ning yãmb sẽn solgde la yãmb sẽn vẽnegde. Wẽnd yaa Mit ne bũmb ning sẽn be sũyẽ.",
+      "aa": "Yalli yaaxigeh qaranwaa kee baaxóh addat tanim, kaadu yaaxigeh qellissaanam kee taybulleenim, kaadu Yalli alilwah addat tanim yaaxigi kinni.",
+      "mdh": "Katawan nin (Allah) su dalem nu langit endu su lupa endu katawan nin su ipedsulen nu endu su ipebpayag nu, su Allah na gatawan ni su dalem nu pusung nu.",
+      "ak": "Ɔnim deε εwͻ soro ne asaase so (nyinaa), εna Ɔnim deε mode suma ne deε moda no adie. Nyankopͻn na Ɔnim deε εwͻ akoma mu (nyinaa).",
+      "ceb": "Siya nahibalo kon unsa ang anaa sa mga langit ug sa yuta, ug Siya nahibalo sa unsay inyong gitagoan o gidayag. Ang Allah mao ang Labing Nakahibalo sa unsay anaa sa mga dughan (sa katawhan).",
+      "nqo": "ߊ߬ ߞߵߊ߬ ߟߐ߲߫ ߝߋ߲ ߡߍ߲ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߐ߫ ߸ ߊ߬ ߣߴߊ߬ ߞߵߊ߬ ߟߐ߲߫ ߊߟߎ߫ ߦߋ߫ ߡߍ߲ ߜߎ߲߬ߘߎ߬ ߟߊ߫ ߸ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߡߍ߲ ߟߊ߲ߞߣߍߡߊ߫ ߟߊ߫ ، ߛߌߛߌ ߟߎ߬ ߘߐ߫ ߞߏ ߟߎ߬ ߟߐ߲ߓߊ߮ ߟߋ߫ ߘߏ߲߬ ߦߋ߫ ߊߟߊ߫ ߘߌ߫"
     }
   },
   {
@@ -9911,7 +12018,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহৰ অনুমতি অবিহনে কোনো বিপদেই আপতিত নহয়। যিয়ে আল্লাহক বিশ্বাস কৰে, আল্লাহে তাৰ অন্তৰক সৎপথত পৰিচালিত কৰে। আল্লাহ সকলো বিষয়ে সম্যক অৱগত।",
       "ne": "अल्लाहको आज्ञा बिना कुनै पनि संकट आउँदैन । जसले अल्लाहमाथि ईमान ल्याए अल्लाहले उनको हृदयलाई सही मार्ग देखाउँछ र अल्लाह प्रत्येक कुरा राम्ररी जान्दछ ।",
       "si": "අල්ලාහ්ගේ අනුමැතියෙන් තොරව කිසිදු ආපදාවක් සිදු නො වේ. තවද කවරෙකු අල්ලාහ්ව විශ්වාස කරන්නේ ද ඔහුගේ හදවතට ඔහු(අල්ලාහ්) මග පෙන්වයි. තවද අල්ලාහ් සියලු දෑ පිළිබඳව සර්වඥ ය.",
-      "km": "គ្មានអ្នកណាម្នាក់ទទួលរងនូវគ្រោះអ្វីមួយឡើយ លើកលែងតែដោយការអនុញ្ញាតពីអល់ឡោះប៉ុណ្ណោះ។ ហើយជនណាដែលមានជំនឿចំពោះអល់ឡោះ នោះទ្រង់នឹងចង្អុលបង្ហាញដួងចិត្ដរបស់គេ។ ហើយអល់ឡោះមហាដឹងបំផុតនូវរាល់អ្វីៗទាំងអស់។"
+      "km": "គ្មានអ្នកណាម្នាក់ទទួលរងនូវគ្រោះអ្វីមួយឡើយ លើកលែងតែដោយការអនុញ្ញាតពីអល់ឡោះប៉ុណ្ណោះ។ ហើយជនណាដែលមានជំនឿចំពោះអល់ឡោះ នោះទ្រង់នឹងចង្អុលបង្ហាញដួងចិត្ដរបស់គេ។ ហើយអល់ឡោះមហាដឹងបំផុតនូវរាល់អ្វីៗទាំងអស់។",
+      "he": "שום אסון אינו מתרחש ללא רשותו של אללה. ומי שמאמין באללה, הוא ידריך את לבו, ואללה הוא זה שיודע הכול.",
+      "ka": "რაც არ უნდა უბედურება მოხდეს, ის მხოლოდ ალლაჰის ნებით ხდება. და ვინც ირწმუნა ალლაჰი, მის გულს ის (ალლაჰი) წარმართავს და ალლაჰმა ყველაფერი იცის.",
+      "lt": "Jokios nelaimės neištinka, išskyrus tik su Allaho Leidimu. Ir kas tiki Allahą, to širdį Jis išves į teisingą kelią. Ir Allahas yra Visa Žinantis apie kiekvieną daiktą.",
+      "mg": "Tsy misy loza mahazo ny olona, raha tsy alalana avy amin’Allah fa izay mino an’Andriamanitra dia hitari-dalana ny fony Izy. Mahalala ny zava-drehetra Allah.",
+      "lg": "Tewali buzibu bwonna butuuka ku muntu okuggyako nga Allah akkirizza, oyo yenna akkiriza Allah, Allah aluŋŋamya omutima gwe. Mazima bulijjo Allah Mumanyi nnyo Wa buli kintu.",
+      "rw": "Nta kibi gishobora kuba (ku muntu) bitari ku burenganzira bwa Allah. Ndetse n’uwemeye Allah, (Allah) ayobora umutima we (mu kwemera nyako). Kandi Allah ni Umumenyi uhebuje wa buri kintu.",
+      "dag": "Yɛlibiɛɣu na ʒin nya (ninsalinima) naɣila ni Naawuni yɛda. Dinzuɣu, ninvuɣu so ŋun ti Naawuni yεlimaŋli, tɔ! O ni dolsi o suhu. Yaha! Naawuni nyɛla Ŋum mi binshɛɣu kam.",
+      "mos": "Masɩɩb pa yɩ sẽn na paam rẽndame tɩ yɩɩ ne Wẽnd sor-kũuni, la ned ning sẽn kõ sɩd ne Wẽnde, A kãndgda a sũurã. Wẽnd yaa Mit ne bũmbã fãa gilli.",
+      "aa": "Umaane inki num maxagta Yallih meklaay kay idini akke waytek, kaadu woh Yallak is xagtem nummayse num, Yalli kay sorkocobbaxa tirri haa wohul yisbireemih taagah, Yalli ummaanim yaaxigi kinni.",
+      "mdh": "Da tyuba ebpun kanu manga tyuba ya tabya na kahanda nu Allah, su taw a nangimbenal sa Allah na natutulu su atay (pusung) nin, endu su Allah a langun na enggaga-isa na katawan nin.",
+      "ak": "Mmusuo biara a εbesie no na Nyankopͻn ama ho kwan. Obiara a ͻbεgye Nyankopͻn adie no Ɔtene n’akoma. Onyankopͻn ne biribiara ho Nimdefoͻ.",
+      "ceb": "Walay katalagman nga mahitabo (kang bisan kinsa) gawas sa Pagtugot sa Allah; ug bisan kinsa nga mituo sa Allah, Siya nagtultol sa iyang kasingkasing. Ang Allāh naka-ila sa tanan.",
+      "nqo": "ߛߐ߬ߘߐ߲߬ߞߏ߬ ߛߌ߫ ߕߍ߫ ߊߟߎ߫ ߛߐ߬ߘߐ߲߬ ߕߣߊ߬ߡߊ߫ ߘߐ߫ ߝߏ߫ ߊߟߊ߫ ߟߊ߫ ߘߌ߬ߢߍ ߟߊ߫ ߸ ߡߍ߲ ߞߏ߬ߣߌ߲ ߓߊ߯ ߟߴߊߟߊ߫ ߟߊ߫ ߊ߬ ߘߴߏ ߛߣߐ߬ߡߍ ߞߊ߲ߘߊ߫ ߸ ߊߟߊ߫ ߟߋ߫ ߘߏ߲߬ ߦߋ߫ ߞߏ ߓߍ߯ ߟߐ߲ߓߊ߮ ߘߌ߫"
     }
   },
   {
@@ -9975,7 +12095,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহ, তেওঁৰ বাহিৰে আন কোনো (সত্য) ইলাহ নাই আৰু আল্লাহৰ ওপৰতেই মুমিনসকলে তাৱাক্কুল কৰা উচিত।",
       "ne": "अल्लाह बाहेक कोही वास्तविक पूजनीय छैन र मोमिनहरूले अल्लाहमै भरोसा राख्नुपर्दछ ।",
       "si": "අල්ලාහ් වනාහි ඔහු හැර වෙනත් දෙවිඳෙකු නැත. තවද විශ්වාසවන්තයෝ අල්ලාහ් වෙත ම (සියල්ල) භාර කරත්වා.",
-      "km": "អល់ឡោះ(តែមួយគត់)គ្មានព្រះជាម្ចាស់ឯណាដែលត្រូវគេគោរពសក្ការៈដ៏ពិតប្រាកដក្រៅពីទ្រង់ឡើយ។ ហេតុនេះ ចូរឱ្យបណ្ដាអ្នកមានជំនឿទាំងឡាយប្រគល់ការទុកចិត្ដលើអល់ឡោះជាម្ចាស់ចុះ។"
+      "km": "អល់ឡោះ(តែមួយគត់)គ្មានព្រះជាម្ចាស់ឯណាដែលត្រូវគេគោរពសក្ការៈដ៏ពិតប្រាកដក្រៅពីទ្រង់ឡើយ។ ហេតុនេះ ចូរឱ្យបណ្ដាអ្នកមានជំនឿទាំងឡាយប្រគល់ការទុកចិត្ដលើអល់ឡោះជាម្ចាស់ចុះ។",
+      "he": "אללה, אין עוד אלוה מלבדו, ועל אללה יישענו המאמינים.",
+      "ka": "ალლაჰი! არ არსებობს ღვთაება, გარდა მისი. დაე, მხოლოდ ალლაჰს მიენდონ მორწმუნენი.",
+      "lt": "Allahas – nėra jokios kitos dievybės, vertos garbinimo, tik Jis. Ir lai Allahu pasikliauna tikintieji.",
+      "mg": "Allah, tsy misy tompo hafa, afa-tsy Izy ! Ary amin’I Allah no aoka ianteheran’ireo mpino.",
+      "lg": "Allah Ye Yekka asinzibwa mu butuufu, tewali kisinzibwa mu butuufu okuggyako Yye, Abakkiriza bateekwa kwesiga Allah Yekka.",
+      "rw": "Allah! Nta yindi mana itari We. Bityo, abemeramana ngaho nibiringire Allah (wenyine).",
+      "rn": "Allah, ni Yo Mana ata yindi mana ibwirijwe gusengwa atari Yo. Abemeramana rero, nibishimikize Imana Allah bayizere.",
+      "ln": "Allah, nzambe mosusu azali te ya kobondela na bosóló sé ye. Mpe epai ya Allah esengeli na bandimi bamikaba.",
+      "dag": "Naawuni, duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna. Yaha! Ninvuɣu shεba ban ti Naawuni yεlimaŋli dalimmi la Naawuni ko zuɣu.",
+      "mos": "Wẽnde! Soaba kae tɩ sã n pa Yẽ ye, bɩ muumin-rãmbã bobl b mens ne Wẽnde.",
+      "aa": "Yalli inkittu kaak sa qibaada cakkisita Yalli mayan, tokkel moominiin dibuk sinni caagiidah Yallal kelittay.",
+      "mdh": "Allah, da kadenan ya tabya na sekanin (Allah) endu su Allah ipedsaligan nu manga bamaginugut.",
+      "ak": "Nyankopͻn, awurade foforͻ biara nni hͻ gyesε Ɔno. Onyankopͻn na agyidiefoͻ no mfa wͻn ho nto Ne soͻ.",
+      "ceb": "Ang Allah, wala nay laing diyos gawas Kaniya; ug ngadto sa Allah (lamang) himoa nga ang mga magtotoo mosalig.",
+      "nqo": "ߊߟߊ߫߸ ߡߊ߰ߙߌ߬ ߕߍ߫ ߊ߬ߟߋ߬ ߞߐ߫ ߸ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߴߊ߬ߟߎ߫ ߛߍ߲߬ߓߍ߬ ߊߟߊ߫ ߟߋ߬ ߟߊ߫"
     }
   },
   {
@@ -10036,7 +12171,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় তোমালোকৰ ধন-সম্পদ আৰু সন্তান-সন্ততি কেৱল এটা পৰীক্ষা বিশেষ; আৰু আল্লাহৰ ওচৰতেই আছে মহাপুৰস্কাৰ।",
       "ne": "तिम्रा माल सम्पत्ति र सन्तान त तिम्रो लागि परीक्षा हुन् र अल्लाहकहाँ ठूलो प्रतिफल छ ।",
       "si": "නියත වශයෙන් ම නුඹලාගේ ධනය ද නුඹලාගේ දරුවන් ද පරීක්ෂණයකි. තවද අල්ලාහ් වන ඔහු අබියස මහත් වූ කුලියක් ඇත.",
-      "km": "តាមពិត ទ្រព្យសម្បត្ដិរបស់ពួកអ្នក និងកូនចៅរបស់ពួកអ្នក គឺជាការសាកល្បង(ចំពោះពួកអ្នក)។ ហើយនៅឯអល់ឡោះ គឺមានផលបុណ្យយ៉ាងធំធេងបំផុត។"
+      "km": "តាមពិត ទ្រព្យសម្បត្ដិរបស់ពួកអ្នក និងកូនចៅរបស់ពួកអ្នក គឺជាការសាកល្បង(ចំពោះពួកអ្នក)។ ហើយនៅឯអល់ឡោះ គឺមានផលបុណ្យយ៉ាងធំធេងបំផុត។",
+      "he": "הממון וילדיכם הם רק ניסיון, ואצל אללה נמצא הגמול הגדול מכולם.",
+      "ka": "თქვენი ქონება და თქვენი შვილები მხოლოდ გამოცდაა, ხოლო ალლაჰთანაა დიადი საზღაური.",
+      "lt": "Jūsų turtas ir jūsų vaikai yra tik išbandymas, o Allahas pas Save turi didį atlygį (Rojų).",
+      "mg": "Fitsapana fotsiny ihany ny fanananareo sy ny zanakareo, fa any amin’Allah no misy ny valisoa lehibe.",
+      "lg": "Mazima e byobugagga bya mmwe n'abaana ba mmwe kikemo, nga ate ewa Allah we wali empeera ensukkulumu.",
+      "rw": "Mu by’ukuri imitungo yanyu n’abana banyu ni ikigeragezo, ariko Allah afite ibihembo bihambaye (Ijuru).",
+      "rn": "Mu vy’ukuri amatungo yanyu n’ibibondo vyanyu, ni ibigeragezo kuri mwebwe. Imana Allah na Yo, Irafise impembo ihambaye.",
+      "ln": "Ya sólo, misolo na bana na bino ezali mimekano, mpe epayi na Allah nde lifuta linene lizali.",
+      "dag": "Achiika! Yi daarzichi mini yi bihi nyɛla dahimbu tin ya, Naawuni mi sani ka sanyoo (laara) din galsi be.",
+      "mos": "Ad yãmb arzεgsã, la yãmb koambã yaa zarb-n-gesgɑ, la bee Wẽnd nengẽ keoor sẽn yaa bedre.",
+      "aa": "Cagalah sin maaluu kee sin xaylo siinih aqayyaare (mokkoro), Yalli kaxxa galto Íe (kay oggol doorite marah).",
+      "mdh": "Saben-sabenal su manga tamuk nu endu su manga wata nu na fitna, lu saAllah i balas a masla.",
+      "ak": "Mo agyapadeε ne mo mma yε nsͻhwε ma mo, na Nyankopͻn hͻ na akatua kεseε paa wͻ.",
+      "ceb": "Ang inyong bahandi ug ang inyong mga anak usa lamang ka pagsulay, samtang ngadto sa Allah adunay Dakong Ganti.",
+      "nqo": "ߊߟߎ߫ ߟߊ߫ ߣߊ߲߬ߝߟߏ ߟߎ߬ ߣߴߊߟߎ߫ ߘߋ߲ ߠߎ߬ ߦߋ߫ ߞߘߐߓߐߟߌ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߸ ߛߙߊ߬ߓߊ߫ ߟߋ߫ ߘߏ߲߬ ߦߋ߫ ߊߟߊ߫ ߓߟߏ߫ ߊ߬ ߕߍ߬ߟߊ ߘߐ߫"
     }
   },
   {
@@ -10100,7 +12250,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেওঁ দৃশ্য আৰু অদৃশ্য যাৱতীয় বিষয়ৰ জ্ঞানী, পৰাক্ৰমশালী, প্ৰজ্ঞাময়।",
       "ne": "ऊ परोक्ष र प्रत्यक्षलाई जान्दछ, अधिपत्यशाली तत्वदर्शी छ ।",
       "si": "(ඔහු) අදෘශ්‍යමාන දෑ හා දෘශ්‍යමාන දෑ පිළිබඳව සර්ව ඥානී ය. සර්ව බලධාරී ය. මහා ප්‍රඥාවන්ත ය.",
-      "km": "(ទ្រង់)ជាអ្នកដឹងបំផុតនូវប្រការអាថ៌កំបាំង និងប្រការដែលលាតត្រដាង មហាខ្លាំងពូកែ មហាគតិបណ្ឌិត។"
+      "km": "(ទ្រង់)ជាអ្នកដឹងបំផុតនូវប្រការអាថ៌កំបាំង និងប្រការដែលលាតត្រដាង មហាខ្លាំងពូកែ មហាគតិបណ្ឌិត។",
+      "he": "והוא היודע את הנסתר ואת הגלוי, והוא האדיר והחכם.",
+      "ka": "დაფარულისა და ცხადის მცოდნე, ძლევამოსილი, ბრძენი.",
+      "lt": "Visa Žinantis apie Nematomą ir Matomą, Visagalis, Išmintingiausias.",
+      "mg": "Izy no ilay mahafantatra ny zava-miafina sy ny miharihary, ary Izy no Ilay Tsitoha, Ilay be Fahendrena.",
+      "lg": "(Allah Oyo) amanyi ebitalabwako n'ebirabwa, Nnantakubwakumukono, akola buli kintu Mugobansonga.",
+      "rw": "Umumenyi w’ibitagaragara n’ibigaragara, Umunyacyubahiro uhebuje, Nyirubugenge buhambaye.",
+      "rn": "Izi ibinyegeje n’ibiboneka. Ni Yo Nyenintsinzi-Mutaneshwa, Intungane mu vyo Ikora.",
+      "ln": "Ayebi maye mabombami na maye mazali polele (azali) wa bokasi atonda bwanya.",
+      "dag": "O (Naawuni) nyɛla Ŋun mi din sɔɣi, ni din be polo ni, Nyεŋda, Yεmgoliŋgalana.",
+      "mos": "N yaa sẽn solg Mit la sẽn vẽneg Mita, n yaa zɩslem Naaba n yaa yam-bedr Soaba (Bʋʋd-Mitɑ).",
+      "aa": "Yalli qellitti ittam kee umbullu ittam inkih yaaxigi kinni, usuk isi reedal maysoli, isi abtol naggaara.",
+      "mdh": "Katawan nin (Allah) su gayb endu su mapayag, sekanin (Allah) i mapulu a mataw mapandadayta.",
+      "ak": "Kokoam ne Badwam Nimdefoͻ no, Otumfoͻ no a Ɔtumi ade nyinaa yε, Onyansafoͻ no.",
+      "ceb": "(Siya mao) ang Nakahibalo sa dili makita ug sa makita, ang Hingpit Gamhanan, ang Hingpit Maalamon.",
+      "nqo": "ߘߏ߲߰ߣߍ߲ ߣߌ߫ ߟߊ߲ߞߣߍߡߊߣߍ߲ ߟߐ߲ߓߊ߮ ߟߋ߬ ߸ ߣߌ߬ߣߌ߬ߟߊ ߟߋ߬ ߸ ߥߘߋ߬ߥߘߋ߬ߟߌ߬ߟߊ ߟߋ߬"
     }
   },
   {
@@ -10162,7 +12327,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে নেদেখাকৈ নিজ প্ৰতিপালকক ভয় কৰে তেওঁলোকৰ বাবে আছে ক্ষমা আৰু ডাঙৰ প্ৰতিদান।",
       "ne": "निःसंदेह जुन मानिसहरू परोक्षमा आफ्नो पालनकर्तासित डराउने गर्दछन् । उनीहरूको निम्ति क्षमा र ठूलो प्रतिफल छ ।",
       "si": "නියත වශයෙන් ම අදෘශ්‍යමානයෙහි තම පරමාධිපතිට බිය වන අය වනාහි ඔවුනට සමාව හා මහත් වූ තිළිණයක් ඇත.",
-      "km": "ពិតប្រាកដណាស់ បណ្ដាអ្នកដែលកោតខ្លាចព្រះជាម្ចាស់របស់ពួកគេក្នុងពេលស្ងាត់កំបាំង សម្រាប់ពួកគេនឹងទទួលបាននូវការអភ័យទោស និងផលបុណ្យយ៉ាងធំធេងបំផុត(ឋានសួគ៌)។"
+      "km": "ពិតប្រាកដណាស់ បណ្ដាអ្នកដែលកោតខ្លាចព្រះជាម្ចាស់របស់ពួកគេក្នុងពេលស្ងាត់កំបាំង សម្រាប់ពួកគេនឹងទទួលបាននូវការអភ័យទោស និងផលបុណ្យយ៉ាងធំធេងបំផុត(ឋានសួគ៌)។",
+      "he": "אכן, אלה אשר יראים מריבונם הנסתר, הם יזכו לרחמים. ולגמול גדול",
+      "ka": "ჭეშმარიტად, მათ, ვისაც თავიანთი უფლის ეშინიათ დაფარულში, მათთვისაა შენდობა და დიდი საზღაური.",
+      "lt": "Iš tiesų, tie, kurie bijo savo Viešpaties nematydami (nei Jo, nei Jo bausmės Sekančiame Gyvenime), gaus atleidimą ir didį atlygį.",
+      "mg": "Ireo izay matahotra ny Tompony na tsy mahita Azy aza dia hahazo famelan-keloka sy valisoa lehibe.",
+      "lg": "Mazima abo abatya omulezi Waabwe awamu n'okuba nga talabika, bagenda kufuna ekisonyiwo n'empeera ennene.",
+      "rw": "Mu by’ukuri abatinya Nyagasani wabo batamubona, bazababarirwa ibyaha ndetse banahabwe ibihembo bihebuje.",
+      "ln": "Ya soló, baye bazali kobanga Nkolo na bango nakobombama bakozuaka lifuta linene.",
+      "dag": "Achiika! Ninvuɣu shεba ban zɔri bɛ Duuma ni sɔɣisinli, tɔ! Bɛ mali chɛ mpaŋ, ni laara din galsi (Zaadali).",
+      "mos": "Ad neb nins sẽn yaeesd b Soabã ne A sẽn solgã fãa, bãmb tara yaafg la keoor sẽn bεdme.",
+      "aa": "Diggah, ablekal sinni Rabbik meesita mari, dambi cabtii kee kaxxa galató le.",
+      "mdh": "Saben-sabenal su manga taw a ipegkagilek nilan su Kadenan nilan sa gayb na sa kanilan su balas a masla.",
+      "ak": "Nokorε sε wͻn a wͻ’suro wͻn Wura (Nyankopͻn) wͻ kokoamu no benya bͻnefakyε ne akatua kεseε paa.",
+      "ceb": "Apan alang kanila nga mga mahinadlokon sa ilang Ginoo (Allah) bisan pa dili nila siya makita, sila sa pagkatinuod makabaton og Kapasayloan ug usa ka Dakong Ganti.",
+      "nqo": "ߒ߬ߓߊ߬ ߡߍ߲ ߠߎ߬ ߦߋ߫ ߛߌߟߊ߲߫ ߠߴߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߢߍ߫ ߊ߬ ߢߊߞߕߐߡߊ߫ ߸ ߜߊ߲ߒߞߎ߲ߠߊߟߌ ߟߴߏ߬ ߟߎ߬ ߦߋ߫ ߊ߬ ߣߌ߫ ߛߙߊ߬ ߓߟߋߓߟߋ"
     }
   },
   {
@@ -10214,7 +12393,16 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "te": "ఏమీ? వారు తమ ఎగిరే పక్షులు రెక్కలను ఎలా చాపుతూ ముడుచుకుంటూ, ఎగురుతున్నాయో చూడటం లేదా? ఆ అనంత కరుణామయుడు తప్ప మరెవ్వరూ వాటిని అలా నిలిపి ఉంచలేరు కదా! నిశ్చయంగా ఆయన ప్రతి దానినీ చూస్తున్నాడు!",
       "mr": "काय हे कधी आपल्या वर पक्ष्यांना पंख पसरविताना आणि (कधी) मिटविताना पाहत नाहीत? त्यांना रहमान (अल्लाह) नेच (वातावरणात व आकाशात) आधार दिलेला आहे. निःसंशय, प्रत्येक गोष्ट त्याच्या नजरेत आहे.",
       "as": "সিহঁতে সিহঁতৰ ওপৰত (উৰি ফুৰা) চৰাইবোৰৰ প্ৰতি লক্ষ্য নকৰে নেকি, যিবোৰে পাখি মেলি দিয়ে আৰু সংকুচিত কৰে? পৰম কৰুণাময় আল্লাহেই এইবোৰক স্থিৰ কৰি ৰাখে। নিশ্চয় তেওঁ সকলো বস্তুৰ সম্যক দ্ৰষ্টা।",
-      "ne": "के यिनीहरूले आफ्ना टाउकाहरूमाथि पखेटा फैलाएर वा खुम्च्याएर उडिराखेका पंक्षिहरूलाई देखेनन् ? अल्लाहले नै उनीहरूलाई हावामा थामिराखेको हुन्छ । निःसन्देह त्यसले हरेक कुरालाई देखिराखेको छ ।"
+      "ne": "के यिनीहरूले आफ्ना टाउकाहरूमाथि पखेटा फैलाएर वा खुम्च्याएर उडिराखेका पंक्षिहरूलाई देखेनन् ? अल्लाहले नै उनीहरूलाई हावामा थामिराखेको हुन्छ । निःसन्देह त्यसले हरेक कुरालाई देखिराखेको छ ।",
+      "he": "האם אינם רואים את העופות אשר מעליהם, שפורשים כנפיים ולפעמים מקפלים את כנפיהם? רק הרחמן יחזיקם, והוא רואה הכול.",
+      "lt": "Argi jie nemato paukščių virš savęs, išskleistais sparnais ir (kartais) suglaustais? Niekas nelaiko jų (aukštai), išskyrus Maloningiausiąjį. Iš tiesų, Jis yra Visa Matantis.",
+      "mg": "Tsy hitan'izy ireo va ireo voro-manidina eo amboniny, izay mamelatra sy manakombona ny elany? Ilay be fiantrana ihany no mihazona azy ireny, fa mahita ny zavatra rehetra tokoa Izy.",
+      "lg": "Abaffe tebalaba ebinyonyi ebibuukira waggulu waabwe nga byanjuluza ebiwaawaatiro era nga bwe bibiwumbako, tewali kibikuumira mu bbanga okuggyako Allah Omusaasizi, mazima Yye alaba buli kintu.",
+      "rw": "Ese ntibabona inyoni hejuru yabo uko ziguruka zirambura amababa yazo zikanayahina? Ntawe uzifata (ngo zitagwa hasi) usibye (Allah) Nyirimpuhwe. Mu by’ukuri ni Ubona buri kintu bihebuje.",
+      "mos": "Rẽ yĩnga bãmb pa get liuuli wã bãmb zugẽ tɩ b yaa sẽn yεdgd b pɩgsã la b gõtẽ, bũmb pa gãt-b sã n pa Ar-rahmaan Naab ye; ad Yẽnda yaa Net ne bũmbã fãa gilli.",
+      "aa": "Kaadu mayablaanaa keenik amól tan haadá galwá fakta waqdii kee xambaqta waqdi takkem? raddaamak tet tabbixeeh dacrissam matan Racmaan kinni Rabbi akke waytek, diggah usuk ummaanim yabali kinni.",
+      "ak": "Anaasε wͻ’nhunuu nnomaa a wͻn wͻ wͻn apampamu a, wͻ’tu bae wͻn ntaban mu san ka to mu no? Obiara nkuta wͻn mu, na mmom Ahummͻborͻ Hene no ara. Nokorε sε, Ɔno na Ohunu biribiara.",
+      "nqo": "ߊ߬ߝߐ߫ ߊ߬ߟߎ߬ ߕߍ߫ ߞߐ߬ߣߐ ߟߎ߫ ( ߞߊ߬ߡߊ߲ ߠߎ߬ ) ߘߐߝߎߟߋ߲ߣߍ߲ ߦߋ߫ ߟߴߊ߬ߟߎ߫ ߞߎ߲߬ߘߐ߫ ߓߊ߬ ߸ ߊ߬ ߣߴߊ߬ߟߎ߬ ߦߴߊ߬ ߟߊߛߌ߭ ߡߍ߲ ߞߍ߫ ߟߊ߫؟، ߒ߬ߓߊ߬ ߝߏߦߌ߬ ߕߴߏ߬ ߟߎ߬ ߘߐߡߌ߬ߘߊ߬ ߟߊ߫ ߝߏ߫ ߡߊ߬ߤߌ߬ߣߊ߬ߟߊ ߸ ߓߊ ߏ߬ ߟߋ ߢߊ߯ ߞߏ ߓߍ߯ ߟߊ߫"
     }
   },
   {
@@ -10278,7 +12466,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় মুত্তাক্বীসকলৰ বাবে তেওঁলোকৰ প্ৰতিপালকৰ ওচৰত আছে নিয়ামতপূৰ্ণ জান্নাত।",
       "ne": "निश्चय नै संयमीहरूको निम्ति उनीहरूको पालनकर्ताकहाँ उपहारवाला स्वर्गहरू छन् ।",
       "si": "නියත වශයෙන් ම බිය බැතිමතුන්ට සැප පහසුකම් සහිත ස්වර්ග උයන් ඔවුන්ගේ පරමාධිපති අබියස ඇත.",
-      "km": "ពិតប្រាកដណាស់ សម្រាប់បណ្ដាអ្នកដែលកោតខ្លាច(អល់ឡោះ) គឺទទួលបានឋានសួគ៌ណាអ៊ីមនៅឯព្រះជាម្ចាស់របស់ពួកគេ។"
+      "km": "ពិតប្រាកដណាស់ សម្រាប់បណ្ដាអ្នកដែលកោតខ្លាច(អល់ឡោះ) គឺទទួលបានឋានសួគ៌ណាអ៊ីមនៅឯព្រះជាម្ចាស់របស់ពួកគេ។",
+      "he": "אכן, לצדיקים אשר עם אללה מחכים גני העדן.",
+      "ka": "ჭეშმარიტად, ღვთისმოშიშთათვის თავიანთ უფალთან ნეტარების ბაღებია.",
+      "lt": "Iš tiesų, teisingiesiems pas savo Viešpatį – Malonumo Sodai.",
+      "mg": "Fa mahazo ireo zaridainam-pahasambarana eo akaikin'i Tompony kosa ireo vontom-pinoana.",
+      "lg": "Mazima abatya Allah balina Ejjana ez'ebyengera ewa Mukama Katonda Waabwe",
+      "rw": "Mu by’ukuri abagandukira (Allah) bazagororerwa Ijuru ryuje ingabire kwa Nyagasani wabo.",
+      "rn": "Mu vy’ukuri, abatinya ibihano vy'Imana Allah mu kwubahiriza amabwirizwa yayo, barategekanirijwe ku Mana yabo Rurema Allah, Ubwami bw’ijuru bwuzuyemwo inema.",
+      "ln": "Ya soló, babangi (Allah) bakozalaka epai ya Nkolo na bango na lola ya kitoko.",
+      "dag": "Achiika! Wuntizɔriba mali ni’ima Daalizanda bɛ Duuma (Naawuni) sani.",
+      "mos": "Ad wẽn-zoetbã tarame b Soabã nengẽ, neema arzãn-rãmba.",
+      "aa": "Diggah Yallak meesita mari, sinni Rabbih xaqul waara niqmat elle yan jannoota Ion.",
+      "mdh": "Saben-sabenal su magilek sa Allah na aden sa kanilan i manga pamulan a limu lu kanu Kadenan nilan.",
+      "ak": "Nokorε sε, Nyamesurofoͻ no bɛnya Anigyeε Aheman no wͻ wͻn Wura Nyankopͻn hͻ.",
+      "ceb": "Ang mga matarung makabaton og mga tanaman sa Kabulahanan duol sa ilang Ginoo (Allāh).",
+      "nqo": "ߡߍ߲ߘߌߦߊ߫ ( ߛߏ ) ߟߎ߫ ߟߋ߬ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߬ ߦߋ߫ ߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߕߍ߰ߟߊ ߘߐ߫ ߘߋ߬"
     }
   },
   {
@@ -10338,7 +12541,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় এইটো এটা উপদেশ, এতেকে যিয়ে ইচ্ছা কৰে, সি যেন তাৰ প্ৰতিপালকৰ পথ অৱলম্বন কৰক।",
       "ne": "यो कुरआन त निश्चय नै एउटा उपदेश हो । अब जसले चाहन्छ, आफ्नो पालनकर्तातिर मार्ग ग्रहण गरोस् ।",
       "si": "නියත වශයෙන් ම මෙය මෙනෙහි කිරීමකි. එහෙයින් කවරෙකු අභිමත කරන්නේ ද ඔහු එය තම පරමාධිපති වෙත වූ මාර්ගයක් ලෙස ගනිත්වා!",
-      "km": "ពិតប្រាកដណាស់ នេះជាការដាស់រំឭកមួយ។ ហេតុនេះ ជនណាដែលមានបំណងទទួលយកការដាស់រំលឹក ចូរឲ្យគេជ្រើសយកមាគ៌ាទៅកាន់ព្រះជាម្ចាស់របស់គេចុះ។"
+      "km": "ពិតប្រាកដណាស់ នេះជាការដាស់រំឭកមួយ។ ហេតុនេះ ជនណាដែលមានបំណងទទួលយកការដាស់រំលឹក ចូរឲ្យគេជ្រើសយកមាគ៌ាទៅកាន់ព្រះជាម្ចាស់របស់គេចុះ។",
+      "he": "זוהי תזכורת ואזהרה, כך שכל מי שרוצה יעלה על הדרך הנכונה אל ריבונו",
+      "ka": "ჭეშმარიტად, ეს (აიათები) შეგონებაა მათთვის, ვისაც სურს, რომ თავისი უფლისკენ გზა აირჩიოს.",
+      "lt": "Iš tiesų, tai – Priminimas, tad kas nori, lai renkasi kelią pas savo Viešpatį.",
+      "mg": "Tena fampatsiahivana marina ity. Koa aoka handeha amin'ny lalana mankany amin'ny Tompony izay tia izany.",
+      "lg": "(Bwekiba nga bwekityo bwekiri), mazima ddala Kulaani mugitwale nga kyakwebuulirira. N'olwekyo ayagala okuwona ateekeddwa okukwata ekkubo erimuzza eri Katonda Omulezi We.",
+      "rw": "Mu by’ukuri ibi ni urwibutso. Bityo ushaka nayoboke inzira imuganisha kwa Nyagasani we.",
+      "rn": "Mu vy’ukuri, izi Aayah za Qor’ani zigabisha, zirimwo urwibutso ku bantu. Uwushaka kwibuka rero, niyumvire Imana Allah, maze afate inzira igana ku Mana yiwe Rurema Allah.",
+      "ln": "Ya sólo, oyo ezali bokundoli, oyo alingi, azua nzela epai na Nkolo naye.",
+      "dag": "Achiika! Ŋɔ maa nyɛla teebu, dinzuɣu ninvuɣu so ŋun bɔra, tɔ! Ŋun gbibi soviεlli n-zaŋ chaŋ o Duuma (Naawuni) sani.",
+      "mos": "Ad wãnde yaa tẽegre, la ned ning sẽn tʋlla, a baooda sor n tʋg a Soabã nengẽ.",
+      "aa": "Diggah ta aayoota sinaamah kassiisik, toysa qakkaloowaah, isi nafsih maqaané faxe num isi Rabbi fanah gita yabbaxay Yallak meesii kee taaqatal.",
+      "mdh": "Saben-sabenal i nya ba indawan, entayn i pegkyug (sa surga) na mumbal silan sa lalan sa Allah.",
+      "ak": "Nokorε sε, woi yε Afutusεm, enti obi a ͻpε no ͻnfa kwan a εkͻ ne Wura Nyankopͻn hͻ no so.",
+      "ceb": "Sa pagkatinuod, kini usa ka Pasidaan, busa, si bisan kinsa nga mobuot, makahimo sa pagsubay sa Dalan sa iyang Ginoo (Allāh).",
+      "nqo": "( ߦߟߌߡߊߘߌߦߊ ߣߌ߫ ߞߐ߲߬ߞߐ߲߬ߒߡߊ ߟߝߊߙߌ ) ߢߌ߲߬ ߠߎ߬ ߦߋ߫ ߖߊ߲߬ߓߌ߬ߟߊ߬ߟߌ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߸ ߒ߬ߓߵߊ߬ ߓߊ߯ ߡߍ߲ ߘߌߦߊ߫ ߏ߬ ߦߋ߫ ߛߌߟߊ߫ ߡߌ߬ߘߴߊ߬ ߡߊ߰ߙߌ ߝߍ߬ ߞߋߟߋ߲߬"
     }
   },
   {
@@ -10401,7 +12619,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "সেইজন স্ৰষ্টা মৃতক পুনৰ্জীৱিত কৰিবলৈ সক্ষম নহয়নে বাৰু?",
       "ne": "त के उसलाई यस कुरामा सामथ्र्य छैन कि मृतकहरूलाई पुनः जीवित पारिदेओस् ।",
       "si": "(මේ සියලු දේ කළ) ඔහු, මළවුන් නැගිටුවීමට හැකියාව ඇත්තා බවට ඒවා (සාක්ෂියක් ලෙස) පිහිටා නොමැති ද?",
-      "km": "តើអ្នកដែលអាចធ្វើដូច្នោះ ពុំមែនជាអ្នកដែលមានសមត្ថភាពក្នុងការធ្វើឱ្យអ្នកស្លាប់រស់ឡើងវិញទេឬ???"
+      "km": "តើអ្នកដែលអាចធ្វើដូច្នោះ ពុំមែនជាអ្នកដែលមានសមត្ថភាពក្នុងការធ្វើឱ្យអ្នកស្លាប់រស់ឡើងវិញទេឬ???",
+      "he": "האם הוא (אללה הבורא) אינו יכול להחיות את המתים? בשם אללה הרחמן הרחום",
+      "ka": "ნუთუ მას არ ძალუძს მკვდრების გაცოცხლება?",
+      "lt": "Argi (Kūrėjas) nėra Galintis suteikti gyvybę mirusiam?",
+      "mg": "Moa va tsy afaka hamelona indray ny efa maty Izy ?",
+      "lg": "Abaffe Oyo eyakola omuntu mu ngeri eyo tasobola kulamusa bafu?!",
+      "rw": "Ese uwo (Allah ukora ibyo) si We ushoboye kuzura abapfuye?",
+      "rn": "Mbega Imana Allah Ishoboye gukora ivyo vyose, ntishoboye kuzura abapfuye, Ikabasubiza ubuzima!",
+      "ln": "Ezali (Allah) te nde azali na bokoki ya kosekwisa bawei?",
+      "dag": "Di ni bɔŋɔ, (Duuma So) Ŋun niŋ ŋɔ maa ka yiko din yɛn tooi neei kpiimba?",
+      "mos": "Rẽ yĩnga Yẽnda pa yɩ n yaa Tõod n na n vʋʋg kũ-rãmbã?",
+      "aa": "Yallay toh abe rabtem yaynuwweemih qamal geytoli hinnaa? (yeey kinnih).",
+      "mdh": "Su Allah na ya nin pan di magaga i kapanguyagan kanu minatay.",
+      "ak": "Enti (Nyankopͻn a, ͻnam anwanwa kwan a yɛakyerε yi so bͻͻ onipa no), Onni tumi sε Ɔbɛnyane owufoͻ aba nkwa mu (bio)?",
+      "nqo": "ߦߊ߯ߟߊ߫ ߏ߬ ( ߟߎ߬ ) ߞߍߓߊ߮ ߕߴߛߋ߫ ߛߎ߭ ߟߎ߬ ߟߊߞߎߣߎ߲߫ ߠߊ߫ ߓߊ߬؟"
     }
   },
   {
@@ -10460,7 +12692,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় আমি তাক পথ নিৰ্দেশ দিছোঁ, হয় সি কৃতজ্ঞ হ’ব, নহয় সি অকৃতজ্ঞ হ’ব।",
       "ne": "हामीले उसलाई मार्ग देखायौं, अब चाहे ऊ कृतज्ञ बनोस् वा कृतध्न ।",
       "si": "එම මාර්ගය වෙත නියත වශයෙන් ම අපි ඔහුට මග පෙන්වූයෙමු. ඔහු කෘතවේදියෙකු ලෙස හෝ ගුණමකුවෙකු ලෙස හෝ සිටිය හැකි ය.",
-      "km": "ពិតប្រាកដណាស់ យើងបានបញ្ជាក់ដល់គេនូវមាគ៌ា(ចង្អុលបង្ហាញនិងមាគ៌ាដែលវង្វេង)។ (ក្រោយមក) រូបគេអាចជាអ្នកដឹងគុណ ឬជាអ្នកដែលប្រឆាំង។"
+      "km": "ពិតប្រាកដណាស់ យើងបានបញ្ជាក់ដល់គេនូវមាគ៌ា(ចង្អុលបង្ហាញនិងមាគ៌ាដែលវង្វេង)។ (ក្រោយមក) រូបគេអាចជាអ្នកដឹងគុណ ឬជាអ្នកដែលប្រឆាំង។",
+      "he": "אנו הדרכנו אותו אל חזון, בין אם הוא מודה או כופר",
+      "ka": "ჭეშმარიტად, ჩვენ ვუჩვენეთ მას გზა, (რის შემდეგაც იგი თავად აირჩევს გზას და იქნება) ან მადლიერი (და მორწმუნე), ან უმადური (და ურწმუნო).",
+      "lt": "Iš tiesų, Mes vedėme jį į kelią, dėkingas jis bus ar nedėkingas.",
+      "mg": "Notarinay lalana izy, hahalala hankasitraka na haniratsira.",
+      "lg": "Mazima ddala twamulaga ekkubo, kiri gy'ali yeebaze asinze Katonda Omu oba ajeeme awakanye.",
+      "rw": "Mu by’ukuri twamweretse inzira; kugira ngo nabishaka ahitemo kwemera cyangwa guhakana (Nyagasani we).",
+      "ln": "Ya solo, tolakisaki ye nzela mpo atondo (Allah) to apengwa.",
+      "dag": "Achiika! Ti (Tinim’ Naawuni) wuhi o la soya ayi (o yi bɔra), ka o leei ŋun paɣi, bee ka o leei gutulu.",
+      "mos": "Tõnd vẽnega-la sorã, ma t'a yaa sõm-zɩta ma bark pʋʋsda.",
+      "aa": "Diggah nanu tirtô gitaa kee makô gita kaah baxxaqisneh moomintuy faatita akkee kee korostay yangadde akke yakke immay.",
+      "mdh": "Saben-sabenal na tinutulu nami sekanin sa lalan a mapya, na u di kena edsukur sekanin (a manusya) na egkafir.",
+      "ceb": "Among gipakita kaniya ang husto nga Dalan: din niini siya magapasalamat o dili mapasalamaton.",
+      "nqo": "ߊ߲ ߞߵߊ߬ ߞߊ߲ߘߊ߫ ߛߌߟߊ ߡߊ߬ ߛߊ߫ ߸ ߞߋߟߋ߲߫ ߊ߰ ߞߍ߫ ߞߏߢߌߡߊߟߐ߲ߠߊ߫ ߘߌ߫ ߥߟߴߊ߬ ߦߋ߫ ߞߍ߫ ߞߏߢߌߡߊߟߐ߲ߓߊߟߌ߫ ߘߌ߫"
     }
   },
   {
@@ -10524,7 +12769,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আমি পৃথিৱীখনক শয্যা বনোৱা নাইনে?",
       "ne": "के हामीले धरतीलाई ओछ्यान बनाएनौं ?",
       "si": "අපි මහපොළොව තොටිල්ලක් ලෙස පත් නො කළෙමු ද?",
-      "km": "តើយើង(អល់ឡោះ)មិនបានបង្កើតផែនដីឱ្យមានសណ្ឋានលាតសន្ធឹង"
+      "km": "តើយើង(អល់ឡោះ)មិនបានបង្កើតផែនដីឱ្យមានសណ្ឋានលាតសន្ធឹង",
+      "he": "הלא שיטחנו את הארץ כשטיח?",
+      "ka": "ნუთუ ჩვენ არ გავხადეთ მიწა ვაკედ?",
+      "lt": "Argi Mes nepadarėme šios žemės poilsio vieta?",
+      "mg": "Moa ve tsy nataoko ho toeram-pialan-tsasatra ny tany?",
+      "lg": "Abaffe tetwabafuulira ensi ekyaliiro?!",
+      "rw": "Ese isi ntitwayigize nk’isaso?",
+      "rn": "Mbega Twebwe Allah, ntitwagize isi nk’isaso!",
+      "ln": "Tozalisaki te mabele etando?",
+      "dag": "Di ni bɔŋɔ, Ti (Tinim’ Naawuni) bi zaŋ tiŋgbani leei binyɛrgili?",
+      "mos": "Tõnd pa maan Tengã t'a yaa sẽn yεdge?",
+      "aa": "Baaxó fidó siinih maabinninoo?",
+      "mdh": "Ngintu da nami baluya su lupa sa belat?",
+      "ak": "Yεnfaa asaase nsεε hͻ ntrεε mu?",
+      "ceb": "Wala ba Kami nagbuhat sa yuta ingon nga patag nga dapit pahulayanan alang kaninyo?",
+      "nqo": "ߦߊ߯ߟߴߊ߲ ߡߊ߫ ߘߎ߱ ߞߍ߫ ߖߍ߰ߖߍ߮ ߘߌ߫ ߓߊ߬؟"
     }
   },
   {
@@ -10585,7 +12845,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে ঈমান আনিছে আৰু সৎকৰ্ম কৰিছে তেওঁলোকৰ বাবে আছে জান্নাত, যাৰ তলত নদীমালা প্ৰবাহিত; এইটোৱে হৈছে মহা সফলতা।",
       "ne": "निःसन्देह जसले ईमान ल्याए र असल कर्म गरिरहे उनीहरूको निम्ति बगैंचाहरू छन् जसमुनि नहरहरू बगिराखेका छन्, यही नै ठूलो सफलता हो ।",
       "si": "සැබැවින් ම විශ්වාස කොට යහකම් කළවුන් වන ඔවුනට ඊට පහළින් ගංගාවන් ගලා බසින (ස්වර්ග) උයන් ඇත. එයයි අතිමහත් ජයග්‍රහණ ය.",
-      "km": "ពិតប្រាកដណាស់ បណ្ដាអ្នកដែលមានជំនឿ និងបានសាងនូវទង្វើកុសល សម្រាប់ពួកគេនឹងទទួលបានឋានសួគ៌ដែលមានទនេ្លជាច្រើនហូរកាត់ពីក្រោមវា។ នោះហើយជាជោគជ័យដ៏ធំធេងបំផុត។"
+      "km": "ពិតប្រាកដណាស់ បណ្ដាអ្នកដែលមានជំនឿ និងបានសាងនូវទង្វើកុសល សម្រាប់ពួកគេនឹងទទួលបានឋានសួគ៌ដែលមានទនេ្លជាច្រើនហូរកាត់ពីក្រោមវា។ នោះហើយជាជោគជ័យដ៏ធំធេងបំផុត។",
+      "he": "אך אלו אשר מאמינים, ועושים את המעשים הטובים, הם יזכו בגן-עדן שמתחתיו זורמים נהרות...וזה הניצחון הגדול!",
+      "ka": "ჭეშმარიტად, ისინი, ვინც ირწმუნეს და კეთილი საქმეები აკეთეს — მათთვისაა გამზადებული (სამოთხის) ბაღები, რომელთა ქვეშაც მდინარეები მოედინება. ეს არის დიდი წარმატება!",
+      "lt": "Iš tiesų, tie, kurie patikėjo ir darė teisingus darbus, turės Sodus, po kuriais teka upės (Rojų). Tai yra didis pasiekimas.",
+      "mg": "Fa ireo izay nino sy nanao ny asa soa kosa dia hahazo ny paradisa izay ahitana renirano mikoriana eo ambany; izany no tena fahombiazana lehibe.",
+      "lg": "Mazima abo abakkiriza ne bakola emirimu emirungi bajja kufuna Ejjana nga zikulukutiramu emigga. Okwo nno kwe kwesiima okwannamaddala.",
+      "rw": "Mu by’ukuri abemeye bakanakora ibikorwa byiza, bazagororerwa ubusitani butembamo imigezi (Ijuru). Iyo ni yo ntsinzi ihebuje.",
+      "ln": "Ya soló, baye bandimi mpe basali misala ya malamu bakozwaka Iola eye mingala mizali kotiola na nsé na yango. Wana nde ezali elonga ya monene.",
+      "dag": "Achiika! Ninvuɣu shɛba ban ti Naawuni yɛlimaŋli, ka tum tuunsuma, bɛ mali Alizanda yili shɛŋa kulibona ni yɛn ti zɔri gindi di lɔŋ ni, dina n-nyɛ tarli din galsi.",
+      "mos": "Ad neb nins sẽn kõ-b sɩdã la b tʋm sẽn sõmbã, Arzãn bee ne-ba, tɩ ko-sood zoet a tẽngrã, ad wãndã la paoong sẽn bedme.",
+      "mdh": "Saben-sabenal na silan antu a namalityala endu minggagalebek sa manga mapya na aden kanilan i kasulgan a pelagilay kanu kababan nin su manga lawas a ig entuba su bantugan a masla.",
+      "ak": "Nokorε sε, wͻn a wͻagye adie, na wͻdii dwuma pa no, wͻbɛnya Ahemman a, nsubͻnten nenam aseε; na εno ne Nkonimdie kεseε no.",
+      "ceb": "Kadtong mga mituo ug nagbuhat sa matarung nga mga buhat, sila makabaton og mga Tanaman nga sa ubos niini anaa ang mga suba nga nagadagayday, kana mao ang Dakong Kalamposan.",
+      "nqo": "ߡߍ߲ ߠߎ߫ ߞߏ߬ߣߌ߲ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߡߍ߲ߘߌߦߊ ߟߎ߫ ߟߴߏ߬ ߟߎ߬ ߦߋ߫ ، ߞߐ߬ߢߊ ߟߎ߬ ߦߋ߫ ߥߦߏ߬ ߟߴߏ߬ ߟߎ߬ ߞߘߐߟߊ ߟߎ߬ ߘߐ߫ ߸ ߏ߬ ߘߏ߲߬ ߦߋ߫ ߣߌ߬ߓߊ߫ ߓߟߋ߬ߓߟߋ߫ ߟߋ߬ ߘߌ߫"
     }
   },
   {
@@ -10649,7 +12922,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তেৱেঁই অস্তিত্ব প্ৰদান কৰে আৰু তেৱেঁই পুনৰাৱৰ্তন ঘটায়,",
       "ne": "उसैले पहिलो पटक सृष्टि गर्दछ र उसैले दोस्रो पटक (जीवित) गर्नेछ ।",
       "si": "(පූර්වාදර්ශයක් නොමැති ව) නිර්මාණය කරන්නේ ද යළි සකස් කරන්නේ ද ඔහු ම ය.",
-      "km": "ពិតប្រាកដណាស់ ទ្រង់ជាអ្នកដែលបានបង្កើត(ភាវៈទាំងអស់)ពីដំបូង ហើយទ្រង់ជាអ្នកត្រឡប់វាមកវិញ។"
+      "km": "ពិតប្រាកដណាស់ ទ្រង់ជាអ្នកដែលបានបង្កើត(ភាវៈទាំងអស់)ពីដំបូង ហើយទ្រង់ជាអ្នកត្រឡប់វាមកវិញ។",
+      "he": "זה הוא אשר ברא ואשר חוזר לברוא,",
+      "ka": "ჭეშმარიტად, ის იწყებს შექმნას და კვლავ იმეორებს მას.",
+      "lt": "Iš tiesų, tai Jis, Kuris pradeda (bausti) ir pakartoja (bausmę Pomirtiniame gyvenime) (arba duoda pradžią visai kūrinijai ir tada pakartoja tai Prikelties Dieną).",
+      "mg": "Ary Izy ilay mpahary ny tany am-piandohana, ary Izy ihany koa no hanangana indray ny amin'ny maty.",
+      "lg": "Mazima ddala Yye Ye Mutandisi Wa buli kintu era Ye Wookubizzaawo.",
+      "rw": "Mu by’ukuri ni We waremye (ibiremwa bitari biriho) kandi ni na We uzabigarura (ku munsi w’imperuka).",
+      "rn": "Mu vy’ukuri, ni Yo Yatanguje kurema ibiremwa vyose ata co Irinze gufatirako, kandi ni Yo Izobisubiza ubuzima, biheze bizuke.",
+      "ln": "Ye nde abandaka mpe azongelaka (bokeli).",
+      "dag": "Achiika! Ŋuna n-nyɛ Ŋun piindi nambu, ka labsiri li na (gballi ni, bee Chiyaama dali).",
+      "mos": "Ad yaa Yẽ n sɩngd (naanegã) la A lebsdẽ.",
+      "aa": "Diggah usuk ginó suge way tik qimbisaah, ken bayseek geeral ken gacisah.",
+      "mdh": "Saben-sabenal na sekanin (Allah) i pangebpun endu papembalingan.",
+      "ak": "Nokorε sε, Ɔno na Ɔhyεε aseε bͻͻ adeε, εna Ɔbεsan de aba nkwa mu bio.",
+      "ceb": "Sa pagkatinuod ang Allah mao ang nagbuhat (sa tanang butang) gikan sa sinugdanan, ug magpabalik niini (sa kinabuhi human sa kamatayon alang sa Paghukom),",
+      "nqo": "ߊ߬ߟߋ ߞߊ߬ߣߌ߲ ߸ ߊ߬ߟߋ ߟߋ߬ ߟߊ߬ߝߟߐ߬ߟߌ ߞߍ߫ ߟߊ߫ ߞߊ߬ ߣߐ߬ߡߛߊ߬ߦߌ߬ߟߌ ߝߣߊ߫ ߞߍ߫"
     }
   },
   {
@@ -10710,7 +12998,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "প্ৰত্যেক জীৱৰ ওপৰতেই এজন তত্ত্বাৱধায়ক আছে।",
       "ne": "कुनै व्यक्ति यस्तो छैन जसमाथि एउटा फरिश्ता निरीक्षक नियुक्त नहोस् ।",
       "si": "නිරීක්ෂකයකුගෙන් තොර ව කිසිදු ආත්මයක් නොමැත.",
-      "km": "រាល់ជីវិតគ្រប់រូបសុទ្ធតែមានអ្នកឃ្លាំមើល(គ្រប់ទង្វើរបស់គេ)។"
+      "km": "រាល់ជីវិតគ្រប់រូបសុទ្ធតែមានអ្នកឃ្លាំមើល(គ្រប់ទង្វើរបស់គេ)។",
+      "he": "אין אפילו יצור אחד שנשאר ללא (מלאך) משגיח.",
+      "lt": "Nėra jokios kitokios sielos kaip tik turinčios savo globėją (t. y. angelus, atsakingus už kiekvieną žmogų, saugančius, rašančius jo gerus ir blogus darbus).",
+      "mg": "Eny! Tsy misy fanahy ka tsy manana mpiambina,",
+      "lg": "Buli muntu yenna aliko abakuumi (Bamalayika).",
+      "rw": "Nta muntu utagira umugenzuzi (abamalayika bashinzwe kugenzura ibikorwa bya muntu).",
+      "rn": "Ndarahiye kuri ivyo vyose, ko ata muntu n’umwe kiretse ko afise umubungabunzi azigama ibikorwa vyiwe mu bamalayika, kugira azobihemberwe!",
+      "ln": "Ezali na molimo moko te sé azala na mokengeli likolo naye.",
+      "dag": "Nyɛvuli n-kani naɣila di malila ŋun (Malaaika so) guli li.",
+      "mos": "Ad yõor fãa, a tara gũusda.",
+      "aa": "Hebeltô nafsi mayan malaykatti dacayrih amol kaak yanih akke waytek.",
+      "mdh": "Uman isa a balangyawa na aden lun i pedtiyakap.",
+      "ak": "Ɔkra biara nni hͻ a, ͻwεnfoͻ nni ne soͻ.",
+      "ceb": "Walay usa nga kalag apan sa ibabaw niini adunay magbalantay (anghel).",
+      "nqo": "ߣߌߡߊ߫ ߛߌ߫ ߕߴߦߋ߲߬ ߸ ߝߏ߫ ߞߣߐ߬ߜߍ߲߬ߓߊ߯ ߦߋ߫ ߞߍ߫ ߊ߬ ߟߊ߫"
     }
   },
   {
@@ -10771,7 +13073,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় তোমাৰ প্ৰতিপালকে সতৰ্ক দৃষ্টি ৰাখে।",
       "ne": "निःसन्देह तिम्रो पालनकर्ता हेरी घातमा छ ।",
       "si": "සැබැවින්ම නුඹගේ පරමාධිපති රැක බලා සිටින්නා ය.",
-      "km": "ពិតប្រាកដណាស់ ព្រះជាម្ចាស់របស់អ្នក ទ្រង់ពិតជាអ្នកដែលឃ្លាំមើល។"
+      "km": "ពិតប្រាកដណាស់ ព្រះជាម្ចាស់របស់អ្នក ទ្រង់ពិតជាអ្នកដែលឃ្លាំមើល។",
+      "he": "כי אכן, ריבונך אורב!",
+      "ka": "ჭეშმარიტად, შენი უფალი მეთვალყურეა.",
+      "lt": "Iš tiesų, tavo Viešpats – akylai prižiūrintis.",
+      "mg": "Tena marina ! Ny tomponao dia manara-maso fatratra.",
+      "lg": "Mazima ddala Omuleziwo (Allah) abalindiridde.",
+      "rw": "Mu by’ukuri Nyagasani wawe yiteguye guhana (inkozi z’ibibi).",
+      "rn": "Ntumwa y’Imana! Mu vy’ukuri Imana yawe Rurema Allah, ni Umureretsi w’ivyo bakoze, Iratenyenya ntiyibagira.",
+      "ln": "Mpo ete Nkolo nayo azali kotala.",
+      "dag": "A nya ninsala, o Duuma yi dahimmi o ka tibgi o, ka niŋ o",
+      "mos": "Ad fo Soabã yaa gũusda ( kordɑ).",
+      "aa": "Nabiyow diggah, ku Rabbi külli seehadaytih taama dacrisaah ken elle gälte le.",
+      "mdh": "Saben-sabenal na su Kadenan nengka (Muhammad) na labi masuliman.",
+      "ak": "Nokorε sε, wo Wura Nyankopͻn tε hͻ rewεn.",
+      "ceb": "Sa pagkatinuod! Ang imong Ginoo (Allah) kanunay nga Mabinantayon.",
+      "nqo": "ߓߊ ߌ ߡߊ߰ߙߌ ߦߋ߫ ߜߟߊ߬ߟߊ߬ߛߌ߰ ߦߙߐ ߘߐ߫ ߟߋ߫ ߘߋ߬"
     }
   },
   {
@@ -10834,7 +13151,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "তাৰ বাবে আমি দুটা চকু সৃষ্টি কৰা নাইনে?",
       "ne": "के हामीले उसलाई दुईटा आँखा दिएनौं ।",
       "si": "අපි ඔහුට දෑස් ඇති නො කළෙමු ද?",
-      "km": "តើយើងមិនបានបង្កើតឱ្យគេមានភ្នែកពីរ"
+      "km": "តើយើងមិនបានបង្កើតឱ្យគេមានភ្នែកពីរ",
+      "he": "האם לא בראנו לו זוג עיניים?",
+      "ka": "ნუთუ ჩვენ არ მივეცით მას თვალები, რათა ხედავდეს?",
+      "lt": "Argi Mes nepadarėme jam dviejų akių?",
+      "mg": "Moa va tsy nohariako ho azy ireo ny masony roa ?",
+      "lg": "Tetwamuwa amaaso abiri g'alabisa?!",
+      "rw": "Ese ntitwamuhaye amaso abiri,",
+      "rn": "Mbega, Twebwe Allah Ntitwamuhaye amaso abiri abonesha!",
+      "dag": "Di ni bɔŋɔ, Ti (Tinim’ Naawuni) bi zali o ka o mali nina ayi?",
+      "mos": "Tõnd pa maan nin a yiib n kõ-a sɩdɑ?",
+      "aa": "Namma inti kaah mahanninoo edde yabaluh?",
+      "mdh": "Ngintu da nami baluya sa lekanin i duwa a mata?",
+      "ak": "Yɛamma no ani mmienu,-",
+      "ceb": "Wala ba Kami nagbuhat alang kaniya ug duha ka mata?",
+      "nqo": "ߊ߬ ߝߐ߫ ߒ߬ߠߎ߫ ߟߋ߬ ߡߊ߫ ߢߊ߫ ߝߌ߬ߟߊ߬ ߞߍ߫ ߊ߬ ߟߊ߫ ߘߍ߫؟"
     }
   },
   {
@@ -10897,7 +13228,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় তোমালোকৰ কৰ্মপ্ৰচেষ্টা বিভিন্ন প্ৰকৃতিৰ।",
       "ne": "निःसंदेह तिम्रो प्रयास भिन्न–भिन्न छ ।",
       "si": "නියත වශයෙන්ම නුඹලාගේ උත්සාහයන් විවිධ ය.",
-      "km": "ជាការពិតណាស់ ទង្វើរបស់ពួកអ្នក(មនុស្សលោក) គឺខុសៗគ្នា។"
+      "km": "ជាការពិតណាស់ ទង្វើរបស់ពួកអ្នក(មនុស្សលោក) គឺខុសៗគ្នា។",
+      "he": "אכן, מעשיכם נבדלים!",
+      "ka": "ჭეშმარიტად, თქვენი სწრაფვები არაერთგვაროვანია.",
+      "lt": "Iš tiesų, jūsų pastangos yra skirtingos (tikslais ir priežastimis).",
+      "mg": "Fa raha ny tena marina, ny asanareo dia samihafa,",
+      "lg": "Mazima dala okulafuubana kwammwe si kwe kumu.",
+      "rw": "Mu by’ukuri ibikorwa byanyu biratandukanye,",
+      "rn": "Bantu! Mu vy’ukuri ibikorwa vyanyu biri kwinshi; muri mwebwe harimwo uwukorera isi, hakabamwo n’uwukorera ubuzima bw’inyuma yo gupfa.",
+      "ln": "Ya soló, molende na bino ezali ya kokesene.",
+      "dag": "Achiika! Yi tuuntumsa nyɛla koŋkoba.",
+      "mos": "Ad yãmb tʋʋmã yaa toay-toaya.",
+      "aa": "Diggah sin taama sissinih, isin addunyah taamita maraa kee akeerah taamita marah anuk.",
+      "mdh": "Saben-sabenal na langun u galebekan nu na midsempad-sempad.",
+      "ak": "“Nokorε, mo mmͻdemmͻ gu sonoko-sonoko”.",
+      "ceb": "Sa pagkamatuod ang inyong manga paninguha nag-kadaiya,",
+      "nqo": "ߤߋ߫ ߸ ߊߟߎ߫ ߗߋߥߊߟߌ ( ߟߎ߬) ߝߘߊߝߘߊߣߍ߲߫ ߠߋ߫ ߘߋ߬"
     }
   },
   {
@@ -10961,7 +13307,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "এতেকে দুখৰ লগতেই আছে সুখ",
       "ne": "निःसन्देह कठिनाइको साथमा सरलता पनि छ ।",
       "si": "එබැවින් නියත වශයෙන් ම දුෂ්කරතාව සමඟ පහසුව ඇත.",
-      "km": "ហើយពិតប្រាកដណាស់ ទន្ទឹមនឹងការលំបាក គឺមានភាពងាយស្រួល។"
+      "km": "ហើយពិតប្រាកដណាស់ ទន្ទឹមនឹងការលំបាក គឺមានភាពងាយស្រួល។",
+      "he": "ואכן, לאחר המצוקה תבוא הרווחה,",
+      "ka": "და ჭეშმარიტად, სიძნელესთან ერთად მოდის სიმარტივე [შემსუბუქება].",
+      "lt": "Juk iš tiesų, su sunkumu (bus) lengvumas (t. y. palengvėjiimas).",
+      "mg": "Tena marina fa aorian'ny fahasarotana dia ny fahamorana.",
+      "lg": "Mazima ddala buli awabeera obuzibu, wabaawo obwangu.",
+      "rw": "Mu by’ukuri nyuma y’ingorane haza ibihe byiza.",
+      "rn": "Ntuzobuzwe rero n’ibangamirwa ry’abakwanka, gushikiriza ubutumwa. Burya mu vy’ukuri, akaga n’agahengwe biragendana.",
+      "ln": "Ya soló, mpasi ezalaka péne ya esengo.",
+      "dag": "Tɔ! Achiika! Miisim be mi ni faako.",
+      "mos": "Bɩ f bãng tɩ yol-yol pʋgda keelmã.",
+      "aa": "Toysa diggah gibdaabinâ luk xabca tan.",
+      "mdh": "Na saben-sabenal na makasaleta kanu malegen su malemu.",
+      "ak": "Nokorε sε, ahokyerε akyi ahotͻ na εwͻ hͻ.",
+      "ceb": "Kay sa pagkatinuod uban sa matag kalisdanan adunay kasayon (kaharuhay).",
+      "nqo": "ߒ߬ߓߊ߬ ߣߐ߰ߦߊ ߦߋ߫ ߜߟߍ߬ߦߊ ߟߋ߫ ߝߍ߬ ߘߋ߬"
     }
   },
   {
@@ -11023,7 +13384,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় দুখৰ লগতেই আছে সুখ।",
       "ne": "निःसन्देह कष्टको साथ सजिलो (सरलता) छ ।",
       "si": "සැබැවින් ම දුෂ්කාරතාව සමඟ පහසුව ඇත.",
-      "km": "ពិតប្រាកដណាស់ ទន្ទឹមនឹងការលំបាក គឺមានភាពងាយស្រួល។"
+      "km": "ពិតប្រាកដណាស់ ទន្ទឹមនឹងការលំបាក គឺមានភាពងាយស្រួល។",
+      "he": "אכן, לאחר המצוקה תבוא הרווחה.",
+      "ka": "ჭეშმარიტად, სიძნელესთან ერთად მოდის სიმარტივე [შემსუბუქება].",
+      "lt": "Iš tiesų, su sunkumu (bus) lengvumas.",
+      "mg": "Eny ! Aorian'ny fahasarotana dia ny fahamorana.",
+      "lg": "Mazima ddala buli awabeera obuzibu wabaawo obwangu.",
+      "rw": "Rwose, nyuma y’ingorane haza ibihe byiza.",
+      "rn": "Burya mu vy’ukuri, akaga n’agahengwe biragendana.",
+      "ln": "Ya solo, mpasi ezalaka péne ya esengo.",
+      "dag": "Achiika! Miisim be mi ni faako.",
+      "mos": "Ad yol-yol pʋgda keelmã",
+      "aa": "Diggah gibdaabinâ luk xabca tan.",
+      "mdh": "Saben-sabenal na makasaleta kanu malegen su malemu.",
+      "ak": "Nokorε sε, ahokyerε akyi ahotͻ na εwͻ hͻ.",
+      "ceb": "Sa pagkatinuod uban sa matag kalisdanan moabut ang kasayon (kaharuhay).",
+      "nqo": "ߣߐ߰ߦߊ ߦߋ߫ ߜߟߍ߬ߦߊ ߟߋ߫ ߝߍ߬ ߝߊ߯ߛߌ߫"
     }
   },
   {
@@ -11086,7 +13462,21 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "আল্লাহ বিচাৰকসকলৰ মাজত সৰ্বশ্ৰেষ্ঠ বিচাৰক নহয়নে?",
       "ne": "के अल्लाह सबै हाकिमहरूभन्दा ठूलो हाकिम होइन र ?",
       "si": "විනිශ්චකරුවන්ගෙන් මහා විනිශ්චයකරු අල්ලාහ් නො වේ ද?",
-      "km": "តើមិនមែនអល់ឡោះជាម្ចាស់ទេឬដែលជាអ្នកកាត់សេចក្ដីដ៏សុក្រឹតបំផុតក្នុងចំណោមអ្នកកាត់សេចក្ដីទាំងឡាយនោះ?"
+      "km": "តើមិនមែនអល់ឡោះជាម្ចាស់ទេឬដែលជាអ្នកកាត់សេចក្ដីដ៏សុក្រឹតបំផុតក្នុងចំណោមអ្នកកាត់សេចក្ដីទាំងឡាយនោះ?",
+      "he": "אכן, הלא אללה הוא המושלם שבשופטים?",
+      "ka": "განა არ არის ალლაჰი ყველაზე სამართლიანი მსაჯული?",
+      "lt": "Argi ne Allahas yra teisingiausias iš teisėjų?",
+      "mg": "Moa tsy Allah va no mpitsara mendrika indrindra?",
+      "lg": "Abaffe Allah si Ye Mulamuzi asinga okuba omwenkanya era owamazima?!",
+      "rw": "Ese Allah si We Mucamanza usumba abandi?",
+      "rn": "Mbega burya Imana Allah, Yategekanije umusi wo gutunganiriza ibiremwa, si Yo Nyene kugira ubutungane bubereye ku biremwa vyayo gusumba abacamanza bose! Yobuzwa n’iki! Ego cane, ni Yo!",
+      "ln": "Allah azali te zuzi wa bazuzi?",
+      "dag": "Di ni bɔŋɔ, pa Naawuni n-nyɛ Ŋun gari ban kam zaandi fukumsi fukumsi zalibu?",
+      "mos": "Rẽ yĩnga pa Wẽnd n yɩɩd bʋʋdbã fãa ne bʋʋd minim?",
+      "aa": "Yalli mekla abba haytaamak meklah yaysi hinnaa? Yeey, kinnih.",
+      "mdh": "Ngintu kena ba su Allah i labi a matidtu i kakukumin kanu langun nu manga pakukukum?",
+      "ak": "Enti εnnyε Nyankopͻn ne atemmufoͻ no mu Otemmufo?",
+      "nqo": "ߊ߬ ߝߐ߫ ߊߟߊ߫ ߕߍ߫ ߞߕߌߕߍ߯ߟߊ ߟߎ߬ ߘߐ߫ ߞߕߌߕߍ߯ߟߊ߫ ߞߎߛߊ߲ ߘߌ߫ ߘߍ߫؟"
     }
   },
   {
@@ -11149,7 +13539,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় তোমাৰ প্ৰতিপালকৰ ওচৰতেই প্ৰত্যাৱৰ্তন।",
       "ne": "यसमा कुनै सन्देह छैन कि तिम्रो पालनकर्तातिर नै फर्किजानु पर्नेछ ।",
       "si": "නියත වශයෙන් ම නැවත හැරී යාම නුඹගේ පරමාධිපති වෙත ය.",
-      "km": "ពិតប្រាកដណាស់ កន្លែងវិលត្រឡប់(នៅថ្ងៃបរលោក) គឺឆ្ពោះទៅកាន់ព្រះជាម្ចាស់របស់អ្នក។"
+      "km": "ពិតប្រាកដណាស់ កន្លែងវិលត្រឡប់(នៅថ្ងៃបរលោក) គឺឆ្ពោះទៅកាន់ព្រះជាម្ចាស់របស់អ្នក។",
+      "he": "אכן, אל ריבונך תשוב.",
+      "ka": "ჭეშმარიტად, შენს უფალთან იქნება დაბრუნება.",
+      "lt": "Iš tiesų, pas tavo Viešpatį yra sugrįžimas.",
+      "mg": "kanefa any amin'ny Tomponao tokoa no hiverenana.",
+      "lg": "Mazima ddala eri Omulezi Wo (Allah) y’eri obuddo.",
+      "rw": "Mu by’ukuri (umenye ko) kwa Nyagasani wawe ari ho garukiro.",
+      "rn": "Mu vy’ukuri uburuhukiro bwiwe, ni ku Mana yawe Rurema Allah, Izomuhembera ivyo yakoze.",
+      "ln": "Nzoka nde bozongi ezali epai ya Nkolo nayo.",
+      "dag": "Achiika! Labbu shee nyɛla a Duuma (Naawuni) sani.",
+      "mos": "Ad lεbengã pata f Soabã nengẽ.",
+      "aa": "Diggah madaara ku Rabbí fanah takke Nabiyow.",
+      "mdh": "Saben-sabenal (Muhammad) na lu kanu Kadenan nengka i kambalinganan.",
+      "ak": "Nokorε sε, wo Wura Nyankopͻn hͻ ne (onipa) nnkyi.",
+      "ceb": "Sa pagkatinuod, ngadto sa (Allah) nga imong Ginoo mao ang (katapusan) nga Pagbalik (sa tanan).",
+      "nqo": "ߞߐߛߊߦߌ߲ ߘߏ߲߬ ߞߍߕߐ߫ ߌ ߡߊ߰ߙߌ ߟߋ߫ ߡߊ߬ ߘߋ߬"
     }
   },
   {
@@ -11210,7 +13615,20 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "লাইলাতুল ক্বদৰ হৈছে এহেজাৰ মাহতকৈও শ্ৰেষ্ঠ।",
       "ne": "शबेकद्र एक हजार महीनाभन्दा राम्रो छ ।",
       "si": "බලගතු රාත්‍රිය මාස දහසකට වඩා උතුම්ය.",
-      "km": "យប់ឡៃឡាទុលកទើរ គឺល្អប្រសើរជាងមួយពាន់ខែ។"
+      "km": "យប់ឡៃឡាទុលកទើរ គឺល្អប្រសើរជាងមួយពាន់ខែ។",
+      "he": "ליל הגורל טוב יותר מאלף חודשים.",
+      "lt": "Al-Kadr (Lemties) Naktis (garbinti Allahą tą naktį yra geriau nei garbinti Jį tūksantį mėnesių t. y. 83 metus ir 4 mėnesius) yra geriau nei tūkstantis mėnesių.",
+      "mg": "Ny alin'ny lahatra dia tsara lavitra mihoatra ny arivo volana.",
+      "lg": "Layila-tul-kadri kiro kirungi okusinga emyezi olukumi (1,000).",
+      "rw": "Ijoro ry’igeno riruta amezi igihumbi (ibyiza bikozwe muri iryo joro birusha ibihembo ibikozwe mu gihe kingana n’amezi igihumbi)!",
+      "ln": "Butu ya mokano ezali malamu koleka sanza koto moko.",
+      "dag": "Yuŋ shɛli din mali darza maa gari chirili tuhili.",
+      "mos": "Kordgã yʋng sõmblem yɩɩda kiis-tusri.",
+      "aa": "Leylatul Qhadri usuk baray muxxó ley, alfi alsak kayrih aysuk raaqa kinni.",
+      "mdh": "Su magabi a inukul na ya tumu kumin kanu sangibu a ulan-ulan.",
+      "ak": "Tumi anaa Nhyehyεe Anadwo no (mu nhyira) kyεn bosome apem.",
+      "ceb": "Ang Gabii sa himaya ug gahum - Dekreto- labing maayo pa kay sa usa ka libo ka mga bulan.",
+      "nqo": "ߟߊ߬ߕߍ߮ ߛߎ ߓߊ߬ ߸ ߏ߬ ߦߊ߯ ߝߌ߬ߛߊ߬ ߞߊߙߏ߫ ߥߊ߯ߞߋߟߋ߲߫ ߘߌ߫"
     }
   },
   {
@@ -11274,7 +13692,22 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে ঈমান আনিছে আৰু নেক আমল কৰিছে, তেওঁলোকেই হৈছে সৃষ্টিৰ শ্ৰেষ্ঠ।",
       "ne": "र जसले ईमान ल्याए र असल कर्म गरिरहे, तिनीहरू सम्पूर्ण प्राणीहरूमा राम्रा हुन् ।",
       "si": "සැබැවින් ම විශ්වාස කොට දැහැමි ක්‍රියාවන් කළවුන් වනාහි ඔවුහු මය මැවීම් අතරින් ශ්‍රේෂ්ඨම මැවීම වනුයේ.",
-      "km": "ពិតប្រាកដណាស់ បណ្ដាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសល អ្នកទាំងនោះហើយជាភាវៈដែលល្អបំផុត។"
+      "km": "ពិតប្រាកដណាស់ បណ្ដាអ្នកដែលមានជំនឿ និងបានសាងទង្វើកុសល អ្នកទាំងនោះហើយជាភាវៈដែលល្អបំផុត។",
+      "he": "הן, אלה, אשר האמינו ועשו חסדים, הם המשובחים שביצורים,",
+      "ka": "ჭეშმარიტად, ისინი, ვინც ირწმუნეს და კეთილი საქმეები აკეთეს — ისინი არიან ქმნილებათა შორის საუკეთესოები.",
+      "lt": "Iš tiesų, tie, kurie patikėjo (Allaho Vienumą ir Jo Pasiuntinį Muchammedą ﷺ , įskaitant visas prievoles įsakytas islamo) ir darė teisingus darbus, – jie yra geriausi iš kūrinių.",
+      "mg": "Fa ireo izay nino sy nanao asa soa kosa dia izy ireo no zava-boary tsara indindra eto an-tany.",
+      "lg": "Mazima abo abakkiriza ne bakola emirimu emirungi be balungi okusinga ebitonde byonna.",
+      "rw": "Naho abemeye bakanakora ibikorwa byiza; abo ni bo beza mu biremwa.",
+      "rn": "Mu vy’ukuri, abemeye Imana Allah n’Intumwa yayo bagakora n’ivyiza bitegetswe; abo rero, ni bo beza cane mu biremwa;",
+      "ln": "Ya sôló, baye bandimi mpe basali misala ya malamu, bango nde bazali bikelamu ya malamu.",
+      "dag": "Achiika! Ninvuɣu shɛba ban ti Naawuni yɛlimaŋli, ka tum tuunviɛla, bannim’ maa n-nyɛ binnamda puuni ban gahim.",
+      "mos": "Ad neb nins sẽn kõ-b sɩdã, la b tʋm tʋʋm-sõmsã wã, bãmb la bõn-naandsã fãa sẽn yɩɩd sõma.",
+      "aa": "Diggah yeemeneeh meqe taamoomi abe marí, woo mari usun ginok tayse ginó kinnon.",
+      "mdh": "Saben-sabenal a su silan a namalitiyaya endu minggalebek sa mapya na silan ba antu su pinakamapya a pinamaluy.",
+      "ak": "Nokorε sε, wͻn a wɔagye adie na wͻdi dwuma pa no, saa nkorͻfoͻ no ne abͻdeε papa no.",
+      "ceb": "Kanila nga mituo ug nagbuhat sa matarung nga mga buhat, sa pagkatinuod sila mao ang labing maayo sa tanang binuhat.",
+      "nqo": "ߒ߬ߓߊ߬ ߡߍ߲ ߠߎ߬ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߛߊ߫ ߸ ߏ߬ ߟߎ߫ ߟߋ߬ ߘߊ߲ߝߋ߲ ߠߎ߬ ߘߐ߫ ߢߌ߬ߡߊ ߟߎ߬ ߘߌ߫"
     }
   }
 ];

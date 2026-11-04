@@ -93,6 +93,22 @@ const MEALLER = {
   ne: 'nepali_central',
   si: 'sinhalese_mahir',
   km: 'khmer_rwwad',
+  // Dalga 13 (kapalı iskelet, 2026-11-04). Hepsinde meal VAR (QuranEnc, tarayıcı benzeri User-Agent).
+  he: 'hebrew_darussalam',
+  ka: 'georgian_rwwad',
+  lt: 'lithuanian_rwwad',
+  mg: 'malagasy_rwwad',
+  lg: 'luganda_foundation',
+  rw: 'kinyarwanda_assoc',
+  rn: 'ikirundi_gehiti',
+  ln: 'lingala_zakaria',
+  dag: 'dagbani_ghatubo',
+  mos: 'moore_rwwad',
+  aa: 'afar_hamza',
+  mdh: 'maguindanao_rwwad',
+  ak: 'asante_harun',
+  ceb: 'bisayan_rwwad',
+  nqo: 'ankobambara_dayyan',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -117,6 +133,13 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   tagalog_rwwad: 'Filipino Translation (Tagalog) - Rowwad Translation Center',
   marathi_ansari: 'Marathi Translation - Muhammad Shafee‘ Ansari',
   nepali_central: 'Nepali Translation - Ahlul-Hadith Association',
+  // Dalga 13: İbranice, Gürcüce, Malgaşça, Luganda ve Dagbani liste API'sinde yok (`translations/list` 2026-11-04);
+  // başlıklar sitedeki karttan (Gürcüce kartı çevirmen adı yazmaz).
+  hebrew_darussalam: 'Hebrew Translation - Darussalam Association',
+  georgian_rwwad: 'Georgian Translation',
+  malagasy_rwwad: 'Malagasy Translation - Rowwad Translation Center',
+  luganda_foundation: 'Luganda Translation - African Development Foundation',
+  dagbani_ghatubo: 'Dagbani Translation - Muhammad Baba Ghutubo',
 };
 
 /**
@@ -131,8 +154,15 @@ const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** NFC'ye birleştirilen diller (`gunun-ayeti-uret.js > NFC_DILLER` ile AYNI; gerekçe orada). */
 const NFC_DILLER = new Set(['yo', 'fil']);
 // Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27);
-// Marathi ("१५३. ") ve Nepalce ("१५३) ") de (dalga 12, aynı karar).
-const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk', 'mr', 'ne']);
+// Marathi ("१५३. ") ve Nepalce ("१५३) ") de (dalga 12, aynı karar); dalga 13'te Litvanca ve Afarca ("255. "), Dagbani
+// ("255. ", "5.Yaa") ve İbranice ("255 ": noktasız, `NOKTASIZ_AYET_NO_SILINEN`).
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk', 'mr', 'ne', 'lt', 'dag', 'aa', 'he']);
+/**
+ * Baştaki ayet numarası noktasız ("255 אללה…") yazılan diller (dalga 13, yalnız İbranice `hebrew_darussalam`):
+ * numara ve ardındaki boşluk silinir. Başka dilde noktasız baştaki numara `NUMARALI` ile elenir.
+ */
+const NOKTASIZ_AYET_NO_SILINEN = new Set(['he']);
+const NOKTASIZ_AYET_NO = /^\s*\p{Nd}+\s+/u;
 /**
  * Cümle sonuna yapışık not numarası silinen diller (sahip kararı 2026-11-04, yalnız Marathi): `marathi_ansari`
  * dipnot numarasını köşeli ayraçsız, cümle sonu işaretine yapışık yazar ("…देतो.१", "…आहे?१ मुळीच"). Yalnız
@@ -149,10 +179,13 @@ const CUMLE_SONU_NOTU = /([.?!।])\p{Nd}+(?![\p{L}\p{M}])/gu;
 const YILDIZ_SILINEN = new Set(['ja']);
 const YILDIZ = /\*/g;
 /** Latin harf taşıyamayan meal dilleri (`gunun-ayeti-uret.js > LATIN_HARF_BOZUK` ile AYNI). */
-const LATIN_HARF_BOZUK = new Set(['te', 'kn', 'mr', 'as', 'ne', 'si', 'km']);
+const LATIN_HARF_BOZUK = new Set(['te', 'kn', 'mr', 'as', 'ne', 'si', 'km', 'he', 'ka', 'nqo']);
+/** Latin harfli dalga 13 meal dilleri ve yabancı harf deseni (`gunun-ayeti-uret.js > YABANCI_HARF_BOZUK` ile AYNI; gerekçe orada). */
+const YABANCI_HARF_BOZUK = new Set(['lt', 'mg', 'lg', 'rw', 'rn', 'ln', 'dag', 'mos', 'aa', 'mdh', 'ak', 'ceb']);
+const YABANCI_HARF = /[\p{Script=Cyrillic}\p{Script=Hebrew}\p{Cc}]|(?!\ufdfa)(?=\p{Script=Arabic})\p{L}/u;
 const NUMARALI = [
   /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u,
-  /^\s*\p{Nd}+\s*[.)]\s/u,
+  /^\s*\p{Nd}+\s*[.)]?\s/u,
   /\(\p{Nd}+\)\s*[.।]?\s*$/u,
   /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u, // `ARA_NUMARA`: "(24)،", "(ـ18)", "(8ـ10)"
   /[\u00a6\ufffd]/u, // `BOZUK_KARAKTER`: hausa_gummi "¦aki" (Ɗ bozulmuş)
@@ -206,6 +239,7 @@ async function main() {
       if (NFC_DILLER.has(dil)) result.translation = result.translation.normalize('NFC');
       if (NOT_NUMARASI_SILINEN.has(dil)) result.translation = result.translation.replace(NOT_NUMARASI, '').trim();
       if (YILDIZ_SILINEN.has(dil)) result.translation = result.translation.replace(YILDIZ, '');
+      if (NOKTASIZ_AYET_NO_SILINEN.has(dil)) result.translation = result.translation.replace(NOKTASIZ_AYET_NO, '');
       if (AYET_NUMARASI_SILINEN.has(dil)) {
         result.translation = result.translation
           .replace(/^\s*\p{Nd}+\s*[.)]\s*/u, '')
@@ -227,7 +261,8 @@ async function main() {
         NUMARALI.some((d) => d.test(result.translation)) ||
         (CUMLE_SONU_NOTU_SILINEN.has(dil) && /\p{Nd}/u.test(result.translation)) ||
         // Latin dışı yazılı mealde Latin harf kaynak bozulmasıdır (`gunun-ayeti-uret.js > LATIN_HARF_BOZUK`).
-        (LATIN_HARF_BOZUK.has(dil) && /\p{Script=Latin}/u.test(result.translation))
+        (LATIN_HARF_BOZUK.has(dil) && /\p{Script=Latin}/u.test(result.translation)) ||
+        (YABANCI_HARF_BOZUK.has(dil) && YABANCI_HARF.test(result.translation))
       ) {
         console.log(`  atlandı ${dil} ${sure}:${ayet} (dipnot işareti)`);
         continue;

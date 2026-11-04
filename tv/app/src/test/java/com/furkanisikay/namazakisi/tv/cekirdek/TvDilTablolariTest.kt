@@ -11,7 +11,7 @@ import org.junit.Test
  * parametreleri kullanır (işaretçi değerlerle çağrılır).
  */
 class TvDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo")
     private val isaretciler = listOf("<AD>", "<AY>", "<GUN>", "987", "2468")
 
     private fun metinler(d: TvDili): Map<String, String> = linkedMapOf(
@@ -111,5 +111,26 @@ class TvDilTablolariTest {
         // km yalnız other: sesli süre her sayıda çoğul kalıp.
         assertEquals(TvDiliKm.saatSesli(1).removePrefix("1"), TvDiliKm.saatSesli(2).removePrefix("2"))
         assertSame(TvDiliFil, tvDili("tl"))
+    }
+
+    @Test
+    fun dalga13CogulKategorileri() {
+        // CLDR he (JS `cogul.ts > ibranice`): 1 one, 2 two, gerisi other.
+        assertEquals(listOf("other", "one", "two", "other", "other"), listOf(0, 1, 2, 3, 20).map { TvDiliHe.cogulKategorisi(it) })
+        // CLDR lt (JS `cogul.ts > litvanca`): …1 one, …2–9 few (…11–19 hariç), gerisi other.
+        assertEquals(
+            listOf("other", "one", "few", "few", "other", "other", "other", "one", "few", "other"),
+            listOf(0, 1, 2, 9, 10, 11, 19, 21, 22, 111).map { TvDiliLt.cogulKategorisi(it) },
+        )
+        // Sebuano Filipince kuralı.
+        assertEquals(listOf("one", "one", "other", "other", "one"), listOf(0, 1, 4, 14, 21).map { TvDiliCeb.cogulKategorisi(it) })
+        // mg, ln, ak 0 ve 1 tekil: 0'da tekil kalıp.
+        for (dil in listOf(TvDiliMg, TvDiliLn, TvDiliAk)) assertEquals(dil.saatSesli(1).removePrefix("1"), dil.saatSesli(0).removePrefix("0"))
+        // CLDR dışı (rw, rn, dag, mos, aa, mdh) ve nqo yalnız other: sesli süre her sayıda çoğul kalıp.
+        for (dil in listOf(TvDiliRw, TvDiliRn, TvDiliDag, TvDiliMos, TvDiliAa, TvDiliMdh, TvDiliNqo)) {
+            assertEquals(dil.saatSesli(1).removePrefix("1"), dil.saatSesli(2).removePrefix("2"))
+        }
+        // İbranice kaynak dizini values-iw: cihazdan gelen "iw" de İbranice tabloyu seçer.
+        assertSame(TvDiliHe, tvDili("iw"))
     }
 }

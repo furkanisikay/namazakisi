@@ -163,10 +163,13 @@ esitMi(TvDili.coz("tl-PH"), "fil", "Tagalog tl → fil")
 esitMi(TvDili.coz("pnb-PK"), "pa", "Bati Pencapcasi pnb → pa")
 esitMi(TvDili.coz("pa-Arab-PK"), "pa", "Sahmuki cihaz pa")
 esitMi(TvDili.coz("pa-Guru-IN"), "tr", "Gurmuki cihaz Pencapcaya eslenmez")
+// Ibranice: eski kod "iw" → "he"; N'Ko uc harfli kod aynen.
+esitMi(TvDili.coz("iw-IL"), "he", "Ibranice eski kod iw → he")
+esitMi(TvDili.coz("nqo-GN"), "nqo", "N'Ko nqo")
 
 // MARK: - 4c) Native dil tablolari (W4) — on dokuz dil, Turkce tablo eski sabitlerle ayni
 
-esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km"], "dil: tablo sirasi")
+esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo"], "dil: tablo sirasi")
 esitMi(TvDili.coz("ar-SA"), "ar", "dil: ar-SA → ar")
 esitMi(TvDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(TvDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")

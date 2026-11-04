@@ -4,7 +4,7 @@ import android.content.Context
 import expo.modules.countdownnotification.cekirdek.Rakam
 
 /**
- * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km") — JS
+ * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo") — JS
  * etkin dil değişince yazar; uygulama modülü (widget, bildirim, alarm) ve diğer yerel
  * modüller aynı tercih dosyasını okur. Sesli okuma dilinden (`AnonsKonusucu`, BCP-47)
  * AYRIDIR: ses motoru başka dile düşebilir. Uygulama hiç açılmadıysa (JS yazmadı) Türkçe.

@@ -87,11 +87,14 @@ object GununAyetiKurallari {
 
     /**
      * Noto Serif'in KAPSAMADIĞI yazılar (fc-query cmap, 2026-10-30; Gucarati ve kana fontTools cmap, 2026-11-02; Devanagari,
-     * Bengal, Telugu, Kannada, Sinhala ve Khmer fontTools cmap 0/128, 2026-11-04): bunlardan bir harf taşıyan meal
+     * Bengal, Telugu, Kannada, Sinhala ve Khmer fontTools cmap 0/128, 2026-11-04; İbrani 0/112, N'Ko 0/64, Gürcü 1/96,
+     * dalga 13 fontTools cmap 2026-11-04): bunlardan bir harf taşıyan meal
      * sistem yazı tipiyle çizilir (serif Latin noktalama + sistemden düşen harf karışmasın). Kural
      * yazıya göredir, dile göre değil. Swift ikizi `GununAyetiKarari.serifsizAraliklar`.
      */
     private val SERIFSIZ_ARALIKLAR: List<IntRange> = listOf(
+        0x0590..0x05FF, // İbrani
+        0x07C0..0x07FF, // N'Ko
         0x0900..0x097F, // Devanagari (Hintçe, Marathi, Nepalce)
         0x0980..0x09FF, // Bengal (Bengalce, Assamca)
         0x0A80..0x0AFF, // Gucarati
@@ -101,9 +104,12 @@ object GununAyetiKurallari {
         0x0D00..0x0D7F, // Malayalam
         0x0D80..0x0DFF, // Sinhala
         0x0E00..0x0E7F, // Tay
+        0x10A0..0x10FF, // Gürcü (Mkhedruli, Asomtavruli)
         0x1100..0x11FF, // Hangıl Jamo
         0x1200..0x139F, // Ge'ez (+ ek)
         0x1780..0x17FF, // Khmer
+        0x1C90..0x1CBF, // Gürcü Mtavruli (büyük harf)
+        0x2D00..0x2D2F, // Gürcü ek (Nuskhuri)
         0x2D80..0x2DDF, // Ge'ez genişletilmiş
         0x3000..0x303F, // CJK noktalama (、。《》〔〕)
         0x3040..0x30FF, // Hiragana + Katakana
@@ -115,14 +121,16 @@ object GununAyetiKurallari {
         0xAB00..0xAB2F, // Ge'ez genişletilmiş A
         0xAC00..0xD7FF, // Hangıl hece + Jamo genişletilmiş B
         0xF900..0xFAFF, // CJK uyumluluk ideogramı
+        0xFB1D..0xFB4F, // İbrani sunum biçimleri
         0xFF00..0xFFEF, // tam genişlik biçimler (，！？：)
     )
 
     /**
-     * Meal Noto Serif'le mi çizilir? Ge'ez (Amharca), Devanagari (Hintçe, Marathi, Nepalce), Bengal (Bengalce,
+     * Meal Noto Serif'le mi çizilir? İbrani, N'Ko, Gürcü, Ge'ez (Amharca), Devanagari (Hintçe, Marathi, Nepalce), Bengal (Bengalce,
      * Assamca), Gucarati, Tamil, Telugu, Kannada, Malayalam, Sinhala, Tay, Khmer, Hangıl (Korece),
      * Han (Çince, Japonca kanji) ve kana (Hiragana, Katakana) Noto Serif'te YOK → sistem yazı tipi. Hausa/Fula kancalı harfleri (ɓ ɗ ƙ ƴ), Yoruba ton
-     * işaretleri ve Vietnamca yığılmış ses işaretleri (U+1EA0–1EF9) Noto Serif'te var (cmap denetlendi).
+     * işaretleri, Vietnamca yığılmış ses işaretleri (U+1EA0–1EF9), Afrika Latin harfleri (ɛ ɔ ŋ ɣ ʒ ʋ ɩ) ve Litvanca
+     * (ą č ę ė į š ų ū ž) Noto Serif'te var (cmap denetlendi).
      * Swift ikizi `GununAyetiKarari.mealSerifMi`. Cihazda DOĞRULANMADI.
      */
     fun mealSerifMi(meal: String): Boolean = meal.none { c -> SERIFSIZ_ARALIKLAR.any { c.code in it } }

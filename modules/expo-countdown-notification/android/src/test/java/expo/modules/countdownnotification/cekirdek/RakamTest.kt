@@ -15,7 +15,7 @@ class RakamTest {
         assertEquals('0', Rakam.sifir("ar", null))
         assertEquals('0', Rakam.sifir("ar", "latn"))
         assertEquals('0', Rakam.sifir("ar", "beng"))
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km", null)) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", null)) {
             assertEquals("$dil", '0', Rakam.sifir(dil, "arab"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "beng"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "arabext"))
@@ -50,6 +50,17 @@ class RakamTest {
         assertEquals("mr-u-nu-deva", Rakam.yerelEtiketi("mr", "deva"))
         val kisa = CanliGuncellemeKurallari.kisaMetin(65 * 60_000L, "mr")
         assertEquals("१५", rakamlariYerellestir(kisa, Rakam.DEVA_SIFIR).filter { it in '०'..'९' })
+    }
+
+    @Test
+    fun dalga13NkoRakami() {
+        assertEquals('\u07C0', Rakam.sifir("nqo", "nkoo"))
+        assertEquals('\u07C0', Rakam.sifir("nqo-GN", "nkoo"))
+        assertEquals('0', Rakam.sifir("nqo", "deva"))
+        assertEquals('0', Rakam.sifir("he", "nkoo"))
+        assertEquals("nqo-u-nu-nkoo", Rakam.yerelEtiketi("nqo", "nkoo"))
+        val kisa = CanliGuncellemeKurallari.kisaMetin(65 * 60_000L, "nqo")
+        assertEquals("\u07C1\u07C5", rakamlariYerellestir(kisa, Rakam.NKOO_SIFIR).filter { it in '\u07C0'..'\u07C9' })
     }
 
     @Test

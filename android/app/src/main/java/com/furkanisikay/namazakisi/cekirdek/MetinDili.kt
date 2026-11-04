@@ -18,14 +18,15 @@ object MetinDili {
     const val TR = "tr"
     const val EN = "en"
 
-    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km). */
-    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km")
+    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo). */
+    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo")
 
     /**
      * "en", "en-US", "de_DE" → kök kod; desteklenmeyen ya da boş → "tr". Java/Android eski
      * Endonezce kodu "in" (`java.util.Locale` "id"yi "in"e çevirir) "id" sayılır; Kurmancînin ISO 639-3
      * kodu "kmr" uygulamanın Kurmancî kodu "ku" sayılır (Arap harfli "ku-Arab" cihaz da "ku": yalnız Latin).
-     * Tagalog "tl" (AOSP'nin Filipince kaynak kodu) "fil", Batı Pencapçası "pnb" "pa" sayılır. Pencapça YALNIZ
+     * Tagalog "tl" (AOSP'nin Filipince kaynak kodu) "fil", Batı Pencapçası "pnb" "pa", İbranicenin eski kodu "iw"
+     * (`java.util.Locale` ve kaynak dizini `values-iw`) "he" sayılır. Pencapça YALNIZ
      * Şahmuki: uygulama kodu "pa" (alt etiketsiz, JS'in yazdığı) ve Arap betikli / Pakistan bölgeli yerel ayar
      * ("pa-Arab", "pa_PK_#Arab", "pa-PK") "pa"; Gurmuki ("pa-IN", "pa-Guru") Türkçeye düşer.
      */
@@ -36,6 +37,7 @@ object MetinDili {
             "kmr" -> "ku"
             "tl" -> "fil"
             "pnb" -> "pa"
+            "iw" -> "he"
             "pa" -> if (pencapcaSahmuki(parcalar)) "pa" else null
             else -> kok
         }
@@ -113,6 +115,21 @@ object MetinDili {
         "ne" -> CEKIRDEK_NE
         "si" -> CEKIRDEK_SI
         "km" -> CEKIRDEK_KM
+        "he" -> CEKIRDEK_HE
+        "ka" -> CEKIRDEK_KA
+        "lt" -> CEKIRDEK_LT
+        "mg" -> CEKIRDEK_MG
+        "lg" -> CEKIRDEK_LG
+        "rw" -> CEKIRDEK_RW
+        "rn" -> CEKIRDEK_RN
+        "ln" -> CEKIRDEK_LN
+        "dag" -> CEKIRDEK_DAG
+        "mos" -> CEKIRDEK_MOS
+        "aa" -> CEKIRDEK_AA
+        "mdh" -> CEKIRDEK_MDH
+        "ak" -> CEKIRDEK_AK
+        "ceb" -> CEKIRDEK_CEB
+        "nqo" -> CEKIRDEK_NQO
         else -> CEKIRDEK_TR
     }
 

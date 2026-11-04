@@ -62,6 +62,19 @@ const makedonca: Kural = (n) => (n % 10 === 1 && n % 100 !== 11 ? 'one' : 'other
  */
 const filipince: Kural = (n) => (n % 10 === 4 || n % 10 === 6 || n % 10 === 9 ? 'other' : 'one');
 /** Farsça, Hintçe, Bengalce, Gucaratça, Kannada, Assamca, Pencapça, Sinhala, Amharca ve Fula: 0 ve 1 tekil (Fulada 1,5 de tekil; burada yalnız tam sayı). */
+/** İbranice (tam sayıda; CLDR 42+): 1 one, 2 two, gerisi other (eski CLDR'nin `many`si kaldırıldı). */
+const ibranice: Kural = (n) => (n === 1 ? 'one' : n === 2 ? 'two' : 'other');
+/**
+ * Litvanca (tam sayıda): son hanesi 1 → one, 2–9 → few (son iki hanesi 11–19 olan hariç: 11–19 other);
+ * gerisi other (0, 10, 20…). CLDR `many` yalnız kesirli sayıdır (f != 0), tam sayıda çıkmaz.
+ */
+const litvanca: Kural = (n) => {
+  const s10 = n % 10;
+  const s100 = n % 100;
+  if (s100 >= 11 && s100 <= 19) return 'other';
+  if (s10 === 1) return 'one';
+  return s10 >= 2 ? 'few' : 'other';
+};
 const sifirBir: Kural = (n) => (n === 0 || n === 1 ? 'one' : 'other');
 
 const KURALLAR: Record<string, Kural> = {
@@ -94,6 +107,8 @@ const KURALLAR: Record<string, Kural> = {
   te: birDiger,
   mr: birDiger,
   ne: birDiger,
+  ka: birDiger,
+  lg: birDiger,
   id: hepDiger,
   ms: hepDiger,
   yo: hepDiger,
@@ -106,6 +121,15 @@ const KURALLAR: Record<string, Kural> = {
   // `other`. Android `<plurals>` seçimi de kökten düşer (yalnız `other`); JS aynısını yapar.
   tt: hepDiger,
   km: hepDiger,
+  nqo: hepDiger,
+  // Kinyarwanda, Kirundi, Dagbani, Mooré, Afar ve Maguindanao CLDR `plurals.xml`'de YOK (2026-11-04) → Tatarca
+  // emsali: ICU kök kuralı (yalnız other); Android `<plurals>` seçimi de kökten düşer.
+  rw: hepDiger,
+  rn: hepDiger,
+  dag: hepDiger,
+  mos: hepDiger,
+  aa: hepDiger,
+  mdh: hepDiger,
   fr: fransizca,
   ru: rusca,
   uk: rusca,
@@ -116,6 +140,10 @@ const KURALLAR: Record<string, Kural> = {
   pl: lehce,
   mk: makedonca,
   fil: filipince,
+  // Sebuano CLDR'de Filipinceyle aynı kural bloğundadır (`ceb fil tl`).
+  ceb: filipince,
+  he: ibranice,
+  lt: litvanca,
   ar: arapca,
   fa: sifirBir,
   bn: sifirBir,
@@ -129,6 +157,10 @@ const KURALLAR: Record<string, Kural> = {
   pa: sifirBir,
   // Sinhala CLDR: one = n = 0,1 or i = 0 and f = 1 → tam sayıda Hintçe kuralı.
   si: sifirBir,
+  // Malgaşça, Lingala ve Akan CLDR: one = n = 0..1 → tam sayıda 0 ve 1 tekil.
+  mg: sifirBir,
+  ln: sifirBir,
+  ak: sifirBir,
   es: ispanyolca,
   // Portekizce Avrupa normu: pt-PT kuralı (yalnız 1 tekil). CLDR `pt` (Brezilya) 0'ı da tekil sayar
   // (one = i = 0..1); uygulama tek kural taşır. Nöbetçi ICU karşılaştırmasını `pt-PT` ile yapar.

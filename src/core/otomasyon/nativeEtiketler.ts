@@ -402,15 +402,121 @@ export const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, Na
     kosul: 'Namaz Akışı៖ ស្ថានភាពពេលសឡាត', // dil-haric: marka adı (native etiket)
     eylem: 'Namaz Akışı៖ បានសឡាតហើយ', // dil-haric: marka adı (native etiket)
   },
+  // ÇEVİRİ: he (values-iw; İngilizce iskelet)
+  he: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: ka (values-ka; İngilizce iskelet)
+  ka: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: lt (values-lt; İngilizce iskelet)
+  lt: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: mg (values-mg; İngilizce iskelet)
+  mg: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: lg (values-lg; İngilizce iskelet)
+  lg: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: rw (values-rw; İngilizce iskelet)
+  rw: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: rn (values-rn; İngilizce iskelet)
+  rn: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: ln (values-ln; İngilizce iskelet)
+  ln: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: dag (values-b+dag; İngilizce iskelet)
+  dag: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: mos (values-b+mos; İngilizce iskelet)
+  mos: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: aa (values-aa; İngilizce iskelet)
+  aa: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: mdh (values-b+mdh; İngilizce iskelet)
+  mdh: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: ak (values-ak; İngilizce iskelet)
+  ak: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: ceb (values-b+ceb; İngilizce iskelet)
+  ceb: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: nqo (values-b+nqo; İngilizce iskelet)
+  nqo: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
 };
 
 /** Cihaz yerel ayarından ('ckb_IQ', 'in_ID', 'fa-IR') etiket kümesi; tabloda yoksa Türkçe. */
 export function nativeEtiketleri(yerel: string | null | undefined): NativeEtiket {
   const ham = yerel?.split(/[-_]/)[0];
   // Java `Locale` Endonezceyi eski kod 'in' ile verir; kaynak dizini de `values-in`. Filipince kaynak dizini
-  // `values-tl` (Tagalog); kaynak sistemi `fil` ve `tl`'yi eşdeğer sayar.
+  // `values-tl` (Tagalog); kaynak sistemi `fil` ve `tl`'yi eşdeğer sayar. İbranice kaynak dizini `values-iw`
+  // (`ResourcesImpl.adjustLanguageTag` cihazın `he`sini `iw`ye çevirir); Java `Locale` de 'iw' verebilir.
   // Pencapça kaynağı `values-b+pa+Arab`: yalnız Şahmuki cihaz (Arap betiği / Pakistan) onu seçer, Gurmuki cihaz Türkçeye düşer.
   if (ham === 'pa') return yerelAyarDili(yerel) === 'pa' ? NATIVE_ETIKETLER.pa ?? NATIVE_ETIKETLER.tr : NATIVE_ETIKETLER.tr;
-  const kod = ham === 'in' ? 'id' : ham === 'tl' ? 'fil' : ham;
+  const kod = ham === 'in' ? 'id' : ham === 'tl' ? 'fil' : ham === 'iw' ? 'he' : ham;
   return (kod ? (NATIVE_ETIKETLER as Partial<Record<string, NativeEtiket>>)[kod] : undefined) ?? NATIVE_ETIKETLER.tr;
 }

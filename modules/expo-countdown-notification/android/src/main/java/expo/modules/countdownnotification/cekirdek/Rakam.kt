@@ -6,9 +6,10 @@ package expo.modules.countdownnotification.cekirdek
  *
  * İKİZ: uygulama modülündeki `com.furkanisikay.namazakisi.cekirdek.Rakam` (kural ve gerekçe
  * orada). Modül uygulama sınıflarını göremediği için kopya; biri değişirse ikisini birlikte
- * değiştir. Değeri JS yazar (`ArayuzDili.TERCIH_RAKAM_SISTEMI`, ÇÖZÜLMÜŞ: "arab", "arabext", "beng", "deva"
+ * değiştir. Değeri JS yazar (`ArayuzDili.TERCIH_RAKAM_SISTEMI`, ÇÖZÜLMÜŞ: "arab", "arabext", "beng", "deva", "nkoo"
  * ya da yok); yalnız arayüz dilinin kendi yerel sistemiyle eşleşirse uygulanır (Arapçada, Soranîde ve Sindhçede
- * "arab", Farsça, Peştuca ve Pencapçada "arabext", Bengalcede ve Assamcada "beng", Marathi ve Nepalcede "deva"),
+ * "arab", Farsça, Peştuca ve Pencapçada "arabext", Bengalcede ve Assamcada "beng", Marathi ve Nepalcede "deva",
+ * N'Koda "nkoo"),
  * diğer dillerde çıktı BİREBİR aynı.
  */
 object Rakam {
@@ -16,6 +17,7 @@ object Rakam {
     const val ARABEXT = "arabext"
     const val BENG = "beng"
     const val DEVA = "deva"
+    const val NKOO = "nkoo"
     const val LATN = "latn"
 
     /** Doğu Arap (Arapça-Hint) sıfırı, U+0660. */
@@ -30,13 +32,16 @@ object Rakam {
     /** Devanagari sıfır, U+0966 — Marathi ve Nepalce. */
     const val DEVA_SIFIR = '०'
 
+    /** N'Ko sıfır, U+07C0 — N'Ko (sağdan sola yazı; rakamlar da sağdan sola akar). */
+    const val NKOO_SIFIR = '\u07C0'
+
     /** Dil kökü → yerel rakam sistemi (TEK eşleme; listede olmayan dil Batı rakamı yazar). */
     private val YEREL = mapOf(
         "ar" to ARAB, "bn" to BENG, "fa" to ARABEXT, "ps" to ARABEXT, "ckb" to ARAB, "sd" to ARAB,
-        "mr" to DEVA, "pa" to ARABEXT, "as" to BENG, "ne" to DEVA,
+        "mr" to DEVA, "pa" to ARABEXT, "as" to BENG, "ne" to DEVA, "nqo" to NKOO,
     )
 
-    private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, ARABEXT to ARABEXT_SIFIR, BENG to BENG_SIFIR, DEVA to DEVA_SIFIR)
+    private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, ARABEXT to ARABEXT_SIFIR, BENG to BENG_SIFIR, DEVA to DEVA_SIFIR, NKOO to NKOO_SIFIR)
 
     private fun kok(dil: String?): String = dil?.trim()?.substringBefore('-')?.substringBefore('_').orEmpty()
 

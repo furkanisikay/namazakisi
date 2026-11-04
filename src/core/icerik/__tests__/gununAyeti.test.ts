@@ -112,6 +112,18 @@ it('meali olan dalga 12 dilleri (fil, te, kn, mr, as, ne, si, km) kendi havuzund
   expect(dilHavuzu('pa')).toBe(GUNUN_AYETI_HAVUZU);
 });
 
+it('dalga 13 dillerinin hepsi meali olan diller: kendi havuzundan seçer, baştaki ayet numarası silinmiş', () => {
+  for (const dil of ['he', 'ka', 'lt', 'mg', 'lg', 'rw', 'rn', 'ln', 'dag', 'mos', 'aa', 'mdh', 'ak', 'ceb', 'nqo'] as const) {
+    // Kirundi havuzu 75 (uzun meal elenir), öteki diller 100'ün üstünde.
+    expect([dil, dilHavuzu(dil).length > (dil === 'rn' ? 70 : 100)]).toEqual([dil, true]);
+    const gorunum = gununAyetiGorunumu(gununAyetiKaydi('2026-11-04', dil), dil);
+    expect(gorunum.meal).toBeTruthy();
+    expect(gorunum.mealKaynagi).toMatch(/QuranEnc \d/);
+  }
+  // Litvanca, Dagbani, Afarca "255." ve İbranice noktasız "255 " baştaki ayet numarası silinir.
+  for (const dil of ['lt', 'dag', 'aa', 'he'] as const) for (const k of dilHavuzu(dil)) expect(k.mealler[dil]).not.toMatch(/^\s*\p{Nd}/u);
+});
+
 it('plan süren günden başlar, başlangıçlar imsak ve artan sırada', () => {
   const plan = gununAyetiPlani(new Date(2026, 9, 24, 3, 0), imsak6, 3, 'tr');
   expect(plan.map((p) => p.gun)).toEqual(['2026-10-23', '2026-10-24', '2026-10-25']);

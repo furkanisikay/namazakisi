@@ -25,6 +25,12 @@ class RakamTest {
         assertEquals("०५:३०", rakamlariYerellestir("05:30", '०'))
         // Kaynak `%d`'si cihaz yerel ayarıyla Devanagari gelebilir: önce Batıya normalleşir.
         assertEquals("05:30", rakamlariYerellestir("०५:३०", '0'))
+        // Dalga 13: N'Ko "nkoo" (߀ U+07C0); İbranice Batı.
+        assertEquals("nkoo", RakamKarari.sistem("nqo", TvRakam("GN")))
+        assertEquals("latn", RakamKarari.sistem("he", TvRakam("IL")))
+        assertEquals('\u07C0', RakamKarari.sifir("nkoo"))
+        assertEquals("\u07C0\u07C5:\u07C3\u07C0", rakamlariYerellestir("05:30", '\u07C0'))
+        assertEquals("05:30", rakamlariYerellestir("\u07C0\u07C5:\u07C3\u07C0", '0'))
     }
 
     @Test

@@ -46,7 +46,7 @@ object CanliGuncellemeKurallari {
     /**
      * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
      * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü. Sıra tr, en,
-     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
+     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
      */
     internal val KISA_BIRIMLER: Map<String, KisaBirimler> = mapOf(
         "tr" to KisaBirimler("sa", "dk"),
@@ -172,6 +172,36 @@ object CanliGuncellemeKurallari {
         "si" to KisaBirimler("පැය", "මිනි", birimAyirici = " ", parcaAyirici = " "),
         // km
         "km" to KisaBirimler("ម៉ោង", "នាទី", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: he
+        "he" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: ka
+        "ka" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: lt
+        "lt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: mg
+        "mg" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: lg
+        "lg" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: rw
+        "rw" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: rn
+        "rn" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: ln
+        "ln" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: dag
+        "dag" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: mos
+        "mos" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: aa
+        "aa" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: mdh
+        "mdh" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: ak
+        "ak" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: ceb
+        "ceb" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: nqo
+        "nqo" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
     )
 
     /**

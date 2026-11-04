@@ -125,7 +125,7 @@ public enum Kible {
 
 /// Kible metinleri — dil basina bir ornek (Wear `SaatDili` kible alanlari ve JS
 /// `sozluk/<dil>/kible.ts > yon` ikizi). Yer tutucular `{derece}`, `{km}`. Duzen: sira tr, en,
-/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 public struct KibleMetinleri: Equatable {
     public let arkada: String
     public let saga: String
@@ -1026,6 +1026,216 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
+    // ÇEVİRİ: he (CLDR he: binlik ayırıcı ",")
+    public static let he = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: ka (CLDR ka: binlik ayırıcı bölünmez boşluk)
+    public static let ka = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "\u{00A0}"
+    )
+
+    // ÇEVİRİ: lt (CLDR lt: binlik ayırıcı bölünmez boşluk)
+    public static let lt = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "\u{00A0}"
+    )
+
+    // ÇEVİRİ: mg (CLDR mg: binlik ayırıcı ",")
+    public static let mg = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: lg (CLDR lg: binlik ayırıcı ",")
+    public static let lg = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: rw (CLDR rw: binlik ayırıcı ".")
+    public static let rw = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+    // ÇEVİRİ: rn (CLDR rn: binlik ayırıcı ".")
+    public static let rn = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+    // ÇEVİRİ: ln (CLDR ln: binlik ayırıcı ".")
+    public static let ln = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+    // ÇEVİRİ: dag (CLDR verisi yok, ülke normu: binlik ayırıcı ",")
+    public static let dag = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: mos (CLDR verisi yok, ülke normu: binlik ayırıcı dar bölünmez boşluk)
+    public static let mos = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "\u{202F}"
+    )
+
+    // ÇEVİRİ: aa (CLDR verisi yok, ülke normu: binlik ayırıcı ",")
+    public static let aa = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: mdh (CLDR verisi yok, ülke normu: binlik ayırıcı ",")
+    public static let mdh = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: ak (CLDR ak: binlik ayırıcı ",")
+    public static let ak = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: ceb (CLDR ceb: binlik ayırıcı ",")
+    public static let ceb = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: nqo (CLDR nqo: binlik ayırıcı ","; CLDR ayırıcısı Arap virgülü ، — Arapça gibi Latin ',' yazılır, rakam çizimde N'Ko)
+    public static let nqo = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
     public static let tablo: [String: KibleMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
@@ -1036,6 +1246,7 @@ public struct KibleMetinleri: Equatable {
         "pt": pt, "it": it, "sv": sv, "uk": uk, "ro": ro, "hr": hr, "sr": sr, "el": el,
         "ku": ku, "tk": tk, "tt": tt, "sd": sd, "pl": pl, "ja": ja, "gu": gu, "bg": bg, "mk": mk,
         "fil": fil, "te": te, "kn": kn, "mr": mr, "pa": pa, "as": `as`, "ne": ne, "si": si, "km": km,
+        "he": he, "ka": ka, "lt": lt, "mg": mg, "lg": lg, "rw": rw, "rn": rn, "ln": ln, "dag": dag, "mos": mos, "aa": aa, "mdh": mdh, "ak": ak, "ceb": ceb, "nqo": nqo,
     ]
 
     public static func dil(_ kod: String?) -> KibleMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

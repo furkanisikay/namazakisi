@@ -51,8 +51,8 @@ describe('rakamSistemiCoz', () => {
     expect(rakamSecimiGecerliMi('tr', 'latn')).toBe(false);
   });
 
-  it('dil → yerel rakam eşlemesi TEK yerde: Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe, Marathi, Pencapça, Assamca, Nepalce', () => {
-    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'as', 'bn', 'ckb', 'fa', 'mr', 'ne', 'pa', 'ps', 'sd']);
+  it('dil → yerel rakam eşlemesi TEK yerde: Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe, Marathi, Pencapça, Assamca, Nepalce, N\'Ko', () => {
+    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'as', 'bn', 'ckb', 'fa', 'mr', 'ne', 'nqo', 'pa', 'ps', 'sd']);
     // Sindhçe CLDR varsayılanı Doğu Arap rakamı (Node `Intl.NumberFormat('sd')` → ١٢٬٣٤٥.٦).
     expect(dilYerelRakami('sd')).toBe('arab');
     expect(rakamSistemiCoz('sd', undefined, 'PK')).toBe('arab');
@@ -97,6 +97,20 @@ describe('rakamSistemiCoz', () => {
     for (const dil of ['fil', 'te', 'kn', 'si', 'km'] as const) expect(rakamSecilebilir(dil)).toBe(false);
   });
 
+  it("dalga 13: N'Ko N'Ko rakamıyla başlar (CLDR nqo `nkoo`); seçim yalnız `latn` ve `nkoo`, öteki dillerde seçici yok", () => {
+    expect(new Intl.NumberFormat('nqo').resolvedOptions().numberingSystem).toBe('nkoo');
+    expect(dilYerelRakami('nqo')).toBe('nkoo');
+    for (const ulke of [null, 'GN', 'ML', 'CI']) expect(rakamSistemiCoz('nqo', undefined, ulke)).toBe('nkoo');
+    expect(rakamSistemiCoz('nqo', 'latn', 'GN')).toBe('latn');
+    expect(rakamSecimiGecerliMi('nqo', 'nkoo')).toBe(true);
+    expect(rakamSecimiGecerliMi('nqo', 'latn')).toBe(true);
+    for (const yanlis of ['arab', 'arabext', 'beng', 'deva']) expect(rakamSecimiGecerliMi('nqo', yanlis)).toBe(false);
+    expect(rakamSecimiGecerliMi('ar', 'nkoo')).toBe(false);
+    for (const dil of ['he', 'ka', 'lt', 'mg', 'lg', 'rw', 'rn', 'ln', 'dag', 'mos', 'aa', 'mdh', 'ak', 'ceb'] as const) {
+      expect(rakamSecilebilir(dil)).toBe(false);
+    }
+  });
+
   it('Farsça ve Peştuca Fars rakamıyla, Soranî Doğu Arap rakamıyla başlar; seçim yalnız kendi sistemi ya da Batı', () => {
     for (const ulke of [null, 'IR', 'AF', 'TR']) {
       expect(rakamSistemiCoz('fa', undefined, ulke)).toBe('arabext');
@@ -131,6 +145,7 @@ describe('rakamSistemiCoz', () => {
       expect(rakamSistemiCoz(d.kod, 'beng', 'BD')).toBe('latn');
       expect(rakamSistemiCoz(d.kod, 'arabext', 'IR')).toBe('latn');
       expect(rakamSistemiCoz(d.kod, 'deva', 'IN')).toBe('latn');
+      expect(rakamSistemiCoz(d.kod, 'nkoo', 'GN')).toBe('latn');
       expect(dilRakamVarsayilani(d.kod)).toBe('latn');
     }
     expect(rakamSecilebilir('ar')).toBe(true);
@@ -160,6 +175,12 @@ describe('rakamlariCevir / rakamlariNormallestir', () => {
     expect(rakamlariCevir('मगरिब 18:05', 'deva')).toBe('मगरिब १८:०५');
     expect(rakamlariNormallestir('वर्ष २०२६')).toBe('वर्ष 2026');
     expect(rakamlariNormallestir(rakamlariCevir('12:05 · 1447', 'deva'))).toBe('12:05 · 1447');
+  });
+
+  it("Batı rakamlarını N'Ko rakamına çevirir (߀ U+07C0), girişte Batıya döner", () => {
+    expect(rakamlariCevir('0123456789', 'nkoo')).toBe('\u07c0\u07c1\u07c2\u07c3\u07c4\u07c5\u07c6\u07c7\u07c8\u07c9');
+    expect(rakamlariNormallestir('\u07c2\u07c0\u07c2\u07c6')).toBe('2026');
+    expect(rakamlariNormallestir(rakamlariCevir('12:05 · 1447', 'nkoo'))).toBe('12:05 · 1447');
   });
 
   it('girişte Doğu Arap ve Farsça/Urduca rakamları Batıya çevirir', () => {
@@ -216,7 +237,7 @@ describe('etkin rakam sistemi (aktifDil)', () => {
 
 /**
  * Nöbetçi: sözlükte Doğu Arap (U+0660–0669), Farsça (U+06F0–06F9), Bengalce (U+09E6–09EF) ya da
- * Devanagari (U+0966–096F) rakamı OLMAZ. Rakamlar her zaman Batı rakamıyla yazılır; yerel rakam yalnız çizimde (metin
+ * Devanagari (U+0966–096F) ya da N'Ko (U+07C0–07C9) rakamı OLMAZ. Rakamlar her zaman Batı rakamıyla yazılır; yerel rakam yalnız çizimde (metin
  * kapısı) üretilir — yoksa Mağrip kullanıcısı ve rakam seçimini değiştiren kişi karışık rakam görür.
  */
 describe('nöbetçi: sözlükte yerel rakam yok', () => {
@@ -237,7 +258,7 @@ describe('nöbetçi: sözlükte yerel rakam yok', () => {
       fs
         .readFileSync(p, 'utf8')
         .split('\n')
-        .flatMap((satir, i) => (/[\u0660-\u0669\u06F0-\u06F9\u09E6-\u09EF\u0966-\u096F]/.test(satir) ? [`${path.relative(kok, p)}:${i + 1}`] : []))
+        .flatMap((satir, i) => (/[\u0660-\u0669\u06F0-\u06F9\u09E6-\u09EF\u0966-\u096F\u07C0-\u07C9]/.test(satir) ? [`${path.relative(kok, p)}:${i + 1}`] : []))
     );
     expect(ihlaller).toEqual([]);
   });

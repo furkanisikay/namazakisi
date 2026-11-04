@@ -32,16 +32,23 @@ const sirali = [...ulkeler].sort();
  * Kaynak yazısı ya da normu CLDR varsayılanından farklı diller. Portekizce Avrupa/Afrika normudur
  * (`pt-PT`; düz `pt` CLDR'de Brezilya normudur: "Irã" / "Irão", "Quênia" / "Quénia"). Pencapça yalnız
  * Şahmukidir (`pa-Arab-PK`; düz `pa` CLDR'de Gurmuki): CLDR `pa-Arab` yalnız Pakistan'ın adını taşır, öteki
- * ülkeler `ulkeAdi`'nde İngilizceye düşer (Gurmuki ad YAZILMAZ).
+ * ülkeler `ulkeAdi`'nde İngilizceye düşer (Gurmuki ad YAZILMAZ). Dagbani, Mooré, Afar ve Maguindanao'nun ICU'da
+ * bölge adı verisi YOK (`ICU_VERISIZ`): tabloları boştur, `ulkeAdi` İngilizceye düşer (başka dilin adı yazılmaz).
  */
 const ICU_YEREL = { uz: 'uz-Cyrl', pt: 'pt-PT', pa: 'pa-Arab-PK' };
+/** ICU'da bölge adı verisi olmayan diller (CLDR'de yerel ayarları yok): tablo boş kalır. */
+const ICU_VERISIZ = new Set(['dag', 'mos', 'aa', 'mdh']);
 const tablo = {};
 for (const dil of diller) {
   const dn = new Intl.DisplayNames([ICU_YEREL[dil] ?? dil], { type: 'region', fallback: 'none' });
   // ICU'da verisi olmayan dil sessizce başka yerele (en-US) düşer: İngilizce adlar o dilin adı sanılmasın.
   const cozulen = dn.resolvedOptions().locale.split('-')[0];
-  if (cozulen !== dil) throw new Error(`${dil}: ICU bölge adı verisi yok (${cozulen} yereline düştü)`);
   tablo[dil] = {};
+  if (ICU_VERISIZ.has(dil)) {
+    if (cozulen === dil) throw new Error(`${dil}: ICU artık bölge adı taşıyor, ICU_VERISIZ'den çıkarın`);
+    continue;
+  }
+  if (cozulen !== dil) throw new Error(`${dil}: ICU bölge adı verisi yok (${cozulen} yereline düştü)`);
   for (const kod of sirali) {
     const ad = dn.of(kod);
     if (ad && ad !== kod) tablo[dil][kod] = ad;

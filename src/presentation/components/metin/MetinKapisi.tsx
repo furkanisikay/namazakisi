@@ -62,11 +62,12 @@ const VARSAYILAN_PUNTO = 14;
 export const UST_ISARETLI_SATIR_ORANI = 1.5;
 /**
  * Ünlü işareti üst çizginin üstüne çıkan yazıyla yazılan diller (Devanagari: hi, mr, ne; Bengal: bn, as; Gucarati;
- * Tamil, Malayalam, Tay, Telugu, Kannada, Sinhala, Khmer: üst ünlü, ton ve alt bağlı ünsüz işaretleri).
+ * Tamil, Malayalam, Tay, Telugu, Kannada, Sinhala, Khmer: üst ünlü, ton ve alt bağlı ünsüz işaretleri; N'Ko: harfin
+ * üstündeki ton ve uzunluk işaretleri, dalga 13 iskeleti — dil açılırken büyük başlığı karede yakından inceleyin).
  */
-const UST_ISARETLI_DILLER: ReadonlySet<DilKodu> = new Set<DilKodu>(['hi', 'bn', 'ta', 'ml', 'th', 'gu', 'te', 'kn', 'mr', 'as', 'ne', 'si', 'km']);
+const UST_ISARETLI_DILLER: ReadonlySet<DilKodu> = new Set<DilKodu>(['hi', 'bn', 'ta', 'ml', 'th', 'gu', 'te', 'kn', 'mr', 'as', 'ne', 'si', 'km', 'nqo']);
 
-/** Kapı gereken diller: yerel rakamlı diller (Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe, Marathi, Pencapça, Assamca, Nepalce; `core/dil/rakam`), Urduca (yazı tipi), üst işaretli yazılar. */
+/** Kapı gereken diller: yerel rakamlı diller (Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe, Marathi, Pencapça, Assamca, Nepalce, N'Ko; `core/dil/rakam`), Urduca (yazı tipi), üst işaretli yazılar. */
 export const kapiGerekli = (dil: DilKodu): boolean =>
   rakamSecilebilir(dil) || dil === 'ur' || UST_ISARETLI_DILLER.has(dil);
 

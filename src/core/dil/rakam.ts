@@ -1,7 +1,7 @@
 /**
  * Rakam sistemi — arayüzde rakamların Batı (0123) ya da dilin YEREL rakamıyla yazılması
  * (CLDR numbering system adları: `arab` Doğu Arap ٠١٢٣ U+0660–0669, `arabext` Fars rakamı
- * ۰۱۲۳ U+06F0–06F9, `beng` Bengalce ০১২৩ U+09E6–09EF, `deva` Devanagari १२३ U+0966–096F).
+ * ۰۱۲۳ U+06F0–06F9, `beng` Bengalce ০১২৩ U+09E6–09EF, `deva` Devanagari १२३ U+0966–096F, `nkoo` N'Ko ߀߁߂ U+07C0–07C9).
  *
  * Sahip kararları:
  *  - 2026-10-26 Arapça: Körfez/Ortadoğu Doğu Arap, Mağrip (DZ, MA, TN, LY, MR, EH) Batı rakamı.
@@ -11,6 +11,7 @@
  *  - 2026-11-02 Sindhçe Doğu Arap rakamıyla (`arab`, CLDR `sd` varsayılanı) başlar.
  *  - 2026-11-04 Marathi ve Nepalce Devanagari (`deva`), Assamca Bengalce (`beng`), Pencapça (Şahmuki) Fars
  *    rakamıyla (`arabext`, CLDR `pa-Arab`) başlar (CLDR varsayılanları). Hintçe Batı kalır (CLDR `hi` `latn`).
+ *  - Dalga 13 (kapalı iskelet): N'Ko N'Ko rakamıyla (`nkoo`, CLDR `nqo` varsayılanı) başlar.
  *  - Urducada Batı rakamı (Pakistan uygulamaları gibi; seçici YOK). Diğer diller değişmez.
  * Yerel rakamı olan her dilde kullanıcı Ayarlar > Dil'den değiştirebilir ("Ülkeye göre" /
  * yerel / Batı).
@@ -34,6 +35,7 @@ const SIFIRLAR = {
   arabext: 0x06f0,
   beng: 0x09e6,
   deva: 0x0966,
+  nkoo: 0x07c0,
 } as const;
 
 export type YerelRakamSistemi = keyof typeof SIFIRLAR;
@@ -55,6 +57,7 @@ const YEREL_RAKAMLAR: Partial<Record<DilKodu, YerelRakamSistemi>> = {
   pa: 'arabext',
   as: 'beng',
   ne: 'deva',
+  nqo: 'nkoo',
 };
 
 /** Rakam seçicisi gösterilen diller (seçim yalnız bunlarda geçerlidir). */
@@ -128,9 +131,9 @@ export function tvRakamOzeti(ulke: string | null, secimler: unknown): TvRakamOze
 }
 
 const BATI_RAKAMI = /[0-9]/g;
-/** Girişte Batıya çevrilen yerel rakamlar: Doğu Arap, Farsça/Urduca (genişletilmiş), Bengalce, Devanagari. */
-const NORMALLESEN_SIFIRLAR = [0x0660, 0x06f0, 0x09e6, 0x0966] as const;
-const YEREL_RAKAM = /[٠-٩۰-۹০-৯०-९]/g;
+/** Girişte Batıya çevrilen yerel rakamlar: Doğu Arap, Farsça/Urduca (genişletilmiş), Bengalce, Devanagari, N'Ko. */
+const NORMALLESEN_SIFIRLAR = [0x0660, 0x06f0, 0x09e6, 0x0966, 0x07c0] as const;
+const YEREL_RAKAM = /[٠-٩۰-۹০-৯०-९\u07c0-\u07c9]/g;
 
 /** Metindeki Batı rakamlarını sistemin rakamlarına çevirir; `latn` metni olduğu gibi döndürür. */
 export function rakamlariCevir(metin: string, sistem: RakamSistemi): string {
@@ -140,8 +143,8 @@ export function rakamlariCevir(metin: string, sistem: RakamSistemi): string {
 }
 
 /**
- * Girişteki Doğu Arap (U+0660–0669), Farsça/Urduca (U+06F0–06F9), Bengalce (U+09E6–09EF) ve Devanagari
- * (U+0966–096F) rakamları Batı rakamına çevirir (yerel klavyeyle yazılan sayı). Diğer karakterlere dokunmaz.
+ * Girişteki Doğu Arap (U+0660–0669), Farsça/Urduca (U+06F0–06F9), Bengalce (U+09E6–09EF), Devanagari
+ * (U+0966–096F) ve N'Ko (U+07C0–07C9) rakamları Batı rakamına çevirir (yerel klavyeyle yazılan sayı). Diğer karakterlere dokunmaz.
  */
 export function rakamlariNormallestir(metin: string): string {
   return metin.replace(YEREL_RAKAM, (r) => {

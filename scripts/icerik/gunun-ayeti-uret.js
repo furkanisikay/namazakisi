@@ -106,6 +106,22 @@ const MEALLER = {
   ne: 'nepali_central',
   si: 'sinhalese_mahir',
   km: 'khmer_rwwad',
+  // Dalga 13 (kapalı iskelet, 2026-11-04). Hepsinde meal VAR (QuranEnc, tarayıcı benzeri User-Agent).
+  he: 'hebrew_darussalam',
+  ka: 'georgian_rwwad',
+  lt: 'lithuanian_rwwad',
+  mg: 'malagasy_rwwad',
+  lg: 'luganda_foundation',
+  rw: 'kinyarwanda_assoc',
+  rn: 'ikirundi_gehiti',
+  ln: 'lingala_zakaria',
+  dag: 'dagbani_ghatubo',
+  mos: 'moore_rwwad',
+  aa: 'afar_hamza',
+  mdh: 'maguindanao_rwwad',
+  ak: 'asante_harun',
+  ceb: 'bisayan_rwwad',
+  nqo: 'ankobambara_dayyan',
 };
 
 /**
@@ -133,6 +149,13 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   tagalog_rwwad: 'Filipino Translation (Tagalog) - Rowwad Translation Center',
   marathi_ansari: 'Marathi Translation - Muhammad Shafee‘ Ansari',
   nepali_central: 'Nepali Translation - Ahlul-Hadith Association',
+  // Dalga 13: İbranice, Gürcüce, Malgaşça, Luganda ve Dagbani liste API'sinde yok (`translations/list` 2026-11-04);
+  // başlıklar sitedeki karttan (Gürcüce kartı çevirmen adı yazmaz).
+  hebrew_darussalam: 'Hebrew Translation - Darussalam Association',
+  georgian_rwwad: 'Georgian Translation',
+  malagasy_rwwad: 'Malagasy Translation - Rowwad Translation Center',
+  luganda_foundation: 'Luganda Translation - African Development Foundation',
+  dagbani_ghatubo: 'Dagbani Translation - Muhammad Baba Ghutubo',
 };
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';
@@ -240,8 +263,15 @@ const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
  */
 const NFC_DILLER = new Set(['yo', 'fil']);
 // Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27);
-// Marathi ("१५३. ") ve Nepalce ("१५३) ") de (dalga 12, aynı karar).
-const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk', 'mr', 'ne']);
+// Marathi ("१५३. ") ve Nepalce ("१५३) ") de (dalga 12, aynı karar); dalga 13'te Litvanca ve Afarca ("255. "), Dagbani
+// ("255. ", "5.Yaa") ve İbranice ("255 ": noktasız, `NOKTASIZ_AYET_NO_SILINEN`).
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk', 'mr', 'ne', 'lt', 'dag', 'aa', 'he']);
+/**
+ * Baştaki ayet numarası noktasız ("255 אללה…") yazılan diller (dalga 13, yalnız İbranice `hebrew_darussalam`):
+ * numara ve ardındaki boşluk silinir. Başka dilde noktasız baştaki numara `BASTA_NUMARA` ile elenir.
+ */
+const NOKTASIZ_AYET_NO_SILINEN = new Set(['he']);
+const NOKTASIZ_AYET_NO = /^\s*\p{Nd}+\s+/u;
 /**
  * Cümle sonuna yapışık not numarası silinen diller (sahip kararı 2026-11-04, yalnız Marathi): `marathi_ansari`
  * dipnot numarasını köşeli ayraçsız, cümle sonu işaretine yapışık yazar ("…देतो.१", "…आहे?१ मुळीच"). Yalnız
@@ -262,6 +292,7 @@ const SONDAKI_AYET_NO = /\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u;
 function notNumarasiz(dil, metin) {
   let m = NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(NOT_NUMARASI, '').trim() : metin;
   if (YILDIZ_SILINEN.has(dil)) m = m.replace(YILDIZ, '');
+  if (NOKTASIZ_AYET_NO_SILINEN.has(dil)) m = m.replace(NOKTASIZ_AYET_NO, '');
   if (AYET_NUMARASI_SILINEN.has(dil)) m = m.replace(BASTAKI_AYET_NO, '').replace(SONDAKI_AYET_NO, '$1').trim();
   if (CUMLE_SONU_NOTU_SILINEN.has(dil)) m = m.replace(CUMLE_SONU_NOTU, '$1');
   // Baştaki/sondaki boşluk metin değildir (kurdish_bamoki her ayeti "\n" ile bitirir); sözcüklere dokunulmaz.
@@ -273,7 +304,7 @@ function notNumarasiz(dil, metin) {
  * Gucarati ૨, Arap-Hint ٢…); ASCII `\d` bunları kaçırır. Nöbetçi testteki kural 2 aynı desenler.
  */
 const DIPNOT = /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u; // "[915]", "[১]", "*"
-const BASTA_NUMARA = /^\s*\p{Nd}+\s*[.)]\s/u; // "153. …", "२. …"
+const BASTA_NUMARA = /^\s*\p{Nd}+\s*[.)]?\s/u; // "153. …", "२. …", noktasız "153 …"
 const SONDA_NUMARA = /\(\p{Nd}+\)\s*[.।]?\s*$/u; // "… (153)", "… (१५३)।"
 /** Silinemeyen ayet numarası, metnin herhangi bir yerinde: "(24)،", "(ـ18).", "(8ـ10)" (uyghur_saleh). */
 const ARA_NUMARA = /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u;
@@ -287,7 +318,18 @@ const BOZUK_KARAKTER = /[\u00a6\ufffd]/u;
  * Latin harf taşıyamayan (Latin dışı yazılı) meallerde Latin harf kaynak bozulmasıdır: `sinhalese_mahir`
  * 2:277 "zසකාත්" (dalga 12). Kayıt alınmaz (`bozuk-karakter`); öteki dillere uygulanmaz (veri değişmesin).
  */
-const LATIN_HARF_BOZUK = new Set(['te', 'kn', 'mr', 'as', 'ne', 'si', 'km']);
+const LATIN_HARF_BOZUK = new Set(['te', 'kn', 'mr', 'as', 'ne', 'si', 'km', 'he', 'ka', 'nqo']);
+/**
+ * Latin harfli dalga 13 meallerinde Kiril, İbrani ya da Arap harfi ve metin içi denetim karakteri kaynak bozulmasıdır:
+ * `afar_hamza` Rusça sözcük taşır ("Yalli как Aanee", "Макка"), `lingala_zakaria` "mpona" yerine Kiril "тропа",
+ * `asante_harun` ɛ/ɔ yerine Kiril "ԑ" ve İbrani "כ", `malagasy_rwwad` 2:208 "خ هanareo", `bisayan_rwwad` 3:138 cümle
+ * ortasında satır sonu. Kayıt alınmaz (`bozuk-karakter`). Salavat bağı ﷺ (U+FDFA) ve ۞ bilinçli işarettir, kalır
+ * (`italian_rwwad` emsali). Yunan "ε" (U+03B5) ve "ͻ" (U+037B) dag/mos/ak meallerinde ɛ/ɔ yerine çeviri boyunca
+ * tutarlı yazıldığı için ELENMEZ (görünüşte aynı; elenirse Akan havuzu 1'e iner) — sahibe soruldu.
+ * Öteki dillere uygulanmaz (eski Latin meallerde Kiril/Yunan harf yok, 2026-11-04 tarandı; veri değişmesin).
+ */
+const YABANCI_HARF_BOZUK = new Set(['lt', 'mg', 'lg', 'rw', 'rn', 'ln', 'dag', 'mos', 'aa', 'mdh', 'ak', 'ceb']);
+const YABANCI_HARF = /[\p{Script=Cyrillic}\p{Script=Hebrew}\p{Cc}]|(?!\ufdfa)(?=\p{Script=Arabic})\p{L}/u;
 
 /**
  * Bir mealin elenme gerekçeleri (boş = uygun). `dil` verilirse dile özgü kural da uygulanır: cümle sonu notu
@@ -299,7 +341,13 @@ function mealGerekce(metin, dil) {
   if (!metin.trim()) g.push('bos');
   if (metin.length > AZAMI_UZUNLUK) g.push('uzunluk');
   if (DIPNOT.test(metin) || (CUMLE_SONU_NOTU_SILINEN.has(dil) && /\p{Nd}/u.test(metin))) g.push('dipnot');
-  if (BOZUK_KARAKTER.test(metin) || (LATIN_HARF_BOZUK.has(dil) && /\p{Script=Latin}/u.test(metin))) g.push('bozuk-karakter');
+  if (
+    BOZUK_KARAKTER.test(metin) ||
+    (LATIN_HARF_BOZUK.has(dil) && /\p{Script=Latin}/u.test(metin)) ||
+    (YABANCI_HARF_BOZUK.has(dil) && YABANCI_HARF.test(metin))
+  ) {
+    g.push('bozuk-karakter');
+  }
   if (BASTA_NUMARA.test(metin)) g.push('basta-numara');
   if (SONDA_NUMARA.test(metin)) g.push('sonda-numara');
   else if (ARA_NUMARA.test(metin)) g.push('ara-numara');

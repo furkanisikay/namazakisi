@@ -11,8 +11,8 @@ import Foundation
 /// BIREBIR ayni.
 public enum TvDili {
     public static let varsayilan = "tr"
-    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km).
-    public static let desteklenenler = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km"]
+    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo).
+    public static let desteklenenler = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo"]
 
     /// "en", "en-US", "de_DE" → kok kod; desteklenmeyen → "tr". Eski Endonezce kodu "in" → "id".
     public static func coz(_ kod: String?) -> String {
@@ -23,6 +23,7 @@ public enum TvDili {
         if dil == "kmr" { dil = "ku" }  // Kurmanci ISO 639-3 → uygulamanin Kurmanci kodu
         if dil == "tl" { dil = "fil" }  // Tagalog → Filipince (AOSP kaynak kodu tl)
         if dil == "pnb" { dil = "pa" }  // Bati Pencapcasi (Sahmuki) → Pencapca
+        if dil == "iw" { dil = "he" }  // Ibranicenin eski ISO kodu (Java/Android mirasi)
         // Pencapca YALNIZ Sahmuki: alt etiketsiz "pa" (uygulama kodu) ya da Arap betigi / Pakistan; Gurmuki → Turkce.
         if dil == "pa" {
             let alt = parcalar.dropFirst().map { $0.hasPrefix("#") ? String($0.dropFirst()) : $0 }
@@ -44,7 +45,7 @@ public enum TvDili {
 
 /// Pano cekirdek metinleri — dil basina bir ornek (Android TV `TvDili.kt` nesneleri ikizi).
 /// Anahtarlar `TvVakit` / `TvKerahat.Tur` ham degerleridir. Yer tutucular `{gun}`, `{ay}`,
-/// `{yil}`, `{gunAdi}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km; cevrilmemis dil Ingilizce
+/// `{yil}`, `{gunAdi}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; cevrilmemis dil Ingilizce
 /// kopya (`// ÇEVİRİ: <kod>`). Nobetci: `targets/tv/test/main.swift` §4c.
 public struct TvPanoMetinleri: Equatable {
     public let vakitAdlari: [String: String]
@@ -1007,6 +1008,231 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
+    // ÇEVİRİ: he
+    public static let he = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: ka
+    public static let ka = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: lt (`aylar` tarih içi biçimdir: ilgi hâli)
+    public static let lt = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: mg
+    public static let mg = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: lg
+    public static let lg = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: rw
+    public static let rw = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: rn
+    public static let rn = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: ln
+    public static let ln = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: dag
+    public static let dag = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: mos
+    public static let mos = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: aa
+    public static let aa = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: mdh
+    public static let mdh = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: ak
+    public static let ak = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: ceb
+    public static let ceb = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
+    // ÇEVİRİ: nqo
+    public static let nqo = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'ah",
+        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAciklamalari: [
+            "suruk": "Praying is makruh until the sun has risen well.",
+            "istiva": "Praying is makruh while the sun is at its zenith.",
+            "gurub": "Praying is makruh while the sun is setting.",
+        ]
+    )
+
     public static let tablo: [String: TvPanoMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
@@ -1017,6 +1243,7 @@ public struct TvPanoMetinleri: Equatable {
         "pt": pt, "it": it, "sv": sv, "uk": uk, "ro": ro, "hr": hr, "sr": sr, "el": el,
         "ku": ku, "tk": tk, "tt": tt, "sd": sd, "pl": pl, "ja": ja, "gu": gu, "bg": bg, "mk": mk,
         "fil": fil, "te": te, "kn": kn, "mr": mr, "pa": pa, "as": `as`, "ne": ne, "si": si, "km": km,
+        "he": he, "ka": ka, "lt": lt, "mg": mg, "lg": lg, "rw": rw, "rn": rn, "ln": ln, "dag": dag, "mos": mos, "aa": aa, "mdh": mdh, "ak": ak, "ceb": ceb, "nqo": nqo,
     ]
 
     public static func dil(_ kod: String?) -> TvPanoMetinleri { tablo[TvDili.coz(kod)] ?? tr }

@@ -37,7 +37,7 @@ it('cihaz dili yalnız SEÇİLEBİLİR dilse kullanılır (yarım dil kendiliği
     expect(yerelAyarDili(yerel)).toBe('zh');
     expect(cihazDilindenSec(yerel)).toBe(zh.secilebilir ? 'zh' : null);
   }
-  expect(yerelAyarDili('he-IL')).toBeNull();
+  expect(yerelAyarDili('yi-US')).toBeNull();
   expect(yerelAyarDili('in_ID')).toBe('id');
   // Portekizcenin bütün cihaz dilleri (Brezilya dahil) Avrupa normlu `pt`'dir; İngilizceye düşmez.
   const pt = DILLER.find((d) => d.kod === 'pt')!;
@@ -72,6 +72,14 @@ it('cihaz dili yalnız SEÇİLEBİLİR dilse kullanılır (yarım dil kendiliği
     expect(cihazDilindenSec(yerel)).toBeNull();
   }
   for (const [yerel, kod] of [['te-IN', 'te'], ['kn_IN', 'kn'], ['mr-IN', 'mr'], ['as-IN', 'as'], ['ne-NP', 'ne'], ['ne-IN', 'ne'], ['si-LK', 'si'], ['km-KH', 'km']] as const) {
+    expect(yerelAyarDili(yerel)).toBe(kod);
+  }
+  // Dalga 13. İbranice: `he` ve Java/Android'in eski kodu `iw` (kaynak dizini `values-iw`) `he`'dir.
+  for (const yerel of ['he', 'he-IL', 'he_IL', 'iw', 'iw-IL', 'iw_IL']) expect(yerelAyarDili(yerel)).toBe('he');
+  for (const [yerel, kod] of [
+    ['ka-GE', 'ka'], ['lt_LT', 'lt'], ['mg-MG', 'mg'], ['lg-UG', 'lg'], ['rw-RW', 'rw'], ['rn-BI', 'rn'], ['ln-CD', 'ln'],
+    ['dag-GH', 'dag'], ['mos-BF', 'mos'], ['aa-ET', 'aa'], ['mdh-PH', 'mdh'], ['ak-GH', 'ak'], ['ceb_PH', 'ceb'], ['nqo-GN', 'nqo'],
+  ] as const) {
     expect(yerelAyarDili(yerel)).toBe(kod);
   }
 });

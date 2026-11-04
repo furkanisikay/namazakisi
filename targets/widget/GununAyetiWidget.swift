@@ -25,7 +25,7 @@ enum GununAyetiSabitleri {
 /// Yuk yokken (uygulama hic acilmadi) ve galeride gereken metinler. Ingilizce karsiliklar
 /// JS sozlugunden (`sozluk/en/gununAyeti.ts > baslik, etiket`).
 ///
-/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km; cevrilmemis dil
+/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; cevrilmemis dil
 /// Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`). `ornek*` alanlari galeri onizlemesindeki
 /// 94:6'dir: meal o dilin QuranEnc mealinden BIREBIR (kesilmeden) ve kunyesiyle yazilir
 /// (`docs/ajan/coklu-dil.md > Nass kurali`; dilde meal yoksa `ornekMeal` bos → yalniz Arapca).
@@ -935,6 +935,216 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.4"
     )
 
+    // ÇEVİRİ: he
+    static let he = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: ka
+    static let ka = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: lt
+    static let lt = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: mg
+    static let mg = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: lg
+    static let lg = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: rw
+    static let rw = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: rn
+    static let rn = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: ln
+    static let ln = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: dag
+    static let dag = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: mos
+    static let mos = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: aa
+    static let aa = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: mdh
+    static let mdh = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: ak
+    static let ak = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: ceb
+    static let ceb = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+    // ÇEVİRİ: nqo
+    static let nqo = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
     static let tablo: [String: GununAyetiYerelMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
@@ -945,6 +1155,7 @@ struct GununAyetiYerelMetinleri {
         "pt": pt, "it": it, "sv": sv, "uk": uk, "ro": ro, "hr": hr, "sr": sr, "el": el,
         "ku": ku, "tk": tk, "tt": tt, "sd": sd, "pl": pl, "ja": ja, "gu": gu, "bg": bg, "mk": mk,
         "fil": fil, "te": te, "kn": kn, "mr": mr, "pa": pa, "as": `as`, "ne": ne, "si": si, "km": km,
+        "he": he, "ka": ka, "lt": lt, "mg": mg, "lg": lg, "rw": rw, "rn": rn, "ln": ln, "dag": dag, "mos": mos, "aa": aa, "mdh": mdh, "ak": ak, "ceb": ceb, "nqo": nqo,
     ]
 
     static var simdiki: GununAyetiYerelMetinleri {

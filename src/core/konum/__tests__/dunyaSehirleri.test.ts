@@ -59,8 +59,13 @@ describe('dünya şehirleri verisi (GeoNames)', () => {
   it('her arayüz dilinin kendi ülke adı tablosu var (İngilizceye düşmez)', () => {
     // İstisna Pencapça (yalnız Şahmuki): CLDR `pa-Arab` bölge adı taşımaz (yalnız Pakistan); Gurmuki `pa` adları
     // yazılmaz, öteki ülkeler `ulkeAdi`'nde İngilizceye düşer (bilinçli; çevirmen/sahip karar verecek).
-    for (const { kod } of DILLER.filter((d) => d.kod !== 'pa')) expect(Object.keys(ULKE_ADLARI[kod] ?? {}).length).toBeGreaterThan(200);
+    // Dalga 13: Kinyarwanda CLDR'de yalnız üç bölge adı taşır; Dagbani, Mooré, Afar ve Maguindanao'nun ICU'da bölge
+    // adı verisi yok (tablo boş) → `ulkeAdi` İngilizceye düşer.
+    const istisna = new Set(['pa', 'rw', 'dag', 'mos', 'aa', 'mdh']);
+    for (const { kod } of DILLER.filter((d) => !istisna.has(d.kod))) expect(Object.keys(ULKE_ADLARI[kod] ?? {}).length).toBeGreaterThan(200);
     expect(ULKE_ADLARI.pa).toEqual({ PK: 'پاکستان' });
+    expect(Object.keys(ULKE_ADLARI.rw ?? {}).length).toBeLessThan(10);
+    for (const kod of ['dag', 'mos', 'aa', 'mdh']) expect(ULKE_ADLARI[kod]).toEqual({});
     expect(ulkeAdi('MY', 'ar')).toBe('ماليزيا');
   });
 

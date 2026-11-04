@@ -106,6 +106,23 @@ const SABAH_SESI_ADLARI = {
     ne: 'फज्रको अजान',
     si: 'ෆජ්ර් අදාන්',
     km: 'អាហ្សានហ្វាជរ៍',
+    // Dalga 13: sözlük İngilizce iskelet; adlar o dilin yerleşik yazımıyla (yerli okuyucuyla DOĞRULANMADI). Yazımı
+    // kaynakla doğrulanamayan Dagbani, Mooré, Afar ve N'Ko İngilizce kalır (kare dili Türkçeye düşmesin).
+    he: 'אזאן הפג׳ר',
+    ka: 'ფაჯრის აზანი',
+    lt: 'Fadžro azanas',
+    mg: 'Adhan Fajr',
+    lg: 'Adhana ya Fajr',
+    rw: 'Adhana ya Fajr',
+    rn: 'Adhana ya Fajr',
+    ln: 'Adhan ya Fajr',
+    dag: 'Fajr adhan',
+    mos: 'Fajr adhan',
+    aa: 'Fajr adhan',
+    mdh: 'Adhan sa Fajr',
+    ak: 'Fajr Adhan',
+    ceb: 'Adhan sa Fajr',
+    nqo: 'Fajr adhan',
 };
 
 /** Kare dilindeki sabah sesi adi (bilinmeyen dil → Turkce). */

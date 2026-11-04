@@ -15,7 +15,9 @@ const SAYILAR = [
 // Tatarca CLDR çoğul tablosunda YOK (CLDR 49 `language_plural_rules`, 2026-11-02): ICU `tt`'yi kök kurala
 // (yalnız `other`) düşürmez, Node `Intl.PluralRules('tt')` `en-US`'ye düşer (one/other) → karşılaştırma kök
 // davranışı taşıyan bir yerelle (`ja`, yalnız other) yapılır. Android `<plurals>` de `tt`'de kökten düşer.
-const ICU_YERELI: Record<string, string> = { pt: 'pt-PT', tt: 'ja' };
+// Dalga 13: Kinyarwanda, Kirundi, Dagbani, Mooré, Afar ve Maguindanao da CLDR çoğul tablosunda YOK (CLDR main
+// `plurals.xml`, 2026-11-04) → Node `en-US`'ye düşer; aynı gerekçeyle kök davranışlı `ja` ile karşılaştırılır.
+const ICU_YERELI: Record<string, string> = { pt: 'pt-PT', tt: 'ja', rw: 'ja', rn: 'ja', dag: 'ja', mos: 'ja', aa: 'ja', mdh: 'ja' };
 
 describe.each(COGUL_DILLERI)('%s çoğul kuralı', (dil) => {
   it('ICU ile aynı', () => {
@@ -90,4 +92,17 @@ it('dalga 12: fil yeni kural, te/mr/ne one/other, kn/as/pa/si 0 ve 1 tekil, km y
   for (const dil of ['te', 'mr', 'ne']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
   for (const dil of ['kn', 'as', 'pa', 'si']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['one', 'one', 'other']);
   expect([0, 1, 2].map((n) => cogulKategorisi('km', n))).toEqual(['other', 'other', 'other']);
+});
+
+it('dalga 13: he ve lt yeni kural, ceb Filipince kuralı, mg/ln/ak 0 ve 1 tekil, CLDR dışı diller yalnız other', () => {
+  // İbranice (CLDR 42+): 1 one, 2 two, gerisi other (eski `many` yok: 20, 100 other).
+  expect([0, 1, 2, 3, 10, 20, 100, 1000000].map((n) => cogulKategorisi('he', n))).toEqual(['other', 'one', 'two', 'other', 'other', 'other', 'other', 'other']);
+  // Litvanca: …1 one, …2–9 few (…11–19 hariç), gerisi other; `many` yalnız kesirli.
+  expect([0, 1, 2, 9, 10, 11, 12, 19, 21, 22, 101, 111, 1000000].map((n) => cogulKategorisi('lt', n))).toEqual([
+    'other', 'one', 'few', 'few', 'other', 'other', 'other', 'other', 'one', 'few', 'one', 'other', 'other',
+  ]);
+  expect([0, 1, 4, 14, 21].map((n) => cogulKategorisi('ceb', n))).toEqual(['one', 'one', 'other', 'other', 'one']);
+  for (const dil of ['mg', 'ln', 'ak']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['one', 'one', 'other']);
+  for (const dil of ['ka', 'lg']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
+  for (const dil of ['rw', 'rn', 'dag', 'mos', 'aa', 'mdh', 'nqo']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'other', 'other']);
 });

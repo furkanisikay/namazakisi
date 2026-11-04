@@ -190,8 +190,8 @@ adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
 # Desen DILDEN BAGIMSIZ: zikir adi dile gore yazilir; bulunamayinca hazir_bekle'nin
 # kaydirmasi sayaci sifirlama onayini aciyordu. "/ 33" her dilde sayacin altindadir;
 # Yerel rakamli ayarda "/ ٣٣" (ar-SA, ckb-IQ, sd-PK), "/ ۳۳" (fa-IR, ps-AF, pa-Arab-PK), "/ ৩৩" (bn-BD, as-IN)
-# ya da "/ ३३" (mr-IN, ne-NP) yazilir (saat rakami yerel ayardan alir).
-hazir_bekle '/ ?(33|٣٣|۳۳|৩৩|३३)' || sleep 5
+# ya da "/ ३३" (mr-IN, ne-NP) ya da N'Ko "/ ߃߃" (nqo-GN; cihaz ICU'su nkoo veriyorsa) yazilir (saat rakami yerel ayardan alir).
+hazir_bekle '/ ?(33|٣٣|۳۳|৩৩|३३|߃߃)' || sleep 5
 for _ in $(seq 1 21); do dokun_merkez; sleep 0.3; done
 kare 04-tesbihat 2 || true
 

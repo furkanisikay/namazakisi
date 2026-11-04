@@ -6,9 +6,9 @@ package com.furkanisikay.namazakisi.cekirdek
  *
  * Seçimi JS çözer (`core/dil/rakam.ts > rakamSistemiCoz`: açık seçim → ülke → dil) ve
  * ÇÖZÜLMÜŞ değeri yazar: `namazakisi_dil/rakam_sistemi` = yerel rakamın CLDR adı ("arab" Doğu
- * Arap, "arabext" Fars, "beng" Bengalce, "deva" Devanagari) ya da anahtar yok (Batı). Native taraf kaydı YALNIZ arayüz
- * dilinin kendi yerel sistemiyle eşleşirse uygular ([YEREL]: Arapçada, Soranîde ve Sindhçede "arab", Farsça,
- * Peştuca ve Pencapçada "arabext", Bengalcede ve Assamcada "beng", Marathi ve Nepalcede "deva"); diğer
+ * Arap, "arabext" Fars, "beng" Bengalce, "deva" Devanagari, "nkoo" N'Ko) ya da anahtar yok (Batı). Native taraf kaydı
+ * YALNIZ arayüz dilinin kendi yerel sistemiyle eşleşirse uygular ([YEREL]: Arapçada, Soranîde ve Sindhçede "arab", Farsça,
+ * Peştuca ve Pencapçada "arabext", Bengalcede ve Assamcada "beng", Marathi ve Nepalcede "deva", N'Koda "nkoo"); diğer
  * her durumda (Türkçe dahil, dil değişimiyle yazım yarışında da) çıktı BİREBİR aynı kalır.
  *
  * Kural (Wear `saat/cekirdek/Rakam.kt` deseni): çekirdek metni Batı rakamıyla ÜRETİR (testler,
@@ -28,6 +28,7 @@ object Rakam {
     const val ARABEXT = "arabext"
     const val BENG = "beng"
     const val DEVA = "deva"
+    const val NKOO = "nkoo"
     const val LATN = "latn"
 
     /** Doğu Arap (Arapça-Hint) sıfırı, U+0660. */
@@ -42,14 +43,17 @@ object Rakam {
     /** Devanagari sıfır, U+0966 — Marathi ve Nepalce. */
     const val DEVA_SIFIR = '०'
 
+    /** N'Ko sıfır, U+07C0 — N'Ko (sağdan sola yazı; rakamlar da sağdan sola akar). */
+    const val NKOO_SIFIR = '\u07C0'
+
     /** Dil kökü → yerel rakam sistemi (TEK eşleme; listede olmayan dil Batı rakamı yazar). */
     private val YEREL = mapOf(
         "ar" to ARAB, "bn" to BENG, "fa" to ARABEXT, "ps" to ARABEXT, "ckb" to ARAB, "sd" to ARAB,
-        "mr" to DEVA, "pa" to ARABEXT, "as" to BENG, "ne" to DEVA,
+        "mr" to DEVA, "pa" to ARABEXT, "as" to BENG, "ne" to DEVA, "nqo" to NKOO,
     )
 
     /** Yerel sistem → sıfır rakamı (dizi Unicode'da ardışık). */
-    private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, ARABEXT to ARABEXT_SIFIR, BENG to BENG_SIFIR, DEVA to DEVA_SIFIR)
+    private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, ARABEXT to ARABEXT_SIFIR, BENG to BENG_SIFIR, DEVA to DEVA_SIFIR, NKOO to NKOO_SIFIR)
 
     /** "ar", "ar-SA", "bn_BD" → "ar" / "bn"; null → "". */
     private fun kok(dil: String?): String = dil?.trim()?.substringBefore('-')?.substringBefore('_').orEmpty()
@@ -76,7 +80,7 @@ object Rakam {
         return if (kayitli?.trim() == yerel) yerel else LATN
     }
 
-    /** Sistemin sıfır rakamı ([rakamlariYerellestir]'e verilir): yerel → '٠'/'۰'/'০'/'०', Batı → '0'. */
+    /** Sistemin sıfır rakamı ([rakamlariYerellestir]'e verilir): yerel → '٠'/'۰'/'০'/'०'/'߀', Batı → '0'. */
     fun sifir(sistem: String): Char = SIFIRLAR[sistem] ?: '0'
 
     fun sifir(dil: String?, kayitli: String?): Char = sifir(sistem(dil, kayitli))
@@ -107,7 +111,8 @@ fun rakamlariYerellestir(metin: String, sifir: Char): String {
 
 /**
  * SİSTEMİN biçimlediği metin (ör. `TextClock`, cihaz yerel ayarıyla yazar) için: ASCII, Doğu
- * Arap (U+0660–0669), Farsça/Urduca (U+06F0–06F9), Bengalce (U+09E6–09EF) ve Devanagari (U+0966–096F) rakamların HEPSİNİ
+ * Arap (U+0660–0669), Farsça/Urduca (U+06F0–06F9), Bengalce (U+09E6–09EF), Devanagari (U+0966–096F) ve N'Ko
+ * (U+07C0–07C9) rakamların HEPSİNİ
  * [sifir] dizisine eşitler. Yalnız yerel rakamlı arayüzde (`Rakam.yerelRakamli`: Arapça,
  * Bengalce) kullanılır (diğer dillerde cihazın biçimi aynen kalır). Değişecek rakam yoksa AYNI
  * nesne döner.
@@ -119,6 +124,7 @@ fun rakamlariEsitle(metin: String, sifir: Char): String {
         in '\u06F0'..'\u06F9' -> c - '\u06F0'
         in '\u09E6'..'\u09EF' -> c - '\u09E6'
         in '\u0966'..'\u096F' -> c - '\u0966'
+        in '\u07C0'..'\u07C9' -> c - '\u07C0'
         else -> -1
     }
     if (metin.none { deger(it) >= 0 && it != sifir + deger(it) }) return metin

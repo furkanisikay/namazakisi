@@ -88,6 +88,23 @@ class GununAyetiTest {
     }
 
     @Test
+    fun dalga13IbraniGurcuNkoSistemYazitipineDuserAfrikaLatinVeLitvancaSerifKalir() {
+        // Dalga 13 (fontTools cmap, 2026-11-04): Noto Serif'te İbrani 0/112, N'Ko 0/64, Gürcü 1/96 → sistem yazı tipi.
+        // 2:153 hebrew_darussalam, georgian_rwwad, ankobambara_dayyan.
+        assertFalse(GununAyetiKurallari.mealSerifMi("הוי אלה אשר האמינו! התאזרו בסבלנות ובתפילה, כי אללה הוא עם הסבלנים."))
+        assertFalse(GununAyetiKurallari.mealSerifMi("ჰეი, თქვენ, რომელთაც ირწმუნეთ! დახმარება ითხოვეთ (ალლაჰისგან) მოთმინების და ლოცვის მეშვეობით."))
+        assertFalse(GununAyetiKurallari.mealSerifMi("ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߯ ߘߍ߲߬ߡߍ߲߬ߠߌ߲߬ߢߌߣߌ߲ ߞߍ߫ ߡߎ߬ߢߎ߲ ߣߌ߫ ߛߊߟߌ ߞߊ߲߬ ߘߋ߬"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("\uFB2E")) // İbrani sunum biçimi
+        assertFalse(GununAyetiKurallari.mealSerifMi("\u1C90")) // Gürcü Mtavruli
+        // Litvanca (ą č ę ė į š ų ū ž) ve Afrika Latin harfleri (ɛ ɔ ŋ ɣ ʋ ɩ, birleşik ton; Yunan ε ͻ) Noto Serif'te var.
+        assertTrue(GununAyetiKurallari.mealSerifMi("O jūs, kurie tikite! Ieškokite pagalbos kantrybėje ir As-Salat (maldoje). Iš tiesų, Allahas yra su As-Sabirūn (kantriaisiais)."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Mo a moagye adie, monfa aboterε ne mpaebͻ nhwehwε mmoa (wͻ Nyankopͻn hͻ); nokorε sε Nyankopͻn ka aboterεfoͻ no ho."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Yaa yinim’ ninvuɣu shεba ban ti Naawuni. yεlimaŋli! Bom ya sɔŋsim ni suɣulo ni jiŋli puhibu."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Yɑɑ yãmb neb nins sẽn kõ sɩd ne Wẽnde! kos-y sõngr ne sugr mɑɑneg lɑ pʋʋsgo, ɑd Wẽnd lɑgma sugrã rãmbã."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Eh bino bandimi! Boluka lisalisi okati ya losambo mpe na koyika mpiko. Mpamba te Allah azali elongo na bakangi mitema."))
+    }
+
+    @Test
     fun mealsizDildeArapcaVeKunye() {
         // Mealsiz dil (ku, tk, tt, sd, pl; sahip kararı 2026-11-02): widget ve duvar kâğıdı yalnız Arapça çizer,
         // ekran okuyucu Arapçayı ve "Arapça: Tanzil" kaynaklı künyeyi duyar; duvar kâğıdı ayardan bağımsız Arapça.

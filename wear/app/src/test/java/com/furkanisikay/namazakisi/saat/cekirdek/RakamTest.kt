@@ -57,6 +57,15 @@ class RakamTest {
     }
 
     @Test
+    fun dalga13NkoUzantisiNkoRakaminiVerir() {
+        // CLDR nqo varsayılanı N'Ko rakamı (`nkoo`, ߀ U+07C0; Android ICU `nqo.txt` default nkoo). JDK'nın CLDR'sinde nqo
+        // yerel ayarı YOK (çıplak nqo-GN '0' verir) → JVM testinde uzantıyla doğrulanır; cihazda DOĞRULANMADI.
+        assertEquals('\u07C0', yerelSifir(yerel("nqo-GN-u-nu-nkoo")))
+        assertEquals("\u07C0\u07C5:\u07C5\u07C5", rakamlariYerellestir("05:55", yerelSifir(yerel("nqo-GN-u-nu-nkoo"))))
+        assertEquals('0', yerelSifir(yerel("he-IL")))
+    }
+
+    @Test
     fun batiRakamliYerelAyarlarSifirVerir() {
         for (etiket in listOf("tr-TR", "tr", "en-US", "en", "ur-PK", "ar-MA", "ar-DZ", "ar-TN", "id-ID", "de-DE", "ru-RU", "ug-CN")) {
             assertEquals(etiket, '0', yerelSifir(yerel(etiket)))
