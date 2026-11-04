@@ -1,10 +1,9 @@
-// ÇEVİRİ: mr — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'ची वेळ झाली',
+  vakitGirdiBasligi: '{ad} ची वेळ झाली',
+  herhangiVakit: 'कोणत्याही नमाजची वेळ झाल्यावर',
+  yalnizVakit: 'फक्त {ad} ची वेळ झाल्यावर',
+  camide: 'तुम्ही मशिदीत असल्याचे ओळखले जाते तेव्हा ("मशिदीत आहे" सुरू असताना)',
 };

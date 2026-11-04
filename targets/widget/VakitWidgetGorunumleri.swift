@@ -1481,29 +1481,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: mr
+    // mr
     static let mr = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "नमाजची वेळ",
+        galeriAciklama: "सध्याची नमाजची वेळ, ती संपेपर्यंत उरलेला वेळ आणि आजच्या नमाजच्या वेळा.",
+        veriEski: "नमाजच्या वेळा अपडेट करण्यासाठी ॲप उघडा",
+        konumYok: "तुमचे स्थान सेट करण्यासाठी ॲप उघडा",
+        kilindiSiradaki: "{ad} अदा झाली · {sonraki} {saat}",
+        adCikis: "{ad} · {saat} ला संपते",
+        siradakiAdSaat: "पुढील {ad} {saat}",
+        vaktiCikisErisim: "{ad} ची वेळ, {saat} ला संपते",
+        siradakiErisim: "पुढील {ad}, {saat}",
+        cikisSaat: "{saat} ला संपते",
+        bitisSaat: "{saat} ला संपते",
+        kilindiBaslik: "{ad} अदा झाली",
+        siradaki: "पुढील",
+        siradakiAd: "पुढील {ad}",
+        kildimErisim: "{ad} ची नमाज पढली",
+        gunSatiriKilindi: ", अदा झाली",
+        bitti: "संपली",
+        vakitCikti: "नमाजची वेळ संपली",
+        kabulAlt: "{ad} अदा झाली",
+        kontrolAdi: "नमाज पढली",
+        kontrolAciklama: "सध्याची नमाज \"अदा झाली\" म्हणून नोंदवते."
     )
 
     // pa (yalnız Şahmuki); terimler JS sozluk/pa (Kıldım "نماز پڑھ لئی", Kılındı "ادا ہو گئی")

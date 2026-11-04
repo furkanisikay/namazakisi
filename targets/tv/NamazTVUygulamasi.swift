@@ -934,19 +934,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: mr
+    // mr
     static let mr = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "तुमचे शहर निवडा",
+        ilMerkezi: "नमाजच्या वेळा प्रांताच्या मध्यासाठी मोजल्या जातात. तुम्ही तुमची निवड नंतर बदलू शकता.",
+        ilSecErisim: "{il}, निवडा",
+        kalan: "{ad} पर्यंत उरलेला वेळ",
+        kalanErisim: "{ad} पर्यंत उरलेला वेळ: {sure}",
+        konumuDegistirin: "स्थान बदला",
+        kerahatSuruyor: "मकरूह वेळ: {tur}, {bitis} ला संपेल. {aciklama}",
+        siradakiKerahat: "पुढील मकरूह वेळ: {tur} {bas}–{bit}",
+        cumaBilgisi: "आज शुक्रवार आहे. जुमाची नमाज जोहरच्या वेळी अदा केली जाते ({giris} ला सुरू).",
+        suAnkiEk: ", सध्याची नमाज",
+        siradakiEk: ", पुढील नमाज"
     )
 
     // pa (yalnız Şahmuki; terimler src/core/dil/sozluk/pa)

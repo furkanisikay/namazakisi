@@ -1,61 +1,60 @@
-// ÇEVİRİ: mr — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * Marathi ibadete çağrı: "तुम्ही" kipinin kısa ‑आ emri ("नमाज अदा करा", "नमाजसाठी उभे राहा");
+ * secde kalıbı yok, "!" yok. Başlıkta süre birimi "मि" (CLDR dar biçim "मि"): "मगरिब · 655 मि"
+ * bilekliğin ilk 16 karakterine sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} मि झाली · नमाजची वेळ झाली ⏰',
+    giris2: '{ad} · {dk} मि झाली · नमाजला उशीर करू नका ⚠️',
+    giris3: '{ad} · {dk} मि झाली · नमाज तुमची वाट पाहत आहे 🔥',
+    giris4: '{ad} · {dk} मि झाली · नमाजसाठी उभे राहा 🚨',
+    erken3: '{ad} · {dk} मि बाकी · नमाज तुमची वाट पाहत आहे 🔥',
+    erken4: '{ad} · {dk} मि बाकी · नमाजसाठी उभे राहा 🚨',
+    cikis1: '{ad} · {dk} मि बाकी ⏰',
+    cikis2: '{ad} · {dk} मि · वेळ कमी होत आहे ⚠️',
+    cikis3: '{ad} · {dk} मि · वेळ निसटत आहे 🔥',
+    cikis4: '{ad} · {dk} मि · वेळ संपत आहे 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['नमाजची वेळ झाली; संधी आहे तोवर नमाज अदा करा.', 'वेळ तुमच्या हातात आहे तोवर नमाज अदा करा; नंतरवर ढकलू नका.'],
+    s2: ['जितके पुढे ढकलाल तितके ते जड होते; नमाज शेवटपर्यंत ठेवू नका.', 'वेळ पुढे जात आहे — आता नमाज अदा करा.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'जितका उशीर कराल तितकी नमाज चुकण्याची शक्यता वाढते; आता नमाज अदा करा.',
+      '"नंतर अदा करीन" असे म्हणू नका; तुम्ही आता नमाज अदा करू शकता.',
+      'काही मिनिटांनी "वेळेवर अदा केली असती तर" म्हणण्यापेक्षा आत्ताच उठा.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['नमाजला आणखी उशीर करू नका — आता नमाजसाठी उभे राहा.', 'हातातले काम बाजूला ठेवा आणि नमाजसाठी उभे राहा.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'वेळ कमी होऊ लागली आहे; संधी आहे तोवर नमाज अदा करा.',
+    s2: 'नमाज शेवटपर्यंत ठेवू नका; नमाज अदा करण्यासाठी आता चांगली वेळ आहे.',
+    s3: 'वेळ जवळजवळ संपली आहे; तुम्ही अजूनही आता नमाज अदा करू शकता.',
+    s4: 'नमाज अदा केली असल्यास "नमाज पढली" वर टॅप करा; नसल्यास आता नमाजसाठी उभे राहा.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'नमाजला उशीर करू नका. आता नमाजसाठी उभे राहा. ({dk} मि झाली)',
+    giris2: 'वेळ पुढे जात आहे; नमाज शेवटपर्यंत ठेवू नका. ({dk} मि झाली)',
+    giris1: cogul({ one: 'नमाजची वेळ सुरू होऊन {n} मिनिट झाले.', other: 'नमाजची वेळ सुरू होऊन {n} मिनिटे झाली.' }),
+    erken4: 'नमाजला उशीर करू नका; आता नमाजसाठी उभे राहा. ({dk} मि बाकी)',
+    cikis4: 'वेळ संपत आहे. आता नमाजसाठी उभे राहा. ({dk} मि बाकी)',
+    cikis2: 'वेळ कमी होत आहे; नमाज शेवटपर्यंत ठेवू नका. ({dk} मि बाकी)',
+    cikis1: cogul({ one: 'नमाजची वेळ संपायला {n} मिनिट बाकी.', other: 'नमाजची वेळ संपायला {n} मिनिटे बाकी.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · झोपण्यापूर्वी नमाज अदा करा ⏰',
+    govde: 'शांततेचे तास {dk} मिनिटांनी सुरू होतील; झोपायला जाण्यापूर्वी इशाची नमाज अदा करा.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'वेळ कमी होऊ लागली आहे; संधी आहे तोवर नमाज अदा करा.',
+    sonaBirakma: 'नमाज शेवटपर्यंत ठेवू नका; नमाज अदा करण्यासाठी आता चांगली वेळ आहे.',
+    fisilti: '"नंतर अदा करीन" असे म्हणू नका; वेळ जवळजवळ संपली आहे, तुम्ही आता नमाज अदा करू शकता.',
+    omur: 'वेळ जात आहे; ही नमाज वेळेवर अदा करण्याची संधी अजून तुमच्याकडे आहे.',
+    keske: 'काही मिनिटांनी "वेळेवर अदा केली असती तर" म्हणण्यापेक्षा आत्ताच उठा.',
+    namazaDur: 'नमाज अदा केली असल्यास "नमाज पढली" वर टॅप करा; नसल्यास आता नमाजसाठी उभे राहा.',
+    sonDakika: 'शेवटची काही मिनिटे. हातातले काम बाजूला ठेवा आणि नमाजसाठी उभे राहा.',
   },
 };

@@ -160,8 +160,8 @@ object CanliGuncellemeKurallari {
         "te" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: kn
         "kn" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: mr
-        "mr" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // mr
+        "mr" to KisaBirimler("ता", "मिनि", birimAyirici = " ", parcaAyirici = " "),
         // pa (Şahmuki; Urduca gibi kısaltma yok — JS sure.kisa ile aynı)
         "pa" to KisaBirimler("گھنٹے", "منٹ", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: as

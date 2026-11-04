@@ -942,17 +942,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: mr (CLDR mr binlik ayırıcı ","; rakam çizimde yerelleşir)
+    // mr (CLDR mr binlik ayırıcı ","; rakam çizimde yerelleşir)
     public static let mr = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "मागे",
+        saga: "उजवीकडे {derece}°",
+        sola: "डावीकडे {derece}°",
+        hizali: "तुमचे तोंड किब्लाकडे आहे",
+        arkadaErisim: "किब्ला तुमच्या मागे आहे",
+        sagdaErisim: "किब्ला तुमच्या उजवीकडे {derece} अंशांवर आहे",
+        soldaErisim: "किब्ला तुमच्या डावीकडे {derece} अंशांवर आहे",
+        kabede: "तुम्ही काबाजवळ आहात",
+        mesafe: "{km} किमी",
         binlikAyirici: ","
     )
 

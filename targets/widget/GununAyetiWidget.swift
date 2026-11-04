@@ -850,18 +850,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: mr
+    // mr — meal `marathi_ansari` (gununAyetiHavuzu 94:6, birebir)
     static let mr = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "आजची आयत",
+        galeriAciklama: "दररोज फज्रला बदलणारी एक आयत आणि तिचे भाषांतर.",
+        etiket: "आजची आयत",
+        uygulamayiAcin: "आजची आयत पाहण्यासाठी ॲप उघडा",
+        ornekSigmiyor: "आजची आयत या आकारात मावत नाही. वाचण्यासाठी टॅप करा.",
+        ornekAcin: "उघडा",
+        ornekArapcaKaynagi: "अरबी: Tanzil",
+        ornekMeal: "निःसंशय, कठीणतेसह सहजता आहे.",
+        ornekKisaKunye: "कुरआन 94:6",
+        ornekMealKaynagi: "Muhammad Shafee‘ Ansari, QuranEnc 1.0.0"
     )
 
     // pa (Şahmuki meal yok: QuranEnc `punjabi_arif` Gurmuki; yalnız Arapça metin + künye, Sindhçe emsali)

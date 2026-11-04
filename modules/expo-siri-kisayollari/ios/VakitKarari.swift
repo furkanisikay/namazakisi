@@ -1891,31 +1891,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: mr
+    // mr — Marathi (beta): JS `sozluk/mr`; Kıldım "नमाज पढली", Kılındı "अदा झाली"
     public static let mr = VakitMetinleri(
         dil: "mr",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "फज्र", "ogle": "जोहर", "ikindi": "असर", "aksam": "मगरिब", "yatsi": "इशा"],
+        gunes: "सूर्योदय",
+        konumYok: "नमाजच्या वेळा मोजता याव्यात म्हणून ॲप उघडा आणि तुमचे स्थान सेट करा.",
+        veriEski: "नमाजच्या वेळा जुन्या झाल्या आहेत. अपडेट करण्यासाठी एकदा ॲप उघडा.",
+        girisBugun: "{saat} वाजता",
+        girisYarin: "उद्या {saat} वाजता",
+        suAnVakti: "आता {ad} ची वेळ आहे.",
+        suAnVaktiCikis: "आता {ad} ची वेळ आहे; ती {saat} वाजता संपते.",
+        siradakiNamaz: "पुढील नमाज {ad} आहे, {giris}.",
+        isaretlendi: "{ad} \"अदा झाली\" म्हणून नोंदवली. {dua}.",
+        zatenKilindi: "{ad} आधीच \"अदा झाली\" म्हणून नोंदवलेली आहे.",
+        vakitYok: "आत्ता नोंदवण्यासाठी कोणतीही नमाज नाही.",
+        vakitYokSiradaki: "आत्ता नोंदवण्यासाठी कोणतीही नमाज नाही. पुढील नमाज {ad} आहे, {giris}.",
+        onay: "{ad} \"अदा झाली\" म्हणून नोंदवायची का?",
+        vakitDegisti: "नमाजची वेळ बदलली, त्यामुळे काहीही नोंदवले गेले नाही. पुन्हा प्रयत्न करा.",
+        kabulDuasi: "अल्लाह कबूल करो",
+        kildim: "नमाज पढली",
+        kilindi: "अदा झाली",
+        kontrolKildim: "{ad} · नमाज पढली",
+        kontrolKilindi: "{ad} अदा झाली",
+        kontrolVakitYok: "नोंदीसाठी नमाज नाही",
+        uygulamayiAcin: "ॲप उघडा"
     )
 
     // pa (yalnız Şahmuki; terimler src/core/dil/sozluk/pa)

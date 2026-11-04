@@ -537,11 +537,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: mr (one/other)
+    // mr (one/other)
     static let mr = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} {n} मिनिटात सुरू होईल.", "other": "{ad} {n} मिनिटांत सुरू होईल."],
+        evetKilindi: "होय, \"अदा झाली\" म्हणून नोंदवलेली आहे.",
+        hayirKilinmadi: "नाही, अजून नोंद झालेली नाही."
     )
 
     // pa (one = 0 ve 1, one = other; Şahmuki)

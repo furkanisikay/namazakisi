@@ -917,18 +917,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: mr
+    // mr — Marathi (beta): JS `sozluk/mr`; tarih CLDR gibi virgüllü
     public static let mr = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "फज्र", "gunes": "सूर्योदय", "ogle": "जोहर", "ikindi": "असर", "aksam": "मगरिब", "yatsi": "इशा"],
+        cuma: "जुमा",
+        aylar: ["जानेवारी", "फेब्रुवारी", "मार्च", "एप्रिल", "मे", "जून", "जुलै", "ऑगस्ट", "सप्टेंबर", "ऑक्टोबर", "नोव्हेंबर", "डिसेंबर"],
+        gunler: ["सोमवार", "मंगळवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार", "रविवार"],
+        tarih: "{gunAdi}, {gun} {ay}, {yil}",
+        kerahatAdlari: ["suruk": "सूर्योदय", "istiva": "मध्यान्ह", "gurub": "सूर्यास्त"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "सूर्य चांगला वर येईपर्यंत नमाज अदा करणे मकरूह आहे.",
+            "istiva": "सूर्य माथ्यावर असताना नमाज अदा करणे मकरूह आहे.",
+            "gurub": "सूर्य मावळत असताना नमाज अदा करणे मकरूह आहे.",
         ]
     )
 

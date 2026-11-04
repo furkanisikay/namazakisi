@@ -1,35 +1,37 @@
-// ÇEVİRİ: mr — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Marathi konuşan Müslümanların namaz sonrası ve selam için kullandığı kalıplar (çeviri değil;
+ * Dakhni/Urduca kalıpların Devanagari yazımı, nuktasız). Kabul duası "अल्लाह कबूल करो" (Marathi
+ * dilek kipi ‑ओ, "देव भले करो" yapısı; türetildi, yerli okuyucu baksın) ve QE 2:127 "स्वीकार कर"
+ * kökünden "अल्लाह स्वीकार करो". Sabah/gece selamı yerleşik Marathi "सुप्रभात", "शुभ रात्री".
+ * Övgü ve "!" yok. Kandil selamı yalnız ülke listesindeki gecelerde söylenir
+ * (`selam.ts > KANDIL_ULKELERI`); buradaki karşılıklar tip bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'मुबारक असो.',
+  kabulDualari: ['अल्लाह कबूल करो', 'अल्लाह तआला कबूल करो', 'अल्लाह कबूल करो', 'अल्लाह स्वीकार करो'],
+  kabulDuasi: 'अल्लाह कबूल करो',
+  ekSabah: 'सुप्रभात',
+  ekYatsi: 'शुभ रात्री',
+  tamGunAna: 'अल्लाह कबूल करो',
+  tamGunAlt: 'आज तुम्ही पाचही नमाज पूर्ण केल्या.',
+  kazaKabul: 'तुमच्या नोंदीतून {vakit} ची एक कजा नमाज कमी केली. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'शब-ए-रगाइब मुबारक',
+    mirac: 'शब-ए-मेराज मुबारक',
+    berat: 'शब-ए-बरात मुबारक',
+    mevlid: 'ईद-ए-मिलादुन्नबी मुबारक',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'सहरी मुबारक',
+    bayram: 'ईद मुबारक',
+    iftar: 'इफ्तार मुबारक',
+    kadir: 'शब-ए-कद्र मुबारक',
+    arefe: 'ईदच्या आगमनाच्या शुभेच्छा',
+    hicriYilbasi: 'नवीन इस्लामी वर्ष मुबारक',
+    cuma: 'जुमा मुबारक',
+    ramazan: 'रमजान मुबारक',
+    sabah: 'सुप्रभात',
   },
 };
