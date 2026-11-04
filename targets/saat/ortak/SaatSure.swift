@@ -517,12 +517,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: kn (one/other)
+    // kn (one = 0 ve 1, other; sayıyla ad tekil kalır → JS sure ile aynı, one = other)
     public static let kn = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "ಗಂ", birimDk: "ನಿಮಿ", birimSn: "ಸೆ",
+        saat: ["one": "{n} ಗಂಟೆ", "other": "{n} ಗಂಟೆ"],
+        dakika: ["one": "{n} ನಿಮಿಷ", "other": "{n} ನಿಮಿಷ"],
+        saniye: ["one": "{n} ಸೆಕೆಂಡ್", "other": "{n} ಸೆಕೆಂಡ್"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

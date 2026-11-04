@@ -836,18 +836,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Abdurrahim ibn Muhammad, QuranEnc 1.0.7"
     )
 
-    // ÇEVİRİ: kn
+    // kn (Kannada'da büyük harf yok: etiket = galeriAdi; meal birebir `gununAyetiHavuzu.ts` 94:6 kn)
     static let kn = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "ದಿನದ ವಚನ",
+        galeriAciklama: "ಒಂದು ವಚನ ಮತ್ತು ಅದರ ಅರ್ಥಾನುವಾದ, ಪ್ರತಿದಿನ ಫಜ್ರ್ ಸಮಯದಲ್ಲಿ ಬದಲಾಗುತ್ತದೆ.",
+        etiket: "ದಿನದ ವಚನ",
+        uygulamayiAcin: "ದಿನದ ವಚನ ನೋಡಲು ಆ್ಯಪ್ ತೆರೆಯಿರಿ",
+        ornekSigmiyor: "ಇಂದಿನ ವಚನ ಈ ಗಾತ್ರಕ್ಕೆ ಹೊಂದುವುದಿಲ್ಲ. ಓದಲು ಟ್ಯಾಪ್ ಮಾಡಿ.",
+        ornekAcin: "ತೆರೆಯಿರಿ",
+        ornekArapcaKaynagi: "ಅರೇಬಿಕ್: Tanzil",
+        ornekMeal: "ನಿಶ್ಚಯವಾಗಿಯೂ ಕಷ್ಟದೊಂದಿಗೆ ಸುಲಭವಿದೆ.",
+        ornekKisaKunye: "ಕುರ್‌ಆನ್ 94:6",
+        ornekMealKaynagi: "Hamza Butur, QuranEnc 1.0.3"
     )
 
     // mr — meal `marathi_ansari` (gununAyetiHavuzu 94:6, birebir)

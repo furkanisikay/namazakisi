@@ -1864,31 +1864,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "యాప్‌ను తెరవండి"
     )
 
-    // ÇEVİRİ: kn
+    // kn
     public static let kn = VakitMetinleri(
         dil: "kn",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ಫಜ್ರ್", "ogle": "ಝುಹರ್", "ikindi": "ಅಸರ್", "aksam": "ಮಗ್ರಿಬ್", "yatsi": "ಇಶಾ"],
+        gunes: "ಸೂರ್ಯೋದಯ",
+        konumYok: "ನಮಾಝ್ ಸಮಯಗಳನ್ನು ಲೆಕ್ಕ ಹಾಕಲು ಆ್ಯಪ್ ತೆರೆದು ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಹೊಂದಿಸಿ.",
+        veriEski: "ನಮಾಝ್ ಸಮಯಗಳು ಹಳೆಯದಾಗಿವೆ. ನವೀಕರಿಸಲು ಆ್ಯಪ್ ಅನ್ನು ಒಮ್ಮೆ ತೆರೆಯಿರಿ.",
+        girisBugun: "{saat} ಕ್ಕೆ",
+        girisYarin: "ನಾಳೆ {saat} ಕ್ಕೆ",
+        suAnVakti: "ಈಗ {ad} ಸಮಯ.",
+        suAnVaktiCikis: "ಈಗ {ad} ಸಮಯ; ಇದು {saat} ಕ್ಕೆ ಮುಗಿಯುತ್ತದೆ.",
+        siradakiNamaz: "ಮುಂದಿನ ನಮಾಝ್ {ad}, {giris}.",
+        isaretlendi: "{ad} ನಮಾಝನ್ನು ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ. {dua}.",
+        zatenKilindi: "{ad} ನಮಾಝ್ ಈಗಾಗಲೇ ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ.",
+        vakitYok: "ಸದ್ಯ ನಿರ್ವಹಿಸಬೇಕಾದ ನಮಾಝ್ ಇಲ್ಲ.",
+        vakitYokSiradaki: "ಸದ್ಯ ನಿರ್ವಹಿಸಬೇಕಾದ ನಮಾಝ್ ಇಲ್ಲ. ಮುಂದಿನದು {ad}, {giris}.",
+        onay: "{ad} ನಮಾಝನ್ನು ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಬೇಕೆ?",
+        vakitDegisti: "ನಮಾಝ್ ಸಮಯ ಬದಲಾಗಿದೆ, ಏನೂ ಗುರುತಿಸಲಾಗಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+        kabulDuasi: "ಅಲ್ಲಾಹು ಸ್ವೀಕರಿಸಲಿ",
+        kildim: "ನಮಾಝ್ ಮಾಡಿದೆ",
+        kilindi: "ನಿರ್ವಹಿಸಲಾಗಿದೆ",
+        kontrolKildim: "{ad} · ನಮಾಝ್ ಮಾಡಿದೆ",
+        kontrolKilindi: "{ad} ನಿರ್ವಹಿಸಲಾಗಿದೆ",
+        kontrolVakitYok: "ಗುರುತಿಸಬೇಕಾದ ನಮಾಝ್ ಇಲ್ಲ",
+        uygulamayiAcin: "ಆ್ಯಪ್ ತೆರೆಯಿರಿ"
     )
 
     // mr — Marathi (beta): JS `sozluk/mr`; Kıldım "नमाज पढली", Kılındı "अदा झाली"

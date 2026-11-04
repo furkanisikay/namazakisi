@@ -158,8 +158,8 @@ object CanliGuncellemeKurallari {
         "fil" to KisaBirimler("oras", "min", birimAyirici = " ", parcaAyirici = " "),
         // te (JS sure.kisa ile aynı)
         "te" to KisaBirimler("గం", "నిమి", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: kn
-        "kn" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // kn (CLDR kn short, noktasız — JS sure.kisa ile aynı)
+        "kn" to KisaBirimler("ಗಂ", "ನಿಮಿ", birimAyirici = " ", parcaAyirici = " "),
         // mr
         "mr" to KisaBirimler("ता", "मिनि", birimAyirici = " ", parcaAyirici = " "),
         // pa (Şahmuki; Urduca gibi kısaltma yok — JS sure.kisa ile aynı)

@@ -530,11 +530,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "కాదు, ఇంకా గుర్తించబడలేదు."
     )
 
-    // ÇEVİRİ: kn (one/other)
+    // kn (one = 0 ve 1, other; sayıyla ad tekil kalır → one = other)
     static let kn = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} ಸಮಯ {n} ನಿಮಿಷದಲ್ಲಿ ಆರಂಭವಾಗುತ್ತದೆ.", "other": "{ad} ಸಮಯ {n} ನಿಮಿಷದಲ್ಲಿ ಆರಂಭವಾಗುತ್ತದೆ."],
+        evetKilindi: "ಹೌದು, ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ.",
+        hayirKilinmadi: "ಇಲ್ಲ, ಇನ್ನೂ ಗುರುತಿಸಲಾಗಿಲ್ಲ."
     )
 
     // mr (one/other)

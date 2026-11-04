@@ -919,19 +919,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", తదుపరి నమాజ్"
     )
 
-    // ÇEVİRİ: kn
+    // kn
     static let kn = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "ನಿಮ್ಮ ನಗರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+        ilMerkezi: "ನಮಾಝ್ ಸಮಯಗಳನ್ನು ನಗರ ಕೇಂದ್ರದ ಪ್ರಕಾರ ಲೆಕ್ಕ ಹಾಕಲಾಗುತ್ತದೆ. ನಿಮ್ಮ ಆಯ್ಕೆಯನ್ನು ನಂತರ ಬದಲಾಯಿಸಬಹುದು.",
+        ilSecErisim: "{il}, ಆಯ್ಕೆಮಾಡಿ",
+        kalan: "{ad} ಸಮಯಕ್ಕೆ ಉಳಿದ ಸಮಯ",
+        kalanErisim: "{ad} ಸಮಯಕ್ಕೆ ಉಳಿದ ಸಮಯ: {sure}",
+        konumuDegistirin: "ಸ್ಥಳ ಬದಲಾಯಿಸಿ",
+        kerahatSuruyor: "ಮಕ್ರೂಹ್ ಸಮಯ: {tur}, ಮುಕ್ತಾಯ {bitis}. {aciklama}",
+        siradakiKerahat: "ಮುಂದಿನ ಮಕ್ರೂಹ್ ಸಮಯ: {tur} {bas}–{bit}",
+        cumaBilgisi: "ಇಂದು ಶುಕ್ರವಾರ. ಜುಮಾ ನಮಾಝನ್ನು ಝುಹರ್ ಸಮಯದಲ್ಲಿ ನಿರ್ವಹಿಸಲಾಗುತ್ತದೆ (ಆರಂಭ {giris}).",
+        suAnkiEk: ", ಪ್ರಸ್ತುತ ನಮಾಝ್",
+        siradakiEk: ", ಮುಂದಿನ ನಮಾಝ್"
     )
 
     // mr

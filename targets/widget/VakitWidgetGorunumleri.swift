@@ -1456,29 +1456,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "ప్రస్తుత నమాజ్‌ను ఆచరించినట్లు గుర్తిస్తుంది."
     )
 
-    // ÇEVİRİ: kn
+    // kn
     static let kn = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "ನಮಾಝ್ ಸಮಯ",
+        galeriAciklama: "ಪ್ರಸ್ತುತ ನಮಾಝ್ ಸಮಯ, ಅದು ಮುಗಿಯಲು ಉಳಿದ ಸಮಯ ಮತ್ತು ಇಂದಿನ ನಮಾಝ್ ಸಮಯಗಳು.",
+        veriEski: "ನಮಾಝ್ ಸಮಯಗಳನ್ನು ನವೀಕರಿಸಲು ಆ್ಯಪ್ ತೆರೆಯಿರಿ",
+        konumYok: "ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಹೊಂದಿಸಲು ಆ್ಯಪ್ ತೆರೆಯಿರಿ",
+        kilindiSiradaki: "{ad} ನಿರ್ವಹಿಸಲಾಗಿದೆ · {sonraki} {saat}",
+        adCikis: "{ad} · ಮುಕ್ತಾಯ {saat}",
+        siradakiAdSaat: "ಮುಂದಿನದು {ad} {saat}",
+        vaktiCikisErisim: "{ad} ಸಮಯ, ಮುಕ್ತಾಯ {saat}",
+        siradakiErisim: "ಮುಂದಿನದು {ad}, {saat}",
+        cikisSaat: "ಮುಕ್ತಾಯ {saat}",
+        bitisSaat: "ಮುಕ್ತಾಯ {saat}",
+        kilindiBaslik: "{ad} ನಿರ್ವಹಿಸಲಾಗಿದೆ",
+        siradaki: "ಮುಂದಿನದು",
+        siradakiAd: "ಮುಂದಿನದು {ad}",
+        kildimErisim: "{ad} ನಮಾಝ್ ಮಾಡಿದೆ",
+        gunSatiriKilindi: ", ನಿರ್ವಹಿಸಲಾಗಿದೆ",
+        bitti: "ಮುಗಿದಿದೆ",
+        vakitCikti: "ನಮಾಝ್ ಸಮಯ ಮುಗಿದಿದೆ",
+        kabulAlt: "{ad} ನಿರ್ವಹಿಸಲಾಗಿದೆ",
+        kontrolAdi: "ನಮಾಝ್ ಮಾಡಿದೆ",
+        kontrolAciklama: "ಪ್ರಸ್ತುತ ನಮಾಝನ್ನು ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸುತ್ತದೆ."
     )
 
     // mr

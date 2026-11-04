@@ -928,17 +928,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: kn (CLDR kn binlik ayırıcı ",")
+    // kn (CLDR kn binlik ayırıcı ",")
     public static let kn = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "ಹಿಂದೆ",
+        saga: "ಬಲಕ್ಕೆ {derece}°",
+        sola: "ಎಡಕ್ಕೆ {derece}°",
+        hizali: "ನೀವು ಕಿಬ್ಲಾ ದಿಕ್ಕಿನಲ್ಲಿದ್ದೀರಿ",
+        arkadaErisim: "ಕಿಬ್ಲಾ ನಿಮ್ಮ ಹಿಂದೆ ಇದೆ",
+        sagdaErisim: "ಕಿಬ್ಲಾ ನಿಮ್ಮ ಬಲಕ್ಕೆ {derece} ಡಿಗ್ರಿ ಇದೆ",
+        soldaErisim: "ಕಿಬ್ಲಾ ನಿಮ್ಮ ಎಡಕ್ಕೆ {derece} ಡಿಗ್ರಿ ಇದೆ",
+        kabede: "ನೀವು ಕಅಬಾದಲ್ಲಿದ್ದೀರಿ",
+        mesafe: "{km} ಕಿ.ಮೀ",
         binlikAyirici: ","
     )
 

@@ -208,8 +208,8 @@ enum NamazAlarmCekirdegi {
         "fil": "Ihinto",
         // te
         "te": "ఆపండి",
-        // ÇEVİRİ: kn
-        "kn": "Stop",
+        // kn
+        "kn": "ನಿಲ್ಲಿಸಿ",
         // mr
         "mr": "थांबवा",
         // pa

@@ -1,15 +1,14 @@
-// ÇEVİRİ: kn — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'ಕುರ್‌ಆನ್ {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'ನಮಾಝ್ ನಿದ್ರೆಗಿಂತ ಉತ್ತಮವಾಗಿದೆ. ಯಶಸ್ಸಿನೆಡೆಗೆ ಬನ್ನಿರಿ.',
+    araVer: 'ಲೌಕಿಕ ಕೆಲಸಗಳಿಂದ ಸ್ವಲ್ಪ ವಿರಾಮ ತೆಗೆದುಕೊಳ್ಳಿರಿ, ನಿಮ್ಮ ಪರಿಪಾಲಕನ ಮುಂದೆ ನಿಲ್ಲಿರಿ.',
+    yorgunluk: 'ದಿನದ ದಣಿವನ್ನು ಕಳೆದು ನೆಮ್ಮದಿ ಪಡೆಯಲು ಅಸರ್ ನಮಾಝ್ ನಿಮಗಾಗಿ ಕಾಯುತ್ತಿದೆ.',
+    sukur: 'ಮಗ್ರಿಬ್ ನಮಾಝ್ ದಿನದ ಕೃತಜ್ಞತೆಯಾಗಿದೆ. ನಿಮ್ಮ ಪರಿಪಾಲಕನ ಸನ್ನಿಧಿಗೆ ಧಾವಿಸಿರಿ.',
+    aksamKisa: 'ಮಗ್ರಿಬ್ ಸಮಯ ಚಿಕ್ಕದು; ಸಮಯ ಆರಂಭವಾಗಿದೆ, ತಡಮಾಡದೆ ನಮಾಝ್ ನಿರ್ವಹಿಸಿರಿ.',
+    geceKaranligi: 'ರಾತ್ರಿಯ ಕತ್ತಲಲ್ಲಿ ನಿಮ್ಮ ಪರಿಪಾಲಕನೊಂದಿಗೆ ಏಕಾಂತದಲ್ಲಿರಿ. ಇಶಾ ನಮಾಝ್ ಆತ್ಮಕ್ಕೆ ಔಷಧಿಯಾಗಿದೆ.',
+    davet: 'ಅಲ್ಲಾಹನ ಸಂಪ್ರೀತಿಯೊಂದಿಗೆ ದಿನವನ್ನು ಮುಗಿಸಲು ನಿಮ್ಮನ್ನು ಇಶಾ ನಮಾಝಿಗೆ ಆಹ್ವಾನಿಸಲಾಗಿದೆ.',
   },
 };
