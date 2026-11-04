@@ -14,6 +14,7 @@ import { KADRAN_AZAMI_YATIS, KADRAN_ORANI, KADRAN_PERSPEKTIF } from './sabitler'
 /** Sığdırma kadranı bundan küçültmez (dar ekranda metin kaydırılmaz, kadran okunur kalır). */
 const KADRAN_EN_KUCUK = 160;
 import { bicim } from '../../../core/dil/aktifDil';
+import { yonuYalit } from '../../../core/dil/yon';
 import { useMetin } from '../../hooks/useMetin';
 import { SOLDAN_SAGA } from '../../components/common/yon';
 
@@ -171,7 +172,8 @@ export const PusulaGorunumu: React.FC<{
         )}
         {statik && kibleAcisi !== null ? (
           <Text style={[styles.alt, { color: renkler.metinIkincil }]}>
-            {[yerAdi, mesafe ? bicim(m.kabeUzakta, { mesafe }) : null].filter(Boolean).join(', ') || m.kuzeydenSaatYonu}
+            {/* Yer adı yalıtılır: Latin harfli ad sağdan sola satırın yönünü çevirmesin. */}
+            {[yerAdi ? yonuYalit(yerAdi) : null, mesafe ? bicim(m.kabeUzakta, { mesafe }) : null].filter(Boolean).join(', ') || m.kuzeydenSaatYonu}
           </Text>
         ) : kibleAcisi !== null && (
           <Text style={[styles.alt, { color: renkler.metinIkincil }]}>

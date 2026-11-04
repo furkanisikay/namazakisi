@@ -239,7 +239,8 @@ describe('KibleSayfasi', () => {
     (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaVar: false, ozet: ozet({ hazir: false, fark: null }) }));
     const { getByTestId, queryByTestId, getByText, queryByLabelText, UNSAFE_root } = render(<KibleSayfasi />);
     expect(getByTestId('kible-statik-aci').props.children).toEqual([152, '°']);
-    expect(getByText(/^Fatih, İstanbul, Kâbe 2\.\d{3} km uzakta$/)).toBeTruthy();
+    // Yer adı yön yalıtımında (FSI…PDI): sağdan sola dilde Latin ad satırı ters dizmesin.
+    expect(getByText(/^\u2068Fatih, İstanbul\u2069, Kâbe 2\.\d{3} km uzakta$/)).toBeTruthy();
     expect(getByTestId('kible-kabe-isareti')).toBeTruthy();
     // Yön harfleri SVG'de kadranla dönmez: ayrı, dik duran metin katmanı (G baş aşağı olmasın).
     const harfler = UNSAFE_root.findAll((n: { type: unknown; props: { children?: unknown } }) => n.type === 'SvgText');
@@ -415,7 +416,7 @@ describe('KibleSayfasi — İngilizce', () => {
     (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaVar: false, ozet: ozet({ hazir: false, fark: null }) }));
     const statik = render(<KibleSayfasi />);
     expect(kalan(statik.toJSON())).toEqual([]);
-    expect(statik.getByText(/London, Kaaba is 2,\d{3} km away/)).toBeTruthy();
+    expect(statik.getByText(/London\u2069, Kaaba is 2,\d{3} km away/)).toBeTruthy();
   });
 
   const kameraModu = () => {
