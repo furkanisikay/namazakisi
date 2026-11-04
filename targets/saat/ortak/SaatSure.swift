@@ -571,12 +571,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: km (other)
+    // km (other)
     public static let km = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["other": "{n} hours"],
-        dakika: ["other": "{n} minutes"],
-        saniye: ["other": "{n} seconds"],
+        birimSa: "ម៉ោង", birimDk: "នាទី", birimSn: "វិនាទី",
+        saat: ["other": "{n} ម៉ោង"],
+        dakika: ["other": "{n} នាទី"],
+        saniye: ["other": "{n} វិនាទី"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

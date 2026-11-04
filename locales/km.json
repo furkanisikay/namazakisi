@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "ទីតាំងរបស់អ្នកត្រូវបានប្រើដើម្បីគណនាពេលសឡាតឲ្យបានត្រឹមត្រូវសម្រាប់ទីកន្លែងដែលអ្នកនៅ។ ទីតាំងរបស់អ្នកនៅលើឧបករណ៍របស់អ្នក។",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "ទីតាំងរបស់អ្នកត្រូវបានប្រើដើម្បីគណនាពេលសឡាតឲ្យបានត្រឹមត្រូវសម្រាប់ទីកន្លែងដែលអ្នកនៅ ហើយបើ នៅម៉ាស្ជិត បើក ដើម្បីបើកមុខងារសឡាតពេលអ្នកចូលម៉ាស្ជិត។ ទីតាំងរបស់អ្នកនៅលើឧបករណ៍របស់អ្នក។",
+  "NSLocationAlwaysUsageDescription": "ទីតាំងរបស់អ្នកត្រូវបានប្រើដើម្បីធ្វើបច្ចុប្បន្នភាពពេលសឡាតដោយស្វ័យប្រវត្តិពេលអ្នកប្ដូរទីក្រុង ហើយបើ នៅម៉ាស្ជិត បើក ដើម្បីបើកមុខងារសឡាតពេលអ្នកចូលម៉ាស្ជិត។ ទីតាំងរបស់អ្នកនៅលើឧបករណ៍របស់អ្នក។",
+  "NSCameraUsageDescription": "កាមេរ៉ារបស់អ្នកត្រូវបានប្រើដើម្បីបង្ហាញទិសគិបឡាត់លើទិដ្ឋភាពកាមេរ៉ា និងដើម្បីស្កេនកូដផ្គូផ្គងនៅលើទូរទស្សន៍របស់អ្នក។ រូបភាពមិនត្រូវបានរក្សាទុក ហើយមិនចេញពីឧបករណ៍របស់អ្នកឡើយ។",
+  "NSCalendarsUsageDescription": "ការចូលប្រើប្រតិទិនត្រូវបានប្រើដើម្បីបន្ថែមពេលសឡាតទៅប្រតិទិនរបស់អ្នក ហើយបើអ្នកបើក ដើម្បីពិនិត្យថាតើព្រឹត្តិការណ៍ក្នុងប្រតិទិនជាន់នឹងពេលសឡាតឬអត់។ ទិន្នន័យប្រតិទិនរបស់អ្នកនៅលើឧបករណ៍របស់អ្នក។",
+  "NSCalendarsFullAccessUsageDescription": "ការចូលប្រើប្រតិទិនត្រូវបានប្រើដើម្បីបន្ថែមពេលសឡាតទៅប្រតិទិនរបស់អ្នក ហើយបើអ្នកបើក ដើម្បីពិនិត្យថាតើព្រឹត្តិការណ៍ក្នុងប្រតិទិនជាន់នឹងពេលសឡាតឬអត់។ ទិន្នន័យប្រតិទិនរបស់អ្នកនៅលើឧបករណ៍របស់អ្នក។",
+  "NSLocalNetworkUsageDescription": "កម្មវិធីភ្ជាប់ទៅទូរទស្សន៍នៅលើបណ្ដាញមូលដ្ឋានរបស់អ្នក ដើម្បីផ្ញើពេលសឡាត និងសឡាតដែលអ្នកបានសម្គាល់ទៅវា។ ទិន្នន័យត្រូវបានអ៊ិនគ្រីប ហើយធ្វើដំណើរតែរវាងឧបករណ៍ទាំងពីរប៉ុណ្ណោះ។",
+  "NSAlarmKitUsageDescription": "ជំហានរំលឹកដែលអ្នកជ្រើស «ម៉ោងរោទ៍ពិត» ត្រូវបានដាក់ជាម៉ោងរោទ៍ ដូច្នេះអ្នកឮវាសូម្បីតែពេលទូរសព្ទស្ងាត់ ឬ Focus បើក។",
+  "\"Vakti kıldım\"": "បានសឡាតហើយ",
+  "\"Kıble\"": "គិបឡាត់"
 }

@@ -1,15 +1,14 @@
-// ÇEVİRİ: km — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'បន្ត',
+  vazgecin: 'បោះបង់',
+  kapatin: 'បិទ',
+  ayarlariAcin: 'បើកការកំណត់',
+  simdilikGecin: 'រំលងសិន',
+  tekrarDeneyin: 'ព្យាយាមម្ដងទៀត',
+  evet: 'យល់ព្រម',
+  hayir: 'ទេ',
+  ayrintilariAcar: 'បើកព័ត៌មានលម្អិត',
   marka: 'Namaz Akışı',
 };

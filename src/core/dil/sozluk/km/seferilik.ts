@@ -1,60 +1,63 @@
-// ÇEVİRİ: km — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
-/** Kaynak fetvalar Türkçedir; etiket bunu söyler. Hüküm kipi yok (bilgi aktarımı). */
+/**
+ * Kaynak fetvalar Türkçedir; etiket bunu söyler. Hüküm kipi yok (bilgi aktarımı). Kasr "បង្រួមសឡាត"
+ * (meal 4:101), yolcu អ្នកធ្វើដំណើរ (HE); cem "រួមសឡាត", mezhep adları (ហាណាហ្វី, ស្ហាហ្វីអ៊ី) ve
+ * "មូហ្សាហាប់" Arapçadan yazıldı (DOĞRULANMADI).
+ */
 export const seferilik: Sozluk['seferilik'] = {
-  mezhepler: { hanefi: 'Hanafi', safii: "Shafi'i" },
+  mezhepler: { hanefi: 'ហាណាហ្វី', safii: 'ស្ហាហ្វីអ៊ី' },
   kaynaklar: {
-    vatan: 'Home, residence and temporary stay in terms of travel (in Turkish)',
-    cem: 'Can prayers be combined (jam\')? (in Turkish)',
-    baslangic: 'When does travel begin? (in Turkish)',
-    ziyaret: "Is someone visiting their parents' town a traveler? (in Turkish)",
+    vatan: 'លំនៅ ទីលំនៅ និងការស្នាក់នៅបណ្ដោះអាសន្ន ក្នុងន័យនៃការធ្វើដំណើរ (ជាភាសាទួរគី)',
+    cem: 'តើអាចរួមសឡាតបានទេ? (ជាភាសាទួរគី)',
+    baslangic: 'តើការធ្វើដំណើរចាប់ផ្ដើមនៅពេលណា? (ជាភាសាទួរគី)',
+    ziyaret: 'តើអ្នកដែលទៅលេងឪពុកម្ដាយនៅស្រុករបស់ពួកគាត់ ជាអ្នកធ្វើដំណើរឬទេ? (ជាភាសាទួរគី)',
   },
   bilgiNotu:
-    'This is information, not a ruling. Whether you count as a traveler depends on the purpose and length of your journey and on your intention.',
-  baslik: 'It looks like you are traveling',
-  mesafeSatiri: 'You are about {km} km from your place of residence as the crow flies. What Diyanet conveys for the {mezhep} school:',
+    'នេះជាព័ត៌មាន មិនមែនជាសេចក្ដីវិនិច្ឆ័យទេ។ ថាតើអ្នកជាអ្នកធ្វើដំណើរឬអត់ អាស្រ័យលើគោលបំណង និងរយៈពេលនៃដំណើររបស់អ្នក ព្រមទាំងចេតនារបស់អ្នក។',
+  baslik: 'មើលទៅដូចជាអ្នកកំពុងធ្វើដំណើរ',
+  mesafeSatiri: 'អ្នកនៅឆ្ងាយពីទីលំនៅរបស់អ្នកប្រហែល {km} គ.ម បន្ទាត់ត្រង់។ អ្វីដែល Diyanet បានបង្ហាញសម្រាប់មូហ្សាហាប់ {mezhep}៖',
   maddeler: {
     hanefi: [
-      'In the Hanafi school, the travel (safar) distance is about 90 km. Someone who intends to stay less than 15 days at the destination counts as a traveler.',
-      'A traveler prays the four-rakat obligatory prayers as two rakats (qasr).',
-      "In the Hanafi school, combining two prayers (jam') is only during Hajj, at Arafat and Muzdalifah. Diyanet also notes that in serious excuses such as travel, one may follow the view of the other schools.",
+      'ក្នុងមូហ្សាហាប់ហាណាហ្វី ចម្ងាយនៃការធ្វើដំណើរប្រហែល 90 គ.ម។ អ្នកដែលមានចេតនាស្នាក់នៅទីដៅតិចជាង 15 ថ្ងៃ ត្រូវបានរាប់ជាអ្នកធ្វើដំណើរ។',
+      'អ្នកធ្វើដំណើរសឡាតកាតព្វកិច្ចបួនរ៉ក្អាត់ ត្រឹមពីររ៉ក្អាត់ (បង្រួមសឡាត)។',
+      'ក្នុងមូហ្សាហាប់ហាណាហ្វី ការរួមសឡាតពីរ មានតែក្នុងពេលហាជ្ជ នៅអារ៉ហ្វះ និងមូហ្សដាលីហ្វះប៉ុណ្ណោះ។ Diyanet ក៏បញ្ជាក់ថា ក្នុងហេតុផលធ្ងន់ធ្ងរដូចជាការធ្វើដំណើរ អាចធ្វើតាមទស្សនៈនៃមូហ្សាហាប់ផ្សេងទៀតបាន។',
     ],
     safii: [
-      "In the Shafi'i school, too, the travel distance is about 90 km. If the stay at the destination is less than 4 days, not counting the days of arrival and departure, the travel rulings continue.",
-      'A traveler prays the four-rakat obligatory prayers as two rakats (qasr).',
-      "In the Shafi'i school, travel is a valid excuse for combining (jam') Dhuhr with Asr and Maghrib with Isha.",
+      'ក្នុងមូហ្សាហាប់ស្ហាហ្វីអ៊ីក៏ដូចគ្នា ចម្ងាយនៃការធ្វើដំណើរប្រហែល 90 គ.ម។ បើការស្នាក់នៅទីដៅតិចជាង 4 ថ្ងៃ ដោយមិនរាប់ថ្ងៃមកដល់ និងថ្ងៃចាកចេញ ច្បាប់នៃការធ្វើដំណើរនៅតែបន្ត។',
+      'អ្នកធ្វើដំណើរសឡាតកាតព្វកិច្ចបួនរ៉ក្អាត់ ត្រឹមពីររ៉ក្អាត់ (បង្រួមសឡាត)។',
+      'ក្នុងមូហ្សាហាប់ស្ហាហ្វីអ៊ី ការធ្វើដំណើរជាហេតុផលត្រឹមត្រូវ សម្រាប់រួមសឡាតហ្ស៊ូហូរជាមួយអាសើរ និងម៉ាហ្គ្រិបជាមួយអ៊ីស្ហា។',
     ],
   },
-  ozetAcik: 'On · {mezhep}',
-  ozetKapali: 'Off',
-  baglantiAcilamadi: "The link couldn't be opened. Check your internet connection.",
-  ikametGuncellendi: 'Your place of residence was updated',
-  ikametKaydedilemedi: "Your place of residence couldn't be saved",
-  kartiKapatin: 'Close the travel card',
-  burasiEvimErisim: 'This is my home, save it as my place of residence',
-  burasiEvim: 'This is home',
-  diyanetteOkuyunErisim: 'Read the Diyanet fatwa in the browser',
-  diyanetteOkuyun: 'Read on Diyanet',
+  ozetAcik: 'បើក · {mezhep}',
+  ozetKapali: 'បិទ',
+  baglantiAcilamadi: 'មិនអាចបើកតំណបានទេ។ សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក។',
+  ikametGuncellendi: 'បានធ្វើបច្ចុប្បន្នភាពទីលំនៅរបស់អ្នក',
+  ikametKaydedilemedi: 'មិនអាចរក្សាទុកទីលំនៅរបស់អ្នកបានទេ',
+  kartiKapatin: 'បិទកាតធ្វើដំណើរ',
+  burasiEvimErisim: 'នេះជាផ្ទះខ្ញុំ រក្សាទុកជាទីលំនៅរបស់ខ្ញុំ',
+  burasiEvim: 'នេះជាផ្ទះ',
+  diyanetteOkuyunErisim: 'អានហ្វាតវ៉ារបស់ Diyanet ក្នុងកម្មវិធីរុករក',
+  diyanetteOkuyun: 'អាននៅ Diyanet',
   sayfa: {
-    kayitliKonum: 'Saved location',
-    henuzKaydedilmedi: 'Not saved yet — your first location counts as your place of residence',
-    buradasiniz: 'You are here now',
-    uzaktasiniz: 'You are now about {km} km away as the crow flies',
-    konumBilinmiyor: "Your location isn't known yet; choose a location first",
+    kayitliKonum: 'ទីតាំងដែលបានរក្សាទុក',
+    henuzKaydedilmedi: 'មិនទាន់រក្សាទុក — ទីតាំងដំបូងរបស់អ្នកនឹងរាប់ជាទីលំនៅ',
+    buradasiniz: 'ឥឡូវអ្នកនៅទីនេះ',
+    uzaktasiniz: 'ឥឡូវអ្នកនៅឆ្ងាយប្រហែល {km} គ.ម បន្ទាត់ត្រង់',
+    konumBilinmiyor: 'មិនទាន់ដឹងទីតាំងរបស់អ្នកទេ សូមជ្រើសរើសទីតាំងជាមុនសិន',
     giris:
-      "When you are about {km} km from your place of residence, a short info card summarizing Diyanet's fatwas appears on the home screen. The card appears once per journey and sends no notifications.",
-    bilgiKarti: 'Info card',
-    kartBaslik: 'Travel info card',
-    gosterilir: 'Shown on the home screen',
-    gosterilmez: 'Not shown',
-    mezhepNotu: 'The card follows your school of thought; you can choose it in Settings › Prayer times.',
-    ikametYeri: 'Place of residence',
-    ikametYapErisim: 'Save your current location as your place of residence',
-    ikametYap: 'Make my current location my residence',
-    kaynaklar: 'Sources (Diyanet High Board of Religious Affairs)',
-    kaynakErisim: '{etiket}. Opens in the browser',
-    /** Not shown outside Turkish (Türkiye-only service). */
-    fetvaHatti: "For questions, you can call Diyanet's 190 fatwa line.",
+      'នៅពេលអ្នកនៅឆ្ងាយពីទីលំនៅប្រហែល {km} គ.ម កាតព័ត៌មានខ្លីមួយដែលសង្ខេបហ្វាតវ៉ារបស់ Diyanet នឹងបង្ហាញនៅអេក្រង់ដើម។ កាតនេះបង្ហាញម្ដងក្នុងមួយដំណើរ ហើយមិនផ្ញើការជូនដំណឹងទេ។',
+    bilgiKarti: 'កាតព័ត៌មាន',
+    kartBaslik: 'កាតព័ត៌មានធ្វើដំណើរ',
+    gosterilir: 'បង្ហាញនៅអេក្រង់ដើម',
+    gosterilmez: 'មិនបង្ហាញ',
+    mezhepNotu: 'កាតនេះធ្វើតាមមូហ្សាហាប់របស់អ្នក ដែលអ្នកអាចជ្រើសរើសនៅ ការកំណត់ › ពេលសឡាត។',
+    ikametYeri: 'ទីលំនៅ',
+    ikametYapErisim: 'រក្សាទុកទីតាំងបច្ចុប្បន្នរបស់អ្នកជាទីលំនៅ',
+    ikametYap: 'ធ្វើឲ្យទីតាំងបច្ចុប្បន្នជាទីលំនៅ',
+    kaynaklar: 'ប្រភព (ក្រុមប្រឹក្សាកិច្ចការសាសនាជាន់ខ្ពស់ Diyanet)',
+    kaynakErisim: '{etiket}។ បើកក្នុងកម្មវិធីរុករក',
+    /** Türkçe dışında gösterilmez (yalnız Türkiye'de geçerli hizmet). */
+    fetvaHatti: 'សម្រាប់សំណួរ អ្នកអាចហៅទៅខ្សែហ្វាតវ៉ា 190 របស់ Diyanet។',
   },
 };

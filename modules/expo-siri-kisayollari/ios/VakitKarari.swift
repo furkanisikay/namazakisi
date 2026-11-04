@@ -2026,31 +2026,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "යෙදුම විවෘත කරන්න"
     )
 
-    // ÇEVİRİ: km
+    // km
     public static let km = VakitMetinleri(
         dil: "km",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ស៊ូពុស", "ogle": "ហ្ស៊ូហូរ", "ikindi": "អាសើរ", "aksam": "ម៉ាហ្គ្រិប", "yatsi": "អ៊ីស្ហា"],
+        gunes: "ថ្ងៃរះ",
+        konumYok: "បើកកម្មវិធី ហើយកំណត់ទីតាំងរបស់អ្នក ដើម្បីឲ្យពេលសឡាតអាចគណនាបាន។",
+        veriEski: "ពេលសឡាតហួសសម័យហើយ។ សូមបើកកម្មវិធីម្ដង ដើម្បីធ្វើបច្ចុប្បន្នភាព។",
+        girisBugun: "នៅម៉ោង {saat}",
+        girisYarin: "ថ្ងៃស្អែកនៅម៉ោង {saat}",
+        suAnVakti: "ឥឡូវជាពេល{ad}។",
+        suAnVaktiCikis: "ឥឡូវជាពេល{ad} វានឹងផុតនៅម៉ោង {saat}។",
+        siradakiNamaz: "សឡាតបន្ទាប់គឺ{ad} {giris}។",
+        isaretlendi: "{ad} ត្រូវបានសម្គាល់ថាបានសឡាត។ {dua}។",
+        zatenKilindi: "{ad} ត្រូវបានសម្គាល់ថាបានសឡាតរួចហើយ។",
+        vakitYok: "ឥឡូវគ្មានសឡាតដែលត្រូវសម្គាល់ទេ។",
+        vakitYokSiradaki: "ឥឡូវគ្មានសឡាតដែលត្រូវសម្គាល់ទេ។ បន្ទាប់គឺ{ad} {giris}។",
+        onay: "សម្គាល់{ad}ថាបានសឡាតឬ?",
+        vakitDegisti: "ពេលសឡាតបានផ្លាស់ប្ដូរ ដូច្នេះគ្មានអ្វីត្រូវបានសម្គាល់ទេ។ ព្យាយាមម្ដងទៀត។",
+        kabulDuasi: "សូមអល់ឡោះទទួលយក",
+        kildim: "បានសឡាតហើយ",
+        kilindi: "បានសឡាត",
+        kontrolKildim: "{ad} · បានសឡាតហើយ",
+        kontrolKilindi: "បានសឡាត{ad}",
+        kontrolVakitYok: "គ្មានសឡាតដែលត្រូវសម្គាល់",
+        uygulamayiAcin: "បើកកម្មវិធី"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

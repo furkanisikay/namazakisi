@@ -1,18 +1,17 @@
-/* ÇEVİRİ: km */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "សឡាតបន្ទាប់ពេលណា ក្នុង ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} សឡាតបន្ទាប់";
+"${applicationName} ile sıradaki namazı söyle" = "ប្រាប់សឡាតបន្ទាប់ជាមួយ ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} ពេលសឡាត";
+"${applicationName} şu anki vakti kıldım" = "បានសឡាតពេលបច្ចុប្បន្នហើយ ក្នុង ${applicationName}";
+"${applicationName} namazımı kıldım" = "បានសឡាតហើយ ក្នុង ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "សម្គាល់សឡាតបច្ចុប្បន្នថាបានសឡាត ក្នុង ${applicationName}";
+"${applicationName} kıbleyi aç" = "បើកគិបឡាត់ ក្នុង ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "បង្ហាញគិបឡាត់ជាមួយ ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} រូបភាពអាយ៉ាត់ប្រចាំថ្ងៃ";
+"${applicationName} ile günün ayeti görselini hazırla" = "រៀបចំរូបភាពអាយ៉ាត់ប្រចាំថ្ងៃជាមួយ ${applicationName}";

@@ -1,61 +1,60 @@
-// ÇEVİRİ: km — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Khmercede: zamirsiz, kısa, doğrudan emir; mealin ចូរ edatı ve លោកអ្នក yok.
+ * "Secdeye kapan" karşılığı YAZILMAZ → "ក្រោកសឡាត" ("kalk, namaz kıl"; meal 17:79 kalıbı).
+ * Başlıkta dakika vakit adının hemen ardından gelir ("ម៉ាហ្គ្រិប · 15 នាទី…"): bileklikte ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} នាទីហើយ · ដល់ពេលសឡាត ⏰',
+    giris2: '{ad} · {dk} នាទីហើយ · កុំពន្យារសឡាត ⚠️',
+    giris3: '{ad} · {dk} នាទីហើយ · សឡាតកំពុងរង់ចាំ 🔥',
+    giris4: '{ad} · {dk} នាទីហើយ · ក្រោកសឡាតឥឡូវ 🚨',
+    erken3: '{ad} · នៅ {dk} នាទី · សឡាតកំពុងរង់ចាំ 🔥',
+    erken4: '{ad} · នៅ {dk} នាទី · ក្រោកសឡាតឥឡូវ 🚨',
+    cikis1: '{ad} · នៅ {dk} នាទី ⏰',
+    cikis2: '{ad} · {dk} នាទី · ពេលចាប់ផ្ដើមខ្លី ⚠️',
+    cikis3: '{ad} · {dk} នាទី · ពេលកំពុងរសាត់ទៅ 🔥',
+    cikis4: '{ad} · {dk} នាទី · ពេលជិតផុតហើយ 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['ដល់ពេលសឡាតហើយ សឡាតខណៈដែលនៅមានឱកាស។', 'សឡាតខណៈដែលពេលវេលានៅអំណោយផល កុំទុកពេលក្រោយ។'],
+    s2: ['កាន់តែពន្យារ កាន់តែធ្ងន់ កុំទុកសឡាតដល់ចុងក្រោយ។', 'ពេលវេលាកំពុងកន្លងទៅ សឡាតឥឡូវ។'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'កាន់តែយឺត កាន់តែជិតខកខាន សឡាតឥឡូវ។',
+      'កុំថា «ចាំសឡាតពេលក្រោយ» ឥឡូវក៏អាចសឡាតបាន។',
+      'ក្រោកឥឡូវ ប្រសើរជាងនិយាយថា «បើដឹងមុន» ក្នុងប៉ុន្មាននាទីទៀត។',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['កុំពន្យារសឡាតទៀត ក្រោកសឡាតឥឡូវ។', 'ដាក់ការងារដែលកំពុងធ្វើចុះ ហើយក្រោកសឡាត។'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'ពេលវេលាចាប់ផ្ដើមខ្លីហើយ សឡាតខណៈដែលនៅមានឱកាស។',
+    s2: 'កុំទុកសឡាតដល់ចុងក្រោយ ឥឡូវជាពេលល្អដើម្បីសឡាត។',
+    s3: 'ពេលជិតផុតហើយ ឥឡូវនៅអាចសឡាតបាន។',
+    s4: 'បើបានសឡាតហើយ ប៉ះ «បានសឡាតហើយ» បើមិនទាន់ ក្រោកសឡាតឥឡូវ។',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'កុំពន្យារសឡាត។ ក្រោកសឡាតឥឡូវ។ (កន្លងផុត {dk} នាទី)',
+    giris2: 'ពេលវេលាកំពុងកន្លងទៅ កុំទុកសឡាតដល់ចុងក្រោយ។ (កន្លងផុត {dk} នាទី)',
+    giris1: cogul({ other: 'កន្លងផុត {n} នាទីហើយ ចាប់តាំងពីចូលពេលសឡាត។' }),
+    erken4: 'កុំពន្យារសឡាត ក្រោកសឡាតឥឡូវ។ (នៅសល់ {dk} នាទី)',
+    cikis4: 'ពេលជិតផុតហើយ។ ក្រោកសឡាតឥឡូវ។ (នៅសល់ {dk} នាទី)',
+    cikis2: 'ពេលចាប់ផ្ដើមខ្លីហើយ កុំទុកសឡាតដល់ចុងក្រោយ។ (នៅសល់ {dk} នាទី)',
+    cikis1: cogul({ other: 'នៅសល់ {n} នាទីទៀត ពេលសឡាតនឹងផុត។' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · សឡាតមុនគេង ⏰',
+    govde: 'ម៉ោងស្ងាត់ចាប់ផ្ដើមក្នុងរយៈ {dk} នាទី សឡាតអ៊ីស្ហាមុនចូលគេង។',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'ពេលវេលាចាប់ផ្ដើមខ្លីហើយ សឡាតខណៈដែលនៅមានឱកាស។',
+    sonaBirakma: 'កុំទុកសឡាតដល់ចុងក្រោយ ឥឡូវជាពេលល្អដើម្បីសឡាត។',
+    fisilti: 'កុំថា «ចាំសឡាតពេលក្រោយ» ពេលជិតផុតហើយ ឥឡូវនៅអាចសឡាតបាន។',
+    omur: 'ពេលវេលាកំពុងកន្លងទៅ នៅមានឱកាសសឡាតនេះទាន់ពេល។',
+    keske: 'ក្រោកឥឡូវ ប្រសើរជាងនិយាយថា «បើដឹងមុន» ក្នុងប៉ុន្មាននាទីទៀត។',
+    namazaDur: 'បើបានសឡាតហើយ ប៉ះ «បានសឡាតហើយ» បើមិនទាន់ ក្រោកសឡាតឥឡូវ។',
+    sonDakika: 'នាទីចុងក្រោយ។ ដាក់ការងារដែលកំពុងធ្វើចុះ ហើយក្រោកសឡាត។',
   },
 };

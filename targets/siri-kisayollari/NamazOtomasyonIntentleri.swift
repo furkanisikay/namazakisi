@@ -572,11 +572,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "නැත, එය තවම සලකුණු කර නැත."
     )
 
-    // ÇEVİRİ: km (other)
+    // km (other)
     static let km = OtomasyonMetinleri(
-        kalanDakika: ["other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad} នឹងចូលក្នុងរយៈ {n} នាទីទៀត។"],
+        evetKilindi: "មែន វាត្រូវបានសម្គាល់ថាបានសឡាតហើយ។",
+        hayirKilinmadi: "ទេ វាមិនទាន់ត្រូវបានសម្គាល់ទេ។"
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

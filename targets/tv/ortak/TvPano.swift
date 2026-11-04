@@ -992,18 +992,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: km
+    // km
     public static let km = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "ស៊ូពុស", "gunes": "ថ្ងៃរះ", "ogle": "ហ្ស៊ូហូរ", "ikindi": "អាសើរ", "aksam": "ម៉ាហ្គ្រិប", "yatsi": "អ៊ីស្ហា"],
+        cuma: "ជុមអាត់",
+        aylar: ["មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"],
+        gunler: ["ចន្ទ", "អង្គារ", "ពុធ", "ព្រហស្បតិ៍", "សុក្រ", "សៅរ៍", "អាទិត្យ"],
+        tarih: "{gunAdi} {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "ថ្ងៃរះ", "istiva": "ថ្ងៃត្រង់", "gurub": "ថ្ងៃលិច"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "ហាមសឡាត រហូតដល់ព្រះអាទិត្យរះខ្ពស់។",
+            "istiva": "ហាមសឡាត ពេលព្រះអាទិត្យនៅចំកំពូល។",
+            "gurub": "ហាមសឡាត ពេលព្រះអាទិត្យកំពុងលិច។",
         ]
     )
 

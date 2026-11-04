@@ -1,11 +1,10 @@
-// ÇEVİRİ: km — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'លេខ',
+  aciklama: 'ជ្រើសរើសលេខដែលប្រើសម្រាប់ម៉ោង កាលបរិច្ឆេទ និងចំនួន។',
+  otomatik: 'តាមប្រទេស',
+  otomatikAciklama: 'ប្រើលេខដែលនិយមក្នុងប្រទេសនៃទីតាំងរបស់អ្នក។',
+  dogu: 'លេខអារ៉ាប់ខាងកើត',
+  bati: 'លេខអារ៉ាប់ (សកល)',
 };

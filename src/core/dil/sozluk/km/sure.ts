@@ -1,12 +1,12 @@
-// ÇEVİRİ: km — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Khmerce: sayı ile birim arası ve iki süre parçası arası boşluklu (CLDR "5 នាទី"); çoğul yok (yalnız other). */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'ម៉ោង', dk: 'នាទី', sn: 'វិនាទី' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ other: '{n} ម៉ោង' }),
+  dakika: cogul({ other: '{n} នាទី' }),
+  saniye: cogul({ other: '{n} វិនាទី' }),
 };

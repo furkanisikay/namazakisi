@@ -1,10 +1,9 @@
-// ÇEVİRİ: km — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'ទិសដៅអត្ថបទនឹងផ្លាស់ប្ដូរ',
+  aciklama: 'ភាសាដែលអ្នកបានជ្រើសរើសត្រូវបានសរសេរក្នុងទិសដៅផ្សេង។ កម្មវិធីត្រូវចាប់ផ្ដើមឡើងវិញ ដើម្បីឲ្យអេក្រង់ប្ដូរតាម។',
+  simdiBaslat: 'ចាប់ផ្ដើមឡើងវិញឥឡូវ',
+  sonra: 'ពេលក្រោយ',
+  bekliyor: 'ទិសដៅអត្ថបទនឹងផ្លាស់ប្ដូរ នៅពេលកម្មវិធីចាប់ផ្ដើមឡើងវិញ។',
 };

@@ -1606,29 +1606,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "වත්මන් සලාතය ඉටු කළ බව සලකුණු කරයි."
     )
 
-    // ÇEVİRİ: km
+    // km
     static let km = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "ពេលសឡាត",
+        galeriAciklama: "ពេលសឡាតបច្ចុប្បន្ន ពេលនៅសល់មុនវាផុត និងពេលសឡាតថ្ងៃនេះ។",
+        veriEski: "បើកកម្មវិធីដើម្បីធ្វើបច្ចុប្បន្នភាពពេលសឡាត",
+        konumYok: "បើកកម្មវិធីដើម្បីកំណត់ទីតាំងរបស់អ្នក",
+        kilindiSiradaki: "បានសឡាត{ad} · {sonraki} {saat}",
+        adCikis: "{ad} · ផុត {saat}",
+        siradakiAdSaat: "បន្ទាប់{ad} {saat}",
+        vaktiCikisErisim: "ពេល{ad} ផុត {saat}",
+        siradakiErisim: "បន្ទាប់{ad} {saat}",
+        cikisSaat: "ផុត {saat}",
+        bitisSaat: "ចប់ {saat}",
+        kilindiBaslik: "បានសឡាត{ad}",
+        siradaki: "បន្ទាប់",
+        siradakiAd: "បន្ទាប់{ad}",
+        kildimErisim: "បានសឡាត{ad}ហើយ",
+        gunSatiriKilindi: " បានសឡាត",
+        bitti: "បានចប់",
+        vakitCikti: "ពេលសឡាតបានផុត",
+        kabulAlt: "បានសឡាត{ad}",
+        kontrolAdi: "បានសឡាតហើយ",
+        kontrolAciklama: "សម្គាល់សឡាតបច្ចុប្បន្នថាបានសឡាត។"
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km; cevrilmemis dil `// ÇEVİRİ: <kod>`

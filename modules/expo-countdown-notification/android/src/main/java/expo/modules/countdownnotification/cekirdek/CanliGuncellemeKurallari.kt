@@ -170,8 +170,8 @@ object CanliGuncellemeKurallari {
         "ne" to KisaBirimler("घण्टा", "मिनेट", birimAyirici = " ", parcaAyirici = " "),
         // si (CLDR si short: "පැය", "මිනි" — JS sure.kisa ile aynı; kalıp sözleşmesi gereği sayı önce)
         "si" to KisaBirimler("පැය", "මිනි", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: km
-        "km" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // km
+        "km" to KisaBirimler("ម៉ោង", "នាទី", birimAyirici = " ", parcaAyirici = " "),
     )
 
     /**

@@ -220,8 +220,8 @@ enum NamazAlarmCekirdegi {
         "ne": "रोक्नुहोस्",
         // si
         "si": "නවත්වන්න",
-        // ÇEVİRİ: km
-        "km": "Stop",
+        // km
+        "km": "បញ្ឈប់",
     ]
 
     static func durum() -> String {
