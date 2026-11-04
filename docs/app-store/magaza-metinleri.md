@@ -210,6 +210,12 @@ Tam kıldığınız her gün serinizi bir gün uzatır. 7 günü aşan bir serin
 RAMAZAN
 İftar ve sahura kalan süreyi bildirimde geri sayımla gösterir.
 
+WEAR OS SAAT UYGULAMASI
+Saat uygulaması telefonunuzla eşitlenir; saatte işaretlediğiniz vakit telefona da geçer.
+• Kutucuklar (tile): "Sıradaki vakit" kutucuğu sıradaki namazı ve saatini gösterir. "Bugün" kutucuğu günün beş vaktini gösterir; kıldığınız vakti kutucuktan iki dokunuşla işaretlersiniz.
+• Kadran komplikasyonları (complication): Kadranınıza kalan süre, vakit çıkış saati, sıradaki namaz, günlük ilerleme, gün dağılımı, kerahat ve kıble komplikasyonlarını ekleyebilirsiniz.
+• Tesbihat sayacı ve kıble pusulası saatte de çalışır.
+
 GİZLİLİK
 Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit ve kıble hesabı için kullanır, hiçbir sunucuya göndermez; Wear OS saatinizdeki kıble pusulası için saatinize yalnızca yaklaşık konum aktarılır. Verilerinizi bir yedek dosyasına alıp başka bir cihaza taşıyabilirsiniz.
 
