@@ -11,8 +11,9 @@ const kok = path.join(__dirname, '..', '..', 'android', 'app', 'src', 'main');
 /**
  * Dil kodu → `locales_config.xml` adı. Basitleştirilmiş Çince betikle yazılır (`zh-Hans`, Android
  * belgesinin örneği): sistemin uygulama dili seçicisi "简体中文" gösterir ve seçim `values-zh` ile eşleşir.
+ * Pencapça (yalnız Şahmuki) `pa-Arab`: kaynağı `values-b+pa+Arab`, çıplak `pa` Gurmukidir.
  */
-const LOCALE_CONFIG_ADI: Partial<Record<string, string>> = { zh: 'zh-Hans' };
+const LOCALE_CONFIG_ADI: Partial<Record<string, string>> = { zh: 'zh-Hans', pa: 'pa-Arab' };
 
 it('locales_config.xml = seçilebilir diller, manifest ona bağlı', () => {
   const xml = fs.readFileSync(path.join(kok, 'res', 'xml', 'locales_config.xml'), 'utf8');

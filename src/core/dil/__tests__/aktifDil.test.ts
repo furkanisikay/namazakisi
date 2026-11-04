@@ -62,11 +62,25 @@ it('cihaz dili yalnız SEÇİLEBİLİR dilse kullanılır (yarım dil kendiliği
   for (const [yerel, kod] of [['tk-TM', 'tk'], ['tt-RU', 'tt'], ['sd-PK', 'sd'], ['sd-Arab-PK', 'sd'], ['pl_PL', 'pl'], ['ja-JP', 'ja'], ['gu-IN', 'gu'], ['bg_BG', 'bg'], ['mk-MK', 'mk']] as const) {
     expect(yerelAyarDili(yerel)).toBe(kod);
   }
+  // Dalga 12. Filipince: `fil` ve AOSP'nin Tagalog kodu `tl` (`values-tl`) `fil`'dir.
+  for (const yerel of ['fil', 'fil-PH', 'fil_PH', 'tl', 'tl-PH', 'tl_PH']) expect(yerelAyarDili(yerel)).toBe('fil');
+  // Pencapça yalnız Şahmuki: Arap betikli ya da Pakistan bölgeli cihaz ve Batı Pencapçası `pnb` `pa`. Çıplak `pa`
+  // (CLDR'de Gurmuki) ve Gurmuki cihaz (`pa-IN`, `pa-Guru`) EŞLENMEZ: Gurmuki okuyucu Şahmukiye düşmez.
+  for (const yerel of ['pa-PK', 'pa_PK', 'pa-Arab', 'pa-Arab-PK', 'pa_PK_#Arab', 'pnb', 'pnb-PK']) expect(yerelAyarDili(yerel)).toBe('pa');
+  for (const yerel of ['pa', 'pa-IN', 'pa_IN', 'pa-Guru', 'pa-Guru-IN', 'pa_IN_#Guru']) {
+    expect(yerelAyarDili(yerel)).toBeNull();
+    expect(cihazDilindenSec(yerel)).toBeNull();
+  }
+  for (const [yerel, kod] of [['te-IN', 'te'], ['kn_IN', 'kn'], ['mr-IN', 'mr'], ['as-IN', 'as'], ['ne-NP', 'ne'], ['ne-IN', 'ne'], ['si-LK', 'si'], ['km-KH', 'km']] as const) {
+    expect(yerelAyarDili(yerel)).toBe(kod);
+  }
 });
 
 it('iOS yerelleştirme adı: Basitleştirilmiş Çince zh-Hans, diğer diller kendi kodu', () => {
   expect(iosYerelAdi('zh')).toBe('zh-Hans');
-  for (const d of DILLER.filter((x) => x.kod !== 'zh')) expect(iosYerelAdi(d.kod)).toBe(d.kod);
+  // Pencapça yalnız Şahmuki: `pa-Arab.lproj` (çıplak `pa` CLDR'de Gurmuki).
+  expect(iosYerelAdi('pa')).toBe('pa-Arab');
+  for (const d of DILLER.filter((x) => x.kod !== 'zh' && x.kod !== 'pa')) expect(iosYerelAdi(d.kod)).toBe(d.kod);
   // Portekizce `pt.lproj`: Apple yalnız bölge varyantından genel dile düşer (pt-BR/pt-PT/pt-MZ → pt);
   // `pt-PT.lproj`un pt-BR cihazında seçildiği belgelenmemiştir (QA1828). Sırpça `sr.lproj` (Kiril).
   expect(iosYerelAdi('pt')).toBe('pt');

@@ -57,7 +57,10 @@ describe('dünya şehirleri verisi (GeoNames)', () => {
   });
 
   it('her arayüz dilinin kendi ülke adı tablosu var (İngilizceye düşmez)', () => {
-    for (const { kod } of DILLER) expect(Object.keys(ULKE_ADLARI[kod] ?? {}).length).toBeGreaterThan(200);
+    // İstisna Pencapça (yalnız Şahmuki): CLDR `pa-Arab` bölge adı taşımaz (yalnız Pakistan); Gurmuki `pa` adları
+    // yazılmaz, öteki ülkeler `ulkeAdi`'nde İngilizceye düşer (bilinçli; çevirmen/sahip karar verecek).
+    for (const { kod } of DILLER.filter((d) => d.kod !== 'pa')) expect(Object.keys(ULKE_ADLARI[kod] ?? {}).length).toBeGreaterThan(200);
+    expect(ULKE_ADLARI.pa).toEqual({ PK: 'پاکستان' });
     expect(ulkeAdi('MY', 'ar')).toBe('ماليزيا');
   });
 

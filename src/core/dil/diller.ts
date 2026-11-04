@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el' | 'ku' | 'tk' | 'tt' | 'sd' | 'pl' | 'ja' | 'gu' | 'bg' | 'mk';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el' | 'ku' | 'tk' | 'tt' | 'sd' | 'pl' | 'ja' | 'gu' | 'bg' | 'mk' | 'fil' | 'te' | 'kn' | 'mr' | 'pa' | 'as' | 'ne' | 'si' | 'km';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -84,6 +84,21 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'gu', yerelAd: 'ગુજરાતી', yon: 'ltr', ttsDili: 'gu-IN', beta: true, secilebilir: true },
   { kod: 'bg', yerelAd: 'Български', yon: 'ltr', ttsDili: 'bg-BG', beta: true, secilebilir: true },
   { kod: 'mk', yerelAd: 'Македонски', yon: 'ltr', ttsDili: 'mk-MK', beta: true, secilebilir: true },
+  // Dalga 12 (kapalı iskelet). Filipince kodu `fil` (Android kaynak niteleyicisi `values-tl`: AOSP Tagalog'u `tl`
+  // dizininde taşır, kaynak sistemi `fil` ve `tl`'yi eşdeğer sayar). Pencapça yalnız Şahmuki (Arap harfli,
+  // Pakistan normu; sahip kararı 2026-11-04), sağdan sola, yerel rakam `arabext` (CLDR `pa-Arab`); uygulama kodu
+  // `pa`, platform etiketi `pa-Arab` (`values-b+pa+Arab`, `pa-Arab.lproj`): çıplak `pa` CLDR'de Gurmukidir,
+  // Gurmuki cihaz (`pa-IN`, `pa-Guru`) Pencapçaya EŞLENMEZ (Şahmukiyi okuyamaz). Marathi ve Nepalce yerel rakam `deva` (CLDR varsayılanı),
+  // Assamca `beng`; Telugu, Kannada, Sinhala, Khmer Batı rakamlı (CLDR `latn`). Khmerde sözcük arası boşluk yok.
+  { kod: 'fil', yerelAd: 'Filipino', yon: 'ltr', ttsDili: 'fil-PH', beta: true, secilebilir: false },
+  { kod: 'te', yerelAd: 'తెలుగు', yon: 'ltr', ttsDili: 'te-IN', beta: true, secilebilir: false },
+  { kod: 'kn', yerelAd: 'ಕನ್ನಡ', yon: 'ltr', ttsDili: 'kn-IN', beta: true, secilebilir: false },
+  { kod: 'mr', yerelAd: 'मराठी', yon: 'ltr', ttsDili: 'mr-IN', beta: true, secilebilir: false },
+  { kod: 'pa', yerelAd: 'پنجابی', yon: 'rtl', ttsDili: 'pa-PK', beta: true, secilebilir: false },
+  { kod: 'as', yerelAd: 'অসমীয়া', yon: 'ltr', ttsDili: 'as-IN', beta: true, secilebilir: false },
+  { kod: 'ne', yerelAd: 'नेपाली', yon: 'ltr', ttsDili: 'ne-NP', beta: true, secilebilir: false },
+  { kod: 'si', yerelAd: 'සිංහල', yon: 'ltr', ttsDili: 'si-LK', beta: true, secilebilir: false },
+  { kod: 'km', yerelAd: 'ខ្មែរ', yon: 'ltr', ttsDili: 'km-KH', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
@@ -102,13 +117,33 @@ export function dilKoduMu(x: unknown): x is DilKodu {
  * bütün Portekizce yerel ayarları (pt-BR, pt-PT, pt-MZ, pt-AO) `pt` (Avrupa normu), Latin Sırpça
  * cihaz (`sr-Latn-RS`, Android `sr_RS_#Latn`) `sr` (Kiril arayüz). Kurmancî: `ku`, `ku-TR`, `kmr`,
  * `kmr-Latn` `ku`'dur; Arap harfli `ku-Arab`/`ku-IQ` cihaz da `ku` alır (uygulamada Kurmancî yalnız Latin).
+ * Filipince: `fil`, `fil-PH` ve Tagalog `tl`, `tl-PH` `fil`'dir. Pencapça YALNIZ Şahmuki cihazda: `pa-Arab`,
+ * `pa-Arab-PK`, `pa-PK`, `pa_PK_#Arab` ve Batı Pencapçası `pnb` `pa`'dır; çıplak `pa` ile Gurmuki `pa-IN`,
+ * `pa-Guru`, `pa-Guru-IN` EŞLENMEZ (null; CLDR'de çıplak `pa` Gurmukidir, Gurmuki okuyucu Şahmukiye düşmez).
  * Büyük/küçük harf dönüşümü yapılmaz (yerel kimlikler zaten küçük harfle başlar).
  */
+/**
+ * Uygulama koduna eşlenen başka kodlar: Java `Locale` Endonezceyi eski ISO kodu "in" ile verir (Android
+ * `in_ID`); Kurmancînin ISO 639-3 kodu `kmr` → `ku`; Tagalog `tl` (AOSP'nin Filipince kaynak kodu) → `fil`;
+ * Batı Pencapçası (ISO 639-3 `pnb`, Şahmuki) → `pa`.
+ */
+const ESKI_KODLAR: Readonly<Record<string, DilKodu>> = { in: 'id', kmr: 'ku', tl: 'fil', pnb: 'pa' };
+
+/**
+ * Pencapça yerel ayarı Şahmuki mi (Arap betiği ya da Pakistan bölgesi; Gurmuki betik değil)? `parcalar` yerel
+ * kimliğin `-`/`_` parçalarıdır (Android `pa_PK_#Arab` betiği `#` ile yazar).
+ */
+function pencapcaSahmukiMi(parcalar: readonly string[]): boolean {
+  const alt = parcalar.slice(1).map((x) => x.replace(/^#/, ''));
+  if (alt.includes('Guru')) return false;
+  return alt.includes('Arab') || alt.includes('PK');
+}
+
 export function yerelAyarDili(yerel: string | null | undefined): DilKodu | null {
   if (!yerel) return null;
-  // Java `Locale` Endonezceyi eski ISO kodu "in" ile verir (Android `in_ID`); Kurmancînin ISO 639-3 kodu `kmr` → `ku`.
   const ham = yerel.split(/[-_]/)[0];
-  const kod = ham === 'in' ? 'id' : ham === 'kmr' ? 'ku' : ham;
+  if (ham === 'pa') return pencapcaSahmukiMi(yerel.split(/[-_]/)) ? 'pa' : null;
+  const kod = ESKI_KODLAR[ham] ?? ham;
   return dilKoduMu(kod) ? kod : null;
 }
 
@@ -122,5 +157,6 @@ export function cihazDilindenSec(yerel: string | null | undefined): DilKodu | nu
  * Dilin iOS yerelleştirme adı: `targets/siri-kisayollari/<ad>.lproj`, `app.json > locales`
  * anahtarı (Expo onu `<ad>.lproj` klasörü yapar) ve Siri eklentisinin `diller` listesi.
  * Basitleştirilmiş Çince iOS'ta `zh-Hans`tır (Apple'ın Basitleştirilmiş Çince klasörü; çıplak `zh` eşleşmeyebilir).
+ * Pencapça (yalnız Şahmuki) `pa-Arab`tır: çıplak `pa` CLDR'de Gurmukidir.
  */
-export const iosYerelAdi = (kod: DilKodu): string => (kod === 'zh' ? 'zh-Hans' : kod);
+export const iosYerelAdi = (kod: DilKodu): string => (kod === 'zh' ? 'zh-Hans' : kod === 'pa' ? 'pa-Arab' : kod);

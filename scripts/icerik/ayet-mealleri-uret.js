@@ -79,6 +79,20 @@ const MEALLER = {
   gu: 'gujarati_omari',
   bg: 'bulgarian_translation',
   mk: 'macedonian_group',
+  // Dalga 12 (sahip kararları 2026-11-04). Meali olan sekiz dil; te ve mr not numarası silinir (`NOT_NUMARASI_SILINEN`;
+  // mr cümle sonuna yapışık Devanagari rakamı, `CUMLE_SONU_NOTU_SILINEN`), mr ve ne baştaki ayet numarası silinir.
+  // kn: `kannada_hamza` (`kannada_bashir` havuzu daha büyük ama Kannada metne karışmış Latin-1 harfleri taşır:
+  // "ದುಷ್ಪೆçÃರಣೆ"); km: `khmer_rwwad` (`khmer_cambodia` sözcük içi boşluk, bozuk coeng sırası ve ASCII nokta
+  // taşır). MEALSİZ: pa
+  // (QuranEnc'teki tek Pencapça meal `punjabi_arif` Gurmuki yazılıdır; uygulama Pencapçası yalnız Şahmuki → alınmaz).
+  fil: 'tagalog_rwwad',
+  te: 'telugu_muhammad',
+  kn: 'kannada_hamza',
+  mr: 'marathi_ansari',
+  as: 'assamese_rafeeq',
+  ne: 'nepali_central',
+  si: 'sinhalese_mahir',
+  km: 'khmer_rwwad',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -98,21 +112,35 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   greek_rwwad: 'Greek Translation - Rowwad Translation Center',
   // Bulgarca liste API'sinde yok (`translations/list/bg` boş); QuranEnc kartı çevirmen adı yazmaz.
   bulgarian_translation: 'Bulgarian Translation',
+  // Dalga 12: Filipince QuranEnc'te `tl` koduyla listelenir (uygulama kodu `fil` → dil listesinde bulunmaz);
+  // Marathi ve Nepalce liste API'sinde yok (`translations/list/mr`, `/ne` boş). Başlıklar sitedeki karttan.
+  tagalog_rwwad: 'Filipino Translation (Tagalog) - Rowwad Translation Center',
+  marathi_ansari: 'Marathi Translation - Muhammad Shafee‘ Ansari',
+  nepali_central: 'Nepali Translation - Ahlul-Hadith Association',
 };
 
 /**
  * Not numarası silinen diller ve desen — `gunun-ayeti-uret.js > NOT_NUMARASI_SILINEN` ile AYNI
- * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01; Japonca ve Makedonca 2026-11-02; Bengalce rakam "[১]").
+ * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01; Japonca ve Makedonca 2026-11-02; Telugu ve Marathi 2026-11-04; Bengalce rakam "[১]").
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk', 'ja', 'mk']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk', 'ja', 'mk', 'te', 'mr']);
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */
 /** Ayet numarası silinen diller (`gunun-ayeti-uret.js > AYET_NUMARASI_SILINEN` ile AYNI). */
 /** NFC'ye birleştirilen diller (`gunun-ayeti-uret.js > NFC_DILLER` ile AYNI; gerekçe orada). */
-const NFC_DILLER = new Set(['yo']);
-// Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27).
-const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk']);
+const NFC_DILLER = new Set(['yo', 'fil']);
+// Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27);
+// Marathi ("१५३. ") ve Nepalce ("१५३) ") de (dalga 12, aynı karar).
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk', 'mr', 'ne']);
+/**
+ * Cümle sonuna yapışık not numarası silinen diller (sahip kararı 2026-11-04, yalnız Marathi): `marathi_ansari`
+ * dipnot numarasını köşeli ayraçsız, cümle sonu işaretine yapışık yazar ("…देतो.१", "…आहे?१ मुळीच"). Yalnız
+ * cümle sonu işaretinden (. ? ! ।) HEMEN sonra gelen rakam silinir, işaret kalır; sözcüğe yapışık ya da boşluktan
+ * sonra gelen rakama ("शिकवावे१", "दाखव. १") DOKUNULMAZ — o meal hâlâ rakam taşıdığı için alınmaz.
+ */
+const CUMLE_SONU_NOTU_SILINEN = new Set(['mr']);
+const CUMLE_SONU_NOTU = /([.?!।])\p{Nd}+(?![\p{L}\p{M}])/gu;
 /**
  * Yıldızı silinen diller (sahip kararı 2026-11-02, yalnız Japonca): `japanese_saeedsato` sözlük işareti
  * olarak sözcük sonuna "*" koyar ("アッラー*"); işaret silinir, metnin geri kalanı (tam genişlik
@@ -120,6 +148,8 @@ const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk']);
  */
 const YILDIZ_SILINEN = new Set(['ja']);
 const YILDIZ = /\*/g;
+/** Latin harf taşıyamayan meal dilleri (`gunun-ayeti-uret.js > LATIN_HARF_BOZUK` ile AYNI). */
+const LATIN_HARF_BOZUK = new Set(['te', 'kn', 'mr', 'as', 'ne', 'si', 'km']);
 const NUMARALI = [
   /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u,
   /^\s*\p{Nd}+\s*[.)]\s/u,
@@ -182,6 +212,7 @@ async function main() {
           .replace(/\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u, '$1')
           .trim();
       }
+      if (CUMLE_SONU_NOTU_SILINEN.has(dil)) result.translation = result.translation.replace(CUMLE_SONU_NOTU, '$1');
       // Baştaki/sondaki boşluk metin değildir (kurdish_bamoki "\n" ile biter).
       result.translation = result.translation.trim();
       // Tamamlanmamış çeviri (korean_rwwad) bazı ayetleri boş verir: o ayet o dilde gösterilmez.
@@ -191,7 +222,13 @@ async function main() {
       }
       // Dipnot işaretli ya da başında ayet numarası olan meal metin değiştirilemeyeceği için
       // ALINMAZ: o ayet o dilde gösterilmez (`nassDili.ayetMeali` null döner).
-      if (NUMARALI.some((d) => d.test(result.translation))) {
+      // Cümle sonu notu silinen dilde (Marathi) kalan rakam sözcüğe yapışık dipnot numarasıdır.
+      if (
+        NUMARALI.some((d) => d.test(result.translation)) ||
+        (CUMLE_SONU_NOTU_SILINEN.has(dil) && /\p{Nd}/u.test(result.translation)) ||
+        // Latin dışı yazılı mealde Latin harf kaynak bozulmasıdır (`gunun-ayeti-uret.js > LATIN_HARF_BOZUK`).
+        (LATIN_HARF_BOZUK.has(dil) && /\p{Script=Latin}/u.test(result.translation))
+      ) {
         console.log(`  atlandı ${dil} ${sure}:${ayet} (dipnot işareti)`);
         continue;
       }

@@ -1,8 +1,9 @@
 /**
  * Rakam sistemi seçimi (Ayarlar > Dil > "Rakamlar") — yalnız yerel rakamı olan dilde (Arapça,
- * Bengalce, Farsça, Peştuca, Soranî, Sindhçe; `core/dil/rakam`) çizilir. Seçenekler: otomatik (ülkeye göre:
- * Arapçada Mağrip Batı, diğerleri Doğu Arap; Bengalcede her ülkede Bengalce; Farsça ve Peştucada
- * Fars, Soranîde Doğu Arap rakamı), dilin yerel rakamı (sözlükte
+ * Bengalce, Farsça, Peştuca, Soranî, Sindhçe, Marathi, Pencapça, Assamca, Nepalce; `core/dil/rakam`) çizilir.
+ * Seçenekler: otomatik (ülkeye göre: Arapçada Mağrip Batı, diğerleri Doğu Arap; Bengalcede ve Assamcada her
+ * ülkede Bengalce; Farsça, Peştuca ve Pencapçada Fars, Soranîde Doğu Arap, Marathi ve Nepalcede Devanagari
+ * rakamı), dilin yerel rakamı (sözlükte
  * `rakam.dogu` etiketi) ve Batı.
  * Görsel dil `VakitAdlariSecimi` ile aynı (başlık + açıklama + radyo kartları).
  *

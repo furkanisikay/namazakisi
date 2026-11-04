@@ -38,7 +38,8 @@ it('JS kalıplarındaki ayıraçlar native ikizlerle aynı', () => {
   }
   const saat: Ayiraclar = {};
   const swift = oku('targets/saat/ortak/SaatSure.swift');
-  for (const e of swift.matchAll(/public static let (\w+) = SaatSureMetinleri\(([\s\S]*?)\n {4}\)/g)) {
+  // Swift ayrılmış sözcüğü olan kod ters tırnakla yazılır (`as`: Assamca).
+  for (const e of swift.matchAll(/public static let `?(\w+)`? = SaatSureMetinleri\(([\s\S]*?)\n {4}\)/g)) {
     const a = /birimAyirici: "([^"]*)", parcaAyirici: "([^"]*)"/.exec(e[2]);
     saat[e[1]] = [a?.[1] ?? ' ', a?.[2] ?? ' '];
   }

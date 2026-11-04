@@ -34,7 +34,7 @@ function kaynakEtiketleri(dizin: string): Partial<NativeEtiket> {
 
 const dilKodu = (dizin: string) => {
   const q = dizin.slice('values-'.length) || 'tr';
-  return q === 'in' ? 'id' : q.replace(/^b\+/, '');
+  return q === 'in' ? 'id' : q === 'tl' ? 'fil' : q.replace(/^b\+/, '').split('+')[0];
 };
 
 const dizinler = fs
@@ -62,5 +62,10 @@ it('cihaz yerel ayarı çözülür; Endonezce eski kodla, bilinmeyen dil Türkç
   expect(nativeEtiketleri('zh_CN_#Hans')).toBe(NATIVE_ETIKETLER.zh);
   expect(nativeEtiketleri('ja_JP')).toBe(NATIVE_ETIKETLER.ja);
   expect(nativeEtiketleri('he_IL')).toBe(NATIVE_ETIKETLER.tr);
+  // Filipince kaynağı values-tl; Pencapça (values-b+pa+Arab) yalnız Şahmuki cihazda, Gurmuki cihaz Türkçe.
+  expect(nativeEtiketleri('fil_PH')).toBe(NATIVE_ETIKETLER.fil);
+  expect(nativeEtiketleri('tl_PH')).toBe(NATIVE_ETIKETLER.fil);
+  expect(nativeEtiketleri('pa_PK_#Arab')).toBe(NATIVE_ETIKETLER.pa);
+  expect(nativeEtiketleri('pa_IN')).toBe(NATIVE_ETIKETLER.tr);
   expect(nativeEtiketleri(null)).toBe(NATIVE_ETIKETLER.tr);
 });

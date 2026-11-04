@@ -96,6 +96,15 @@ on:
           - gu
           - bg
           - mk
+          - fil
+          - te
+          - kn
+          - mr
+          - pa
+          - as
+          - ne
+          - si
+          - km
       tur:
         description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi | tablet (yalnız tablet özellik turu) | katlanabilir (Pixel Fold: açık + masaüstü postürü) | saat (Wear OS) | tv (Android TV) | cihazlar (saat + tv)'
         type: choice

@@ -15,6 +15,16 @@ class RakamTest {
         assertEquals("arabext", RakamKarari.sistem("ps", null))
         assertEquals("arab", RakamKarari.sistem("ckb", TvRakam("IQ")))
         assertEquals("beng", RakamKarari.sistem("bn", TvRakam("IN")))
+        // Dalga 12: Marathi ve Nepalce Devanagari, Assamca Bengalce, Pencapça (Şahmuki) Fars rakamı; Hintçe Batı.
+        assertEquals("deva", RakamKarari.sistem("mr", TvRakam("IN")))
+        assertEquals("deva", RakamKarari.sistem("ne", null))
+        assertEquals("beng", RakamKarari.sistem("as", TvRakam("IN")))
+        assertEquals("arabext", RakamKarari.sistem("pa", TvRakam("PK")))
+        assertEquals("latn", RakamKarari.sistem("hi", TvRakam("IN")))
+        assertEquals('०', RakamKarari.sifir("deva"))
+        assertEquals("०५:३०", rakamlariYerellestir("05:30", '०'))
+        // Kaynak `%d`'si cihaz yerel ayarıyla Devanagari gelebilir: önce Batıya normalleşir.
+        assertEquals("05:30", rakamlariYerellestir("०५:३०", '0'))
     }
 
     @Test

@@ -44,6 +44,19 @@ class RakamTest {
     }
 
     @Test
+    fun dalga12YerelAyarlarCldrRakaminiVerir() {
+        // CLDR: mr ve ne varsayılanı Devanagari (`deva`, ० U+0966), as Bengalce (`beng`), Şahmuki Pencapça
+        // (pa-Arab-PK) Fars rakamı (`arabext`); hi-IN Batı. Saat cihaz yerel ayarını izler.
+        assertEquals('०', yerelSifir(yerel("mr-IN")))
+        assertEquals('०', yerelSifir(yerel("ne-NP")))
+        assertEquals('০', yerelSifir(yerel("as-IN")))
+        assertEquals('۰', yerelSifir(yerel("pa-Arab-PK")))
+        assertEquals('0', yerelSifir(yerel("hi-IN")))
+        assertEquals('0', yerelSifir(yerel("mr-IN-u-nu-latn")))
+        assertEquals("०५:५५", rakamlariYerellestir("05:55", yerelSifir(yerel("mr-IN"))))
+    }
+
+    @Test
     fun batiRakamliYerelAyarlarSifirVerir() {
         for (etiket in listOf("tr-TR", "tr", "en-US", "en", "ur-PK", "ar-MA", "ar-DZ", "ar-TN", "id-ID", "de-DE", "ru-RU", "ug-CN")) {
             assertEquals(etiket, '0', yerelSifir(yerel(etiket)))

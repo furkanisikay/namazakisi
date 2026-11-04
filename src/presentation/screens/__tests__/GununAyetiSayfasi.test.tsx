@@ -46,7 +46,8 @@ describe('GununAyetiSayfasi', () => {
         expect(e.getAllByText(a.kisaKunye).length).toBeGreaterThan(0);
         expect(e.getAllByText(a.tamKunye).length).toBeGreaterThan(0);
         expect(e.getAllByText(a.meal as string).length).toBeGreaterThan(0);
-        expect(e.getByText(/^Dün/)).toBeTruthy();
+        // "Dün" başlığı; 47:36 meali "Dünya hayatı…" ile başlar (o gün ekrandaysa /^Dün/ iki öğe bulurdu).
+        expect(e.getByText(/^Dün(?!ya)/)).toBeTruthy();
         fireEvent.press(e.getByText(/^Widget ve duvar kâğıdı/));
         expect(mockNavigate).toHaveBeenCalledWith('GununAyetiAyarlari');
     });
@@ -90,8 +91,8 @@ describe('GununAyetiSayfasi', () => {
         expect(satirlar.slice(-2)).toEqual([a.kisaKunye, a.mealKaynagi]);
     });
 
-    it('mealsiz dilde (ku, sd) Arapça metin, künye ve "meal yok" satırı çizilir; paylaşımda meal satırı yok', () => {
-        for (const dil of ['ku', 'sd'] as const) {
+    it('mealsiz dilde (ku, sd, pa) Arapça metin, künye ve "meal yok" satırı çizilir; paylaşımda meal satırı yok', () => {
+        for (const dil of ['ku', 'sd', 'pa'] as const) {
             act(() => aktifDiliKur(dil));
             try {
                 const a = gununAyetiGorunumu(gununAyetiKaydi(isoGun(aktifNamazGunu(new Date(), () => null)), dil), dil);

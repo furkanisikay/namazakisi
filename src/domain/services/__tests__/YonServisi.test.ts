@@ -50,6 +50,9 @@ describe('YonServisi', () => {
     expect(sagdanSolaMi('sd')).toBe(true);
     expect(sagdanSolaMi('ku')).toBe(false);
     expect(sagdanSolaMi('ckb')).toBe(true);
+    // Pencapça yalnız Şahmuki (Arap harfli, Pakistan normu): sağdan sola. Öteki dalga 12 dilleri soldan sağa.
+    expect(sagdanSolaMi('pa')).toBe(true);
+    for (const dil of ['fil', 'te', 'kn', 'mr', 'as', 'ne', 'si', 'km']) expect(sagdanSolaMi(dil)).toBe(false);
     expect(sagdanSolaMi('tr')).toBe(false);
     expect(sagdanSolaMi('xx')).toBe(false);
   });

@@ -26,7 +26,7 @@ class RakamTest {
         assertEquals(Rakam.LATN, Rakam.sistem("ar", "ARAB"))
         assertEquals('0', Rakam.sifir("ar", null))
         // Yerel rakamsız dilde kayıt yok sayılır (dil değişimiyle yazım yarışı olsa bile).
-        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "", null)) {
+        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km", "", null)) {
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "arab"))
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "beng"))
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "arabext"))
@@ -91,6 +91,41 @@ class RakamTest {
     }
 
     @Test
+    fun dalga12DevanagariBengalceFarsRakamlari() {
+        // Marathi ve Nepalce "deva" (० U+0966), Assamca "beng", Pencapça (Şahmuki) "arabext"; Hintçe Batı (CLDR latn).
+        assertEquals(Rakam.DEVA, Rakam.sistem("mr", "deva"))
+        assertEquals(Rakam.DEVA, Rakam.sistem("ne-NP", " deva "))
+        assertEquals(Rakam.BENG, Rakam.sistem("as_IN", "beng"))
+        assertEquals(Rakam.ARABEXT, Rakam.sistem("pa", "arabext"))
+        assertEquals(Rakam.LATN, Rakam.sistem("mr", "beng"))
+        assertEquals(Rakam.LATN, Rakam.sistem("pa", "arab"))
+        assertEquals(Rakam.LATN, Rakam.sistem("hi", "deva"))
+        assertEquals(Rakam.LATN, Rakam.sistem("bn", "deva"))
+        assertEquals(Rakam.DEVA_SIFIR, Rakam.sifir("mr", "deva"))
+        assertEquals('०', Rakam.sifir("ne", "deva"))
+        assertTrue(Rakam.yerelRakamli("mr") && Rakam.yerelRakamli("ne") && Rakam.yerelRakamli("as") && Rakam.yerelRakamli("pa"))
+        assertFalse(Rakam.yerelRakamli("fil") || Rakam.yerelRakamli("te") || Rakam.yerelRakamli("kn") || Rakam.yerelRakamli("si") || Rakam.yerelRakamli("km"))
+        assertEquals("मगरिब १८:०५", rakamlariYerellestir("मगरिब 18:05", Rakam.DEVA_SIFIR))
+        assertEquals("०५:३०", rakamlariEsitle("05:30", Rakam.DEVA_SIFIR))
+        assertEquals("05:30", rakamlariEsitle("०५:३०", '0'))
+        assertEquals("०५:३०", rakamlariEsitle("০৫:৩০", Rakam.DEVA_SIFIR))
+        assertEquals("mr-u-nu-deva", Rakam.yerelEtiketi("mr", "deva"))
+        assertEquals("ne-u-nu-latn", Rakam.yerelEtiketi("ne", null))
+        // Pencapça platform etiketi pa-Arab (kaynak values-b+pa+Arab; çıplak "pa" Gurmuki).
+        assertEquals("pa-Arab-u-nu-arabext", Rakam.yerelEtiketi("pa", "arabext"))
+        assertEquals("Arab", Locale.forLanguageTag(Rakam.yerelEtiketi("pa", null)).script)
+        assertEquals("as-u-nu-beng", Rakam.yerelEtiketi("as", "beng"))
+        assertEquals("hi", Rakam.yerelEtiketi("hi", "deva"))
+        // JDK CLDR: çıplak mr/ne Devanagari, as Bengalce rakam yazar → Batı seçene uzantı ŞART.
+        assertEquals('०', DecimalFormatSymbols.getInstance(Locale.forLanguageTag("mr")).zeroDigit)
+        assertEquals('०', DecimalFormatSymbols.getInstance(Locale.forLanguageTag("ne")).zeroDigit)
+        assertEquals('০', DecimalFormatSymbols.getInstance(Locale.forLanguageTag("as")).zeroDigit)
+        assertEquals("५", String.format(Locale.forLanguageTag("mr-u-nu-deva"), "%d", 5))
+        assertEquals("5", String.format(Locale.forLanguageTag(Rakam.yerelEtiketi("mr", null)), "%d", 5))
+        assertEquals("۵", String.format(Locale.forLanguageTag(Rakam.yerelEtiketi("pa", "arabext")), "%d", 5))
+    }
+
+    @Test
     fun yerelEtiketiYalnizArapcadaUzantiTasir() {
         assertEquals("ar-u-nu-arab", Rakam.yerelEtiketi("ar", "arab"))
         assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", null))
@@ -100,7 +135,7 @@ class RakamTest {
         assertEquals("bn-u-nu-latn", Rakam.yerelEtiketi("bn", null))
         assertEquals("bn-u-nu-latn", Rakam.yerelEtiketi("bn", "arab"))
         // Diğer diller AYNEN (Endonezce "id" → Android "in" eşlemesi bozulmasın).
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk")) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km")) {
             assertEquals(dil, Rakam.yerelEtiketi(dil, "arab"))
             assertEquals(dil, Rakam.yerelEtiketi(dil, "beng"))
         }
@@ -183,7 +218,7 @@ class RakamTest {
             .filter { it.name != "Rakam.kt" }
         assertTrue(dosyalar.size > 10)
         for (f in dosyalar) {
-            val dogu = f.readText().filter { it in '٠'..'٩' || it in '۰'..'۹' || it in '০'..'৯' }
+            val dogu = f.readText().filter { it in '٠'..'٩' || it in '۰'..'۹' || it in '০'..'৯' || it in '०'..'९' }
             assertEquals("${f.path} yerel rakam taşıyor", "", dogu)
         }
     }

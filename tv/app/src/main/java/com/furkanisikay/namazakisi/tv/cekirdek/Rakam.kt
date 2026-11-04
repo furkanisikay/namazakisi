@@ -24,15 +24,18 @@ data class TvRakam(
 
 object RakamKarari {
     /** Dil → yerel rakam sistemi (`rakam.ts > YEREL_RAKAMLAR`). */
-    private val YEREL = mapOf("ar" to "arab", "bn" to "beng", "fa" to "arabext", "ps" to "arabext", "ckb" to "arab", "sd" to "arab")
+    private val YEREL = mapOf(
+        "ar" to "arab", "bn" to "beng", "fa" to "arabext", "ps" to "arabext", "ckb" to "arab", "sd" to "arab",
+        "mr" to "deva", "pa" to "arabext", "as" to "beng", "ne" to "deva",
+    )
 
     /** Dil başına ülke → sistem (`RAKAM_ULKE_VARSAYILANLARI`; Mağrip Batı rakamı yazar). */
     private val ULKE = mapOf("ar" to setOf("DZ", "MA", "TN", "LY", "MR", "EH").associateWith { "latn" })
 
-    private val SIFIR = mapOf("arab" to '٠', "arabext" to '۰', "beng" to '০')
+    private val SIFIR = mapOf("arab" to '٠', "arabext" to '۰', "beng" to '০', "deva" to '०')
     private val ULKE_KODU = Regex("^[A-Z]{2}$")
 
-    /** Etkin sistem: `latn`, `arab`, `arabext` ya da `beng`. */
+    /** Etkin sistem: `latn`, `arab`, `arabext`, `beng` ya da `deva`. */
     fun sistem(dil: String, tercih: TvRakam?): String {
         val yerel = YEREL[dil] ?: return "latn"
         val secim = tercih?.secimler?.get(dil)
@@ -67,9 +70,9 @@ object RakamKarari {
     }
 }
 
-/** Yerel rakamlar (Doğu Arap, Fars/Urdu, Bengalce) → Batı; kaynak `%d`'si cihaz yerel ayarıyla gelebilir. */
+/** Yerel rakamlar (Doğu Arap, Fars/Urdu, Bengalce, Devanagari) → Batı; kaynak `%d`'si cihaz yerel ayarıyla gelebilir. */
 private fun batiya(metin: String): String {
-    if (metin.none { it in '٠'..'٩' || it in '۰'..'۹' || it in '০'..'৯' }) return metin
+    if (metin.none { it in '٠'..'٩' || it in '۰'..'۹' || it in '০'..'৯' || it in '०'..'९' }) return metin
     val sb = StringBuilder(metin.length)
     for (c in metin) {
         sb.append(
@@ -77,6 +80,7 @@ private fun batiya(metin: String): String {
                 in '٠'..'٩' -> '0' + (c - '٠')
                 in '۰'..'۹' -> '0' + (c - '۰')
                 in '০'..'৯' -> '0' + (c - '০')
+                in '०'..'९' -> '0' + (c - '०')
                 else -> c
             },
         )

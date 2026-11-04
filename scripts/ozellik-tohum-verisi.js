@@ -96,6 +96,16 @@ const SABAH_SESI_ADLARI = {
     gu: 'ફજરની અઝાન',
     bg: 'Сутрешен езан',
     mk: 'Сабахски езан',
+    // Dalga 12: sözlük henüz İngilizce iskelet; adlar o dilin yerleşik yazımıyla (yerli okuyucuyla DOĞRULANMADI).
+    fil: 'Adhan ng Fajr',
+    te: 'ఫజ్ర్ అజాన్',
+    kn: 'ಫಜ್ರ್ ಅಜಾನ್',
+    mr: 'फजरची अजान',
+    pa: 'فجر دی اذان',
+    as: 'ফজৰৰ আজান',
+    ne: 'फज्रको अजान',
+    si: 'ෆජ්ර් අදාන්',
+    km: 'អាហ្សានហ្វាជរ៍',
 };
 
 /** Kare dilindeki sabah sesi adi (bilinmeyen dil → Turkce). */

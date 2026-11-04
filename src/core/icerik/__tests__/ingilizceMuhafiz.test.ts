@@ -78,8 +78,8 @@ it('her seviyede her vakit için en az bir içerik kalır (hadis düşünce havu
   for (const vakit of VAKITLER) for (const s of SEVIYELER) expect(uygunIcerikleriBul(vakit, s).length).toBeGreaterThan(0);
 });
 
-it('mealsiz dillerde (ku, tk, tt, sd, pl) ayet ve hadis düşer, havuz yine boşalmaz; cuma nassı boş', () => {
-  for (const dil of ['ku', 'tk', 'tt', 'sd', 'pl'] as const) {
+it('mealsiz dillerde (ku, tk, tt, sd, pl, pa) ayet ve hadis düşer, havuz yine boşalmaz; cuma nassı boş', () => {
+  for (const dil of ['ku', 'tk', 'tt', 'sd', 'pl', 'pa'] as const) {
     aktifDiliKur(dil);
     expect(AYET_MEALLERI[dil]).toBeUndefined();
     expect(cumaNassi()).toBe('');

@@ -15,7 +15,7 @@ class RakamTest {
         assertEquals('0', Rakam.sifir("ar", null))
         assertEquals('0', Rakam.sifir("ar", "latn"))
         assertEquals('0', Rakam.sifir("ar", "beng"))
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", null)) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "si", "km", null)) {
             assertEquals("$dil", '0', Rakam.sifir(dil, "arab"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "beng"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "arabext"))
@@ -37,6 +37,19 @@ class RakamTest {
         val kisa = CanliGuncellemeKurallari.kisaMetin(65 * 60_000L, "bn")
         assertEquals("15", kisa.filter { it in '0'..'9' })
         assertEquals("১৫", rakamlariYerellestir(kisa, Rakam.BENG_SIFIR).filter { it in '০'..'৯' })
+    }
+
+    @Test
+    fun dalga12DevanagariBengalceFarsRakamlari() {
+        assertEquals('०', Rakam.sifir("mr", "deva"))
+        assertEquals('०', Rakam.sifir("ne-NP", "deva"))
+        assertEquals('০', Rakam.sifir("as", "beng"))
+        assertEquals('۰', Rakam.sifir("pa", "arabext"))
+        assertEquals('0', Rakam.sifir("mr", "beng"))
+        assertEquals('0', Rakam.sifir("hi", "deva"))
+        assertEquals("mr-u-nu-deva", Rakam.yerelEtiketi("mr", "deva"))
+        val kisa = CanliGuncellemeKurallari.kisaMetin(65 * 60_000L, "mr")
+        assertEquals("१५", rakamlariYerellestir(kisa, Rakam.DEVA_SIFIR).filter { it in '०'..'९' })
     }
 
     @Test

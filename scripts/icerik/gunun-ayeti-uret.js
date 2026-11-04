@@ -92,6 +92,20 @@ const MEALLER = {
   gu: 'gujarati_omari',
   bg: 'bulgarian_translation',
   mk: 'macedonian_group',
+  // Dalga 12 (sahip kararları 2026-11-04). Meali olan sekiz dil; te ve mr not numarası silinir (`NOT_NUMARASI_SILINEN`;
+  // mr cümle sonuna yapışık Devanagari rakamı, `CUMLE_SONU_NOTU_SILINEN`), mr ve ne baştaki ayet numarası silinir.
+  // kn: `kannada_hamza` (`kannada_bashir` havuzu daha büyük ama Kannada metne karışmış Latin-1 harfleri taşır:
+  // "ದುಷ್ಪೆçÃರಣೆ"); km: `khmer_rwwad` (`khmer_cambodia` sözcük içi boşluk, bozuk coeng sırası ve ASCII nokta
+  // taşır). MEALSİZ: pa
+  // (QuranEnc'teki tek Pencapça meal `punjabi_arif` Gurmuki yazılıdır; uygulama Pencapçası yalnız Şahmuki → alınmaz).
+  fil: 'tagalog_rwwad',
+  te: 'telugu_muhammad',
+  kn: 'kannada_hamza',
+  mr: 'marathi_ansari',
+  as: 'assamese_rafeeq',
+  ne: 'nepali_central',
+  si: 'sinhalese_mahir',
+  km: 'khmer_rwwad',
 };
 
 /**
@@ -114,6 +128,11 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   greek_rwwad: 'Greek Translation - Rowwad Translation Center',
   // Bulgarca liste API'sinde yok (`translations/list/bg` boş); QuranEnc kartı çevirmen adı yazmaz.
   bulgarian_translation: 'Bulgarian Translation',
+  // Dalga 12: Filipince QuranEnc'te `tl` koduyla listelenir (uygulama kodu `fil` → dil listesinde bulunmaz);
+  // Marathi ve Nepalce liste API'sinde yok (`translations/list/mr`, `/ne` boş). Başlıklar sitedeki karttan.
+  tagalog_rwwad: 'Filipino Translation (Tagalog) - Rowwad Translation Center',
+  marathi_ansari: 'Marathi Translation - Muhammad Shafee‘ Ansari',
+  nepali_central: 'Nepali Translation - Ahlul-Hadith Association',
 };
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';
@@ -198,12 +217,12 @@ const ref = (sure, ayet) => `${sure}:${ayet}`;
  */
 /** Kural 1 ve 2 tek meal için: sığar ve dipnot işareti / baştaki ayet numarası taşımaz. */
 /**
- * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01; Japonca ve Makedonca 2026-11-02): mealde
+ * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01; Japonca ve Makedonca 2026-11-02; Telugu ve Marathi 2026-11-04): mealde
  * ayetlerin çoğu "[1]" / "[১]" (Bengalce rakam) gibi dipnot numarası taşır; dipnot gösterilmediği
  * için yalnız numara silinir, meal sözcükleri birebir kalır. Diğer dillerde numaralı meal alınmaz
  * (`mealUygun`). `ayet-mealleri-uret.js` aynı kümeyi ve deseni kullanır.
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk', 'ja', 'mk']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk', 'ja', 'mk', 'te', 'mr']);
 /** Dipnot numarası, herhangi bir yazının rakamıyla ("[12]", "[১২]", "[१२]"); `\p{Nd}` + `u`. */
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
@@ -213,14 +232,24 @@ const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
  * yazar). Yalnız bu kümede: başka dilde numaralı meal eskisi gibi alınmaz.
  */
 /**
- * NFC'ye birleştirilen diller: QuranEnc Yorubayı ayrışık (NFD: harf + birleşen ton/alt nokta) verir;
+ * NFC'ye birleştirilen diller: QuranEnc Yorubayı ayrışık (NFD: harf + birleşen ton/alt nokta) verir, Filipince
+ * (`tagalog_rwwad`) karışık ("Allāh" çoğunlukla birleşik, bazı kayıtlarda a + U+0304);
  * NFC kanonik eşdeğerdir, metin değişmez, yalnız uzunluk ölçümü ve arama tutarlı olur. Bütün dillere
  * uygulanmaz: Bengalcede NFC "য়" gibi bileşim dışı harfleri AYIRIR (veri değişir).
  * `ayet-mealleri-uret.js > NFC_DILLER` ile AYNI.
  */
-const NFC_DILLER = new Set(['yo']);
-// Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27).
-const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk']);
+const NFC_DILLER = new Set(['yo', 'fil']);
+// Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27);
+// Marathi ("१५३. ") ve Nepalce ("१५३) ") de (dalga 12, aynı karar).
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk', 'mr', 'ne']);
+/**
+ * Cümle sonuna yapışık not numarası silinen diller (sahip kararı 2026-11-04, yalnız Marathi): `marathi_ansari`
+ * dipnot numarasını köşeli ayraçsız, cümle sonu işaretine yapışık yazar ("…देतो.१", "…आहे?१ मुळीच"). Yalnız
+ * cümle sonu işaretinden (. ? ! ।) HEMEN sonra gelen rakam silinir, işaret kalır; sözcüğe yapışık ya da boşluktan
+ * sonra gelen rakama ("शिकवावे१", "दाखव. १") DOKUNULMAZ — o meal hâlâ rakam taşıdığı için alınmaz.
+ */
+const CUMLE_SONU_NOTU_SILINEN = new Set(['mr']);
+const CUMLE_SONU_NOTU = /([.?!।])\p{Nd}+(?![\p{L}\p{M}])/gu;
 /**
  * Yıldızı silinen diller (sahip kararı 2026-11-02, yalnız Japonca): `japanese_saeedsato` sözlük işareti
  * olarak sözcük sonuna "*" koyar ("アッラー*"); işaret silinir, metnin geri kalanı (tam genişlik
@@ -234,6 +263,7 @@ function notNumarasiz(dil, metin) {
   let m = NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(NOT_NUMARASI, '').trim() : metin;
   if (YILDIZ_SILINEN.has(dil)) m = m.replace(YILDIZ, '');
   if (AYET_NUMARASI_SILINEN.has(dil)) m = m.replace(BASTAKI_AYET_NO, '').replace(SONDAKI_AYET_NO, '$1').trim();
+  if (CUMLE_SONU_NOTU_SILINEN.has(dil)) m = m.replace(CUMLE_SONU_NOTU, '$1');
   // Baştaki/sondaki boşluk metin değildir (kurdish_bamoki her ayeti "\n" ile bitirir); sözcüklere dokunulmaz.
   return m.trim();
 }
@@ -253,23 +283,31 @@ const ARA_NUMARA = /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u;
  * değiştirilemeyeceği için kayıt ALINMAZ; U+FFFD de aynı türden kodlama bozulmasıdır.
  */
 const BOZUK_KARAKTER = /[\u00a6\ufffd]/u;
+/**
+ * Latin harf taşıyamayan (Latin dışı yazılı) meallerde Latin harf kaynak bozulmasıdır: `sinhalese_mahir`
+ * 2:277 "zසකාත්" (dalga 12). Kayıt alınmaz (`bozuk-karakter`); öteki dillere uygulanmaz (veri değişmesin).
+ */
+const LATIN_HARF_BOZUK = new Set(['te', 'kn', 'mr', 'as', 'ne', 'si', 'km']);
 
-/** Bir mealin elenme gerekçeleri (boş = uygun). */
-function mealGerekce(metin) {
+/**
+ * Bir mealin elenme gerekçeleri (boş = uygun). `dil` verilirse dile özgü kural da uygulanır: cümle sonu notu
+ * silinen dilde (Marathi) temizlikten sonra kalan rakam yapışık dipnot numarasıdır → `dipnot`.
+ */
+function mealGerekce(metin, dil) {
   const g = [];
   // Tamamlanmamış çeviri (korean_rwwad) bazı ayetleri boş dize verir: meal yok sayılır.
   if (!metin.trim()) g.push('bos');
   if (metin.length > AZAMI_UZUNLUK) g.push('uzunluk');
-  if (DIPNOT.test(metin)) g.push('dipnot');
-  if (BOZUK_KARAKTER.test(metin)) g.push('bozuk-karakter');
+  if (DIPNOT.test(metin) || (CUMLE_SONU_NOTU_SILINEN.has(dil) && /\p{Nd}/u.test(metin))) g.push('dipnot');
+  if (BOZUK_KARAKTER.test(metin) || (LATIN_HARF_BOZUK.has(dil) && /\p{Script=Latin}/u.test(metin))) g.push('bozuk-karakter');
   if (BASTA_NUMARA.test(metin)) g.push('basta-numara');
   if (SONDA_NUMARA.test(metin)) g.push('sonda-numara');
   else if (ARA_NUMARA.test(metin)) g.push('ara-numara');
   return g;
 }
 
-function mealUygun(metin) {
-  return mealGerekce(metin).length === 0;
+function mealUygun(metin, dil) {
+  return mealGerekce(metin, dil).length === 0;
 }
 
 /**
@@ -446,7 +484,7 @@ async function main() {
     }
     const ayetMealleri = { tr, en };
     for (const dil of Object.keys(MEALLER)) {
-      if (dil !== 'tr' && dil !== 'en' && mealUygun(mealler[dil][r])) ayetMealleri[dil] = mealler[dil][r];
+      if (dil !== 'tr' && dil !== 'en' && mealUygun(mealler[dil][r], dil)) ayetMealleri[dil] = mealler[dil][r];
     }
     havuz.push({ ref: r, sure, ayet, ar, mealler: ayetMealleri });
   }
@@ -516,7 +554,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = ${JSON.stringify(h
   console.log('\nDil başına meal elemesi (havuz kaydı → dil havuzu; gerekçe sayıları):');
   for (const dil of Object.keys(MEALLER).filter((d) => d !== 'tr' && d !== 'en')) {
     const sayac2 = {};
-    for (const k of havuz) for (const g of mealGerekce(mealler[dil][k.ref])) sayac2[g] = (sayac2[g] || 0) + 1;
+    for (const k of havuz) for (const g of mealGerekce(mealler[dil][k.ref], dil)) sayac2[g] = (sayac2[g] || 0) + 1;
     const ham = havuz.filter((k) => /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/u.test(mealler.ham[dil][k.ref])).length;
     console.log(
       `  ${dil.padEnd(3)} ${havuz.length} → ${havuz.filter((k) => k.mealler[dil]).length}  ` +
@@ -531,7 +569,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = ${JSON.stringify(h
 }
 
 // Nöbetçi testi (`src/core/data/__tests__/gununAyetiHavuzu.test.ts`) temizleme kuralını betikten alır.
-module.exports = { notNumarasiz, mealGerekce };
+module.exports = { notNumarasiz, mealGerekce, MEALLER };
 if (require.main === module) {
   main().catch((e) => {
     console.error(e);

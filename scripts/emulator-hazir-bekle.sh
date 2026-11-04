@@ -2,7 +2,7 @@
 # Emulatoru kare hattinin diline alir ve paket servisi kararli hale gelene kadar bekler.
 # Kare hatlari `adb wait-for-device`'tan hemen sonra, APK kurmadan once cagirir.
 #
-# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
+# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
 # cihaz Turkce olmali). `-change-locale` emulator secenegi KULLANILMAZ: acilistan hemen sonra
 # framework'u yeniden baslatir ve emulator-runner'in kendi kilit acma adimi (`input keyevent 82`)
 # "Broken pipe" ile duser — o adim kapatilamaz. Burada dil, acilis tamamlandiktan sonra root ile
@@ -31,6 +31,10 @@ case "${TOHUM_DIL:-tr}" in
   # Sindhçe Pakistan normu (Arap harfli, sağdan sola). Sistem dili `persist.sys.locale` ile yazılır: dilin
   # sistem ayarlarındaki listede olması gerekmez, kaynak seçimi BCP-47 etiketinden yapılır.
   ku) HEDEF="ku-TR" ;; tk) HEDEF="tk-TM" ;; tt) HEDEF="tt-RU" ;; sd) HEDEF="sd-PK" ;; pl) HEDEF="pl-PL" ;; ja) HEDEF="ja-JP" ;; gu) HEDEF="gu-IN" ;; bg) HEDEF="bg-BG" ;; mk) HEDEF="mk-MK" ;;
+  # fil/te/kn/mr/pa/as/ne/si/km seçicide kapalıdır (kare hattı işareti açar). Filipince sistem dili fil-PH
+  # (uygulama kaynağı values-tl; Android `fil` ile `tl`'yi eşdeğer sayar). Pencapça YALNIZ Şahmuki: betik açık
+  # yazılır (pa-Arab-PK; kaynak values-b+pa+Arab, çıplak `pa` Gurmuki betiğe çözülür ve o dizini seçmez).
+  fil) HEDEF="fil-PH" ;; te) HEDEF="te-IN" ;; kn) HEDEF="kn-IN" ;; mr) HEDEF="mr-IN" ;; pa) HEDEF="pa-Arab-PK" ;; as) HEDEF="as-IN" ;; ne) HEDEF="ne-NP" ;; si) HEDEF="si-LK" ;; km) HEDEF="km-KH" ;;
   *) HEDEF="tr-TR" ;;
 esac
 

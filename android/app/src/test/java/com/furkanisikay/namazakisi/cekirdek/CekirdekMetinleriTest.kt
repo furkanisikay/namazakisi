@@ -11,7 +11,7 @@ import org.junit.Test
  * eşlemesi ve Endonezce "in" takma adı. Türkçe çıktı fikstür testlerinde kilitlidir.
  */
 class CekirdekMetinleriTest {
-    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
+    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km")
     private val yerTutucu = Regex("""\{\w+\}""")
 
     private fun alanlar(m: CekirdekMetinleri): Map<String, String> =
@@ -28,7 +28,8 @@ class CekirdekMetinleriTest {
     fun herDilinBlokuKendiKodunuTasir() {
         for (d in diller) {
             assertEquals(d, MetinDili.metinler(d).dil)
-            assertEquals(d, MetinDili.coz("$d-XX"))
+            // Pencapça yalnız Şahmuki bölge/betikle eşlenir (bölgesi belirsiz "pa-XX" Gurmuki sayılabilir).
+            assertEquals(d, MetinDili.coz(if (d == "pa") "pa-PK" else "$d-XX"))
         }
         assertSame(CEKIRDEK_TR, MetinDili.metinler("xx"))
         assertSame(CEKIRDEK_TR, MetinDili.metinler(null))
@@ -72,6 +73,20 @@ class CekirdekMetinleriTest {
         // Soranî ayrı dildir.
         assertEquals("ckb", MetinDili.coz("ckb_IQ"))
         assertSame(CEKIRDEK_KU, MetinDili.metinler("kmr"))
+    }
+
+    @Test
+    fun filipinceVePencapcaYerelAyarlari() {
+        // Filipince: AOSP'nin Tagalog kodu "tl" (kaynak dizini values-tl) "fil"dir.
+        for (yerel in listOf("fil", "fil_PH", "fil-PH", "tl", "tl_PH")) assertEquals(yerel, "fil", MetinDili.coz(yerel))
+        assertSame(CEKIRDEK_FIL, MetinDili.metinler("tl_PH"))
+        // Pencapça yalnız Şahmuki: uygulama kodu "pa", Arap betikli / Pakistan bölgeli yerel ayar ve "pnb" "pa";
+        // Gurmuki cihaz (pa_IN, pa-Guru) Türkçeye düşer (Şahmukiyi okuyamaz).
+        for (yerel in listOf("pa", "pa_PK", "pa-Arab", "pa-Arab-PK", "pa_PK_#Arab", "pnb", "pnb_PK")) {
+            assertEquals(yerel, "pa", MetinDili.coz(yerel))
+        }
+        for (yerel in listOf("pa_IN", "pa-IN", "pa-Guru", "pa-Guru-IN", "pa_IN_#Guru")) assertEquals(yerel, "tr", MetinDili.coz(yerel))
+        assertSame(CEKIRDEK_PA, MetinDili.metinler("pnb"))
     }
 
     @Test

@@ -51,8 +51,8 @@ describe('rakamSistemiCoz', () => {
     expect(rakamSecimiGecerliMi('tr', 'latn')).toBe(false);
   });
 
-  it('dil → yerel rakam eşlemesi TEK yerde: Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe', () => {
-    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'bn', 'ckb', 'fa', 'ps', 'sd']);
+  it('dil → yerel rakam eşlemesi TEK yerde: Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe, Marathi, Pencapça, Assamca, Nepalce', () => {
+    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'as', 'bn', 'ckb', 'fa', 'mr', 'ne', 'pa', 'ps', 'sd']);
     // Sindhçe CLDR varsayılanı Doğu Arap rakamı (Node `Intl.NumberFormat('sd')` → ١٢٬٣٤٥.٦).
     expect(dilYerelRakami('sd')).toBe('arab');
     expect(rakamSistemiCoz('sd', undefined, 'PK')).toBe('arab');
@@ -65,6 +65,36 @@ describe('rakamSistemiCoz', () => {
     expect(dilYerelRakami('ckb')).toBe('arab');
     expect(dilYerelRakami('ur')).toBeNull();
     expect(dilYerelRakami('ug')).toBeNull();
+  });
+
+  it('dalga 12: Marathi ve Nepalce Devanagari, Assamca Bengalce, Pencapça (Şahmuki) Fars rakamıyla başlar; Hintçe Batı kalır', () => {
+    // CLDR varsayılanları (Node `Intl.NumberFormat`): mr, ne `deva` (१२,३४५.६), as `beng`, `pa-Arab` `arabext`; hi `latn`.
+    expect(dilYerelRakami('mr')).toBe('deva');
+    expect(dilYerelRakami('ne')).toBe('deva');
+    expect(dilYerelRakami('as')).toBe('beng');
+    expect(dilYerelRakami('pa')).toBe('arabext');
+    expect(dilYerelRakami('hi')).toBeNull();
+    for (const ulke of [null, 'IN', 'NP', 'PK', 'TR']) {
+      expect(rakamSistemiCoz('mr', undefined, ulke)).toBe('deva');
+      expect(rakamSistemiCoz('ne', undefined, ulke)).toBe('deva');
+      expect(rakamSistemiCoz('as', undefined, ulke)).toBe('beng');
+      expect(rakamSistemiCoz('pa', undefined, ulke)).toBe('arabext');
+    }
+    expect(rakamSistemiCoz('mr', 'latn', 'IN')).toBe('latn');
+    expect(rakamSistemiCoz('pa', 'latn', 'PK')).toBe('latn');
+    // Seçim yalnız Batı ya da dilin kendi sistemi: Pencapçada `latn` ve `arabext`, Nepalcede `deva`.
+    expect(rakamSecimiGecerliMi('pa', 'arabext')).toBe(true);
+    expect(rakamSecimiGecerliMi('pa', 'latn')).toBe(true);
+    expect(rakamSecimiGecerliMi('pa', 'arab')).toBe(false);
+    expect(rakamSecimiGecerliMi('pa', 'deva')).toBe(false);
+    expect(rakamSecimiGecerliMi('ne', 'deva')).toBe(true);
+    expect(rakamSecimiGecerliMi('ne', 'beng')).toBe(false);
+    expect(rakamSecimiGecerliMi('as', 'deva')).toBe(false);
+    expect(rakamSecimiGecerliMi('bn', 'deva')).toBe(false);
+    expect(rakamSecimiGecerliMi('hi', 'deva')).toBe(false);
+    expect(rakamSistemiCoz('mr', 'beng', 'IN')).toBe('deva');
+    // Yerel rakamsız dalga 12 dilleri (CLDR `latn`).
+    for (const dil of ['fil', 'te', 'kn', 'si', 'km'] as const) expect(rakamSecilebilir(dil)).toBe(false);
   });
 
   it('Farsça ve Peştuca Fars rakamıyla, Soranî Doğu Arap rakamıyla başlar; seçim yalnız kendi sistemi ya da Batı', () => {
@@ -100,6 +130,7 @@ describe('rakamSistemiCoz', () => {
       expect(rakamSistemiCoz(d.kod, 'arab', 'SA')).toBe('latn');
       expect(rakamSistemiCoz(d.kod, 'beng', 'BD')).toBe('latn');
       expect(rakamSistemiCoz(d.kod, 'arabext', 'IR')).toBe('latn');
+      expect(rakamSistemiCoz(d.kod, 'deva', 'IN')).toBe('latn');
       expect(dilRakamVarsayilani(d.kod)).toBe('latn');
     }
     expect(rakamSecilebilir('ar')).toBe(true);
@@ -122,6 +153,13 @@ describe('rakamlariCevir / rakamlariNormallestir', () => {
   it('Batı rakamlarını Fars rakamına çevirir (۰ U+06F0)', () => {
     expect(rakamlariCevir('0123456789', 'arabext')).toBe('۰۱۲۳۴۵۶۷۸۹');
     expect(rakamlariCevir('12:05', 'arabext')).toBe('۱۲:۰۵');
+  });
+
+  it('Batı rakamlarını Devanagari rakama çevirir (० U+0966), girişte Batıya döner', () => {
+    expect(rakamlariCevir('0123456789', 'deva')).toBe('०१२३४५६७८९');
+    expect(rakamlariCevir('मगरिब 18:05', 'deva')).toBe('मगरिब १८:०५');
+    expect(rakamlariNormallestir('वर्ष २०२६')).toBe('वर्ष 2026');
+    expect(rakamlariNormallestir(rakamlariCevir('12:05 · 1447', 'deva'))).toBe('12:05 · 1447');
   });
 
   it('girişte Doğu Arap ve Farsça/Urduca rakamları Batıya çevirir', () => {
@@ -177,8 +215,8 @@ describe('etkin rakam sistemi (aktifDil)', () => {
 });
 
 /**
- * Nöbetçi: sözlükte Doğu Arap (U+0660–0669), Farsça (U+06F0–06F9) ya da Bengalce (U+09E6–09EF)
- * rakamı OLMAZ. Rakamlar her zaman Batı rakamıyla yazılır; yerel rakam yalnız çizimde (metin
+ * Nöbetçi: sözlükte Doğu Arap (U+0660–0669), Farsça (U+06F0–06F9), Bengalce (U+09E6–09EF) ya da
+ * Devanagari (U+0966–096F) rakamı OLMAZ. Rakamlar her zaman Batı rakamıyla yazılır; yerel rakam yalnız çizimde (metin
  * kapısı) üretilir — yoksa Mağrip kullanıcısı ve rakam seçimini değiştiren kişi karışık rakam görür.
  */
 describe('nöbetçi: sözlükte yerel rakam yok', () => {
@@ -199,7 +237,7 @@ describe('nöbetçi: sözlükte yerel rakam yok', () => {
       fs
         .readFileSync(p, 'utf8')
         .split('\n')
-        .flatMap((satir, i) => (/[\u0660-\u0669\u06F0-\u06F9\u09E6-\u09EF]/.test(satir) ? [`${path.relative(kok, p)}:${i + 1}`] : []))
+        .flatMap((satir, i) => (/[\u0660-\u0669\u06F0-\u06F9\u09E6-\u09EF\u0966-\u096F]/.test(satir) ? [`${path.relative(kok, p)}:${i + 1}`] : []))
     );
     expect(ihlaller).toEqual([]);
   });

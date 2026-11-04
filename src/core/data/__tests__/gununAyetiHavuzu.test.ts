@@ -50,6 +50,18 @@ describe('günün ayeti havuzu', () => {
     expect(bozuk).toEqual([]);
   });
 
+  it('Marathi mealinde rakam yok (cümle sonu notu silinir, sözcüğe yapışık not numaralı kayıt elenir)', () => {
+    const rakamli = GUNUN_AYETI_HAVUZU.filter((k) => /\p{Nd}/u.test(k.mealler.mr ?? '')).map((k) => k.ref);
+    expect(rakamli).toEqual([]);
+  });
+
+  it('Latin dışı yazılı dalga 12 meallerinde Latin harf yok (sinhalese_mahir 2:277 "zසකාත්" kaynak bozulması)', () => {
+    const bozuk = GUNUN_AYETI_HAVUZU.flatMap((k) =>
+      (['te', 'kn', 'mr', 'as', 'ne', 'si', 'km'] as const).filter((d) => /\p{Script=Latin}/u.test(k.mealler[d] ?? '')).map((d) => `${k.ref}:${d}`),
+    );
+    expect(bozuk).toEqual([]);
+  });
+
   it('mealin başında ve sonunda boşluk yok (kurdish_bamoki her ayeti satır sonuyla bitirir; üretici kırpar)', () => {
     const bosluklu = GUNUN_AYETI_HAVUZU.flatMap((k) => mealler(k).filter(([, m]) => m !== m.trim()).map(([d]) => `${k.ref}:${d}`));
     expect(bosluklu).toEqual([]);
@@ -149,6 +161,33 @@ describe('üreticinin meal temizliği (scripts/icerik/gunun-ayeti-uret.js)', () 
     expect(notNumarasiz('mk', '255. Аллах[1] е')).toBe('Аллах е');
     // Kümede olmayan dilde numara silinmez (meal elenir).
     expect(notNumarasiz('sr', '255. Аллах')).toBe('255. Аллах');
+  });
+
+  it('dalga 12 (sahip kararları 2026-11-04): Telugu "[1]", Marathi ve Nepalce baştaki ayet numarası silinir', () => {
+    expect(notNumarasiz('te', 'అల్లాహ్ ఉంటాడు.[1]')).toBe('అల్లాహ్ ఉంటాడు.');
+    expect(notNumarasiz('mr', '१५३. हे ईमान राखणाऱ्यांनो!')).toBe('हे ईमान राखणाऱ्यांनो!');
+    // Nepalce ayet numarası ")" ile: "१५३) …".
+    expect(notNumarasiz('ne', '१५३) हे आस्थावानहरू ।')).toBe('हे आस्थावानहरू ।');
+  });
+
+  it('Marathi cümle sonuna yapışık not numarası: YALNIZ cümle sonu işaretinden hemen sonraki rakam silinir', () => {
+    expect(notNumarasiz('mr', '१५३. अल्लाह साथ देतो.१')).toBe('अल्लाह साथ देतो.');
+    expect(notNumarasiz('mr', 'हक्क आहे.१ ते या ग्रंथावर')).toBe('हक्क आहे. ते या ग्रंथावर');
+    expect(notNumarasiz('mr', 'आहे?१ मुळीच नाही.')).toBe('आहे? मुळीच नाही.');
+    expect(notNumarasiz('mr', 'देतो।१२')).toBe('देतो।');
+    // Sözcüğe yapışık ya da boşluktan sonraki rakama dokunulmaz; o meal rakam taşıdığı için alınmaz.
+    expect(notNumarasiz('mr', 'शिकवावे१ आणि')).toBe('शिकवावे१ आणि');
+    expect(notNumarasiz('mr', 'मार्ग दाखव. १')).toBe('मार्ग दाखव. १');
+    expect(mealGerekce(notNumarasiz('mr', 'शिकवावे१ आणि'), 'mr')).toContain('dipnot');
+    expect(mealGerekce(notNumarasiz('mr', 'अल्लाह साथ देतो.१'), 'mr')).toEqual([]);
+    // Kural yalnız Marathide: Nepalce/Hintçede cümle sonu rakamı silinmez.
+    expect(notNumarasiz('hi', 'देता है.१')).toBe('देता है.१');
+  });
+
+  it('Latin dışı yazılı dalga 12 mealinde Latin harf kaynak bozulmasıdır (bozuk-karakter); Filipincede değil', () => {
+    expect(mealGerekce('ද, zසකාත් පිර', 'si')).toContain('bozuk-karakter');
+    expect(mealGerekce('ದುಷ್ಪೆçÃರಣೆ', 'kn')).toContain('bozuk-karakter');
+    expect(mealGerekce('Tunay na si Allāh ay kasama ng mga nagtitiis.', 'fil')).toEqual([]);
   });
 });
 

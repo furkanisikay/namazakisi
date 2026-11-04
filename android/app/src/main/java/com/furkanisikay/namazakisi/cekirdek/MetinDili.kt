@@ -18,22 +18,35 @@ object MetinDili {
     const val TR = "tr"
     const val EN = "en"
 
-    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk). */
-    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
+    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km). */
+    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km")
 
     /**
      * "en", "en-US", "de_DE" → kök kod; desteklenmeyen ya da boş → "tr". Java/Android eski
      * Endonezce kodu "in" (`java.util.Locale` "id"yi "in"e çevirir) "id" sayılır; Kurmancînin ISO 639-3
      * kodu "kmr" uygulamanın Kurmancî kodu "ku" sayılır (Arap harfli "ku-Arab" cihaz da "ku": yalnız Latin).
+     * Tagalog "tl" (AOSP'nin Filipince kaynak kodu) "fil", Batı Pencapçası "pnb" "pa" sayılır. Pencapça YALNIZ
+     * Şahmuki: uygulama kodu "pa" (alt etiketsiz, JS'in yazdığı) ve Arap betikli / Pakistan bölgeli yerel ayar
+     * ("pa-Arab", "pa_PK_#Arab", "pa-PK") "pa"; Gurmuki ("pa-IN", "pa-Guru") Türkçeye düşer.
      */
     fun coz(kod: String?): String {
-        val kok = kod?.trim()?.substringBefore('-')?.substringBefore('_')
-        val normal = when (kok) {
+        val parcalar = kod?.trim()?.split('-', '_').orEmpty()
+        val normal = when (val kok = parcalar.firstOrNull()) {
             "in" -> "id"
             "kmr" -> "ku"
+            "tl" -> "fil"
+            "pnb" -> "pa"
+            "pa" -> if (pencapcaSahmuki(parcalar)) "pa" else null
             else -> kok
         }
         return if (normal != null && normal in DESTEKLENENLER) normal else TR
+    }
+
+    /** Alt etiketsiz "pa" (uygulama kodu) ya da Arap betiği / Pakistan bölgesi; Gurmuki betik değil. */
+    private fun pencapcaSahmuki(parcalar: List<String>): Boolean {
+        val alt = parcalar.drop(1).map { it.removePrefix("#") }
+        if ("Guru" in alt) return false
+        return alt.isEmpty() || "Arab" in alt || "PK" in alt
     }
 
     /** Dilin metin bloğu (bilinmeyen → Türkçe). */
@@ -91,6 +104,15 @@ object MetinDili {
         "gu" -> CEKIRDEK_GU
         "bg" -> CEKIRDEK_BG
         "mk" -> CEKIRDEK_MK
+        "fil" -> CEKIRDEK_FIL
+        "te" -> CEKIRDEK_TE
+        "kn" -> CEKIRDEK_KN
+        "mr" -> CEKIRDEK_MR
+        "pa" -> CEKIRDEK_PA
+        "as" -> CEKIRDEK_AS
+        "ne" -> CEKIRDEK_NE
+        "si" -> CEKIRDEK_SI
+        "km" -> CEKIRDEK_KM
         else -> CEKIRDEK_TR
     }
 

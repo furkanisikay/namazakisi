@@ -30,9 +30,11 @@ for (const satir of veri.split('\n')) {
 const sirali = [...ulkeler].sort();
 /**
  * Kaynak yazısı ya da normu CLDR varsayılanından farklı diller. Portekizce Avrupa/Afrika normudur
- * (`pt-PT`; düz `pt` CLDR'de Brezilya normudur: "Irã" / "Irão", "Quênia" / "Quénia").
+ * (`pt-PT`; düz `pt` CLDR'de Brezilya normudur: "Irã" / "Irão", "Quênia" / "Quénia"). Pencapça yalnız
+ * Şahmukidir (`pa-Arab-PK`; düz `pa` CLDR'de Gurmuki): CLDR `pa-Arab` yalnız Pakistan'ın adını taşır, öteki
+ * ülkeler `ulkeAdi`'nde İngilizceye düşer (Gurmuki ad YAZILMAZ).
  */
-const ICU_YEREL = { uz: 'uz-Cyrl', pt: 'pt-PT' };
+const ICU_YEREL = { uz: 'uz-Cyrl', pt: 'pt-PT', pa: 'pa-Arab-PK' };
 const tablo = {};
 for (const dil of diller) {
   const dn = new Intl.DisplayNames([ICU_YEREL[dil] ?? dil], { type: 'region', fallback: 'none' });

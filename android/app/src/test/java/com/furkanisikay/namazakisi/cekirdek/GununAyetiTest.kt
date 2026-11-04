@@ -70,6 +70,24 @@ class GununAyetiTest {
     }
 
     @Test
+    fun dalga12HintVeGuneydoguAsyaYazilariSistemYazitipineDuserFilipinceSerifKalir() {
+        // Dalga 12 (fontTools cmap, 2026-11-04): Noto Serif'te Devanagari, Bengal, Telugu, Kannada, Sinhala ve Khmer
+        // 0/128. 2:153 marathi_ansari, nepali_central, assamese_rafeeq, telugu_muhammad, kannada_hamza, sinhalese_mahir,
+        // khmer_rwwad. Kural yazıya göre: Hintçe (Devanagari) ve Bengalce meal de artık sistem yazı tipiyle çizilir.
+        assertFalse(GununAyetiKurallari.mealSerifMi("हे ईमान राखणाऱ्यांनो! धीर-संयम आणि नमाजद्वारे मदत मागा."))
+        assertFalse(GununAyetiKurallari.mealSerifMi("हे आस्थावानहरू, धैर्य र नमाजसित मद्दतको आशा गर्नु ।"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("হে ঈমান্দাৰসকল! তোমালোকে ধৈৰ্য্য আৰু ছালাতৰ মাধ্যমত সহায় প্ৰাৰ্থনা কৰা।"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("ఓ విశ్వాసులారా! సహనం మరియు నమాజ్ ద్వారా సహాయం అర్థించండి."))
+        assertFalse(GununAyetiKurallari.mealSerifMi("ಓ ಸತ್ಯವಿಶ್ವಾಸಿಗಳೇ! ತಾಳ್ಮೆ ಮತ್ತು ನಮಾಝಿನ ಮೂಲಕ ಸಹಾಯ ಬೇಡಿರಿ."))
+        assertFalse(GununAyetiKurallari.mealSerifMi("අහෝ විශ්වාස කළවුනි! නුඹලා ඉවසීම හා සලාතය තුළින් උදව් පතනු."))
+        assertFalse(GununAyetiKurallari.mealSerifMi("ឱបណ្តាអ្នកដែលមានជំនឿ! ចូរពួកអ្នកសុំជំនួយដោយការអត់ធ្មត់។"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("ऐ ईमान वालो! धैर्य और नमाज़ से सहायता माँगो।"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("হে মুমিনগণ! ধৈর্য ও সালাতের মাধ্যমে সাহায্য চাও।"))
+        // Filipince (Latin, "Allāh" ā dahil) Noto Serif'te var → serif kalır.
+        assertTrue(GununAyetiKurallari.mealSerifMi("O mga sumampalataya, magpatulong kayo sa pamamagitan ng pagtitiis at pagdarasal. Tunay na si Allāh ay kasama ng mga nagtitiis."))
+    }
+
+    @Test
     fun mealsizDildeArapcaVeKunye() {
         // Mealsiz dil (ku, tk, tt, sd, pl; sahip kararı 2026-11-02): widget ve duvar kâğıdı yalnız Arapça çizer,
         // ekran okuyucu Arapçayı ve "Arapça: Tanzil" kaynaklı künyeyi duyar; duvar kâğıdı ayardan bağımsız Arapça.

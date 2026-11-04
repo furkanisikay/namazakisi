@@ -86,17 +86,24 @@ object GununAyetiKurallari {
     const val SURUM = 1
 
     /**
-     * Noto Serif'in KAPSAMADIĞI yazılar (fc-query cmap, 2026-10-30; Gucarati ve kana fontTools cmap, 2026-11-02): bunlardan bir harf taşıyan meal
+     * Noto Serif'in KAPSAMADIĞI yazılar (fc-query cmap, 2026-10-30; Gucarati ve kana fontTools cmap, 2026-11-02; Devanagari,
+     * Bengal, Telugu, Kannada, Sinhala ve Khmer fontTools cmap 0/128, 2026-11-04): bunlardan bir harf taşıyan meal
      * sistem yazı tipiyle çizilir (serif Latin noktalama + sistemden düşen harf karışmasın). Kural
      * yazıya göredir, dile göre değil. Swift ikizi `GununAyetiKarari.serifsizAraliklar`.
      */
     private val SERIFSIZ_ARALIKLAR: List<IntRange> = listOf(
+        0x0900..0x097F, // Devanagari (Hintçe, Marathi, Nepalce)
+        0x0980..0x09FF, // Bengal (Bengalce, Assamca)
         0x0A80..0x0AFF, // Gucarati
         0x0B80..0x0BFF, // Tamil
+        0x0C00..0x0C7F, // Telugu
+        0x0C80..0x0CFF, // Kannada
         0x0D00..0x0D7F, // Malayalam
+        0x0D80..0x0DFF, // Sinhala
         0x0E00..0x0E7F, // Tay
         0x1100..0x11FF, // Hangıl Jamo
         0x1200..0x139F, // Ge'ez (+ ek)
+        0x1780..0x17FF, // Khmer
         0x2D80..0x2DDF, // Ge'ez genişletilmiş
         0x3000..0x303F, // CJK noktalama (、。《》〔〕)
         0x3040..0x30FF, // Hiragana + Katakana
@@ -112,7 +119,8 @@ object GununAyetiKurallari {
     )
 
     /**
-     * Meal Noto Serif'le mi çizilir? Ge'ez (Amharca), Gucarati, Tamil, Malayalam, Tay, Hangıl (Korece),
+     * Meal Noto Serif'le mi çizilir? Ge'ez (Amharca), Devanagari (Hintçe, Marathi, Nepalce), Bengal (Bengalce,
+     * Assamca), Gucarati, Tamil, Telugu, Kannada, Malayalam, Sinhala, Tay, Khmer, Hangıl (Korece),
      * Han (Çince, Japonca kanji) ve kana (Hiragana, Katakana) Noto Serif'te YOK → sistem yazı tipi. Hausa/Fula kancalı harfleri (ɓ ɗ ƙ ƴ), Yoruba ton
      * işaretleri ve Vietnamca yığılmış ses işaretleri (U+1EA0–1EF9) Noto Serif'te var (cmap denetlendi).
      * Swift ikizi `GununAyetiKarari.mealSerifMi`. Cihazda DOĞRULANMADI.

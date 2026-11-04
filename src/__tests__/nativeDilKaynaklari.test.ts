@@ -17,7 +17,10 @@ import { DILLER as TANIMLI_DILLER, iosYerelAdi } from '../core/dil/diller';
 const KOK = path.join(__dirname, '..', '..');
 const DILLER = TANIMLI_DILLER.map((d) => d.kod).filter((k) => k !== 'tr');
 /** Android kaynak niteleyicisi (dil kodundan farklıysa). */
-const NITELEYICI: Record<string, string> = { id: 'in', ckb: 'b+ckb' };
+// Filipince AOSP gibi `values-tl` (Tagalog): kaynak sistemi `fil` ve `tl`'yi eşdeğer sayar (ResourceTypes.cpp
+// `langsAreEquivalent`), AOSP ve Launcher3 Filipince çevirisini `values-tl`'de taşır.
+// Pencapça (yalnız Şahmuki) `b+pa+Arab`: çıplak `values-pa` Gurmuki cihazlara gider (CLDR `pa` olası betiği Guru).
+const NITELEYICI: Record<string, string> = { id: 'in', ckb: 'b+ckb', fil: 'tl', pa: 'b+pa+Arab' };
 const nitelik = (dil: string) => NITELEYICI[dil] ?? dil;
 /** Android lint `MissingQuantity` HATA'dır: dilin CLDR çoğul kategorileri `<plurals>`'ta olmalı. */
 const COGUL: Record<string, string[]> = {
@@ -76,6 +79,15 @@ const COGUL: Record<string, string[]> = {
   gu: ['one', 'other'],
   bg: ['one', 'other'],
   mk: ['one', 'other'],
+  fil: ['one', 'other'],
+  te: ['one', 'other'],
+  kn: ['one', 'other'],
+  mr: ['one', 'other'],
+  pa: ['one', 'other'],
+  as: ['one', 'other'],
+  ne: ['one', 'other'],
+  si: ['one', 'other'],
+  km: ['other'],
 };
 
 function resDizinleri(): string[] {
@@ -134,6 +146,14 @@ describe.each(resDizinleri())('%s', (res) => {
 
   it('Soranî yalnız values-b+ckb (values-ckb geçersiz niteleyici, derleme düşer)', () => {
     expect(fs.existsSync(path.join(KOK, res, 'values-ckb'))).toBe(false);
+  });
+
+  it('Filipince yalnız values-tl (AOSP kodu; values-fil ile çift kaynak olmaz)', () => {
+    expect(fs.existsSync(path.join(KOK, res, 'values-fil'))).toBe(false);
+  });
+
+  it('Pencapça yalnız values-b+pa+Arab (values-pa Gurmuki cihazlara Şahmuki gösterirdi)', () => {
+    expect(fs.existsSync(path.join(KOK, res, 'values-pa'))).toBe(false);
   });
 });
 

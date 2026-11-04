@@ -81,3 +81,13 @@ it('dalga 11: ku/tk/bg/sd one/other, gu 0 ve 1 tekil, ja/tt yalnız other, pl on
   // Makedonca: son hanesi 1 (11 hariç) one; gerisi other.
   expect([0, 1, 2, 11, 21, 101, 111].map((n) => cogulKategorisi('mk', n))).toEqual(['other', 'one', 'other', 'other', 'one', 'one', 'other']);
 });
+
+it('dalga 12: fil yeni kural, te/mr/ne one/other, kn/as/pa/si 0 ve 1 tekil, km yalnız other', () => {
+  // Filipince: son hanesi 4, 6, 9 OLMAYAN her tam sayı tekil (0 ve 1.000.000 dahil).
+  expect([0, 1, 2, 3, 4, 5, 6, 9, 10, 14, 16, 19, 21, 104, 1000000].map((n) => cogulKategorisi('fil', n))).toEqual([
+    'one', 'one', 'one', 'one', 'other', 'one', 'other', 'other', 'one', 'other', 'other', 'other', 'one', 'other', 'one',
+  ]);
+  for (const dil of ['te', 'mr', 'ne']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
+  for (const dil of ['kn', 'as', 'pa', 'si']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['one', 'one', 'other']);
+  expect([0, 1, 2].map((n) => cogulKategorisi('km', n))).toEqual(['other', 'other', 'other']);
+});

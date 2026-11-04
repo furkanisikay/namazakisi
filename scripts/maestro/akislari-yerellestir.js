@@ -112,7 +112,7 @@ function sablonKarsiliklari(secenek) {
           .join(''),
       );
       // Önek eşleşmesinde hedefin yer tutucudan önceki baş literali de ("Mode reprise" ← "Recovery mode").
-      const bas = hedefParcalar[0].replace(/[\s:፦：.\u00a0\u202f]+$/, '');
+      const bas = hedefParcalar[0].replace(/[\s:፦：\u17d6.\u00a0\u202f]+$/, '');
       if (k === 1 && parcalar.length > 1 && bas) sonuc.push(kacir(bas));
       break;
     }
@@ -179,8 +179,9 @@ for (const dosya of dosyalar(path.join(KOK, 'scripts', 'maestro'))) {
             .replace(/\(([^()]*\|[^()]*)\)(?=(: )?)/g, (_, g, iki) => `(${grubuGenislet(g, Boolean(iki))})`)
             // Fransız yazımı iki noktadan önce bölünmez boşluk koyar ("Série\u00a0: 25 jours");
             // Amharca iki nokta yerine Etiyopya önsöz iki noktası yazar ("ተከታታይነት፦ 5 ቀናት"); Çince
-            // tam genişlik iki nokta (U+FF1A) çoğunlukla boşluksuz yazılır ("连续：25天").
-            .replace(/\): /g, ')[\u00a0\u202f]?(?:[:፦] |： ?)'),
+            // tam genişlik iki nokta (U+FF1A) çoğunlukla boşluksuz yazılır ("连续：25天"); Khmer kendi iki
+            // noktasını (U+17D6) boşluklu ya da boşluksuz yazar.
+            .replace(/\): /g, ')[\u00a0\u202f]?(?:[:፦] |： ?|\u17d6 ?)'),
     )
     .join('\n');
   if (yeni !== eski) {

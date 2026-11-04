@@ -158,10 +158,15 @@ esitMi(TvDili.coz(nil), "tr", "dil yok Turkce")
 esitMi(TvDili.coz("kmr-Latn"), "ku", "Kurmanci kmr → ku")
 esitMi(TvDili.coz("ku-TR"), "ku", "Kurmanci ku-TR → ku")
 esitMi(TvDili.coz("ckb-IQ"), "ckb", "Sorani ckb ayri")
+// Filipince: Tagalog "tl" → "fil"; Pencapca yalniz Sahmuki: pnb ve Gurmuki pa-IN → "pa".
+esitMi(TvDili.coz("tl-PH"), "fil", "Tagalog tl → fil")
+esitMi(TvDili.coz("pnb-PK"), "pa", "Bati Pencapcasi pnb → pa")
+esitMi(TvDili.coz("pa-Arab-PK"), "pa", "Sahmuki cihaz pa")
+esitMi(TvDili.coz("pa-Guru-IN"), "tr", "Gurmuki cihaz Pencapcaya eslenmez")
 
 // MARK: - 4c) Native dil tablolari (W4) — on dokuz dil, Turkce tablo eski sabitlerle ayni
 
-esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk"], "dil: tablo sirasi")
+esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km"], "dil: tablo sirasi")
 esitMi(TvDili.coz("ar-SA"), "ar", "dil: ar-SA → ar")
 esitMi(TvDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(TvDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")

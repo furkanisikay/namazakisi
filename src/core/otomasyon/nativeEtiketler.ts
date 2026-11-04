@@ -5,7 +5,7 @@
  * cihaz dili Android'de varsayılan `values/`'e (Türkçe) düşer; burada da öyle.
  * Nöbetçi: `__tests__/nativeEtiketler.test.ts` (her `values-*` dizini bu tabloyla birebir).
  */
-import type { DilKodu } from '../dil/diller';
+import { yerelAyarDili, type DilKodu } from '../dil/diller';
 
 export type NativeEtiket = { kisayol: string; olay: string; kosul: string; eylem: string };
 
@@ -343,12 +343,78 @@ export const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, Na
     kosul: 'Namaz Akışı: Состојба на времето за намаз', // dil-haric: marka adı (native etiket)
     eylem: 'Namaz Akışı: Клањав', // dil-haric: marka adı (native etiket)
   },
+  // ÇEVİRİ: fil (values-tl İngilizce iskelet kopyası)
+  fil: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: te (values-te İngilizce iskelet kopyası)
+  te: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: kn (values-kn İngilizce iskelet kopyası)
+  kn: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: mr (values-mr İngilizce iskelet kopyası)
+  mr: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: pa (values-pa İngilizce iskelet kopyası)
+  pa: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: as (values-as İngilizce iskelet kopyası)
+  as: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: ne (values-ne İngilizce iskelet kopyası)
+  ne: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: si (values-si İngilizce iskelet kopyası)
+  si: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: km (values-km İngilizce iskelet kopyası)
+  km: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
 };
 
 /** Cihaz yerel ayarından ('ckb_IQ', 'in_ID', 'fa-IR') etiket kümesi; tabloda yoksa Türkçe. */
 export function nativeEtiketleri(yerel: string | null | undefined): NativeEtiket {
   const ham = yerel?.split(/[-_]/)[0];
-  // Java `Locale` Endonezceyi eski kod 'in' ile verir; kaynak dizini de `values-in`.
-  const kod = ham === 'in' ? 'id' : ham;
+  // Java `Locale` Endonezceyi eski kod 'in' ile verir; kaynak dizini de `values-in`. Filipince kaynak dizini
+  // `values-tl` (Tagalog); kaynak sistemi `fil` ve `tl`'yi eşdeğer sayar.
+  // Pencapça kaynağı `values-b+pa+Arab`: yalnız Şahmuki cihaz (Arap betiği / Pakistan) onu seçer, Gurmuki cihaz Türkçeye düşer.
+  if (ham === 'pa') return yerelAyarDili(yerel) === 'pa' ? NATIVE_ETIKETLER.pa ?? NATIVE_ETIKETLER.tr : NATIVE_ETIKETLER.tr;
+  const kod = ham === 'in' ? 'id' : ham === 'tl' ? 'fil' : ham;
   return (kod ? (NATIVE_ETIKETLER as Partial<Record<string, NativeEtiket>>)[kod] : undefined) ?? NATIVE_ETIKETLER.tr;
 }

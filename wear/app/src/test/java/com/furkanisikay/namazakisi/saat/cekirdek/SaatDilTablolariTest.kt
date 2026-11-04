@@ -12,7 +12,7 @@ import org.junit.Test
  * (ör. `$ad`) düşürmesin diye işaretçi değerlerle çağrılır.
  */
 class SaatDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km")
     private val isaretciler = listOf("<AD>", "<SAAT>", "<SURE>", "<S>", "<D>", "987", "986", "985")
 
     private fun metinler(d: SaatDili): Map<String, String> = linkedMapOf(
@@ -131,6 +131,20 @@ class SaatDilTablolariTest {
         )
         // ja ve tt yalnız other: sesli süre her sayıda çoğul kalıp.
         for (dil in listOf(SaatDiliJa, SaatDiliTt)) assertEquals(dil.saatSesli(1L).removePrefix("1"), dil.saatSesli(2L).removePrefix("2"))
+    }
+
+    @Test
+    fun dalga12CogulKategorileri() {
+        // CLDR fil (JS `cogul.ts > filipince`): son hanesi 4, 6, 9 OLMAYAN tekil (0 ve 1.000.000 dahil).
+        val sayilar = listOf(0L, 1L, 2L, 3L, 4L, 5L, 6L, 9L, 10L, 14L, 21L, 104L, 1_000_000L)
+        assertEquals(
+            listOf("one", "one", "one", "one", "other", "one", "other", "other", "one", "other", "one", "other", "one"),
+            sayilar.map { SaatDiliFil.cogulKategorisi(it) },
+        )
+        // km yalnız other: sesli süre her sayıda çoğul kalıp.
+        assertEquals(SaatDiliKm.saatSesli(1L).removePrefix("1"), SaatDiliKm.saatSesli(2L).removePrefix("2"))
+        // Filipince kaynak dizini values-tl: cihazdan gelen "tl" de Filipince tabloyu seçer.
+        assertSame(SaatDiliFil, saatDili("tl"))
     }
 
     @Test

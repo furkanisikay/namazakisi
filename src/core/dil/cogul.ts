@@ -55,7 +55,13 @@ const lehce: Kural = (n) => {
 };
 /** Makedonca (tam sayıda): son hanesi 1 olan (11 hariç: 1, 21, 101) tekil; gerisi `other`. */
 const makedonca: Kural = (n) => (n % 10 === 1 && n % 100 !== 11 ? 'one' : 'other');
-/** Farsça, Hintçe, Bengalce, Gucaratça, Amharca ve Fula: 0 ve 1 tekil (Fulada 1,5 de tekil; burada yalnız tam sayı). */
+/**
+ * Filipince (tam sayıda): son hanesi 4, 6 ya da 9 OLMAYAN her sayı tekil (0, 1, 2, 3, 5, 10, 11, 1.000.000);
+ * gerisi (4, 6, 9, 14, 106…) `other`. CLDR: one = v = 0 and i = 1,2,3 or v = 0 and i % 10 != 4,6,9 or
+ * v != 0 and f % 10 != 4,6,9.
+ */
+const filipince: Kural = (n) => (n % 10 === 4 || n % 10 === 6 || n % 10 === 9 ? 'other' : 'one');
+/** Farsça, Hintçe, Bengalce, Gucaratça, Kannada, Assamca, Pencapça, Sinhala, Amharca ve Fula: 0 ve 1 tekil (Fulada 1,5 de tekil; burada yalnız tam sayı). */
 const sifirBir: Kural = (n) => (n === 0 || n === 1 ? 'one' : 'other');
 
 const KURALLAR: Record<string, Kural> = {
@@ -85,6 +91,9 @@ const KURALLAR: Record<string, Kural> = {
   tk: birDiger,
   bg: birDiger,
   sd: birDiger,
+  te: birDiger,
+  mr: birDiger,
+  ne: birDiger,
   id: hepDiger,
   ms: hepDiger,
   yo: hepDiger,
@@ -96,6 +105,7 @@ const KURALLAR: Record<string, Kural> = {
   // Tatarca CLDR `plurals.xml`'de YOK (CLDR 49 dil çoğul tablosu, 2026-11-02) → ICU kök kuralı: yalnız
   // `other`. Android `<plurals>` seçimi de kökten düşer (yalnız `other`); JS aynısını yapar.
   tt: hepDiger,
+  km: hepDiger,
   fr: fransizca,
   ru: rusca,
   uk: rusca,
@@ -105,6 +115,7 @@ const KURALLAR: Record<string, Kural> = {
   ro: rumence,
   pl: lehce,
   mk: makedonca,
+  fil: filipince,
   ar: arapca,
   fa: sifirBir,
   bn: sifirBir,
@@ -112,6 +123,12 @@ const KURALLAR: Record<string, Kural> = {
   am: sifirBir,
   ff: sifirBir,
   gu: sifirBir,
+  kn: sifirBir,
+  as: sifirBir,
+  // Pencapça Şahmuki: ICU `pa-Arab` kuralı `pa`nınkidir (one = 0, 1).
+  pa: sifirBir,
+  // Sinhala CLDR: one = n = 0,1 or i = 0 and f = 1 → tam sayıda Hintçe kuralı.
+  si: sifirBir,
   es: ispanyolca,
   // Portekizce Avrupa normu: pt-PT kuralı (yalnız 1 tekil). CLDR `pt` (Brezilya) 0'ı da tekil sayar
   // (one = i = 0..1); uygulama tek kural taşır. Nöbetçi ICU karşılaştırmasını `pt-PT` ile yapar.

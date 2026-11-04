@@ -46,7 +46,7 @@ object CanliGuncellemeKurallari {
     /**
      * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
      * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü. Sıra tr, en,
-     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
+     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
      */
     internal val KISA_BIRIMLER: Map<String, KisaBirimler> = mapOf(
         "tr" to KisaBirimler("sa", "dk"),
@@ -154,6 +154,24 @@ object CanliGuncellemeKurallari {
         "bg" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
         // mk
         "mk" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: fil
+        "fil" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: te
+        "te" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: kn
+        "kn" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: mr
+        "mr" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: pa
+        "pa" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: as
+        "as" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: ne
+        "ne" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: si
+        "si" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: km
+        "km" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
     )
 
     /**

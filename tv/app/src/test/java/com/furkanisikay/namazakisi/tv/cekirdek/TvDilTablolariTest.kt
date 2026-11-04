@@ -11,7 +11,7 @@ import org.junit.Test
  * parametreleri kullanır (işaretçi değerlerle çağrılır).
  */
 class TvDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km")
     private val isaretciler = listOf("<AD>", "<AY>", "<GUN>", "987", "2468")
 
     private fun metinler(d: TvDili): Map<String, String> = linkedMapOf(
@@ -98,5 +98,18 @@ class TvDilTablolariTest {
         )
         // ja ve tt yalnız other: sesli süre her sayıda çoğul kalıp.
         for (dil in listOf(TvDiliJa, TvDiliTt)) assertEquals(dil.saatSesli(1).removePrefix("1"), dil.saatSesli(2).removePrefix("2"))
+    }
+
+    @Test
+    fun dalga12CogulKategorileri() {
+        // CLDR fil (JS `cogul.ts > filipince`): son hanesi 4, 6, 9 OLMAYAN tekil (0 dahil).
+        val sayilar = listOf(0, 1, 2, 3, 4, 5, 6, 9, 10, 14, 21, 104)
+        assertEquals(
+            listOf("one", "one", "one", "one", "other", "one", "other", "other", "one", "other", "one", "other"),
+            sayilar.map { TvDiliFil.cogulKategorisi(it) },
+        )
+        // km yalnız other: sesli süre her sayıda çoğul kalıp.
+        assertEquals(TvDiliKm.saatSesli(1).removePrefix("1"), TvDiliKm.saatSesli(2).removePrefix("2"))
+        assertSame(TvDiliFil, tvDili("tl"))
     }
 }
