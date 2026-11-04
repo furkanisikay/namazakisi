@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ne — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">मस्जिदमा छु</string>
+    <string name="camigeofence_kanal_durum_aciklama">तपाईं मस्जिदमा हुनुहुन्छ भनी पत्ता लाग्दा आउने शान्त सूचना</string>
+    <string name="camigeofence_kanal_soru_ad">मस्जिदबाट निस्केपछि</string>
+    <string name="camigeofence_kanal_soru_aciklama">मस्जिदबाट निस्केपछि नमाजमा चिन्ह लगाउन सकियोस् भनेर सोधिने प्रश्न</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">नमाज मोड सक्रिय छ। रिमाइन्डर चुपचाप आउने छन्।</string>
+    <string name="camigeofence_govde_mod">नमाज मोड सक्रिय छ।</string>
+    <string name="camigeofence_govde_sessiz">रिमाइन्डर चुपचाप आउने छन्।</string>
+    <string name="camigeofence_govde_normal">रिमाइन्डर सधैंझैं आउने छन्।</string>
+    <string name="camigeofence_eylem_modu_kapat">मोड निष्क्रिय गर्नुहोस्</string>
+    <string name="camigeofence_eylem_cami_degil">मस्जिद होइन</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">तपाईं मस्जिदमा हुनुहुन्छ?</string>
+    <string name="camigeofence_soru_govde">तपाईं %1$s नजिक हुनुहुन्छ। हामी पक्का नभएकाले सोधिरहेका छौं।</string>
+    <string name="camigeofence_varsayilan_ad">मस्जिद</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">नमाज मोड सक्रिय गर्नुहोस्</string>
+    <string name="camigeofence_eylem_evet_camideyim">हो, म मस्जिदमा छु</string>
+    <string name="camigeofence_eylem_hayir">होइन</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
-    <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
-    <string name="camigeofence_namaz_ikindi">Asr</string>
-    <string name="camigeofence_namaz_aksam">Maghrib</string>
-    <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_kildiniz_mi">%1$s को नमाज पढ्नुभयो?</string>
+    <string name="camigeofence_kildiniz_mi_govde">एकै ट्यापमा चिन्ह लगाउन सक्नुहुन्छ।</string>
+    <string name="camigeofence_eylem_kildim">नमाज पढें</string>
+    <string name="camigeofence_namaz_imsak">फज्र</string>
+    <string name="camigeofence_namaz_ogle">जुहर</string>
+    <string name="camigeofence_namaz_ikindi">अस्र</string>
+    <string name="camigeofence_namaz_aksam">मगरिब</string>
+    <string name="camigeofence_namaz_yatsi">इशा</string>
+    <string name="camigeofence_namaz_cuma">जुमा</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">नमाज</string>
+    <string name="camigeofence_mod_tetik_aciklama">जुमाको खुत्बामा, मस्जिदमा वा नमाजको समय सुरु हुँदा Namaz Akışı ले यसलाई सक्रिय गर्छ</string>
 </resources>

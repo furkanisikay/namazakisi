@@ -1,12 +1,12 @@
-// ÇEVİRİ: ne — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Nepalcede süre birimi kısaltılmaz (CLDR kısa biçim de tam sözcük: घण्टा, मिनेट, सेकेन्ड); sayıdan sonra çoğul eki yok. one = yalnız 1. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'घण्टा', dk: 'मिनेट', sn: 'सेकेन्ड' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ one: '{n} घण्टा', other: '{n} घण्टा' }),
+  dakika: cogul({ one: '{n} मिनेट', other: '{n} मिनेट' }),
+  saniye: cogul({ one: '{n} सेकेन्ड', other: '{n} सेकेन्ड' }),
 };

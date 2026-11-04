@@ -1,63 +1,66 @@
-// ÇEVİRİ: ne — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
-/** İbadete çağrı kaydı: doğrudan, kısa; "prostrate" yok. Sıra Türkçe şablonlarla BİREBİR eşleşir. */
+/**
+ * İbadete çağrı kaydı Nepalcede: "तपाईं" + ‑नुहोस् emri, kısa ve doğrudan; secde emri yok
+ * ("नमाजमा उभिनुहोस्"). Sıra Türkçe şablonlarla BİREBİR eşleşir; dakika "मिनेट" (kısaltma yok).
+ * Takvim etkinliği = कार्यक्रम.
+ */
 export const anons: Sozluk['anons'] = {
-  yon: { cikisaDogru: 'left', girisindenItibaren: 'passed' },
-  cip: { vakit: 'Prayer name', sure: 'Minutes', yon: 'left / passed', cuma: "Jumu'ah", yatsi: 'Isha' },
+  yon: { cikisaDogru: 'बाँकी', girisindenItibaren: 'बित्यो' },
+  cip: { vakit: 'नमाजको नाम', sure: 'मिनेट', yon: 'बाँकी / बित्यो', cuma: 'जुमा', yatsi: 'इशा' },
   sablon: {
     muhafizCikis: [
-      '{vakit} time is ending, {süre} minutes left.',
-      "Don't miss {vakit}, {süre} minutes left.",
-      'Time is running short, {süre} minutes until {vakit} ends.',
+      '{vakit}को समय सकिँदै छ, अन्तिम {süre} मिनेट।',
+      '{vakit}को नमाज नछुटाउनुहोस्, {süre} मिनेट बाँकी छ।',
+      'समय कम हुँदै छ, {vakit} सकिन {süre} मिनेट बाँकी।',
     ],
     muhafizGiris: [
-      '{vakit} time has begun, {süre} minutes have passed.',
-      "Don't delay {vakit}, {süre} minutes have passed.",
-      'Time is moving on, stand for {vakit}, it has been {süre} minutes.',
+      '{vakit}को समय भयो, {süre} मिनेट बित्यो।',
+      '{vakit}को नमाजमा ढिलो नगर्नुहोस्, {süre} मिनेट बितिसक्यो।',
+      'समय बित्दै छ, {vakit}को नमाजमा उभिनुहोस्, {süre} मिनेट भयो।',
     ],
     nafile: [
-      '{vakit} time, {süre} minutes {yön}. A good moment for two rakats.',
-      '{vakit} time is on. A good chance to pray two rakats.',
-      '{süre} minutes {yön} for {vakit}.',
+      '{vakit}को समय, {süre} मिनेट {yön}। दुई रकातका लागि राम्रो अवसर।',
+      '{vakit}को समय चलिरहेको छ। दुई रकात पढ्ने राम्रो अवसर।',
+      '{vakit}का लागि {süre} मिनेट {yön}।',
     ],
     cuma: [
-      "{süre} minutes left until Jumu'ah. Get ready and head to the mosque.",
-      "Jumu'ah is approaching, {süre} minutes left.",
-      "Catch the khutbah, {süre} minutes left until Jumu'ah.",
+      'जुमा नमाजमा {süre} मिनेट बाँकी छ। तयारी गर्नुहोस् र मस्जिदतर्फ निस्कनुहोस्।',
+      'जुमाको समय नजिकिँदै छ, {süre} मिनेट बाँकी छ।',
+      'खुत्बामा पुग्नुहोस्, जुमामा {süre} मिनेट बाँकी छ।',
     ],
     camiyeGit: [
-      '{süre} minutes left until {vakit}. Head to the mosque.',
-      'Time to go to the mosque, {süre} minutes until {vakit}.',
-      'Head to the mosque for {vakit}.',
+      '{vakit}को समयमा {süre} मिनेट बाँकी छ। मस्जिदतर्फ निस्कनुहोस्।',
+      'मस्जिद जाने समय भयो, {vakit}को समयमा {süre} मिनेट छ।',
+      '{vakit}को नमाजका लागि मस्जिदतर्फ निस्कनुहोस्।',
     ],
-    yatis: ['Pray Isha before you go to bed.', 'Isha time is still on, stand for prayer before you sleep.', "Don't sleep before you pray Isha."],
+    yatis: ['सुत्नुअघि इशा पढ्नुहोस्।', 'इशाको समय अझै छ, सुत्नुअघि नमाजमा उभिनुहोस्।', 'इशा नपढी नसुत्नुहोस्।'],
     takvim: [
-      'An event in your calendar falls during {vakit} time.',
-      "{vakit} time clashes with an event; don't forget to pray first.",
-      "In {süre} minutes {vakit} time clashes with your event; don't forget your prayer.",
+      'तपाईंको क्यालेन्डरको एउटा कार्यक्रम {vakit}को समयमा पर्छ।',
+      '{vakit}को समय एउटा कार्यक्रमसँग जुध्छ; पहिले नमाज पढ्न नबिर्सनुहोस्।',
+      '{süre} मिनेटपछि {vakit}को समय तपाईंको कार्यक्रमसँग जुध्छ; नमाज नबिर्सनुहोस्।',
     ],
   },
   otomatik: {
-    cuma: "{sure} until Dhuhr for Jumu'ah. Get ready and head to the mosque.",
-    camiyeGiris: '{sure} until {vakit}.',
-    camiyeHazirlan: 'Get ready and head to the mosque.',
-    camiyeYola: 'Head to the mosque.',
-    takvimGiris: 'An event in your calendar falls during {vakit} time.',
-    takvimOnce: "Don't forget to pray before the event.",
-    takvimKaplar: "Don't forget to take a break and pray.",
-    yatsi: 'Pray Isha before you go to bed.',
-    muhasebeTek: '{vakit} looks unmarked today.',
-    muhasebeCoklu: cogul({ one: '{n} prayer looks unmarked today.', other: '{n} prayers look unmarked today.' }),
-    geceCapasi: 'Quiet hours start in {süre} minutes. Pray {vakit} before you go to bed.',
-    kuslukSuruyor: 'Duha time is on.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats.',
-    kuslukBitiyor: cogul({ one: '{n} minute left in Duha time.', other: '{n} minutes left in Duha time.' }),
-    evvabinSuruyor: 'There is still time for Awwabin.',
-    evvabinGirdi: 'Awwabin time. A good moment for two rakats.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin.', other: '{n} minutes left for Awwabin.' }),
-    teheccudSonUcte: 'Tahajjud time. The last third of the night has begun.',
-    teheccudKalan: cogul({ one: 'Tahajjud time. {n} minute left until Fajr.', other: 'Tahajjud time. {n} minutes left until Fajr.' }),
+    cuma: 'जुमाका लागि जुहरको समयमा {sure} बाँकी छ। तयारी गर्नुहोस् र मस्जिदतर्फ निस्कनुहोस्।',
+    camiyeGiris: '{vakit}को समयमा {sure} बाँकी छ।',
+    camiyeHazirlan: 'तयारी गर्नुहोस् र मस्जिदतर्फ निस्कनुहोस्।',
+    camiyeYola: 'मस्जिदतर्फ निस्कनुहोस्।',
+    takvimGiris: 'तपाईंको क्यालेन्डरको एउटा कार्यक्रम {vakit}को समयमा पर्छ।',
+    takvimOnce: 'कार्यक्रमअघि नमाज पढ्न नबिर्सनुहोस्।',
+    takvimKaplar: 'केही बेर विश्राम लिएर नमाज पढ्न नबिर्सनुहोस्।',
+    yatsi: 'सुत्नुअघि इशा पढ्नुहोस्।',
+    muhasebeTek: 'आज {vakit}मा चिन्ह लगाइएको छैन जस्तो देखिन्छ।',
+    muhasebeCoklu: cogul({ one: 'आज {n} नमाजमा चिन्ह लगाइएको छैन जस्तो देखिन्छ।', other: 'आज {n} नमाजमा चिन्ह लगाइएको छैन जस्तो देखिन्छ।' }),
+    geceCapasi: 'शान्त समय सुरु हुन {süre} मिनेट बाँकी छ। सुत्नुअघि {vakit}को नमाज पढ्नुहोस्।',
+    kuslukSuruyor: 'चाश्तको समय चलिरहेको छ।',
+    kuslukGirdi: 'चाश्तको समय भयो। दुई रकातका लागि राम्रो अवसर।',
+    kuslukBitiyor: cogul({ one: 'चाश्तको समय सकिन {n} मिनेट बाँकी छ।', other: 'चाश्तको समय सकिन {n} मिनेट बाँकी छ।' }),
+    evvabinSuruyor: 'अव्वाबीनका लागि अझै समय छ।',
+    evvabinGirdi: 'अव्वाबीनको समय। दुई रकातका लागि राम्रो अवसर।',
+    evvabinKalan: cogul({ one: 'अव्वाबीनका लागि {n} मिनेट बाँकी छ।', other: 'अव्वाबीनका लागि {n} मिनेट बाँकी छ।' }),
+    teheccudSonUcte: 'तहज्जुदको समय। रातको अन्तिम तिहाइ सुरु भयो।',
+    teheccudKalan: cogul({ one: 'तहज्जुदको समय। फज्रमा {n} मिनेट बाँकी छ।', other: 'तहज्जुदको समय। फज्रमा {n} मिनेट बाँकी छ।' }),
   },
 };

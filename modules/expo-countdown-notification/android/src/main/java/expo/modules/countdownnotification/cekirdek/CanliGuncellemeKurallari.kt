@@ -166,8 +166,8 @@ object CanliGuncellemeKurallari {
         "pa" to KisaBirimler("گھنٹے", "منٹ", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: as
         "as" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: ne
-        "ne" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ne
+        "ne" to KisaBirimler("घण्टा", "मिनेट", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: si
         "si" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: km

@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ne — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">लाइभ काउन्टडाउन</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar र स्टाटस बारमा काउन्टडाउन</string>
+    <string name="countdown_kanal_genel_ad">काउन्टडाउन सूचना</string>
+    <string name="countdown_kanal_genel_aciklama">काउन्टडाउन सूचनाका लागि च्यानल</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">नमाज पढें</string>
+    <string name="countdown_eylem_durdur">रोक्नुहोस्</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">हतार गर्नुहोस्, नमाजको समय सकिन लागेको छ।</string>
+    <string name="countdown_yedek_iftar">समय कम हुँदै छ।</string>
+    <string name="countdown_yedek_sahur">अझै खानपिन गर्न सकिन्छ; रोजा चाँडै सुरु हुन्छ।</string>
+    <string name="countdown_yedek_seri">आजका नमाज पूरा भएका छैनन्; आफ्नो निरन्तरता नटुटाउनुहोस्।</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">समय सकिन बाँकी</string>
+    <string name="countdown_onek_vakit_dar">समय सकिँदै</string>
+    <string name="countdown_onek_iftar">इफ्तारसम्म</string>
+    <string name="countdown_onek_iftar_dar">इफ्तारसम्म</string>
+    <string name="countdown_onek_sahur">सेहरी सकिन बाँकी</string>
+    <string name="countdown_onek_sahur_dar">सेहरी सकिँदै</string>
+    <string name="countdown_onek_seri">निरन्तरता जोगाउन</string>
+    <string name="countdown_onek_seri_dar">निरन्तरता सकिँदै</string>
 </resources>

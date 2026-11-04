@@ -893,18 +893,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: ne
+    // ne — meal `gununAyetiHavuzu.ts` 94:6 birebir (nepali_central), künye `GUNUN_AYETI_KAYNAKLARI.mealler.ne`.
     static let ne = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "आजको आयत",
+        galeriAciklama: "हरेक दिन फज्रमा बदलिने एउटा आयत र यसको अनुवाद।",
+        etiket: "आजको आयत",
+        uygulamayiAcin: "आजको आयत हेर्न एप खोल्नुहोस्",
+        ornekSigmiyor: "आजको आयत यो साइजमा अटाउँदैन। पढ्न ट्याप गर्नुहोस्।",
+        ornekAcin: "खोल्नुहोस्",
+        ornekArapcaKaynagi: "अरबी: Tanzil",
+        ornekMeal: "निःसन्देह कष्टको साथ सजिलो (सरलता) छ ।",
+        ornekKisaKunye: "कुरआन 94:6",
+        ornekMealKaynagi: "Ahlul-Hadith Association, QuranEnc 1.0.3"
     )
 
     // ÇEVİRİ: si

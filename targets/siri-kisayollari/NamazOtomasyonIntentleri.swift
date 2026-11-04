@@ -558,11 +558,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: ne (one/other)
+    // ne (one/other; sayıdan sonra isim çekimlenmez)
     static let ne = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} सुरु हुन {n} मिनेट बाँकी छ।", "other": "{ad} सुरु हुन {n} मिनेट बाँकी छ।"],
+        evetKilindi: "हो, \"पढियो\" चिन्ह लगाइएको छ।",
+        hayirKilinmadi: "होइन, अझै चिन्ह लगाइएको छैन।"
     )
 
     // ÇEVİRİ: si (one/other)

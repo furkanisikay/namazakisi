@@ -216,8 +216,8 @@ enum NamazAlarmCekirdegi {
         "pa": "روکو",
         // ÇEVİRİ: as
         "as": "Stop",
-        // ÇEVİRİ: ne
-        "ne": "Stop",
+        // ne
+        "ne": "रोक्नुहोस्",
         // ÇEVİRİ: si
         "si": "Stop",
         // ÇEVİRİ: km

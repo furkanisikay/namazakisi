@@ -1556,29 +1556,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: ne
+    // ne
     static let ne = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "नमाजको समय",
+        galeriAciklama: "हालको नमाजको समय, सकिन बाँकी समय र आजका नमाजका समय।",
+        veriEski: "नमाजका समय अपडेट गर्न एप खोल्नुहोस्",
+        konumYok: "लोकेसन सेट गर्न एप खोल्नुहोस्",
+        kilindiSiradaki: "{ad} पढियो · {sonraki} {saat}",
+        adCikis: "{ad} · {saat} मा सकिन्छ",
+        siradakiAdSaat: "अर्को {ad} {saat}",
+        vaktiCikisErisim: "{ad}को समय, {saat} मा सकिन्छ",
+        siradakiErisim: "अर्को {ad}, {saat}",
+        cikisSaat: "{saat} मा सकिन्छ",
+        bitisSaat: "{saat} मा सकिन्छ",
+        kilindiBaslik: "{ad} पढियो",
+        siradaki: "अर्को",
+        siradakiAd: "अर्को {ad}",
+        kildimErisim: "{ad} पढें",
+        gunSatiriKilindi: ", पढियो",
+        bitti: "सकियो",
+        vakitCikti: "नमाजको समय सकियो",
+        kabulAlt: "{ad} पढियो",
+        kontrolAdi: "नमाज पढें",
+        kontrolAciklama: "हालको नमाजमा \"पढियो\" चिन्ह लगाउँछ।"
     )
 
     // ÇEVİRİ: si
