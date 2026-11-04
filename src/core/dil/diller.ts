@@ -84,21 +84,21 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'gu', yerelAd: 'ગુજરાતી', yon: 'ltr', ttsDili: 'gu-IN', beta: true, secilebilir: true },
   { kod: 'bg', yerelAd: 'Български', yon: 'ltr', ttsDili: 'bg-BG', beta: true, secilebilir: true },
   { kod: 'mk', yerelAd: 'Македонски', yon: 'ltr', ttsDili: 'mk-MK', beta: true, secilebilir: true },
-  // Dalga 12 (kapalı iskelet). Filipince kodu `fil` (Android kaynak niteleyicisi `values-tl`: AOSP Tagalog'u `tl`
+  // Dalga 12 (beta, 2026-11-04). Filipince kodu `fil` (Android kaynak niteleyicisi `values-tl`: AOSP Tagalog'u `tl`
   // dizininde taşır, kaynak sistemi `fil` ve `tl`'yi eşdeğer sayar). Pencapça yalnız Şahmuki (Arap harfli,
   // Pakistan normu; sahip kararı 2026-11-04), sağdan sola, yerel rakam `arabext` (CLDR `pa-Arab`); uygulama kodu
   // `pa`, platform etiketi `pa-Arab` (`values-b+pa+Arab`, `pa-Arab.lproj`): çıplak `pa` CLDR'de Gurmukidir,
   // Gurmuki cihaz (`pa-IN`, `pa-Guru`) Pencapçaya EŞLENMEZ (Şahmukiyi okuyamaz). Marathi ve Nepalce yerel rakam `deva` (CLDR varsayılanı),
   // Assamca `beng`; Telugu, Kannada, Sinhala, Khmer Batı rakamlı (CLDR `latn`). Khmerde sözcük arası boşluk yok.
-  { kod: 'fil', yerelAd: 'Filipino', yon: 'ltr', ttsDili: 'fil-PH', beta: true, secilebilir: false },
-  { kod: 'te', yerelAd: 'తెలుగు', yon: 'ltr', ttsDili: 'te-IN', beta: true, secilebilir: false },
-  { kod: 'kn', yerelAd: 'ಕನ್ನಡ', yon: 'ltr', ttsDili: 'kn-IN', beta: true, secilebilir: false },
-  { kod: 'mr', yerelAd: 'मराठी', yon: 'ltr', ttsDili: 'mr-IN', beta: true, secilebilir: false },
-  { kod: 'pa', yerelAd: 'پنجابی', yon: 'rtl', ttsDili: 'pa-PK', beta: true, secilebilir: false },
-  { kod: 'as', yerelAd: 'অসমীয়া', yon: 'ltr', ttsDili: 'as-IN', beta: true, secilebilir: false },
-  { kod: 'ne', yerelAd: 'नेपाली', yon: 'ltr', ttsDili: 'ne-NP', beta: true, secilebilir: false },
-  { kod: 'si', yerelAd: 'සිංහල', yon: 'ltr', ttsDili: 'si-LK', beta: true, secilebilir: false },
-  { kod: 'km', yerelAd: 'ខ្មែរ', yon: 'ltr', ttsDili: 'km-KH', beta: true, secilebilir: false },
+  { kod: 'fil', yerelAd: 'Filipino', yon: 'ltr', ttsDili: 'fil-PH', beta: true, secilebilir: true },
+  { kod: 'te', yerelAd: 'తెలుగు', yon: 'ltr', ttsDili: 'te-IN', beta: true, secilebilir: true },
+  { kod: 'kn', yerelAd: 'ಕನ್ನಡ', yon: 'ltr', ttsDili: 'kn-IN', beta: true, secilebilir: true },
+  { kod: 'mr', yerelAd: 'मराठी', yon: 'ltr', ttsDili: 'mr-IN', beta: true, secilebilir: true },
+  { kod: 'pa', yerelAd: 'پنجابی', yon: 'rtl', ttsDili: 'pa-PK', beta: true, secilebilir: true },
+  { kod: 'as', yerelAd: 'অসমীয়া', yon: 'ltr', ttsDili: 'as-IN', beta: true, secilebilir: true },
+  { kod: 'ne', yerelAd: 'नेपाली', yon: 'ltr', ttsDili: 'ne-NP', beta: true, secilebilir: true },
+  { kod: 'si', yerelAd: 'සිංහල', yon: 'ltr', ttsDili: 'si-LK', beta: true, secilebilir: true },
+  { kod: 'km', yerelAd: 'ខ្មែរ', yon: 'ltr', ttsDili: 'km-KH', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

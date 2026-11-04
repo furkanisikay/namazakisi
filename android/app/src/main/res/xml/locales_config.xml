@@ -59,4 +59,13 @@
   <locale android:name="gu"/>
   <locale android:name="bg"/>
   <locale android:name="mk"/>
+  <locale android:name="fil"/>
+  <locale android:name="te"/>
+  <locale android:name="kn"/>
+  <locale android:name="mr"/>
+  <locale android:name="pa-Arab"/>
+  <locale android:name="as"/>
+  <locale android:name="ne"/>
+  <locale android:name="si"/>
+  <locale android:name="km"/>
 </locale-config>
