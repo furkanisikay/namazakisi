@@ -204,14 +204,16 @@ fun VakitSayaci(
             ) {
                 // Vakit değişince (ya da son dakikalar başlayınca) ad yumuşakça yer değiştirir;
                 // olay tetikli, 300 ms, boşta hareket yok. Azaltılmış harekette anında.
+                // Son dakikalar satırı ("Asr · son 15 dk") Kannada, Nepalce, Sinhala ve Khmercede
+                // tek satıra sığmıyor: sabit boy sonu sessizce keserdi, kendini sığdıran metin küçülür.
                 Crossfade(targetState = g.adSatiri, animationSpec = tween(if (azalt) 0 else 300), label = "vakitAdi") { ad ->
-                    Text(
-                        yerelRakam(ad),
-                        color = renk,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
+                    val baslik = MaterialTheme.typography.titleMedium
+                    SigdirilanMetin(
+                        metin = ad,
+                        enFazla = baslik.fontSize,
+                        renk = renk,
+                        agirlik = FontWeight.SemiBold,
+                        stil = baslik,
                     )
                 }
                 SureGosterimi(
