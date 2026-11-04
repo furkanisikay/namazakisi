@@ -1,15 +1,14 @@
-// ÇEVİRİ: pa — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'جاری رکھو',
+  vazgecin: 'منسوخ کرو',
+  kapatin: 'بند کرو',
+  ayarlariAcin: 'ترتیباں کھولو',
+  simdilikGecin: 'فی الحال چھڈ دیو',
+  tekrarDeneyin: 'فیر کوشش کرو',
+  evet: 'ہاں',
+  hayir: 'نہیں',
+  ayrintilariAcar: 'تفصیل کھولدا اے',
   marka: 'Namaz Akışı',
 };

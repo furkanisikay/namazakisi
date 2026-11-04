@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "تہاڈا مقام ایس لئی ورتیا جاندا اے کہ تسیں جتھے او اوتھے دے نماز دے وقت ٹھیک کڈھے جا سکن۔ تہاڈا مقام تہاڈی ڈیوائس توں باہر نہیں جاندا۔",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "تہاڈا مقام ایس لئی ورتیا جاندا اے کہ تسیں جتھے او اوتھے دے نماز دے وقت ٹھیک کڈھے جا سکن تے، جے مسجد وچ آں چالو ہووے، تاں مسجد وچ وڑن تے نماز موڈ چالو ہو جاوے۔ تہاڈا مقام تہاڈی ڈیوائس توں باہر نہیں جاندا۔",
+  "NSLocationAlwaysUsageDescription": "تہاڈا مقام ایس لئی ورتیا جاندا اے کہ شہر بدلن تے نماز دے وقت آپ اپ ڈیٹ ہون تے، جے مسجد وچ آں چالو ہووے، تاں مسجد وچ وڑن تے نماز موڈ چالو ہو جاوے۔ تہاڈا مقام تہاڈی ڈیوائس توں باہر نہیں جاندا۔",
+  "NSCameraUsageDescription": "کیمرا ایس لئی ورتیا جاندا اے کہ کیمرا منظر اُتے قبلہ دی سمت وکھائی جا سکے تے تہاڈے ٹی وی تے جوڑن والا کوڈ سکین کیتا جا سکے۔ تصویراں محفوظ نہیں ہوندیاں تے تہاڈی ڈیوائس توں باہر نہیں جاندیاں۔",
+  "NSCalendarsUsageDescription": "کیلنڈر تک رسائی ایس لئی ورتی جاندی اے کہ نماز دے وقت تہاڈے کیلنڈر وچ پائے جا سکن تے، جے تسیں چالو کرو، تاں ایہہ ویکھیا جا سکے کہ تہاڈے کیلنڈر دیاں مصروفیتاں کسے نماز دے وقت نال ٹکراندیاں نیں یا نہیں۔ تہاڈے کیلنڈر دا ڈیٹا تہاڈی ڈیوائس تے رہندا اے۔",
+  "NSCalendarsFullAccessUsageDescription": "کیلنڈر تک رسائی ایس لئی ورتی جاندی اے کہ نماز دے وقت تہاڈے کیلنڈر وچ پائے جا سکن تے، جے تسیں چالو کرو، تاں ایہہ ویکھیا جا سکے کہ تہاڈے کیلنڈر دیاں مصروفیتاں کسے نماز دے وقت نال ٹکراندیاں نیں یا نہیں۔ تہاڈے کیلنڈر دا ڈیٹا تہاڈی ڈیوائس تے رہندا اے۔",
+  "NSLocalNetworkUsageDescription": "ایپ تہاڈے مقامی نیٹ ورک تے ٹی وی نال جُڑدی اے تاں جو تہاڈے نماز دے وقت تے نشان لائیاں نمازاں اوہنوں گھلیاں جا سکن۔ ڈیٹا خفیہ (encrypted) ہوندا اے تے صرف ایہناں دو ڈیوائساں وچکار جاندا اے۔",
+  "NSAlarmKitUsageDescription": "جنہاں یاد دہانی دے قدماں وچ تسیں “اصل الارم” چُنو اوہ الارم وجوں سیٹ ہوندے نیں، تاں جو فون سائلنٹ تے ہووے یا کوئی فوکس چالو ہووے تاں وی تسیں اوہناں نوں سن سکو۔",
+  "\"Vakti kıldım\"": "نماز پڑھ لئی",
+  "\"Kıble\"": "قبلہ"
 }

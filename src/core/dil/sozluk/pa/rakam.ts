@@ -1,11 +1,11 @@
-// ÇEVİRİ: pa — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** `dogu` yerel rakam etiketidir: bu dilde (CLDR `pa-Arab`) Fars/Urdu biçimli rakam (`arabext`), Doğu Arap rakamı değil. */
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'ہندسے',
+  aciklama: 'چُنو کہ وقتاں، تاریخاں تے عدداں وچ کیہڑے ہندسے ورتے جان۔',
+  otomatik: 'ملک دے مطابق',
+  otomatikAciklama: 'تہاڈے مقام والے ملک وچ عام ہندسے ورتے جاندے نیں۔',
+  dogu: 'اردو ہندسے',
+  bati: 'مغربی ہندسے',
 };

@@ -1506,29 +1506,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: pa
+    // pa (yalnız Şahmuki); terimler JS sozluk/pa (Kıldım "نماز پڑھ لئی", Kılındı "ادا ہو گئی")
     static let pa = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "نماز دا وقت",
+        galeriAciklama: "موجودہ نماز دا وقت، اوہدے مکن وچ باقی وقت تے اج دیاں نمازاں دے وقت۔",
+        veriEski: "نماز دے وقت اپ ڈیٹ کرن لئی ایپ کھولو",
+        konumYok: "اپنا مقام چُنن لئی ایپ کھولو",
+        kilindiSiradaki: "{ad} ادا ہو گئی · {sonraki} {saat}",
+        adCikis: "{ad} · اختتام {saat}",
+        siradakiAdSaat: "اگلی {ad} {saat}",
+        vaktiCikisErisim: "{ad} دا وقت، اختتام {saat}",
+        siradakiErisim: "اگلی نماز {ad}، {saat}",
+        cikisSaat: "اختتام {saat}",
+        bitisSaat: "اختتام {saat}",
+        kilindiBaslik: "{ad} ادا ہو گئی",
+        siradaki: "اگلی",
+        siradakiAd: "اگلی {ad}",
+        kildimErisim: "{ad} دی نماز پڑھ لئی",
+        gunSatiriKilindi: "، ادا ہو گئی",
+        bitti: "مک گیا",
+        vakitCikti: "نماز دا وقت مک گیا",
+        kabulAlt: "{ad} دی نماز ادا ہو گئی",
+        kontrolAdi: "نماز پڑھ لئی",
+        kontrolAciklama: "موجودہ نماز تے ادا ہو گئی دا نشان لاندا اے۔"
     )
 
     // ÇEVİRİ: as

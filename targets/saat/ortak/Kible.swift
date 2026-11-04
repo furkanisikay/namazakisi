@@ -956,17 +956,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: pa (CLDR pa binlik ayırıcı ","; rakam çizimde yerelleşir)
+    // pa — JS `sozluk/pa/kible.ts > yon` (Şahmuki); binlik ayırıcı "," (JS `aktifDil.ts > BINLIK`, Urduca gibi; rakam çizimde yerelleşir)
     public static let pa = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "پچھے",
+        saga: "سجے {derece}°",
+        sola: "کھبے {derece}°",
+        hizali: "تسیں قبلہ رُخ او",
+        arkadaErisim: "قبلہ تہاڈے پچھے اے",
+        sagdaErisim: "قبلہ تہاڈے سجے پاسے {derece} درجے تے اے",
+        soldaErisim: "قبلہ تہاڈے کھبے پاسے {derece} درجے تے اے",
+        kabede: "تسیں کعبہ دے کول او",
+        mesafe: "{km} کلومیٹر",
         binlikAyirici: ","
     )
 

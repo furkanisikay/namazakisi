@@ -1,48 +1,51 @@
-// ÇEVİRİ: pa — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Dil adları CLDR `pa-Arab`'da yok: Urduca sözlükteki adlardan Şahmuki Pencapçaya uyarlandı
+ * (türetildi, DOĞRULANMADI; yerli okuyucu baksın).
+ */
 export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'بولی · Language',
-  aciklama: 'Choose the app language. Notifications and read-aloud use it too.',
-  grup: 'App language',
-  dilAdlari: { tr: 'Turkish', en: 'English', id: 'Indonesian', de: 'German', fr: 'French', bs: 'Bosnian', ru: 'Russian', ms: 'Malay', ar: 'Arabic', ur: 'Urdu', es: 'Spanish', nl: 'Dutch', sq: 'Albanian', hi: 'Hindi', bn: 'Bangla', fa: 'Persian', ps: 'Pashto', ckb: 'Central Kurdish', ug: 'Uyghur', az: 'Azerbaijani', uz: 'Uzbek', kk: 'Kazakh', ky: 'Kyrgyz', tg: 'Tajik', sw: 'Swahili', ha: 'Hausa', am: 'Amharic', om: 'Oromo', so: 'Somali', ff: 'Fula', yo: 'Yoruba', zh: 'Simplified Chinese', ta: 'Tamil', ml: 'Malayalam', th: 'Thai', ko: 'Korean', vi: 'Vietnamese', pt: 'Portuguese', it: 'Italian', sv: 'Swedish', uk: 'Ukrainian', ro: 'Romanian', hr: 'Croatian', sr: 'Serbian', el: 'Greek', ku: 'Kurdish (Kurmancî)', tk: 'Turkmen', tt: 'Tatar', sd: 'Sindhi', pl: 'Polish', ja: 'Japanese', gu: 'Gujarati', bg: 'Bulgarian', mk: 'Macedonian', fil: 'Filipino', te: 'Telugu', kn: 'Kannada', mr: 'Marathi', pa: 'پنجابی', as: 'Assamese', ne: 'Nepali', si: 'Sinhala', km: 'Khmer' },
-  cihazDili: 'Device language',
-  cihazDiliKullaniliyor: 'Currently {ad}',
-  cihazDiliDesteklenmiyor: "Your device language isn't available yet; Turkish is used.",
-  beta: 'Beta',
-  betaAciklama: '{ad} · Beta',
+  aciklama: 'ایپ دی بولی چُنو۔ اطلاعاں تے اُچی آواز وچ پڑھائی وی ایسے بولی وچ ہووے گی۔',
+  grup: 'ایپ دی بولی',
+  dilAdlari: { tr: 'ترکی', en: 'انگریزی', id: 'انڈونیشیائی', de: 'جرمن', fr: 'فرانسیسی', bs: 'بوسنیائی', ru: 'روسی', ms: 'مالے', ar: 'عربی', ur: 'اردو', es: 'ہسپانوی', nl: 'ڈچ', sq: 'البانوی', hi: 'ہندی', bn: 'بنگلہ', fa: 'فارسی', ps: 'پشتو', ckb: 'سورانی کُردی', ug: 'اویغور', az: 'آذربائیجانی', uz: 'ازبک', kk: 'قزاخ', ky: 'کرغیز', tg: 'تاجک', sw: 'سواحلی', ha: 'ہوسا', am: 'امہاری', om: 'اورومو', so: 'صومالی', ff: 'فولا', yo: 'یوروبا', zh: 'چینی (سادہ)', ta: 'تامل', ml: 'ملیالم', th: 'تھائی', ko: 'کوریائی', vi: 'ویتنامی', pt: 'پرتگالی', it: 'اطالوی', sv: 'سویڈش', uk: 'یوکرینی', ro: 'رومانوی', hr: 'کروشیائی', sr: 'سربیائی', el: 'یونانی', ku: 'کُردی (Kurmancî)', tk: 'ترکمانی', tt: 'تاتاری', sd: 'سندھی', pl: 'پولش', ja: 'جاپانی', gu: 'گجراتی', bg: 'بلغاری', mk: 'مقدونیائی', fil: 'فلپینو', te: 'تیلگو', kn: 'کنڑ', mr: 'مراٹھی', pa: 'پنجابی', as: 'آسامی', ne: 'نیپالی', si: 'سنہالی', km: 'خمیر' },
+  cihazDili: 'ڈیوائس دی بولی',
+  cihazDiliKullaniliyor: 'ایس ویلے {ad}',
+  cihazDiliDesteklenmiyor: 'تہاڈی ڈیوائس دی بولی اجے دستیاب نہیں؛ ترکی ورتی جا رہی اے۔',
+  beta: 'بیٹا',
+  betaAciklama: '{ad} · بیٹا',
   notlar: {
-    beta: 'Beta translations are being reviewed; some text may be imperfect.',
-    vakit: "The language doesn't change how prayer times are calculated.",
-    nass: 'In languages other than Turkish, only Quran translations are shown; hadith texts come from a Turkish source, so they are not shown.',
+    beta: 'بیٹا ترجمیاں دا جائزہ لیا جا رہیا اے؛ کجھ عبارتاں وچ گھاٹ ہو سکدی اے۔',
+    vakit: 'بولی نماز دے وقتاں دے حساب نوں نہیں بدلدی۔',
+    nass: 'ترکی توں علاوہ دوجیاں بولیاں وچ صرف آیتاں دے ترجمے وکھائے جاندے نیں؛ حدیثاں دے متن ترکی ماخذ توں آؤندے نیں، ایس لئی نہیں وکھائے جاندے۔',
   },
   ozelAnons: {
-    baslik: 'Read-aloud texts you wrote',
+    baslik: 'تہاڈیاں لکھیاں ہوئیاں اُچی آواز والیاں عبارتاں',
     govde: cogul({
-      one: '{n} read-aloud text you wrote is still in the previous language. Replace it with the ready-made text in the new language?',
-      other: '{n} read-aloud texts you wrote are still in the previous language. Replace them with the ready-made texts in the new language?',
+      one: 'تہاڈی لکھی ہوئی {n} اُچی آواز والی عبارت پچھلی بولی وچ اے۔ کیہ اینوں نویں بولی دی تیار عبارت نال بدل دتا جاوے؟',
+      other: 'تہاڈیاں لکھیاں ہوئیاں {n} اُچی آواز والیاں عبارتاں پچھلی بولی وچ نیں۔ کیہ اوہناں نوں نویں بولی دیاں تیار عبارتاں نال بدل دتا جاوے؟',
     }),
-    degistir: 'Replace with ready-made text',
-    koru: 'Keep as is',
-    degisti: cogul({ one: '{n} text replaced.', other: '{n} texts replaced.' }),
+    degistir: 'تیار عبارت نال بدلو',
+    koru: 'جیویں اے اونویں رہن دیو',
+    degisti: cogul({ one: '{n} عبارت بدل دتی گئی۔', other: '{n} عبارتاں بدل دتیاں گئیاں۔' }),
   },
   vakitAdlari: {
-    baslik: 'Prayer names',
-    aciklama: 'Choose how prayer times are named.',
-    otomatik: 'By country',
-    otomatikAciklama: 'Uses the names common in the country of your location.',
-    takimlar: { temel: 'Arabic names', diyanetDe: 'Diyanet (German)', turkce: 'Turkish names', magrip: 'Maghrebi spelling', cezayir: 'Algerian spelling', afgan: 'Afghan names' },
+    baslik: 'نمازاں دے ناں',
+    aciklama: 'چُنو کہ نمازاں دے ناں کیویں لکھے جان۔',
+    otomatik: 'ملک دے مطابق',
+    otomatikAciklama: 'تہاڈے مقام والے ملک وچ چلدے ناں ورتے جاندے نیں۔',
+    takimlar: { temel: 'عربی ناں', diyanetDe: 'Diyanet (جرمن)', turkce: 'ترکی ناں', magrip: 'شمالی افریقی املا', cezayir: 'الجزائری املا', afgan: 'افغان ناں' },
   },
   yazi: {
-    baslik: 'Alphabet',
-    aciklama: 'Choose which alphabet text is written in.',
-    otomatik: 'By country',
-    otomatikAciklama: 'Uses the alphabet common in the country of your location.',
-    latin: 'Latin alphabet',
-    kiril: 'Cyrillic alphabet',
+    baslik: 'لکھائی',
+    aciklama: 'چُنو کہ متن کیہڑی لکھائی وچ لکھیا جاوے۔',
+    otomatik: 'ملک دے مطابق',
+    otomatikAciklama: 'تہاڈے مقام والے ملک وچ عام لکھائی ورتی جاندی اے۔',
+    latin: 'لاطینی لکھائی',
+    kiril: 'سیریلک لکھائی',
   },
-  kaydedilemedi: "The language couldn't be saved. Try again.",
+  kaydedilemedi: 'بولی محفوظ نہیں ہو سکی۔ فیر کوشش کرو۔',
   sihirbazBaglantisi: 'بولی · Language',
-  sihirbazBaglantisiAciklama: 'Change the app language',
+  sihirbazBaglantisiAciklama: 'ایپ دی بولی بدلو',
 };

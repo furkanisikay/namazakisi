@@ -535,12 +535,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: pa (one/other)
+    // pa — JS `sozluk/pa/sure.ts` birebir (Şahmuki; birim kısaltılmaz; one = 0 ve 1, `CogulKurali` hi dalı)
     public static let pa = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "گھنٹے", birimDk: "منٹ", birimSn: "سیکنڈ",
+        saat: ["one": "{n} گھنٹہ", "other": "{n} گھنٹے"],
+        dakika: ["one": "{n} منٹ", "other": "{n} منٹ"],
+        saniye: ["one": "{n} سیکنڈ", "other": "{n} سیکنڈ"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

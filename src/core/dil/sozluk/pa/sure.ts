@@ -1,12 +1,12 @@
-// ÇEVİRİ: pa — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Pencapçada (Şahmuki) süre birimi kısaltılmaz; kısa biçim de tam sözcüktür (Urduca emsali). */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'گھنٹے', dk: 'منٹ', sn: 'سیکنڈ' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ one: '{n} گھنٹہ', other: '{n} گھنٹے' }),
+  dakika: cogul({ one: '{n} منٹ', other: '{n} منٹ' }),
+  saniye: cogul({ one: '{n} سیکنڈ', other: '{n} سیکنڈ' }),
 };

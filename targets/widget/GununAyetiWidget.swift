@@ -864,18 +864,19 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: pa
+    // pa (Şahmuki meal yok: QuranEnc `punjabi_arif` Gurmuki; yalnız Arapça metin + künye, Sindhçe emsali)
+    // → `ornekMeal` ve `ornekMealKaynagi` boş (uydurma çeviri yok).
     static let pa = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "اج دی آیت",
+        galeriAciklama: "قرآن دی اک آیت، ہر روز فجر ویلے نویں۔",
+        etiket: "اج دی آیت",
+        uygulamayiAcin: "اج دی آیت ویکھن لئی ایپ کھولو",
+        ornekSigmiyor: "اج دی آیت ایس سائز وچ نہیں سماندی۔ پڑھن لئی ٹیپ کرو۔",
+        ornekAcin: "کھولو",
+        ornekArapcaKaynagi: "عربی: Tanzil",
+        ornekMeal: "",
+        ornekKisaKunye: "قرآن 94:6",
+        ornekMealKaynagi: ""
     )
 
     // ÇEVİRİ: as

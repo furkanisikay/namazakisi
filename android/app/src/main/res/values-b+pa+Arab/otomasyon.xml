@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: pa — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Pencapça, Şahmuki). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: نماز پڑھ لئی</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: نماز دے وقت دی حالت</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: نماز دے وقت دا واقعہ</string>
 
-  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "تسیں". -->
+  <string name="otomasyon_bilgi_baslik">ایہہ ترتیب کسے آٹومیشن ایپ توں شامل کیتی جاندی اے</string>
+  <string name="otomasyon_bilgi_tarayici">براؤزراں نوں پکی اجازت نہیں دتی جاندی۔ Tasker، MacroDroid یا Automate ورگی کسے ایپ دی پلگ ان لسٹ توں شامل کرو۔</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker، MacroDroid یا Automate ورگی کسے ایپ دی پلگ ان لسٹ وچوں \"Namaz Akışı\" چُن کے شامل کرو۔</string>
+  <string name="otomasyon_engelli_baslik">%1$s بلاک اے</string>
+  <string name="otomasyon_engelli_mesaj">تسیں پہلاں ایس ایپ نوں اپنیاں نمازاں تے نشان لاؤن توں بلاک کیتا سی۔ اینوں Namaz Akışı وچ ترتیباں &gt; \"نماز پڑھ لئی\" دا نشان لاؤن والیاں ایپاں وچ اجازت دتی جا سکدی اے۔</string>
+  <string name="otomasyon_izin_baslik">کیہ %1$s نال ورتو گے؟</string>
+  <string name="otomasyon_izin_kosul">%1$s جان سکدی اے کہ نماز دا وقت کدوں شروع ہوندا اے، کدوں مک رہیا اے تے تسیں کدوں مسجد وچ او، تے تہاڈیاں آٹومیشناں چلا سکدی اے۔ اپنا فیصلہ Namaz Akışı وچ ترتیباں &gt; \"نماز پڑھ لئی\" دا نشان لاؤن والیاں ایپاں وچ بدلیا جا سکدا اے۔</string>
+  <string name="otomasyon_izin_kildim">%1$s تہاڈی سیٹ کیتی آٹومیشن نال موجودہ نماز تے ادا ہو گئی دا نشان لا سکدی اے۔ اپنا فیصلہ Namaz Akışı وچ ترتیباں &gt; \"نماز پڑھ لئی\" دا نشان لاؤن والیاں ایپاں وچ بدلیا جا سکدا اے۔</string>
+  <string name="otomasyon_izin_ver">اجازت دیو</string>
+  <string name="otomasyon_engelle">بلاک کرو</string>
+  <string name="otomasyon_vazgec">منسوخ کرو</string>
+  <string name="otomasyon_tamam">ٹھیک اے</string>
+  <string name="otomasyon_tur_baslik">کدوں چلے؟</string>
+  <string name="otomasyon_ileri">اگے</string>
+  <string name="otomasyon_vakit_baslik">کیہڑی نماز؟</string>
+  <string name="otomasyon_herhangi_vakit">کوئی وی نماز دا وقت</string>
+  <string name="otomasyon_kaydet">محفوظ کرو</string>
+  <string name="otomasyon_kosul_icinde">جدوں تک نماز دا وقت جاری ہووے</string>
+  <string name="otomasyon_kosul_cikiyor">جدوں نماز دا وقت مک رہیا ہووے (%1$d منٹ باقی، نماز محافظ چالو)</string>
+  <string name="otomasyon_kosul_camide">مسجد وچ ہوندیاں</string>
+  <string name="otomasyon_olay_girdi">جدوں نماز دا وقت شروع ہووے</string>
+  <string name="otomasyon_olay_cikiyor">جدوں نماز دا وقت مک رہیا ہووے (%1$d منٹ باقی، نماز محافظ چالو)</string>
+  <string name="otomasyon_olay_camide">جدوں تہاڈے مسجد وچ ہون دا پتہ لگے</string>
 </resources>

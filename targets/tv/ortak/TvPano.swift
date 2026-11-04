@@ -932,18 +932,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: pa
+    // pa (yalnız Şahmuki; gün/ay adları CLDR `pa-Arab-PK`, JS `sozluk/pa/tarih.ts`)
     public static let pa = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "فجر", "gunes": "طلوعِ آفتاب", "ogle": "ظہر", "ikindi": "عصر", "aksam": "مغرب", "yatsi": "عشاء"],
+        cuma: "جمعہ",
+        aylar: ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"],
+        gunler: ["پیر", "منگل", "بُدھ", "جمعرات", "جمعہ", "ہفتہ", "اتوار"],
+        tarih: "{gunAdi}، {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "طلوعِ آفتاب", "istiva": "زوال", "gurub": "غروبِ آفتاب"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "سورج چنگی طرح اُچا ہون تک نماز پڑھنا مکروہ اے۔",
+            "istiva": "سورج عین سر اُتے ہووے تاں نماز پڑھنا مکروہ اے۔",
+            "gurub": "سورج ڈُبدے ویلے نماز پڑھنا مکروہ اے۔",
         ]
     )
 
