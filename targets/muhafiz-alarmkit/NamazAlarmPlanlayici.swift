@@ -214,8 +214,8 @@ enum NamazAlarmCekirdegi {
         "mr": "थांबवा",
         // pa
         "pa": "روکو",
-        // ÇEVİRİ: as
-        "as": "Stop",
+        // as
+        "as": "বন্ধ কৰক",
         // ne
         "ne": "रोक्नुहोस्",
         // si

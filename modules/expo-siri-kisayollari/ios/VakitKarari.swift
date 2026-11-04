@@ -1945,31 +1945,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "ایپ کھولو"
     )
 
-    // ÇEVİRİ: as
+    // as
     public static let `as` = VakitMetinleri(
         dil: "as",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ফজৰ", "ogle": "জোহৰ", "ikindi": "আছৰ", "aksam": "মাগৰিব", "yatsi": "ঈশ্বা"],
+        gunes: "সূৰ্যোদয়",
+        konumYok: "নামাজৰ সময় গণনা কৰিবলৈ এপটো খুলি আপোনাৰ অৱস্থান ছেট কৰক।",
+        veriEski: "নামাজৰ সময় পুৰণি হৈছে। আপডে’ট কৰিবলৈ এবাৰ এপটো খোলক।",
+        girisBugun: "{saat} বজাত",
+        girisYarin: "কাইলৈ {saat} বজাত",
+        suAnVakti: "এতিয়া {ad}ৰ ওৱাক্ত।",
+        suAnVaktiCikis: "এতিয়া {ad}ৰ ওৱাক্ত; {saat} বজাত শেষ হ’ব।",
+        siradakiNamaz: "পৰৱৰ্তী নামাজ {ad}, {giris}।",
+        isaretlendi: "{ad}ৰ নামাজ পঢ়া হ’ল বুলি চিহ্নিত কৰা হ’ল। {dua}।",
+        zatenKilindi: "{ad}ৰ নামাজ আগতেই পঢ়া হ’ল বুলি চিহ্নিত কৰা আছে।",
+        vakitYok: "এই মুহূৰ্তত চিহ্নিত কৰিবলগীয়া কোনো নামাজ নাই।",
+        vakitYokSiradaki: "এই মুহূৰ্তত চিহ্নিত কৰিবলগীয়া কোনো নামাজ নাই। পৰৱৰ্তী {ad}, {giris}।",
+        onay: "{ad}ৰ নামাজ পঢ়া হ’ল বুলি চিহ্নিত কৰিবনে?",
+        vakitDegisti: "নামাজৰ সময় সলনি হ’ল, সেয়ে একো চিহ্নিত কৰা নহ’ল। পুনৰ চেষ্টা কৰক।",
+        kabulDuasi: "আল্লাহে কবুল কৰক",
+        kildim: "নামাজ পঢ়িছোঁ",
+        kilindi: "পঢ়া হ’ল",
+        kontrolKildim: "{ad} · নামাজ পঢ়িছোঁ",
+        kontrolKilindi: "{ad} পঢ়া হ’ল",
+        kontrolVakitYok: "চিহ্নিত কৰিবলগীয়া নামাজ নাই",
+        uygulamayiAcin: "এপটো খোলক"
     )
 
     // ne

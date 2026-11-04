@@ -879,18 +879,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: ""
     )
 
-    // ÇEVİRİ: as
+    // as
     static let `as` = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "আজিৰ আয়াত",
+        galeriAciklama: "প্ৰতিদিনে ফজৰত সলনি হোৱা এটা আয়াত আৰু ইয়াৰ অৰ্থানুবাদ।",
+        etiket: "আজিৰ আয়াত",
+        uygulamayiAcin: "আজিৰ আয়াত চাবলৈ এপটো খোলক",
+        ornekSigmiyor: "আজিৰ আয়াত এই আকাৰত নধৰে। পঢ়িবলৈ টিপক।",
+        ornekAcin: "খোলক",
+        ornekArapcaKaynagi: "আৰবী: Tanzil",
+        ornekMeal: "নিশ্চয় দুখৰ লগতেই আছে সুখ।",
+        ornekKisaKunye: "কোৰআন 94:6",
+        ornekMealKaynagi: "Rafiqul Islam Habibur-Rahman, QuranEnc 1.0.5"
     )
 
     // ne — meal `gununAyetiHavuzu.ts` 94:6 birebir (nepali_central), künye `GUNUN_AYETI_KAYNAKLARI.mealler.ne`.

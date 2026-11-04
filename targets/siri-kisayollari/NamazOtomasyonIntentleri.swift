@@ -551,11 +551,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "نہیں، اجے نشان نہیں لگیا۔"
     )
 
-    // ÇEVİRİ: as (one/other)
+    // as (one = 0 ve 1, other; ikisi aynı biçim)
     static let `as` = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{n} মিনিটৰ পিছত {ad} আৰম্ভ হ’ব।", "other": "{n} মিনিটৰ পিছত {ad} আৰম্ভ হ’ব।"],
+        evetKilindi: "হয়, পঢ়া হ’ল বুলি চিহ্নিত কৰা আছে।",
+        hayirKilinmadi: "নহয়, এতিয়াও চিহ্নিত কৰা হোৱা নাই।"
     )
 
     // ne (one/other; sayıdan sonra isim çekimlenmez)

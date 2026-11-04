@@ -1,35 +1,35 @@
-// ÇEVİRİ: as — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Assamlı Müslümanların namaz sonrası ve selamda kullandığı kalıplar (çeviri değil). Kök:
+ * "কবুল কৰা" (QE 2:127), "বৰকতময়" (HadeethEnc as); "আল্লাহে কবুল কৰক" saygılı dilek
+ * kipiyle türetildi, yerli okuyucu onaylamalı. Bayram, cuma ve Ramazan "… মোবাৰক" kalıbıyla.
+ * Kandil karşılıkları tip bütünlüğü içindir. Övgü ve "!" yok.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'বৰকতময় হওক।',
+  kabulDualari: ['আল্লাহে কবুল কৰক', 'কবুল হওক', 'আল্লাহে কবুল কৰক', 'আল্লাহ তাআলাই কবুল কৰক'],
+  kabulDuasi: 'আল্লাহে কবুল কৰক',
+  ekSabah: 'আপোনাৰ পুৱা বৰকতময় হওক',
+  ekYatsi: 'আপোনাৰ ৰাতি বৰকতময় হওক',
+  tamGunAna: 'আল্লাহে কবুল কৰক',
+  tamGunAlt: 'আজি আপুনি পাঁচো ওৱাক্ত নামাজ সম্পূৰ্ণ কৰিলে।',
+  kazaKabul: 'আপোনাৰ খাতাৰ পৰা {vakit}ৰ এটা কাজা কমোৱা হ’ল। {dua}।',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'লাইলাতুৰ ৰাগাইব বৰকতময় হওক',
+    mirac: 'শবে মিৰাজ বৰকতময় হওক',
+    berat: 'শবে বৰাত বৰকতময় হওক',
+    mevlid: 'ঈদে মিলাদুন্নবী বৰকতময় হওক',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'বৰকতময় ছাহৰী',
+    bayram: 'ঈদ মোবাৰক',
+    iftar: 'বৰকতময় ইফতাৰ',
+    kadir: 'লাইলাতুল কদৰ বৰকতময় হওক',
+    arefe: 'ঈদৰ আগদিনটো বৰকতময় হওক',
+    hicriYilbasi: 'হিজৰী নৱবৰ্ষ বৰকতময় হওক',
+    cuma: 'জুমুআ মোবাৰক',
+    ramazan: 'ৰমজান মোবাৰক',
+    sabah: 'আপোনাৰ পুৱা বৰকতময় হওক',
   },
 };

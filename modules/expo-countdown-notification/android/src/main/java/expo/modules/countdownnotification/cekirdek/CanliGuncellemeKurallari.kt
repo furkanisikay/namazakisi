@@ -164,8 +164,8 @@ object CanliGuncellemeKurallari {
         "mr" to KisaBirimler("ता", "मिनि", birimAyirici = " ", parcaAyirici = " "),
         // pa (Şahmuki; Urduca gibi kısaltma yok — JS sure.kisa ile aynı)
         "pa" to KisaBirimler("گھنٹے", "منٹ", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: as
-        "as" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // as
+        "as" to KisaBirimler("ঘ", "মি", birimAyirici = " ", parcaAyirici = " "),
         // ne
         "ne" to KisaBirimler("घण्टा", "मिनेट", birimAyirici = " ", parcaAyirici = " "),
         // si (CLDR si short: "පැය", "මිනි" — JS sure.kisa ile aynı; kalıp sözleşmesi gereği sayı önce)

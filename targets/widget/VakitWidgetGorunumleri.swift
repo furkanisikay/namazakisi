@@ -1531,29 +1531,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "موجودہ نماز تے ادا ہو گئی دا نشان لاندا اے۔"
     )
 
-    // ÇEVİRİ: as
+    // as
     static let `as` = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "নামাজৰ সময়",
+        galeriAciklama: "বৰ্তমানৰ নামাজৰ সময়, শেষ হ’বলৈ বাকী সময় আৰু আজিৰ নামাজৰ সময়।",
+        veriEski: "নামাজৰ সময় আপডে’ট কৰিবলৈ এপটো খোলক",
+        konumYok: "আপোনাৰ অৱস্থান ছেট কৰিবলৈ এপটো খোলক",
+        kilindiSiradaki: "{ad} পঢ়া হ’ল · {sonraki} {saat}",
+        adCikis: "{ad} · {saat} বজাত শেষ",
+        siradakiAdSaat: "পৰৱৰ্তী {ad} {saat}",
+        vaktiCikisErisim: "{ad}ৰ ওৱাক্ত, {saat} বজাত শেষ",
+        siradakiErisim: "পৰৱৰ্তী {ad}, {saat}",
+        cikisSaat: "{saat} বজাত শেষ",
+        bitisSaat: "{saat} বজাত শেষ",
+        kilindiBaslik: "{ad} পঢ়া হ’ল",
+        siradaki: "পৰৱৰ্তী",
+        siradakiAd: "পৰৱৰ্তী {ad}",
+        kildimErisim: "{ad}ৰ নামাজ পঢ়িছোঁ",
+        gunSatiriKilindi: ", পঢ়া হ’ল",
+        bitti: "শেষ হ’ল",
+        vakitCikti: "নামাজৰ সময় শেষ হ’ল",
+        kabulAlt: "{ad} পঢ়া হ’ল",
+        kontrolAdi: "নামাজ পঢ়িছোঁ",
+        kontrolAciklama: "বৰ্তমানৰ নামাজ পঢ়া হ’ল বুলি চিহ্নিত কৰে।"
     )
 
     // ne

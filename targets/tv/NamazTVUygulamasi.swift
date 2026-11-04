@@ -964,19 +964,19 @@ struct TvArayuzMetinleri {
         siradakiEk: "، اگلی نماز"
     )
 
-    // ÇEVİRİ: as
+    // as
     static let `as` = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "আপোনাৰ চহৰ বাছনি কৰক",
+        ilMerkezi: "নামাজৰ সময় প্ৰদেশৰ কেন্দ্ৰৰ বাবে গণনা কৰা হয়। পিছত আপোনাৰ বাছনি সলনি কৰিব পাৰে।",
+        ilSecErisim: "{il}, বাছনি কৰক",
+        kalan: "{ad}লৈ বাকী সময়",
+        kalanErisim: "{ad}লৈ বাকী সময়: {sure}",
+        konumuDegistirin: "অৱস্থান সলনি কৰক",
+        kerahatSuruyor: "মাকৰূহ সময়: {tur}, {bitis} বজাত শেষ। {aciklama}",
+        siradakiKerahat: "পৰৱৰ্তী মাকৰূহ সময়: {tur} {bas}–{bit}",
+        cumaBilgisi: "আজি শুক্ৰবাৰ। জুমুআৰ নামাজ জোহৰৰ সময়ত পঢ়া হয় ({giris} বজাত আৰম্ভ)।",
+        suAnkiEk: ", বৰ্তমানৰ নামাজ",
+        siradakiEk: ", পৰৱৰ্তী নামাজ"
     )
 
     // ne

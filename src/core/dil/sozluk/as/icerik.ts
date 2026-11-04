@@ -1,15 +1,14 @@
-// ÇEVİRİ: as — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'কোৰআন {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'নামাজ টোপনিতকৈ উত্তম। সফলতাৰ ফালে আহক।',
+    araVer: 'সংসাৰৰ কামৰ পৰা অলপ বিৰতি লওক, আপোনাৰ প্ৰতিপালকৰ সন্মুখত থিয় হওক।',
+    yorgunluk: 'দিনটোৰ ভাগৰ আঁতৰাবলৈ আৰু শান্তি পাবলৈ আছৰৰ নামাজে আপোনাৰ বাবে অপেক্ষা কৰি আছে।',
+    sukur: 'মাগৰিবৰ নামাজ দিনটোৰ শুকৰিয়া। আপোনাৰ প্ৰতিপালকৰ সন্মুখত থিয় হ’বলৈ খৰখেদা কৰক।',
+    aksamKisa: 'মাগৰিবৰ সময় চুটি; ওৱাক্ত আৰম্ভ হ’ল, পলম নকৰাকৈ নামাজ পঢ়ক।',
+    geceKaranligi: 'ৰাতিৰ আন্ধাৰত আপোনাৰ প্ৰতিপালকৰ সৈতে অকলে থাকক। ঈশ্বাৰ নামাজ আত্মাৰ ঔষধ।',
+    davet: 'আল্লাহৰ সন্তুষ্টিৰে দিনটো শেষ কৰিবলৈ আপোনাক ঈশ্বাৰ নামাজলৈ আমন্ত্ৰণ জনোৱা হৈছে।',
   },
 };

@@ -544,12 +544,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: as (one/other)
+    // as (one = 0 ve 1, other; ikisi aynı biçim)
     public static let `as` = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "ঘ", birimDk: "মি", birimSn: "ছে",
+        saat: ["one": "{n} ঘণ্টা", "other": "{n} ঘণ্টা"],
+        dakika: ["one": "{n} মিনিট", "other": "{n} মিনিট"],
+        saniye: ["one": "{n} ছেকেণ্ড", "other": "{n} ছেকেণ্ড"],
         birimAyirici: " ", parcaAyirici: " "
     )
 
