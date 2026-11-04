@@ -1,11 +1,10 @@
-// ÇEVİRİ: fil — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Mga numero',
+  aciklama: 'Piliin kung aling mga numero ang gagamitin sa oras, petsa at bilang.',
+  otomatik: 'Ayon sa bansa',
+  otomatikAciklama: 'Ginagamit ang mga numerong karaniwan sa bansa ng inyong lokasyon.',
+  dogu: 'Mga numerong Silangang Arabe',
+  bati: 'Mga numerong Kanluranin',
 };

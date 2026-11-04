@@ -872,18 +872,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: fil
+    // fil
     public static let fil = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Pagsikat ng araw", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
         cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        aylar: ["Enero", "Pebrero", "Marso", "Abril", "Mayo", "Hunyo", "Hulyo", "Agosto", "Setyembre", "Oktubre", "Nobyembre", "Disyembre"],
+        gunler: ["Lunes", "Martes", "Miyerkules", "Huwebes", "Biyernes", "Sabado", "Linggo"],
+        tarih: "{gunAdi}, {ay} {gun}, {yil}",
+        kerahatAdlari: ["suruk": "Pagsikat ng araw", "istiva": "Katanghaliang-tapat", "gurub": "Paglubog ng araw"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Makruh ang pagdarasal hanggang lubusang sumikat ang araw.",
+            "istiva": "Makruh ang pagdarasal habang nasa tuktok ng langit ang araw.",
+            "gurub": "Makruh ang pagdarasal habang lumulubog ang araw.",
         ]
     )
 

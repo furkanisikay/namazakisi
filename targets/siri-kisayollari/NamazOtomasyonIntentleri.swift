@@ -516,11 +516,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Не, сѐ уште не е означено."
     )
 
-    // ÇEVİRİ: fil (one/other)
+    // fil (one/other)
     static let fil = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "Magsisimula ang {ad} sa loob ng {n} minuto.", "other": "Magsisimula ang {ad} sa loob ng {n} minuto."],
+        evetKilindi: "Oo, namarkahang naidasal na ito.",
+        hayirKilinmadi: "Hindi, hindi pa ito namamarkahan."
     )
 
     // ÇEVİRİ: te (one/other)

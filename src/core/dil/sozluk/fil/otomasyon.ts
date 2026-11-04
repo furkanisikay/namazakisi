@@ -1,10 +1,10 @@
-// ÇEVİRİ: fil — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Anahtar kelime başlığın içinde AYNEN geçer (rutin "bildirimde şu metin varsa" ile eşler). */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'pumasok na ang oras',
+  vakitGirdiBasligi: '{ad}: pumasok na ang oras',
+  herhangiVakit: 'Kapag pumasok ang anumang oras ng dasal',
+  yalnizVakit: 'Kapag pumasok lang ang oras ng {ad}',
+  camide: 'Kapag natukoy na nasa masjid kayo (nakabukas ang Nasa masjid)',
 };

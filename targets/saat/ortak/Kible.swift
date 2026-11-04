@@ -900,16 +900,16 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: "."
     )
 
-    // ÇEVİRİ: fil (CLDR fil binlik ayırıcı ",")
+    // fil (CLDR fil binlik ayırıcı ",")
     public static let fil = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Sa likod ninyo",
+        saga: "Kanan {derece}°",
+        sola: "Kaliwa {derece}°",
+        hizali: "Nakaharap kayo sa Qiblah",
+        arkadaErisim: "Nasa likod ninyo ang Qiblah",
+        sagdaErisim: "Nasa {derece} digri sa inyong kanan ang Qiblah",
+        soldaErisim: "Nasa {derece} digri sa inyong kaliwa ang Qiblah",
+        kabede: "Nasa Kaaba kayo",
         mesafe: "{km} km",
         binlikAyirici: ","
     )

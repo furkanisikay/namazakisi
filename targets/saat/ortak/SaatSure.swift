@@ -499,12 +499,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: fil (one/other)
+    // fil (one/other; ad sayıyla çekilmez)
     public static let fil = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "oras", birimDk: "min", birimSn: "seg",
+        saat: ["one": "{n} oras", "other": "{n} oras"],
+        dakika: ["one": "{n} minuto", "other": "{n} minuto"],
+        saniye: ["one": "{n} segundo", "other": "{n} segundo"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

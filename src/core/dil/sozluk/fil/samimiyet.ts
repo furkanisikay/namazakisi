@@ -1,35 +1,37 @@
-// ÇEVİRİ: fil — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Filipinli Müslümanların kalıpları (çeviri değil): fiil kökü "tanggapin" QuranEnc
+ * `tagalog_rwwad` 2:127 ("Panginoon Namin, tanggapin Mo mula sa amin") + dilek eki "nawa"
+ * (türetildi); bayram, cuma ve Ramazan için yerleşik Arapça "Mubarak" kalıpları ve ortak
+ * "Taqabbal Allahu minna wa minkum". Kandil ve hicrî yılbaşı selamı Filipinler'de söylenmez
+ * (`selam.ts > KANDIL_ULKELERI`); buradaki karşılıklar tip bütünlüğü içindir. Övgü ve "!" yok.
+ * Yerli okuyucuyla DOĞRULANMADI.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: "Nawa'y maging pinagpala.",
+  kabulDualari: ['Tanggapin nawa ni Allah', 'Taqabbal Allahu minna wa minkum', 'Tanggapin nawa ni Allah', 'Tanggapin nawa ng ating Panginoon'],
+  kabulDuasi: 'Tanggapin nawa ni Allah',
+  ekSabah: 'Mapagpalang umaga',
+  ekYatsi: 'Mapagpalang gabi',
+  tamGunAna: 'Tanggapin nawa ni Allah',
+  tamGunAlt: 'Naidasal ninyo ngayong araw ang limang dasal.',
+  kazaKabul: 'Nabawasan ng isang qada ng {vakit} ang inyong talaan. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Mapagpalang gabi ng Raghaib',
+    mirac: "Mapagpalang Isra' at Mi'raj",
+    berat: "Mapagpalang gabi ng Bara'ah",
+    mevlid: 'Mapagpalang Mawlid',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
+    sahur: 'Mapagpalang sahur',
     bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
+    iftar: 'Mapagpalang iftar',
+    kadir: 'Mapagpalang Laylat al-Qadr',
+    arefe: 'Mapagpalang bisperas ng Eid',
+    hicriYilbasi: 'Mapagpalang Bagong Taon ng Hijri',
     cuma: "Jumu'ah Mubarak",
     ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sabah: 'Mapagpalang umaga',
   },
 };

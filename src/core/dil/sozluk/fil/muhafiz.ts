@@ -1,61 +1,60 @@
-// ÇEVİRİ: fil — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı: zamirsiz kısa emir, zamir gerekirse saygılı "inyong/ninyo"; "po" ve "!" yok
+ * (sahip kararı). Secde karşılığı ("magpatirapa") YAZILMAZ → "magdasal na". Başlıkta süre
+ * birimi CLDR dar biçimi "m": "Maghrib · 655m" ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}m na · oras na ng dasal ⏰',
+    giris2: '{ad} · {dk}m na · huwag ipagpaliban ⚠️',
+    giris3: '{ad} · {dk}m na · naghihintay ang dasal 🔥',
+    giris4: '{ad} · {dk}m na · MAGDASAL NA 🚨',
+    erken3: '{ad} · {dk}m pa · naghihintay ang dasal 🔥',
+    erken4: '{ad} · {dk}m pa · MAGDASAL NA 🚨',
+    cikis1: '{ad} · {dk}m pa ⏰',
+    cikis2: '{ad} · {dk}m · kumikitid na ang oras ⚠️',
+    cikis3: '{ad} · {dk}m · nauubos na ang oras 🔥',
+    cikis4: '{ad} · {dk}m · MATATAPOS NA ANG ORAS 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Oras na ng dasal; magdasal habang may pagkakataon.', 'Magdasal habang nasa panig ninyo ang oras; huwag itong ipagpaliban.'],
+    s2: ['Habang ipinagpapaliban, lalong bumibigat; huwag iwan ang dasal sa huli.', 'Lumilipas ang oras — magdasal na ngayon.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Habang naaantala, lalong lumalapit ang pagkalampas nito; magdasal na ngayon.',
+      'Huwag sabihing "mamaya na ako magdadasal"; makapagdadasal kayo ngayon.',
+      'Tumayo na ngayon sa halip na sabihing "sana" pagkalipas ng ilang minuto.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Huwag nang ipagpaliban ang dasal — magdasal na ngayon.', 'Iwan muna ang ginagawa at tumayo para magdasal.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Nagsisimula nang kumitid ang oras; magdasal habang may pagkakataon.',
+    s2: 'Huwag iwan ang dasal sa huli; magandang pagkakataon ngayon para magdasal.',
+    s3: 'Halos ubos na ang oras; makapagdadasal pa kayo ngayon.',
+    s4: 'Kung nakapagdasal na kayo, i-tap ang "Nagdasal ako"; kung hindi pa, magdasal na ngayon.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'HUWAG IPAGPALIBAN ANG DASAL. Magdasal na ngayon. (lumipas ang {dk} min)',
+    giris2: 'Lumilipas ang oras; huwag iwan ang dasal sa huli. (lumipas ang {dk} min)',
+    giris1: cogul({ one: '{n} minuto na mula nang pumasok ang oras ng dasal.', other: '{n} minuto na mula nang pumasok ang oras ng dasal.' }),
+    erken4: 'Huwag ipagpaliban ang dasal; magdasal na ngayon. ({dk} min pa)',
+    cikis4: 'MATATAPOS NA ANG ORAS. Magdasal na ngayon. ({dk} min pa)',
+    cikis2: 'Kumikitid na ang oras; huwag iwan ang dasal sa huli. ({dk} min pa)',
+    cikis1: cogul({ one: '{n} minuto pa bago matapos ang oras ng dasal.', other: '{n} minuto pa bago matapos ang oras ng dasal.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · magdasal bago matulog ⏰',
+    govde: 'Magsisimula ang tahimik na oras sa loob ng {dk} min; idasal ang Isha bago matulog.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Nagsisimula nang kumitid ang oras; magdasal habang may pagkakataon.',
+    sonaBirakma: 'Huwag iwan ang dasal sa huli; magandang pagkakataon ngayon para magdasal.',
+    fisilti: 'Huwag sabihing "mamaya na ako magdadasal"; halos ubos na ang oras, makapagdadasal pa kayo ngayon.',
+    omur: 'Lumilipas ang oras; may pagkakataon pa kayong idasal ito sa tamang oras.',
+    keske: 'Tumayo na ngayon sa halip na sabihing "sana" pagkalipas ng ilang minuto.',
+    namazaDur: 'Kung nakapagdasal na kayo, i-tap ang "Nagdasal ako"; kung hindi pa, magdasal na ngayon.',
+    sonDakika: 'Ang mga huling minuto. Iwan muna ang ginagawa at tumayo para magdasal.',
   },
 };

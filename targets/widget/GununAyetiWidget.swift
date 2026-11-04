@@ -808,18 +808,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "a group of Macedonian scholars, QuranEnc 1.0.1"
     )
 
-    // ÇEVİRİ: fil
+    // fil
     static let fil = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Talata ng araw",
+        galeriAciklama: "Isang talata at ang salin nito na nagbabago araw-araw sa Fajr.",
+        etiket: "TALATA NG ARAW",
+        uygulamayiAcin: "Buksan ang app para makita ang talata ng araw",
+        ornekSigmiyor: "Hindi kasya sa laking ito ang talata ngayon. I-tap para basahin.",
+        ornekAcin: "Buksan",
+        ornekArapcaKaynagi: "Arabe: Tanzil",
+        ornekMeal: "Tunay na kasama sa hirap ay ginhawa.",
+        ornekKisaKunye: "Qur'an 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.1.4"
     )
 
     // ÇEVİRİ: te

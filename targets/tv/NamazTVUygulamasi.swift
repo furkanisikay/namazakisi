@@ -889,19 +889,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", следен намаз"
     )
 
-    // ÇEVİRİ: fil
+    // fil
     static let fil = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Pumili ng lungsod",
+        ilMerkezi: "Kinakalkula ang mga oras ng dasal para sa sentro ng lalawigan. Mababago ninyo ang pinili mamaya.",
+        ilSecErisim: "{il}, piliin",
+        kalan: "Natitirang oras bago ang {ad}",
+        kalanErisim: "Natitirang oras bago ang {ad}: {sure}",
+        konumuDegistirin: "Palitan ang lokasyon",
+        kerahatSuruyor: "Makruh na oras: {tur}, matatapos {bitis}. {aciklama}",
+        siradakiKerahat: "Susunod na makruh na oras: {tur} {bas}–{bit}",
+        cumaBilgisi: "Biyernes ngayon. Idinadasal ang Jumu'ah sa oras ng Dhuhr (magsisimula {giris}).",
+        suAnkiEk: ", kasalukuyang dasal",
+        siradakiEk: ", susunod na dasal"
     )
 
     // ÇEVİRİ: te

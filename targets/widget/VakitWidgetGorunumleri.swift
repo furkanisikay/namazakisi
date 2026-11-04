@@ -1406,29 +1406,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Го означува тековниот намаз како клањан."
     )
 
-    // ÇEVİRİ: fil
+    // fil
     static let fil = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Oras ng dasal",
+        galeriAciklama: "Ang kasalukuyang oras ng dasal, ang natitirang oras bago ito matapos at ang mga oras ng dasal ngayon.",
+        veriEski: "Buksan ang app para i-update ang mga oras ng dasal",
+        konumYok: "Buksan ang app para itakda ang lokasyon",
+        kilindiSiradaki: "Naidasal na ang {ad} · {sonraki} {saat}",
+        adCikis: "{ad} · matatapos {saat}",
+        siradakiAdSaat: "Susunod {ad} {saat}",
+        vaktiCikisErisim: "Oras ng {ad}, matatapos {saat}",
+        siradakiErisim: "Susunod {ad}, {saat}",
+        cikisSaat: "Matatapos {saat}",
+        bitisSaat: "Matatapos {saat}",
+        kilindiBaslik: "Naidasal na ang {ad}",
+        siradaki: "Susunod",
+        siradakiAd: "Susunod {ad}",
+        kildimErisim: "Nagdasal ako ng {ad}",
+        gunSatiriKilindi: ", naidasal na",
+        bitti: "Tapos na",
+        vakitCikti: "Tapos na ang oras ng dasal",
+        kabulAlt: "Naidasal na ang {ad}",
+        kontrolAdi: "Nagdasal ako",
+        kontrolAciklama: "Minamarkahang naidasal na ang kasalukuyang dasal."
     )
 
     // ÇEVİRİ: te

@@ -1,12 +1,12 @@
-// ÇEVİRİ: fil — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** CLDR fil: "5 minuto", kısa "5 min.", "5 seg."; saatin kısası yok ("oras"). Ad sayıyla çekilmez. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'oras', dk: 'min', sn: 'seg' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ one: '{n} oras', other: '{n} oras' }),
+  dakika: cogul({ one: '{n} minuto', other: '{n} minuto' }),
+  saniye: cogul({ one: '{n} segundo', other: '{n} segundo' }),
 };

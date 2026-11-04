@@ -204,8 +204,8 @@ enum NamazAlarmCekirdegi {
         "bg": "Спрете",
         // mk
         "mk": "Запрете",
-        // ÇEVİRİ: fil
-        "fil": "Stop",
+        // fil
+        "fil": "Ihinto",
         // ÇEVİRİ: te
         "te": "Stop",
         // ÇEVİRİ: kn

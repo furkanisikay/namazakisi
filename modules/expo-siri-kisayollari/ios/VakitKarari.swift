@@ -1810,31 +1810,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Отворете ја апликацијата"
     )
 
-    // ÇEVİRİ: fil
+    // fil
     public static let fil = VakitMetinleri(
         dil: "fil",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Pagsikat ng araw",
+        konumYok: "Buksan ang app at itakda ang lokasyon para makalkula ang mga oras ng dasal.",
+        veriEski: "Luma na ang mga oras ng dasal. Buksan ang app nang isang beses para i-update ang mga ito.",
+        girisBugun: "sa {saat}",
+        girisYarin: "bukas sa {saat}",
+        suAnVakti: "Oras na ngayon ng {ad}.",
+        suAnVaktiCikis: "Oras na ngayon ng {ad}; matatapos ito sa {saat}.",
+        siradakiNamaz: "Ang susunod na dasal ay {ad} {giris}.",
+        isaretlendi: "Namarkahang naidasal na ang {ad}. {dua}.",
+        zatenKilindi: "Namarkahan nang naidasal ang {ad}.",
+        vakitYok: "Walang dasal na mamarkahan ngayon.",
+        vakitYokSiradaki: "Walang dasal na mamarkahan ngayon. Susunod ang {ad} {giris}.",
+        onay: "Markahang naidasal na ang {ad}?",
+        vakitDegisti: "Nagbago ang oras ng dasal, kaya walang namarkahan. Subukang muli.",
+        kabulDuasi: "Tanggapin nawa ni Allah",
+        kildim: "Nagdasal ako",
+        kilindi: "Naidasal na",
+        kontrolKildim: "{ad} · Nagdasal ako",
+        kontrolKilindi: "Naidasal na ang {ad}",
+        kontrolVakitYok: "Walang dasal na mamarkahan",
+        uygulamayiAcin: "Buksan ang app"
     )
 
     // ÇEVİRİ: te

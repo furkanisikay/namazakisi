@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "Ginagamit ang inyong lokasyon para tumpak na makalkula ang mga oras ng dasal sa inyong kinaroroonan. Nananatili sa inyong device ang inyong lokasyon.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ginagamit ang inyong lokasyon para tumpak na makalkula ang mga oras ng dasal sa inyong kinaroroonan at, kung naka-on ang Nasa masjid, para i-on ang Mode ng dasal pagpasok ninyo sa masjid. Nananatili sa inyong device ang inyong lokasyon.",
+  "NSLocationAlwaysUsageDescription": "Ginagamit ang inyong lokasyon para kusang i-update ang mga oras ng dasal kapag lumipat kayo ng lungsod at, kung naka-on ang Nasa masjid, para i-on ang Mode ng dasal pagpasok ninyo sa masjid. Nananatili sa inyong device ang inyong lokasyon.",
+  "NSCameraUsageDescription": "Ginagamit ang inyong camera para ipakita ang direksyon ng Qiblah sa camera view at para i-scan ang code ng pagpapares sa inyong TV. Hindi sine-save ang mga larawan at hindi umaalis ang mga ito sa inyong device.",
+  "NSCalendarsUsageDescription": "Ginagamit ang access sa kalendaryo para idagdag ang mga oras ng dasal sa inyong kalendaryo at, kung io-on ninyo, para suriin kung may event sa inyong kalendaryo na kasabay ng oras ng dasal. Nananatili sa inyong device ang datos ng inyong kalendaryo.",
+  "NSCalendarsFullAccessUsageDescription": "Ginagamit ang access sa kalendaryo para idagdag ang mga oras ng dasal sa inyong kalendaryo at, kung io-on ninyo, para suriin kung may event sa inyong kalendaryo na kasabay ng oras ng dasal. Nananatili sa inyong device ang datos ng inyong kalendaryo.",
+  "NSLocalNetworkUsageDescription": "Kumokonekta ang app sa TV sa inyong lokal na network para ipadala rito ang inyong mga oras ng dasal at ang mga dasal na minarkahan ninyo. Naka-encrypt ang datos at sa pagitan lang ng dalawang device ito dumadaan.",
+  "NSAlarmKitUsageDescription": "Itinatakda bilang alarm ang mga hakbang ng paalala kung saan pinili ninyo ang “Tunay na alarm”, kaya maririnig ninyo ang mga ito kahit naka-silent ang telepono o naka-on ang Focus.",
+  "\"Vakti kıldım\"": "Nagdasal ako",
+  "\"Kıble\"": "Qiblah"
 }
