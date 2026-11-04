@@ -156,8 +156,8 @@ object CanliGuncellemeKurallari {
         "mk" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
         // fil
         "fil" to KisaBirimler("oras", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: te
-        "te" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // te (JS sure.kisa ile aynı)
+        "te" to KisaBirimler("గం", "నిమి", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: kn
         "kn" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // mr

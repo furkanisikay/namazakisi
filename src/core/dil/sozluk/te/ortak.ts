@@ -1,15 +1,14 @@
-// ÇEVİRİ: te — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'కొనసాగించండి',
+  vazgecin: 'రద్దు చేయండి',
+  kapatin: 'మూసివేయండి',
+  ayarlariAcin: 'సెట్టింగ్‌లను తెరవండి',
+  simdilikGecin: 'ప్రస్తుతానికి దాటవేయండి',
+  tekrarDeneyin: 'మళ్లీ ప్రయత్నించండి',
+  evet: 'అవును',
+  hayir: 'కాదు',
+  ayrintilariAcar: 'వివరాలను తెరుస్తుంది',
   marka: 'Namaz Akışı',
 };

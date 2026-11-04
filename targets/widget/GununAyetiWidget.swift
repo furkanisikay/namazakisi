@@ -822,18 +822,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.1.4"
     )
 
-    // ÇEVİRİ: te
+    // te — meal QuranEnc telugu_muhammad 1.0.7 (gununAyetiHavuzu.ts, 94:6 birebir)
     static let te = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "ఈ రోజు ఆయత్",
+        galeriAciklama: "ప్రతిరోజూ ఫజ్ర్‌లో మారే ఒక ఆయత్, దాని అనువాదం.",
+        etiket: "ఈ రోజు ఆయత్",
+        uygulamayiAcin: "ఈ రోజు ఆయత్‌ను చూడటానికి యాప్‌ను తెరవండి",
+        ornekSigmiyor: "ఈ రోజు ఆయత్ ఈ పరిమాణంలో సరిపోదు. చదవడానికి నొక్కండి.",
+        ornekAcin: "తెరవండి",
+        ornekArapcaKaynagi: "అరబిక్: Tanzil",
+        ornekMeal: "నిశ్చయంగా, కష్టంతో పాటు సుఖం కూడా ఉంటుంది.",
+        ornekKisaKunye: "ఖుర్ఆన్ 94:6",
+        ornekMealKaynagi: "Abdurrahim ibn Muhammad, QuranEnc 1.0.7"
     )
 
     // ÇEVİRİ: kn

@@ -1837,31 +1837,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Buksan ang app"
     )
 
-    // ÇEVİRİ: te
+    // te — Telugu (beta): JS `sozluk/te`; Kıldım "ఆచరించాను", Kılındı "ఆచరించబడింది"
     public static let te = VakitMetinleri(
         dil: "te",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ఫజ్ర్", "ogle": "జుహ్ర్", "ikindi": "అస్ర్", "aksam": "మగ్రిబ్", "yatsi": "ఇషా"],
+        gunes: "సూర్యోదయం",
+        konumYok: "నమాజ్ సమయాలు లెక్కించబడటానికి యాప్‌ను తెరిచి మీ లొకేషన్‌ను సెట్ చేయండి.",
+        veriEski: "నమాజ్ సమయాలు పాతవి. అప్‌డేట్ చేయడానికి యాప్‌ను ఒకసారి తెరవండి.",
+        girisBugun: "{saat}కి",
+        girisYarin: "రేపు {saat}కి",
+        suAnVakti: "ఇప్పుడు {ad} సమయం.",
+        suAnVaktiCikis: "ఇప్పుడు {ad} సమయం; అది {saat}కి ముగుస్తుంది.",
+        siradakiNamaz: "తదుపరి నమాజ్ {ad}, {giris}.",
+        isaretlendi: "{ad} ఆచరించినట్లు గుర్తించబడింది. {dua}.",
+        zatenKilindi: "{ad} ఇప్పటికే ఆచరించినట్లు గుర్తించబడింది.",
+        vakitYok: "ప్రస్తుతం గుర్తించడానికి నమాజ్ లేదు.",
+        vakitYokSiradaki: "ప్రస్తుతం గుర్తించడానికి నమాజ్ లేదు. తదుపరి {ad}, {giris}.",
+        onay: "{ad} ఆచరించినట్లు గుర్తించాలా?",
+        vakitDegisti: "నమాజ్ సమయం మారింది, కాబట్టి ఏదీ గుర్తించబడలేదు. మళ్లీ ప్రయత్నించండి.",
+        kabulDuasi: "అల్లాహ్ స్వీకరించుగాక",
+        kildim: "ఆచరించాను",
+        kilindi: "ఆచరించబడింది",
+        kontrolKildim: "{ad} · ఆచరించాను",
+        kontrolKilindi: "{ad} ఆచరించబడింది",
+        kontrolVakitYok: "గుర్తించడానికి నమాజ్ లేదు",
+        uygulamayiAcin: "యాప్‌ను తెరవండి"
     )
 
     // ÇEVİRİ: kn

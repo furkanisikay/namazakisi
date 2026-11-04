@@ -523,11 +523,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Hindi, hindi pa ito namamarkahan."
     )
 
-    // ÇEVİRİ: te (one/other)
+    // te (one/other)
     static let te = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} ప్రారంభానికి {n} నిమిషం ఉంది.", "other": "{ad} ప్రారంభానికి {n} నిమిషాలు ఉన్నాయి."],
+        evetKilindi: "అవును, ఆచరించినట్లు గుర్తించబడింది.",
+        hayirKilinmadi: "కాదు, ఇంకా గుర్తించబడలేదు."
     )
 
     // ÇEVİRİ: kn (one/other)

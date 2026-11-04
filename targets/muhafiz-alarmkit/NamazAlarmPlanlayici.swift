@@ -206,8 +206,8 @@ enum NamazAlarmCekirdegi {
         "mk": "Запрете",
         // fil
         "fil": "Ihinto",
-        // ÇEVİRİ: te
-        "te": "Stop",
+        // te
+        "te": "ఆపండి",
         // ÇEVİRİ: kn
         "kn": "Stop",
         // mr

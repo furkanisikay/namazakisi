@@ -1,61 +1,61 @@
-// ÇEVİRİ: te — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Telugucada: మీరు biçiminin kısa emri ‑ండి (meal 2:43 "నమాజ్‌ను
+ * స్థాపించండి"); mealin tekil emri ve నువ్వు/నీవు YOK; "secdeye kapan" yok → "నమాజ్‌కు
+ * నిలబడండి" (namaza durun, türetildi). Başlıkta süre birimi "నిమి"; vakit adı + süre ilk 16
+ * karakterde. Telugu yazısında büyük harf yok: acil seviye emojiyle ayrılır; "!" yazılmaz.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} నిమి అయింది · నమాజ్ సమయం ⏰',
+    giris2: '{ad} · {dk} నిమి అయింది · నమాజ్‌ను ఆలస్యం చేయకండి ⚠️',
+    giris3: '{ad} · {dk} నిమి అయింది · నమాజ్ మీ కోసం ఎదురుచూస్తోంది 🔥',
+    giris4: '{ad} · {dk} నిమి అయింది · నమాజ్‌కు నిలబడండి 🚨',
+    erken3: '{ad} · {dk} నిమి మిగిలింది · నమాజ్ మీ కోసం ఎదురుచూస్తోంది 🔥',
+    erken4: '{ad} · {dk} నిమి మిగిలింది · నమాజ్‌కు నిలబడండి 🚨',
+    cikis1: '{ad} · {dk} నిమి మిగిలింది ⏰',
+    cikis2: '{ad} · {dk} నిమి · సమయం తగ్గుతోంది ⚠️',
+    cikis3: '{ad} · {dk} నిమి · సమయం జారిపోతోంది 🔥',
+    cikis4: '{ad} · {dk} నిమి · సమయం ముగుస్తోంది 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['నమాజ్ సమయం అయింది; అవకాశం ఉండగానే ఆచరించండి.', 'సమయం మీకు అనుకూలంగా ఉండగానే ఆచరించండి; తర్వాతకు వదలకండి.'],
+    s2: ['వాయిదా వేసిన కొద్దీ భారం పెరుగుతుంది; నమాజ్‌ను చివరి వరకు వదలకండి.', 'సమయం గడిచిపోతోంది — ఇప్పుడే ఆచరించండి.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'ఆలస్యం చేసిన కొద్దీ సమయం తప్పిపోవడానికి దగ్గరవుతారు; ఇప్పుడే ఆచరించండి.',
+      '"తర్వాత ఆచరిస్తాను" అనకండి; ఇప్పుడే ఆచరించవచ్చు.',
+      'కొన్ని నిమిషాల్లో "అప్పుడే ఆచరించి ఉంటే" అని బాధపడటం కంటే ఇప్పుడే లేవండి.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['నమాజ్‌ను ఇక ఆలస్యం చేయకండి — ఇప్పుడే నమాజ్‌కు నిలబడండి.', 'చేస్తున్న పనిని పక్కన పెట్టి నమాజ్‌కు నిలబడండి.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'సమయం తగ్గడం మొదలైంది; అవకాశం ఉండగానే ఆచరించండి.',
+    s2: 'నమాజ్‌ను చివరి వరకు వదలకండి; ఇప్పుడు ఆచరించడానికి మంచి సమయం.',
+    s3: 'సమయం దాదాపు ముగిసింది; ఇప్పుడు కూడా ఆచరించవచ్చు.',
+    s4: 'ఆచరించి ఉంటే "ఆచరించాను" నొక్కండి; లేకపోతే ఇప్పుడే నమాజ్‌కు నిలబడండి.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'నమాజ్‌ను ఆలస్యం చేయకండి. ఇప్పుడే నమాజ్‌కు నిలబడండి. ({dk} నిమి అయింది)',
+    giris2: 'సమయం గడిచిపోతోంది; నమాజ్‌ను చివరి వరకు వదలకండి. ({dk} నిమి అయింది)',
+    giris1: cogul({ one: 'నమాజ్ సమయం ప్రారంభమై {n} నిమిషం అయింది.', other: 'నమాజ్ సమయం ప్రారంభమై {n} నిమిషాలు అయింది.' }),
+    erken4: 'నమాజ్‌ను ఆలస్యం చేయకండి; ఇప్పుడే నమాజ్‌కు నిలబడండి. ({dk} నిమి మిగిలింది)',
+    cikis4: 'సమయం ముగుస్తోంది. ఇప్పుడే నమాజ్‌కు నిలబడండి. ({dk} నిమి మిగిలింది)',
+    cikis2: 'సమయం తగ్గుతోంది; నమాజ్‌ను చివరి వరకు వదలకండి. ({dk} నిమి మిగిలింది)',
+    cikis1: cogul({ one: 'నమాజ్ సమయం ముగియడానికి {n} నిమిషం మిగిలింది.', other: 'నమాజ్ సమయం ముగియడానికి {n} నిమిషాలు మిగిలాయి.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · నిద్రకు ముందు ఆచరించండి ⏰',
+    govde: 'నిశ్శబ్ద సమయానికి ఇంకా {dk} నిమి ఉంది; పడుకునే ముందు ఇషా నమాజ్ ఆచరించండి.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'సమయం తగ్గడం మొదలైంది; అవకాశం ఉండగానే ఆచరించండి.',
+    sonaBirakma: 'నమాజ్‌ను చివరి వరకు వదలకండి; ఇప్పుడు ఆచరించడానికి మంచి సమయం.',
+    fisilti: '"తర్వాత ఆచరిస్తాను" అనకండి; సమయం దాదాపు ముగిసింది, ఇప్పుడు ఆచరించవచ్చు.',
+    omur: 'సమయం గడిచిపోతోంది; ఈ నమాజ్‌ను సమయానికి ఆచరించే అవకాశం ఇంకా ఉంది.',
+    keske: 'కొన్ని నిమిషాల్లో "అప్పుడే ఆచరించి ఉంటే" అని బాధపడటం కంటే ఇప్పుడే లేవండి.',
+    namazaDur: 'ఆచరించి ఉంటే "ఆచరించాను" నొక్కండి; లేకపోతే ఇప్పుడే నమాజ్‌కు నిలబడండి.',
+    sonDakika: 'చివరి నిమిషాలు. చేస్తున్న పనిని పక్కన పెట్టి నమాజ్‌కు నిలబడండి.',
   },
 };

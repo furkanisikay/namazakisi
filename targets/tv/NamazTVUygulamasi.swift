@@ -904,19 +904,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", susunod na dasal"
     )
 
-    // ÇEVİRİ: te
+    // te
     static let te = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "మీ నగరాన్ని ఎంచుకోండి",
+        ilMerkezi: "నమాజ్ సమయాలు ప్రావిన్స్ కేంద్రం కోసం లెక్కించబడతాయి. మీ ఎంపికను తర్వాత మార్చవచ్చు.",
+        ilSecErisim: "{il}, ఎంచుకోండి",
+        kalan: "{ad} వరకు మిగిలిన సమయం",
+        kalanErisim: "{ad} వరకు మిగిలిన సమయం: {sure}",
+        konumuDegistirin: "లొకేషన్ మార్చండి",
+        kerahatSuruyor: "మక్రూహ్ సమయం: {tur}, {bitis}కి ముగుస్తుంది. {aciklama}",
+        siradakiKerahat: "తదుపరి మక్రూహ్ సమయం: {tur} {bas}–{bit}",
+        cumaBilgisi: "ఈ రోజు శుక్రవారం. జుమా జుహ్ర్ సమయంలో ఆచరించబడుతుంది ({giris}కి ప్రారంభమవుతుంది).",
+        suAnkiEk: ", ప్రస్తుత నమాజ్",
+        siradakiEk: ", తదుపరి నమాజ్"
     )
 
     // ÇEVİRİ: kn

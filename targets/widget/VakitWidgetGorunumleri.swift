@@ -1431,29 +1431,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Minamarkahang naidasal na ang kasalukuyang dasal."
     )
 
-    // ÇEVİRİ: te
+    // te
     static let te = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "నమాజ్ సమయం",
+        galeriAciklama: "ప్రస్తుత నమాజ్ సమయం, అది ముగియడానికి మిగిలిన సమయం, ఈ రోజు నమాజ్ సమయాలు.",
+        veriEski: "నమాజ్ సమయాలను అప్‌డేట్ చేయడానికి యాప్‌ను తెరవండి",
+        konumYok: "మీ లొకేషన్‌ను సెట్ చేయడానికి యాప్‌ను తెరవండి",
+        kilindiSiradaki: "{ad} ఆచరించబడింది · {sonraki} {saat}",
+        adCikis: "{ad} · ముగింపు {saat}",
+        siradakiAdSaat: "తదుపరి {ad} {saat}",
+        vaktiCikisErisim: "{ad} సమయం, {saat}కి ముగుస్తుంది",
+        siradakiErisim: "తదుపరి {ad}, {saat}",
+        cikisSaat: "ముగింపు {saat}",
+        bitisSaat: "ముగింపు {saat}",
+        kilindiBaslik: "{ad} ఆచరించబడింది",
+        siradaki: "తదుపరి",
+        siradakiAd: "తదుపరి {ad}",
+        kildimErisim: "{ad} ఆచరించాను",
+        gunSatiriKilindi: ", ఆచరించబడింది",
+        bitti: "ముగిసింది",
+        vakitCikti: "నమాజ్ సమయం ముగిసింది",
+        kabulAlt: "{ad} ఆచరించబడింది",
+        kontrolAdi: "ఆచరించాను",
+        kontrolAciklama: "ప్రస్తుత నమాజ్‌ను ఆచరించినట్లు గుర్తిస్తుంది."
     )
 
     // ÇEVİRİ: kn
