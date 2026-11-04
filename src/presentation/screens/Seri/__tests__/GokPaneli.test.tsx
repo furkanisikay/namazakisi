@@ -198,7 +198,7 @@ describe('GokPaneli', () => {
     );
   });
 
-  test('KRITIK (inceleme bulgusu #1 — kontrast): ay adı ve gün harfleri koyu panelin İÇİNDE (SVG Text), tema token DEĞİL sabit sahne tonuyla çizilir', () => {
+  test('KRITIK (inceleme bulgusu #1 — kontrast): ay adı ve gün harfleri koyu panelin İÇİNDE (RN Text, SVG dışında), tema token DEĞİL sabit sahne tonuyla çizilir', () => {
     const { izgara, zincirler } = ornekIzgaraKur();
     const tree = render(
       <GokPaneli
@@ -212,15 +212,19 @@ describe('GokPaneli', () => {
     );
     genislikSimuleEt(tree, 350);
 
-    const metinler = tree.root.findAllByType(SvgTextMock);
-    const ayAdiMetni = metinler.find((d) => d.props.children === 'Temmuz 2026');
-    expect(ayAdiMetni).toBeDefined();
+    // RN Text (SVG Text Arap harflerini bağlamaz); koyu panelin içinde, header payında.
+    const ayAdiMetni = tree.root.findByProps({ testID: 'gok-ay-adi' });
+    expect(ayAdiMetni.props.children).toBe('Temmuz 2026');
     // Sabit gök sahnesi tonu (AGENTS.md'nin tek istisnası) — tema `renkler.*`
     // DEĞİL; panelin dışına taşınsaydı bu değer açık temada okunmaz olurdu.
-    expect(ayAdiMetni!.props.fill).toBe(GOK_TONLARI.AY_ADI);
+    expect(ayAdiMetni.props.style.color).toBe(GOK_TONLARI.AY_ADI);
+    // Ay adı SVG'ye geri dönmez.
+    // (Mock'ta SVG Text de 'Text' dizesi; SVG metnini `fill` ayırır.)
+    expect(tree.root.findAllByType(SvgTextMock).some((d) => d.props.children === 'Temmuz 2026' && d.props.fill !== undefined)).toBe(false);
 
-    const gunHarfi = metinler.find((d) => d.props.children === 'P' && d.props.fill === GOK_TONLARI.GUN_ADI);
-    expect(gunHarfi).toBeDefined();
+    const gunHarfi = tree.root.findByProps({ testID: 'gok-gun-adi-0' });
+    expect(gunHarfi.props.children).toBe('P');
+    expect(gunHarfi.props.style.color).toBe(GOK_TONLARI.GUN_ADI);
   });
 
   test('KRITIK (inceleme bulgusu #2 — zincir): ikisiTam düz bağ, yıldız merkezlerinden İÇERİ ÇEKİLMİŞ uçlarla çizilir (halka/bloom bölgesinin İÇİNDEN geçmez)', () => {

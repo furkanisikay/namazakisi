@@ -74,7 +74,7 @@
  * yok eder (spec §1).
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, LayoutChangeEvent } from 'react-native';
+import { View, Text, LayoutChangeEvent } from 'react-native';
 import Svg, { Defs, RadialGradient, LinearGradient, Stop, Rect, G, Text as SvgText } from 'react-native-svg';
 import { useRenkler } from '../../../core/theme';
 import { GOK_TONLARI, GOK_ZAMANLAMA } from './sabitler';
@@ -415,32 +415,54 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
             })}
           </G>
 
-          {/* 5) Ay adı + gün harfleri — koyu zeminin İÇİNDE (aynı tuval, üstteki
-              header payında). Gün harfleri ızgaranın sütun merkezleriyle (satır 0)
-              birebir hizalanır (`yerlesim.merkez(i).x`, i=0..6). */}
-          <SvgText
-            x={sagdanSola ? panelGenislik - PANEL_YATAY_PAY : PANEL_YATAY_PAY}
-            textAnchor={sagdanSola ? 'end' : 'start'}
-            y={20}
-            fontSize={13}
-            fontWeight="600"
-            fill={GOK_TONLARI.AY_ADI}
-          >
-            {rakam(ayAdi)}
-          </SvgText>
-          {gunHarfleri.map((harf, i) => (
-            <SvgText
-              key={`gun-adi-${i}`}
-              x={yerlesim.merkez(i).x}
-              y={40}
-              fontSize={9.5}
-              fill={GOK_TONLARI.GUN_ADI}
-              textAnchor="middle"
-            >
-              {harf}
-            </SvgText>
-          ))}
         </Svg>
+
+        {/* 5) Ay adı + gün harfleri — koyu zeminin İÇİNDE (header payında), ama SVG'nin
+            DIŞINDA RN `Text` ile: react-native-svg `Text` Arap harflerini birbirine bağlamaz
+            (Pencapça/Sindhçe "نومبر" harf harf çiziliyordu). Gün harfleri ızgaranın sütun
+            merkezleriyle (satır 0) birebir hizalanır (`yerlesim.merkez(i).x`, i=0..6).
+            `rakamKoru`: rakam `rakam()` ile çevrildi; SVG'deki gibi sistem yazı tipi kalır
+            (Nestalik yüksekliği başlık payına sığmaz), yazı ölçeği de SVG gibi uygulanmaz. */}
+        <Text
+          testID="gok-ay-adi"
+          rakamKoru
+          allowFontScaling={false}
+          numberOfLines={1}
+          style={{
+            position: 'absolute',
+            top: 4,
+            left: PANEL_YATAY_PAY,
+            right: PANEL_YATAY_PAY,
+            textAlign: sagdanSola ? 'right' : 'left',
+            fontSize: 13,
+            lineHeight: 20,
+            fontWeight: '600',
+            color: GOK_TONLARI.AY_ADI,
+          }}
+        >
+          {rakam(ayAdi)}
+        </Text>
+        {gunHarfleri.map((harf, i) => (
+          <Text
+            key={`gun-adi-${i}`}
+            testID={`gok-gun-adi-${i}`}
+            rakamKoru
+            allowFontScaling={false}
+            numberOfLines={1}
+            style={{
+              position: 'absolute',
+              top: 28,
+              left: yerlesim.merkez(i).x - yerlesim.hucreGenislik / 2,
+              width: yerlesim.hucreGenislik,
+              textAlign: 'center',
+              fontSize: 9.5,
+              lineHeight: 15,
+              color: GOK_TONLARI.GUN_ADI,
+            }}
+          >
+            {harf}
+          </Text>
+        ))}
 
         {/* 5/5 parıltısı — Svg'nin DIŞINDA, ayrı bir overlay katmanı (bkz.
             `Parilti.tsx` doc-block, mimari gerekçe). `ust` hesabına
