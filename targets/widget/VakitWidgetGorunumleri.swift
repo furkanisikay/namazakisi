@@ -1581,29 +1581,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "हालको नमाजमा \"पढियो\" चिन्ह लगाउँछ।"
     )
 
-    // ÇEVİRİ: si
+    // si — Sinhala (beta): JS `sozluk/si`; Kıldım "ඉටු කළෙමි", Kılındı "ඉටු කළා"
     static let si = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "සලාත් වේලාව",
+        galeriAciklama: "වත්මන් සලාත් වේලාව, එය අවසන් වන තෙක් ඉතිරි කාලය සහ අද සලාත් වේලාවන්.",
+        veriEski: "සලාත් වේලාවන් යාවත්කාලීන කිරීමට යෙදුම විවෘත කරන්න",
+        konumYok: "ඔබගේ ස්ථානය සැකසීමට යෙදුම විවෘත කරන්න",
+        kilindiSiradaki: "{ad} ඉටු කළා · {sonraki} {saat}",
+        adCikis: "{ad} · {saat}ට අවසන්",
+        siradakiAdSaat: "ඊළඟ {ad} {saat}",
+        vaktiCikisErisim: "{ad} වේලාව, {saat}ට අවසන්",
+        siradakiErisim: "ඊළඟ {ad}, {saat}",
+        cikisSaat: "{saat}ට අවසන්",
+        bitisSaat: "{saat}ට අවසන්",
+        kilindiBaslik: "{ad} ඉටු කළා",
+        siradaki: "ඊළඟ",
+        siradakiAd: "ඊළඟ {ad}",
+        kildimErisim: "{ad} ඉටු කළෙමි",
+        gunSatiriKilindi: ", ඉටු කළා",
+        bitti: "අවසන්",
+        vakitCikti: "සලාත් වේලාව අවසන්",
+        kabulAlt: "{ad} ඉටු කළා",
+        kontrolAdi: "ඉටු කළෙමි",
+        kontrolAciklama: "වත්මන් සලාතය ඉටු කළ බව සලකුණු කරයි."
     )
 
     // ÇEVİRİ: km

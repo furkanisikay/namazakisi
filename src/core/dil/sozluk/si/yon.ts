@@ -1,10 +1,9 @@
-// ÇEVİRİ: si — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'පෙළ දිශාව වෙනස් වේ',
+  aciklama: 'ඔබ තෝරාගත් භාෂාව වෙනත් දිශාවකට ලියැවේ. තිර එයට මාරු වීමට යෙදුම නැවත ආරම්භ කළ යුතුය.',
+  simdiBaslat: 'දැන් නැවත ආරම්භ කරන්න',
+  sonra: 'පසුව',
+  bekliyor: 'යෙදුම නැවත ආරම්භ වූ විට පෙළ දිශාව වෙනස් වේ.',
 };

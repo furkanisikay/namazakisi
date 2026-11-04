@@ -565,11 +565,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "होइन, अझै चिन्ह लगाइएको छैन।"
     )
 
-    // ÇEVİRİ: si (one/other)
+    // si (one = 0, 1 / other; iki kategori aynı kalıp)
     static let si = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} මිනිත්තු {n}කින් ආරම්භ වේ.", "other": "{ad} මිනිත්තු {n}කින් ආරම්භ වේ."],
+        evetKilindi: "ඔව්, එය ඉටු කළ බව සලකුණු කර ඇත.",
+        hayirKilinmadi: "නැත, එය තවම සලකුණු කර නැත."
     )
 
     // ÇEVİRİ: km (other)

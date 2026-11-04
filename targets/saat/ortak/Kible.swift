@@ -998,17 +998,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: si (CLDR si binlik ayırıcı ",")
+    // si (CLDR si binlik ayırıcı ","; mesafe JS `camiye.km` gibi "කි.මී. {km}")
     public static let si = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "පිටුපස",
+        saga: "දකුණට {derece}°",
+        sola: "වමට {derece}°",
+        hizali: "ඔබ කිබ්ලාව දෙසට මුහුණලා සිටී",
+        arkadaErisim: "කිබ්ලාව ඔබ පිටුපසින්",
+        sagdaErisim: "කිබ්ලාව ඔබගේ දකුණට අංශක {derece}",
+        soldaErisim: "කිබ්ලාව ඔබගේ වමට අංශක {derece}",
+        kabede: "ඔබ කඃබාවේ සිටී",
+        mesafe: "කි.මී. {km}",
         binlikAyirici: ","
     )
 

@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "ඔබ සිටින තැනට සලාත් වේලාවන් නිවැරදිව ගණනය කිරීමට ඔබගේ ස්ථානය භාවිත වේ. ඔබගේ ස්ථානය ඔබගේ උපාංගයේම රැඳේ.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "ඔබ සිටින තැනට සලාත් වේලාවන් නිවැරදිව ගණනය කිරීමට සහ, “මස්ජිදයේ සිටිමි” ක්‍රියාත්මක නම්, ඔබ මස්ජිදයකට ඇතුළු වන විට සලාත් ප්‍රකාරය ක්‍රියාත්මක කිරීමට ඔබගේ ස්ථානය භාවිත වේ. ඔබගේ ස්ථානය ඔබගේ උපාංගයේම රැඳේ.",
+  "NSLocationAlwaysUsageDescription": "ඔබ නගර මාරු කරන විට සලාත් වේලාවන් ස්වයංක්‍රීයව යාවත්කාලීන කිරීමට සහ, “මස්ජිදයේ සිටිමි” ක්‍රියාත්මක නම්, ඔබ මස්ජිදයකට ඇතුළු වන විට සලාත් ප්‍රකාරය ක්‍රියාත්මක කිරීමට ඔබගේ ස්ථානය භාවිත වේ. ඔබගේ ස්ථානය ඔබගේ උපාංගයේම රැඳේ.",
+  "NSCameraUsageDescription": "කැමරා දසුන මත කිබ්ලා දිශාව පෙන්වීමට සහ ඔබගේ TV එකේ යුගල කේතය පරිලෝකනය කිරීමට ඔබගේ කැමරාව භාවිත වේ. රූප සුරැකෙන්නේ නැති අතර කිසිවිටෙක ඔබගේ උපාංගයෙන් පිට නොයයි.",
+  "NSCalendarsUsageDescription": "සලාත් වේලාවන් ඔබගේ දින දර්ශනයට එක් කිරීමට සහ, ඔබ එය ක්‍රියාත්මක කළහොත්, ඔබගේ දින දර්ශනයේ සිදුවීම් සලාත් වේලාවක් සමඟ ගැටේද යන්න පරීක්ෂා කිරීමට දින දර්ශන ප්‍රවේශය භාවිත වේ. ඔබගේ දින දර්ශන දත්ත ඔබගේ උපාංගයේම රැඳේ.",
+  "NSCalendarsFullAccessUsageDescription": "සලාත් වේලාවන් ඔබගේ දින දර්ශනයට එක් කිරීමට සහ, ඔබ එය ක්‍රියාත්මක කළහොත්, ඔබගේ දින දර්ශනයේ සිදුවීම් සලාත් වේලාවක් සමඟ ගැටේද යන්න පරීක්ෂා කිරීමට දින දර්ශන ප්‍රවේශය භාවිත වේ. ඔබගේ දින දර්ශන දත්ත ඔබගේ උපාංගයේම රැඳේ.",
+  "NSLocalNetworkUsageDescription": "ඔබගේ සලාත් වේලාවන් සහ ඔබ සලකුණු කළ සලාත් TV එකට යැවීමට යෙදුම ඔබගේ දේශීය ජාලයේ ඇති TV එකට සම්බන්ධ වේ. දත්ත සංකේතනය කර ඇති අතර උපාංග දෙක අතර පමණක් ගමන් කරයි.",
+  "NSAlarmKitUsageDescription": "ඔබ “සැබෑ එලාමය” තෝරන සිහිකැඳවීම් පියවර එලාම් ලෙස සැකසේ, එබැවින් ඔබගේ දුරකථනය නිහඬ විට හෝ Focus ක්‍රියාත්මක විට පවා ඔබට ඒවා ඇසේ.",
+  "\"Vakti kıldım\"": "ඉටු කළෙමි",
+  "\"Kıble\"": "කිබ්ලාව"
 }

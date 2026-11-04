@@ -218,8 +218,8 @@ enum NamazAlarmCekirdegi {
         "as": "Stop",
         // ne
         "ne": "रोक्नुहोस्",
-        // ÇEVİRİ: si
-        "si": "Stop",
+        // si
+        "si": "නවත්වන්න",
         // ÇEVİRİ: km
         "km": "Stop",
     ]

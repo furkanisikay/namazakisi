@@ -3239,53 +3239,60 @@ object TvDiliNe : TvDili {
     override val iftaraKalan = "इफ्तारसम्म बाँकी समय"
 }
 
-// ÇEVİRİ: si
-// CLDR si: tam sayıda one = 0 ve 1, other (JS `cogul.ts > sifirBir`); Sinhala yazısı, Batı rakamı.
+// si — Sinhala (beta); terimler src/core/dil/sozluk/si.
+// CLDR si: tam sayıda one = 0 ve 1, other (JS `cogul.ts > sifirBir`). Sinhala ad sayıyla çekilmez: iki
+// kategori aynı kalıbı taşır; sayı önce (kalıp sözleşmesi). Tarih CLDR gibi yıl önce: "2026 ඔක්තෝබර් 30, සිකුරාදා".
 object TvDiliSi : TvDili {
     override val kod = "si"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
-        Vakit.IMSAK -> "Fajr"
-        Vakit.GUNES -> "Sunrise"
-        Vakit.OGLE -> "Dhuhr"
-        Vakit.IKINDI -> "Asr"
-        Vakit.AKSAM -> "Maghrib"
-        Vakit.YATSI -> "Isha"
+        Vakit.IMSAK -> "ෆජ්ර්"
+        Vakit.GUNES -> "හිරු උදාව"
+        Vakit.OGLE -> "ලුහර්"
+        Vakit.IKINDI -> "අසර්"
+        Vakit.AKSAM -> "මග්රිබ්"
+        Vakit.YATSI -> "ඉෂා"
     }
-    override val cuma = "Jumu'ah"
+    override val cuma = "ජුමුආ"
     override val aylar = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "ජනවාරි", "පෙබරවාරි", "මාර්තු", "අප්‍රේල්", "මැයි", "ජූනි",
+        "ජූලි", "අගෝස්තු", "සැප්තැම්බර්", "ඔක්තෝබර්", "නොවැම්බර්", "දෙසැම්බර්",
     )
-    override val gunler = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
+    override val gunler = listOf("සඳුදා", "අඟහරුවාදා", "බදාදා", "බ්‍රහස්පතින්දා", "සිකුරාදා", "සෙනසුරාදා", "ඉරිදා")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$yil $ay $gun, $gunAdi"
 
-    override val birimSa = "h"
-    override val birimDk = "min"
-    override val birimSn = "s"
+    override val birimSa = "පැය"
+    override val birimDk = "මිනි"
+    override val birimSn = "තත්"
     override val birimAyirici = " "
     override val parcaAyirici = " "
-    override fun saatSesli(n: Int) = if (n == 1) "1 hour" else "$n hours"
-    override fun dakikaSesli(n: Int) = if (n == 1) "1 minute" else "$n minutes"
-    override val birDakikadanAz = "less than 1 minute"
+    override fun saatSesli(n: Int) = when (n) {
+        0, 1 -> "$n පැය"
+        else -> "$n පැය"
+    }
+    override fun dakikaSesli(n: Int) = when (n) {
+        0, 1 -> "$n මිනිත්තු"
+        else -> "$n මිනිත්තු"
+    }
+    override val birDakikadanAz = "මිනිත්තුවකට අඩු"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Sunrise"
-        Kerahat.Tur.ISTIVA -> "Zenith"
-        Kerahat.Tur.GURUB -> "Sunset"
+        Kerahat.Tur.SURUK -> "හිරු උදාව"
+        Kerahat.Tur.ISTIVA -> "හිරු මුදුන"
+        Kerahat.Tur.GURUB -> "හිරු බැසීම"
     }
 
     override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Praying is makruh until the sun has risen well."
-        Kerahat.Tur.ISTIVA -> "Praying is makruh while the sun is at its zenith."
-        Kerahat.Tur.GURUB -> "Praying is makruh while the sun is setting."
+        Kerahat.Tur.SURUK -> "හිරු හොඳින් උදා වන තෙක් සලාතය ඉටු කිරීම තහනම්."
+        Kerahat.Tur.ISTIVA -> "හිරු මුදුන් වී ඇති අතරතුර සලාතය ඉටු කිරීම තහනම්."
+        Kerahat.Tur.GURUB -> "හිරු බසින අතරතුර සලාතය ඉටු කිරීම තහනම්."
     }
 
-    override fun bant(ad: String, dk: Long) = "Time for $ad is running short · $dk min"
-    override val kabulDuasi = "May Allah accept it"
-    override val iftarSelami = "Blessed iftar"
-    override val cumaSelami = "Jumu'ah Mubarak"
-    override val sahuraKalan = "Time left for suhoor"
-    override val iftaraKalan = "Time left until iftar"
+    override fun bant(ad: String, dk: Long) = "$ad සඳහා වේලාව අඩු වෙමින් · $dk මි"
+    override val kabulDuasi = "අල්ලාහ් පිළිගනු මැනව"
+    override val iftarSelami = "ආශිර්වාදිත ඉෆ්තාර් වේලාවක් වේවා"
+    override val cumaSelami = "ජුමුආ මුබාරක්"
+    override val sahuraKalan = "සහර් සඳහා ඉතිරි කාලය"
+    override val iftaraKalan = "ඉෆ්තාර් දක්වා ඉතිරි කාලය"
 }
 
 // ÇEVİRİ: km

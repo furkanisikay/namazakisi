@@ -562,12 +562,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: si (one/other)
+    // si (CLDR one = 0, 1 / other; Sinhala ad sayıyla çekilmez, iki kategori aynı kalıp; sayı önce)
     public static let si = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "පැය", birimDk: "මිනි", birimSn: "තත්",
+        saat: ["one": "{n} පැය", "other": "{n} පැය"],
+        dakika: ["one": "{n} මිනිත්තු", "other": "{n} මිනිත්තු"],
+        saniye: ["one": "{n} තත්පර", "other": "{n} තත්පර"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

@@ -994,19 +994,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", अर्को नमाज"
     )
 
-    // ÇEVİRİ: si
+    // si — Sinhala (beta): JS `sozluk/si`
     static let si = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "ඔබගේ නගරය තෝරන්න",
+        ilMerkezi: "සලාත් වේලාවන් පළාත් මධ්‍යය සඳහා ගණනය කෙරේ. ඔබගේ තේරීම පසුව වෙනස් කළ හැක.",
+        ilSecErisim: "{il}, තෝරන්න",
+        kalan: "{ad} දක්වා ඉතිරි කාලය",
+        kalanErisim: "{ad} දක්වා ඉතිරි කාලය: {sure}",
+        konumuDegistirin: "ස්ථානය වෙනස් කරන්න",
+        kerahatSuruyor: "තහනම් වේලාව: {tur}, {bitis}ට අවසන්. {aciklama}",
+        siradakiKerahat: "ඊළඟ තහනම් වේලාව: {tur} {bas}–{bit}",
+        cumaBilgisi: "අද සිකුරාදා. ජුමුආ ලුහර් වේලාවේ ඉටු කෙරේ ({giris}ට ආරම්භ).",
+        suAnkiEk: ", වත්මන් සලාතය",
+        siradakiEk: ", ඊළඟ සලාතය"
     )
 
     // ÇEVİRİ: km

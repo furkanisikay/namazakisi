@@ -907,18 +907,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Ahlul-Hadith Association, QuranEnc 1.0.3"
     )
 
-    // ÇEVİRİ: si
+    // si — Sinhala (beta); JS `sozluk/si/gununAyeti.ts`, meal 94:6 `gununAyetiHavuzu.ts` (sinhalese_mahir, BİREBİR), künye `mealler.si`
     static let si = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "දවසේ ආයතය",
+        galeriAciklama: "දිනපතා ෆජ්ර් වේලාවේ වෙනස් වන ආයතයක් සහ එහි පරිවර්තනය.",
+        etiket: "දවසේ ආයතය",
+        uygulamayiAcin: "දවසේ ආයතය බැලීමට යෙදුම විවෘත කරන්න",
+        ornekSigmiyor: "අද ආයතය මෙම ප්‍රමාණයට නොගැළපේ. කියවීමට තට්ටු කරන්න.",
+        ornekAcin: "විවෘත කරන්න",
+        ornekArapcaKaynagi: "අරාබි: Tanzil",
+        ornekMeal: "සැබැවින් ම දුෂ්කාරතාව සමඟ පහසුව ඇත.",
+        ornekKisaKunye: "කුර්ආනය 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.6"
     )
 
     // ÇEVİRİ: km

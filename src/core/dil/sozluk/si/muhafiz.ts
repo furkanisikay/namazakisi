@@ -1,61 +1,61 @@
-// ÇEVİRİ: si — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Sinhalada "ඔබ" düzeyinin kısa ‑න්න emri ("සලාතය ඉටු කරන්න"); meal hitabı
+ * නුඹ/නුඹලා yok. "Secdeye kapan" YAZILMAZ → namaza durmak "සලාතය සඳහා නැගිටින්න" (HE si
+ * "සලාතය සඳහා නැගිට"). Başlıkta süre birimi CLDR narrow "මි", sayı önce ("{dk} මි"): vakit adı
+ * ve süre önden okunur.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} මි ගතවිය · සලාත් වේලාවයි ⏰',
+    giris2: '{ad} · {dk} මි ගතවිය · ප්‍රමාද නොකරන්න ⚠️',
+    giris3: '{ad} · {dk} මි ගතවිය · සලාතය ඔබ එනතුරු 🔥',
+    giris4: '{ad} · {dk} මි ගතවිය · සලාතය සඳහා නැගිටින්න 🚨',
+    erken3: '{ad} · {dk} මි ඉතිරි · සලාතය ඔබ එනතුරු 🔥',
+    erken4: '{ad} · {dk} මි ඉතිරි · සලාතය සඳහා නැගිටින්න 🚨',
+    cikis1: '{ad} · {dk} මි ඉතිරි ⏰',
+    cikis2: '{ad} · {dk} මි · වේලාව අඩු වෙමින් ⚠️',
+    cikis3: '{ad} · {dk} මි · වේලාව ගෙවී යයි 🔥',
+    cikis4: '{ad} · {dk} මි · වේලාව අවසන් වෙයි 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['සලාත් වේලාව එළඹ ඇත; අවස්ථාව ඇති විට ඉටු කරන්න.', 'වේලාව ඔබට වාසිදායක අතරතුර ඉටු කරන්න; පසුවට තබන්න එපා.'],
+    s2: ['කල් දමන තරමට එය බර වේ; සලාතය අවසානයට තබන්න එපා.', 'වේලාව ගෙවී යයි — දැන්ම සලාතය ඉටු කරන්න.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'ප්‍රමාද කරන තරමට අතපසු වීමට ළං වේ; දැන්ම ඉටු කරන්න.',
+      '"පසුව ඉටු කරමි" යැයි නොකියන්න; දැන් ඉටු කළ හැක.',
+      'මිනිත්තු කිහිපයකින් "අනේ" යැයි කියනවාට වඩා දැන්ම නැගිටින්න.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['සලාතය තවත් ප්‍රමාද නොකරන්න — දැන්ම සලාතය සඳහා නැගිටින්න.', 'අතේ ඇති දේ තබා සලාතය සඳහා නැගිටින්න.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'වේලාව අඩු වෙමින් පවතී; අවස්ථාව ඇති විට ඉටු කරන්න.',
+    s2: 'සලාතය අවසානයට තබන්න එපා; දැන් ඉටු කිරීමට හොඳ වේලාවකි.',
+    s3: 'වේලාව බොහෝ දුරට අවසන්; තවමත් දැන් ඉටු කළ හැක.',
+    s4: 'ඉටු කළා නම් "ඉටු කළෙමි" තට්ටු කරන්න; නැතිනම් දැන්ම සලාතය සඳහා නැගිටින්න.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'සලාතය ප්‍රමාද නොකරන්න. දැන්ම සලාතය සඳහා නැගිටින්න. (මිනිත්තු {dk} ගතවිය)',
+    giris2: 'වේලාව ගෙවී යයි; සලාතය අවසානයට තබන්න එපා. (මිනිත්තු {dk} ගතවිය)',
+    giris1: cogul({ one: 'සලාත් වේලාව ආරම්භ වී මිනිත්තු {n}ක් ගතවිය.', other: 'සලාත් වේලාව ආරම්භ වී මිනිත්තු {n}ක් ගතවිය.' }),
+    erken4: 'සලාතය ප්‍රමාද නොකරන්න; දැන්ම සලාතය සඳහා නැගිටින්න. (මිනිත්තු {dk} ඉතිරි)',
+    cikis4: 'වේලාව අවසන් වෙයි. දැන්ම සලාතය සඳහා නැගිටින්න. (මිනිත්තු {dk} ඉතිරි)',
+    cikis2: 'වේලාව අඩු වෙමින්; සලාතය අවසානයට තබන්න එපා. (මිනිත්තු {dk} ඉතිරි)',
+    cikis1: cogul({ one: 'සලාත් වේලාව අවසන් වීමට මිනිත්තු {n}ක් ඉතිරියි.', other: 'සලාත් වේලාව අවසන් වීමට මිනිත්තු {n}ක් ඉතිරියි.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · නින්දට පෙර ඉටු කරන්න ⏰',
+    govde: 'නිහඬ පැය මිනිත්තු {dk}කින් ආරම්භ වේ; නින්දට යාමට පෙර ඉෂා ඉටු කරන්න.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'වේලාව අඩු වෙමින් පවතී; අවස්ථාව ඇති විට ඉටු කරන්න.',
+    sonaBirakma: 'සලාතය අවසානයට තබන්න එපා; දැන් ඉටු කිරීමට හොඳ වේලාවකි.',
+    fisilti: '"පසුව ඉටු කරමි" යැයි නොකියන්න; වේලාව බොහෝ දුරට අවසන්, දැන් ඉටු කළ හැක.',
+    omur: 'කාලය ගෙවී යයි; මෙම සලාතය නියමිත වේලාවට ඉටු කිරීමට තවමත් අවස්ථාව ඇත.',
+    keske: 'මිනිත්තු කිහිපයකින් "අනේ" යැයි කියනවාට වඩා දැන්ම නැගිටින්න.',
+    namazaDur: 'ඉටු කළා නම් "ඉටු කළෙමි" තට්ටු කරන්න; නැතිනම් දැන්ම සලාතය සඳහා නැගිටින්න.',
+    sonDakika: 'අවසන් මිනිත්තු. අතේ ඇති දේ තබා සලාතය සඳහා නැගිටින්න.',
   },
 };

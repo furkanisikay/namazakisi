@@ -1,10 +1,10 @@
-// ÇEVİRİ: si — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Anahtar kelime ({ad}'dan ayrı sözcükle başlar): bildirim başlığı "ලුහර් සලාත් වේලාව එළඹ ඇත". */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'සලාත් වේලාව එළඹ ඇත',
+  vakitGirdiBasligi: '{ad} සලාත් වේලාව එළඹ ඇත',
+  herhangiVakit: 'ඕනෑම සලාත් වේලාවක් එළඹෙන විට',
+  yalnizVakit: '{ad} සලාත් වේලාව එළඹෙන විට පමණක්',
+  camide: 'ඔබ මස්ජිදයක සිටින බව හඳුනාගත් විට ("මස්ජිදයේ සිටිමි" ක්‍රියාත්මක විට)',
 };
