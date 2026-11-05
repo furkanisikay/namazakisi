@@ -1231,19 +1231,18 @@ struct TvArayuzMetinleri {
         siradakiEk: ", sunod nga Salah"
     )
 
-    // ÇEVİRİ: nqo
     static let nqo = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "ߊߟߎ߫ ߦߋ߫ ߊߟߎ߫ ߟߊ߫ ߘߎߜߎ ߛߎߥߊ߲ߘߌ߫",
+        ilMerkezi: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍ߫ ߖߊ߬ߕߋ߬ ߡߙߊ߬ ߗߍߡߊ߲ߗߍ ߞߊߡߊ߬. ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߛߎߥߊ߲ߘߟߌ ߦߍߟߍߡߊ ߞߐߝߍ߬.",
+        ilSecErisim: "{il}߸ ߊ߬ ߛߎߥߊ߲ߘߌ߫",
+        kalan: "ߥߊ߯ߕߌ߫ ߡߌ߲߬ ߕߏߙߊ ߝߏ߫ {ad}",
+        kalanErisim: "ߥߊ߯ߕߌ߫ ߡߌ߲߬ ߕߏߙߊ ߝߏ߫ {ad}: {sure}",
+        konumuDegistirin: "ߦߙߐ߫ ߦߍߟߍߡߊ",
+        kerahatSuruyor: "ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫: {tur}߸ ߊ߬ ߓߍ߫ ߓߊ߲߫ {bitis}. {aciklama}",
+        siradakiKerahat: "ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫ ߣߕߊ߬: {tur} {bas}–{bit}",
+        cumaBilgisi: "ߓߌ߬ ߦߋ߫ ߛߌ߬ߣߌ߲߬ߟߏ߲ ߦߋ߫. ߛߌ߬ߣߌ߲߬ߟߏ߲ ߛߊߟߌ ߓߍ߫ ߞߍ߫ ߖ߭ߎߤߎߙߌ ߥߊ߯ߕߌ߫ ߟߊ߫ (ߊ߬ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ {giris}).",
+        suAnkiEk: "߸ ߛߊߟߌ ߛߌߛߍ߲߬ ߕߊ",
+        siradakiEk: "߸ ߛߊߟߌ ߣߕߊ߬"
     )
 
     static let tablo: [String: TvArayuzMetinleri] = [

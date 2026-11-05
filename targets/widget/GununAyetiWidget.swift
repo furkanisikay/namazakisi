@@ -1128,18 +1128,17 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.1.3"
     )
 
-    // ÇEVİRİ: nqo
     static let nqo = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "ߓߌ߬ ߊߦߊ",
+        galeriAciklama: "ߊߦߊ ߣߌ߫ ߊ߬ ߓߊߦߍߟߍߡߊ߲ߠߌ ߡߌ߲߬ ߓߍ߫ ߦߍߟߍߡߊ ߟߏ߲ ߏ߬ ߟߏ߲ ߖߍߡߎߙߍ߲ ߣߊ߬.",
+        etiket: "ߓߌ߬ ߊߦߊ",
+        uygulamayiAcin: "ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߞߊ߬ ߓߌ߬ ߊߦߊ ߟߊߖߍ",
+        ornekSigmiyor: "ߓߌ߬ ߊߦߊ ߕߍ߫ ߛߋ߫ ߣߌ߲߬ ߓߏ߲߬ߧߊ߬ ߟߊ߫. ߊߟߎ߫ ߦߋ߫ ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߞߊߟߊ߲.",
+        ornekAcin: "ߊ߬ ߘߊߦߟߍ߬",
+        ornekArapcaKaynagi: "ߊߙߊߓߎߞߊ߲: Tanzil",
+        ornekMeal: "ߣߐ߰ߦߊ ߦߋ߫ ߜߟߍ߬ߦߊ ߟߋ߫ ߝߍ߬ ߝߊ߯ߛߌ߫",
+        ornekKisaKunye: "ߞߎ߬ߙߊ߬ߣߊ 94:6",
+        ornekMealKaynagi: "Baba Mamadi߸ QuranEnc 1.0.5"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [

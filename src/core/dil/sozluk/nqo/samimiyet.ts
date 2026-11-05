@@ -1,35 +1,35 @@
-// ÇEVİRİ: nqo — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * N'Ko (Manding) kalıpları: "kabul et" fiili QE 2:127 ߟߊߡߌ߬ߘߊ߬ (QuranEnc ankobambara_dayyan), dilek
+ * kipi "Ala ye …" (Manding dua kalıbı; birebir kaynaklı değil, türetildi — yerli okuyucu baksın).
+ * "Allah" her yerde ߊߟߊ߫ (sahip kararı 2026-11-04). Kandil ve hicrî yılbaşı selamı yalnız Türkiye geleneğinde
+ * söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki karşılıklar tip bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'ߊߟߊ߫ ߦߋ߫ ߊ߬ ߞߍ߫ ߓߊߙߌߞߊ ߦߋ߫.',
+  kabulDualari: ['ߊߟߊ߫ ߦߋ߫ ߊ߬ ߟߊߡߌ߬ߘߊ߬', 'ߊߟߊ߫ ߦߋ߫ ߊߟߎ߫ ߟߊ߫ ߛߊߟߌ ߟߊߡߌ߬ߘߊ߬', 'ߊߟߊ߫ ߦߋ߫ ߊ߲ ߟߊ߫ ߛߊߟߌ ߟߊߡߌ߬ߘߊ߬', 'ߊ߲ ߡߊߕߌߜߌ ߦߋ߫ ߊ߬ ߟߊߡߌ߬ߘߊ߬'],
+  kabulDuasi: 'ߊߟߊ߫ ߦߋ߫ ߊ߬ ߟߊߡߌ߬ߘߊ߬',
+  ekSabah: 'ߊߟߊ߫ ߦߋ߫ ߛߐߜߐߡߊ ߢߎ߬ߡߊ߲߬ ߘߌ߫',
+  ekYatsi: 'ߊߟߊ߫ ߦߋ߫ ߛߎ ߢߎ߬ߡߊ߲߬ ߘߌ߫',
+  tamGunAna: 'ߊߟߊ߫ ߦߋ߫ ߊ߬ ߟߊߡߌ߬ߘߊ߬',
+  tamGunAlt: 'ߊߟߎ߫ ߓߘߊ߫ ߛߊߟߌ ߘߎ߬ߙߎ߫ ߓߍ߯ ߞߍ߫ ߓߌ߬.',
+  kazaKabul: '{vakit} ߞߊߘߊ ߞߋߟߋ߲߫ ߓߘߊ߫ ߓߐ߫ ߊߟߎ߫ ߟߊ߫ ߛߓߍߟߌ ߞߐ߬ߣߐ. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'ߙߊߜߊߦߌߓߎ ߛߎ ߓߊߙߌߞߊߡߊ',
+    mirac: 'ߌߛߌߙߊ ߣߌ߫ ߡߌߙߊߖߌ ߓߊߙߌߞߊߡߊ',
+    berat: 'ߓߊߙߊߕߊ ߛߎ ߓߊߙߌߞߊߡߊ',
+    mevlid: 'ߡߊߥߎߟߌߘߌ ߓߊߙߌߞߊߡߊ',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'ߛߎߝߎߙߍ ߓߊߙߌߞߊߡߊ',
+    bayram: 'ߛߊߟߌ ߓߊߙߌߞߊߡߊ',
+    iftar: 'ߛߎ߲ߘߊߓߐ ߓߊߙߌߞߊߡߊ',
+    kadir: 'ߟߊ߬ߕߍ߮ ߛߎ ߓߊߙߌߞߊߡߊ',
+    arefe: 'ߊߙߊߝߊ߫ ߟߏ߲ ߓߊߙߌߞߊߡߊ',
+    hicriYilbasi: 'ߛߌߟߊߡߍ ߛߊ߲߭ ߞߎߘߊ ߓߊߙߌߞߊߡߊ',
+    cuma: 'ߛߌ߬ߣߌ߲߬ߟߏ߲ ߓߊߙߌߞߊߡߊ',
+    ramazan: 'ߛߎ߲ߞߊߙߏ ߓߊߙߌߞߊߡߊ',
+    sabah: 'ߊߟߊ߫ ߦߋ߫ ߛߐߜߐߡߊ ߢߎ߬ߡߊ߲߬ ߘߌ߫',
   },
 };

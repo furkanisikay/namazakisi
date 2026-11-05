@@ -2439,31 +2439,30 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Ablihi ang app"
     )
 
-    // ÇEVİRİ: nqo
     public static let nqo = VakitMetinleri(
         dil: "nqo",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ߖߍߡߎߙߍ߲", "ogle": "ߖ߭ߎߤߎߙߌ", "ikindi": "ߟߊ߲ߛߊߙߊ", "aksam": "ߝߌߕߌߙߌ", "yatsi": "ߛߊߝߏ߫"],
+        gunes: "ߕߟߋ߬ߓߐ",
+        konumYok: "ߊߟߎ߫ ߦߋ߫ ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߞߊ߬ ߊߟߎ߫ ߦߙߐ߫ ߟߊߓߍ߲߬ ߥߊߟߊߛߊ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߞߊ߬ ߛߋ߫ ߞߊ߬ ߖߊ߬ߕߋ߬.",
+        veriEski: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߡߊ߬ ߞߎߘߊ. ߊߟߎ߫ ߦߋ߫ ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߛߌߢߍ ߞߋߟߋ߲߫ ߞߊ߬ ߎ߯ ߞߎߘߊ.",
+        girisBugun: "{saat} ߟߊ߫",
+        girisYarin: "ߛߌߣߌ߲߫ {saat} ߟߊ߫",
+        suAnVakti: "{ad} ߥߊ߯ߕߌ߫ ߟߏ ߛߌߛߍ߲߬.",
+        suAnVaktiCikis: "{ad} ߥߊ߯ߕߌ߫ ߟߏ ߛߌߛߍ߲߬; ߊ߬ ߓߍ߫ ߓߊ߲߫ {saat}.",
+        siradakiNamaz: "ߛߊߟߌ ߣߕߊ߬ ߦߋ߫ {ad} ߦߋ߫ {giris}.",
+        isaretlendi: "{ad} ߛߍߓߍ߲ߠߊ ߞߏ߫ ߊ߬ ߞߍߣߍ߲. {dua}.",
+        zatenKilindi: "{ad} ߛߓߍߣߍ߲߫ ߘߏ߲߬ ߞߊ߬ ߓߊ߲߫ ߞߏ߫ ߊ߬ ߞߍߣߍ߲.",
+        vakitYok: "ߛߊߟߌ ߛߌ߫ ߕߍ߫ ߦߋ߲߬ ߞߊ߬ ߛߓߍ߫ ߛߌߛߍ߲߬.",
+        vakitYokSiradaki: "ߛߊߟߌ ߛߌ߫ ߕߍ߫ ߦߋ߲߬ ߞߊ߬ ߛߓߍ߫ ߛߌߛߍ߲߬. ߊ߬ ߣߕߊ߬ ߦߋ߫ {ad} ߦߋ߫ {giris}.",
+        onay: "{ad} ߛߓߍ߫ ߞߏ߫ ߊ߬ ߞߍߣߍ߲ ߥߊ߫؟",
+        vakitDegisti: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߦߍߟߍߡߊߣߊ߸ ߏ߬ ߞߏߛߐ߲߬ ߝߏߦߌ߬ ߡߊ߬ ߛߓߍ߫. ߊߟߎ߫ ߦߋ߫ ߊ߬ ߞߍ߫ ߕߎߜߎ߲.",
+        kabulDuasi: "ߊߟߊ߫ ߦߋ߫ ߊ߬ ߟߊߡߌ߬ߘߊ߬",
+        kildim: "ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫",
+        kilindi: "ߞߍߣߍ߲",
+        kontrolKildim: "{ad} · ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫",
+        kontrolKilindi: "{ad} ߞߍߣߍ߲",
+        kontrolVakitYok: "ߛߊߟߌ ߛߌ߫ ߕߍ߫ ߞߊ߬ ߛߓߍ߫",
+        uygulamayiAcin: "ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

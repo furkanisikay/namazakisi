@@ -1,15 +1,14 @@
-// ÇEVİRİ: nqo — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'ߞߎ߬ߙߊ߬ߣߊ {ref} · {yayimci}߸ QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'ߛߊߟߌ ߞߊ߬ ߝߌ߬ߛߊ߬ ߛߎߣߐߜߐ ߦߋ߫. ߊߟߎ߫ ߦߋ߫ ߣߊ߬ ߢߍߕߊ ߡߊ߬.',
+    araVer: 'ߊߟߎ߫ ߦߋ߫ ߘߌ߬ߢߍ ߓߊ߯ߙߊ ߕߏ߫ ߘߐ߯ߣߌ߸ ߞߊ߬ ߟߐ߬ ߊߟߎ߫ ߡߊߕߌߜߌ ߢߍ߫ ߞߐ߬ߙߐ.',
+    yorgunluk: 'ߟߊ߲ߛߊߙߊ ߓߍ߫ ߊߟߎ߫ ߡߊߞߐߣߐ߸ ߥߊߟߊߛߊ ߞߊ߬ ߘߏ߲߬ ߛߍߜߍ߲ ߓߐ߫߸ ߞߊ߬ ߤߙߍ ߛߐ߬ߘߐ߲߬.',
+    sukur: 'ߝߌߕߌߙߌ ߦߋ߫ ߘߏ߲߬ ߓߊߙߌߞߊ ߦߋ߫. ߊߟߎ߫ ߦߋ߫ ߕߋߟߌߦߊ ߞߊ߬ ߟߐ߬ ߊߟߎ߫ ߡߊߕߌߜߌ ߢߍ߫ ߞߐ߬ߙߐ.',
+    aksamKisa: 'ߝߌߕߌߙߌ ߥߊ߯ߕߌ߫ ߞߊ߬ ߛߎߙߎ߲. ߊ߬ ߓߘߊ߫ ߛߋ߫߸ ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫ ߖߏߣߊ߫.',
+    geceKaranligi: 'ߛߎ ߘߌ߬ߓߌ ߞߐ߬ߣߐ߸ ߊߟߎ߫ ߦߋ߫ ߞߍ߫ ߊߟߎ߫ ߡߊߕߌߜߌ ߞߍ߬ߙߍ ߝߍ߬. ߛߊߝߏ߫ ߦߋ߫ ߣߌ߫ ߝߎߙߊߞߍߟߌ ߦߋ߫.',
+    davet: 'ߊߟߎ߫ ߥߋߟߋߟߋ߲ ߓߍ߫ ߛߊߝߏ߫ ߡߊ߬߸ ߥߊߟߊߛߊ ߞߊ߬ ߘߏ߲߬ ߓߊ߲߫ ߞߊ߬ ߊߟߊ߫ ߘߌߦߊߢߋ ߢߌߣߌ.',
   },
 };

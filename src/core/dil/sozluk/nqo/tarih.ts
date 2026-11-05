@@ -1,13 +1,13 @@
-// ÇEVİRİ: nqo — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Gün ve ay adları CLDR `nqo` (Node ICU 77.1); tarih sırası yıl · ay · gün (CLDR uzun tarih kalıbı). */
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  uzun: '{gun} {ay} {yil}',
-  gunAdiYil: '{gunAdi}, {yil}',
+  gunler: ['ߞߊ߯ߙߌߟߏ߲', 'ߞߐ߬ߓߊ߬ߟߏ߲', 'ߞߐ߬ߟߏ߲', 'ߞߎߣߎ߲ߟߏ߲', 'ߓߌߟߏ߲', 'ߛߌ߬ߣߌ߲߬ߟߏ߲', 'ߞߍ߲ߘߍߟߏ߲'],
+  gunlerKisa: ['ߞߊ߯ߙ', 'ߞߐ߬ߓ', 'ߞߐ߬ߟ', 'ߞߎߣ', 'ߓߌߟ', 'ߛߌ߬ߣ', 'ߞߍ߲ߘ'],
+  aylar: ['ߓߌ߲ߠߊߥߎߟߋ߲', 'ߞߏ߲ߞߏߜߍ', 'ߕߙߊߓߊ', 'ߞߏ߲ߞߏߘߌ߬ߓߌ', 'ߘߓߊ߬ߕߊ', 'ߥߊ߬ߛߌ߬ߥߙߊ', 'ߞߊ߬ߙߌߝߐ߭', 'ߘߓߊ߬ߓߌߟߊ', 'ߕߎߟߊߝߌ߲', 'ߞߏ߲ߓߌߕߌ߮', 'ߣߍߣߍߓߊ', 'ߞߏߟߌ߲ߞߏߟߌ߲'],
+  aylarYalin: ['ߓߌ߲ߠߊߥߎߟߋ߲', 'ߞߏ߲ߞߏߜߍ', 'ߕߙߊߓߊ', 'ߞߏ߲ߞߏߘߌ߬ߓߌ', 'ߘߓߊ߬ߕߊ', 'ߥߊ߬ߛߌ߬ߥߙߊ', 'ߞߊ߬ߙߌߝߐ߭', 'ߘߓߊ߬ߓߌߟߊ', 'ߕߎߟߊߝߌ߲', 'ߞߏ߲ߓߌߕߌ߮', 'ߣߍߣߍߓߊ', 'ߞߏߟߌ߲ߞߏߟߌ߲'],
+  aylarKisa: ['ߓߌ߲ߠ', 'ߞߏ߲ߞ', 'ߕߙߊ', 'ߞߏ߲ߘ', 'ߘߓߊ߬ߕ', 'ߥߊ߬ߛ', 'ߞߊ߬ߙ', 'ߘߓߊ߬ߓ', 'ߕߎߟ', 'ߞߏ߲ߓ', 'ߣߍߣ', 'ߞߏߟ'],
+  haftaHarfleri: ['ߞߐ߬ߓ', 'ߞߐ߬ߟ', 'ߞߎߣ', 'ߓߌߟ', 'ߛߌ߬ߣ', 'ߞߍ߲ߘ', 'ߞߊ߯ߙ'],
+  uzun: '{yil} {ay} {gun}',
+  gunAdiYil: '{gunAdi}߸ {yil}',
 };

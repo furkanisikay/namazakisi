@@ -1,61 +1,59 @@
-// ÇEVİRİ: nqo — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı: mealin çoğul emri "ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬" (QE 2:43, namazı ikame edin), kısa; "!" yok.
+ * Secde karşılığı YAZILMAZ: kişi namaza durur ("sali lɔ"). Başlıkta kısa dakika birimi CLDR ߡߌ߬ߛ, sayıdan önce.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · ߡߌ߬ߛ {dk} · ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߏ ⏰',
+    giris2: '{ad} · ߡߌ߬ߛ {dk} · ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߕߏ߫ ߞߐߝߍ߬ ⚠️',
+    giris3: '{ad} · ߡߌ߬ߛ {dk} · ߛߊߟߌ ߓߍ߫ ߊߟߎ߫ ߡߊߞߐߣߐ 🔥',
+    giris4: '{ad} · ߡߌ߬ߛ {dk} · ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬ 🚨',
+    erken3: '{ad} · ߡߌ߬ߛ {dk} ߕߏߙߊ · ߛߊߟߌ ߓߍ߫ ߊߟߎ߫ ߡߊߞߐߣߐ 🔥',
+    erken4: '{ad} · ߡߌ߬ߛ {dk} ߕߏߙߊ · ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬ 🚨',
+    cikis1: '{ad} · ߡߌ߬ߛ {dk} ߕߏߙߊ ⏰',
+    cikis2: '{ad} · ߡߌ߬ߛ {dk} · ߥߊ߯ߕߌ߫ ߓߍ߫ ߘߐߜߐߦߊ ⚠️',
+    cikis3: '{ad} · ߡߌ߬ߛ {dk} · ߥߊ߯ߕߌ߫ ߓߍ߫ ߕߍߡߍ߲ 🔥',
+    cikis4: '{ad} · ߡߌ߬ߛ {dk} · ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬ 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߏ; ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫ ߞߊ߬ ߛߐ߬ߘߐ߲߬ ߥߊ߯ߕߌ߫ ߓߍ߫ ߦߋ߲߬.', 'ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫ ߞߊ߬ ߥߊ߯ߕߌ߫ ߕߏ߫ ߊߟߎ߫ ߓߟߏ߫; ߊߟߎ߫ ߞߊߣߊ߬ ߊ߬ ߕߏ߫ ߞߐߝߍ߬.'],
+    s2: ['ߣߌ߫ ߊߟߎ߫ ߦߋ߫ ߊ߬ ߡߍ߲߸ ߊ߬ ߓߍ߫ ߜߟߍ߬ߦߊ; ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߕߏ߫ ߟߊߓߊ߲ ߣߊ߬.', 'ߥߊ߯ߕߌ߫ ߓߍ߫ ߕߍߡߍ߲ — ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫ ߛߌߛߍ߲߬.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'ߣߌ߫ ߊߟߎ߫ ߦߋ߫ ߊ߬ ߡߍ߲ ߞߏߛߓߍ߫߸ ߊ߬ ߓߍ߫ ߛߎߙߎߢߊ ߞߊ߬ ߕߎߣߎ߲߫; ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫ ߛߌߛߍ߲߬.',
+      'ߊߟߎ߫ ߞߊߣߊ߬ ߊ߬ ߝߐ߫ ߞߏ߫ "ߒ ߓߍߣߊ߬ ߛߊߟߌ ߞߍ߫ ߞߐߝߍ߬"; ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߛߊߟߌ ߞߍ߫ ߛߌߛߍ߲߬.',
+      'ߊߟߎ߫ ߦߋ߫ ߥߎߟߌ ߛߌߛߍ߲߬߸ ߛߊߣߌ߬ ߊߟߎ߫ ߞߊ߬ ߊ߬ ߝߐ߫ ߡߌ߬ߛߍ߲ ߘߐ߯ߣߌ߲ ߞߐߝߍ߬ ߞߏ߫ "ߣߌ߫ ߒ ߕߎ߲߬ ߦߋ߫ ߊ߬ ߞߍ߫".',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߡߍ߲ ߕߎߜߎ߲ — ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬ ߛߌߛߍ߲߬.', 'ߊߟߎ߫ ߦߋ߫ ߊߟߎ߫ ߟߊ߫ ߓߊ߯ߙߊ ߓߌ߬ߟߊ߬߸ ߞߊ߬ ߛߊߟߌ ߟߐ߬.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'ߥߊ߯ߕߌ߫ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ ߞߊ߬ ߘߐߜߐߦߊ; ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫ ߞߊ߬ ߛߐ߬ߘߐ߲߬ ߥߊ߯ߕߌ߫ ߓߍ߫ ߦߋ߲߬.',
+    s2: 'ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߕߏ߫ ߟߊߓߊ߲ ߣߊ߬; ߛߌߛߍ߲߬ ߦߋ߫ ߥߊ߯ߕߌ߫ ߢߎ߬ߡߊ߲߬ ߦߋ߫ ߛߊߟߌ ߞߊߡߊ߬.',
+    s3: 'ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬; ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߛߊߟߌ ߞߍ߫ ߛߌߛߍ߲߬ ߝߟߐ.',
+    s4: 'ߣߌ߫ ߊߟߎ߫ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫߸ ߊߟߎ߫ ߦߋ߫ "ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫" ߘߌߜߌ; ߣߌ߫ ߏ߬ ߕߍ߫߸ ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬ ߛߌߛߍ߲߬.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߡߍ߲. ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬ ߛߌߛߍ߲߬. (ߡߌ߬ߛߍ߲ {dk} ߓߘߊ߫ ߕߍߡߍ߲)',
+    giris2: 'ߥߊ߯ߕߌ߫ ߓߍ߫ ߕߍߡߍ߲; ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߕߏ߫ ߟߊߓߊ߲ ߣߊ߬. (ߡߌ߬ߛߍ߲ {dk} ߓߘߊ߫ ߕߍߡߍ߲)',
+    giris1: cogul({ other: 'ߡߌ߬ߛߍ߲ {n} ߓߘߊ߫ ߕߍߡߍ߲ ߞߊߓߌߣߌ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߛߋߙߊ.' }),
+    erken4: 'ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߡߍ߲; ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬ ߛߌߛߍ߲߬. (ߡߌ߬ߛߍ߲ {dk} ߕߏߙߊ)',
+    cikis4: 'ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬. ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬ ߛߌߛߍ߲߬. (ߡߌ߬ߛߍ߲ {dk} ߕߏߙߊ)',
+    cikis2: 'ߥߊ߯ߕߌ߫ ߓߍ߫ ߘߐߜߐߦߊ; ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߕߏ߫ ߟߊߓߊ߲ ߣߊ߬. (ߡߌ߬ߛߍ߲ {dk} ߕߏߙߊ)',
+    cikis1: cogul({ other: 'ߡߌ߬ߛߍ߲ {n} ߕߏߙߊ ߛߊߣߌ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߞߊ߬ ߓߊ߲߫.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫ ߛߊߣߌ߬ ߛߎߣߐߜߐ ⏰',
+    govde: 'ߡߊߞߎ߲߬ ߥߊ߯ߕߌ߫ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ ߡߌ߬ߛߍ߲ {dk} ߞߐߝߍ߬; ߊߟߎ߫ ߦߋ߫ ߛߊߝߏ߫ ߞߍ߫ ߛߊߣߌ߬ ߊߟߎ߫ ߞߊ߬ ߘߊ߫.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'ߥߊ߯ߕߌ߫ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ ߞߊ߬ ߘߐߜߐߦߊ; ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫ ߞߊ߬ ߛߐ߬ߘߐ߲߬ ߥߊ߯ߕߌ߫ ߓߍ߫ ߦߋ߲߬.',
+    sonaBirakma: 'ߊߟߎ߫ ߞߊߣߊ߬ ߛߊߟߌ ߕߏ߫ ߟߊߓߊ߲ ߣߊ߬; ߛߌߛߍ߲߬ ߦߋ߫ ߥߊ߯ߕߌ߫ ߢߎ߬ߡߊ߲߬ ߦߋ߫ ߛߊߟߌ ߞߊߡߊ߬.',
+    fisilti: 'ߊߟߎ߫ ߞߊߣߊ߬ ߊ߬ ߝߐ߫ ߞߏ߫ "ߒ ߓߍߣߊ߬ ߛߊߟߌ ߞߍ߫ ߞߐߝߍ߬"; ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬߸ ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߛߊߟߌ ߞߍ߫ ߛߌߛߍ߲߬.',
+    omur: 'ߥߊ߯ߕߌ߫ ߓߍ߫ ߕߍߡߍ߲; ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߣߌ߲߬ ߛߊߟߌ ߞߍ߫ ߊ߬ ߥߊ߯ߕߌ߫ ߟߊ߫ ߝߟߐ.',
+    keske: 'ߊߟߎ߫ ߦߋ߫ ߥߎߟߌ ߛߌߛߍ߲߬߸ ߛߊߣߌ߬ ߊߟߎ߫ ߞߊ߬ ߊ߬ ߝߐ߫ ߡߌ߬ߛߍ߲ ߘߐ߯ߣߌ߲ ߞߐߝߍ߬ ߞߏ߫ "ߣߌ߫ ߒ ߕߎ߲߬ ߦߋ߫ ߊ߬ ߞߍ߫".',
+    namazaDur: 'ߣߌ߫ ߊߟߎ߫ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫߸ ߊߟߎ߫ ߦߋ߫ "ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫" ߘߌߜߌ; ߣߌ߫ ߏ߬ ߕߍ߫߸ ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߟߐ߬ ߛߌߛߍ߲߬.',
+    sonDakika: 'ߡߌ߬ߛߍ߲ ߠߊߓߊ߲ ߟߎ߬. ߊߟߎ߫ ߦߋ߫ ߊߟߎ߫ ߟߊ߫ ߓߊ߯ߙߊ ߓߌ߬ߟߊ߬߸ ߞߊ߬ ߛߊߟߌ ߟߐ߬.',
   },
 };

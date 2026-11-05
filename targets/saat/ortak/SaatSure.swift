@@ -705,12 +705,11 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: nqo (other)
     public static let nqo = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["other": "{n} hours"],
-        dakika: ["other": "{n} minutes"],
-        saniye: ["other": "{n} seconds"],
+        birimSa: "ߕ", birimDk: "ߡߌ߬ߛ", birimSn: "ߝ",
+        saat: ["other": "{n} ߕߎ߬ߡߊ߬ߙߋ߲"],
+        dakika: ["other": "{n} ߡߌ߬ߛߍ߲"],
+        saniye: ["other": "{n} ߝߌ߬ߟߊ߲"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

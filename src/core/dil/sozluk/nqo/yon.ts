@@ -1,10 +1,9 @@
-// ÇEVİRİ: nqo — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'ߛߓߍߟߌ ߛߌߙߊ ߓߍߣߊ߬ ߦߍߟߍߡߊ',
+  aciklama: 'ߊߟߎ߫ ߦߋ߫ ߞߊ߲ ߡߌ߲߬ ߛߎߥߊ߲ߘߌ߫߸ ߏ߬ ߓߍ߫ ߛߓߍ߫ ߛߌߙߊ ߥߍߙߍ ߝߍ߬. ߔߏߙߏߜߊߙߊߡߎ ߞߊ߬ ߞߊ߲ ߞߊ߬ ߘߊߡߌ߬ߣߊ߬ ߞߏߞߎߙߊ ߥߊߟߊߛߊ ߢߍ߫ ߟߎ߬ ߞߊ߬ ߦߍߟߍߡߊ.',
+  simdiBaslat: 'ߊ߬ ߘߊߡߌ߬ߣߊ߬ ߞߏߞߎߙߊ ߛߌߛߍ߲߬',
+  sonra: 'ߞߐߝߍ߬',
+  bekliyor: 'ߛߓߍߟߌ ߛߌߙߊ ߓߍߣߊ߬ ߦߍߟߍߡߊ ߣߌ߫ ߔߏߙߏߜߊߙߊߡߎ ߘߊߡߌߣߍߣߊ ߞߏߞߎߙߊ.',
 };

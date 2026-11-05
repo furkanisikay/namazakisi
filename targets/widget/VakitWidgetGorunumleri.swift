@@ -1978,29 +1978,28 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Markahan nga nakaampo na ang karon nga Salah."
     )
 
-    // ÇEVİRİ: nqo
     static let nqo = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "ߛߊߟߌ ߥߊ߯ߕߌ߫",
+        galeriAciklama: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߛߌߛߍ߲߬ ߕߊ߸ ߥߊ߯ߕߌ߫ ߡߌ߲߬ ߕߏߙߊ ߝߏ߫ ߊ߬ ߞߊ߬ ߓߊ߲߫ ߊߣߌ ߓߌ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬.",
+        veriEski: "ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߞߎߘߊ",
+        konumYok: "ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߞߊ߬ ߊߟߎ߫ ߦߙߐ߫ ߟߊߓߍ߲߬",
+        kilindiSiradaki: "{ad} ߞߍߣߍ߲ · {sonraki} {saat}",
+        adCikis: "{ad} · ߊ߬ ߓߍ߫ ߓߊ߲߫ {saat}",
+        siradakiAdSaat: "ߊ߬ ߣߕߊ߬ {ad} {saat}",
+        vaktiCikisErisim: "{ad} ߥߊ߯ߕߌ߫߸ ߊ߬ ߓߍ߫ ߓߊ߲߫ {saat}",
+        siradakiErisim: "ߊ߬ ߣߕߊ߬ {ad}߸ {saat}",
+        cikisSaat: "ߊ߬ ߓߍ߫ ߓߊ߲߫ {saat}",
+        bitisSaat: "ߊ߬ ߓߍ߫ ߓߊ߲߫ {saat}",
+        kilindiBaslik: "{ad} ߞߍߣߍ߲",
+        siradaki: "ߊ߬ ߣߕߊ߬",
+        siradakiAd: "ߊ߬ ߣߕߊ߬ {ad}",
+        kildimErisim: "ߒ ߓߘߊ߫ {ad} ߞߍ߫",
+        gunSatiriKilindi: "߸ ߞߍߣߍ߲",
+        bitti: "ߊ߬ ߓߊ߲ߠߊ",
+        vakitCikti: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߓߘߊ߫ ߓߊ߲߫",
+        kabulAlt: "{ad} ߞߍߣߍ߲",
+        kontrolAdi: "ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫",
+        kontrolAciklama: "ߊ߬ ߓߍ߫ ߛߊߟߌ ߛߌߛߍ߲߬ ߕߊ ߛߓߍ߫ ߞߏ߫ ߊ߬ ߞߍߣߍ߲."
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; cevrilmemis dil `// ÇEVİRİ: <kod>`

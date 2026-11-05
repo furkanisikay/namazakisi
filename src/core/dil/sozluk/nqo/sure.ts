@@ -1,12 +1,12 @@
-// ÇEVİRİ: nqo — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** N'Ko (CLDR `nqo`): CLDR'de birim sayıdan önce gelir; süre kalıpları native tablolarla ortak olduğu için sayı önce (nöbetçi sure.test); çoğul yok (yalnız other). Kısa birimler CLDR short. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'ߕ', dk: 'ߡߌ߬ߛ', sn: 'ߝ' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ other: '{n} ߕߎ߬ߡߊ߬ߙߋ߲' }),
+  dakika: cogul({ other: '{n} ߡߌ߬ߛߍ߲' }),
+  saniye: cogul({ other: '{n} ߝߌ߬ߟߊ߲' }),
 };

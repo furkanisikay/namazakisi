@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "ߊߟߎ߫ ߦߙߐ߫ ߓߍ߫ ߞߍ߫ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߖߊ߬ߕߋ߬ ߞߊ߬ ߕߌߟߋ߲ ߊߟߎ߫ ߦߙߐ߫ ߞߊߡߊ߬. ߊߟߎ߫ ߦߙߐ߫ ߓߍ߫ ߕߏ߫ ߊߟߎ߫ ߟߊ߫ ߡߌߣߍ߲ ߞߊ߲.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "ߊߟߎ߫ ߦߙߐ߫ ߓߍ߫ ߞߍ߫ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߖߊ߬ߕߋ߬ ߞߊ߬ ߕߌߟߋ߲ ߊߟߎ߫ ߦߙߐ߫ ߞߊߡߊ߬ ߊߣߌ߸ ߣߌ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫ ߘߊߦߍߟߍߣߍ߲ ߘߏ߲߬߸ ߞߊ߬ ߛߊߟߌ ߗߏߜߏ ߘߊߦߟߍ߬ ߣߌ߫ ߊߟߎ߫ ߘߏ߲ߠߊ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫. ߊߟߎ߫ ߦߙߐ߫ ߓߍ߫ ߕߏ߫ ߊߟߎ߫ ߟߊ߫ ߡߌߣߍ߲ ߞߊ߲.",
+  "NSLocationAlwaysUsageDescription": "ߊߟߎ߫ ߦߙߐ߫ ߓߍ߫ ߞߍ߫ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߞߎߘߊ ߊ߬ ߦߍߙߍ߫ ߡߊ߬ ߣߌ߫ ߊߟߎ߫ ߦߋ߫ ߘߎߜߎ ߦߍߟߍߡߊ ߊߣߌ߸ ߣߌ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫ ߘߊߦߍߟߍߣߍ߲ ߘߏ߲߬߸ ߞߊ߬ ߛߊߟߌ ߗߏߜߏ ߘߊߦߟߍ߬ ߣߌ߫ ߊߟߎ߫ ߘߏ߲ߠߊ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫. ߊߟߎ߫ ߦߙߐ߫ ߓߍ߫ ߕߏ߫ ߊߟߎ߫ ߟߊ߫ ߡߌߣߍ߲ ߞߊ߲.",
+  "NSCameraUsageDescription": "ߊߟߎ߫ ߟߊ߫ ߞߊߡߋߙߊ ߓߍ߫ ߞߍ߫ ߞߊ߬ ߞߌߓߌߟߊ ߢߊߛߌ߲߫ ߦߌ߬ߘߊ߬ ߞߊߡߋߙߊ ߖߊ߭ ߞߊ߲ ߊߣߌ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ TV ߛߌߙߌߟߌ ߞߏߘߋ ߟߊߖߍ. ߖߊ߭ ߟߎ߬ ߕߍ߫ ߡߙߊ߬߸ ߎ߯ ߕߍ߫ ߓߐ߫ ߊߟߎ߫ ߟߊ߫ ߡߌߣߍ߲ ߞߐ߬ߣߐ ߊߓߊߘߊ.",
+  "NSCalendarsUsageDescription": "ߞߊߟߊ߲ߘߌߙߌߦߋ ߛߐߙߐߟߌ ߓߍ߫ ߞߍ߫ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߟߊ߫ ߊߟߎ߫ ߟߊ߫ ߞߊߟߊ߲ߘߌߙߌߦߋ ߞߐ߬ߣߐ ߊߣߌ߸ ߣߌ߫ ߊߟߎ߫ ߦߋ߫ ߊ߬ ߘߊߦߟߍ߬߸ ߞߊ߬ ߊ߬ ߟߊߖߍ ߣߌ߫ ߊߟߎ߫ ߟߊ߫ ߞߊߟߊ߲ߘߌߙߌߦߋ ߞߏ߫ ߟߎ߬ ߓߍ߫ ߢߐߜߐ߲ ߛߐ߬ߘߐ߲߬ ߣߌ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߦߋ߫. ߊߟߎ߫ ߟߊ߫ ߞߊߟߊ߲ߘߌߙߌߦߋ ߞߎ߲߬ߠߊ߬ߝߏߣߌ߲ ߓߍ߫ ߕߏ߫ ߊߟߎ߫ ߟߊ߫ ߡߌߣߍ߲ ߞߊ߲.",
+  "NSCalendarsFullAccessUsageDescription": "ߞߊߟߊ߲ߘߌߙߌߦߋ ߛߐߙߐߟߌ ߓߍ߫ ߞߍ߫ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߟߊ߫ ߊߟߎ߫ ߟߊ߫ ߞߊߟߊ߲ߘߌߙߌߦߋ ߞߐ߬ߣߐ ߊߣߌ߸ ߣߌ߫ ߊߟߎ߫ ߦߋ߫ ߊ߬ ߘߊߦߟߍ߬߸ ߞߊ߬ ߊ߬ ߟߊߖߍ ߣߌ߫ ߊߟߎ߫ ߟߊ߫ ߞߊߟߊ߲ߘߌߙߌߦߋ ߞߏ߫ ߟߎ߬ ߓߍ߫ ߢߐߜߐ߲ ߛߐ߬ߘߐ߲߬ ߣߌ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߦߋ߫. ߊߟߎ߫ ߟߊ߫ ߞߊߟߊ߲ߘߌߙߌߦߋ ߞߎ߲߬ߠߊ߬ߝߏߣߌ߲ ߓߍ߫ ߕߏ߫ ߊߟߎ߫ ߟߊ߫ ߡߌߣߍ߲ ߞߊ߲.",
+  "NSLocalNetworkUsageDescription": "ߔߏߙߏߜߊߙߊߡߎ ߓߍ߫ ߛߌߙߌ TV ߟߊ߫ ߊߟߎ߫ ߟߊ߫ ߦߙߐ߫ ߖߍ߲ߛߍ߲߫ ߞߊ߲ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߣߌ߫ ߛߊߟߌ ߡߌ߲ߠߎ ߊߟߎ߫ ߦߋ߫ ߛߓߍ߫߸ ߏߟߎ ߗߌ ߊ߬ ߡߊ߬. ߞߎ߲߬ߠߊ߬ߝߏߣߌ߲ ߘߏߜߏߟߋ߲ ߘߏ߲߬߸ ߊ߬ ߓߍ߫ ߕߊ߯ ߡߌߣߍ߲ ߝߌ߬ߟߊ ߘߐߙߐ߲߫ ߗߍ߭.",
+  "NSAlarmKitUsageDescription": "ߤߊߞߌߟߌߖߌߜߌ߲ ߕߊߓߟߏ ߡߌ߲ߠߎ ߣߊ߬ ߊߟߎ߫ ߦߋ߫ “ߟߊߥߎߟߌ ߦߍߙߍ߫” ߛߎߥߊ߲ߘߌ߫߸ ߏߟߎ ߓߍ߫ ߟߊ߫ ߟߊߥߎߟߌ ߦߋ߫߸ ߏ߬ ߟߊ߫ ߊߟߎ߫ ߓߍ߫ ߎ߯ ߡߍ߲ ߤߊߟߌ߬ ߣߌ߫ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߡߊߞߎ߲߬ߣߍ߲ ߘߏ߲߬ ߥߟߊ߫ Focus ߘߊߦߍߟߍߣߍ߲ ߘߏ߲߬.",
+  "\"Vakti kıldım\"": "ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫",
+  "\"Kıble\"": "ߞߌߓߌߟߊ"
 }

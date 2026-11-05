@@ -675,11 +675,10 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Dili, wala pa kini mamarkahi."
     )
 
-    // ÇEVİRİ: nqo (other)
     static let nqo = OtomasyonMetinleri(
-        kalanDakika: ["other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad} ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ ߡߌ߬ߛߍ߲ {n} ߞߐߝߍ߬."],
+        evetKilindi: "ߐ߲߬ߤߐ߲߫߸ ߊ߬ ߛߓߍߣߍ߲߫ ߘߏ߲߬ ߞߏ߫ ߊ߬ ߞߍߣߍ߲.",
+        hayirKilinmadi: "ߊ߬ߦߌ߫߸ ߊ߬ ߡߊ߬ ߛߓߍ߫ ߝߟߐ."
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

@@ -197,8 +197,7 @@ object CanliGuncellemeKurallari {
         "mdh" to KisaBirimler("or", "min",birimAyirici = " ", parcaAyirici = " "),
         "ak" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         "ceb" to KisaBirimler("oras", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: nqo
-        "nqo" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        "nqo" to KisaBirimler("ߕ", "ߡߌ߬ߛ", birimAyirici = " ", parcaAyirici = " "),
     )
 
     /**

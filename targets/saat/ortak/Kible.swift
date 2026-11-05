@@ -1220,16 +1220,15 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: nqo (CLDR nqo: binlik ayırıcı ","; CLDR ayırıcısı Arap virgülü ، — Arapça gibi Latin ',' yazılır, rakam çizimde N'Ko)
     public static let nqo = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "ߊߟߎ߫ ߞߐ߫ ߝߍ߬",
+        saga: "ߞߌߣߌ߲ߓߟߏ߫ {derece}°",
+        sola: "ߣߎߡߊ߲ߓߏߟߏ {derece}°",
+        hizali: "ߊߟߎ߫ ߢߍ߫ ߓߍ߫ ߞߌߓߌߟߊ ߝߍ߬",
+        arkadaErisim: "ߞߌߓߌߟߊ ߓߍ߫ ߊߟߎ߫ ߞߐ߫ ߝߍ߬",
+        sagdaErisim: "ߞߌߓߌߟߊ ߓߍ߫ ߊߟߎ߫ ߞߌߣߌ߲ߓߟߏ߫ ߝߍ߬ ߘߍߙߍߖ߭ߌ {derece}",
+        soldaErisim: "ߞߌߓߌߟߊ ߓߍ߫ ߊߟߎ߫ ߣߎߡߊ߲ߓߏߟߏ ߝߍ߬ ߘߍߙߍߖ߭ߌ {derece}",
+        kabede: "ߊߟߎ߫ ߓߍ߫ ߞߊ߯ߓߊ ߟߊ߫",
         mesafe: "{km} km",
         binlikAyirici: ","
     )

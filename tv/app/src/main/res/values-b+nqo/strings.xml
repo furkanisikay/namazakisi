@@ -1,96 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: nqo — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- English. Terms: docs/ajan/coklu-dil.md glossary + src/core/dil/sozluk/en. -->
+<!-- N'Ko (sağdan sola). Terimler: src/core/dil/sozluk/nqo. -->
 <resources>
     <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
     <string name="dil_kodu">nqo</string>
     <string name="app_name">Namaz Akışı</string>
-    <string name="ekran_koruyucu_adi">Prayer times board</string>
-    <string name="ayarlar">Settings</string>
+    <string name="ekran_koruyucu_adi">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߥߊߟߊ߲</string>
+    <string name="ayarlar">ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ</string>
     <!-- Pano (ui/PanoEkrani) -->
-    <string name="pano_kalan_erisim">%2$s left until %1$s</string>
-    <string name="pano_vaktine">Until %1$s</string>
-    <string name="pano_vaktine_kalan">%1$s in %2$s</string>
-    <string name="pano_kerahat_vakti">Makruh time</string>
-    <string name="pano_bitis">ends %1$s</string>
-    <string name="pano_kerahat_erisim">Makruh time, %1$s, ends %2$s. %3$s</string>
-    <string name="pano_cumaya">Jumu\'ah in %1$s</string>
-    <string name="pano_cikis_geldi">time to leave</string>
-    <string name="pano_cikis">leave at %1$s</string>
-    <string name="pano_cuma_cikis_geldi_erisim">It\'s time to leave for Jumu\'ah</string>
-    <string name="pano_cuma_cikis_erisim">Leave for Jumu\'ah at %1$s</string>
-    <string name="pano_bugun_cuma">Today is Jumu\'ah</string>
-    <string name="pano_ogle">Dhuhr %1$s</string>
-    <string name="pano_bugun_cuma_erisim">Today is Jumu\'ah. The Jumu\'ah prayer is at Dhuhr time, %1$s</string>
-    <string name="pano_ayarlar_erisim">Settings: add a phone, location, connected phones</string>
-    <string name="pano_simdiki_vakit">current prayer time</string>
-    <string name="pano_siradaki_vakit">next prayer time</string>
-    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Add your phone", "Enter code", "I'll choose the city myself", "Add". -->
-    <string name="kodla_girin">Enter code</string>
-    <string name="ili_kendim_secin">I\'ll choose the city myself</string>
-    <string name="yeniden_deneyin">Try again</string>
-    <string name="telefon_varsayilan">Phone</string>
-    <string name="esleme_ekleniyor">Adding %1$s</string>
-    <string name="esleme_gonderiyor">Your phone is sending its location and status…</string>
-    <string name="esleme_tamamlanamadi">Pairing couldn\'t be completed</string>
-    <string name="esleme_saklanamadi">This TV can\'t store the connection key securely. You can enter your location with a code or choose your city.</string>
-    <string name="telefonunuzu_ekleyin">Add your phone</string>
-    <string name="esleme_alt">Prayer times for your location; the prayers you\'ve prayed appear too.</string>
-    <string name="esleme_adim1">Open Namaz Akışı on your phone</string>
-    <string name="esleme_adim2">Settings › My devices › Add a TV</string>
-    <string name="esleme_adim3">Point your phone\'s camera at the code</string>
-    <string name="esleme_ayni_wifi">Your phone and TV must be on the same Wi-Fi network.</string>
-    <string name="esleme_onay_soru">Add this phone?</string>
-    <string name="esleme_onay_aciklama">The added phone can send its location and the prayers it marks to this TV.</string>
-    <string name="ekleyin">Add</string>
-    <string name="hayir">No</string>
-    <string name="esleme_eklendi">%1$s added</string>
-    <string name="konumunuz_geldi">Your location arrived</string>
-    <string name="konuma_gore_hesaplanacak">Prayer times will be calculated for this location.</string>
-    <string name="qr_konum_alindi">Location received</string>
-    <string name="qr_kodu">Pairing code to scan with your phone</string>
-    <string name="ag_yok">The TV isn\'t connected to a network</string>
-    <string name="ag_yok_aciklama">You can continue by entering the 7-digit code from your phone or choosing your city.</string>
+    <string name="pano_kalan_erisim">%2$s ߕߏߙߊ ߝߏ߫ %1$s</string>
+    <string name="pano_vaktine">ߝߏ߫ %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s %2$s ߞߐߝߍ߬</string>
+    <string name="pano_kerahat_vakti">ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫</string>
+    <string name="pano_bitis">ߊ߬ ߓߍ߫ ߓߊ߲߫ %1$s</string>
+    <string name="pano_kerahat_erisim">ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫߸ %1$s߸ ߊ߬ ߓߍ߫ ߓߊ߲߫ %2$s. %3$s</string>
+    <string name="pano_cumaya">ߛߌ߬ߣߌ߲߬ߟߏ߲ ߛߊߟߌ %1$s ߞߐߝߍ߬</string>
+    <string name="pano_cikis_geldi">ߓߐߟߌ ߥߊ߯ߕߌ߫</string>
+    <string name="pano_cikis">ߊ߬ ߓߐ߫ %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">ߛߌ߬ߣߌ߲߬ߟߏ߲ ߛߊߟߌ ߕߊ߯ ߥߊ߯ߕߌ߫ ߟߏ</string>
+    <string name="pano_cuma_cikis_erisim">ߊ߬ ߓߐ߫ ߛߌ߬ߣߌ߲߬ߟߏ߲ ߛߊߟߌ ߞߊߡߊ߬ %1$s</string>
+    <string name="pano_bugun_cuma">ߓߌ߬ ߦߋ߫ ߛߌ߬ߣߌ߲߬ߟߏ߲ ߦߋ߫</string>
+    <string name="pano_ogle">ߖ߭ߎߤߎߙߌ %1$s</string>
+    <string name="pano_bugun_cuma_erisim">ߓߌ߬ ߦߋ߫ ߛߌ߬ߣߌ߲߬ߟߏ߲ ߦߋ߫. ߛߌ߬ߣߌ߲߬ߟߏ߲ ߛߊߟߌ ߓߍ߫ ߞߍ߫ ߖ߭ߎߤߎߙߌ ߥߊ߯ߕߌ߫ ߟߊ߫߸ %1$s</string>
+    <string name="pano_ayarlar_erisim">ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ: ߕߋߟߋߝߐߣߌ ߟߊ߫߸ ߦߙߐ߫߸ ߕߋߟߋߝߐߣߌ ߛߌߙߌߟߋ߲ ߟߎ߬</string>
+    <string name="pano_simdiki_vakit">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߛߌߛߍ߲߬ ߕߊ</string>
+    <string name="pano_siradaki_vakit">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߣߕߊ߬</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir. -->
+    <string name="kodla_girin">ߞߏߘߋ ߛߓߍ߫</string>
+    <string name="ili_kendim_secin">ߒ ߦߍߙߍ߫ ߓߍߣߊ߬ ߘߎߜߎ ߛߎߥߊ߲ߘߌ߫</string>
+    <string name="yeniden_deneyin">ߊ߬ ߞߍ߫ ߕߎߜߎ߲</string>
+    <string name="telefon_varsayilan">ߕߋߟߋߝߐߣߌ</string>
+    <string name="esleme_ekleniyor">%1$s ߓߍ߫ ߟߊ߫</string>
+    <string name="esleme_gonderiyor">ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߓߍ߫ ߊ߬ ߦߙߐ߫ ߣߌ߫ ߊ߬ ߗߏߜߏߦߊ ߗߌ…</string>
+    <string name="esleme_tamamlanamadi">ߛߌߙߌߟߌ ߡߊ߬ ߛߋ߫ ߞߊ߬ ߘߝߊ߫</string>
+    <string name="esleme_saklanamadi">ߣߌ߲߬ TV ߕߍ߫ ߛߋ߫ ߞߊ߬ ߛߌߙߌߟߌ ߞߌߟߌߛߌ ߡߙߊ߬ ߟߊߞߊߣߊ ߟߊ߫. ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊߟߎ߫ ߦߙߐ߫ ߛߓߍ߫ ߞߏߘߋ ߟߊ߫ ߥߟߊ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߘߎߜߎ ߛߎߥߊ߲ߘߌ߫.</string>
+    <string name="telefonunuzu_ekleyin">ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߟߊ߫</string>
+    <string name="esleme_alt">ߊߟߎ߫ ߦߙߐ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬; ߛߊߟߌ ߡߌ߲ߠߎ ߊߟߎ߫ ߦߋ߫ ߞߍ߫߸ ߏߟߎ ߝߣߊ߫ ߓߍ߫ ߓߐ߫.</string>
+    <string name="esleme_adim1">ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="esleme_adim2">ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ › ߒ ߟߊ߫ ߡߌߣߍ߲ ߟߎ߬ › TV ߟߊ߫</string>
+    <string name="esleme_adim3">ߊߟߎ߫ ߦߋ߫ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊߡߋߙߊ ߢߍ߫ ߞߍ߫ ߞߏߘߋ ߟߊ߫</string>
+    <string name="esleme_ayni_wifi">ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߣߌ߫ TV ߞߊ߬ ߞߊ߲ ߞߊ߬ ߞߍ߫ Wi-Fi ߖߍ߲ߛߍ߲߫ ߞߋߟߋ߲߫ ߞߊ߲.</string>
+    <string name="esleme_onay_soru">ߣߌ߲߬ ߕߋߟߋߝߐߣߌ ߟߊ߫ ߥߊ߫؟</string>
+    <string name="esleme_onay_aciklama">ߕߋߟߋߝߐߣߌ ߡߌ߲߬ ߟߊߙߊ߸ ߏ߬ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊ߬ ߦߙߐ߫ ߣߌ߫ ߛߊߟߌ ߡߌ߲ߠߎ ߊ߬ ߓߍ߫ ߛߓߍ߫߸ ߏߟߎ ߗߌ ߣߌ߲߬ TV ߡߊ߬.</string>
+    <string name="ekleyin">ߊ߬ ߟߊ߫</string>
+    <string name="hayir">ߊ߬ߦߌ߫</string>
+    <string name="esleme_eklendi">%1$s ߟߊߙߊ</string>
+    <string name="konumunuz_geldi">ߊߟߎ߫ ߦߙߐ߫ ߣߊ߰ߣߊ߮</string>
+    <string name="konuma_gore_hesaplanacak">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍߣߊ߬ ߖߊ߬ߕߋ߬ ߣߌ߲߬ ߦߙߐ߫ ߞߊߡߊ߬.</string>
+    <string name="qr_konum_alindi">ߦߙߐ߫ ߛߐߙߐߟߊ</string>
+    <string name="qr_kodu">ߛߌߙߌߟߌ ߞߏߘߋ ߡߌ߲߬ ߞߊ߬ ߞߊ߲ ߞߊ߬ ߟߊߖߍ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߟߊ߫</string>
+    <string name="ag_yok">TV ߡߊ߬ ߛߌߙߌ ߖߍ߲ߛߍ߲߫ ߛߌ߫ ߟߊ߫</string>
+    <string name="ag_yok_aciklama">ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߕߊ߯ ߝߍ߬ ߞߊ߬ ߖߊ߬ߕߋ߬ 7 ߞߏߘߋ ߛߓߍ߫ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߟߊ߫ ߥߟߊ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߘߎߜߎ ߛߎߥߊ߲ߘߌ߫.</string>
     <!-- Kodla konum (ui/KodGirisEkrani) -->
-    <string name="kod_baslik">Enter the code from your phone</string>
-    <string name="kod_yol">On your phone: Settings › My devices › Add a TV</string>
-    <string name="kod_hatali">The code didn\'t match. Check the 7 digits on your phone; fix a wrong digit with “%1$s”.</string>
-    <string name="kod_rakamli_kumanda">If your remote has number keys, you can also type with them.</string>
-    <string name="kod_bos_hane">empty digit</string>
-    <string name="kod_sil">Delete</string>
-    <string name="kod_sil_aciklama">Delete the last digit</string>
-    <string name="kod_geri">Back</string>
-    <string name="vazgecin">Cancel</string>
+    <string name="kod_baslik">ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߏߘߋ ߛߓߍ߫</string>
+    <string name="kod_yol">ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲: ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ › ߒ ߟߊ߫ ߡߌߣߍ߲ ߟߎ߬ › TV ߟߊ߫</string>
+    <string name="kod_hatali">ߞߏߘߋ ߡߊ߬ ߓߍ߲߬. ߊߟߎ߫ ߦߋ߫ ߖߊ߬ߕߋ߬ 7 ߟߊߖߍ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲; ߖߊ߬ߕߋ߬ ߝߟߌ߬ ߟߊߓߍ߲߬ ߣߌ߫ “%1$s” ߦߋ߫.</string>
+    <string name="kod_rakamli_kumanda">ߣߌ߫ ߖߊ߬ߕߋ߬ ߓߎߕߐ߲ ߟߎ߬ ߓߍ߫ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߞߏߡߊ߲ߘߌ ߟߊ߫߸ ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߎ߯ ߝߣߊ߫ ߞߍ߫ ߞߊ߬ ߛߓߍ߫.</string>
+    <string name="kod_bos_hane">ߖߊ߬ߕߋ߬ ߟߊ߲ߞߏߟߏ߲</string>
+    <string name="kod_sil">ߊ߬ ߖߏ߬ߛߌ߬</string>
+    <string name="kod_sil_aciklama">ߖߊ߬ߕߋ߬ ߟߊߓߊ߲ ߖߏ߬ߛߌ߬</string>
+    <string name="kod_geri">ߊ߬ ߞߐ߫</string>
+    <string name="vazgecin">ߊ߬ ߘߐߛߊ߬</string>
     <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
-    <string name="il_secin">Choose your city</string>
-    <string name="il_merkezine_gore">Prayer times are calculated for the city center.</string>
-    <string name="il_secili">%1$s, selected</string>
-    <string name="dream_il_yok">To see the prayer times board, open the Namaz Akışı app and choose your city.</string>
+    <string name="il_secin">ߊߟߎ߫ ߦߋ߫ ߊߟߎ߫ ߟߊ߫ ߘߎߜߎ ߛߎߥߊ߲ߘߌ߫</string>
+    <string name="il_merkezine_gore">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍ߫ ߖߊ߬ߕߋ߬ ߘߎߜߎ ߗߍߡߊ߲ߗߍ ߞߊߡߊ߬.</string>
+    <string name="il_secili">%1$s߸ ߛߎߥߊ߲ߘߌߣߍ߲</string>
+    <string name="dream_il_yok">ߥߊߟߊߛߊ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߥߊߟߊ߲ ߠߊߖߍ߸ ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߘߎߜߎ ߛߎߥߊ߲ߘߌ߫.</string>
     <!-- TV ayarları (ui/TvAyarlarEkrani) -->
-    <string name="ayar_konum">Location: %1$s</string>
-    <string name="ayar_konum_yok">No location chosen</string>
-    <string name="ayar_telefon_ekleyin">Add a phone</string>
-    <string name="ayar_konumu_kodla">Enter location with a code</string>
-    <string name="ayar_bagli_telefonlar">Phones connected to this TV</string>
-    <string name="ayar_telefon_yok">No phone added yet. Use “%1$s” on the left and scan the code that appears.</string>
-    <string name="kaldirin">Remove</string>
-    <string name="ayar_ne_gonderir">What do phones send?</string>
-    <string name="ayar_madde_konum">Location: prayer times follow it</string>
-    <string name="ayar_madde_namazlar">Prayers marked, for those who choose</string>
-    <string name="ayar_madde_sifreli">Encrypted, only on your home network</string>
-    <string name="son_haber_yok">No information yet</string>
-    <string name="son_haber_az_once">Just now</string>
+    <string name="ayar_konum">ߦߙߐ߫: %1$s</string>
+    <string name="ayar_konum_yok">ߦߙߐ߫ ߛߌ߫ ߡߊ߬ ߛߎߥߊ߲ߘߌ߫</string>
+    <string name="ayar_telefon_ekleyin">ߕߋߟߋߝߐߣߌ ߟߊ߫</string>
+    <string name="ayar_konumu_kodla">ߦߙߐ߫ ߛߓߍ߫ ߞߏߘߋ ߟߊ߫</string>
+    <string name="ayar_bagli_telefonlar">ߕߋߟߋߝߐߣߌ ߡߌ߲ߠߎ ߛߌߙߌߟߋ߲ ߘߏ߲߬ ߣߌ߲߬ TV ߟߊ߫</string>
+    <string name="ayar_telefon_yok">ߕߋߟߋߝߐߣߌ ߛߌ߫ ߡߊ߬ ߟߊ߫ ߝߟߐ. ߊߟߎ߫ ߦߋ߫ “%1$s” ߞߍ߫ ߣߎߡߊ߲ߓߏߟߏ ߝߍ߬ ߞߊ߬ ߞߏߘߋ ߡߌ߲߬ ߓߍ߫ ߓߐ߫߸ ߏ߬ ߟߊߖߍ.</string>
+    <string name="kaldirin">ߊ߬ ߓߐ߫</string>
+    <string name="ayar_ne_gonderir">ߕߋߟߋߝߐߣߌ ߟߎ߬ ߓߍ߫ ߡߎ߲߬ ߗߌ؟</string>
+    <string name="ayar_madde_konum">ߦߙߐ߫: ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍ߫ ߊ߬ ߕߎߜߎ</string>
+    <string name="ayar_madde_namazlar">ߛߊߟߌ ߛߓߍߣߍ߲߫ ߟߎ߬߸ ߡߐ߰ ߡߌ߲ߠߎ ߦߋ߫ ߊ߬ ߛߎߥߊ߲ߘߌ߫</string>
+    <string name="ayar_madde_sifreli">ߊ߬ ߘߏߜߏߟߋ߲߸ ߊߟߎ߫ ߟߊ߫ ߛߏ ߖߍ߲ߛߍ߲߫ ߘߐߙߐ߲߫ ߞߊ߲</string>
+    <string name="son_haber_yok">ߞߎ߲߬ߠߊ߬ߝߏߣߌ߲ ߛߌ߫ ߕߍ߫ ߦߋ߲߬ ߝߟߐ</string>
+    <string name="son_haber_az_once">ߛߌߛߍ߲߬ ߛߌߛߍ߲߬</string>
     <plurals name="son_haber_dk">
-        <item quantity="other">%1$d min ago</item>
+        <item quantity="other">ߡߌ߬ߛ %1$d ߢߍ߫</item>
     </plurals>
     <plurals name="son_haber_saat">
-        <item quantity="other">%1$d h ago</item>
+        <item quantity="other">ߕ %1$d ߢߍ߫</item>
     </plurals>
     <plurals name="son_haber_gun">
-        <item quantity="other">%1$d days ago</item>
+        <item quantity="other">ߟߏ߲ %1$d ߢߍ߫</item>
     </plurals>
-    <string name="kaldir_soru">Remove %1$s?</string>
-    <string name="kaldir_aciklama">This phone will no longer be able to send information to the TV. To add it again, you need to scan the QR code again.</string>
+    <string name="kaldir_soru">%1$s ߓߐ߫ ߥߊ߫؟</string>
+    <string name="kaldir_aciklama">ߣߌ߲߬ ߕߋߟߋߝߐߣߌ ߕߍߣߊ߬ ߛߋ߫ ߞߊ߬ ߞߎ߲߬ߠߊ߬ߝߏߣߌ߲ ߗߌ TV ߡߊ߬ ߕߎߜߎ߲. ߥߊߟߊߛߊ ߞߊ߬ ߊ߬ ߟߊ߫ ߕߎߜߎ߲߸ ߊߟߎ߫ ߞߊ߬ ߞߊ߲ ߞߊ߬ QR ߞߏߘߋ ߟߊߖߍ ߕߎߜߎ߲.</string>
     <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
-    <string name="telefondaki_konum">Your phone\'s location</string>
+    <string name="telefondaki_konum">ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߦߙߐ߫</string>
 </resources>
