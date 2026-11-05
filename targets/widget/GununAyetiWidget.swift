@@ -1018,18 +1018,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rwanda Muslim Association, QuranEnc 1.0.5"
     )
 
-    // ÇEVİRİ: rn
+    // rn
     static let rn = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Umurongo w’umusi",
+        galeriAciklama: "Umurongo n’ubusobanuro bwawo bihindurwa buri musi kuri Fajri.",
+        etiket: "UMURONGO W’UMUSI",
+        uygulamayiAcin: "Mwugurure porogarama kugira mubone umurongo w’umusi",
+        ornekSigmiyor: "Umurongo w’uyu musi ntukwiye kuri uru rugero. Mukande kugira muwusome.",
+        ornekAcin: "Mwugurure",
+        ornekArapcaKaynagi: "Icarabu: Tanzil",
+        ornekMeal: "Burya mu vy’ukuri, akaga n’agahengwe biragendana.",
+        ornekKisaKunye: "Qor’ani 94:6",
+        ornekMealKaynagi: "Yusuf Gahiti, QuranEnc 1.0.4"
     )
 
     // ln (meal 94:6 gununAyetiHavuzu.ts'ten birebir; künye GUNUN_AYETI_KAYNAKLARI.mealler.ln)

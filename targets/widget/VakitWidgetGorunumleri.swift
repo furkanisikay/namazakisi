@@ -1780,29 +1780,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Byemeza ko iswala y’iki gihe yasaliwe."
     )
 
-    // ÇEVİRİ: rn
+    // rn
     static let rn = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Igihe c’isengesho",
+        galeriAciklama: "Igihe c’isengesho c’ubu, igihe gisigaye ngo kirangire n’ibihe vy’isengesho vy’uyu musi.",
+        veriEski: "Mwugurure porogarama kugira muvugurure ibihe vy’isengesho",
+        konumYok: "Mwugurure porogarama kugira mushireho ikibanza canyu",
+        kilindiSiradaki: "{ad} ryasenzwe · {sonraki} {saat}",
+        adCikis: "{ad} · kirangira {saat}",
+        siradakiAdSaat: "Rikurikira {ad} {saat}",
+        vaktiCikisErisim: "Igihe ca {ad}, kirangira {saat}",
+        siradakiErisim: "Rikurikira {ad}, {saat}",
+        cikisSaat: "Kirangira {saat}",
+        bitisSaat: "Kirangira {saat}",
+        kilindiBaslik: "{ad} ryasenzwe",
+        siradaki: "Rikurikira",
+        siradakiAd: "Rikurikira {ad}",
+        kildimErisim: "Nasenze {ad}",
+        gunSatiriKilindi: ", ryasenzwe",
+        bitti: "Carangiye",
+        vakitCikti: "Igihe c’isengesho carangiye",
+        kabulAlt: "{ad} ryasenzwe",
+        kontrolAdi: "Nasenze",
+        kontrolAciklama: "Yemeza ko isengesho ry’ubu ryasenzwe."
     )
 
     // ln

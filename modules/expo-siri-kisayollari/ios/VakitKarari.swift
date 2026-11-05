@@ -2225,31 +2225,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Mufungure porogaramu"
     )
 
-    // ÇEVİRİ: rn
+    // rn
     public static let rn = VakitMetinleri(
         dil: "rn",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Fajri", "ogle": "Adhuhuri", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Izuba rirashe",
+        konumYok: "Mwugurure porogarama mushireho ikibanza canyu kugira ngo ibihe vy’isengesho biharurwe.",
+        veriEski: "Ibihe vy’isengesho birashaje. Mwugurure porogarama rimwe kugira bivugururwe.",
+        girisBugun: "ku isaha {saat}",
+        girisYarin: "ejo ku isaha {saat}",
+        suAnVakti: "Ubu ni igihe ca {ad}.",
+        suAnVaktiCikis: "Ubu ni igihe ca {ad}; kirangira ku isaha {saat}.",
+        siradakiNamaz: "Isengesho rikurikira ni {ad}, {giris}.",
+        isaretlendi: "Isengesho rya {ad} ryemejwe. {dua}.",
+        zatenKilindi: "Isengesho rya {ad} ryari ryaremejwe.",
+        vakitYok: "Nta sengesho ryo kwemeza ubu.",
+        vakitYokSiradaki: "Nta sengesho ryo kwemeza ubu. Rikurikira ni {ad}, {giris}.",
+        onay: "Mwemeze ko {ad} yasenzwe?",
+        vakitDegisti: "Igihe c’isengesho cahindutse, ni co gituma nta kintu cemejwe. Mwongere mugerageze.",
+        kabulDuasi: "Allah abyakire",
+        kildim: "Nasenze",
+        kilindi: "Ryasenzwe",
+        kontrolKildim: "{ad} · Nasenze",
+        kontrolKilindi: "{ad} ryasenzwe",
+        kontrolVakitYok: "Nta sengesho ryo kwemeza",
+        uygulamayiAcin: "Mwugurure porogarama"
     )
 
     // ln

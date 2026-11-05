@@ -1113,19 +1113,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", iswala ikurikira"
     )
 
-    // ÇEVİRİ: rn
+    // rn
     static let rn = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Muhitemwo igisagara canyu",
+        ilMerkezi: "Ibihe vy’isengesho biharurwa hakurikijwe hagati mu ntara. Murashobora guhindura ivyo mwahisemwo hanyuma.",
+        ilSecErisim: "{il}, muhitemwo",
+        kalan: "Igihe gisigaye gushika {ad}",
+        kalanErisim: "Igihe gisigaye gushika {ad}: {sure}",
+        konumuDegistirin: "Muhindure ikibanza",
+        kerahatSuruyor: "Igihe ca makruhu: {tur}, kirangira {bitis}. {aciklama}",
+        siradakiKerahat: "Igihe ca makruhu gikurikira: {tur} {bas}–{bit}",
+        cumaBilgisi: "Uyu musi ni ku wa gatanu. Ijuma risengwa mu gihe ca Adhuhuri (gitangura {giris}).",
+        suAnkiEk: ", isengesho ry’ubu",
+        siradakiEk: ", isengesho rikurikira"
     )
 
     // ln

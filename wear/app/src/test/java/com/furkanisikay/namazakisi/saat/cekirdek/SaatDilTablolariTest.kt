@@ -161,7 +161,7 @@ class SaatDilTablolariTest {
         // mg, ln, ak 0 ve 1 tekil: 0'da tekil kalıp. Sayının yeri dile göre değişir (ln "ngonga 1"): rakamı yerinde soy.
         for (dil in listOf(SaatDiliMg, SaatDiliLn, SaatDiliAk)) assertEquals(dil.saatSesli(1L).replace("1", "#"), dil.saatSesli(0L).replace("0", "#"))
         // CLDR dışı (rw, rn, dag, mos, aa, mdh) ve nqo yalnız other: sesli süre her sayıda çoğul kalıp.
-        // Sayı başta ya da sonda olabilir (Kinyarwanda "amasaha 1": birim önce).
+        // Sayı başta ya da sonda olabilir (rw, rn "amasaha 1": birim önce): sayıyı yerinde maskeleyerek karşılaştır.
         for (dil in listOf(SaatDiliRw, SaatDiliRn, SaatDiliDag, SaatDiliMos, SaatDiliAa, SaatDiliMdh, SaatDiliNqo)) {
             assertEquals(dil.saatSesli(1L).replace("1", "#"), dil.saatSesli(2L).replace("2", "#"))
         }

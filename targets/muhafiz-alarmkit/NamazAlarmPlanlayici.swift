@@ -233,8 +233,8 @@ enum NamazAlarmCekirdegi {
         "lg": "Yimiriza",
         // rw
         "rw": "Guhagarika",
-        // ÇEVİRİ: rn
-        "rn": "Stop",
+        // rn
+        "rn": "Muhagarike",
         // ln
         "ln": "Botelemisa",
         // ÇEVİRİ: dag

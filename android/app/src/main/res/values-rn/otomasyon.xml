@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: rn — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Kirundi). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nasenze</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Uko igihe c’isengesho kimeze</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ivyabaye ku gihe c’isengesho</string>
 
   <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <string name="otomasyon_bilgi_baslik">Iyi ngingo yongerwamwo biciye muri porogarama y’ibikorwa vyikora</string>
+  <string name="otomasyon_bilgi_tarayici">Mushakisha ntizishobora kuronka uruhusha rw’igihe cose. Muyongere muvuye ku rutonde rwa plugin rwa porogarama nka Tasker, MacroDroid canke Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Muyongere muhitamwo ”Namaz Akışı” ku rutonde rwa plugin rwa porogarama nka Tasker, MacroDroid canke Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s yarabujijwe</string>
+  <string name="otomasyon_engelli_mesaj">Mwari mwabujije iyi porogarama kwemeza amasengesho yanyu. Murashobora kuyemerera muri Namaz Akışı mu Mahitamwo &gt; ”Porogarama zishobora kwemeza amasengesho”.</string>
+  <string name="otomasyon_izin_baslik">Mukoreshe na %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s irashobora kumenya igihe igihe c’isengesho gitangura, igihe kiriko kirarangira n’igihe muri ku musigiti, igakoresha ibikorwa vyanyu vyikora. Murashobora guhindura icemezo canyu muri Namaz Akışı mu Mahitamwo &gt; ”Porogarama zishobora kwemeza amasengesho”.</string>
+  <string name="otomasyon_izin_kildim">%1$s irashobora kwemeza ko isengesho ry’ubu ryasenzwe biciye ku gikorwa cikora mwashizeho. Murashobora guhindura icemezo canyu muri Namaz Akışı mu Mahitamwo &gt; ”Porogarama zishobora kwemeza amasengesho”.</string>
+  <string name="otomasyon_izin_ver">Mwemere</string>
+  <string name="otomasyon_engelle">Mubuze</string>
+  <string name="otomasyon_vazgec">Mureke</string>
+  <string name="otomasyon_tamam">Sawa</string>
+  <string name="otomasyon_tur_baslik">Bikore ryari?</string>
+  <string name="otomasyon_ileri">Ibikurikira</string>
+  <string name="otomasyon_vakit_baslik">Isengesho irihe?</string>
+  <string name="otomasyon_herhangi_vakit">Igihe c’isengesho ico ari co cose</string>
+  <string name="otomasyon_kaydet">Mubike</string>
+  <string name="otomasyon_kosul_icinde">Igihe ari igihe c’isengesho</string>
+  <string name="otomasyon_kosul_cikiyor">Igihe igihe c’isengesho kiriko kirarangira (hasigaye %1$d min, Umurinzi w’isengesho arakora)</string>
+  <string name="otomasyon_kosul_camide">Igihe muri ku musigiti</string>
+  <string name="otomasyon_olay_girdi">Iyo igihe c’isengesho kigeze</string>
+  <string name="otomasyon_olay_cikiyor">Iyo igihe c’isengesho kiriko kirarangira (hasigaye %1$d min, Umurinzi w’isengesho arakora)</string>
+  <string name="otomasyon_olay_camide">Iyo bimenyekanye ko muri ku musigiti</string>
 </resources>

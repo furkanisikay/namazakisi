@@ -183,7 +183,7 @@ object CanliGuncellemeKurallari {
         "lg" to KisaBirimler("ssa", "dk", birimAyirici = " ", parcaAyirici = " "),
         // rw
         "rw" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: rn
+        // rn
         "rn" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ln
         "ln" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),

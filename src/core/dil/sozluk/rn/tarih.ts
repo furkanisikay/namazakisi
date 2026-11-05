@@ -1,13 +1,13 @@
-// ÇEVİRİ: rn — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** CLDR rn: "4 Munyonyo 2026", gün "Ku wa gatatu". Kısa ay ve gün adları uzun adlardan türetildi (ICU kısaltmaları uzun adlarla örtüşmüyor). */
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+  gunler: ['Ku w’indwi', 'Ku wa mbere', 'Ku wa kabiri', 'Ku wa gatatu', 'Ku wa kane', 'Ku wa gatanu', 'Ku wa gatandatu'],
+  gunlerKisa: ['Cu.', 'Mbe.', 'Kab.', 'Gtu.', 'Kan.', 'Gnu.', 'Gnd.'],
+  aylar: ['Nzero', 'Ruhuhuma', 'Ntwarante', 'Ndamukiza', 'Rusama', 'Ruheshi', 'Mukakaro', 'Nyandagaro', 'Nyakanga', 'Gitugutu', 'Munyonyo', 'Kigarama'],
+  aylarYalin: ['Nzero', 'Ruhuhuma', 'Ntwarante', 'Ndamukiza', 'Rusama', 'Ruheshi', 'Mukakaro', 'Nyandagaro', 'Nyakanga', 'Gitugutu', 'Munyonyo', 'Kigarama'],
+  aylarKisa: ['Nze.', 'Ruhu.', 'Ntw.', 'Nda.', 'Rus.', 'Ruhe.', 'Muk.', 'Nyand.', 'Nyak.', 'Gitu.', 'Muny.', 'Kig.'],
+  haftaHarfleri: ['Mb', 'Kb', 'Gt', 'Kn', 'Gn', 'Gd', 'In'],
   uzun: '{gun} {ay} {yil}',
   gunAdiYil: '{gunAdi}, {yil}',
 };

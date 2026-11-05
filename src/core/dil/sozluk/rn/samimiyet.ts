@@ -1,35 +1,35 @@
-// ÇEVİRİ: rn — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Kirundi kalıpları (çeviri değil): kök meal 2:127'nin "kwakira" fiili ("Twakirire"); ana oturum
+ * kararıyla "Allah" ("Imana" değil). Kalıpların hepsi TÜRETİLDİ, yerli okuyucu baksın. Kandil ve
+ * hicrî yılbaşı selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`);
+ * buradaki karşılıklar tip bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Allah abihezagire.',
+  kabulDualari: ['Allah abyakire', 'Allah atwakirire', 'Allah aryakire', 'Umukama wacu abyakire'],
+  kabulDuasi: 'Allah abyakire',
+  ekSabah: 'Igitondo c’umugisha',
+  ekYatsi: 'Ijoro ry’umugisha',
+  tamGunAna: 'Allah abyakire',
+  tamGunAlt: 'Uyu musi mwasenze amasengesho yose uko ari atanu.',
+  kazaKabul: 'Isengesho rimwe rya Qadha rya {vakit} ryakuwe mu gitabo canyu. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Ijoro ry’umugisha rya Raghaib',
+    mirac: 'Isra na Mi’raj vy’umugisha',
+    berat: 'Ijoro ry’umugisha rya Bara’ah',
+    mevlid: 'Mawlid y’umugisha',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Suhuri y’umugisha',
+    bayram: 'Ilayidi y’umugisha',
+    iftar: 'Ifutari y’umugisha',
+    kadir: 'Ijoro ry’umugisha rya Qadr',
+    arefe: 'Umusi w’umugisha wa Arafa',
+    hicriYilbasi: 'Umwaka mushasha wa Hijiriya w’umugisha',
+    cuma: 'Ijuma ry’umugisha',
+    ramazan: 'Ramadhani y’umugisha',
+    sabah: 'Igitondo c’umugisha',
   },
 };

@@ -1,61 +1,60 @@
-// ÇEVİRİ: rn — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı Kirundide mealin 2. çoğul emriyle (2:43 "mutsimbataze amasengesho"): kısa, doğrudan,
+ * "!" yok. "Secdeye kapan" karşılığı YAZILMAZ → "muhagarare musenge" (namaza durun). Başlıkta süre
+ * "{dk} min"; "haciye" (geçti) / "hasigaye" (kaldı).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · haciye {dk} min · igihe c’isengesho ⏰',
+    giris2: '{ad} · haciye {dk} min · ntimutebaganye isengesho ⚠️',
+    giris3: '{ad} · haciye {dk} min · isengesho ribarindiriye 🔥',
+    giris4: '{ad} · haciye {dk} min · MUHAGARARE MUSENGE 🚨',
+    erken3: '{ad} · hasigaye {dk} min · isengesho ribarindiriye 🔥',
+    erken4: '{ad} · hasigaye {dk} min · MUHAGARARE MUSENGE 🚨',
+    cikis1: '{ad} · hasigaye {dk} min ⏰',
+    cikis2: '{ad} · {dk} min · igihe kiriko kiragabanuka ⚠️',
+    cikis3: '{ad} · {dk} min · igihe kiriko kiracika 🔥',
+    cikis4: '{ad} · {dk} min · IGIHE KIRARANGIRA 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Igihe c’isengesho cageze; musenge mukiri mu mwanya.', 'Musenge igihe kikiri kibakundira; ntimubisigaze inyuma.'],
+    s2: ['Uko mubitebaganya, ni ko birushiriza kuremera; ntimusigaze isengesho ryanyu ku mpera.', 'Igihe kiriko kiragenda — musenge ubu.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Uko mutebaganya, ni ko murushiriza kwegera kuricikanwa; musenge ubu.',
+      'Ntimuvuge ngo ”Nzosenga hanyuma”; murashobora gusenga ubu.',
+      'Muvyuke ubu aho kuvuga ngo ”Iyo mba narasenze” haciye iminota mike.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Ntimwongere gutebaganya isengesho — muhagarare musenge ubu.', 'Mushire hasi ivyo muriko murakora, muhagarare musenge.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Igihe gitanguye kugabanuka; musenge mukiri mu mwanya.',
+    s2: 'Ntimusigaze isengesho ryanyu ku mpera; ubu ni igihe ciza co gusenga.',
+    s3: 'Igihe kiri hafi kurangira; murashobora gusenga ubu.',
+    s4: 'Nimwasenze, mukande ”Nasenze”; nimba atari ko, muhagarare musenge ubu.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'NTIMUTEBAGANYE ISENGESHO. Muhagarare musenge ubu. (haciye {dk} min)',
+    giris2: 'Igihe kiriko kiragenda; ntimusigaze isengesho ryanyu ku mpera. (haciye {dk} min)',
+    giris1: cogul({ one: 'Haciye umunota {n} igihe c’isengesho gitanguye.', other: 'Haciye iminota {n} igihe c’isengesho gitanguye.' }),
+    erken4: 'Ntimutebaganye isengesho; muhagarare musenge ubu. (hasigaye {dk} min)',
+    cikis4: 'IGIHE KIRARANGIRA. Muhagarare musenge ubu. (hasigaye {dk} min)',
+    cikis2: 'Igihe kiriko kiragabanuka; ntimusigaze isengesho ryanyu ku mpera. (hasigaye {dk} min)',
+    cikis1: cogul({ one: 'Hasigaye umunota {n} ngo igihe c’isengesho kirangire.', other: 'Hasigaye iminota {n} ngo igihe c’isengesho kirangire.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · musenge imbere yo kuryama ⏰',
+    govde: 'Amasaha y’ituze atangura haciye {dk} min; musenge Isha imbere yo kuryama.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Igihe gitanguye kugabanuka; musenge mukiri mu mwanya.',
+    sonaBirakma: 'Ntimusigaze isengesho ryanyu ku mpera; ubu ni igihe ciza co gusenga.',
+    fisilti: 'Ntimuvuge ngo ”Nzosenga hanyuma”; igihe kiri hafi kurangira, murashobora gusenga ubu.',
+    omur: 'Igihe kiriko kirarengana; muracafise umwanya wo gusenga iri sengesho mu gihe caryo.',
+    keske: 'Muvyuke ubu aho kuvuga ngo ”Iyo mba narasenze” haciye iminota mike.',
+    namazaDur: 'Nimwasenze, mukande ”Nasenze”; nimba atari ko, muhagarare musenge ubu.',
+    sonDakika: 'Iminota ya nyuma. Mushire hasi ivyo muriko murakora, muhagarare musenge.',
   },
 };

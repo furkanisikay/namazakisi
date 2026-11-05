@@ -1,15 +1,14 @@
-// ÇEVİRİ: rn — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Mubandanye',
+  vazgecin: 'Mureke',
+  kapatin: 'Mwugare',
+  ayarlariAcin: 'Mwugurure amahitamwo',
+  simdilikGecin: 'Musimbe ubu',
+  tekrarDeneyin: 'Mwongere mugerageze',
+  evet: 'Ego',
+  hayir: 'Oya',
+  ayrintilariAcar: 'Vyugurura ibisobanuro',
   marka: 'Namaz Akışı',
 };
