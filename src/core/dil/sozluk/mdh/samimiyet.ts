@@ -1,35 +1,38 @@
-// ÇEVİRİ: mdh — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Maguindanao Müslümanlarının kalıpları (çeviri değil): kabul fiili "talima" QuranEnc
+ * `maguindanao_rwwad` 2:127 ("Hay Kadenan nami! Talima ka sa lekami"), dilek biçimi "Talimaen nu
+ * Allah" türetildi; ortak Arapça "Taqabbal Allahu minna wa minkum" ve "Barakallahu fikum";
+ * bayram, cuma ve Ramazan için yerleşik "Mubarak" kalıpları; sabah/akşam selamı yerel "Mapya a
+ * mapita / magabi" (mealdeki "mapya" yazımıyla). Kandil ve hicrî yılbaşı selamı Filipinler'de
+ * söylenmez (`selam.ts > KANDIL_ULKELERI`); buradaki karşılıklar tip bütünlüğü içindir. Övgü ve
+ * "!" yok. Yerli okuyucuyla DOĞRULANMADI.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Barakallahu fikum.',
+  kabulDualari: ['Talimaen nu Allah', 'Taqabbal Allahu minna wa minkum', 'Talimaen nu Allah', 'Talimaen nu Kadenan tanu'],
+  kabulDuasi: 'Talimaen nu Allah',
+  ekSabah: 'Mapya a mapita',
+  ekYatsi: 'Mapya a magabi',
+  tamGunAna: 'Talimaen nu Allah',
+  tamGunAlt: 'Nasambayang nu saguna a gay su langun nu lima a sambayang.',
+  kazaKabul: 'Nakwa su isa a qada nu {vakit} kanu listahan nu. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Mabarakat a magabi nu Raghaib',
+    mirac: "Mabarakat a Isra' endu Mi'raj",
+    berat: "Mabarakat a magabi nu Bara'ah",
+    mevlid: 'Mabarakat a Mawlid',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
+    sahur: 'Mabarakat a sahur',
     bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    iftar: 'Mabarakat a iftar',
+    kadir: 'Mabarakat a Laylat al-Qadr',
+    arefe: 'Mabarakat a bisperas nu Eid',
+    hicriYilbasi: 'Mabarakat a bagu a lagun nu Hijri',
+    cuma: "Jum'at Mubarak",
+    ramazan: 'Ramadhan Mubarak',
+    sabah: 'Mapya a mapita',
   },
 };

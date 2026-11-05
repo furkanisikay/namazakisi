@@ -1088,18 +1088,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Mahmoud Abdulqader Hamza, QuranEnc 1.0.1"
     )
 
-    // ÇEVİRİ: mdh
+    // mdh
     static let mdh = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Ayat nu gay",
+        galeriAciklama: "Isa a ayat endu su salin nin a pedilisan uman gay sa Subuh.",
+        etiket: "AYAT NU GAY",
+        uygulamayiAcin: "Bukatan su app para mailay su ayat nu gay",
+        ornekSigmiyor: "Di masulud su ayat nu gay sa kadakel ini. I-tap para basaen.",
+        ornekAcin: "Bukatan",
+        ornekArapcaKaynagi: "Arab: Tanzil",
+        ornekMeal: "Saben-sabenal na makasaleta kanu malegen su malemu.",
+        ornekKisaKunye: "Qur'an 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.4"
     )
 
     // ÇEVİRİ: ak

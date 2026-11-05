@@ -1,15 +1,14 @@
-// ÇEVİRİ: mdh — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Ituluy',
+  vazgecin: 'Ibatal',
+  kapatin: 'Takepen',
+  ayarlariAcin: 'Bukatan su manga setting',
+  simdilikGecin: 'Lipasan pan',
+  tekrarDeneyin: 'Ulit manem',
+  evet: 'Uway',
+  hayir: 'Di',
+  ayrintilariAcar: 'Pedbukat sa manga detalye',
   marka: 'Namaz Akışı',
 };

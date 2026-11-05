@@ -1,10 +1,10 @@
-// ÇEVİRİ: mdh — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Anahtar kelime başlığın içinde AYNEN geçer (rutin "bildirimde şu metin varsa" ile eşler). */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'nakawma su waktu',
+  vakitGirdiBasligi: '{ad}: nakawma su waktu',
+  herhangiVakit: 'Amayka makawma su apiya ngin a waktu nu sambayang',
+  yalnizVakit: 'Amayka makawma bu su waktu nu {ad}',
+  camide: 'Amayka katawan nu app i sa masjid kanu (naka-on su Sa masjid ako)',
 };

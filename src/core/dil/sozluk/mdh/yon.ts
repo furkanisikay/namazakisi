@@ -1,10 +1,9 @@
-// ÇEVİRİ: mdh — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Mailisan su tampal nu sulat',
+  aciklama: 'Su basa a napili nu na pedsulat sa salakaw a tampal. Kailangan i-restart su app para mailisan su manga screen.',
+  simdiBaslat: 'I-restart saguna',
+  sonra: 'Sa ulyan',
+  bekliyor: 'Mailisan su tampal nu sulat amayka ma-restart su app.',
 };

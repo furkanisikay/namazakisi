@@ -1905,29 +1905,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Asaakuh salat abime calaamisa."
     )
 
-    // ÇEVİRİ: mdh
+    // mdh
     static let mdh = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Waktu nu sambayang",
+        galeriAciklama: "Su waktu nu sambayang saguna, su nasama a timpu taman sa kalipus nin endu su manga waktu nu sambayang saguna a gay.",
+        veriEski: "Bukatan su app para mabagwin su manga waktu nu sambayang",
+        konumYok: "Bukatan su app para ibetad su lokasyun nu",
+        kilindiSiradaki: "Midsambayang su {ad} · {sonraki} {saat}",
+        adCikis: "{ad} · malipus {saat}",
+        siradakiAdSaat: "Kasunud {ad} {saat}",
+        vaktiCikisErisim: "Waktu nu {ad}, malipus {saat}",
+        siradakiErisim: "Kasunud {ad}, {saat}",
+        cikisSaat: "Malipus {saat}",
+        bitisSaat: "Malipus {saat}",
+        kilindiBaslik: "Midsambayang su {ad}",
+        siradaki: "Kasunud",
+        siradakiAd: "Kasunud {ad}",
+        kildimErisim: "Midsambayang ako sa {ad}",
+        gunSatiriKilindi: ", midsambayang",
+        bitti: "Nalipus",
+        vakitCikti: "Nalipus su waktu nu sambayang",
+        kabulAlt: "Midsambayang su {ad}",
+        kontrolAdi: "Midsambayang ako",
+        kontrolAciklama: "Pedtandaan a midsambayang su sambayang saguna."
     )
 
     // ÇEVİRİ: ak

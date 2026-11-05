@@ -1188,19 +1188,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", lakal tan salat"
     )
 
-    // ÇEVİRİ: mdh
+    // mdh
     static let mdh = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Pamili sa inged nu",
+        ilMerkezi: "Su manga waktu nu sambayang na pedkwentan para sa tenga nu probinsya. Mailisan nu su napili nu sa ulyan.",
+        ilSecErisim: "{il}, pamili",
+        kalan: "Nasama a timpu taman sa {ad}",
+        kalanErisim: "Nasama a timpu taman sa {ad}: {sure}",
+        konumuDegistirin: "Ilisan su lokasyun",
+        kerahatSuruyor: "Waktu a makruh: {tur}, malipus {bitis}. {aciklama}",
+        siradakiKerahat: "Kasunud a waktu a makruh: {tur} {bas}–{bit}",
+        cumaBilgisi: "Jum'at saguna. Su sambayang sa Jum'at na pedsambayangan sa waktu nu Dhuhur (makawma {giris}).",
+        suAnkiEk: ", sambayang saguna",
+        siradakiEk: ", kasunud a sambayang"
     )
 
     // ÇEVİRİ: ak

@@ -243,8 +243,8 @@ enum NamazAlarmCekirdegi {
         "mos": "Pag-y",
         // aa
         "aa": "Xiqisa",
-        // ÇEVİRİ: mdh
-        "mdh": "Stop",
+        // mdh
+        "mdh": "Ipendeg",
         // ÇEVİRİ: ak
         "ak": "Stop",
         // ÇEVİRİ: ceb

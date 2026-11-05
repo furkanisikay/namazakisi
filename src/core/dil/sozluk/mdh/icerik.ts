@@ -1,15 +1,14 @@
-// ÇEVİRİ: mdh — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: "Qur'an {ref} · {yayimci}, QuranEnc {surum}",
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Su sambayang na mapya pan kanu katulug. Sawit kanu sa kauntungan.',
+    araVer: 'Tagaken nu pan su galebek sa dunya endu tindeg kanu sa sangu nu Kadenan nu.',
+    yorgunluk: 'Pedtagad sa lekanu su Asr, para malepas su kapagel sa gay endu makatalinguma su kalilintad.',
+    sukur: 'Su Maghrib na kasukur sa gay. Gaganat kanu tumindeg sa sangu nu Kadenan nu.',
+    aksamKisa: 'Malipus su waktu nu Maghrib; nakawma den, edsambayang kanu sa di ipagelay.',
+    geceKaranligi: 'Sa lidep nu magabi, pakaisa kanu sa Kadenan nu. Su Isha na ubat nu ginawa.',
+    davet: 'Pedtawagen kanu sa Isha, para tamanan su gay sa kapangeni sa kasuat nu Allah.',
   },
 };

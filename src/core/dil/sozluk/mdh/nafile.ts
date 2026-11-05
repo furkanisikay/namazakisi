@@ -1,40 +1,49 @@
-// ÇEVİRİ: mdh — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Nafile "sunnat" (QE 17:79 "ka sunnat sa leka"), teheccüd "Tahajjud" (17:79); Duha ve Awwabin Arapça ad. */
 export const nafile: Sozluk['nafile'] = {
   adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
   kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Pedpamula sa 45 minutu sa ulyan nu kasebang nu senang taman sa 10 minutu sa unaan nu Dhuhur. Su Ishraq i paganay a waktu nin; su pinakamapya na sa ulyan nu kalipus nu paganay a kwartu nu gay.',
+    evvabin: 'Pedsambayangan sa ulyan nu Maghrib, taman sa waktu nu Isha.',
+    teheccud: 'Pedsambayangan sa ulyan nu katulug endu kabangun sa ulyan nu Isha, taman sa waktu nu Subuh. Su pinakamapya a waktu nin na su ulyanan a ikatelu nu magabi.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nSaguna a gay: {bas} – {son}',
+  enFaziletli: ' · pinakamapya sa ulyan nu {saat}',
+  sonUcteBir: ' · ulyanan a ikatelu {saat}',
+  durumAktif: 'Nakawma su waktu · malipus sa {saat}',
+  durumNafile: 'Sunnat · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Waktu nu Duha',
+    kuslukSuruyor: 'Waktu pan nu Duha; makasambayang kanu taman sa {son}.',
+    kuslukGirdi: 'Nakawma su waktu nu Duha. Mapya a waktu para sa dua a rakaat; taman sa {son}.',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: '{n} minutu pan i nasama sa waktu nu Duha. Mapya a waktu para sa dua a rakaat; taman sa {son}.',
+      other: '{n} minutu pan i nasama sa waktu nu Duha. Mapya a waktu para sa dua a rakaat; taman sa {son}.',
     }),
     evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinSuruyor: 'Aden pan timpu para sa Awwabin. Makawma su Isha sa {son}.',
+    evvabinGirdi: 'Sa ulyan nu Maghrib, mapya a waktu para sa Awwabin. Makawma su Isha sa {son}.',
+    evvabinKalan: cogul({
+      one: '{n} minutu pan i nasama para sa Awwabin. Makawma su Isha sa {son}.',
+      other: '{n} minutu pan i nasama para sa Awwabin. Makawma su Isha sa {son}.',
+    }),
+    teheccudBaslik: 'Waktu nu Tahajjud',
+    uyandirSonUcte: 'Bangun kanu; nakawma su ulyanan a ikatelu nu magabi. Makawma su Subuh sa {son}.',
+    uyandirKalan: cogul({
+      one: 'Bangun kanu; {n} minutu pan taman sa Subuh. Makawma su Subuh sa {son}.',
+      other: 'Bangun kanu; {n} minutu pan taman sa Subuh. Makawma su Subuh sa {son}.',
+    }),
+    sonUcteBaslik: 'Su ulyanan a ikatelu nu magabi',
+    sonUcteGovde: 'Su pinakamabarakat a manga oras para sa Tahajjud. Makawma su Subuh sa {son}.',
+    teheccudKalan: cogul({
+      one: '{n} minutu pan taman sa Subuh. Mapya a waktu para sa Tahajjud.',
+      other: '{n} minutu pan taman sa Subuh. Mapya a waktu para sa Tahajjud.',
+    }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Kapabangun sa Tahajjud',
+  uyandirmaKanaliAciklama: 'Pabangunen kanu para sa sambayang sa magabi; pedtunog apiya naka-silent',
 };

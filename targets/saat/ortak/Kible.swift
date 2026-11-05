@@ -1180,16 +1180,16 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: mdh (CLDR verisi yok, ülke normu: binlik ayırıcı ",")
+    // mdh (CLDR verisi yok, ülke normu: binlik ayırıcı ",")
     public static let mdh = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Sa talikud nu",
+        saga: "Kawanan {derece}°",
+        sola: "Biwang {derece}°",
+        hizali: "Pedsangul kanu sa Qiblat",
+        arkadaErisim: "Lu sa talikud nu su Qiblat",
+        sagdaErisim: "Su Qiblat na {derece} digri sa kawanan nu",
+        soldaErisim: "Su Qiblat na {derece} digri sa biwang nu",
+        kabede: "Lu kanu sa Ka'bah",
         mesafe: "{km} km",
         binlikAyirici: ","
     )

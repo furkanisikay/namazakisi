@@ -1,12 +1,16 @@
-// ÇEVİRİ: mdh — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Maguindanaoda sayıdan sonra isim çekilmez ("telu oras"). CLDR'de `mdh` yok (yalnız other);
+ * `one` aynı metinle yazılır (Tatarca emsali). Birimler: "oras" (QE 7:34), "minutu", "segundu"
+ * (Filipinler ortak kullanımı, türetildi); kısalar "or", "min", "seg".
+ */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'or', dk: 'min', sn: 'seg' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ one: '{n} oras', other: '{n} oras' }),
+  dakika: cogul({ one: '{n} minutu', other: '{n} minutu' }),
+  saniye: cogul({ one: '{n} segundu', other: '{n} segundu' }),
 };

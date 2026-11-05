@@ -1,61 +1,67 @@
-// ÇEVİRİ: mdh — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı: mealin çoğul emri ("Edsambayang kanu", QE 2:45; "tindeg kanu"), kısa,
+ * "!" yok. Secde karşılığı YAZILMAZ → "tindeg kanu sa sambayang" (namaza durun). Geciktirme
+ * "isundul" (QE 7:34 "di makasundul" = geciktiremez). Başlıkta süre birimi "m": "Maghrib · 655m"
+ * ilk 16 karaktere sığar; girişten sonra "den" (artık), çıkışa kalan "pan" (daha).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}m den · waktu nu sambayang ⏰',
+    giris2: '{ad} · {dk}m den · di nu isundul su sambayang ⚠️',
+    giris3: '{ad} · {dk}m den · pedtagad su sambayang nu 🔥',
+    giris4: '{ad} · {dk}m den · TINDEG KANU SA SAMBAYANG 🚨',
+    erken3: '{ad} · {dk}m pan · pedtagad su sambayang nu 🔥',
+    erken4: '{ad} · {dk}m pan · TINDEG KANU SA SAMBAYANG 🚨',
+    cikis1: '{ad} · {dk}m pan ⏰',
+    cikis2: '{ad} · {dk}m · pedpaydu den su timpu ⚠️',
+    cikis3: '{ad} · {dk}m · pedlipus su timpu 🔥',
+    cikis4: '{ad} · {dk}m · MALIPUS DEN SU WAKTU 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Waktu den nu sambayang; edsambayang kanu sa aden pan timpu.', 'Edsambayang kanu sa aden pan timpu; di nu ibagak sa ulyan.'],
+    s2: ['Amayka pedsundulen nu, mas mabegat; di nu ibagak su sambayang nu sa kalipus.', 'Pedlipus su timpu — edsambayang kanu saguna.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Amayka pedsundulen nu, masiken den i di kanu makasambayang; edsambayang kanu saguna.',
+      'Di nu edtalun "Edsambayang ako sa ulyan"; makasambayang kanu saguna.',
+      'Tindeg kanu saguna, sa di pan kanu makatalu sa "upama ka" sa paydu a minutu.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Di nu den isundul su sambayang nu — tindeg kanu sa sambayang saguna.', 'Tagaken nu su galebek nu endu tindeg kanu sa sambayang.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Pedpaydu den su timpu; edsambayang kanu sa aden pan timpu.',
+    s2: 'Di nu ibagak su sambayang nu sa kalipus; mapya a waktu saguna para edsambayang.',
+    s3: 'Masiken den malipus su timpu; makasambayang kanu pan saguna.',
+    s4: 'Amayka midsambayang kanu den, i-tap su "Midsambayang ako"; amayka da, tindeg kanu sa sambayang saguna.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'DI NU ISUNDUL SU SAMBAYANG NU. Tindeg kanu sa sambayang saguna. ({dk} min a nalipus)',
+    giris2: 'Pedlipus su timpu; di nu ibagak su sambayang nu sa kalipus. ({dk} min a nalipus)',
+    giris1: cogul({
+      one: '{n} minutu den sa ulyan nu kinapamula nu waktu nu sambayang.',
+      other: '{n} minutu den sa ulyan nu kinapamula nu waktu nu sambayang.',
+    }),
+    erken4: 'Di nu isundul su sambayang nu; tindeg kanu sa sambayang saguna. ({dk} min pan)',
+    cikis4: 'MALIPUS DEN SU WAKTU. Tindeg kanu sa sambayang saguna. ({dk} min pan)',
+    cikis2: 'Pedpaydu den su timpu; di nu ibagak su sambayang nu sa kalipus. ({dk} min pan)',
+    cikis1: cogul({
+      one: '{n} minutu pan taman sa kalipus nu waktu nu sambayang.',
+      other: '{n} minutu pan taman sa kalipus nu waktu nu sambayang.',
+    }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · edsambayang sa di pan matulug ⏰',
+    govde: 'Magpamula su manga oras a da suara sa {dk} min; edsambayang kanu sa Isha sa di pan matulug.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Pedpaydu den su timpu; edsambayang kanu sa aden pan timpu.',
+    sonaBirakma: 'Di nu ibagak su sambayang nu sa kalipus; mapya a waktu saguna para edsambayang.',
+    fisilti: 'Di nu edtalun "Edsambayang ako sa ulyan"; masiken den malipus su timpu, makasambayang kanu pan saguna.',
+    omur: 'Pedlipus su timpu; aden pan timpu nu para makasambayang sa sambayang ini sa waktu nin.',
+    keske: 'Tindeg kanu saguna, sa di pan kanu makatalu sa "upama ka" sa paydu a minutu.',
+    namazaDur: 'Amayka midsambayang kanu den, i-tap su "Midsambayang ako"; amayka da, tindeg kanu sa sambayang saguna.',
+    sonDakika: 'Su ulyanan a manga minutu. Tagaken nu su galebek nu endu tindeg kanu sa sambayang.',
   },
 };
