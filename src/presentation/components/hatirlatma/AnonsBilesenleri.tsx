@@ -13,6 +13,8 @@ import { BOS_CIHAZ_DURUMU, durumNotu } from '../../../core/cihaz/durumNotlari';
 import { surumuOku } from '../../../domain/services/CihazDurumOkuyucu';
 import { DurumSatiri } from '../ortak/DurumSatiri';
 import { useMetin } from '../../hooks/useMetin';
+import { aktifDil } from '../../../core/dil/aktifDil';
+import { sesliOkumaSesiYok } from '../../../core/dil/sesliOkuma';
 
 /**
  * Cihazda Turkce konusma paketi yoksa gosterilen kibar bilgilendirme.
@@ -26,8 +28,11 @@ import { useMetin } from '../../hooks/useMetin';
  * eylem tek kaynaktan: `core/cihaz/durumNotlari` ('turkceTts').
  */
 export const TurkceTtsUyarisi: React.FC<{ destekli: boolean | null }> = ({ destekli }) => {
-    if (destekli !== false) return null;
-    const not = durumNotu('turkceTts', { ...BOS_CIHAZ_DURUMU, surum: surumuOku(), turkceTts: destekli });
+    // Telefonlarda sesi hiç olmayan dilde cihaza sormaya gerek yok: iPhone'da sorgu `null`
+    // döner, bant hiç çizilmezdi ve sesli okuma sessizce atlanırdı.
+    const sesYok = sesliOkumaSesiYok(aktifDil());
+    if (destekli !== false && !sesYok) return null;
+    const not = durumNotu('turkceTts', { ...BOS_CIHAZ_DURUMU, surum: surumuOku(), turkceTts: false });
     if (!not) return null;
     return (
         <View className="mt-1" accessibilityRole="alert">
