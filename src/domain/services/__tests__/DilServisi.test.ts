@@ -46,7 +46,7 @@ describe('DilServisi', () => {
   afterEach(() => jest.restoreAllMocks());
 
   it('kayıt yoksa ve cihaz dili seçilebilir değilse Türkçe', async () => {
-    cihaz('he_IL');
+    cihaz('is_IS');
     await DilServisi.hazir();
     expect(aktifDil()).toBe('tr');
   });
@@ -136,7 +136,7 @@ describe('DilServisi', () => {
   });
 
   it('cihaz diline dönüş açık seçimi siler, metin dilini korur', async () => {
-    cihaz('he_IL');
+    cihaz('is_IS');
     disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'en', ozelAnonsDili: 'en' };
     await DilServisi.cihazDilineDon();
     expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ ozelAnonsDili: 'en', goc: 1 });

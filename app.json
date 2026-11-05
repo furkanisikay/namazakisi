@@ -62,7 +62,22 @@
       "as": "./locales/as.json",
       "ne": "./locales/ne.json",
       "si": "./locales/si.json",
-      "km": "./locales/km.json"
+      "km": "./locales/km.json",
+      "he": "./locales/he.json",
+      "ka": "./locales/ka.json",
+      "lt": "./locales/lt.json",
+      "mg": "./locales/mg.json",
+      "lg": "./locales/lg.json",
+      "rw": "./locales/rw.json",
+      "rn": "./locales/rn.json",
+      "ln": "./locales/ln.json",
+      "dag": "./locales/dag.json",
+      "mos": "./locales/mos.json",
+      "aa": "./locales/aa.json",
+      "mdh": "./locales/mdh.json",
+      "ak": "./locales/ak.json",
+      "ceb": "./locales/ceb.json",
+      "nqo": "./locales/nqo.json"
     },
     "name": "Namaz Akışı",
     "slug": "namazakisi",
@@ -132,7 +147,7 @@
     },
     "plugins": [
       "./plugins/withPlayStoreDependency",
-      ["./plugins/withSiriKisayollari", { "diller": ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh-Hans", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa-Arab", "as", "ne", "si", "km"] }],
+      ["./plugins/withSiriKisayollari", { "diller": ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh-Hans", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa-Arab", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo"] }],
       "./plugins/withMuhafizAlarmKit",
       [
         "./plugins/withNamazWidget",

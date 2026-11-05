@@ -99,27 +99,27 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'ne', yerelAd: 'नेपाली', yon: 'ltr', ttsDili: 'ne-NP', beta: true, secilebilir: true },
   { kod: 'si', yerelAd: 'සිංහල', yon: 'ltr', ttsDili: 'si-LK', beta: true, secilebilir: true },
   { kod: 'km', yerelAd: 'ខ្មែរ', yon: 'ltr', ttsDili: 'km-KH', beta: true, secilebilir: true },
-  // Dalga 13 (kapalı iskelet). İbranice uygulama kodu `he`, Android kaynak niteleyicisi `values-iw` (Endonezce `in`
+  // Dalga 13 (beta, 2026-11-05). İbranice uygulama kodu `he`, Android kaynak niteleyicisi `values-iw` (Endonezce `in`
   // emsali: `ResourcesImpl.adjustLanguageTag` cihazın `he`sini kaynak eşlemesinden önce `iw`ye çevirir); sağdan sola.
   // N'Ko sağdan sola, yerel rakam `nkoo` (߀–߉, CLDR `nqo` varsayılanı). Üç harfli kodlar (dag, mos, mdh, ceb, nqo)
   // Android'de `values-b+<kod>`. Kendi adları CLDR'den; Dagbani, Mooré ve Maguindanao CLDR'de yok, Afar CLDR ana
   // verisinde onaysız ("Qafar") → yerel adlar görev tablosundan (yerli okuyucuyla DOĞRULANMADI). Öteki dalga 13
   // dilleri Latin ya da Gürcü harfli, soldan sağa, Batı rakamlı.
-  { kod: 'he', yerelAd: 'עברית', yon: 'rtl', ttsDili: 'he-IL', beta: true, secilebilir: false },
-  { kod: 'ka', yerelAd: 'ქართული', yon: 'ltr', ttsDili: 'ka-GE', beta: true, secilebilir: false },
-  { kod: 'lt', yerelAd: 'Lietuvių', yon: 'ltr', ttsDili: 'lt-LT', beta: true, secilebilir: false },
-  { kod: 'mg', yerelAd: 'Malagasy', yon: 'ltr', ttsDili: 'mg-MG', beta: true, secilebilir: false },
-  { kod: 'lg', yerelAd: 'Luganda', yon: 'ltr', ttsDili: 'lg-UG', beta: true, secilebilir: false },
-  { kod: 'rw', yerelAd: 'Ikinyarwanda', yon: 'ltr', ttsDili: 'rw-RW', beta: true, secilebilir: false },
-  { kod: 'rn', yerelAd: 'Ikirundi', yon: 'ltr', ttsDili: 'rn-BI', beta: true, secilebilir: false },
-  { kod: 'ln', yerelAd: 'Lingála', yon: 'ltr', ttsDili: 'ln-CD', beta: true, secilebilir: false },
-  { kod: 'dag', yerelAd: 'Dagbanli', yon: 'ltr', ttsDili: 'dag-GH', beta: true, secilebilir: false },
-  { kod: 'mos', yerelAd: 'Moore', yon: 'ltr', ttsDili: 'mos-BF', beta: true, secilebilir: false },
-  { kod: 'aa', yerelAd: 'Qafar', yon: 'ltr', ttsDili: 'aa-ET', beta: true, secilebilir: false },
-  { kod: 'mdh', yerelAd: 'Magindanawn', yon: 'ltr', ttsDili: 'mdh-PH', beta: true, secilebilir: false },
-  { kod: 'ak', yerelAd: 'Akan', yon: 'ltr', ttsDili: 'ak-GH', beta: true, secilebilir: false },
-  { kod: 'ceb', yerelAd: 'Cebuano', yon: 'ltr', ttsDili: 'ceb-PH', beta: true, secilebilir: false },
-  { kod: 'nqo', yerelAd: 'ߒߞߏ', yon: 'rtl', ttsDili: 'nqo-GN', beta: true, secilebilir: false },
+  { kod: 'he', yerelAd: 'עברית', yon: 'rtl', ttsDili: 'he-IL', beta: true, secilebilir: true },
+  { kod: 'ka', yerelAd: 'ქართული', yon: 'ltr', ttsDili: 'ka-GE', beta: true, secilebilir: true },
+  { kod: 'lt', yerelAd: 'Lietuvių', yon: 'ltr', ttsDili: 'lt-LT', beta: true, secilebilir: true },
+  { kod: 'mg', yerelAd: 'Malagasy', yon: 'ltr', ttsDili: 'mg-MG', beta: true, secilebilir: true },
+  { kod: 'lg', yerelAd: 'Luganda', yon: 'ltr', ttsDili: 'lg-UG', beta: true, secilebilir: true },
+  { kod: 'rw', yerelAd: 'Ikinyarwanda', yon: 'ltr', ttsDili: 'rw-RW', beta: true, secilebilir: true },
+  { kod: 'rn', yerelAd: 'Ikirundi', yon: 'ltr', ttsDili: 'rn-BI', beta: true, secilebilir: true },
+  { kod: 'ln', yerelAd: 'Lingála', yon: 'ltr', ttsDili: 'ln-CD', beta: true, secilebilir: true },
+  { kod: 'dag', yerelAd: 'Dagbanli', yon: 'ltr', ttsDili: 'dag-GH', beta: true, secilebilir: true },
+  { kod: 'mos', yerelAd: 'Moore', yon: 'ltr', ttsDili: 'mos-BF', beta: true, secilebilir: true },
+  { kod: 'aa', yerelAd: 'Qafar', yon: 'ltr', ttsDili: 'aa-ET', beta: true, secilebilir: true },
+  { kod: 'mdh', yerelAd: 'Magindanawn', yon: 'ltr', ttsDili: 'mdh-PH', beta: true, secilebilir: true },
+  { kod: 'ak', yerelAd: 'Akan', yon: 'ltr', ttsDili: 'ak-GH', beta: true, secilebilir: true },
+  { kod: 'ceb', yerelAd: 'Cebuano', yon: 'ltr', ttsDili: 'ceb-PH', beta: true, secilebilir: true },
+  { kod: 'nqo', yerelAd: 'ߒߞߏ', yon: 'rtl', ttsDili: 'nqo-GN', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

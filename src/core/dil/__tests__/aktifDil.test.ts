@@ -26,7 +26,9 @@ it('cihaz dili yalnız SEÇİLEBİLİR dilse kullanılır (yarım dil kendiliği
   expect(cihazDilindenSec('tr_TR')).toBe('tr');
   const en = DILLER.find((d) => d.kod === 'en')!;
   expect(cihazDilindenSec('en_US')).toBe(en.secilebilir ? 'en' : null);
-  expect(cihazDilindenSec('he-IL')).toBeNull();
+  // Uygulamanın hiç bilmediği dil (İzlandaca) seçilmez; İbranice artık seçilebilir, eski `iw` kodu da İbranicedir.
+  expect(cihazDilindenSec('is-IS')).toBeNull();
+  expect(cihazDilindenSec('iw_IL')).toBe('he');
   // Android'in eski Endonezce kodu ("in_ID") Endonezceye eşlenir.
   const id = DILLER.find((d) => d.kod === 'id')!;
   expect(cihazDilindenSec('in_ID')).toBe(id.secilebilir ? 'id' : null);
