@@ -14,9 +14,11 @@ import {
   MetinKapisi,
   NASTALIK_AILESI,
   NASTALIK_KALIN,
+  NKO_AILESI,
   metinKapisiniKur,
   nastalikStili,
   nastalikYuklendiKur,
+  nkoYuklendiKur,
   ustIsaretliStili,
 } from '../MetinKapisi';
 
@@ -38,6 +40,7 @@ afterEach(() => {
   act(() => {
     aktifDilSifirla();
     nastalikYuklendiKur(false);
+    nkoYuklendiKur(false);
   });
 });
 
@@ -237,6 +240,51 @@ describe('Urduca', () => {
     });
     render(<Text rakamKoru>1234567</Text>);
     expect(stil('1234567').fontFamily).toBeUndefined();
+  });
+});
+
+describe("N'Ko", () => {
+  beforeEach(() => {
+    act(() => {
+      aktifDiliKur('nqo');
+    });
+  });
+
+  it('yazı tipi yüklenmeden (Android) sistem yazı tipi; rakam N\'Ko rakamına döner', () => {
+    render(<Text className="text-lg">12</Text>);
+    expect(stil('߁߂').fontFamily).toBeUndefined();
+  });
+
+  it('yüklenince (iOS) N\'Ko ailesi verilir; üst işaret satır yüksekliği de korunur', () => {
+    act(() => {
+      nkoYuklendiKur(true);
+    });
+    render(<Text className="text-lg">ߛߊߟߌ</Text>);
+    // text-lg: 18 / 28 → 28 ≥ 18 × 1.5 = 27 → olduğu gibi
+    expect(stil('ߛߊߟߌ')).toMatchObject({ fontFamily: NKO_AILESI, fontSize: 18, lineHeight: 28 });
+  });
+
+  it('rakamKoru metinde de N\'Ko ailesi verilir (yoksa iOS\'ta kutu); açık aileye dokunulmaz', () => {
+    act(() => {
+      nkoYuklendiKur(true);
+    });
+    render(
+      <>
+        <Text rakamKoru>ߓߌ 1.0.3</Text>
+        <Text style={{ fontFamily: 'AmiriQuran' }}>آية</Text>
+      </>
+    );
+    expect(stil('ߓߌ 1.0.3').fontFamily).toBe(NKO_AILESI);
+    expect(stil('آية').fontFamily).toBe('AmiriQuran');
+  });
+
+  it('başka dilde N\'Ko yazı tipi uygulanmaz', () => {
+    act(() => {
+      nkoYuklendiKur(true);
+      aktifDiliKur('ar');
+    });
+    render(<Text>وقت</Text>);
+    expect(stil('وقت').fontFamily).toBeUndefined();
   });
 });
 

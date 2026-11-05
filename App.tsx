@@ -73,7 +73,7 @@ import { GeriAlBandiKatmani } from './src/presentation/components/ortak/GeriAlBa
 import { EsitlemeTetikleyici } from './src/presentation/components/esitleme/EsitlemeTetikleyici';
 import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
 import { nowBarDegistiUygula } from './src/domain/services/NowBarDegisikligiServisi';
-import { metinKapisiniKur, NastalikYukleyici } from './src/presentation/components/metin/MetinKapisi';
+import { metinKapisiniKur, NastalikYukleyici, NkoYukleyici } from './src/presentation/components/metin/MetinKapisi';
 import { useAktifDil } from './src/presentation/hooks/useMetin';
 
 // Metin kapısı (rakam sistemi + Urduca Nestalik): RN `Text`'in çizim katmanı, ilk çizimden önce.
@@ -607,6 +607,8 @@ const AppIcerik: React.FC = () => {
       <EsitlemeTetikleyici />
       {/* Urduca Nestalik yazı tipi yalnız Urducada yüklenir (metin kapısı kullanır). */}
       {dil === 'ur' ? <NastalikYukleyici /> : null}
+      {/* N'Ko yazı tipi yalnız iOS'ta ve N'Ko'da (iOS sistemde taşımaz; Android 7+ taşır). */}
+      {dil === 'nqo' && Platform.OS === 'ios' ? <NkoYukleyici /> : null}
     </View>
   );
 };

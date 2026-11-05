@@ -53,6 +53,12 @@ declare module 'react-native' {
 /** Paketteki Urduca Nestalik yazı tipi (OFL 1.1, `assets/fonts/OFL.txt`). */
 export const NASTALIK_AILESI = 'NotoNastaliqUrdu';
 export const NASTALIK_KALIN = 'NotoNastaliqUrdu-Bold';
+/**
+ * N'Ko yazı tipi (Noto Sans NKo, OFL 1.1, `assets/fonts/OFL.txt`). iOS N'Ko'yu sistemde taşımaz
+ * (yalnız "document support"), metin kutu çizilirdi; Android 7+ (minSdk 24) sistem fontunda var.
+ * Bu yüzden yalnız iOS'ta ve N'Ko etkinken yüklenir (`NkoYukleyici`).
+ */
+export const NKO_AILESI = 'NotoSansNKo';
 /** Nestalik'te sabit satır yüksekliğinin alt sınırı (× fontSize). */
 export const NASTALIK_SATIR_ORANI = 1.8;
 /** Urducada `adjustsFontSizeToFit` küçültmesinin alt sınırı. */
@@ -72,6 +78,7 @@ export const kapiGerekli = (dil: DilKodu): boolean =>
   rakamSecilebilir(dil) || dil === 'ur' || UST_ISARETLI_DILLER.has(dil);
 
 let nastalikHazir = false;
+let nkoHazir = false;
 const yaziTipiDinleyicileri = new Set<() => void>();
 
 /** Nestalik yüklendi mi (`NastalikYukleyici` kurar). Değişince kapılar yeniden çizer. */
@@ -81,14 +88,23 @@ export function nastalikYuklendiKur(hazir: boolean): void {
   for (const fn of [...yaziTipiDinleyicileri]) fn();
 }
 
+/** N'Ko yazı tipi yüklendi mi (`NkoYukleyici` kurar; yalnız iOS). */
+export function nkoYuklendiKur(hazir: boolean): void {
+  if (hazir === nkoHazir) return;
+  nkoHazir = hazir;
+  for (const fn of [...yaziTipiDinleyicileri]) fn();
+}
+
 interface KapiDurumu {
   readonly rakam: RakamSistemi;
   readonly urduca: boolean;
   readonly nastalik: boolean;
   readonly ustIsaretli: boolean;
+  /** N'Ko etkin ve paketteki yazı tipi yüklü (iOS). */
+  readonly nko: boolean;
 }
 
-let durumOnbellek: KapiDurumu = { rakam: 'latn', urduca: false, nastalik: false, ustIsaretli: false };
+let durumOnbellek: KapiDurumu = { rakam: 'latn', urduca: false, nastalik: false, ustIsaretli: false, nko: false };
 
 /** `useSyncExternalStore` anlık görüntüsü: değerler değişmedikçe AYNI nesne. */
 function kapiDurumu(): KapiDurumu {
@@ -97,9 +113,10 @@ function kapiDurumu(): KapiDurumu {
   const urduca = dil === 'ur';
   const nastalik = urduca && nastalikHazir;
   const ustIsaretli = UST_ISARETLI_DILLER.has(dil);
+  const nko = dil === 'nqo' && nkoHazir;
   const d = durumOnbellek;
-  if (d.rakam !== rakam || d.urduca !== urduca || d.nastalik !== nastalik || d.ustIsaretli !== ustIsaretli) {
-    durumOnbellek = { rakam, urduca, nastalik, ustIsaretli };
+  if (d.rakam !== rakam || d.urduca !== urduca || d.nastalik !== nastalik || d.ustIsaretli !== ustIsaretli || d.nko !== nko) {
+    durumOnbellek = { rakam, urduca, nastalik, ustIsaretli, nko };
   }
   return durumOnbellek;
 }
@@ -152,6 +169,12 @@ export function ustIsaretliStili(stil: StyleProp<TextStyle>): TextStyle | null {
   return duz.lineHeight < alt ? { lineHeight: alt } : null;
 }
 
+/** N'Ko yazı tipi eki: açık aile yoksa paketteki N'Ko ailesi (Latin harfler sistem fontuna düşer). */
+export function nkoStili(stil: StyleProp<TextStyle>): TextStyle | null {
+  const duz = StyleSheet.flatten(stil) ?? {};
+  return duz.fontFamily ? null : { fontFamily: NKO_AILESI };
+}
+
 type KapiProps = TextProps & { ref?: React.Ref<React.ComponentRef<typeof Text>> };
 
 /**
@@ -166,9 +189,13 @@ export const MetinKapisi = React.forwardRef<React.ComponentRef<typeof Text>, Kap
   const durum = useSyncExternalStore(abone, kapiDurumu);
   const ortak = { ...kalan, ref, adjustsFontSizeToFit, cssInterop: false };
   if (rakamKoru || (!durum.urduca && !durum.ustIsaretli && durum.rakam === 'latn')) {
-    return React.createElement(Text, { ...ortak, style, minimumFontScale }, children);
+    // `rakamKoru` rakama ve Nestalik'e dokunmaz; N'Ko yazı tipi ise okunurluk için ŞART (yoksa kutu).
+    const nkoEk = durum.nko ? nkoStili(style) : null;
+    return React.createElement(Text, { ...ortak, style: nkoEk ? [style, nkoEk] : style, minimumFontScale }, children);
   }
-  const ek = durum.nastalik ? nastalikStili(style) : durum.ustIsaretli ? ustIsaretliStili(style) : null;
+  const ustEk = durum.ustIsaretli ? ustIsaretliStili(style) : null;
+  const nkoEk = durum.nko ? nkoStili(style) : null;
+  const ek = durum.nastalik ? nastalikStili(style) : ustEk || nkoEk ? { ...ustEk, ...nkoEk } : null;
   const olcek =
     durum.urduca && adjustsFontSizeToFit ? Math.max(minimumFontScale ?? 0, NASTALIK_EN_KUCUK_OLCEK) : minimumFontScale;
   return React.createElement(
@@ -230,6 +257,20 @@ export const NastalikYukleyici: React.FC = () => {
   });
   useEffect(() => {
     nastalikYuklendiKur(yuklendi);
+  }, [yuklendi]);
+  return null;
+};
+
+/**
+ * N'Ko etkinken iOS'ta paketteki N'Ko yazı tipini yükler (`NastalikYukleyici` ile aynı yol).
+ * Yalnız iOS + N'Ko'da çizilir (App.tsx); Android sistem yazı tipi N'Ko'yu taşır.
+ */
+export const NkoYukleyici: React.FC = () => {
+  const [yuklendi] = useFonts({
+    [NKO_AILESI]: require('../../../../assets/fonts/NotoSansNKo-Regular.ttf'),
+  });
+  useEffect(() => {
+    nkoYuklendiKur(yuklendi);
   }, [yuklendi]);
   return null;
 };
