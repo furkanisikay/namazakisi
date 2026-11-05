@@ -911,7 +911,16 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                                     color={secili ? tonBilgi.renk : renkler.metinIkincil}
                                                                     solid
                                                                 />
-                                                                <Text className="text-xs font-semibold mt-1" style={{ color: renkler.metin }}>
+                                                                {/* Tek uzun sözcük (ka "გამაფრთხილებელი", mg "Fampitandremana")
+                                                                    dar çipte harfin ortasından ikiye bölünüyordu: tek satırda
+                                                                    küçülür. Boşluklu etiket ("Nhẹ nhàng") eskisi gibi sarılır. */}
+                                                                <Text
+                                                                    className="text-xs font-semibold mt-1"
+                                                                    style={{ color: renkler.metin, textAlign: 'center' }}
+                                                                    {...(TON_ETIKETLERI[kademe].includes(' ')
+                                                                        ? {}
+                                                                        : { numberOfLines: 1, adjustsFontSizeToFit: true, minimumFontScale: 0.6 })}
+                                                                >
                                                                     {TON_ETIKETLERI[kademe]}
                                                                 </Text>
                                                             </TouchableOpacity>
