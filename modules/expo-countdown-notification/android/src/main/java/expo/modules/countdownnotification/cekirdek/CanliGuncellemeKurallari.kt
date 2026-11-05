@@ -180,8 +180,7 @@ object CanliGuncellemeKurallari {
         "lt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // mg
         "mg" to KisaBirimler("ora", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: lg
-        "lg" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        "lg" to KisaBirimler("ssa", "dk", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: rw
         "rw" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: rn

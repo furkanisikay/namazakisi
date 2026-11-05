@@ -1,61 +1,60 @@
-// ÇEVİRİ: lg — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Lugandada: yalın tekil emir, kısa (Firefox lg emsali; kaynaklı çağrı
+ * "Yimirizaawo esswala", QE 17:78). Secde karşılığı YAZILMAZ → "yimirira osaale". Başlıkta
+ * süre "{dk}dk" bitişik: "Magaribi · 655dk" ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}dk ziyise · kiseera kya sswala ⏰',
+    giris2: '{ad} · {dk}dk ziyise · tolwisa sswala yo ⚠️',
+    giris3: '{ad} · {dk}dk ziyise · esswala yo ekulindiridde 🔥',
+    giris4: '{ad} · {dk}dk ziyise · YIMIRIZAAWO ESSWALA 🚨',
+    erken3: '{ad} · {dk}dk zisigadde · esswala yo ekulindiridde 🔥',
+    erken4: '{ad} · {dk}dk zisigadde · YIMIRIZAAWO ESSWALA 🚨',
+    cikis1: '{ad} · {dk}dk zisigadde ⏰',
+    cikis2: '{ad} · {dk}dk · ekiseera kikendeera ⚠️',
+    cikis3: '{ad} · {dk}dk · ekiseera kiggwaawo 🔥',
+    cikis4: '{ad} · {dk}dk · EKISEERA KIGGWAAKO 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Kye kiseera ky’esswala; saala ng’okyalina omukisa.', 'Saala ng’ekiseera kikyali ku ludda lwo; togirindiriza.'],
+    s2: ['Gy’okoma okulwisa, gy’ekoma okukuzitoowerera; tolindirira nkomerero.', 'Ekiseera kigenda — saala kati.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Gy’okoma okulwisa, gy’okoma okusemberera okugisubwa; saala kati.',
+      'Togamba nti “Nja kusaala oluvannyuma”; osobola okusaala kati.',
+      'Golokoka kati, oleme kugamba “singa” mu ddakiika ntono.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Tolwisa sswala yo nate — yimirira osaale kati.', 'Teeka wansi ky’okola, oyimirire osaale.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Ekiseera kitandise okukendeera; saala ng’okyalina omukisa.',
+    s2: 'Tolindirira nkomerero; kati kiseera kirungi okusaala.',
+    s3: 'Ekiseera kinaatera okuggwaako; okyayinza okusaala kati.',
+    s4: 'Bw’oba osaaze, nyiga “Nsaaze”; bw’oba tonnasaala, yimirira osaale kati.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'TOLWISA SSWALA YO. Yimirira osaale kati. (eddakiika {dk} ziyise)',
+    giris2: 'Ekiseera kigenda; tolindirira nkomerero. (eddakiika {dk} ziyise)',
+    giris1: cogul({ one: 'Wayise eddakiika {n} bukya ekiseera ky’esswala kituuka.', other: 'Wayise eddakiika {n} bukya ekiseera ky’esswala kituuka.' }),
+    erken4: 'Tolwisa sswala yo; yimirira osaale kati. (eddakiika {dk} zisigadde)',
+    cikis4: 'EKISEERA KIGGWAAKO. Yimirira osaale kati. (eddakiika {dk} zisigadde)',
+    cikis2: 'Ekiseera kikendeera; tolindirira nkomerero. (eddakiika {dk} zisigadde)',
+    cikis1: cogul({ one: 'Esigadde eddakiika {n} ekiseera ky’esswala kiggwe.', other: 'Esigadde eddakiika {n} ekiseera ky’esswala kiggwe.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · saala nga tonnebaka ⏰',
+    govde: 'Essaawa ez’akasirise zitandika mu ddakiika {dk}; saala Ishai nga tonnagenda kwebaka.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Ekiseera kitandise okukendeera; saala ng’okyalina omukisa.',
+    sonaBirakma: 'Tolindirira nkomerero; kati kiseera kirungi okusaala.',
+    fisilti: 'Togamba nti “Nja kusaala oluvannyuma”; ekiseera kinaatera okuggwaako, osobola okusaala kati.',
+    omur: 'Ekiseera kiyita; okyalina omukisa okusaala esswala eno mu kiseera kyayo.',
+    keske: 'Golokoka kati, oleme kugamba “singa” mu ddakiika ntono.',
+    namazaDur: 'Bw’oba osaaze, nyiga “Nsaaze”; bw’oba tonnasaala, yimirira osaale kati.',
+    sonDakika: 'Eddakiika ezisembayo. Teeka wansi ky’okola, oyimirire osaale.',
   },
 };

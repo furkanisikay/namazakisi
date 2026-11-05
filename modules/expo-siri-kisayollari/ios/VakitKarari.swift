@@ -2172,31 +2172,30 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Sokafy ny fampiharana"
     )
 
-    // ÇEVİRİ: lg
     public static let lg = VakitMetinleri(
         dil: "lg",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Subuhi", "ogle": "Dhuhur", "ikindi": "Aswiri", "aksam": "Magaribi", "yatsi": "Ishai"],
+        gunes: "Enjuba okuvaayo",
+        konumYok: "Ggulawo app oteekewo ekifo kyo ebiseera by’esswala bisobole okubalibwa.",
+        veriEski: "Ebiseera by’esswala bikaddiye. Ggulawo app omulundi gumu obizze obuggya.",
+        girisBugun: "ku ssaawa {saat}",
+        girisYarin: "enkya ku ssaawa {saat}",
+        suAnVakti: "Kati kiseera kya {ad}.",
+        suAnVaktiCikis: "Kati kiseera kya {ad}; kiggwaako ku ssaawa {saat}.",
+        siradakiNamaz: "Esswala eddako ye {ad}, etandika {giris}.",
+        isaretlendi: "{ad} eteereddwako akabonero nti esaaliddwa. {dua}.",
+        zatenKilindi: "{ad} yamaze dda okuteekebwako akabonero nti esaaliddwa.",
+        vakitYok: "Tewali sswala ya kuteekako kabonero kati.",
+        vakitYokSiradaki: "Tewali sswala ya kuteekako kabonero kati. Eddako ye {ad}, etandika {giris}.",
+        onay: "Teeka akabonero ku {ad} nti esaaliddwa?",
+        vakitDegisti: "Ekiseera ky’esswala kikyuse, n’olwekyo tewali kiteereddwako kabonero. Ddamu ogezeeko.",
+        kabulDuasi: "Allah akkirize",
+        kildim: "Nsaaze",
+        kilindi: "Esaaliddwa",
+        kontrolKildim: "{ad} · Nsaaze",
+        kontrolKilindi: "{ad} esaaliddwa",
+        kontrolVakitYok: "Tewali sswala ya kuteekako kabonero",
+        uygulamayiAcin: "Ggulawo app"
     )
 
     // ÇEVİRİ: rw

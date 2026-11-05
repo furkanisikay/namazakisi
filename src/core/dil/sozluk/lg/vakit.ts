@@ -1,22 +1,21 @@
-// ÇEVİRİ: lg — İngilizce iskelet, çevrilince bu satır silinir
 // Lugandada `buyuk` elle yazılır (`toUpperCase` YASAK; ŋ → Ŋ).
 import type { Sozluk } from '../tr';
 
-/** İngilizcede vakit adları özel addır; cümle içinde de büyük harfle başlar. */
+/** Vakit adları IslamHouse lg (OKWETUKUZA N’ESSWALA); güneş doğuşu QE 15:73 kökünden türetildi. */
 export const vakit: Sozluk['vakit'] = {
-  adlar: { imsak: 'Fajr', gunes: 'Sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  buyuk: { imsak: 'FAJR', gunes: 'SUNRISE', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
-  kucuk: { imsak: 'Fajr', gunes: 'sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  imsakVakti: 'Fajr',
-  cuma: "Jumu'ah",
-  cumaKucuk: "Jumu'ah",
-  gunesDogusu: 'Sunrise',
-  gunesDogusuKucuk: 'sunrise',
-  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not yet time', gecti: 'Not prayed' },
-  durumKucuk: { kilindi: 'prayed', vaktiGeldi: 'time to pray', girmedi: 'not yet time', gecti: 'not prayed' },
-  eylem: { kildim: "I've prayed", kilindi: 'Prayed' },
-  kerahatVakti: 'Makruh time',
-  isaretle: 'Mark as prayed',
-  geriAlEtiketi: '{durum}, tap to undo',
-  geriAlindi: 'Unmarked',
+  adlar: { imsak: 'Subuhi', gunes: 'Enjuba okuvaayo', ogle: 'Dhuhur', ikindi: 'Aswiri', aksam: 'Magaribi', yatsi: 'Ishai' },
+  buyuk: { imsak: 'SUBUHI', gunes: 'ENJUBA OKUVAAYO', ogle: 'DHUHUR', ikindi: 'ASWIRI', aksam: 'MAGARIBI', yatsi: 'ISHAI' },
+  kucuk: { imsak: 'Subuhi', gunes: 'enjuba okuvaayo', ogle: 'Dhuhur', ikindi: 'Aswiri', aksam: 'Magaribi', yatsi: 'Ishai' },
+  imsakVakti: 'Subuhi',
+  cuma: 'Ejjuma',
+  cumaKucuk: 'Ejjuma',
+  gunesDogusu: 'Enjuba okuvaayo',
+  gunesDogusuKucuk: 'enjuba okuvaayo',
+  durum: { kilindi: 'Esaaliddwa', vaktiGeldi: 'Ekiseera kituuse', girmedi: 'Tekinnatuuka', gecti: 'Tesaaliddwa' },
+  durumKucuk: { kilindi: 'esaaliddwa', vaktiGeldi: 'ekiseera kituuse', girmedi: 'tekinnatuuka', gecti: 'tesaaliddwa' },
+  eylem: { kildim: 'Nsaaze', kilindi: 'Esaaliddwa' },
+  kerahatVakti: 'Ekiseera ekikyayibwa',
+  isaretle: 'Laga nti osaaze',
+  geriAlEtiketi: '{durum}, nyiga okukomyawo',
+  geriAlindi: 'Akabonero kaggyiddwawo',
 };

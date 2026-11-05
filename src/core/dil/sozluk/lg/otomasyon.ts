@@ -1,10 +1,9 @@
-// ÇEVİRİ: lg — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'ekiseera kituuse',
+  vakitGirdiBasligi: '{ad}: ekiseera kituuse',
+  herhangiVakit: 'Ekiseera ky’esswala yonna bwe kituuka',
+  yalnizVakit: 'Ekiseera kya {ad} kyokka bwe kituuka',
+  camide: 'Bw’olabibwa ng’oli ku muzikiti (nga “Ndi ku muzikiti” kiri ku)',
 };

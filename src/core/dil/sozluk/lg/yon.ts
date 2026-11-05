@@ -1,10 +1,9 @@
-// ÇEVİRİ: lg — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Oluuyi lw’ebiwandiiko lujja kukyuka',
+  aciklama: 'Olulimi lw’olonze luwandiikibwa mu luuyi lulala. App yeetaaga okuddamu okutandika empapula zisobole okukyuka.',
+  simdiBaslat: 'Ddamu otandike kati',
+  sonra: 'Oluvannyuma',
+  bekliyor: 'Oluuyi lw’ebiwandiiko lujja kukyuka app bw’eneddamu okutandika.',
 };

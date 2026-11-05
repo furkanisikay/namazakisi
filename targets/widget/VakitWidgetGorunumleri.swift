@@ -1731,29 +1731,28 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Manamarika ho vita ny soalat ankehitriny."
     )
 
-    // ÇEVİRİ: lg
     static let lg = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Ekiseera ky’esswala",
+        galeriAciklama: "Ekiseera ky’esswala ekiriwo, ekiseera ekisigadde okuggwaako n’ebiseera by’esswala bya leero.",
+        veriEski: "Ggulawo app ozze obuggya ebiseera by’esswala",
+        konumYok: "Ggulawo app oteekewo ekifo kyo",
+        kilindiSiradaki: "{ad} esaaliddwa · {sonraki} {saat}",
+        adCikis: "{ad} · kiggwaako {saat}",
+        siradakiAdSaat: "Eddako {ad} {saat}",
+        vaktiCikisErisim: "Kiseera kya {ad}, kiggwaako {saat}",
+        siradakiErisim: "Eddako {ad}, {saat}",
+        cikisSaat: "Kiggwaako {saat}",
+        bitisSaat: "Kiggwaako {saat}",
+        kilindiBaslik: "{ad} esaaliddwa",
+        siradaki: "Eddako",
+        siradakiAd: "Eddako {ad}",
+        kildimErisim: "{ad}: Nsaaze",
+        gunSatiriKilindi: ", esaaliddwa",
+        bitti: "Kiweddeko",
+        vakitCikti: "Ekiseera ky’esswala kiweddeko",
+        kabulAlt: "{ad} esaaliddwa",
+        kontrolAdi: "Nsaaze",
+        kontrolAciklama: "Kiteeka akabonero ku sswala eriwo nti esaaliddwa."
     )
 
     // ÇEVİRİ: rw

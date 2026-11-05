@@ -1,15 +1,14 @@
-// ÇEVİRİ: lg — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Kulaani {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Esswala esinga otulo. Jjangu ku buwanguzi.',
+    araVer: 'Wummulamu katono ku mirimu gy’ensi, oyimirire mu maaso ga Mukama wo.',
+    yorgunluk: 'Aswiri ekulindiridde, weggyeko obukoowu bw’olunaku ofune emirembe.',
+    sukur: 'Magaribi kwe kwebaza kw’olunaku. Yanguwa oyimirire mu maaso ga Mukama wo.',
+    aksamKisa: 'Ekiseera kya Magaribi kimpi; kituuse, saala nga tolwisizza.',
+    geceKaranligi: 'Mu kizikiza ky’ekiro, beera wekka ne Mukama wo. Ishai ddagala lya mwoyo.',
+    davet: 'Oyitiddwa ku Ishai, omaliriza olunaku ng’onoonya okusiima kwa Allah.',
   },
 };

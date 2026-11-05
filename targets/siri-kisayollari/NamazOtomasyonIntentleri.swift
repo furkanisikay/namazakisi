@@ -607,11 +607,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Tsia, mbola tsy voamarika izy."
     )
 
-    // ÇEVİRİ: lg (one/other)
+    // lg — Luganda: JS `sozluk/lg`; CLDR lg one/other, sayı addan sonra (one = other)
     static let lg = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} etandika mu ddakiika {n}.", "other": "{ad} etandika mu ddakiika {n}."],
+        evetKilindi: "Yee, eteereddwako akabonero nti esaaliddwa.",
+        hayirKilinmadi: "Nedda, tennateekebwako kabonero."
     )
 
     // ÇEVİRİ: rw (other)

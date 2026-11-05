@@ -1084,19 +1084,18 @@ struct TvArayuzMetinleri {
         siradakiEk: ", soalat manaraka"
     )
 
-    // ÇEVİRİ: lg
     static let lg = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Londa ekibuga kyo",
+        ilMerkezi: "Ebiseera by’esswala bibalibwa okusinziira ku makkati g’ekibuga. Osobola okukyusa ky’olonze oluvannyuma.",
+        ilSecErisim: "{il}, londa",
+        kalan: "Ekiseera ekisigadde {ad} okutuuka",
+        kalanErisim: "Ekiseera ekisigadde {ad} okutuuka: {sure}",
+        konumuDegistirin: "Kyusa ekifo",
+        kerahatSuruyor: "Ekiseera ekikyayibwa: {tur}, kiggwaako {bitis}. {aciklama}",
+        siradakiKerahat: "Ekiseera ekikyayibwa ekiddako: {tur} {bas}–{bit}",
+        cumaBilgisi: "Leero Lwakutaano. Esswala y’Ejjuma esaalibwa mu kiseera kya Dhuhur (kitandika {giris}).",
+        suAnkiEk: ", esswala eriwo",
+        siradakiEk: ", esswala eddako"
     )
 
     // ÇEVİRİ: rw

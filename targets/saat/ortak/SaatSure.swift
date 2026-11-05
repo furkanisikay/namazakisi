@@ -616,12 +616,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: lg (one/other)
+    // lg — Luganda: JS `sozluk/lg/sure.ts` birebir (kısa birim ssa/dk/tk; sayı addan sonra; one/other)
     public static let lg = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "ssa", birimDk: "dk", birimSn: "tk",
+        saat: ["one": "essaawa {n}", "other": "essaawa {n}"],
+        dakika: ["one": "eddakiika {n}", "other": "eddakiika {n}"],
+        saniye: ["one": "akatikitiki {n}", "other": "obutikitiki {n}"],
         birimAyirici: " ", parcaAyirici: " "
     )
 
