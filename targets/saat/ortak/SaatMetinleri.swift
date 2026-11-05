@@ -4244,8 +4244,8 @@ public struct SaatMetinleri: Equatable {
     public static let nqo = SaatMetinleri(
         dil: "nqo",
         saatiGuncelleyin: "ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߞߎߘߊ ߊߟߎ߫ ߟߊ߫ ߡߐ߲ߕߎߙߎ ߞߊ߲.",
-        iphonedaBirKezAcin: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍ߫ ߓߐ߫ ߊߟߎ߫ ߟߊ߫ ߌߔߑߤߏߣߋ ߟߊ߫. ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߌߔߑߤߏߣߋ ߞߊ߲ ߛߌߢߍ ߞߋߟߋ߲߫.",
-        veriEski: "ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߌߔߑߤߏߣߋ ߞߊ߲ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߞߎߘߊ.",
+        iphonedaBirKezAcin: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍ߫ ߓߐ߫ ߊߟߎ߫ ߟߊ߫ iPhone ߟߊ߫. ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ iPhone ߞߊ߲ ߛߌߢߍ ߞߋߟߋ߲߫.",
+        veriEski: "ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ iPhone ߞߊ߲ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߞߎߘߊ.",
         isaretle: "ߊ߬ ߛߓߍ߫",
         vazgec: "ߊ߬ ߘߐߛߊ߬",
         kilindiErisim: "{ad} ߞߍߣߍ߲. {dua}",
@@ -4265,7 +4265,7 @@ public struct SaatMetinleri: Equatable {
         durumGecti: "ߊ߬ ߕߍߡߍ߲ߠߊ",
         durumSirada: "ߊ߬ ߣߕߊ߬",
         kible: "ߞߌߓߌߟߊ",
-        kibleKonumYok: "ߞߌߓߌߟߊ ߞߊ߬ ߞߊ߲ ߣߌ߫ ߊߟߎ߫ ߦߙߐ߫ ߦߋ߫. ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߌߔߑߤߏߣߋ ߞߊ߲ ߞߊ߬ ߊߟߎ߫ ߦߙߐ߫ ߟߊߓߍ߲߬; ߡߐ߲ߕߎߙߎ ߓߍ߫ ߊ߬ ߛߐ߬ߘߐ߲߬ ߡߌ߬ߛߍ߲ ߞߋߟߋ߲߫ ߞߐ߬ߣߐ.",
+        kibleKonumYok: "ߞߌߓߌߟߊ ߞߊ߬ ߞߊ߲ ߣߌ߫ ߊߟߎ߫ ߦߙߐ߫ ߦߋ߫. ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ iPhone ߞߊ߲ ߞߊ߬ ߊߟߎ߫ ߦߙߐ߫ ߟߊߓߍ߲߬; ߡߐ߲ߕߎߙߎ ߓߍ߫ ߊ߬ ߛߐ߬ߘߐ߲߬ ߡߌ߬ߛߍ߲ ߞߋߟߋ߲߫ ߞߐ߬ߣߐ.",
         pusulaHazirlaniyor: "ߓߎߛߐߟߌ ߓߍ߫ ߟߊߓߍ߲߬…",
         sekizCizin: "ߊߟߎ߫ ߦߋ߫ ߡߐ߲ߕߎߙߎ ߟߊߡߊߜߊ ߌ ߣߴߊ߬ ߝߐ߫ 8",
         kuzeyHarfi: "ߛ",
@@ -4290,8 +4290,8 @@ public struct SaatMetinleri: Equatable {
         vaktiCikisErisim: "{ad} ߥߊ߯ߕߌ߫߸ ߊ߬ ߓߍ߫ ߓߊ߲߫ {saat}",
         kilindiBaslik: "{ad} ߞߍߣߍ߲",
         siradaki: "ߊ߬ ߣߕߊ߬",
-        komplikasyonVeriEski: "ߊߟߎ߫ ߦߋ߫ ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߌߔߑߤߏߣߋ ߞߊ߲ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߞߎߘߊ",
-        vakitlerIphonedan: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍ߫ ߓߐ߫ ߊߟߎ߫ ߟߊ߫ ߌߔߑߤߏߣߋ ߟߊ߫"
+        komplikasyonVeriEski: "ߊߟߎ߫ ߦߋ߫ ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ iPhone ߞߊ߲ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߞߎߘߊ",
+        vakitlerIphonedan: "ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍ߫ ߓߐ߫ ߊߟߎ߫ ߟߊ߫ iPhone ߟߊ߫"
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; cevrilmemis dil Ingilizce kopya,

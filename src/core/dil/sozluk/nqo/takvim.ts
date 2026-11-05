@@ -154,7 +154,7 @@ export const takvim: Sozluk['takvim'] = {
     yenile: 'ߊ߬ ߟߊߞߎߙߊ',
     izinOkunamadi: 'ߞߊߟߊ߲ߘߌߙߌߦߋ ߘߊߢߍ ߡߊ߬ ߛߋ߫ ߞߊ߬ ߞߊߟߊ߲.',
     takvimYok: 'ߞߊߟߊ߲ߘߌߙߌߦߋ ߛߌ߫ ߡߊ߬ ߛߐ߬ߘߐ߲߬ ߊߟߎ߫ ߟߊ߫ ߡߌߣߍ߲ ߞߊ߲ ߡߌ߲߬ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߦߍߟߍߡߊ.',
-    takvimYokIos: 'ߊߟߎ߫ ߦߋ߫ ߌߗߑߟߏߎߘ ߟߊ߫ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ ߞߐ߬ߣߐ ߞߊ߬ Calendars ߘߊߦߟߍ߬.',
+    takvimYokIos: 'ߊߟߎ߫ ߦߋ߫ iCloud ߟߊ߫ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ ߞߐ߬ߣߐ ߞߊ߬ Calendars ߘߊߦߟߍ߬.',
     takvimYokAndroid: 'ߊߟߎ߫ ߦߋ߫ Google ߖߊߕߋߓߐߛߍߓߍ߲ ߘߐ߫ ߟߊ߫ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲.',
     hangiVakitler: 'ߛߊߟߌ ߖߎߡߍ߲ ߟߎ߬؟',
     kacGun: 'ߟߏ߲ ߖߏߟߌ ߢߍ߫ ߝߍ߬؟',

@@ -5,7 +5,7 @@ export const hesap: Sozluk['hesap'] = {
   profiller: {
     diyanet: 'Diyanet (ߕߎߙߑߞߌ߫)',
     mwl: 'ߛߌߟߊߡߍ ߘߌ߬ߢߍ ߖߍߞߎߟߎ (MWL)',
-    ummulKura: 'Umm ߊߟ-Qura (ߛߎ߰ߘߎ߬ߟߊ߫-ߡߊ߲߬ߛߊ߬ߟߊ)',
+    ummulKura: 'Umm al-Qura (ߛߎ߰ߘߎ߬ߟߊ߫-ߡߊ߲߬ߛߊ߬ߟߊ)',
     misir: 'ߋߖ߭ߌߔߑߕ ߘߎߜߎߞߏߟߏ ߛߎߡߊ߲ߠߌ ߢߍߡߐߜߐߦߊ',
     karachi: 'ߛߌߟߊߡߍ ߘߐ߲ߠߌߦߊ ߌߣߌߝߍߙߌߛߌߕߋ߸ Karachi',
     isna: 'ISNA (ߊߡߋߙߌߞߌ ߛߊߤߋߟߌ)',
