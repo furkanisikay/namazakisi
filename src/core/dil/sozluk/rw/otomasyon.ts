@@ -1,10 +1,10 @@
-// ÇEVİRİ: rw — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Ijambo ry’ingenzi rya Samsung Routines: «igihe cyageze» riri ku iherezo rya buri mutwe, kugira ngo routine imwe ifate iswala zose. */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'igihe cyageze',
+  vakitGirdiBasligi: '{ad}: igihe cyageze',
+  herhangiVakit: 'Igihe icyo ari cyo cyose cy’iswala nikigera',
+  yalnizVakit: 'Igihe cya {ad} nikigera gusa',
+  camide: 'Iyo mumenyekanye ku musigiti (Ndi ku musigiti ifunguye)',
 };

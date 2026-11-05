@@ -1,61 +1,62 @@
-// ÇEVİRİ: rw — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * Guhamagarira iswala mu Kinyarwanda: itegeko rigufi ribwira umuntu umwe (u-…, «Hagurukira iswala»,
+ * «Ntucyereze»), nk’uko QuranEnc 17:78 na 11:114 bivuga «Ujye uhozaho iswala»; ahandi muri porogaramu
+ * ni ubwubahane (mu-…-e). Nta «!».
+ * «Gupfukama/kubama» ntibyandikwa (secde ni igice cy’iswala) → «hagurukira iswala».
+ * Mu mutwe, umunota wandikwa «min» ufatanye n’umubare: «Adhuhuri · 45min» ikwirwa mu nyuguti 16.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}min irashize · igihe cy’iswala ⏰',
+    giris2: '{ad} · {dk}min irashize · ntucyereze iswala ⚠️',
+    giris3: '{ad} · {dk}min irashize · iswala iragutegereje 🔥',
+    giris4: '{ad} · {dk}min irashize · HAGURUKIRA ISWALA 🚨',
+    erken3: '{ad} · {dk}min isigaye · iswala iragutegereje 🔥',
+    erken4: '{ad} · {dk}min isigaye · HAGURUKIRA ISWALA 🚨',
+    cikis1: '{ad} · {dk}min isigaye ⏰',
+    cikis2: '{ad} · {dk}min · igihe kiragabanuka ⚠️',
+    cikis3: '{ad} · {dk}min · igihe kirashira 🔥',
+    cikis4: '{ad} · {dk}min · IGIHE KIRARANGIRA 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Ni igihe cy’iswala; sali ukiri mu mahirwe.', 'Sali igihe kikikwemerera; ntubisubike.'],
+    s2: ['Uko ubisubika, ni ko biremera; ntutegereze impera y’igihe ngo usali.', 'Igihe kirakomeza — sali ubu.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Uko ucyereza, ni ko wegera kuyicikanwa; sali ubu.',
+      'Ntuvuge ngo «Nzasali nyuma»; ushobora gusali ubu.',
+      'Haguruka ubu aho kuvuga ngo «iyo mbimenya» mu minota mike.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Ntwongere gucyereza iswala — hagurukira iswala ubu.', 'Rekera aho ibyo ukora maze uhagurukire iswala.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Igihe gitangiye kugabanuka; sali ukiri mu mahirwe.',
+    s2: 'Ntutegereze impera y’igihe ngo usali; ubu ni igihe cyiza cyo gusali.',
+    s3: 'Igihe kigiye gushira; uracyashobora gusali ubu.',
+    s4: 'Niba wasali, kanda «Nasali»; niba utarasali, hagurukira iswala ubu.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'NTUCYEREZE ISWALA. Hagurukira iswala ubu. (hashize {dk} min)',
+    giris2: 'Igihe kirakomeza; ntutegereze impera y’igihe ngo usali. (hashize {dk} min)',
+    giris1: cogul({ one: 'Hashize iminota {n} igihe cy’iswala gitangiye.', other: 'Hashize iminota {n} igihe cy’iswala gitangiye.' }),
+    erken4: 'Ntucyereze iswala; hagurukira iswala ubu. (hasigaye {dk} min)',
+    cikis4: 'IGIHE KIRARANGIRA. Hagurukira iswala ubu. (hasigaye {dk} min)',
+    cikis2: 'Igihe kiragabanuka; ntutegereze impera y’igihe ngo usali. (hasigaye {dk} min)',
+    cikis1: cogul({ one: 'Hasigaye iminota {n} ngo igihe cy’iswala kirangire.', other: 'Hasigaye iminota {n} ngo igihe cy’iswala kirangire.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · sali mbere yo gusinzira ⏰',
+    govde: 'Amasaha y’ituze atangira mu minota {dk}; sali Isha mbere yo kuryama.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Igihe gitangiye kugabanuka; sali ukiri mu mahirwe.',
+    sonaBirakma: 'Ntutegereze impera y’igihe ngo usali; ubu ni igihe cyiza cyo gusali.',
+    fisilti: 'Ntuvuge ngo «Nzasali nyuma»; igihe kigiye gushira, ushobora gusali ubu.',
+    omur: 'Igihe kirahita; uracyafite amahirwe yo gusali iyi swala ku gihe cyayo.',
+    keske: 'Haguruka ubu aho kuvuga ngo «iyo mbimenya» mu minota mike.',
+    namazaDur: 'Niba wasali, kanda «Nasali»; niba utarasali, hagurukira iswala ubu.',
+    sonDakika: 'Iminota ya nyuma. Rekera aho ibyo ukora maze uhagurukire iswala.',
   },
 };

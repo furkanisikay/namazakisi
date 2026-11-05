@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: rw — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- Kinyarwanda. -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">Mushyire kode ya QR iri kuri ekarani ya televiziyo mu kazu</string>
+    <string name="tvesleme_qr_vazgec">Kureka</string>
+    <string name="tvesleme_qr_vazgec_erisim">Kureka gusoma kode</string>
+    <string name="tvesleme_qr_yabanci">Iyi kode ya QR si iya Namaz Akışı TV. Musome kode iri kuri televiziyo.</string>
+    <string name="tvesleme_qr_okundu">Kode yasomwe</string>
 </resources>

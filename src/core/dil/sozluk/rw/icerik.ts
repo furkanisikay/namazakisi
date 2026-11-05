@@ -1,15 +1,14 @@
-// ÇEVİRİ: rw — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Qur’an {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Iswala iruta ibitotsi. Ngwino ku ntsinzi.',
+    araVer: 'Fata akaruhuko gato mu mirimo y’isi maze uhagarare imbere ya Nyagasani wawe.',
+    yorgunluk: 'Asr iragutegereje, ngo wikureho umunaniro w’umunsi kandi ubone amahoro.',
+    sukur: 'Maghrib ni ugushimira k’umunsi. Ihutire guhagarara imbere ya Nyagasani wawe.',
+    aksamKisa: 'Igihe cya Maghrib ni gito; cyatangiye, sali udacyereza.',
+    geceKaranligi: 'Mu mwijima w’ijoro, iherere na Nyagasani wawe. Isha ni umuti w’umutima.',
+    davet: 'Uratumiwe kuri Isha, ngo urangize umunsi ushaka kwishimirwa na Allah.',
   },
 };

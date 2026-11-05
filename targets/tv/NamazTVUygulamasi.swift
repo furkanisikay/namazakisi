@@ -1098,19 +1098,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", esswala eddako"
     )
 
-    // ÇEVİRİ: rw
+    // rw
     static let rw = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Muhitemo umujyi wanyu",
+        ilMerkezi: "Ibihe by’iswala bibarwa hakurikijwe icyicaro cy’intara. Mushobora guhindura amahitamo yanyu nyuma.",
+        ilSecErisim: "{il}, guhitamo",
+        kalan: "Igihe gisigaye kugeza {ad}",
+        kalanErisim: "Igihe gisigaye kugeza {ad}: {sure}",
+        konumuDegistirin: "Guhindura aho muherereye",
+        kerahatSuruyor: "Igihe kidakwiye: {tur}, kirangira {bitis}. {aciklama}",
+        siradakiKerahat: "Igihe kidakwiye gikurikira: {tur} {bas}–{bit}",
+        cumaBilgisi: "Uyu munsi ni Ijuma. Iswala ya Ijuma isalwa mu gihe cya Adhuhuri (gitangira saa {giris}).",
+        suAnkiEk: ", iswala iriho",
+        siradakiEk: ", iswala ikurikira"
     )
 
     // ÇEVİRİ: rn

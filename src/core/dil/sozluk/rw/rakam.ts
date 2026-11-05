@@ -1,11 +1,10 @@
-// ÇEVİRİ: rw — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Imibare',
+  aciklama: 'Muhitemo imibare ikoreshwa ku masaha, amatariki n’indi mibare.',
+  otomatik: 'Hakurikijwe igihugu',
+  otomatikAciklama: 'Hakoreshwa imibare imenyerewe mu gihugu muherereyemo.',
+  dogu: 'Imibare y’Icyarabu cy’iburasirazuba',
+  bati: 'Imibare y’iburengerazuba',
 };

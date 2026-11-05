@@ -127,8 +127,9 @@ class TvDilTablolariTest {
         // mg, ln, ak 0 ve 1 tekil: 0'da tekil kalıp. Sayının yeri dile göre değişir (ln "ngonga 1"): rakamı yerinde soy.
         for (dil in listOf(TvDiliMg, TvDiliLn, TvDiliAk)) assertEquals(dil.saatSesli(1).replace("1", "#"), dil.saatSesli(0).replace("0", "#"))
         // CLDR dışı (rw, rn, dag, mos, aa, mdh) ve nqo yalnız other: sesli süre her sayıda çoğul kalıp.
+        // Sayı başta ya da sonda olabilir (Kinyarwanda "amasaha 1": birim önce).
         for (dil in listOf(TvDiliRw, TvDiliRn, TvDiliDag, TvDiliMos, TvDiliAa, TvDiliMdh, TvDiliNqo)) {
-            assertEquals(dil.saatSesli(1).removePrefix("1"), dil.saatSesli(2).removePrefix("2"))
+            assertEquals(dil.saatSesli(1).replace("1", "#"), dil.saatSesli(2).replace("2", "#"))
         }
         // İbranice kaynak dizini values-iw: cihazdan gelen "iw" de İbranice tabloyu seçer.
         assertSame(TvDiliHe, tvDili("iw"))

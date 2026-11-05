@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: rw — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- Kinyarwanda. Terimler JS sozluk/rw ile aynı (Uburyo bw’iswala, umusigiti). -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">Ndi ku musigiti</string>
+    <string name="camigeofence_kanal_durum_aciklama">Itangazo rituje iyo mumenyekanye ku musigiti</string>
+    <string name="camigeofence_kanal_soru_ad">Nyuma yo kuva ku musigiti</string>
+    <string name="camigeofence_kanal_soru_aciklama">Ikibazo kibafasha kwemeza iswala yanyu nyuma yo kuva ku musigiti</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">Uburyo bw’iswala burafunguye. Ibyibutsa bizaza bucece.</string>
+    <string name="camigeofence_govde_mod">Uburyo bw’iswala burafunguye.</string>
+    <string name="camigeofence_govde_sessiz">Ibyibutsa bizaza bucece.</string>
+    <string name="camigeofence_govde_normal">Ibyibutsa bizaza nk’uko bisanzwe.</string>
+    <string name="camigeofence_eylem_modu_kapat">Gufunga uburyo</string>
+    <string name="camigeofence_eylem_cami_degil">Si umusigiti</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">Muri ku musigiti?</string>
+    <string name="camigeofence_soru_govde">Muri hafi ya %1$s. Ntitubizi neza, ni yo mpamvu tubabaza.</string>
+    <string name="camigeofence_varsayilan_ad">Umusigiti</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Gufungura Uburyo bw’iswala</string>
+    <string name="camigeofence_eylem_evet_camideyim">Yego, ndi ku musigiti</string>
+    <string name="camigeofence_eylem_hayir">Oya</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
-    <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_kildiniz_mi">Mwasali %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Mushobora kuyemeza mukanze rimwe gusa.</string>
+    <string name="camigeofence_eylem_kildim">Nasali</string>
+    <string name="camigeofence_namaz_imsak">Fajri</string>
+    <string name="camigeofence_namaz_ogle">Adhuhuri</string>
     <string name="camigeofence_namaz_ikindi">Asr</string>
     <string name="camigeofence_namaz_aksam">Maghrib</string>
     <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_namaz_cuma">Ijuma</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">Iswala</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı ibifungura mu nyigisho ya Ijuma, ku musigiti cyangwa igihe cy’iswala gitangiye</string>
 </resources>

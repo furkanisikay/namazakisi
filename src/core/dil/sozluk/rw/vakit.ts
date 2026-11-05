@@ -1,22 +1,21 @@
-// ÇEVİRİ: rw — İngilizce iskelet, çevrilince bu satır silinir
-// Kinyarwandada `buyuk` elle yazılır (`toUpperCase` YASAK).
+// Ikinyarwanda: `buyuk` yandikwa n’intoki (`toUpperCase` IRABUJIJWE).
 import type { Sozluk } from '../tr';
 
-/** İngilizcede vakit adları özel addır; cümle içinde de büyük harfle başlar. */
+/** Amazina y’ibihe by’iswala ya HadeethEnc (rw); ni amazina bwite, atangirwa n’inyuguti nkuru no mu nteruro (uretse «izuba rirashe»). */
 export const vakit: Sozluk['vakit'] = {
-  adlar: { imsak: 'Fajr', gunes: 'Sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  buyuk: { imsak: 'FAJR', gunes: 'SUNRISE', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
-  kucuk: { imsak: 'Fajr', gunes: 'sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  imsakVakti: 'Fajr',
-  cuma: "Jumu'ah",
-  cumaKucuk: "Jumu'ah",
-  gunesDogusu: 'Sunrise',
-  gunesDogusuKucuk: 'sunrise',
-  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not yet time', gecti: 'Not prayed' },
-  durumKucuk: { kilindi: 'prayed', vaktiGeldi: 'time to pray', girmedi: 'not yet time', gecti: 'not prayed' },
-  eylem: { kildim: "I've prayed", kilindi: 'Prayed' },
-  kerahatVakti: 'Makruh time',
-  isaretle: 'Mark as prayed',
-  geriAlEtiketi: '{durum}, tap to undo',
-  geriAlindi: 'Unmarked',
+  adlar: { imsak: 'Fajri', gunes: 'Izuba rirashe', ogle: 'Adhuhuri', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
+  buyuk: { imsak: 'FAJRI', gunes: 'IZUBA RIRASHE', ogle: 'ADHUHURI', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
+  kucuk: { imsak: 'Fajri', gunes: 'izuba rirashe', ogle: 'Adhuhuri', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
+  imsakVakti: 'Fajri',
+  cuma: 'Ijuma',
+  cumaKucuk: 'Ijuma',
+  gunesDogusu: 'Izuba rirashe',
+  gunesDogusuKucuk: 'izuba rirashe',
+  durum: { kilindi: 'Yasaliwe', vaktiGeldi: 'Igihe kirageze', girmedi: 'Igihe ntikiragera', gecti: 'Ntiyasaliwe' },
+  durumKucuk: { kilindi: 'yasaliwe', vaktiGeldi: 'igihe kirageze', girmedi: 'igihe ntikiragera', gecti: 'ntiyasaliwe' },
+  eylem: { kildim: 'Nasali', kilindi: 'Yasaliwe' },
+  kerahatVakti: 'Igihe kidakwiye',
+  isaretle: 'Kwemeza ko yasaliwe',
+  geriAlEtiketi: '{durum}, mukande mwisubireho',
+  geriAlindi: 'Byakuweho',
 };

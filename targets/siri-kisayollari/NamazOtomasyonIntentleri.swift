@@ -614,11 +614,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Nedda, tennateekebwako kabonero."
     )
 
-    // ÇEVİRİ: rw (other)
+    // rw (other)
     static let rw = OtomasyonMetinleri(
-        kalanDakika: ["other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad} itangira mu minota {n}."],
+        evetKilindi: "Yego, byemejwe ko yasaliwe.",
+        hayirKilinmadi: "Oya, ntiremezwa."
     )
 
     // ÇEVİRİ: rn (other)
