@@ -14,86 +14,46 @@ import type { CogulMetin } from './tipler';
 import type { VakitAdiTakimi } from './vakitTakimlari';
 import { dilRakamVarsayilani, rakamSecimiGecerliMi, type RakamSistemi } from './rakam';
 import { derinCevir, dilYaziVarsayilani, yaziDonusumuGerekli, yaziSecimiGecerliMi, yaziyaCevir as yaziCevirisi, type YaziSistemi } from './yazi';
-import { en } from './sozluk/en';
-import { id } from './sozluk/id';
-import { de } from './sozluk/de';
-import { fr } from './sozluk/fr';
-import { bs } from './sozluk/bs';
-import { ru } from './sozluk/ru';
-import { ms } from './sozluk/ms';
-import { ar } from './sozluk/ar';
-import { ur } from './sozluk/ur';
-import { es } from './sozluk/es';
-import { nl } from './sozluk/nl';
-import { sq } from './sozluk/sq';
-import { hi } from './sozluk/hi';
-import { bn } from './sozluk/bn';
-import { fa } from './sozluk/fa';
-import { ps } from './sozluk/ps';
-import { ckb } from './sozluk/ckb';
-import { ug } from './sozluk/ug';
-import { az } from './sozluk/az';
-import { uz } from './sozluk/uz';
-import { kk } from './sozluk/kk';
-import { ky } from './sozluk/ky';
-import { tg } from './sozluk/tg';
-import { sw } from './sozluk/sw';
-import { ha } from './sozluk/ha';
-import { am } from './sozluk/am';
-import { om } from './sozluk/om';
-import { so } from './sozluk/so';
-import { ff } from './sozluk/ff';
-import { yo } from './sozluk/yo';
-import { zh } from './sozluk/zh';
-import { ta } from './sozluk/ta';
-import { ml } from './sozluk/ml';
-import { th } from './sozluk/th';
-import { ko } from './sozluk/ko';
-import { vi } from './sozluk/vi';
-import { pt } from './sozluk/pt';
-import { it } from './sozluk/it';
-import { sv } from './sozluk/sv';
-import { uk } from './sozluk/uk';
-import { ro } from './sozluk/ro';
-import { hr } from './sozluk/hr';
-import { sr } from './sozluk/sr';
-import { el } from './sozluk/el';
-import { ku } from './sozluk/ku';
-import { tk } from './sozluk/tk';
-import { tt } from './sozluk/tt';
-import { sd } from './sozluk/sd';
-import { pl } from './sozluk/pl';
-import { ja } from './sozluk/ja';
-import { gu } from './sozluk/gu';
-import { bg } from './sozluk/bg';
-import { mk } from './sozluk/mk';
-import { fil } from './sozluk/fil';
-import { te } from './sozluk/te';
-import { kn } from './sozluk/kn';
-import { mr } from './sozluk/mr';
-import { pa } from './sozluk/pa';
-import { as } from './sozluk/as';
-import { ne } from './sozluk/ne';
-import { si } from './sozluk/si';
-import { km } from './sozluk/km';
-import { he } from './sozluk/he';
-import { ka } from './sozluk/ka';
-import { lt } from './sozluk/lt';
-import { mg } from './sozluk/mg';
-import { lg } from './sozluk/lg';
-import { rw } from './sozluk/rw';
-import { rn } from './sozluk/rn';
-import { ln } from './sozluk/ln';
-import { dag } from './sozluk/dag';
-import { mos } from './sozluk/mos';
-import { aa } from './sozluk/aa';
-import { mdh } from './sozluk/mdh';
-import { ak } from './sozluk/ak';
-import { ceb } from './sozluk/ceb';
-import { nqo } from './sozluk/nqo';
 import { tr, type Sozluk } from './sozluk/tr';
+import { strFromU8, unzlibSync } from 'fflate';
+import { base64Coz } from './base64';
+import { dillerArasiPaketi, SOZLUK_PAKETLERI } from './paket';
+import type { DillerArasiDizin } from './dillerArasiDizin';
 
-const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo };
+/** Paketi açar: base64 → zlib → JSON. */
+function paketiAc<T>(paket: string): T {
+  return JSON.parse(strFromU8(unzlibSync(base64Coz(paket)))) as T;
+}
+
+/**
+ * Ham (yazı ve takım UYGULANMAMIŞ) sözlükler. Türkçe pakete gömülü; öteki diller İLK İSTENDİĞİNDE
+ * paketinden açılır ve burada kalır (`sozluk/<kod>/` kaynağı → `npm run sozluk:paketle`). Açılışta
+ * yalnız etkin dil açılır: 78 sözlüğü birden kurmak açılış süresini ve belleği (arka plan görevleri
+ * dahil) şişiriyordu. Bütün dilleri dolaşan arama sözlük açmaz, `dillerArasiDizin()`'i okur.
+ */
+const acilmisSozlukler = new Map<DilKodu, Sozluk>([['tr', tr]]);
+
+function paketliSozluk(kod: DilKodu): Sozluk {
+  let s = acilmisSozlukler.get(kod);
+  if (!s) {
+    s = paketiAc<Sozluk>(SOZLUK_PAKETLERI[kod as Exclude<DilKodu, 'tr'>]());
+    acilmisSozlukler.set(kod, s);
+  }
+  return s;
+}
+
+/** Şu ana kadar açılmış sözlükler (nöbetçi: açılışta yalnız etkin dil açılır). */
+export function acikSozlukKodlari(): DilKodu[] {
+  return [...acilmisSozlukler.keys()];
+}
+
+let dizin: DillerArasiDizin | null = null;
+
+/** Bütün dilleri kapsayan önceden hesaplanmış aramalar (takvim başlıkları, hazır şablonlar); ilk kullanımda açılır. */
+export function dillerArasiDizin(): DillerArasiDizin {
+  if (!dizin) dizin = paketiAc<DillerArasiDizin>(dillerArasiPaketi());
+  return dizin;
+}
 
 let aktif: DilKodu = VARSAYILAN_DIL;
 /** Etkin dilin vakit adı takımı (`null` = sözlüğün kendi adları). Dil değişince sıfırlanır. */
@@ -226,11 +186,11 @@ const yaziliSozlukler = new Map<string, Sozluk>();
  * hazır şablon, yazılırken seçili olan alfabede kalır (`anonsSablonlari.sablonKonumu`).
  */
 export function yaziliSozluk(kod: DilKodu, yazi: YaziSistemi | null): Sozluk {
-  if (!yaziDonusumuGerekli(kod, yazi)) return SOZLUKLER[kod];
+  if (!yaziDonusumuGerekli(kod, yazi)) return paketliSozluk(kod);
   const anahtar = `${kod}:${yazi}`;
   let s = yaziliSozlukler.get(anahtar);
   if (!s) {
-    s = derinCevir(SOZLUKLER[kod], (t) => yaziCevirisi(kod, t, yazi));
+    s = derinCevir(paketliSozluk(kod), (t) => yaziCevirisi(kod, t, yazi));
     yaziliSozlukler.set(anahtar, s);
   }
   return s;

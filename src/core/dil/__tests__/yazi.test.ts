@@ -17,24 +17,31 @@ import { cogul } from '../tipler';
 import { DILLER } from '../diller';
 
 // Özbek sözlüğü iskelette İngilizcedir; çeviri yolunu sınamak için Kiril metinli bir kopya.
-jest.mock('../sozluk/uz', () => {
+// Uygulama sözlüğü paketinden açar (`core/dil/paket`): sahte sözlükler pakete ve diller arası
+// dizine konur (kaynak modülü mock'lamak etkisizdir).
+function mockSahteSozluk(kod: string): unknown {
   const { en } = jest.requireActual('../sozluk/en');
+  if (kod === 'kk') return { ...en, ortak: { ...en.ortak, devamEdin: 'Жалғастыру' } };
   const sablon = Object.fromEntries(
     Object.entries(en.anons.sablon as Record<string, string[]>).map(([k, v]) => [k, v.map((x, i) => (i === 0 ? `Намоз вақти ${k}` : x))])
   );
   return {
-    uz: {
-      ...en,
-      ortak: { ...en.ortak, devamEdin: 'Давом этиш', marka: 'Namaz Akışı' },
-      anons: { ...en.anons, sablon },
-      vakit: { ...en.vakit, adlar: { ...en.vakit.adlar, ogle: 'Пешин' } },
-    },
+    ...en,
+    ortak: { ...en.ortak, devamEdin: 'Давом этиш', marka: 'Namaz Akışı' },
+    anons: { ...en.anons, sablon },
+    vakit: { ...en.vakit, adlar: { ...en.vakit.adlar, ogle: 'Пешин' } },
   };
-});
-jest.mock('../sozluk/kk', () => {
-  const { en } = jest.requireActual('../sozluk/en');
-  return { kk: { ...en, ortak: { ...en.ortak, devamEdin: 'Жалғастыру' } } };
-});
+}
+const mockPaket = (nesne: unknown): { veri: string } => ({ veri: jest.requireActual('../sozlukPaketle').sozluguPaketle(nesne) });
+jest.mock('../paket/uz', () => mockPaket(mockSahteSozluk('uz')));
+jest.mock('../paket/kk', () => mockPaket(mockSahteSozluk('kk')));
+jest.mock('../paket/dillerArasi', () =>
+  mockPaket(
+    jest.requireActual('../dillerArasiDizin').dillerArasiDizinKur((kod: string) =>
+      kod === 'uz' || kod === 'kk' ? mockSahteSozluk(kod) : jest.requireActual(`../sozluk/${kod}`)[kod]
+    )
+  )
+);
 
 import { aktifDiliKur, aktifDilSifirla, aktifYaziSistemi, hamSozluk, metin, sozluk, yaziSisteminiKur, yaziyaCevir } from '../aktifDil';
 import { ayetMeali } from '../../icerik/nassDili';

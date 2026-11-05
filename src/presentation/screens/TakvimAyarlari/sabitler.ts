@@ -2,9 +2,8 @@
  * TakvimAyarlari ekranı ve alt bileşenleri arasında paylaşılan sabitler/yardımcılar.
  */
 import type { TakvimVakitAdi } from '../../store/takvimSlice';
-import { aktifDil, bicim, canli, sozluk, yaziliSozluk } from '../../../core/dil/aktifDil';
-import { DILLER, type DilKodu } from '../../../core/dil/diller';
-import { YAZI_SECENEKLERI } from '../../../core/dil/yazi';
+import { aktifDil, bicim, canli, dillerArasiDizin, sozluk } from '../../../core/dil/aktifDil';
+import type { DilKodu } from '../../../core/dil/diller';
 
 /** Vaktin görünen adı (etkin dilde; kimlik `TakvimVakitAdi`). */
 export const VAKIT_GORUNTU_ADLARI: Readonly<Record<TakvimVakitAdi, string>> = canli((s) => s.vakit.adlar);
@@ -23,17 +22,11 @@ export const vakitEtkinlikBasligi = (vakit: TakvimVakitAdi, kod: DilKodu = aktif
 /**
  * Temizlik süzgeci: vaktin BÜTÜN dillerdeki başlıkları (dil değiştiren kullanıcının eski etkinlikleri);
  * iki alfabeli dilde (Özbekçe, Kazakça) her alfabedeki başlık (alfabe değiştiren kullanıcının eski etkinlikleri).
+ * Bütün diller paketlemede hesaplanan dizinden gelir (78 sözlüğü açmaz); etkin dilin başlığı ayrıca
+ * eklenir (kullanıcının seçtiği vakit adı takımı dizinde yoktur).
  */
 export const vakitTemizleBasliklari = (vakit: TakvimVakitAdi): string[] => [
-    ...new Set(
-        DILLER.flatMap((d) => [
-            vakitEtkinlikBasligi(vakit, d.kod),
-            ...(YAZI_SECENEKLERI[d.kod] ?? []).map((y) => {
-                const s = yaziliSozluk(d.kod, y);
-                return bicim(s.takvim.etkinlikBasligi, { ad: s.vakit.adlar[vakit] });
-            }),
-        ])
-    ),
+    ...new Set([...dillerArasiDizin().takvim[vakit], vakitEtkinlikBasligi(vakit)]),
 ];
 
 export function saatFormatla(tarih: Date): string {
