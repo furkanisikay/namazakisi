@@ -11,6 +11,7 @@ import { KabeSimgesi } from './KabeSimgesi';
 import { HizaHalkasi } from './HizaHalkasi';
 import { KibleYolu } from './KibleYolu';
 import { bicim } from '../../../core/dil/aktifDil';
+import { yonuYalit } from '../../../core/dil/yon';
 import { useMetin } from '../../hooks/useMetin';
 import { SOLDAN_SAGA } from '../../components/common/yon';
 
@@ -228,7 +229,7 @@ export const KameraGorunumu: React.FC<{
         <Text testID="kamera-yon-cumlesi" style={styles.panelCumle}>
           {cumle}
         </Text>
-        {mesafe && <Text style={styles.panelAlt}>{bicim(metinler.pusula.kabeUzakta, { mesafe })}</Text>}
+        {mesafe && <Text style={styles.panelAlt}>{bicim(metinler.pusula.kabeUzakta, { mesafe: yonuYalit(mesafe) })}</Text>}
       </View>
     </View>
   );

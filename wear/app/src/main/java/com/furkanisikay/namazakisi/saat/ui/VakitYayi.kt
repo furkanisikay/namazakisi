@@ -10,6 +10,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,11 +19,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +38,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -43,12 +48,15 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CompactButton
+import androidx.wear.compose.material3.LocalTextStyle
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.furkanisikay.namazakisi.saat.R
@@ -57,6 +65,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.GunDurumu
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.Sigdirma
 import com.furkanisikay.namazakisi.saat.cekirdek.rakamlariYerellestir
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -144,6 +153,36 @@ fun sinirliBoyut(oran: Float, enFazlaOlcek: Float = YAZI_OLCEGI_TAVANI): android
 const val YAZI_OLCEGI_TAVANI = 1.15f
 
 /**
+ * Vakit yayının İÇİNDE, pencerede dikey [ust]..[alt] px aralığını kaplayan satırın yaya ve uç
+ * düğmesine değmeden alabileceği genişlik (dp). Yay kare saatte de dairedir.
+ */
+@Composable
+private fun rememberYayIci(): (Float, Float) -> Dp {
+    val konf = LocalConfiguration.current
+    val y = LocalDensity.current
+    return remember(konf.screenWidthDp, konf.screenHeightDp, y) {
+        val en = konf.screenWidthDp * y.density
+        val boy = konf.screenHeightDp * y.density
+        val r = with(y) { Sigdirma.halkaIcYaricapi(min(en, boy), YAY_KALINLIGI.toPx(), YAY_KENAR_PAYI.toPx()) }
+        val pay = with(y) { YAY_METIN_PAYI.toPx() }
+        val hesap: (Float, Float) -> Dp = { ust, alt -> with(y) { Sigdirma.guvenliGenislik(r, boy / 2f, ust, alt, pay).toDp() } }
+        hesap
+    }
+}
+
+/**
+ * Öğenin penceredeki dikey aralığını (üst, alt px) [durum]'a yazar; 2 px'ten küçük oynama
+ * yazılmaz (genişlik → boy → konum geri beslemesi salınmasın).
+ */
+internal fun Modifier.dikeyAraligiIzle(durum: androidx.compose.runtime.MutableState<Pair<Float, Float>?>): Modifier =
+    onGloballyPositioned { c ->
+        val ust = c.positionInWindow().y
+        val alt = ust + c.size.height
+        val o = durum.value
+        if (o == null || abs(o.first - ust) > 2f || abs(o.second - alt) > 2f) durum.value = ust to alt
+    }
+
+/**
  * Metin sütununun ekran genişliğine oranı (güvenli bölge): yuvarlak ekranda dairenin iç
  * karesi ≈ %71 (köşeye yazılan harfi daire keser), kare ekranda kenar payı yeter.
  */
@@ -153,6 +192,19 @@ fun guvenliGenislikOrani(yuvarlakOran: Float = 0.70f, kareOran: Float = 0.84f): 
 
 /** Rakamlar sabit genişlikli (saniye değişince satır oynamasın). */
 val RAKAM = TextStyle(fontFeatureSettings = "tnum")
+
+/** Yay çizgisinin kalınlığı ve ekran kenarından payı (`vakitYayiCiz` ile metin kirişi AYNI geometriyi kullanır). */
+private val YAY_KALINLIGI = 5.dp
+private val YAY_KENAR_PAYI = 5.dp
+
+/**
+ * Halkanın iç kenarından metne bırakılan pay: uç düğmesi yay çizgisinin üstünde 1,2 × kalınlık
+ * yarıçaplıdır, iç kenardan 0,7 × kalınlık (3,5 dp) içeri taşar.
+ */
+private val YAY_METIN_PAYI = 4.dp
+
+/** "Kıldım" etiketi için düğmenin iç yatay payı (CompactButton içerik payı + kenar). */
+private val KILDIM_YATAY_PAYI = 32.dp
 
 /**
  * Ana ekranın ilk, tam ekran öğesi: vakit yayı + sayaç + "Kıldım" + gün noktaları.
@@ -182,13 +234,18 @@ fun VakitSayaci(
     val kerahat = renk(SaatPaleti.KERAHAT)
     val iz = renk(SaatPaleti.IZ)
 
+    val yayIci = rememberYayIci()
+    val adAraligi = remember { mutableStateOf<Pair<Float, Float>?>(null) }
+    val adSiniri = adAraligi.value?.let { (ust, alt) -> yayIci(ust, alt) }
+
     Box(contentAlignment = Alignment.Center, modifier = modifier) {
         Canvas(Modifier.fillMaxSize()) {
             vakitYayiCiz(
                 kalanOran = g.kalanOran * cizim.value,
                 renk = renk,
                 iz = iz,
-                kalinlik = 5.dp,
+                kalinlik = YAY_KALINLIGI,
+                kenarPay = YAY_KENAR_PAYI,
                 bant = g.kerahatBandi,
                 bantRengi = kerahat,
             )
@@ -208,9 +265,18 @@ fun VakitSayaci(
                 // tek satıra sığmıyor: sabit boy sonu sessizce keserdi, kendini sığdıran metin küçülür.
                 Crossfade(targetState = g.adSatiri, animationSpec = tween(if (azalt) 0 else 300), label = "vakitAdi") { ad ->
                     val baslik = MaterialTheme.typography.titleMedium
+                    // Ad satırı ekranın üst bölgesinde durur; orada yayın kirişi sütundan dardır.
+                    // Uzun satır yaya uzanınca uç düğmesi ilk harfleri örtüyordu ("Lahisari", "Qasri",
+                    // dalga 13). Genişlik satırın EKRANDAKİ dikey konumundan, yayın o yükseklikteki
+                    // kirişiyle hesaplanır (Tesbihat zikir adıyla aynı kural); ilk karede sütun.
                     SigdirilanMetin(
                         metin = ad,
+                        modifier = (if (adSiniri != null) Modifier.widthIn(max = adSiniri) else Modifier)
+                            .dikeyAraligiIzle(adAraligi),
                         enFazla = baslik.fontSize,
+                        // Kare saatte (384 px) tepedeki kiriş uzun son dakika satırına ~0,55× yer
+                        // bırakır; taban 0,6× olsaydı üç noktayla kesilirdi.
+                        enAz = (baslik.fontSize.value * 0.5f).sp,
                         renk = renk,
                         agirlik = FontWeight.SemiBold,
                         stil = baslik,
@@ -320,15 +386,28 @@ private fun KildimDugmesi(dugme: AnaEkranKarari.Dugme, g: AnaEkranKarari.Gorunum
     val dil = stringResource(R.string.dil_kodu)
     val aciklama = AnaEkranKarari.dugmeAciklamasi(g.sayilan.ad(dil), dil)
     when (dugme) {
-        AnaEkranKarari.Dugme.ISARETLE -> CompactButton(
-            onClick = onKildim,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = renk(SaatPaleti.EYLEM),
-                contentColor = renk(SaatPaleti.EYLEM_USTU),
-            ),
-            modifier = Modifier.semantics { contentDescription = aciklama },
-            label = { Text(stringResource(R.string.kildim), fontWeight = FontWeight.Bold) },
-        )
+        // Uzun dilde ("Midsambayang ako") etiket kesilmesin, küçülsün. Genişlik düğme yuvasının
+        // DIŞINDA alınır: etiket yuvası iç ölçüm ister, SigdirilanMetin orada çöker (sigdirilanBoy).
+        AnaEkranKarari.Dugme.ISARETLE -> BoxWithConstraints(contentAlignment = Alignment.Center) {
+            val etiketGenisligi = constraints.maxWidth - with(LocalDensity.current) { KILDIM_YATAY_PAYI.roundToPx() }
+            CompactButton(
+                onClick = onKildim,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = renk(SaatPaleti.EYLEM),
+                    contentColor = renk(SaatPaleti.EYLEM_USTU),
+                ),
+                modifier = Modifier.semantics { contentDescription = aciklama },
+                label = {
+                    val stil = LocalTextStyle.current
+                    val yazi = stringResource(R.string.kildim)
+                    val olcer = rememberTextMeasurer()
+                    val boy = remember(yazi, etiketGenisligi, stil) {
+                        sigdirilanBoy(olcer, yazi, etiketGenisligi, stil.fontSize, stil, FontWeight.Bold)
+                    }
+                    Text(yazi, style = stil, fontSize = boy, fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis)
+                },
+            )
+        }
         AnaEkranKarari.Dugme.KILINDI, AnaEkranKarari.Dugme.ESITLENIYOR -> Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier

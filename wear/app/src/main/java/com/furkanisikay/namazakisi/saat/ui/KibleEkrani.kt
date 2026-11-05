@@ -183,16 +183,18 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula, yonlendirme: Boolean, onYonle
                     contentDescription = aciklama
                 },
             ) {
+                // Tek satır, sığmazsa küçülür: iki satıra düşen yön ("მარჯვნივ 145°", "Na mobali
+                // 145°") bloğu büyütüp kuzey harfinin üstüne bindiriyor, sensör simgesini güney
+                // harfinin üstüne itiyordu (dalga 13, kare saat).
                 Crossfade(targetState = g.hizali, animationSpec = tween(if (azalt) 0 else 250), label = "kibleBaslik") { hizali ->
-                    Text(
-                        yerelRakam(if (hizali) hizaliMetni else g.donus),
-                        style = RAKAM,
-                        fontSize = sinirliBoyut(if (hizali) 0.068f else 0.095f),
-                        fontWeight = FontWeight.SemiBold,
-                        color = renk(if (hizali) SaatPaleti.EYLEM else SaatPaleti.METIN),
-                        textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
+                    SigdirilanMetin(
+                        metin = if (hizali) hizaliMetni else g.donus,
+                        enFazla = sinirliBoyut(if (hizali) 0.068f else 0.095f),
+                        renk = renk(if (hizali) SaatPaleti.EYLEM else SaatPaleti.METIN),
+                        agirlik = FontWeight.SemiBold,
+                        stil = RAKAM,
+                        // "Kıbleye döndünüz" gibi hizalı metin eskisi gibi iki satıra sarılabilir.
+                        enCokSatir = if (hizali) 2 else 1,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

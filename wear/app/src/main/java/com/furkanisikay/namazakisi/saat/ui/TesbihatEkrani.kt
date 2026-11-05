@@ -32,8 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.foundation.layout.widthIn
 import com.furkanisikay.namazakisi.saat.cekirdek.Sigdirma
 import androidx.wear.compose.material3.AlertDialog
@@ -332,18 +330,6 @@ private fun Modifier.dikeyPayiKirp(rakamBoyuPx: Float): Modifier = layout { olcu
     val boy = (p.height - ust - alt).coerceAtLeast(0)
     layout(p.width, boy) { p.placeRelative(0, -ust) }
 }
-
-/**
- * Öğenin penceredeki dikey aralığını (üst, alt px) [durum]'a yazar; 2 px'ten küçük oynama
- * yazılmaz (genişlik → boy → konum geri beslemesi salınmasın).
- */
-private fun Modifier.dikeyAraligiIzle(durum: androidx.compose.runtime.MutableState<Pair<Float, Float>?>): Modifier =
-    onGloballyPositioned { c ->
-        val ust = c.positionInWindow().y
-        val alt = ust + c.size.height
-        val o = durum.value
-        if (o == null || kotlin.math.abs(o.first - ust) > 2f || kotlin.math.abs(o.second - alt) > 2f) durum.value = ust to alt
-    }
 
 /**
  * Bitiş ekranı: ortada onay işareti çizilir (300 ms) ve dışına bir halka bir kez yayılıp

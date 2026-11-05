@@ -111,10 +111,15 @@ fun TvAyarlarEkrani(
                 }
             }
             Column(Modifier.weight(1.4f)) {
-                Text(
+                // İki satıra kadar, sığmazsa küçülür: Gürcüce başlık 32 sp'de iki satırı da doldurup
+                // "…ტელეფ…" diye kesiliyordu (dalga 13).
+                BasicText(
                     stringResource(R.string.ayar_bagli_telefonlar),
-                    color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold,
-                    maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.SemiBold),
+                    color = { Renkler.metin },
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    autoSize = TextAutoSize.StepBased(minFontSize = 24.sp, maxFontSize = 32.sp, stepSize = 2.sp),
                 )
                 Spacer(Modifier.height(14.dp))
                 if (uyeler.isEmpty()) {

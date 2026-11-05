@@ -172,13 +172,14 @@ export const PusulaGorunumu: React.FC<{
         )}
         {statik && kibleAcisi !== null ? (
           <Text style={[styles.alt, { color: renkler.metinIkincil }]}>
-            {/* Yer adı yalıtılır: Latin harfli ad sağdan sola satırın yönünü çevirmesin. */}
-            {[yerAdi ? yonuYalit(yerAdi) : null, mesafe ? bicim(m.kabeUzakta, { mesafe }) : null].filter(Boolean).join(', ') || m.kuzeydenSaatYonu}
+            {/* Yer adı ve mesafe yalıtılır: Latin harfli ad ya da "2,405 km" sağdan sola satırda
+                yön değiştirip "km"yi sayıdan koparmasın (İbranice karesinde görüldü). */}
+            {[yerAdi ? yonuYalit(yerAdi) : null, mesafe ? bicim(m.kabeUzakta, { mesafe: yonuYalit(mesafe) }) : null].filter(Boolean).join(', ') || m.kuzeydenSaatYonu}
           </Text>
         ) : kibleAcisi !== null && (
           <Text style={[styles.alt, { color: renkler.metinIkincil }]}>
             {mesafe
-              ? bicim(m.kabeUzaktaKuzeyden, { mesafe, derece: Math.round(kibleAcisi) })
+              ? bicim(m.kabeUzaktaKuzeyden, { mesafe: yonuYalit(mesafe), derece: Math.round(kibleAcisi) })
               : bicim(m.kuzeyden, { derece: Math.round(kibleAcisi) })}
           </Text>
         )}

@@ -143,7 +143,8 @@ describe('KibleSayfasi', () => {
   it('pusula: yön cümlesi, mesafe ve kıble açısı', () => {
     const { getByTestId, getByText } = render(<KibleSayfasi />);
     expect(getByTestId('kible-yon-cumlesi').props.children).toBe('Kıble 12° sağınızda');
-    expect(getByText(/Kâbe 2\.\d{3} km uzakta, kuzeyden 152°/)).toBeTruthy();
+    // Mesafe yön yalıtımıyla (U+2068…U+2069): sağdan sola dilde "km" sayıdan kopmasın.
+    expect(getByText(/Kâbe \u20682\.\d{3} km\u2069 uzakta, kuzeyden 152°/)).toBeTruthy();
     expect(getByTestId('kible-kabe-isareti')).toBeTruthy();
   });
 
@@ -240,7 +241,7 @@ describe('KibleSayfasi', () => {
     const { getByTestId, queryByTestId, getByText, queryByLabelText, UNSAFE_root } = render(<KibleSayfasi />);
     expect(getByTestId('kible-statik-aci').props.children).toEqual([152, '°']);
     // Yer adı yön yalıtımında (FSI…PDI): sağdan sola dilde Latin ad satırı ters dizmesin.
-    expect(getByText(/^\u2068Fatih, İstanbul\u2069, Kâbe 2\.\d{3} km uzakta$/)).toBeTruthy();
+    expect(getByText(/^\u2068Fatih, İstanbul\u2069, Kâbe \u20682\.\d{3} km\u2069 uzakta$/)).toBeTruthy();
     expect(getByTestId('kible-kabe-isareti')).toBeTruthy();
     // Yön harfleri SVG'de kadranla dönmez: ayrı, dik duran metin katmanı (G baş aşağı olmasın).
     const harfler = UNSAFE_root.findAll((n: { type: unknown; props: { children?: unknown } }) => n.type === 'SvgText');
@@ -416,7 +417,7 @@ describe('KibleSayfasi — İngilizce', () => {
     (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaVar: false, ozet: ozet({ hazir: false, fark: null }) }));
     const statik = render(<KibleSayfasi />);
     expect(kalan(statik.toJSON())).toEqual([]);
-    expect(statik.getByText(/London\u2069, Kaaba is 2,\d{3} km away/)).toBeTruthy();
+    expect(statik.getByText(/London\u2069, Kaaba is \u20682,\d{3} km\u2069 away/)).toBeTruthy();
   });
 
   const kameraModu = () => {

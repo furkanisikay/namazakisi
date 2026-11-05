@@ -490,13 +490,15 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
                 )
                 Spacer(Modifier.width(20.dp))
                 // Uzun ad ("Sonnenaufgang", "Восход солнца") kesilmez, sütuna sığana dek küçülür.
+                // Alt sınır panonun ikincil metinleriyle aynı 16 sp: 18 harflik "Pagsubang sa adlaw",
+                // "Kasebang nu senang" 20 sp'de kesiliyordu (dalga 13).
                 BasicText(
                     durum.gorunenAd(vakit, dil),
                     style = TextStyle(fontSize = 32.sp, fontWeight = if (aktif) FontWeight.Bold else FontWeight.Normal),
                     color = { metinRengi },
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    autoSize = TextAutoSize.StepBased(minFontSize = 20.sp, maxFontSize = 32.sp),
+                    autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = 32.sp),
                     modifier = Modifier.weight(1f),
                 )
                 // Ad ile saat arası en az 28 dp: kalın uzun ad ("Mặt trời mọc") sütunu doldurunca
