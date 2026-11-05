@@ -259,6 +259,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   // (`YonServisi.acilistaDenetle`; en fazla 2, eşleşince silinir). JS belleği yeniden
   // başlatmada sıfırlandığı için diskte. CİHAZA ÖZGÜ, YEDEKLENMEZ.
   YON_DENEMESI: '@namaz_akisi/yon_denemesi',
+  // Telefon ayarlarındaki uygulamaya özel dilin SON GÖRÜLEN değeri (`DilServisi.sistemDiliDegisimi`):
+  // değişirse bir kez benimsenir. Telefona ait bir ayarın izi; CİHAZA ÖZGÜ, YEDEKLENMEZ (başka
+  // cihaza geri yüklenince sahte "değişim" görülürdü).
+  UYGULAMA_DILI_IZI: '@namaz_akisi/uygulama_dili_izi',
   /**
    * Kare hattı işareti (`'true'`): kapalı dili kayıttan açar. YALNIZ kare hattının tohumu yazar
    * (hata ayıklama APK'sında run-as); yedek beyaz listesinde YOK → yedekten geri gelemez.

@@ -46,7 +46,7 @@ import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaS
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { baglamHazir } from './src/domain/services/baglamHazir';
 import { hesapAyariniYukle } from './src/presentation/store/hesapSlice';
-import { diliYukle } from './src/presentation/store/dilSlice';
+import { diliKaydet, diliYukle } from './src/presentation/store/dilSlice';
 import { DilServisi } from './src/domain/services/DilServisi';
 import { YonServisi } from './src/domain/services/YonServisi';
 import { YonDegisimiModali } from './src/presentation/components/dil/YonDegisimiModali';
@@ -209,6 +209,16 @@ const konumTakibiniSenkronizeEt = async () => {
  * operasyonlar (orn. izin dialogu) mutex'i sonsuza kilitlememesi icin 30s'de sifirlar.
  */
 let planlamaDevamEdiyor = false;
+/**
+ * Telefon ayarlarındaki uygulamaya özel dil değiştiyse uygulama içi seçimle AYNI yoldan uygular
+ * (`diliKaydet`: planlar yeni dilde, yazı yönü değişirse yeniden başlatma). Asla fırlatmaz.
+ */
+const sistemDiliniEsitle = (): void => {
+  DilServisi.sistemDiliDegisimi()
+    .then((hedef) => (hedef ? store.dispatch(diliKaydet(hedef)) : undefined))
+    .catch(() => {});
+};
+
 const PLANLAMA_TIMEOUT_MS = 30_000;
 
 const arkaplanMuhafiziBildirimleriniPlanla = async () => {
@@ -240,6 +250,10 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     // 1. Konum en basta yuklenmeli (muhafiz, vakit sayaci ve iftar sayaci konuma bagimli)
     await store.dispatch(konumAyarlariniYukle()).unwrap();
     const konumState = store.getState().konum;
+
+    // Telefon ayarlarındaki uygulama dili değiştiyse (Android 13+, iOS) bir kez benimsenir; konumdan
+    // SONRA: `diliKaydet` planları konumla yeni dilde yeniden kurar.
+    sistemDiliniEsitle();
 
     // Namaz hesaplayiciyi yapilandir (senkron, konum hazir olduktan sonra)
     if (konumState.koordinatlar.lat !== 0 && konumState.koordinatlar.lng !== 0) {
@@ -493,6 +507,8 @@ const AppIcerik: React.FC = () => {
         // "Kıldım" kuyruğu (saat/widget/kutu/kısayol) DEBOUNCE'SUZ boşaltılır: ucuzdur ve
         // headless görev OEM kısıtıyla başlatılamamışsa tek güvenlik ağı budur (#269/#275).
         KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        // Uygulama dili telefon ayarlarından değiştirilmiş olabilir (Android'de uygulama yeniden başlamaz).
+        sistemDiliniEsitle();
         CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
         // Eşleşik TV'ler: önceki gönderim TV kapalıyken düştüyse (özet yalnız başarıda yazılır)
         // şimdi tamamlanır; değişiklik yoksa hiçbir şey gönderilmez (ucuz).

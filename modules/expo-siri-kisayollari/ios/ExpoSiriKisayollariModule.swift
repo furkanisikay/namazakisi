@@ -123,6 +123,39 @@ public class ExpoSiriKisayollariModule: Module {
             SiriDeposu.varsayilan.arayuzDiliniYaz(kod)
         }
 
+        /// Ayarlar > Namaz Akisi > Dil'deki UYGULAMAYA OZEL dil: uygulamanin kendi tercih alanindaki
+        /// `AppleLanguages`'in ilki; secilmemisse nil (cihaz dili izlenir). Cihaz genel dili DEGIL
+        /// (`UserDefaults.standard` genel alani da birlestirir, burada yalniz uygulama alani okunur).
+        /// JS degisip degismedigini izler (`DilServisi.sistemDiliniEsitle`). Cihazda DOGRULANMADI.
+        /// Cihazin GENEL dili: genel tercih alanindaki `AppleLanguages`'in ilki. `UserDefaults.standard`
+        /// once uygulama alanini okur; uygulama dili yazilinca "cihaz dili" secenegi yanilirdi.
+        /// Okunamazsa nil (JS eski yola duser). Cihazda DOGRULANMADI.
+        AsyncFunction("cihazDiliniOku") { () -> String? in
+            if let alan = UserDefaults.standard.persistentDomain(forName: UserDefaults.globalDomain),
+               let diller = alan["AppleLanguages"] as? [String], let ilk = diller.first {
+                return ilk
+            }
+            return nil
+        }
+
+        AsyncFunction("uygulamaDiliniOku") { () -> String? in
+            guard let kimlik = Bundle.main.bundleIdentifier,
+                  let alan = UserDefaults.standard.persistentDomain(forName: kimlik),
+                  let diller = alan["AppleLanguages"] as? [String] else { return nil }
+            return diller.first
+        }
+
+        /// Uygulama icinde secilen dili Ayarlar'daki uygulama diline de yazar (nil = cihaz dili).
+        /// iOS bunu bir sonraki acilista sistem metinlerine uygular; arayuz zaten JS'ten anlik degisir.
+        AsyncFunction("uygulamaDiliniYaz") { (etiket: String?) -> Bool in
+            if let e = etiket, !e.isEmpty {
+                UserDefaults.standard.set([e], forKey: "AppleLanguages")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+            }
+            return true
+        }
+
         /// Kullanicinin vakit adi takimi (JSON) ya da nil (anahtar silinir, dil tablosu).
         /// `arayuzDiliniAyarla` gibi yalniz yazar; widget/saat cizimi bir sonraki okumada alir.
         Function("vakitAdlariniAyarla") { (json: String?) -> Void in

@@ -37,6 +37,10 @@ interface SiriNativeModule {
     /** #295 — eski ikilide yok (opsiyonel). */
     /** Arayüz dili (App Group) — eski ikilide yok (opsiyonel). */
     arayuzDiliniAyarla?(kod: string): void;
+    /** Ayarlar'daki uygulamaya özel dil — eski ikilide yok (opsiyonel). */
+    cihazDiliniOku?(): Promise<string | null>;
+    uygulamaDiliniOku?(): Promise<string | null>;
+    uygulamaDiliniYaz?(etiket: string | null): Promise<boolean>;
     /** Vakit adı takımı (App Group) — eski ikilide yok (opsiyonel). */
     vakitAdlariniAyarla?(json: string | null): void;
     /** Rakam sistemi (App Group) — eski ikilide yok (opsiyonel). */
@@ -63,6 +67,42 @@ const modul = (): SiriNativeModule | null =>
  * Arayüz dilini App Group'a yazar (iOS widget, saat köprüsü ve Siri metinleri okur).
  * Modül/fonksiyon yoksa (Android, eski ikili) sessizce atlanır. Asla fırlatmaz.
  */
+/**
+ * Ayarlar > Uygulama > Dil'deki uygulamaya özel dil (BCP-47) ya da `null` (seçilmemiş, cihaz dili).
+ * `undefined` = köprü yok (Android, eski ikili): karşılaştırma yapılmaz. Asla reddetmez.
+ */
+/** Cihazın GENEL dili (uygulamaya özel dilden bağımsız) ya da `null`; `undefined` = köprü yok. Asla reddetmez. */
+export async function cihazDiliniOku(): Promise<string | null | undefined> {
+    const m = modul();
+    if (!m || typeof m.cihazDiliniOku !== 'function') return undefined;
+    try {
+        return await m.cihazDiliniOku();
+    } catch {
+        return undefined;
+    }
+}
+
+export async function uygulamaDiliniOku(): Promise<string | null | undefined> {
+    const m = modul();
+    if (!m || typeof m.uygulamaDiliniOku !== 'function') return undefined;
+    try {
+        return await m.uygulamaDiliniOku();
+    } catch {
+        return undefined;
+    }
+}
+
+/** Uygulama içi seçimi Ayarlar'daki uygulama diline yazar (`null` = cihaz dili). Yazıldıysa `true`. */
+export async function uygulamaDiliniYaz(etiket: string | null): Promise<boolean> {
+    const m = modul();
+    if (!m || typeof m.uygulamaDiliniYaz !== 'function') return false;
+    try {
+        return await m.uygulamaDiliniYaz(etiket);
+    } catch {
+        return false;
+    }
+}
+
 export function arayuzDiliniAyarla(kod: string): void {
     const m = modul();
     if (!m || typeof m.arayuzDiliniAyarla !== 'function') return;

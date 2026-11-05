@@ -19,7 +19,7 @@ import {
   vakitTakiminiKur,
   yaziSisteminiKur,
 } from '../../core/dil/aktifDil';
-import { cihazDilindenSec, DILLER, dilKoduMu, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
+import { cihazDilindenSec, DILLER, dilKoduMu, iosYerelAdi, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 import { takimCoz, takimKimlikleri } from '../../core/dil/vakitTakimlari';
 import { dilRakamVarsayilani, rakamSecilebilir, rakamSecimiGecerliMi, rakamSistemiCoz, type RakamSistemi } from '../../core/dil/rakam';
 import { dilYaziVarsayilani, yaziSecilebilir, yaziSecimiGecerliMi, yaziSistemiCoz, type YaziSistemi } from '../../core/dil/yazi';
@@ -83,7 +83,59 @@ const kayitNesnesi = (m: DilAyari | null): DilAyari =>
   m && typeof m === 'object' && !Array.isArray(m) ? { ...m } : {};
 
 /** Cihazın yerel ayar kimliği ("en_US"); okunamazsa null. Native modül yoksa (jest) sessiz. */
+/** Cihazın genel dili (native, uygulamaya özel dilden bağımsız); `undefined` = okunamadı. */
+let cihazDiliOnbellegi: string | null | undefined;
+
+interface UygulamaDiliKoprusu {
+  uygulamaDiliniOku(): Promise<string | null | undefined>;
+  uygulamaDiliniYaz(etiket: string | null): Promise<boolean>;
+  cihazDiliniOku(): Promise<string | null | undefined>;
+}
+
+/** Telefon ayarlarındaki uygulama dilinin köprüsü: Android 13+ `expo-countdown-notification`, iOS `expo-siri-kisayollari`. */
+function uygulamaDiliKoprusu(): UygulamaDiliKoprusu | null {
+  let m: Partial<UygulamaDiliKoprusu>;
+  try {
+    m = Platform.OS === 'ios'
+      ? (require('../../../modules/expo-siri-kisayollari/src') as Partial<UygulamaDiliKoprusu>)
+      : (require('../../../modules/expo-countdown-notification/src') as Partial<UygulamaDiliKoprusu>);
+  } catch {
+    return null;
+  }
+  // Fonksiyon yoksa (eski ikili, test) "köprü yok" gibi davranır: okuma `undefined`, yazma `false`.
+  return {
+    uygulamaDiliniOku: () => (typeof m.uygulamaDiliniOku === 'function' ? m.uygulamaDiliniOku() : Promise.resolve(undefined)),
+    uygulamaDiliniYaz: (e) => (typeof m.uygulamaDiliniYaz === 'function' ? m.uygulamaDiliniYaz(e) : Promise.resolve(false)),
+    cihazDiliniOku: () => (typeof m.cihazDiliniOku === 'function' ? m.cihazDiliniOku() : Promise.resolve(undefined)),
+  };
+}
+
+async function cihazDiliniTazele(): Promise<void> {
+  const d = await uygulamaDiliKoprusu()?.cihazDiliniOku().catch(() => undefined);
+  if (d !== undefined) cihazDiliOnbellegi = d;
+}
+
+interface UygulamaDiliIzi {
+  etiket: string | null;
+}
+
+/** Uygulama içi seçimi telefon ayarlarına yazar ve yazılanı (sistemin normalleştirdiği hâliyle) iz olarak saklar. */
+async function sistemeYaz(kod: DilKodu | null): Promise<void> {
+  const k = uygulamaDiliKoprusu();
+  if (!k) return;
+  try {
+    if (!(await k.uygulamaDiliniYaz(kod ? iosYerelAdi(kod) : null))) return;
+    const okunan = await k.uygulamaDiliniOku();
+    if (okunan !== undefined) await Depolama.yaz<UygulamaDiliIzi>(DEPOLAMA_ANAHTARLARI.UYGULAMA_DILI_IZI, { etiket: okunan });
+  } catch (e) {
+    Logger.warn('DilServisi', 'Uygulama dili telefon ayarlarına yazılamadı', e);
+  }
+}
+
 export function cihazYerelAyari(): string | null {
+  // Native genel dil önce: uygulamaya özel dil sisteme yazılınca `I18nManager`/`AppleLanguages`
+  // uygulamanın dilini döndürür ve "cihaz dili" seçeneği yanılırdı.
+  if (cihazDiliOnbellegi !== undefined) return cihazDiliOnbellegi;
   try {
     if (Platform.OS === 'ios') {
       // `NativeModules.SettingsManager` New Architecture'da güvenilmez; `Settings` kararlı yol.
@@ -211,6 +263,7 @@ async function takimiKur(ham?: DilAyari | null): Promise<void> {
 
 async function diskten(): Promise<DilKodu> {
   let ham: DilAyari | null = null;
+  await cihazDiliniTazele();
   try {
     ham = await eskiKurulumGocu(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI));
     const kareTuru = ham?.kod != null && !secilebilirKod(ham.kod) ? await kareTuruMu() : false;
@@ -244,7 +297,40 @@ export const DilServisi = {
     anonsDiliniBildir(aktifDil());
     await takimiKur(ham);
     yukleme = Promise.resolve(aktifDil());
+    // Telefon ayarlarındaki uygulama dili de aynı görünsün (sahip kararı 2026-11-05).
+    await sistemeYaz(kod);
     return degisti;
+  },
+
+  /**
+   * Telefon ayarlarındaki UYGULAMAYA ÖZEL dil son görülenden farklıysa onu döndürür (`'cihaz'` =
+   * kullanıcı orada "sistem dili"ni seçti); çağıran `diliKaydet` ile uygular (planlar ve yön aynı
+   * yoldan). Sahip kararı 2026-11-05: uygulamaya özel ayar bir kez kazanır; cihazın genel dili
+   * değişince uygulama içi seçim korunur (bu yalnız uygulama dilini izler). İlk görüşte değişim
+   * sayılmaz: uygulamanın seçimi sisteme yazılır. Köprü yoksa (Android 12-, eski ikili) `null`.
+   */
+  async sistemDiliDegisimi(): Promise<DilKodu | 'cihaz' | null> {
+    const k = uygulamaDiliKoprusu();
+    if (!k) return null;
+    try {
+      await cihazDiliniTazele();
+      const sistem = await k.uygulamaDiliniOku();
+      if (sistem === undefined) return null;
+      const iz = await Depolama.oku<UygulamaDiliIzi>(DEPOLAMA_ANAHTARLARI.UYGULAMA_DILI_IZI);
+      if (!iz) {
+        const kayit = await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
+        await sistemeYaz(dilKoduMu(kayit?.kod) ? kayit.kod : null);
+        return null;
+      }
+      if (iz.etiket === sistem) return null;
+      await Depolama.yaz<UygulamaDiliIzi>(DEPOLAMA_ANAHTARLARI.UYGULAMA_DILI_IZI, { etiket: sistem });
+      if (sistem === null) return 'cihaz';
+      const kod = cihazDilindenSec(sistem);
+      return kod && kod !== aktifDil() ? kod : null;
+    } catch (e) {
+      Logger.warn('DilServisi', 'Telefon ayarlarındaki uygulama dili okunamadı', e);
+      return null;
+    }
   },
 
   /**
@@ -355,6 +441,8 @@ export const DilServisi = {
       const { kod: _kod, ...kalan } = kayitNesnesi(m);
       return kalan;
     });
+    // Önce telefon ayarındaki uygulama dili temizlenir: yoksa cihaz dili okuması uygulamanın dilini verirdi.
+    await sistemeYaz(null);
     const kod = await DilServisi.yukle(true);
     return kod !== onceki;
   },
@@ -376,5 +464,6 @@ export const DilServisi = {
   /** Testler için. */
   _sifirla(): void {
     yukleme = null;
+    cihazDiliOnbellegi = undefined;
   },
 };

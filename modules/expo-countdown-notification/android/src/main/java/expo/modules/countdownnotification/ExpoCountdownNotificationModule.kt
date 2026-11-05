@@ -186,6 +186,42 @@ class ExpoCountdownNotificationModule : Module() {
         }
 
         /**
+         * Telefon ayarlarındaki UYGULAMAYA ÖZEL dil (Android 13+, Ayarlar > Uygulamalar > Dil):
+         * BCP-47 etiketi ya da `null` (sistem varsayılanı ya da Android 12 ve öncesi). Cihaz genel
+         * dili DEĞİL. JS bu değerin değişip değişmediğini izler (`DilServisi.sistemDiliniEsitle`).
+         */
+        /**
+         * Cihazın GENEL dili (BCP-47): `Resources.getSystem()` uygulamaya özel dilden etkilenmez.
+         * `I18nManager.localeIdentifier` uygulamanın bağlamından okur; uygulama dili sisteme
+         * yazılınca o da uygulama dilini döndürür ve "cihaz dili" seçeneği yanılırdı.
+         */
+        AsyncFunction("cihazDiliniOku") {
+            val yerel = android.content.res.Resources.getSystem().configuration.locales
+            if (yerel.isEmpty) null else yerel[0].toLanguageTag()
+        }
+
+        AsyncFunction("uygulamaDiliniOku") {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@AsyncFunction null
+            val context = appContext.reactContext ?: return@AsyncFunction null
+            val yerel = context.getSystemService(android.app.LocaleManager::class.java)?.applicationLocales
+            if (yerel == null || yerel.isEmpty) null else yerel[0].toLanguageTag()
+        }
+
+        /**
+         * Uygulama içinde seçilen dili telefon ayarlarına da yazar (`null` = sistem varsayılanı);
+         * Ayarlar'daki uygulama dili hep uygulamayla aynı görünür. Android 12 ve öncesinde `false`.
+         * Etkinlik yeniden kurulmaz: manifestte `configChanges` `locale|layoutDirection` içerir.
+         */
+        AsyncFunction("uygulamaDiliniYaz") { etiket: String? ->
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@AsyncFunction false
+            val context = appContext.reactContext ?: return@AsyncFunction false
+            val yonetici = context.getSystemService(android.app.LocaleManager::class.java) ?: return@AsyncFunction false
+            yonetici.applicationLocales =
+                if (etiket.isNullOrBlank()) android.os.LocaleList.getEmptyLocaleList() else android.os.LocaleList.forLanguageTags(etiket)
+            true
+        }
+
+        /**
          * Kullanıcının seçtiği vakit adı takımı (JSON) ya da `null` (anahtar silinir, dil
          * tablosu). Widget'lar `arayuzDiliniAyarla`'daki gibi tercih dinleyicisiyle
          * (`ArayuzDiliIzleyici`) yeniden çizilir.
