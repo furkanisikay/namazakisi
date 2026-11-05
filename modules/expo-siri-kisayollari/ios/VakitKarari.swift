@@ -2279,31 +2279,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Bofungola aplikasiɔ"
     )
 
-    // ÇEVİRİ: dag
+    // dag
     public static let dag = VakitMetinleri(
         dil: "dag",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Subaahi", "ogle": "Azafari", "ikindi": "Lahisari", "aksam": "Magarbi", "yatsi": "Isha’i"],
+        gunes: "Wuntaŋ puhibu",
+        konumYok: "Yoomi ya app maa ka zali yi luɣili ka bɛ kali jiŋli saha.",
+        veriEski: "Jiŋli saha kurigiya. Yoomi ya app maa sahayini ka di mali palli.",
+        girisBugun: "{saat}",
+        girisYarin: "biɛɣusɔɣu {saat}",
+        suAnVakti: "Pumpɔŋɔ nyɛla {ad} saha.",
+        suAnVaktiCikis: "Pumpɔŋɔ nyɛla {ad} saha; di ni naai {saat}.",
+        siradakiNamaz: "Jiŋli din doli nyɛla {ad} {giris}.",
+        isaretlendi: "Bɛ dalim {ad} ni yi puhi. {dua}.",
+        zatenKilindi: "Bɛ pun dalim {ad} ni yi puhi.",
+        vakitYok: "Jiŋli shɛli bɛ ni yɛn dalim kani pumpɔŋɔ.",
+        vakitYokSiradaki: "Jiŋli shɛli bɛ ni yɛn dalim kani pumpɔŋɔ. Din doli nyɛla {ad} {giris}.",
+        onay: "Bɛ dalim {ad} ni yi puhi?",
+        vakitDegisti: "Jiŋli saha taɣiya, dinzuɣu bɛ bi dalim shɛli. Lahi niŋmi ya.",
+        kabulDuasi: "Allah ni deei",
+        kildim: "N puhi jiŋli",
+        kilindi: "Puhiya",
+        kontrolKildim: "{ad} · N puhi jiŋli",
+        kontrolKilindi: "{ad} puhiya",
+        kontrolVakitYok: "Jiŋli shɛli bɛ ni yɛn dalim kani",
+        uygulamayiAcin: "Yoomi ya app maa"
     )
 
     // mos

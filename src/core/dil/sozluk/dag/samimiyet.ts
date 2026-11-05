@@ -1,35 +1,37 @@
-// ÇEVİRİ: dag — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Dagbani kalıpları (çeviri değil): dua "Allah ni deei" ("Allah kabul etsin"; kabul fiili QuranEnc
+ * `dagbani_ghatubo` 2:127 "Deemi ti suhigu", "ni" dilek kipi; Allah adı sahip kararıyla "Allah",
+ * mealin "Naawuni"si değil), "ti Duuma" (Rabbimiz, 2:127), "alibarika" (bereket, QE 17:1). Bütün
+ * kalıplar TÜRETİLDİ, yerli okuyucuyla DOĞRULANMADI. Kandil ve hicrî yılbaşı selamı yalnız
+ * Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki karşılıklar tip
+ * bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Allah ni niŋ alibarika.',
+  kabulDualari: ['Allah ni deei', 'Allah ni deei ti jiŋli', 'Allah ni deei', 'Ti Duuma ni deei'],
+  kabulDuasi: 'Allah ni deei',
+  ekSabah: 'Asiba alibarika',
+  ekYatsi: 'Yuŋ alibarika',
+  tamGunAna: 'Allah ni deei',
+  tamGunAlt: 'Zuŋɔ yi puhi jiŋa anu maa zaa.',
+  kazaKabul: 'Bɛ yihi {vakit} labi puhibu yini yi gbaŋ maa ni. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Ragaa’ibi yuŋ alibarika',
+    mirac: 'Israa’i mini Mi’iraj alibarika',
+    berat: 'Baraa’a yuŋ alibarika',
+    mevlid: 'Mawlid alibarika',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Saɣila alibarika',
+    bayram: 'Chuɣu alibarika',
+    iftar: 'Iftar alibarika',
+    kadir: 'Lailatul Qadri alibarika',
+    arefe: 'Arafa dabsili alibarika',
+    hicriYilbasi: 'Hijira yuun palli alibarika',
+    cuma: 'Alizumma alibarika',
+    ramazan: 'Nolɔri goli alibarika',
+    sabah: 'Asiba alibarika',
   },
 };

@@ -1830,29 +1830,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Etiaka elembo ete losambo ya sikoyo esambelami."
     )
 
-    // ÇEVİRİ: dag
+    // dag
     static let dag = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Jiŋli saha",
+        galeriAciklama: "Pumpɔŋɔ jiŋli saha, saha din kpalim pɔi ka di naai mini zuŋɔ jiŋli saha.",
+        veriEski: "Yoomi ya app maa ka jiŋli saha mali palli",
+        konumYok: "Yoomi ya app maa ka zali yi luɣili",
+        kilindiSiradaki: "{ad} puhiya · {sonraki} {saat}",
+        adCikis: "{ad} · di naai {saat}",
+        siradakiAdSaat: "Din doli {ad} {saat}",
+        vaktiCikisErisim: "{ad} saha, di naai {saat}",
+        siradakiErisim: "Din doli {ad}, {saat}",
+        cikisSaat: "Di naai {saat}",
+        bitisSaat: "Di naai {saat}",
+        kilindiBaslik: "{ad} puhiya",
+        siradaki: "Din doli",
+        siradakiAd: "Din doli {ad}",
+        kildimErisim: "N puhi {ad}",
+        gunSatiriKilindi: ", puhiya",
+        bitti: "Di naaya",
+        vakitCikti: "Jiŋli saha naaya",
+        kabulAlt: "{ad} puhiya",
+        kontrolAdi: "N puhi jiŋli",
+        kontrolAciklama: "Di dalimdi pumpɔŋɔ jiŋli ni yi puhi."
     )
 
     // mos

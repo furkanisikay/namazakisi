@@ -635,11 +635,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Te, etiami elembo naino te."
     )
 
-    // ÇEVİRİ: dag (other)
+    // dag (other)
     static let dag = OtomasyonMetinleri(
-        kalanDakika: ["other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad} ni paai minti {n} puuni."],
+        evetKilindi: "Iin, bɛ dalim li ni yi puhi.",
+        hayirKilinmadi: "Aayi, bɛ na bi dalim li."
     )
 
     // mos (other)

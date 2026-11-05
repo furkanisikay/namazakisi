@@ -1143,19 +1143,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", losambo elandi"
     )
 
-    // ÇEVİRİ: dag
+    // dag
     static let dag = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Piimi ya yi tiŋa",
+        ilMerkezi: "Bɛ kalindi jiŋli saha tiŋgbani yaɣili sunsuuni zuɣu. Yi ni tooi taɣi yi piibu nyaaŋa.",
+        ilSecErisim: "{il}, piimi ya",
+        kalan: "Saha din kpalim pɔi ka {ad} paai",
+        kalanErisim: "Saha din kpalim pɔi ka {ad} paai: {sure}",
+        konumuDegistirin: "Taɣimi ya luɣili",
+        kerahatSuruyor: "Makruhi saha: {tur}, di naai {bitis}. {aciklama}",
+        siradakiKerahat: "Makruhi saha din doli: {tur} {bas}–{bit}",
+        cumaBilgisi: "Zuŋɔ nyɛla Alizumma. Bɛ puhiri Alizumma jiŋli Azafari saha (di paai {giris}).",
+        suAnkiEk: ", pumpɔŋɔ jiŋli",
+        siradakiEk: ", jiŋli din doli"
     )
 
     // mos

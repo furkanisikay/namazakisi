@@ -1,10 +1,9 @@
-// ÇEVİRİ: dag — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Sabbu soli ni taɣi',
+  aciklama: 'Balli shɛli yi ni piri maa sabbu doli la soli shɛli din pa ŋɔ. App maa ni labi pili pɔi ka yaɣa maa taɣi.',
+  simdiBaslat: 'Labi pilimi ya pumpɔŋɔ',
+  sonra: 'Nyaaŋa',
+  bekliyor: 'Sabbu soli maa ni taɣi app maa yi labi pili.',
 };

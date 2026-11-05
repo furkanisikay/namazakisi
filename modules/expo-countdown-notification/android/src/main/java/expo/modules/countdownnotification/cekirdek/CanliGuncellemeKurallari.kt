@@ -187,8 +187,8 @@ object CanliGuncellemeKurallari {
         "rn" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ln
         "ln" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: dag
-        "dag" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // dag
+        "dag" to KisaBirimler("hw", "min", birimAyirici = " ", parcaAyirici = " "),
         // mos
         "mos" to KisaBirimler("lɛɛr", "min", birimAyirici = " ", parcaAyirici = " "),
         // aa

@@ -1127,18 +1127,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: dag
+    // dag (Miladi ay adları İngilizce: Gana kullanımı, Dagbani kaynağı yok)
     public static let dag = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
+        vakitAdlari: ["imsak": "Subaahi", "gunes": "Wuntaŋ puhibu", "ogle": "Azafari", "ikindi": "Lahisari", "aksam": "Magarbi", "yatsi": "Isha’i"],
+        cuma: "Alizumma",
         aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        gunler: ["Atani", "Atalaata", "Alaaba", "Alaamishi", "Alizumma", "Asibri", "Alahari"],
         tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAdlari: ["suruk": "Wuntaŋ puhibu", "istiva": "Wuntaŋ sunsuuni", "gurub": "Wuntaŋ lubu"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Jiŋli puhibu nyɛla makruhi hali ka wuntaŋ puhi viɛnyɛla.",
+            "istiva": "Jiŋli puhibu nyɛla makruhi wuntaŋ yi be sagbana sunsuuni.",
+            "gurub": "Jiŋli puhibu nyɛla makruhi wuntaŋ yi luri.",
         ]
     )
 
