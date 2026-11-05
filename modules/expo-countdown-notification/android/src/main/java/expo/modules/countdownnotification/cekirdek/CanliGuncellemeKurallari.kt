@@ -176,8 +176,8 @@ object CanliGuncellemeKurallari {
         "he" to KisaBirimler("שע׳", "דק׳", birimAyirici = " ", parcaAyirici = " "),
         // ka (CLDR ka short: "სთ", "წთ" — JS sure.kisa ile aynı)
         "ka" to KisaBirimler("სთ", "წთ", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: lt
-        "lt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // lt (CLDR lt short, noktalı — JS sure.kisa ile aynı)
+        "lt" to KisaBirimler("val.", "min.", birimAyirici = " ", parcaAyirici = " "),
         // mg
         "mg" to KisaBirimler("ora", "min", birimAyirici = " ", parcaAyirici = " "),
         "lg" to KisaBirimler("ssa", "dk", birimAyirici = " ", parcaAyirici = " "),

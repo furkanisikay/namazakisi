@@ -1038,18 +1038,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: lt (`aylar` tarih içi biçimdir: ilgi hâli)
+    // lt (`aylar` tarih içi biçimdir: ilgi hâli; CLDR "2026 m. lapkričio 4 d.", gün adı satır başında büyük)
     public static let lt = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Saulėtekis", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Džumua",
+        aylar: ["sausio", "vasario", "kovo", "balandžio", "gegužės", "birželio", "liepos", "rugpjūčio", "rugsėjo", "spalio", "lapkričio", "gruodžio"],
+        gunler: ["Pirmadienis", "Antradienis", "Trečiadienis", "Ketvirtadienis", "Penktadienis", "Šeštadienis", "Sekmadienis"],
+        tarih: "{gunAdi}, {yil} m. {ay} {gun} d.",
+        kerahatAdlari: ["suruk": "Saulėtekis", "istiva": "Zenitas", "gurub": "Saulėlydis"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Kol saulė gerai nepakils, atlikti maldą nepageidautina.",
+            "istiva": "Kol saulė zenite, atlikti maldą nepageidautina.",
+            "gurub": "Kol saulė leidžiasi, atlikti maldą nepageidautina.",
         ]
     )
 

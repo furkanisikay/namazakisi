@@ -1054,19 +1054,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", შემდეგი ლოცვა"
     )
 
-    // ÇEVİRİ: lt
+    // lt (JS genel.evEkrani ile aynı kalıp; vakit adı çekimsiz)
     static let lt = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Pasirinkite provinciją",
+        ilMerkezi: "Maldų laikai skaičiuojami provincijos centrui. Pasirinkimą vėliau galėsite pakeisti.",
+        ilSecErisim: "{il}, pasirinkti",
+        kalan: "Iki {ad} liko",
+        kalanErisim: "Iki {ad} liko {sure}",
+        konumuDegistirin: "Keisti vietovę",
+        kerahatSuruyor: "Nepageidautinas laikas: {tur}, baigiasi {bitis}. {aciklama}",
+        siradakiKerahat: "Kitas nepageidautinas laikas: {tur} {bas}–{bit}",
+        cumaBilgisi: "Šiandien penktadienis. Džumua malda atliekama Dhuhr metu (prasideda {giris}).",
+        suAnkiEk: ", dabartinė malda",
+        siradakiEk: ", kita malda"
     )
 
     // mg

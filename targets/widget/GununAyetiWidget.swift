@@ -963,18 +963,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Georgian Translation, QuranEnc 1.0.7"
     )
 
-    // ÇEVİRİ: lt
+    // lt (meal birebir `gununAyetiHavuzu.ts` 94:6 lt; kaynak `lithuanian_rwwad` 1.0.8)
     static let lt = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Dienos ajatas",
+        galeriAciklama: "Ajatas ir jo vertimas, kasdien keičiami Fajr metu.",
+        etiket: "DIENOS AJATAS",
+        uygulamayiAcin: "Kad pamatytumėte dienos ajatą, atidarykite programą",
+        ornekSigmiyor: "Šiandienos ajatas netelpa šiame dydyje. Palieskite, kad perskaitytumėte.",
+        ornekAcin: "Atidaryti",
+        ornekArapcaKaynagi: "Arabiškai: Tanzil",
+        ornekMeal: "Iš tiesų, su sunkumu (bus) lengvumas.",
+        ornekKisaKunye: "Koranas 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.8"
     )
 
     // mg (meal QuranEnc `malagasy_rwwad` 1.0.1, birebir)

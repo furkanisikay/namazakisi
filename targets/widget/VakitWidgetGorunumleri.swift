@@ -1681,29 +1681,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "მიმდინარე ლოცვას შესრულებულად მონიშნავს."
     )
 
-    // ÇEVİRİ: lt
+    // lt (vakit adı çekimsiz, çekim "malda"da; "Kıldım" = "Atlikau maldą")
     static let lt = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Maldos laikas",
+        galeriAciklama: "Dabartinis maldos laikas, kiek liko iki jo pabaigos, ir šiandienos maldų laikai.",
+        veriEski: "Kad atnaujintumėte maldų laikus, atidarykite programą",
+        konumYok: "Kad nustatytumėte vietovę, atidarykite programą",
+        kilindiSiradaki: "{ad} atlikta · {sonraki} {saat}",
+        adCikis: "{ad} · baigiasi {saat}",
+        siradakiAdSaat: "Kita: {ad} {saat}",
+        vaktiCikisErisim: "{ad} maldos laikas, baigiasi {saat}",
+        siradakiErisim: "Kita: {ad}, {saat}",
+        cikisSaat: "Baigiasi {saat}",
+        bitisSaat: "Baigiasi {saat}",
+        kilindiBaslik: "{ad} atlikta",
+        siradaki: "Kita",
+        siradakiAd: "Kita: {ad}",
+        kildimErisim: "Atlikau {ad} maldą",
+        gunSatiriKilindi: ", atlikta",
+        bitti: "Baigėsi",
+        vakitCikti: "Maldos laikas baigėsi",
+        kabulAlt: "{ad} malda atlikta",
+        kontrolAdi: "Atlikau maldą",
+        kontrolAciklama: "Pažymi dabartinę maldą kaip atliktą."
     )
 
     // mg

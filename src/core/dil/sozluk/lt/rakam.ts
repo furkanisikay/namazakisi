@@ -1,11 +1,10 @@
-// ÇEVİRİ: lt — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Skaitmenys',
+  aciklama: 'Pasirinkite, kokiais skaitmenimis rašyti laiką, datas ir skaičius.',
+  otomatik: 'Pagal šalį',
+  otomatikAciklama: 'Naudojami skaitmenys, įprasti jūsų vietovės šalyje.',
+  dogu: 'Rytų arabų skaitmenys',
+  bati: 'Vakarietiški skaitmenys',
 };

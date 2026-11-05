@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: lt — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">Tiesioginiai skaitikliai</string>
+    <string name="countdown_kanal_canli_aciklama">Atgalinė atskaita „Now Bar“ ir būsenos juostoje</string>
+    <string name="countdown_kanal_genel_ad">Atgalinės atskaitos pranešimai</string>
+    <string name="countdown_kanal_genel_aciklama">Atgalinės atskaitos pranešimų kanalas</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">Atlikau maldą</string>
+    <string name="countdown_eylem_durdur">Sustabdyti</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">Paskubėkite, maldos laikas tuoj baigsis.</string>
+    <string name="countdown_yedek_iftar">Laikas senka.</string>
+    <string name="countdown_yedek_sahur">Dar galite valgyti ir gerti; pasninkas netrukus prasidės.</string>
+    <string name="countdown_yedek_seri">Šiandienos maldos neužbaigtos; nepraraskite serijos.</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">Iki laiko pabaigos</string>
+    <string name="countdown_onek_vakit_dar">Laikas baigiasi</string>
+    <string name="countdown_onek_iftar">Iki iftaro</string>
+    <string name="countdown_onek_iftar_dar">Iki iftaro</string>
+    <string name="countdown_onek_sahur">Iki sahuro pabaigos</string>
+    <string name="countdown_onek_sahur_dar">Sahuras baigiasi</string>
+    <string name="countdown_onek_seri">Seriją išsaugoti liko</string>
+    <string name="countdown_onek_seri_dar">Serija baigiasi</string>
 </resources>

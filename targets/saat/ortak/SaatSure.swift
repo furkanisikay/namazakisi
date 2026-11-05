@@ -599,12 +599,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: lt (one/few/many/other)
+    // lt (one/few/many/other; CLDR lt short noktalı, JS sure ile aynı)
     public static let lt = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "few": "{n} hours", "many": "{n} hours", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "few": "{n} minutes", "many": "{n} minutes", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "few": "{n} seconds", "many": "{n} seconds", "other": "{n} seconds"],
+        birimSa: "val.", birimDk: "min.", birimSn: "sek.",
+        saat: ["one": "{n} valanda", "few": "{n} valandos", "many": "{n} valandos", "other": "{n} valandų"],
+        dakika: ["one": "{n} minutė", "few": "{n} minutės", "many": "{n} minutės", "other": "{n} minučių"],
+        saniye: ["one": "{n} sekundė", "few": "{n} sekundės", "many": "{n} sekundės", "other": "{n} sekundžių"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

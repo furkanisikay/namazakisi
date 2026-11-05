@@ -593,11 +593,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "არა, ჯერ არ არის მონიშნული."
     )
 
-    // ÇEVİRİ: lt (one/few/many/other)
+    // lt (one/few/many/other; "po" + kilmininkas: 1 minutės, 2 minučių)
     static let lt = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "few": "{ad} begins in {n} minutes.", "many": "{ad} begins in {n} minutes.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} maldos laikas prasidės po {n} minutės.", "few": "{ad} maldos laikas prasidės po {n} minučių.", "many": "{ad} maldos laikas prasidės po {n} minutės.", "other": "{ad} maldos laikas prasidės po {n} minučių."],
+        evetKilindi: "Taip, pažymėta kaip atlikta.",
+        hayirKilinmadi: "Ne, dar nepažymėta."
     )
 
     // mg (one = 0 ve 1, other; ad çoğul eki almaz → one = other)

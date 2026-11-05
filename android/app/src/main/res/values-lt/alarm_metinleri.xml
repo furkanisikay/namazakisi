@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: lt — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Tikras žadintuvas (Litvanca). "Atlikau maldą" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Maldos žadintuvas</string>
+  <string name="alarm_kildim">Atlikau maldą</string>
+  <string name="alarm_kapat">Išjungti</string>
+  <string name="alarm_kanal_aciklamasi">Tikras žadintuvas, skambantis jūsų pasirinktuose priminimo žingsniuose</string>
 </resources>

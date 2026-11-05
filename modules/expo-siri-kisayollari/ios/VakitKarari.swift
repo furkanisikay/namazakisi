@@ -2118,31 +2118,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "აპის გახსნა"
     )
 
-    // ÇEVİRİ: lt
+    // lt (Android CEKIRDEK_LT ve JS genel.kildim.sonuc ile aynı; vakit adı çekimsiz, çekim "malda"da)
     public static let lt = VakitMetinleri(
         dil: "lt",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Saulėtekis",
+        konumYok: "Kad galėtume apskaičiuoti maldų laikus, atidarykite programą ir nustatykite savo vietovę.",
+        veriEski: "Maldų laikai pasenę. Kad juos atnaujintumėte, vieną kartą atidarykite programą.",
+        girisBugun: "{saat}",
+        girisYarin: "rytoj {saat}",
+        suAnVakti: "Dabar {ad} maldos laikas.",
+        suAnVaktiCikis: "Dabar {ad} maldos laikas; jis baigiasi {saat}.",
+        siradakiNamaz: "Kita malda – {ad}, {giris}.",
+        isaretlendi: "{ad} malda pažymėta kaip atlikta. {dua}.",
+        zatenKilindi: "{ad} malda jau pažymėta kaip atlikta.",
+        vakitYok: "Šiuo metu atliktinos maldos nėra.",
+        vakitYokSiradaki: "Šiuo metu atliktinos maldos nėra. Kita – {ad}, pradžia {giris}.",
+        onay: "Pažymėti {ad} maldą kaip atliktą?",
+        vakitDegisti: "Maldos laikas pasikeitė, todėl niekas nepažymėta. Bandykite dar kartą.",
+        kabulDuasi: "Tepriima Allahas",
+        kildim: "Atlikau maldą",
+        kilindi: "Atlikta",
+        kontrolKildim: "{ad} · Atlikau maldą",
+        kontrolKilindi: "{ad} atlikta",
+        kontrolVakitYok: "Nėra atliktinos maldos",
+        uygulamayiAcin: "Atidaryti programą"
     )
 
     // mg
