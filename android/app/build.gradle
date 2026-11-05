@@ -132,6 +132,15 @@ android {
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
+    // Dil kaynakları AAB'de bölünmez: uygulama dili cihaz dilinden farklı seçilebilir ve native
+    // metin (widget, bildirim, alarm) seçilen dilin `values-xx`'inden okunur. Bölünürse Play
+    // yalnız cihaz dilinin parçasını kurar, native yüzeyler varsayılana (Türkçe) düşer.
+    // Bedeli ~1 MB (78 dilin metni).
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`
