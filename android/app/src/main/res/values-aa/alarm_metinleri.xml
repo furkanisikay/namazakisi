@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: aa — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Diggah le alarm (Afar). "Salat abe" warsal tan butun luk inki migaq. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Salat alarm</string>
+  <string name="alarm_kildim">Salat abe</string>
+  <string name="alarm_kapat">Alifa</string>
+  <string name="alarm_kanal_aciklamasi">Dooritteen kassisiyya gurral yaqqa diggah le alarm</string>
 </resources>

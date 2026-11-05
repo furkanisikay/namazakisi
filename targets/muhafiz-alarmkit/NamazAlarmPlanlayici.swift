@@ -241,8 +241,8 @@ enum NamazAlarmCekirdegi {
         "dag": "Stop",
         // ÇEVİRİ: mos
         "mos": "Stop",
-        // ÇEVİRİ: aa
-        "aa": "Stop",
+        // aa
+        "aa": "Xiqisa",
         // ÇEVİRİ: mdh
         "mdh": "Stop",
         // ÇEVİRİ: ak

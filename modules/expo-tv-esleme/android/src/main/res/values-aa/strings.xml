@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: aa — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">TV foocal tan QR kood qaxxa addal haysa</string>
+    <string name="tvesleme_qr_vazgec">Caba</string>
+    <string name="tvesleme_qr_vazgec_erisim">Ikriyaanam caba</string>
+    <string name="tvesleme_qr_yabanci">Ama QR kood Namaz Akışı TV le hinna. TVl tan kood ikriya.</string>
+    <string name="tvesleme_qr_okundu">Kood ikriyime</string>
 </resources>

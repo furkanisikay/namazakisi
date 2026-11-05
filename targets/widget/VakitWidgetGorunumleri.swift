@@ -1880,29 +1880,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: aa
+    // aa
     static let aa = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Salat wakti",
+        galeriAciklama: "Asaakuh salat wakti, gexam fanah raqte wakti kee asaakuh salat wakti.",
+        veriEski: "Salat wakti qusbisaanamkeh app faka",
+        konumYok: "Sinni arac haysaanamkeh app faka",
+        kilindiSiradaki: "{ad} abime · {sonraki} {saat}",
+        adCikis: "{ad} · {saat} gexa",
+        siradakiAdSaat: "Lakal {ad} {saat}",
+        vaktiCikisErisim: "{ad} wakti, {saat} gexa",
+        siradakiErisim: "Lakal tan {ad}, {saat}",
+        cikisSaat: "Gexa {saat}",
+        bitisSaat: "Gexa {saat}",
+        kilindiBaslik: "{ad} abime",
+        siradaki: "Lakal tan",
+        siradakiAd: "Lakal tan {ad}",
+        kildimErisim: "{ad} salat abe",
+        gunSatiriKilindi: ", abime",
+        bitti: "Gexe",
+        vakitCikti: "Salat wakti gexe",
+        kabulAlt: "{ad} abime",
+        kontrolAdi: "Salat abe",
+        kontrolAciklama: "Asaakuh salat abime calaamisa."
     )
 
     // ÇEVİRİ: mdh

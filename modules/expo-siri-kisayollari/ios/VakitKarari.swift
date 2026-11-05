@@ -2333,31 +2333,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: aa
+    // aa
     public static let aa = VakitMetinleri(
         dil: "aa",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Subci", "ogle": "Dohori", "ikindi": "Qasri", "aksam": "Magrib", "yatsi": "Qisha"],
+        gunes: "Ayro mawqa",
+        konumYok: "Salat wakti cisaabimamkeh app fakaay sinni arac haysa.",
+        veriEski: "Salat wakti qusba hinna. Qusbisaanamkeh app inki adda faka.",
+        girisBugun: "saaqat {saat}",
+        girisYarin: "beera saaqat {saat}",
+        suAnVakti: "Asaaku {ad} wakti.",
+        suAnVaktiCikis: "Asaaku {ad} wakti; {saat} gexa.",
+        siradakiNamaz: "Lakal tan salat {ad}, {giris}.",
+        isaretlendi: "{ad} abime calaamisime. {dua}.",
+        zatenKilindi: "{ad} duma abime calaamisime.",
+        vakitYok: "Asaaku calaamisimta salat mali.",
+        vakitYokSiradaki: "Asaaku calaamisimta salat mali. Lakal tan {ad}, {giris}.",
+        onay: "{ad} abime calaamisnaa?",
+        vakitDegisti: "Salat wakti korsite, toh sabbatah tu calaamisime wee. Kaadu mokkora.",
+        kabulDuasi: "Allah oggolay",
+        kildim: "Salat abe",
+        kilindi: "Abime",
+        kontrolKildim: "{ad} · Salat abe",
+        kontrolKilindi: "{ad} abime",
+        kontrolVakitYok: "Calaamisimta salat mali",
+        uygulamayiAcin: "App faka"
     )
 
     // ÇEVİRİ: mdh

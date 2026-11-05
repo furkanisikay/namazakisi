@@ -649,11 +649,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: aa (other)
+    // aa (other)
     static let aa = OtomasyonMetinleri(
-        kalanDakika: ["other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad} {n} daqiiqa lakal culta."],
+        evetKilindi: "Yeey, abime calaamisime.",
+        hayirKilinmadi: "Maleey, hanna calaamisime wee."
     )
 
     // ÇEVİRİ: mdh (other)
