@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ln — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">Kotanga ntango ya sikoyo</string>
+    <string name="countdown_kanal_canli_aciklama">Kotanga ntango na Now Bar mpe na barre ya likolo</string>
+    <string name="countdown_kanal_genel_ad">Mayebisi ya kotanga ntango</string>
+    <string name="countdown_kanal_genel_aciklama">Nzela ya mayebisi ya kotanga ntango</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">Nasambeli</string>
+    <string name="countdown_eylem_durdur">Botelemisa</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">Bosala noki, ntango ya losambo ekomi pene ya kosila.</string>
+    <string name="countdown_yedek_iftar">Ntango ezali kosila.</string>
+    <string name="countdown_yedek_sahur">Bokoki naino kolya mpe komela; kokanga ngizi ekobanda noki.</string>
+    <string name="countdown_yedek_seri">Losambo ya lɛlɔ esili te; bobungisa mokoba na bino te.</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">Tii ntango esila</string>
+    <string name="countdown_onek_vakit_dar">Ntango ezali kosila</string>
+    <string name="countdown_onek_iftar">Tii iftar</string>
+    <string name="countdown_onek_iftar_dar">Tii iftar</string>
+    <string name="countdown_onek_sahur">Tii suhur esila</string>
+    <string name="countdown_onek_sahur_dar">Suhur ezali kosila</string>
+    <string name="countdown_onek_seri">Mpɔ na kobatela mokoba</string>
+    <string name="countdown_onek_seri_dar">Mokoba ezali kosila</string>
 </resources>

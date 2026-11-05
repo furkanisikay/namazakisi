@@ -1,35 +1,36 @@
-// ÇEVİRİ: ln — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Lingala konuşan Müslümanların kalıpları (çeviri değil). Kaynaklı birebir "Allah kabul etsin"
+ * kalıbı bulunamadı: "Allah andimela" QE 2:127 "Ndimela biso" ("kabul et bizden") kökünden
+ * türetildi, Allah adı ana oturum kararıyla "Allah"; "Allah apambola" ("Allah bereket versin")
+ * HadeethEnc ln'deki salavat kalıbından ("Nzambe apambola ye"). Yerli okuyucu bakmalı. Kandil ve
+ * hicrî yılbaşı selamı yalnız Türkiye geleneğinde söylenir; buradaki karşılıklar tip bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Allah apambola yango.',
+  kabulDualari: ['Allah andimela bino', 'Allah andima yango', 'Allah andimela biso', 'Nkolo na biso andima yango'],
+  kabulDuasi: 'Allah andimela bino',
+  ekSabah: 'Ntɔngɔ ya lipamboli',
+  ekYatsi: 'Butu ya lipamboli',
+  tamGunAna: 'Allah andimela bino',
+  tamGunAlt: 'Bosambeli losambo nyɔnsɔ mitano lɛlɔ.',
+  kazaKabul: 'Qada mɔkɔ ya {vakit} elongwami na buku na bino. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Butu ya lipamboli ya Raghaib',
+    mirac: "Isra mpe Mi'raj ya lipamboli",
+    berat: "Butu ya lipamboli ya Bara'a",
+    mevlid: 'Mawlid ya lipamboli',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
+    sahur: 'Suhur ya lipamboli',
     bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
+    iftar: 'Iftar ya lipamboli',
+    kadir: 'Laylat al-Qadr ya lipamboli',
+    arefe: 'Lipamboli na mokɔlɔ liboso ya Eid',
+    hicriYilbasi: 'Mbula ya sika ya Hijri ya lipamboli',
+    cuma: "Jumu'a Mubarak",
     ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sabah: 'Ntɔngɔ ya lipamboli',
   },
 };

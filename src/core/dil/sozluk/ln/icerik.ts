@@ -1,15 +1,14 @@
-// ÇEVİRİ: ln — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Kurani {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Losambo eleki pɔngi malamu. Boya na bolongi.',
+    araVer: 'Botika misala ya mokili mwa moke mpe botelema liboso ya Nkolo na bino.',
+    yorgunluk: 'Asr ezali kozela bino, mpɔ na kolongola bolɛmbu ya mokɔlɔ mpe kozwa kimia.',
+    sukur: 'Maghrib ezali matɔndi ya mokɔlɔ. Bosala noki botelema liboso ya Nkolo na bino.',
+    aksamKisa: 'Ntango ya Maghrib ezali mokuse; ebandi, bosambela kozanga kowumela.',
+    geceKaranligi: 'Na molili ya butu, bozala bino mɔkɔ na Nkolo na bino. Isha ezali nkisi ya molimo.',
+    davet: 'Bobengami na Isha, mpɔ na kosilisa mokɔlɔ na koluka bosepeli ya Allah.',
   },
 };

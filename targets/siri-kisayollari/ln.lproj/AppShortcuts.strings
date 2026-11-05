@@ -1,18 +1,17 @@
-/* ÇEVİRİ: ln */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "Losambo oyo elandi ezali ntango nini na ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} losambo oyo elandi";
+"${applicationName} ile sıradaki namazı söyle" = "Yebisa ngai losambo oyo elandi na ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} ntango ya losambo";
+"${applicationName} şu anki vakti kıldım" = "Nasambeli losambo ya sikoyo na ${applicationName}";
+"${applicationName} namazımı kıldım" = "Nasambeli na ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Tia elembo ete losambo ya sikoyo esambelami na ${applicationName}";
+"${applicationName} kıbleyi aç" = "Fungola Qibla na ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Lakisa Qibla na ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} elilingi ya molɔngɔ ya mokɔlɔ";
+"${applicationName} ile günün ayeti görselini hazırla" = "Bongisa elilingi ya molɔngɔ ya mokɔlɔ na ${applicationName}";

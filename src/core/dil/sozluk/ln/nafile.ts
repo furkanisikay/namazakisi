@@ -1,4 +1,3 @@
-// ÇEVİRİ: ln — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
@@ -7,34 +6,43 @@ export const nafile: Sozluk['nafile'] = {
   kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Ebandaka pene na miniti 45 nsima ya kobima ya moi mpe esilaka miniti 10 liboso ya Dhuhr. Ishraq ezali ntango na yango ya liboso; oyo eleki malamu ezali nsima ya ndambo ya minei ya liboso ya mokɔlɔ.',
+    evvabin: 'Esambelamaka nsima ya Maghrib, tii ntango ya Isha.',
+    teheccud: 'Esambelamaka nsima ya kolala mpe kolamuka nsima ya Isha, tii ntango ya Fajr. Ntango na yango eleki malamu ezali ndambo ya misato ya suka ya butu.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nLɛlɔ: {bas} – {son}',
+  enFaziletli: ' · eleki malamu nsima ya {saat}',
+  sonUcteBir: ' · ndambo ya suka {saat}',
+  durumAktif: 'Ntango ebandi · ekosila {saat}',
+  durumNafile: 'Suna · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Ntango ya Duha',
+    kuslukSuruyor: 'Ntango ya Duha ezali kokoba; bokoki kosambela tii {son}.',
+    kuslukGirdi: 'Ntango ya Duha ebandi. Ntango malamu mpɔ na rakat mibale; ekoumela tii {son}.',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: 'Etikali miniti {n} na ntango ya Duha. Ntango malamu mpɔ na rakat mibale; ekoumela tii {son}.',
+      other: 'Etikali miniti {n} na ntango ya Duha. Ntango malamu mpɔ na rakat mibale; ekoumela tii {son}.',
     }),
     evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinSuruyor: 'Ntango ezali naino mpɔ na Awwabin. Isha ekobanda na {son}.',
+    evvabinGirdi: 'Nsima ya Maghrib, ntango malamu mpɔ na Awwabin. Isha ekobanda na {son}.',
+    evvabinKalan: cogul({
+      one: 'Etikali miniti {n} mpɔ na Awwabin. Isha ekobanda na {son}.',
+      other: 'Etikali miniti {n} mpɔ na Awwabin. Isha ekobanda na {son}.',
+    }),
+    teheccudBaslik: 'Ntango ya Tahajjud',
+    uyandirSonUcte: 'Botelema; ndambo ya misato ya suka ya butu ebandi. Fajr ekobanda na {son}.',
+    uyandirKalan: cogul({
+      one: 'Botelema; etikali miniti {n} tii Fajr. Fajr ekobanda na {son}.',
+      other: 'Botelema; etikali miniti {n} tii Fajr. Fajr ekobanda na {son}.',
+    }),
+    sonUcteBaslik: 'Ndambo ya misato ya suka ya butu',
+    sonUcteGovde: 'Bangonga eleki lipamboli mpɔ na Tahajjud. Fajr ekobanda na {son}.',
+    teheccudKalan: cogul({
+      one: 'Etikali miniti {n} tii Fajr. Ntango malamu mpɔ na Tahajjud.',
+      other: 'Etikali miniti {n} tii Fajr. Ntango malamu mpɔ na Tahajjud.',
+    }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Kolamusa mpɔ na Tahajjud',
+  uyandirmaKanaliAciklama: 'Elamusaka bino mpɔ na losambo ya butu; ebɛtaka ata soki telefone ezali na kimia',
 };

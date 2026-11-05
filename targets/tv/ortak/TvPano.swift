@@ -1112,18 +1112,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ln
+    // ln (ay ve gün adları CLDR ln, JS `tarih.ts` ve Android TvDili ile aynı)
     public static let ln = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Kobima ya moi", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu'a",
+        aylar: ["sánzá ya yambo", "sánzá ya míbalé", "sánzá ya mísáto", "sánzá ya mínei", "sánzá ya mítáno", "sánzá ya motóbá", "sánzá ya nsambo", "sánzá ya mwambe", "sánzá ya libwa", "sánzá ya zómi", "sánzá ya zómi na mɔ̌kɔ́", "sánzá ya zómi na míbalé"],
+        gunler: ["Mokɔlɔ mwa yambo", "Mokɔlɔ mwa míbalé", "Mokɔlɔ mwa mísáto", "Mokɔlɔ ya mínéi", "Mokɔlɔ ya mítáno", "Mpɔ́sɔ", "Eyenga"],
         tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAdlari: ["suruk": "Kobima ya moi", "istiva": "Moi na katikati", "gurub": "Kolala ya moi"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Kosambela ezali makruh tii moi ebimi malamu.",
+            "istiva": "Kosambela ezali makruh ntango moi ezali na katikati ya likolo.",
+            "gurub": "Kosambela ezali makruh ntango moi ezali kolala.",
         ]
     )
 

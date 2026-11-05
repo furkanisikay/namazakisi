@@ -1,11 +1,10 @@
-// ÇEVİRİ: ln — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Mitango',
+  aciklama: 'Bopona mitango oyo ekosalelama mpɔ na bangonga, badati mpe mitango.',
+  otomatik: 'Na kolanda mboka',
+  otomatikAciklama: 'Esalelaka mitango oyo bato basalelaka mingi na mboka ya esika bozali.',
+  dogu: 'Mitango ya Arabe ya ɛsti',
+  bati: 'Mitango ya Wɛsti',
 };

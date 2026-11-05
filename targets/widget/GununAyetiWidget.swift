@@ -1032,18 +1032,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: ln
+    // ln (meal 94:6 gununAyetiHavuzu.ts'ten birebir; künye GUNUN_AYETI_KAYNAKLARI.mealler.ln)
     static let ln = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Molɔngɔ ya mokɔlɔ",
+        galeriAciklama: "Molɔngɔ mɔkɔ mpe libongoli na yango, ebongwanaka mokɔlɔ nyɔnsɔ na Fajr.",
+        etiket: "MOLƆNGƆ YA MOKƆLƆ",
+        uygulamayiAcin: "Bofungola aplikasiɔ mpɔ na komona molɔngɔ ya mokɔlɔ",
+        ornekSigmiyor: "Molɔngɔ ya lɛlɔ ekoki na monene oyo te. Bofina mpɔ na kotanga yango.",
+        ornekAcin: "Bofungola",
+        ornekArapcaKaynagi: "Arabe: Tanzil",
+        ornekMeal: "Ya solo, mpasi ezalaka péne ya esengo.",
+        ornekKisaKunye: "Kurani 94:6",
+        ornekMealKaynagi: "Mohammed Balangogo, QuranEnc 1.0.2"
     )
 
     // ÇEVİRİ: dag

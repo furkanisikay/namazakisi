@@ -2252,31 +2252,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: ln
+    // ln
     public static let ln = VakitMetinleri(
         dil: "ln",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Kobima ya moi",
+        konumYok: "Bofungola aplikasiɔ mpe botia esika na bino mpɔ ete bangonga ya losambo etangama.",
+        veriEski: "Bangonga ya losambo esili ntango. Bofungola aplikasiɔ mbala mɔkɔ mpɔ na kozongisa yango ya sika.",
+        girisBugun: "na {saat}",
+        girisYarin: "lobi na {saat}",
+        suAnVakti: "Sikoyo ezali ntango ya {ad}.",
+        suAnVaktiCikis: "Sikoyo ezali ntango ya {ad}; ekosila na {saat}.",
+        siradakiNamaz: "Losambo oyo elandi ezali {ad} {giris}.",
+        isaretlendi: "{ad} etiami elembo ete esambelami. {dua}.",
+        zatenKilindi: "{ad} etiami kala elembo ete esambelami.",
+        vakitYok: "Losambo ya kotia elembo ezali te sikoyo.",
+        vakitYokSiradaki: "Losambo ya kotia elembo ezali te sikoyo. Oyo elandi ezali {ad} {giris}.",
+        onay: "Botia elembo ete {ad} esambelami?",
+        vakitDegisti: "Ntango ya losambo ebongwani, yango wana elembo etiami te. Bomeka lisusu.",
+        kabulDuasi: "Allah andimela bino",
+        kildim: "Nasambeli",
+        kilindi: "Esambelami",
+        kontrolKildim: "{ad} · Nasambeli",
+        kontrolKilindi: "{ad} esambelami",
+        kontrolVakitYok: "Losambo ya kotia elembo ezali te",
+        uygulamayiAcin: "Bofungola aplikasiɔ"
     )
 
     // ÇEVİRİ: dag

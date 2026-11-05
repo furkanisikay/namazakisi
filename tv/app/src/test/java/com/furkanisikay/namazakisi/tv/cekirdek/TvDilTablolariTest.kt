@@ -124,8 +124,8 @@ class TvDilTablolariTest {
         )
         // Sebuano Filipince kuralı.
         assertEquals(listOf("one", "one", "other", "other", "one"), listOf(0, 1, 4, 14, 21).map { TvDiliCeb.cogulKategorisi(it) })
-        // mg, ln, ak 0 ve 1 tekil: 0'da tekil kalıp.
-        for (dil in listOf(TvDiliMg, TvDiliLn, TvDiliAk)) assertEquals(dil.saatSesli(1).removePrefix("1"), dil.saatSesli(0).removePrefix("0"))
+        // mg, ln, ak 0 ve 1 tekil: 0'da tekil kalıp. Sayının yeri dile göre değişir (ln "ngonga 1"): rakamı yerinde soy.
+        for (dil in listOf(TvDiliMg, TvDiliLn, TvDiliAk)) assertEquals(dil.saatSesli(1).replace("1", "#"), dil.saatSesli(0).replace("0", "#"))
         // CLDR dışı (rw, rn, dag, mos, aa, mdh) ve nqo yalnız other: sesli süre her sayıda çoğul kalıp.
         for (dil in listOf(TvDiliRw, TvDiliRn, TvDiliDag, TvDiliMos, TvDiliAa, TvDiliMdh, TvDiliNqo)) {
             assertEquals(dil.saatSesli(1).removePrefix("1"), dil.saatSesli(2).removePrefix("2"))

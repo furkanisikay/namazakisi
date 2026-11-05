@@ -628,11 +628,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: ln (one/other)
+    // ln (one/other)
     static let ln = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} ekobanda na miniti {n}.", "other": "{ad} ekobanda na miniti {n}."],
+        evetKilindi: "Ɛɛ, etiami elembo ete esambelami.",
+        hayirKilinmadi: "Te, etiami elembo naino te."
     )
 
     // ÇEVİRİ: dag (other)

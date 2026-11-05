@@ -1805,29 +1805,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: ln
+    // ln
     static let ln = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Ntango ya losambo",
+        galeriAciklama: "Ntango ya losambo ya sikoyo, ntango etikali tii esila mpe bangonga ya losambo ya lɛlɔ.",
+        veriEski: "Bofungola aplikasiɔ mpɔ na kozongisa bangonga ya losambo ya sika",
+        konumYok: "Bofungola aplikasiɔ mpɔ na kotia esika na bino",
+        kilindiSiradaki: "{ad} esambelami · {sonraki} {saat}",
+        adCikis: "{ad} · ekosila {saat}",
+        siradakiAdSaat: "Oyo elandi {ad} {saat}",
+        vaktiCikisErisim: "Ntango ya {ad}, ekosila {saat}",
+        siradakiErisim: "Oyo elandi {ad}, {saat}",
+        cikisSaat: "Ekosila {saat}",
+        bitisSaat: "Ekosila {saat}",
+        kilindiBaslik: "{ad} esambelami",
+        siradaki: "Elandi",
+        siradakiAd: "Oyo elandi {ad}",
+        kildimErisim: "Nasambeli {ad}",
+        gunSatiriKilindi: ", esambelami",
+        bitti: "Esili",
+        vakitCikti: "Ntango ya losambo esili",
+        kabulAlt: "{ad} esambelami",
+        kontrolAdi: "Nasambeli",
+        kontrolAciklama: "Etiaka elembo ete losambo ya sikoyo esambelami."
     )
 
     // ÇEVİRİ: dag

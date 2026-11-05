@@ -643,12 +643,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: ln (one/other)
+    // ln (one/other; isim sayıdan önce, sayıyla çekilmez: JS `sure.ts`)
     public static let ln = SaatSureMetinleri(
         birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        saat: ["one": "ngonga {n}", "other": "ngonga {n}"],
+        dakika: ["one": "miniti {n}", "other": "miniti {n}"],
+        saniye: ["one": "sekondi {n}", "other": "sekondi {n}"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

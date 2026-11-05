@@ -1128,19 +1128,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: ln
+    // ln
     static let ln = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Bopona engumba na bino",
+        ilMerkezi: "Bangonga ya losambo etangamaka mpɔ na katikati ya engumba. Bokoki kobongola eponi na bino nsima.",
+        ilSecErisim: "{il}, bopona",
+        kalan: "Ntango etikali tii {ad}",
+        kalanErisim: "Ntango etikali tii {ad}: {sure}",
+        konumuDegistirin: "Bobongola esika",
+        kerahatSuruyor: "Ntango ya makruh: {tur}, ekosila {bitis}. {aciklama}",
+        siradakiKerahat: "Ntango ya makruh oyo elandi: {tur} {bas}–{bit}",
+        cumaBilgisi: "Lɛlɔ ezali Jumu'a. Losambo ya Jumu'a esambelamaka na ntango ya Dhuhr (ekobanda {giris}).",
+        suAnkiEk: ", losambo ya sikoyo",
+        siradakiEk: ", losambo elandi"
     )
 
     // ÇEVİRİ: dag
