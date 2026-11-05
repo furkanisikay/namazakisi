@@ -7285,8 +7285,8 @@ object SaatDiliDag : SaatDili {
     override val birimAyirici = " "
     override val parcaAyirici = " "
     override val birDakikadanAzKisa = "<1 min"
-    override fun saatSesli(n: Long) = "${n} hawa"
-    override fun dakikaSesli(n: Long) = "${n} minti"
+    override fun saatSesli(n: Long) = "hawa ${n}"
+    override fun dakikaSesli(n: Long) = "minti ${n}"
     override val birDakikadanAzSesli = "di bi paai minti yini"
 
     override fun cikisaUzun(ad: String) = "${ad} ni naai"

@@ -3822,8 +3822,8 @@ object TvDiliDag : TvDili {
     override val birimSn = "sk"
     override val birimAyirici = " "
     override val parcaAyirici = " "
-    override fun saatSesli(n: Int) = "${n} hawa"
-    override fun dakikaSesli(n: Int) = "${n} minti"
+    override fun saatSesli(n: Int) = "hawa ${n}"
+    override fun dakikaSesli(n: Int) = "minti ${n}"
     override val birDakikadanAz = "di bi paai minti yini"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
