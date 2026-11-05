@@ -1,61 +1,60 @@
-// ÇEVİRİ: ka — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Gürcücede: "თქვენ" + kısa ‑ეთ emri ("აღასრულეთ ლოცვა", QE 2:43), "!" yok,
+ * secde karşılığı YAZILMAZ. Başlıkta süre "{dk} წთ" adın hemen ardından: "მაღრიბი · 655 წთ"
+ * bilekliğin ilk 16 karakterine sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} წთ გავიდა · ლოცვის დროა ⏰',
+    giris2: '{ad} · {dk} წთ გავიდა · ნუ გადადებთ ლოცვას ⚠️',
+    giris3: '{ad} · {dk} წთ გავიდა · ლოცვა გელოდებათ 🔥',
+    giris4: '{ad} · {dk} წთ გავიდა · აღასრულეთ ლოცვა 🚨',
+    erken3: '{ad} · {dk} წთ დარჩა · ლოცვა გელოდებათ 🔥',
+    erken4: '{ad} · {dk} წთ დარჩა · აღასრულეთ ლოცვა 🚨',
+    cikis1: '{ad} · {dk} წთ დარჩა ⏰',
+    cikis2: '{ad} · {dk} წთ · დრო იწურება ⚠️',
+    cikis3: '{ad} · {dk} წთ · დრო გეპარებათ 🔥',
+    cikis4: '{ad} · {dk} წთ · დრო სრულდება 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['ლოცვის დროა; ილოცეთ, სანამ შესაძლებლობა გაქვთ.', 'ილოცეთ, სანამ დრო თქვენს მხარესაა; ნუ გადადებთ მოგვიანებისთვის.'],
+    s2: ['რაც უფრო გადადებთ, მით უფრო გიმძიმდებათ; ნუ დატოვებთ ლოცვას ბოლოსთვის.', 'დრო გადის — ილოცეთ ახლა.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'რაც უფრო აყოვნებთ, მით უფრო უახლოვდებით მის გაცდენას; ილოცეთ ახლა.',
+      'ნუ იტყვით „მოგვიანებით ვილოცებ“; ახლა შეგიძლიათ ილოცოთ.',
+      'ადექით ახლავე, ვიდრე რამდენიმე წუთში იტყვით „ნეტავ“.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['ნუღარ გადადებთ ლოცვას — აღასრულეთ ლოცვა ახლავე.', 'გადადეთ, რასაც აკეთებთ, და აღასრულეთ ლოცვა.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'დრო იწურება; ილოცეთ, სანამ შესაძლებლობა გაქვთ.',
+    s2: 'ნუ დატოვებთ ლოცვას ბოლოსთვის; ახლა ლოცვის კარგი დროა.',
+    s3: 'დრო თითქმის ამოიწურა; ახლაც შეგიძლიათ ილოცოთ.',
+    s4: 'თუ შეასრულეთ, შეეხეთ ღილაკს „ვილოცე“; თუ არა, აღასრულეთ ლოცვა ახლავე.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'ნუ გადადებთ ლოცვას. აღასრულეთ ლოცვა ახლავე. (გავიდა {dk} წთ)',
+    giris2: 'დრო გადის; ნუ დატოვებთ ლოცვას ბოლოსთვის. (გავიდა {dk} წთ)',
+    giris1: cogul({ one: 'ლოცვის დროის დადგომიდან გავიდა {n} წუთი.', other: 'ლოცვის დროის დადგომიდან გავიდა {n} წუთი.' }),
+    erken4: 'ნუ გადადებთ ლოცვას; აღასრულეთ ლოცვა ახლავე. (დარჩა {dk} წთ)',
+    cikis4: 'დრო სრულდება. აღასრულეთ ლოცვა ახლავე. (დარჩა {dk} წთ)',
+    cikis2: 'დრო იწურება; ნუ დატოვებთ ლოცვას ბოლოსთვის. (დარჩა {dk} წთ)',
+    cikis1: cogul({ one: 'ლოცვის დროის დასრულებამდე დარჩა {n} წუთი.', other: 'ლოცვის დროის დასრულებამდე დარჩა {n} წუთი.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ილოცეთ დაძინებამდე ⏰',
+    govde: 'მშვიდი საათები იწყება {dk} წუთში; იშა შეასრულეთ, სანამ დაწვებით.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'დრო იწურება; ილოცეთ, სანამ შესაძლებლობა გაქვთ.',
+    sonaBirakma: 'ნუ დატოვებთ ლოცვას ბოლოსთვის; ახლა ლოცვის კარგი დროა.',
+    fisilti: 'ნუ იტყვით „მოგვიანებით ვილოცებ“; დრო თითქმის ამოიწურა, ახლა შეგიძლიათ ილოცოთ.',
+    omur: 'დრო გადის; ჯერ კიდევ შეგიძლიათ ეს ლოცვა დროულად შეასრულოთ.',
+    keske: 'ადექით ახლავე, ვიდრე რამდენიმე წუთში იტყვით „ნეტავ“.',
+    namazaDur: 'თუ შეასრულეთ, შეეხეთ ღილაკს „ვილოცე“; თუ არა, აღასრულეთ ლოცვა ახლავე.',
+    sonDakika: 'ბოლო წუთებია. გადადეთ, რასაც აკეთებთ, და აღასრულეთ ლოცვა.',
   },
 };

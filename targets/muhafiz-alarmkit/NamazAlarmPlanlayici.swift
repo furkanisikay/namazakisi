@@ -224,8 +224,8 @@ enum NamazAlarmCekirdegi {
         "km": "បញ្ឈប់",
         // ÇEVİRİ: he
         "he": "Stop",
-        // ÇEVİRİ: ka
-        "ka": "Stop",
+        // ka
+        "ka": "შეჩერება",
         // ÇEVİRİ: lt
         "lt": "Stop",
         // mg

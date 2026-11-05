@@ -1039,19 +1039,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: ka
+    // ka — Gürcüce (beta); terimler src/core/dil/sozluk/ka
     static let ka = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "აირჩიეთ ქალაქი",
+        ilMerkezi: "ლოცვის დროები რეგიონის ცენტრისთვის გამოითვლება. არჩევანის შეცვლა მოგვიანებით შეგიძლიათ.",
+        ilSecErisim: "{il}, არჩევა",
+        kalan: "{ad}: დარჩენილი დრო",
+        kalanErisim: "{ad}: დარჩენილი დრო {sure}",
+        konumuDegistirin: "მდებარეობის შეცვლა",
+        kerahatSuruyor: "აკრძალული დრო: {tur}, სრულდება {bitis}-ზე. {aciklama}",
+        siradakiKerahat: "შემდეგი აკრძალული დრო: {tur} {bas}–{bit}",
+        cumaBilgisi: "დღეს პარასკევია. პარასკევის ლოცვა ზუჰრის დროს სრულდება (იწყება {giris}-ზე).",
+        suAnkiEk: ", მიმდინარე ლოცვა",
+        siradakiEk: ", შემდეგი ლოცვა"
     )
 
     // ÇEVİRİ: lt

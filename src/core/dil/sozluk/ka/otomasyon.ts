@@ -1,10 +1,9 @@
-// ÇEVİRİ: ka — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'ლოცვის დრო დადგა',
+  vakitGirdiBasligi: '{ad}: ლოცვის დრო დადგა',
+  herhangiVakit: 'ნებისმიერი ლოცვის დროის დადგომისას',
+  yalnizVakit: 'მხოლოდ მაშინ, როცა დადგება {ad}',
+  camide: 'როცა დადგინდება, რომ მეჩეთში ხართ (ჩართული „მეჩეთში ვარ“ ფუნქციით)',
 };

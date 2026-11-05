@@ -1,18 +1,18 @@
-/* ÇEVİRİ: ka */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+// Gurcuce terimler: src/core/dil/sozluk/ka.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "როდის არის შემდეგი ლოცვა ${applicationName}-ში";
+"${applicationName} sıradaki namaz" = "${applicationName} შემდეგი ლოცვა";
+"${applicationName} ile sıradaki namazı söyle" = "მითხარი შემდეგი ლოცვა ${applicationName}-ით";
+"${applicationName} namaz vakti" = "${applicationName} ლოცვის დრო";
+"${applicationName} şu anki vakti kıldım" = "მიმდინარე ლოცვა შევასრულე ${applicationName}-ში";
+"${applicationName} namazımı kıldım" = "ვილოცე ${applicationName}-ში";
+"${applicationName} ile vakti kıldım olarak işaretle" = "მონიშნე მიმდინარე ლოცვა შესრულებულად ${applicationName}-ში";
+"${applicationName} kıbleyi aç" = "გახსენი ყიბლა ${applicationName}-ში";
+"${applicationName} ile kıbleyi göster" = "მაჩვენე ყიბლა ${applicationName}-ით";
+"${applicationName} günün ayeti görseli" = "${applicationName} დღის აიათის სურათი";
+"${applicationName} ile günün ayeti görselini hazırla" = "მოამზადე დღის აიათის სურათი ${applicationName}-ით";

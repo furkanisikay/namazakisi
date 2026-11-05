@@ -589,12 +589,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: ka (one/other)
+    // ka (one/other; CLDR kısa birimler სთ/წთ/წმ, sayıdan sonra isim tekil)
     public static let ka = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "სთ", birimDk: "წთ", birimSn: "წმ",
+        saat: ["one": "{n} საათი", "other": "{n} საათი"],
+        dakika: ["one": "{n} წუთი", "other": "{n} წუთი"],
+        saniye: ["one": "{n} წამი", "other": "{n} წამი"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

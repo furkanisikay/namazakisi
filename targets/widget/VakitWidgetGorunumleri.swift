@@ -1656,29 +1656,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: ka
+    // ka — Gürcüce (beta); terimler src/core/dil/sozluk/ka
     static let ka = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "ლოცვის დრო",
+        galeriAciklama: "მიმდინარე ლოცვის დრო, მის დასრულებამდე დარჩენილი დრო და დღევანდელი ლოცვის დროები.",
+        veriEski: "ლოცვის დროების გასაახლებლად გახსენით აპი",
+        konumYok: "მდებარეობის მისათითებლად გახსენით აპი",
+        kilindiSiradaki: "{ad} შესრულებულია · {sonraki} {saat}",
+        adCikis: "{ad} · სრულდება {saat}",
+        siradakiAdSaat: "შემდეგი: {ad} {saat}",
+        vaktiCikisErisim: "{ad}, სრულდება {saat}-ზე",
+        siradakiErisim: "შემდეგი: {ad}, {saat}",
+        cikisSaat: "სრულდება {saat}",
+        bitisSaat: "სრულდება {saat}",
+        kilindiBaslik: "{ad} შესრულებულია",
+        siradaki: "შემდეგი",
+        siradakiAd: "შემდეგი: {ad}",
+        kildimErisim: "{ad}: ვილოცე",
+        gunSatiriKilindi: ", შესრულებულია",
+        bitti: "დასრულდა",
+        vakitCikti: "ლოცვის დრო დასრულდა",
+        kabulAlt: "{ad} შესრულებულია",
+        kontrolAdi: "ვილოცე",
+        kontrolAciklama: "მიმდინარე ლოცვას შესრულებულად მონიშნავს."
     )
 
     // ÇEVİRİ: lt

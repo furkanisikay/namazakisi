@@ -1023,18 +1023,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ka
+    // ka — Gürcüce (beta); TvDili ka ile aynı. Tarih CLDR "ოთხშაბათი, 4 ნოემბერი, 2026".
     public static let ka = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "ფაჯრი", "gunes": "მზის ამოსვლა", "ogle": "ზუჰრი", "ikindi": "ასრი", "aksam": "მაღრიბი", "yatsi": "იშა"],
+        cuma: "პარასკევის ლოცვა",
+        aylar: ["იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი"],
+        gunler: ["ორშაბათი", "სამშაბათი", "ოთხშაბათი", "ხუთშაბათი", "პარასკევი", "შაბათი", "კვირა"],
+        tarih: "{gunAdi}, {gun} {ay}, {yil}",
+        kerahatAdlari: ["suruk": "მზის ამოსვლა", "istiva": "ზენიტი", "gurub": "მზის ჩასვლა"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "ლოცვა მაკრუჰია, სანამ მზე კარგად ამოვა.",
+            "istiva": "ლოცვა მაკრუჰია, სანამ მზე ზენიტშია.",
+            "gurub": "ლოცვა მაკრუჰია, სანამ მზე ჩადის.",
         ]
     )
 

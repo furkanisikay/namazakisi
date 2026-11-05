@@ -2091,31 +2091,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: ka
+    // ka — Gürcüce (beta); terimler src/core/dil/sozluk/ka (CekirdekMetinleri ka ile aynı)
     public static let ka = VakitMetinleri(
         dil: "ka",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ფაჯრი", "ogle": "ზუჰრი", "ikindi": "ასრი", "aksam": "მაღრიბი", "yatsi": "იშა"],
+        gunes: "მზის ამოსვლა",
+        konumYok: "გახსენით აპი და მიუთითეთ მდებარეობა, რომ ლოცვის დროები გამოითვალოს.",
+        veriEski: "ლოცვის დროის მონაცემები მოძველებულია. განსაახლებლად ერთხელ გახსენით აპი.",
+        girisBugun: "{saat}-ზე",
+        girisYarin: "ხვალ {saat}-ზე",
+        suAnVakti: "ახლა არის {ad}.",
+        suAnVaktiCikis: "ახლა არის {ad}; სრულდება {saat}-ზე.",
+        siradakiNamaz: "შემდეგი ლოცვაა {ad}, {giris}.",
+        isaretlendi: "{ad} მოინიშნა შესრულებულად. {dua}.",
+        zatenKilindi: "{ad} უკვე მონიშნულია შესრულებულად.",
+        vakitYok: "ახლა მოსანიშნი ლოცვა არ არის.",
+        vakitYokSiradaki: "ახლა მოსანიშნი ლოცვა არ არის. შემდეგია {ad}, იწყება {giris}.",
+        onay: "მოვნიშნოთ {ad} შესრულებულად?",
+        vakitDegisti: "ლოცვის დრო შეიცვალა, ამიტომ არაფერი მოინიშნა. სცადეთ ხელახლა.",
+        kabulDuasi: "ალლაჰმა მიიღოს",
+        kildim: "ვილოცე",
+        kilindi: "შესრულებულია",
+        kontrolKildim: "{ad} · ვილოცე",
+        kontrolKilindi: "{ad} შესრულებულია",
+        kontrolVakitYok: "მოსანიშნი ლოცვა არ არის",
+        uygulamayiAcin: "აპის გახსნა"
     )
 
     // ÇEVİRİ: lt

@@ -949,18 +949,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: ka
+    // ka — Gürcüce (beta); meal QuranEnc georgian_rwwad 1.0.7 (gununAyetiHavuzu ile aynı)
     static let ka = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "დღის აიათი",
+        galeriAciklama: "აიათი და მისი თარგმანი, რომელიც ყოველდღე ფაჯრის დროს იცვლება.",
+        etiket: "დღის აიათი",
+        uygulamayiAcin: "დღის აიათის სანახავად გახსენით აპი",
+        ornekSigmiyor: "დღევანდელი აიათი ამ ზომაში არ ეტევა. შეეხეთ წასაკითხად.",
+        ornekAcin: "გახსნა",
+        ornekArapcaKaynagi: "არაბული: Tanzil",
+        ornekMeal: "ჭეშმარიტად, სიძნელესთან ერთად მოდის სიმარტივე [შემსუბუქება].",
+        ornekKisaKunye: "ყურანი 94:6",
+        ornekMealKaynagi: "Georgian Translation, QuranEnc 1.0.7"
     )
 
     // ÇEVİRİ: lt

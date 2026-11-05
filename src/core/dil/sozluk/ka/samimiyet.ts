@@ -1,35 +1,35 @@
-// ÇEVİRİ: ka — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Gürcü Müslümanların kalıpları (çeviri değil). "Allah kabul etsin" = "ალლაჰმა მიიღოს": QE 2:127
+ * "მიიღე" kökü + istek kipi (türetildi, DOĞRULANMADI). Sabah/gece selamı Gürcücenin gündelik
+ * "დილა მშვიდობისა" / "ღამე მშვიდობისა" kalıbı. Bayram adı ka.wikipedia "ბაირამი" çizgisinde;
+ * kandil adları Arapça kökenli yazımla (DOĞRULANMADI). Yerli okuyucu baksın.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'კურთხეული იყოს.',
+  kabulDualari: ['ალლაჰმა მიიღოს', 'მიღებული იყოს', 'ალლაჰმა მიიღოს', 'ჩვენმა უფალმა მიიღოს'],
+  kabulDuasi: 'ალლაჰმა მიიღოს',
+  ekSabah: 'დილა მშვიდობისა',
+  ekYatsi: 'ღამე მშვიდობისა',
+  tamGunAna: 'ალლაჰმა მიიღოს',
+  tamGunAlt: 'დღეს ხუთივე ლოცვა შეასრულეთ.',
+  kazaKabul: 'თქვენი ჟურნალიდან ჩამოიწერა ერთი ყადა: {vakit}. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'რაღაიბის კურთხეული ღამე',
+    mirac: 'ისრასა და მირაჯის კურთხეული ღამე',
+    berat: 'ბარაათის კურთხეული ღამე',
+    mevlid: 'კურთხეული მავლიდი',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'კურთხეული სუჰური',
+    bayram: 'გილოცავთ ბაირამს',
+    iftar: 'კურთხეული იფთარი',
+    kadir: 'ალ-ყადრის კურთხეული ღამე',
+    arefe: 'ბაირამის კურთხეული წინადღე',
+    hicriYilbasi: 'გილოცავთ ჰიჯრის ახალ წელს',
+    cuma: 'კურთხეული პარასკევი',
+    ramazan: 'გილოცავთ რამადანს',
+    sabah: 'დილა მშვიდობისა',
   },
 };

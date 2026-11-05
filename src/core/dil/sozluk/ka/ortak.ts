@@ -1,15 +1,15 @@
-// ÇEVİRİ: ka — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Düğmeler AOSP ka normunda ad-fiil (masdar): "გაგრძელება", "გამოტოვება". */
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'გაგრძელება',
+  vazgecin: 'გაუქმება',
+  kapatin: 'დახურვა',
+  ayarlariAcin: 'პარამეტრების გახსნა',
+  simdilikGecin: 'ახლა გამოტოვება',
+  tekrarDeneyin: 'ხელახლა ცდა',
+  evet: 'დიახ',
+  hayir: 'არა',
+  ayrintilariAcar: 'ხსნის დეტალებს',
   marka: 'Namaz Akışı',
 };

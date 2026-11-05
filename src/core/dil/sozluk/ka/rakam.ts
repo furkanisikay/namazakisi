@@ -1,11 +1,10 @@
-// ÇEVİRİ: ka — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'ციფრები',
+  aciklama: 'აირჩიეთ, რომელი ციფრები გამოჩნდეს დროში, თარიღებსა და რიცხვებში.',
+  otomatik: 'ქვეყნის მიხედვით',
+  otomatikAciklama: 'გამოიყენება თქვენი მდებარეობის ქვეყანაში გავრცელებული ციფრები.',
+  dogu: 'აღმოსავლური არაბული ციფრები',
+  bati: 'დასავლური ციფრები',
 };
