@@ -1158,19 +1158,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: mos
+    // mos
     static let mos = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Tũus-y y tẽngã",
+        ilMerkezi: "B sõdda pʋʋsg wakatã provẽnsã sʋkã yĩnga. Y tõe n teeg y tũusgã poorẽ.",
+        ilSecErisim: "{il}, tũus-y",
+        kalan: "Wakat sẽn kell n tãag {ad}",
+        kalanErisim: "Wakat sẽn kell n tãag {ad}: {sure}",
+        konumuDegistirin: "Teeg-y zĩigã",
+        kerahatSuruyor: "Gɩdg wakato: {tur}, a saada {bitis}. {aciklama}",
+        siradakiKerahat: "Gɩdg wakat sẽn pʋgdẽ: {tur} {bas}–{bit}",
+        cumaBilgisi: "Rũndã yaa Arzũma. B pʋʋsda Arzũma Zafar wakatẽ (a sɩngda {giris}).",
+        suAnkiEk: ", pʋʋsg sẽn be masã",
+        siradakiEk: ", pʋʋsg sẽn pʋgdẽ"
     )
 
     // aa

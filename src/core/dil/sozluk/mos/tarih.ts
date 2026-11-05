@@ -1,13 +1,17 @@
-// ÇEVİRİ: mos — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/**
+ * Mooré: CLDR verisi yok. Gün adları Arapça kökenli Mooré adları (tẽne, lamusa, arzũma, sibri
+ * HadeethEnc/QuranEnc mos'ta geçer; hado, talaato, arba doğrulanmadı). Ay adları Burkina Faso'da
+ * kullanılan Fransızca kökenli adların Mooré imlasıyla yazımı (türetildi). Gün ayın önünde.
+ */
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+  gunler: ['Hado', 'Tẽne', 'Talaato', 'Arba', 'Lamusa', 'Arzũma', 'Sibri'],
+  gunlerKisa: ['Had', 'Tẽn', 'Tal', 'Arb', 'Lam', 'Arz', 'Sib'],
+  aylar: ['Zanvye', 'Fevrye', 'Mars', 'Avril', 'Mee', 'Zuẽ', 'Zulye', 'Ut', 'Sɛtãmbr', 'Oktoobr', 'Novãmbr', 'Desãmbr'],
+  aylarYalin: ['Zanvye', 'Fevrye', 'Mars', 'Avril', 'Mee', 'Zuẽ', 'Zulye', 'Ut', 'Sɛtãmbr', 'Oktoobr', 'Novãmbr', 'Desãmbr'],
+  aylarKisa: ['Zan', 'Fev', 'Mar', 'Avr', 'Mee', 'Zuẽ', 'Zul', 'Ut', 'Sɛt', 'Okt', 'Nov', 'Des'],
+  haftaHarfleri: ['Tẽ', 'Ta', 'Ar', 'La', 'Az', 'Si', 'Ha'],
   uzun: '{gun} {ay} {yil}',
   gunAdiYil: '{gunAdi}, {yil}',
 };

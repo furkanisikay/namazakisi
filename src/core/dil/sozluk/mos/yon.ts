@@ -1,10 +1,9 @@
-// ÇEVİRİ: mos — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Gʋlsgã wɛɛngã na n teega',
+  aciklama: 'Goam ning y sẽn tũusã gʋlsda ne wɛɛng a to. Aplikaasõ wã segd n leb n sɩnga, tɩ ekraanã teeg n tũ-a.',
+  simdiBaslat: 'Leb-y n sɩng masã',
+  sonra: 'Poorẽ',
+  bekliyor: 'Gʋlsgã wɛɛngã na n teeg aplikaasõ wã sã n leb n sɩng.',
 };

@@ -2306,31 +2306,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: mos
+    // mos
     public static let mos = VakitMetinleri(
         dil: "mos",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Fagir", "ogle": "Zafar", "ikindi": "Laansar", "aksam": "Magrib", "yatsi": "Sãanfo"],
+        gunes: "Wĩntoog pukri",
+        konumYok: "Pak-y aplikaasõ wã la y segl y zĩigã tɩ b tõe n sõd pʋʋsg wakatã.",
+        veriEski: "Pʋʋsg wakatã yaa kʋdre. Pak-y aplikaasõ wã noor a ye n teeg-a.",
+        girisBugun: "{saat} wakatẽ",
+        girisYarin: "beoogo {saat} wakatẽ",
+        suAnVakti: "Masã yaa {ad} wakato.",
+        suAnVaktiCikis: "Masã yaa {ad} wakato; a saada {saat}.",
+        siradakiNamaz: "Pʋʋsg sẽn pʋgdẽ yaa {ad}, {giris}.",
+        isaretlendi: "B gʋlsa {ad} tɩ pʋʋsa. {dua}.",
+        zatenKilindi: "B gʋlsa {ad} tɩ pʋʋsa pĩnda.",
+        vakitYok: "Pʋʋsg ning b sẽn na n gʋls ka be masã ye.",
+        vakitYokSiradaki: "Pʋʋsg ning b sẽn na n gʋls ka be masã ye. Sẽn pʋgdẽ yaa {ad}, {giris}.",
+        onay: "Gʋls {ad} tɩ pʋʋsa?",
+        vakitDegisti: "Pʋʋsg wakatã teega, rẽ n so tɩ b pa gʋls bũmb ye. Leb-y n maan.",
+        kabulDuasi: "Allah na reege",
+        kildim: "M pʋʋsa",
+        kilindi: "Pʋʋsa",
+        kontrolKildim: "{ad} · M pʋʋsa",
+        kontrolKilindi: "{ad}: pʋʋsa",
+        kontrolVakitYok: "Pʋʋsg ka be n gʋls ye",
+        uygulamayiAcin: "Pak-y aplikaasõ wã"
     )
 
     // aa

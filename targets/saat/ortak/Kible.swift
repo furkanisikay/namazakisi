@@ -1152,16 +1152,16 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: mos (CLDR verisi yok, ülke normu: binlik ayırıcı dar bölünmez boşluk)
+    // mos (CLDR verisi yok, ülke normu: binlik ayırıcı dar bölünmez boşluk)
     public static let mos = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Y poorẽ",
+        saga: "Rɩtgo {derece}°",
+        sola: "Goabgo {derece}°",
+        hizali: "Y toglgame Kiblã wɛɛngẽ",
+        arkadaErisim: "Kiblã bee y poorẽ",
+        sagdaErisim: "Kiblã bee y rɩtgo, {derece} degre",
+        soldaErisim: "Kiblã bee y goabgo, {derece} degre",
+        kabede: "Y bee Kaaba nengẽ",
         mesafe: "{km} km",
         binlikAyirici: "\u{202F}"
     )

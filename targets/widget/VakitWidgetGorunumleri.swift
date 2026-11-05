@@ -1855,29 +1855,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: mos
+    // mos
     static let mos = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Pʋʋsg wakato",
+        galeriAciklama: "Pʋʋsg wakat sẽn be masã, wakat sẽn kell tɩ a sa la rũndã pʋʋsg wakatã.",
+        veriEski: "Pak-y aplikaasõ wã n teeg pʋʋsg wakatã",
+        konumYok: "Pak-y aplikaasõ wã n segl y zĩigã",
+        kilindiSiradaki: "{ad}: pʋʋsa · {sonraki} {saat}",
+        adCikis: "{ad} · saada {saat}",
+        siradakiAdSaat: "Sẽn pʋgdẽ {ad} {saat}",
+        vaktiCikisErisim: "{ad} wakato, a saada {saat}",
+        siradakiErisim: "Sẽn pʋgdẽ {ad}, {saat}",
+        cikisSaat: "Saada {saat}",
+        bitisSaat: "Saada {saat}",
+        kilindiBaslik: "{ad}: pʋʋsa",
+        siradaki: "Sẽn pʋgdẽ",
+        siradakiAd: "Sẽn pʋgdẽ {ad}",
+        kildimErisim: "M pʋʋsa {ad}",
+        gunSatiriKilindi: ", pʋʋsa",
+        bitti: "A saame",
+        vakitCikti: "Pʋʋsg wakatã saame",
+        kabulAlt: "{ad}: pʋʋsa",
+        kontrolAdi: "M pʋʋsa",
+        kontrolAciklama: "A gʋlsda pʋʋsg ning sẽn be masã tɩ pʋʋsa."
     )
 
     // aa

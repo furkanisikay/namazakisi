@@ -642,11 +642,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: mos (other)
+    // mos (other)
     static let mos = OtomasyonMetinleri(
-        kalanDakika: ["other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad} sɩngda {n} minit poorẽ."],
+        evetKilindi: "Ẽye, b gʋlsa-a tɩ pʋʋsa.",
+        hayirKilinmadi: "Ayo, b nan ka gʋls-a ye."
     )
 
     // aa (other)

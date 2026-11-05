@@ -1060,18 +1060,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: mos
+    // mos
     static let mos = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Raarã aaya",
+        galeriAciklama: "Aaya la a lebgre, sẽn teegd raar fãa Fagir wakatẽ.",
+        etiket: "RAARÃ AAYA",
+        uygulamayiAcin: "Pak-y aplikaasõ wã n ges raarã aayã",
+        ornekSigmiyor: "Rũndã aayã pa sek ne bʋʋd-kãngã ye. Dig-y n karem-a.",
+        ornekAcin: "Pak-y",
+        ornekArapcaKaynagi: "Arab gʋlsgo: Tanzil",
+        ornekMeal: "Ad yol-yol pʋgda keelmã",
+        ornekKisaKunye: "Kʋrãana 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
     )
 
     // aa

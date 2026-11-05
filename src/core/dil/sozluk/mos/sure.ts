@@ -1,12 +1,15 @@
-// ÇEVİRİ: mos — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Mooré: sayı ile birim arası ve iki süre parçası arası boşluklu. CLDR'de yok → çoğul yalnız
+ * `other` seçilir (`hepDiger`); `one` nöbetçi bütünlüğü için aynı metni taşır.
+ */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'lɛɛr', dk: 'min', sn: 's' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ one: '{n} lɛɛr', other: '{n} lɛɛr' }),
+  dakika: cogul({ one: '{n} minit', other: '{n} minit' }),
+  saniye: cogul({ one: '{n} sekõnd', other: '{n} sekõnd' }),
 };

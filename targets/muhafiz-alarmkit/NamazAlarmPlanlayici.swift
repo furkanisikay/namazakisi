@@ -239,8 +239,8 @@ enum NamazAlarmCekirdegi {
         "ln": "Botelemisa",
         // ÇEVİRİ: dag
         "dag": "Stop",
-        // ÇEVİRİ: mos
-        "mos": "Stop",
+        // mos
+        "mos": "Pag-y",
         // aa
         "aa": "Xiqisa",
         // ÇEVİRİ: mdh

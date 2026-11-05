@@ -1,11 +1,10 @@
-// ÇEVİRİ: mos — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Sõor-gʋlsgo',
+  aciklama: 'Tũus-y sõor-gʋlsg ning b sẽn na n tũ wakato, rasem la sõor yĩnga.',
+  otomatik: 'Tẽngã sẽn tũudã',
+  otomatikAciklama: 'A tũuda sõor-gʋlsg ning sẽn yaa wʋsg y zĩigã tẽngã pʋgẽ.',
+  dogu: 'Arab sõor-gʋlsg (yã-wɛɛngẽ)',
+  bati: 'Wĩnd-lʋɩɩb sõor-gʋlsgo',
 };

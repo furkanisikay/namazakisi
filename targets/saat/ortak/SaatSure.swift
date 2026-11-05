@@ -662,12 +662,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: mos (other)
+    // mos (other)
     public static let mos = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["other": "{n} hours"],
-        dakika: ["other": "{n} minutes"],
-        saniye: ["other": "{n} seconds"],
+        birimSa: "lɛɛr", birimDk: "min", birimSn: "s",
+        saat: ["other": "{n} lɛɛr"],
+        dakika: ["other": "{n} minit"],
+        saniye: ["other": "{n} sekõnd"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

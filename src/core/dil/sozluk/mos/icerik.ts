@@ -1,15 +1,14 @@
-// ÇEVİRİ: mos — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Kʋrãana {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Pʋʋsgo sõmblem yɩɩda gõeem. Wa-y tɩlgr wɛɛngẽ.',
+    araVer: 'Bas-y dũni tʋʋmã bilf la y yals y Soabã taoore.',
+    yorgunluk: 'Laansar gũuda-y, tɩ y vʋʋs raarã sũ-kʋʋngã la y paam laafɩ.',
+    sukur: 'Magrib yaa raarã barka-pʋʋsgo. Yãg-y n yals y Soabã taoore.',
+    aksamKisa: 'Magrib wakatã yaa bilfu; a sɩnga, pʋʋs-y sẽn ka yaool.',
+    geceKaranligi: 'Yʋngã lig pʋgẽ, zĩnd-y ne y Soabã y yembre. Sãanfo yaa sũurã tɩɩm.',
+    davet: 'B boolda-y Sãanfo, tɩ y sa raarã n bao Allah yard-n-noogo.',
   },
 };

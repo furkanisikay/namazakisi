@@ -1,10 +1,9 @@
-// ÇEVİRİ: mos — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'wakatã ta',
+  vakitGirdiBasligi: '{ad} wakatã ta',
+  herhangiVakit: 'Pʋʋsg wakat fãa sã n ta',
+  yalnizVakit: '{ad} wakatã sã n ta bala',
+  camide: 'B sã n bãng tɩ y bee miisrẽ (M be miisrẽ sã n pakame)',
 };
