@@ -1069,19 +1069,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: mg
+    // mg
     static let mg = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Fidio ny tanànanao",
+        ilMerkezi: "Kajiana ho an'ny renivohitry ny faritra ny fotoanan'ny soalat. Azonao ovaina any aoriana ny safidinao.",
+        ilSecErisim: "{il}, fidio",
+        kalan: "Fotoana sisa mankany amin'ny {ad}",
+        kalanErisim: "Fotoana sisa mankany amin'ny {ad}: {sure}",
+        konumuDegistirin: "Ovay ny toerana",
+        kerahatSuruyor: "Fotoana tsy tokony hivavahana: {tur}, tapitra {bitis}. {aciklama}",
+        siradakiKerahat: "Fotoana tsy tokony hivavahana manaraka: {tur} {bas}–{bit}",
+        cumaBilgisi: "Zoma anio. Atao amin'ny fotoanan'ny Zohr ny soalat Zoma (manomboka {giris}).",
+        suAnkiEk: ", soalat ankehitriny",
+        siradakiEk: ", soalat manaraka"
     )
 
     // ÇEVİRİ: lg

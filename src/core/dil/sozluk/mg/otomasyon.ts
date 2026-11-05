@@ -1,10 +1,10 @@
-// ÇEVİRİ: mg — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Başlık eki ile BİTER (anahtar kelime eşleşmesi): "{ad}: tonga ny fotoana". */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'tonga ny fotoana',
+  vakitGirdiBasligi: '{ad}: tonga ny fotoana',
+  herhangiVakit: 'Rehefa tonga ny fotoanan\'ny soalat rehetra',
+  yalnizVakit: 'Rehefa tonga ny fotoanan\'ny {ad} ihany',
+  camide: 'Rehefa hita fa ao amin\'ny moske ianao (rehefa mandeha ny « Ao amin\'ny moske »)',
 };

@@ -600,11 +600,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: mg (one/other)
+    // mg (one = 0 ve 1, other; ad çoğul eki almaz → one = other)
     static let mg = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "Manomboka afaka {n} minitra ny {ad}.", "other": "Manomboka afaka {n} minitra ny {ad}."],
+        evetKilindi: "Eny, voamarika ho vita izy.",
+        hayirKilinmadi: "Tsia, mbola tsy voamarika izy."
     )
 
     // ÇEVİRİ: lg (one/other)

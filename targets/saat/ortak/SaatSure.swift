@@ -607,12 +607,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: mg (one/other)
+    // mg (CLDR one = 0, 1 / other; Malgaşçada isim çoğul eki almaz, iki kategori aynı kalıp)
     public static let mg = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "ora", birimDk: "min", birimSn: "seg",
+        saat: ["one": "{n} ora", "other": "{n} ora"],
+        dakika: ["one": "{n} minitra", "other": "{n} minitra"],
+        saniye: ["one": "{n} segondra", "other": "{n} segondra"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

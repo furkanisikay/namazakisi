@@ -228,8 +228,8 @@ enum NamazAlarmCekirdegi {
         "ka": "Stop",
         // ÇEVİRİ: lt
         "lt": "Stop",
-        // ÇEVİRİ: mg
-        "mg": "Stop",
+        // mg
+        "mg": "Ajanony",
         // ÇEVİRİ: lg
         "lg": "Stop",
         // ÇEVİRİ: rw

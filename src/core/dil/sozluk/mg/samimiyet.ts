@@ -1,35 +1,37 @@
-// ÇEVİRİ: mg — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Malgaşça konuşan Müslümanların kalıpları (çeviri değil): dilek edatı "anie" (HadeethEnc mg 10945
+ * "Ho aminareo anie…"), kabul kökü "raisina" (QE `malagasy_rwwad` 2:127 "Ekeo ny asa vitanay"),
+ * malgaşça bereket dileği "Ho tahin'… anie" ve bayram/cuma/Ramazan için yerleşik Arapça "Mubarak"
+ * kalıpları; ortak "Taqabbal Allahu minna wa minkum". Kandil ve hicrî yılbaşı selamı Madagaskar'da
+ * söylenmez (`selam.ts > KANDIL_ULKELERI`); buradaki karşılıklar tip bütünlüğü içindir. Övgü ve "!"
+ * yok. Hepsi türetildi; yerli okuyucuyla DOĞRULANMADI.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: "Ho tahin'Allah anie.",
+  kabulDualari: ["Raisin'Allah anie", 'Taqabbal Allahu minna wa minkum', "Raisin'Allah anie", "Raisin'ny Tomponay anie"],
+  kabulDuasi: "Raisin'Allah anie",
+  ekSabah: 'Maraina feno fitahiana',
+  ekYatsi: 'Alina feno fitahiana',
+  tamGunAna: "Raisin'Allah anie",
+  tamGunAlt: 'Vitanao androany ny soalat dimy.',
+  kazaKabul: "Nesorina tao amin'ny bokinao ny fanefana {vakit} iray. {dua}.",
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Alin\'ny Raghaib feno fitahiana',
+    mirac: "Isra sy Mi'raj feno fitahiana",
+    berat: "Alin'ny Bara'ah feno fitahiana",
+    mevlid: 'Mawlid feno fitahiana',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
+    sahur: 'Sohor feno fitahiana',
     bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    iftar: 'Iftar feno fitahiana',
+    kadir: "Alin'ny Lahatra feno fitahiana",
+    arefe: "Andro alohan'ny Eid feno fitahiana",
+    hicriYilbasi: 'Taom-baovao hijriana feno fitahiana',
+    cuma: 'Zoma Mubarak',
+    ramazan: 'Ramadany Mubarak',
+    sabah: 'Maraina feno fitahiana',
   },
 };

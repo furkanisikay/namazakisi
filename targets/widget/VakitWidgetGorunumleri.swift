@@ -1706,29 +1706,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: mg
+    // mg
     static let mg = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Fotoanan'ny soalat",
+        galeriAciklama: "Ny fotoanan'ny soalat ankehitriny, ny fotoana sisa mandra-pifaranany ary ny fotoanan'ny soalat anio.",
+        veriEski: "Sokafy ny fampiharana mba hanavaozana ny fotoanan'ny soalat",
+        konumYok: "Sokafy ny fampiharana mba hametrahana ny toeranao",
+        kilindiSiradaki: "Vita ny {ad} · {sonraki} {saat}",
+        adCikis: "{ad} · tapitra {saat}",
+        siradakiAdSaat: "Manaraka {ad} {saat}",
+        vaktiCikisErisim: "Fotoanan'ny {ad}, tapitra {saat}",
+        siradakiErisim: "Manaraka {ad}, {saat}",
+        cikisSaat: "Tapitra {saat}",
+        bitisSaat: "Tapitra {saat}",
+        kilindiBaslik: "Vita ny {ad}",
+        siradaki: "Manaraka",
+        siradakiAd: "Manaraka {ad}",
+        kildimErisim: "Nivavaka ny {ad} aho",
+        gunSatiriKilindi: ", vita",
+        bitti: "Tapitra",
+        vakitCikti: "Tapitra ny fotoanan'ny soalat",
+        kabulAlt: "Vita ny {ad}",
+        kontrolAdi: "Nivavaka aho",
+        kontrolAciklama: "Manamarika ho vita ny soalat ankehitriny."
     )
 
     // ÇEVİRİ: lg

@@ -1,61 +1,65 @@
-// ÇEVİRİ: mg — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı: "ianao" kipinde kısa emir ("Mivavaha", "Mitsangàna hivavaka"), "!" yok, secde yok.
+ * Başlıkta süre "{dk}min": "Maghrib · 655min" ilk 16 karaktere sığar; "lasa" (geçti) / "sisa" (kaldı) arkada.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: "{ad} · {dk}min lasa · fotoanan'ny soalat ⏰",
+    giris2: '{ad} · {dk}min lasa · aza ahemotra ny soalatrao ⚠️',
+    giris3: '{ad} · {dk}min lasa · miandry anao ny soalat 🔥',
+    giris4: '{ad} · {dk}min lasa · MITSANGÀNA HIVAVAKA 🚨',
+    erken3: '{ad} · {dk}min sisa · miandry anao ny soalat 🔥',
+    erken4: '{ad} · {dk}min sisa · MITSANGÀNA HIVAVAKA 🚨',
+    cikis1: '{ad} · {dk}min sisa ⏰',
+    cikis2: '{ad} · {dk}min · mihafohy ny fotoana ⚠️',
+    cikis3: '{ad} · {dk}min · mandositra ny fotoana 🔥',
+    cikis4: '{ad} · {dk}min · EFA HO TAPITRA NY FOTOANA 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ["Fotoanan'ny soalat izao; mivavaha raha mbola misy fahafahana.", 'Mivavaha raha mbola anananao ny fotoana; aza avela ho any aoriana.'],
+    s2: ["Arakaraky ny anemoranao no mavesatra kokoa izy; aza avela ho amin'ny farany ny soalatrao.", 'Mandeha ny fotoana — mivavaha izao.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Arakaraky ny anemoranao no manakaiky ny tsy hahatratrarana azy; mivavaha izao.',
+      'Aza miteny hoe « Hivavaka any aoriana aho »; afaka mivavaka izao ianao.',
+      "Mitsangàna izao, alohan'ny hitenenanao hoe « enga anie » afaka minitra vitsy.",
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Aza ahemotra intsony ny soalatrao — mitsangàna hivavaka izao.', 'Apetraho izay ataonao ary mitsangàna hivavaka.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Efa manomboka mihafohy ny fotoana; mivavaha raha mbola misy fahafahana.',
+    s2: "Aza avela ho amin'ny farany ny soalatrao; fotoana tsara hivavahana izao.",
+    s3: 'Efa ho tapitra ny fotoana; mbola afaka mivavaka izao ianao.',
+    s4: 'Raha efa nivavaka ianao, kitiho ny « Nivavaka aho »; raha tsy izany, mitsangàna hivavaka izao.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'AZA AHEMOTRA NY SOALATRAO. Mitsangàna hivavaka izao. ({dk} min lasa)',
+    giris2: "Mandeha ny fotoana; aza avela ho amin'ny farany ny soalatrao. ({dk} min lasa)",
+    giris1: cogul({
+      one: "{n} minitra no lasa hatramin'ny nidiran'ny fotoanan'ny soalat.",
+      other: "{n} minitra no lasa hatramin'ny nidiran'ny fotoanan'ny soalat.",
+    }),
+    erken4: 'Aza ahemotra ny soalatrao; mitsangàna hivavaka izao. ({dk} min sisa)',
+    cikis4: 'EFA HO TAPITRA NY FOTOANA. Mitsangàna hivavaka izao. ({dk} min sisa)',
+    cikis2: "Mihafohy ny fotoana; aza avela ho amin'ny farany ny soalatrao. ({dk} min sisa)",
+    cikis1: cogul({
+      one: "{n} minitra sisa mandra-pifaranan'ny fotoanan'ny soalat.",
+      other: "{n} minitra sisa mandra-pifaranan'ny fotoanan'ny soalat.",
+    }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: "{ad} · mivavaha alohan'ny hatoriana ⏰",
+    govde: "Manomboka afaka {dk} min ny ora mangina; ataovy ny soalat Isha alohan'ny hatoriana.",
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Efa manomboka mihafohy ny fotoana; mivavaha raha mbola misy fahafahana.',
+    sonaBirakma: "Aza avela ho amin'ny farany ny soalatrao; fotoana tsara hivavahana izao.",
+    fisilti: 'Aza miteny hoe « Hivavaka any aoriana aho »; efa ho tapitra ny fotoana, afaka mivavaka izao ianao.',
+    omur: 'Mandeha ny fotoana; mbola manana fahafahana hanao ity soalat ity ara-potoana ianao.',
+    keske: "Mitsangàna izao, alohan'ny hitenenanao hoe « enga anie » afaka minitra vitsy.",
+    namazaDur: 'Raha efa nivavaka ianao, kitiho ny « Nivavaka aho »; raha tsy izany, mitsangàna hivavaka izao.',
+    sonDakika: 'Ireo minitra farany. Apetraho izay ataonao ary mitsangàna hivavaka.',
   },
 };

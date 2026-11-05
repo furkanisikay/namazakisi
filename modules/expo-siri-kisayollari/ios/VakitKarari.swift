@@ -2145,31 +2145,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: mg
+    // mg
     public static let mg = VakitMetinleri(
         dil: "mg",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Fajr", "ogle": "Zohr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Masoandro",
+        konumYok: "Sokafy ny fampiharana ary apetraho ny toerana misy anao mba hikajiana ny fotoanan'ny soalat.",
+        veriEski: "Efa lany andro ny fotoanan'ny soalat. Sokafy indray mandeha ny fampiharana mba hanavaozana azy.",
+        girisBugun: "amin'ny {saat}",
+        girisYarin: "rahampitso amin'ny {saat}",
+        suAnVakti: "Fotoanan'ny {ad} izao.",
+        suAnVaktiCikis: "Fotoanan'ny {ad} izao; tapitra amin'ny {saat} izy.",
+        siradakiNamaz: "Ny soalat manaraka dia {ad} {giris}.",
+        isaretlendi: "Voamarika ho vita ny {ad}. {dua}.",
+        zatenKilindi: "Efa voamarika ho vita ny {ad}.",
+        vakitYok: "Tsy misy soalat hamarihina amin'izao.",
+        vakitYokSiradaki: "Tsy misy soalat hamarihina amin'izao. Ny manaraka dia {ad} {giris}.",
+        onay: "Hamarihina ho vita ve ny {ad}?",
+        vakitDegisti: "Niova ny fotoanan'ny soalat, ka tsy nisy voamarika. Andramo indray.",
+        kabulDuasi: "Raisin'Allah anie",
+        kildim: "Nivavaka aho",
+        kilindi: "Vita",
+        kontrolKildim: "{ad} · Nivavaka aho",
+        kontrolKilindi: "Vita ny {ad}",
+        kontrolVakitYok: "Tsy misy soalat hamarihina",
+        uygulamayiAcin: "Sokafy ny fampiharana"
     )
 
     // ÇEVİRİ: lg

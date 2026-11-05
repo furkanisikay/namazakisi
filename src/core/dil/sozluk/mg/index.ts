@@ -1,4 +1,3 @@
-// ÇEVİRİ: mg — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 import { ortak } from './ortak';
 import { kurulum } from './kurulum';

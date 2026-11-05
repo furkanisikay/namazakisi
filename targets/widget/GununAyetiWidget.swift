@@ -977,18 +977,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: mg
+    // mg (meal QuranEnc `malagasy_rwwad` 1.0.1, birebir)
     static let mg = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Andininy anio",
+        galeriAciklama: "Andininy iray sy ny dikan-teniny, miova isan'andro amin'ny Fajr.",
+        etiket: "ANDININY ANIO",
+        uygulamayiAcin: "Sokafy ny fampiharana raha hijery ny andininy anio",
+        ornekSigmiyor: "Tsy omby amin'ity habe ity ny andininy anio. Kitiho raha hamaky azy.",
+        ornekAcin: "Sokafy",
+        ornekArapcaKaynagi: "Arabo: Tanzil",
+        ornekMeal: "Eny ! Aorian'ny fahasarotana dia ny fahamorana.",
+        ornekKisaKunye: "Kor'any 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.1"
     )
 
     // ÇEVİRİ: lg

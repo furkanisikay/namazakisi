@@ -1053,18 +1053,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: mg
+    // mg (CLDR mg ay/gün adları; gün dizisi pazartesiyle başlar)
     public static let mg = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Masoandro", "ogle": "Zohr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Zoma",
+        aylar: ["Janoary", "Febroary", "Martsa", "Aprily", "Mey", "Jona", "Jolay", "Aogositra", "Septambra", "Oktobra", "Novambra", "Desambra"],
+        gunler: ["Alatsinainy", "Talata", "Alarobia", "Alakamisy", "Zoma", "Asabotsy", "Alahady"],
         tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAdlari: ["suruk": "Fiposahan'ny masoandro", "istiva": "Tampon'ny masoandro", "gurub": "Filentehan'ny masoandro"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Tsy tokony hivavaka mandra-piposahan'ny masoandro tsara.",
+            "istiva": "Tsy tokony hivavaka raha eo amin'ny tampony ny masoandro.",
+            "gurub": "Tsy tokony hivavaka raha milentika ny masoandro.",
         ]
     )
 
