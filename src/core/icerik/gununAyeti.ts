@@ -12,7 +12,9 @@
  */
 import { aktifDil, bicim, sozluk, yaziyaCevir } from '../dil/aktifDil';
 import type { DilKodu } from '../dil/diller';
-import { GUNUN_AYETI_HAVUZU, GUNUN_AYETI_KAYNAKLARI, type GununAyetiKaydi, type MealDili } from '../data/gununAyetiHavuzu';
+import type { GUNUN_AYETI_KAYNAKLARI, MealDili } from '../data/gununAyetiHavuzu';
+import { AYET_MEAL_PAKETLERI, ayetTemelPaketi } from '../data/ayetPaketi';
+import { paketiAc } from '../dil/paketAc';
 import { sureAdiTr } from '../data/sureAdlari';
 
 /** Verilen takvim gününün imsakı; kaynak yoksa `null` (yapısal: `ImsakSaglayici`). */
@@ -37,7 +39,51 @@ export function gunNumarasi(namazGunu: string): number {
   return Math.floor(Date.UTC(y, a - 1, g) / 86_400_000);
 }
 
-const mealDiliMi = (dil: DilKodu): dil is DilKodu & MealDili => dil in GUNUN_AYETI_KAYNAKLARI.mealler;
+/** Havuzdaki bir ayet (meal dil paketinden, `ref` ile okunur). */
+export interface GununAyetiKaydi {
+  /** "sûre:ayet" */
+  ref: string;
+  sure: number;
+  ayet: number;
+  /** Tanzil Uthmani, birebir. */
+  ar: string;
+}
+
+type AyetKaynaklari = typeof GUNUN_AYETI_KAYNAKLARI;
+
+/**
+ * Havuz paketten tembel açılır (`core/data/ayetPaketi`, `npm run dil:paketle`): çekirdek ilk
+ * kullanımda, meal yalnız istenen dilde. Bütün dillerin mealini (≈4 MB) belleğe almaz.
+ */
+interface AyetTemeli {
+  kaynaklar: AyetKaynaklari;
+  kayitlar: readonly GununAyetiKaydi[];
+}
+let temel: AyetTemeli | null = null;
+function ayetTemeli(): AyetTemeli {
+  if (!temel) temel = paketiAc<AyetTemeli>(ayetTemelPaketi());
+  return temel;
+}
+
+const mealHaritalari = new Map<string, Readonly<Record<string, string>>>();
+function mealHaritasi(dil: MealDili): Readonly<Record<string, string>> {
+  let h = mealHaritalari.get(dil);
+  if (!h) {
+    h = paketiAc<Record<string, string>>(AYET_MEAL_PAKETLERI[dil]());
+    mealHaritalari.set(dil, h);
+  }
+  return h;
+}
+
+/** Bütün havuz (meali olmayan dil bunu kullanır). */
+export const tumHavuz = (): readonly GununAyetiKaydi[] => ayetTemeli().kayitlar;
+
+const mealDiliMi = (dil: DilKodu): dil is DilKodu & MealDili => dil in ayetTemeli().kaynaklar.mealler;
+
+/** Ayetin verilen dildeki meali; meali olmayan dilde ya da kayıtta yoksa `null`. */
+export function ayetMealiOku(kayit: GununAyetiKaydi, dil: DilKodu): string | null {
+  return mealDiliMi(dil) ? (mealHaritasi(dil)[kayit.ref] ?? null) : null;
+}
 
 /** Dilin günün ayeti meali var mı? Yoksa (ar ve mealsiz diller: ku, tk, tt, sd, pl) yalnız Arapça gösterilir. */
 export const dilinMealiVar = (dil: DilKodu): boolean => mealDiliMi(dil);
@@ -51,7 +97,7 @@ const dilHavuzlari = new Map<DilKodu, readonly GununAyetiKaydi[]>();
 export function dilHavuzu(dil: DilKodu): readonly GununAyetiKaydi[] {
   let havuz = dilHavuzlari.get(dil);
   if (!havuz) {
-    havuz = mealDiliMi(dil) ? GUNUN_AYETI_HAVUZU.filter((k) => k.mealler[dil] != null) : GUNUN_AYETI_HAVUZU;
+    havuz = mealDiliMi(dil) ? tumHavuz().filter((k) => mealHaritasi(dil)[k.ref] != null) : tumHavuz();
     dilHavuzlari.set(dil, havuz);
   }
   return havuz;
@@ -85,8 +131,8 @@ export interface GununAyetiGorunumu {
 
 export function gununAyetiGorunumu(kayit: GununAyetiKaydi, dil: DilKodu = aktifDil()): GununAyetiGorunumu {
   const m = sozluk(dil).gununAyeti;
-  const kunye = mealDiliMi(dil) ? GUNUN_AYETI_KAYNAKLARI.mealler[dil] : null;
-  const meal = mealDiliMi(dil) ? (kayit.mealler[dil] ?? null) : null;
+  const kunye = mealDiliMi(dil) ? ayetTemeli().kaynaklar.mealler[dil] : null;
+  const meal = ayetMealiOku(kayit, dil);
   // QuranEnc mealleri ve yayımcı başlığı Kiril olabilir (uz, kk): dilin gösterilen yazısına çevrilir (`core/dil/yazi`).
   const yayimci = kunye ? { yayimci: yaziyaCevir(kunye.baslik, dil), surum: kunye.surum } : null;
   return {

@@ -1,7 +1,7 @@
 /**
  * Nöbetçi: sıkıştırılmış sözlük paketleri (`core/dil/paket/`) kaynak sözlüklerle birebir aynı
  * ve diller arası dizin kaynaktan yeniden kurulunca aynı çıkar. Düşerse sözlük değişmiş ama
- * paket yenilenmemiştir: `npm run sozluk:paketle` koşun.
+ * paket yenilenmemiştir: `npm run dil:paketle` koşun.
  */
 import { strFromU8, unzlibSync } from 'fflate';
 import { base64Coz } from '../base64';
@@ -11,7 +11,7 @@ import { dillerArasiPaketi, SOZLUK_PAKETLERI } from '../paket';
 import { acikSozlukKodlari, aktifDiliKur, aktifDilSifirla, metin, sozluk } from '../aktifDil';
 import type { Sozluk } from '../sozluk/tr';
 
-const YENILE = 'paket eski: `npm run sozluk:paketle` koşun';
+const YENILE = 'paket eski: `npm run dil:paketle` koşun';
 const ac = (paket: string): unknown => JSON.parse(strFromU8(unzlibSync(base64Coz(paket))));
 const kaynak = (kod: DilKodu): Sozluk => (require(`../sozluk/${kod}`) as Record<string, Sozluk>)[kod];
 
@@ -39,6 +39,27 @@ describe('sözlük paketleri', () => {
     for (const s of ['', 'a', 'ab', 'abc', 'abcd', 'Allah kabul etsin ߊߟߊ߫']) {
       const b64 = Buffer.from(s, 'utf8').toString('base64');
       expect(Buffer.from(base64Coz(b64)).toString('utf8')).toBe(s);
+    }
+  });
+});
+
+describe('günün ayeti paketleri', () => {
+  // Kaynak üretilmiş tam havuz (`gununAyetiHavuzu.ts`); uygulama yalnız paketi okur.
+  const { GUNUN_AYETI_HAVUZU, GUNUN_AYETI_KAYNAKLARI } = require('../../data/gununAyetiHavuzu') as typeof import('../../data/gununAyetiHavuzu');
+  const { AYET_MEAL_PAKETLERI, ayetTemelPaketi } = require('../../data/ayetPaketi') as typeof import('../../data/ayetPaketi');
+
+  it('çekirdek (referans, Arapça, künyeler) havuzla aynı', () => {
+    const beklenen = { kaynaklar: GUNUN_AYETI_KAYNAKLARI, kayitlar: GUNUN_AYETI_HAVUZU.map(({ ref, sure, ayet, ar }) => ({ ref, sure, ayet, ar })) };
+    if (JSON.stringify(ac(ayetTemelPaketi())) !== JSON.stringify(beklenen)) throw new Error(`ayet çekirdeği: ${YENILE}`);
+  });
+
+  it('her meal dilinin paketi havuzdaki meallerle aynı', () => {
+    expect(Object.keys(AYET_MEAL_PAKETLERI).sort()).toEqual(Object.keys(GUNUN_AYETI_KAYNAKLARI.mealler).sort());
+    for (const dil of Object.keys(AYET_MEAL_PAKETLERI)) {
+      const beklenen = Object.fromEntries(
+        GUNUN_AYETI_HAVUZU.filter((k) => (k.mealler as Record<string, string | undefined>)[dil] != null).map((k) => [k.ref, (k.mealler as Record<string, string>)[dil]])
+      );
+      if (JSON.stringify(ac(AYET_MEAL_PAKETLERI[dil]())) !== JSON.stringify(beklenen)) throw new Error(`${dil} meali: ${YENILE}`);
     }
   });
 });

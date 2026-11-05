@@ -627,6 +627,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = ${JSON.stringify(h
     `Sürümler: Tanzil ${tanzil.surum}; QuranEnc ${Object.entries(kunyeler).map(([d, k]) => `${d} ${k.anahtar} ${k.surum}`).join(', ')}`,
   );
   console.log(`${path.relative(KOK, HEDEF)} yazıldı`);
+  // Uygulama havuzu paketten okur (`src/core/data/ayetPaketi`): paketi de yenile.
+  require('child_process').execFileSync(process.execPath, [path.join(__dirname, '..', 'dil', 'paketle.js')], { stdio: 'inherit' });
 }
 
 // Nöbetçi testi (`src/core/data/__tests__/gununAyetiHavuzu.test.ts`) temizleme kuralını betikten alır.

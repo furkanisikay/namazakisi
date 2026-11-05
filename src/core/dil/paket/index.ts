@@ -1,4 +1,4 @@
-/** ÜRETİLMİŞ DOSYA — elle düzenleme. Kaynak: scripts/dil/sozluk-paketle.js. Yeniden üret: `npm run sozluk:paketle`. */
+/** ÜRETİLMİŞ DOSYA — elle düzenleme. Kaynak: scripts/dil/paketle.js. Yeniden üret: `npm run dil:paketle`. */
 import type { DilKodu } from '../diller';
 
 /**

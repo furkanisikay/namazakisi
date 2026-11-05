@@ -18,7 +18,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "verify": "npm run typecheck && npm run lint && npm run test",
-    "sozluk:paketle": "node scripts/dil/sozluk-paketle.js",
+    "dil:paketle": "node scripts/dil/paketle.js",
     "commit": "cz",
     "postinstall": "patch-package",
     "prepare": "git config core.hooksPath .githooks || true",

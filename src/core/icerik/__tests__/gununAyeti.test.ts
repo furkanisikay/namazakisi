@@ -1,7 +1,7 @@
 /**
  * Günün ayeti seçimi: namaz günü sınırı (imsak), dilden bağımsız seçim, tam tur, künye.
  */
-import { aktifNamazGunu, dilHavuzu, gununAyetiGorunumu, gununAyetiKaydi, gununAyetiPlani, gunNumarasi } from '../gununAyeti';
+import { aktifNamazGunu, ayetMealiOku, dilHavuzu, gununAyetiGorunumu, gununAyetiKaydi, gununAyetiPlani, gunNumarasi, tumHavuz } from '../gununAyeti';
 import { GUNUN_AYETI_HAVUZU } from '../../data/gununAyetiHavuzu';
 
 /** Her gün 06:00'da imsak. */
@@ -67,7 +67,7 @@ it('meal kaynağı olan dil yalnız meali sığan ayetlerden seçer; meali hep d
 
 it('mealsiz diller (ku, tk, tt, sd, pl; sahip kararı 2026-11-02; pa 2026-11-04): bütün havuz, meal ve meal künyesi yok, Arapça künye', () => {
   for (const dil of ['ku', 'tk', 'tt', 'sd', 'pl', 'pa'] as const) {
-    expect(dilHavuzu(dil)).toBe(GUNUN_AYETI_HAVUZU);
+    expect(dilHavuzu(dil)).toBe(tumHavuz());
     for (let g = 0; g < 30; g++) {
       const gun = new Date(Date.UTC(2026, 0, 1 + g)).toISOString().slice(0, 10);
       const kayit = gununAyetiKaydi(gun, dil);
@@ -94,9 +94,9 @@ it('meali olan dalga 11 dilleri (ja, gu, bg, mk) kendi havuzundan seçer; Japonc
     expect(gorunum.meal).toBeTruthy();
     expect(gorunum.mealKaynagi).toMatch(/QuranEnc \d/);
   }
-  for (const k of dilHavuzu('ja')) expect(k.mealler.ja).not.toMatch(/[*]|\[\p{Nd}+\]/u);
+  for (const k of dilHavuzu('ja')) expect(ayetMealiOku(k, 'ja')).not.toMatch(/[*]|\[\p{Nd}+\]/u);
   // Baştaki ayet numarası silinir (Gucarati rakamı "૨૫૫." dahil).
-  for (const dil of ['gu', 'bg', 'mk'] as const) for (const k of dilHavuzu(dil)) expect(k.mealler[dil]).not.toMatch(/^\s*\p{Nd}+\s*[.)]/u);
+  for (const dil of ['gu', 'bg', 'mk'] as const) for (const k of dilHavuzu(dil)) expect(ayetMealiOku(k, dil)).not.toMatch(/^\s*\p{Nd}+\s*[.)]/u);
 });
 
 it('meali olan dalga 12 dilleri (fil, te, kn, mr, as, ne, si, km) kendi havuzundan seçer; Pencapça mealsiz', () => {
@@ -107,9 +107,9 @@ it('meali olan dalga 12 dilleri (fil, te, kn, mr, as, ne, si, km) kendi havuzund
     expect(gorunum.mealKaynagi).toMatch(/QuranEnc \d/);
   }
   // Telugu "[1]" ve Marathi/Nepalce baştaki ayet numarası silinir.
-  for (const k of dilHavuzu('te')) expect(k.mealler.te).not.toMatch(/\[\p{Nd}+\]/u);
-  for (const dil of ['mr', 'ne'] as const) for (const k of dilHavuzu(dil)) expect(k.mealler[dil]).not.toMatch(/^\s*\p{Nd}+\s*[.)]/u);
-  expect(dilHavuzu('pa')).toBe(GUNUN_AYETI_HAVUZU);
+  for (const k of dilHavuzu('te')) expect(ayetMealiOku(k, 'te')).not.toMatch(/\[\p{Nd}+\]/u);
+  for (const dil of ['mr', 'ne'] as const) for (const k of dilHavuzu(dil)) expect(ayetMealiOku(k, dil)).not.toMatch(/^\s*\p{Nd}+\s*[.)]/u);
+  expect(dilHavuzu('pa')).toBe(tumHavuz());
 });
 
 it('dalga 13 dillerinin hepsi meali olan diller: kendi havuzundan seçer, baştaki ayet numarası silinmiş', () => {
@@ -121,7 +121,7 @@ it('dalga 13 dillerinin hepsi meali olan diller: kendi havuzundan seçer, başta
     expect(gorunum.mealKaynagi).toMatch(/QuranEnc \d/);
   }
   // Litvanca, Dagbani, Afarca "255." ve İbranice noktasız "255 " baştaki ayet numarası silinir.
-  for (const dil of ['lt', 'dag', 'aa', 'he'] as const) for (const k of dilHavuzu(dil)) expect(k.mealler[dil]).not.toMatch(/^\s*\p{Nd}/u);
+  for (const dil of ['lt', 'dag', 'aa', 'he'] as const) for (const k of dilHavuzu(dil)) expect(ayetMealiOku(k, dil)).not.toMatch(/^\s*\p{Nd}/u);
 });
 
 it('plan süren günden başlar, başlangıçlar imsak ve artan sırada', () => {

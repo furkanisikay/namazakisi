@@ -1,7 +1,7 @@
 /**
  * Diller arası dizin (SAF): bütün dillerin sözlüğünü dolaşmayı gerektiren iki aramanın ÖNCEDEN
  * hesaplanmış hâli. Sözlükler tembel ve sıkıştırılmış yüklendiği için çalışma zamanında 78 dili
- * açmak (≈20 MB) yerine paketleme adımında bir kez kurulur (`scripts/dil/sozluk-paketle.js`).
+ * açmak (≈20 MB) yerine paketleme adımında bir kez kurulur (`scripts/dil/paketle.js`).
  *
  * - `takvim`: her vaktin bütün dillerdeki (ve iki alfabeli dilde her alfabedeki) takvim etkinliği
  *   başlığı — dil değiştiren kullanıcının eski etkinliklerini temizlemek için.

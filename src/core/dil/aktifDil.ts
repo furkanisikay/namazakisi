@@ -15,19 +15,13 @@ import type { VakitAdiTakimi } from './vakitTakimlari';
 import { dilRakamVarsayilani, rakamSecimiGecerliMi, type RakamSistemi } from './rakam';
 import { derinCevir, dilYaziVarsayilani, yaziDonusumuGerekli, yaziSecimiGecerliMi, yaziyaCevir as yaziCevirisi, type YaziSistemi } from './yazi';
 import { tr, type Sozluk } from './sozluk/tr';
-import { strFromU8, unzlibSync } from 'fflate';
-import { base64Coz } from './base64';
+import { paketiAc } from './paketAc';
 import { dillerArasiPaketi, SOZLUK_PAKETLERI } from './paket';
 import type { DillerArasiDizin } from './dillerArasiDizin';
 
-/** Paketi açar: base64 → zlib → JSON. */
-function paketiAc<T>(paket: string): T {
-  return JSON.parse(strFromU8(unzlibSync(base64Coz(paket)))) as T;
-}
-
 /**
  * Ham (yazı ve takım UYGULANMAMIŞ) sözlükler. Türkçe pakete gömülü; öteki diller İLK İSTENDİĞİNDE
- * paketinden açılır ve burada kalır (`sozluk/<kod>/` kaynağı → `npm run sozluk:paketle`). Açılışta
+ * paketinden açılır ve burada kalır (`sozluk/<kod>/` kaynağı → `npm run dil:paketle`). Açılışta
  * yalnız etkin dil açılır: 78 sözlüğü birden kurmak açılış süresini ve belleği (arka plan görevleri
  * dahil) şişiriyordu. Bütün dilleri dolaşan arama sözlük açmaz, `dillerArasiDizin()`'i okur.
  */
