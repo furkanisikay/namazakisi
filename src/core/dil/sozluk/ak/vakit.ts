@@ -1,22 +1,25 @@
-// ÇEVİRİ: ak — İngilizce iskelet, çevrilince bu satır silinir
 // Akan (Twi) dilinde `buyuk` elle yazılır (`toUpperCase` YASAK; ɛ ɔ → Ɛ Ɔ).
 import type { Sozluk } from '../tr';
 
-/** İngilizcede vakit adları özel addır; cümle içinde de büyük harfle başlar. */
+/**
+ * Akan vakit adları: QE `asante_harun` yalnız "Asr"ı (2:238) Arapça adla verir; öteki adlar
+ * Latin Arapça yazımla (Fajr, Dhuhr, Maghrib, Isha; türetildi), güneş doğuşu QE 20:130 "awia apue".
+ * Cuma HadeethEnc ak "Efiada" (Cuma namazı anlamında da). Namaz QE "Nyamefrɛ"; fiil "yɛ Nyamefrɛ".
+ */
 export const vakit: Sozluk['vakit'] = {
-  adlar: { imsak: 'Fajr', gunes: 'Sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  buyuk: { imsak: 'FAJR', gunes: 'SUNRISE', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
-  kucuk: { imsak: 'Fajr', gunes: 'sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
+  adlar: { imsak: 'Fajr', gunes: 'Awia apue', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
+  buyuk: { imsak: 'FAJR', gunes: 'AWIA APUE', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
+  kucuk: { imsak: 'Fajr', gunes: 'awia apue', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
   imsakVakti: 'Fajr',
-  cuma: "Jumu'ah",
-  cumaKucuk: "Jumu'ah",
-  gunesDogusu: 'Sunrise',
-  gunesDogusuKucuk: 'sunrise',
-  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not yet time', gecti: 'Not prayed' },
-  durumKucuk: { kilindi: 'prayed', vaktiGeldi: 'time to pray', girmedi: 'not yet time', gecti: 'not prayed' },
-  eylem: { kildim: "I've prayed", kilindi: 'Prayed' },
-  kerahatVakti: 'Makruh time',
-  isaretle: 'Mark as prayed',
-  geriAlEtiketi: '{durum}, tap to undo',
-  geriAlindi: 'Unmarked',
+  cuma: 'Efiada',
+  cumaKucuk: 'Efiada',
+  gunesDogusu: 'Awia apue',
+  gunesDogusuKucuk: 'awia apue',
+  durum: { kilindi: 'Wɔayɛ', vaktiGeldi: 'Berɛ adu', girmedi: 'Berɛ nnuruiɛ', gecti: 'Wɔanyɛ' },
+  durumKucuk: { kilindi: 'wɔayɛ', vaktiGeldi: 'berɛ adu', girmedi: 'berɛ nnuruiɛ', gecti: 'wɔanyɛ' },
+  eylem: { kildim: 'Mayɛ Nyamefrɛ', kilindi: 'Wɔayɛ' },
+  kerahatVakti: 'Makruh berɛ',
+  isaretle: 'Kyerɛ sɛ mayɛ',
+  geriAlEtiketi: '{durum}, mia so na yi',
+  geriAlindi: 'Wɔayi',
 };

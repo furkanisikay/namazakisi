@@ -1,61 +1,60 @@
-// ÇEVİRİ: ak — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Akan dilinde: yalın tekil kısa emir ("Yɛ Nyamefrɛ"), "Yɛsrɛ wo" yok, "!" yok.
+ * Secde karşılığı YAZILMAZ → "hyɛ Nyamefrɛ ase" (namaza dur; QE 2:149 "ahyɛ Nyamefrɛ ase").
+ * Başlıkta süre birimi CLDR kısa "min".
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} min atwam · Nyamefrɛ berɛ adu ⏰',
+    giris2: '{ad} · {dk} min atwam · nntwentwɛn wo nan ase ⚠️',
+    giris3: '{ad} · {dk} min atwam · wo Nyamefrɛ retwɛn wo 🔥',
+    giris4: '{ad} · {dk} min atwam · HYƐ NYAMEFRƐ ASE 🚨',
+    erken3: '{ad} · {dk} min aka · wo Nyamefrɛ retwɛn wo 🔥',
+    erken4: '{ad} · {dk} min aka · HYƐ NYAMEFRƐ ASE 🚨',
+    cikis1: '{ad} · {dk} min aka ⏰',
+    cikis2: '{ad} · {dk} min · berɛ resa ⚠️',
+    cikis3: '{ad} · {dk} min · berɛ retwam 🔥',
+    cikis4: '{ad} · {dk} min · BERƐ REBA AWIEƐ 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Nyamefrɛ berɛ adu; yɛ Nyamefrɛ berɛ a wowɔ kwan yi.', 'Yɛ Nyamefrɛ berɛ a berɛ da so wɔ hɔ; mma ɛnka akyire.'],
+    s2: ['Dodoɔ a wotwentwɛn wo nan ase no, dodoɔ no ara na ɛyɛ duru; mma wo Nyamefrɛ nka awieɛ.', 'Berɛ rekɔ; yɛ Nyamefrɛ seesei.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Dodoɔ a wotwentwɛn wo nan ase no, dodoɔ no ara na ɛbɛn sɛ ɛbɛfiri wo nsa; yɛ Nyamefrɛ seesei.',
+      'Nka sɛ "Mɛyɛ akyire yi"; wobɛtumi ayɛ seesei.',
+      'Sɔre seesei sene sɛ wobɛka sɛ "Anka" sima kakra akyi.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Nntwentwɛn wo Nyamefrɛ nan ase bio; hyɛ Nyamefrɛ ase seesei.', 'Gyae deɛ woreyɛ no na hyɛ Nyamefrɛ ase.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Berɛ ahyɛ ase resa; yɛ Nyamefrɛ berɛ a wowɔ kwan yi.',
+    s2: 'Mma wo Nyamefrɛ nka awieɛ; seesei yɛ berɛ pa sɛ wobɛyɛ Nyamefrɛ.',
+    s3: 'Berɛ no aka kakra; wobɛtumi ayɛ Nyamefrɛ seesei ara.',
+    s4: 'Sɛ woayɛ a, mia "Mayɛ Nyamefrɛ" so; sɛ ɛnte saa a, hyɛ Nyamefrɛ ase seesei.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'NNTWENTWƐN WO NYAMEFRƐ NAN ASE. Hyɛ Nyamefrɛ ase seesei. (sima {dk} atwam)',
+    giris2: 'Berɛ rekɔ; mma wo Nyamefrɛ nka awieɛ. (sima {dk} atwam)',
+    giris1: cogul({ one: 'Sima {n} atwam firi berɛ a Nyamefrɛ berɛ duruiɛ.', other: 'Sima {n} atwam firi berɛ a Nyamefrɛ berɛ duruiɛ.' }),
+    erken4: 'Nntwentwɛn wo Nyamefrɛ nan ase; hyɛ Nyamefrɛ ase seesei. (sima {dk} aka)',
+    cikis4: 'BERƐ REBA AWIEƐ. Hyɛ Nyamefrɛ ase seesei. (sima {dk} aka)',
+    cikis2: 'Berɛ resa; mma wo Nyamefrɛ nka awieɛ. (sima {dk} aka)',
+    cikis1: cogul({ one: 'Sima {n} na aka ansa na Nyamefrɛ berɛ aba awieɛ.', other: 'Sima {n} na aka ansa na Nyamefrɛ berɛ aba awieɛ.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · yɛ Nyamefrɛ ansa na woada ⏰',
+    govde: 'Komm berɛ bɛhyɛ ase sima {dk} mu; yɛ Isha ansa na woada.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Berɛ ahyɛ ase resa; yɛ Nyamefrɛ berɛ a wowɔ kwan yi.',
+    sonaBirakma: 'Mma wo Nyamefrɛ nka awieɛ; seesei yɛ berɛ pa sɛ wobɛyɛ Nyamefrɛ.',
+    fisilti: 'Nka sɛ "Mɛyɛ akyire yi"; berɛ no aka kakra, wobɛtumi ayɛ seesei.',
+    omur: 'Berɛ retwam; wowɔ kwan da so sɛ wobɛyɛ Nyamefrɛ yi wɔ ne berɛ mu.',
+    keske: 'Sɔre seesei sene sɛ wobɛka sɛ "Anka" sima kakra akyi.',
+    namazaDur: 'Sɛ woayɛ a, mia "Mayɛ Nyamefrɛ" so; sɛ ɛnte saa a, hyɛ Nyamefrɛ ase seesei.',
+    sonDakika: 'Sima a ɛtwa toɔ. Gyae deɛ woreyɛ no na hyɛ Nyamefrɛ ase.',
   },
 };

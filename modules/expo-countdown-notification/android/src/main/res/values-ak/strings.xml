@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ak — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">Berɛ a aka a ɛkɔ so</string>
+    <string name="countdown_kanal_canli_aciklama">Berɛ a aka wɔ Now Bar ne tebea nsensanee mu</string>
+    <string name="countdown_kanal_genel_ad">Berɛ a aka amaneɛbɔ</string>
+    <string name="countdown_kanal_genel_aciklama">Kanal ma berɛ a aka amaneɛbɔ</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">Mayɛ Nyamefrɛ</string>
+    <string name="countdown_eylem_durdur">Gyae</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">Yɛ ntɛm, Nyamefrɛ berɛ rebɛba awieɛ.</string>
+    <string name="countdown_yedek_iftar">Berɛ resa.</string>
+    <string name="countdown_yedek_sahur">Wobɛtumi adi na woanom; akyiriwia rebɛhyɛ ase.</string>
+    <string name="countdown_yedek_seri">Ɛnnɛ Nyamefrɛ no nnya nwieeɛ; mma wo toatoaso nsɛe.</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">Kosi sɛ berɛ bɛba awieɛ</string>
+    <string name="countdown_onek_vakit_dar">Berɛ reba awieɛ</string>
+    <string name="countdown_onek_iftar">Kosi Iftar</string>
+    <string name="countdown_onek_iftar_dar">Kosi Iftar</string>
+    <string name="countdown_onek_sahur">Kosi sɛ Suhur bɛba awieɛ</string>
+    <string name="countdown_onek_sahur_dar">Suhur reba awieɛ</string>
+    <string name="countdown_onek_seri">Sɛ wobɛbɔ wo toatoaso ho ban a</string>
+    <string name="countdown_onek_seri_dar">Toatoaso reba awieɛ</string>
 </resources>

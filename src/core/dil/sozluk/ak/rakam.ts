@@ -1,11 +1,10 @@
-// ÇEVİRİ: ak — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Nɔma',
+  aciklama: 'Paw nɔma a wode bɛkyerɛw berɛ, da ne akontaa.',
+  otomatik: 'Sɛdeɛ ɔman no te',
+  otomatikAciklama: 'Ɛde nɔma a wɔtaa de di dwuma wɔ ɔman a wowɔ mu no bedi dwuma.',
+  dogu: 'Apueɛ Arab nɔma',
+  bati: 'Atɔeɛ nɔma',
 };

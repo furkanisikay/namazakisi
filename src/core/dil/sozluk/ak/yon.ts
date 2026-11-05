@@ -1,10 +1,9 @@
-// ÇEVİRİ: ak — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Nkyerɛwee kwan bɛsesa',
+  aciklama: 'Kasa a woapaw no, wɔkyerɛw no kwan foforo so. Ɛsɛ sɛ app no san hyɛ ase ansa na skrin no adane akɔ so.',
+  simdiBaslat: 'San hyɛ ase seesei',
+  sonra: 'Akyire yi',
+  bekliyor: 'Nkyerɛwee kwan no bɛsesa sɛ app no san hyɛ ase a.',
 };

@@ -1203,19 +1203,18 @@ struct TvArayuzMetinleri {
         siradakiEk: ", kasunud a sambayang"
     )
 
-    // ÇEVİRİ: ak
     static let ak = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Paw wo kuropɔn",
+        ilMerkezi: "Wɔbu Nyamefrɛ mmerɛ ma mantam no mfinimfini. Wobɛtumi asesa deɛ woapaw akyire yi.",
+        ilSecErisim: "{il}, paw",
+        kalan: "Berɛ a aka kosi {ad}",
+        kalanErisim: "Berɛ a aka kosi {ad}: {sure}",
+        konumuDegistirin: "Sesa beaeɛ",
+        kerahatSuruyor: "Makruh berɛ: {tur}, ɛba awieɛ {bitis}. {aciklama}",
+        siradakiKerahat: "Makruh berɛ a ɛdi hɔ: {tur} {bas}–{bit}",
+        cumaBilgisi: "Ɛnnɛ yɛ Efiada. Wɔyɛ Efiada Nyamefrɛ wɔ Dhuhr berɛ mu (ɛhyɛ ase {giris}).",
+        suAnkiEk: ", Nyamefrɛ a ɛkɔ so",
+        siradakiEk: ", Nyamefrɛ a ɛdi hɔ"
     )
 
     static let ceb = TvArayuzMetinleri(

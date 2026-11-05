@@ -2387,31 +2387,30 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Bukatan su app"
     )
 
-    // ÇEVİRİ: ak
     public static let ak = VakitMetinleri(
         dil: "ak",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Awia apue",
+        konumYok: "Bue app no na hyɛ wo beaeɛ sɛdeɛ wɔbɛtumi abu Nyamefrɛ mmerɛ.",
+        veriEski: "Nyamefrɛ mmerɛ no nyɛ foforo. Bue app no prɛko na yɛ no foforo.",
+        girisBugun: "{saat}",
+        girisYarin: "ɔkyena {saat}",
+        suAnVakti: "Seesei yɛ {ad} berɛ.",
+        suAnVaktiCikis: "Seesei yɛ {ad} berɛ; ɛba awieɛ {saat}.",
+        siradakiNamaz: "Nyamefrɛ a ɛdi hɔ ne {ad}, {giris}.",
+        isaretlendi: "Wɔakyerɛ sɛ woayɛ {ad}. {dua}.",
+        zatenKilindi: "Wɔakyerɛ dada sɛ woayɛ {ad}.",
+        vakitYok: "Nyamefrɛ biara nni hɔ a wɔbɛkyerɛ seesei.",
+        vakitYokSiradaki: "Nyamefrɛ biara nni hɔ a wɔbɛkyerɛ seesei. Deɛ ɛdi hɔ ne {ad}, {giris}.",
+        onay: "Kyerɛ sɛ woayɛ {ad}?",
+        vakitDegisti: "Nyamefrɛ berɛ no asesa, enti wɔankyerɛ hwee. San bɔ mmɔden.",
+        kabulDuasi: "Allah nnye ntom",
+        kildim: "Mayɛ Nyamefrɛ",
+        kilindi: "Wɔayɛ",
+        kontrolKildim: "{ad} · Mayɛ Nyamefrɛ",
+        kontrolKilindi: "Wɔayɛ {ad}",
+        kontrolVakitYok: "Nyamefrɛ biara nni hɔ a wɔbɛkyerɛ",
+        uygulamayiAcin: "Bue app no"
     )
 
     public static let ceb = VakitMetinleri(

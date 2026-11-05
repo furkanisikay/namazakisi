@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
+  "NSLocationWhenInUseUsageDescription": "Wɔde wo beaeɛ bu Nyamefrɛ mmerɛ pɛpɛɛpɛ ma baabi a wowɔ. Wo beaeɛ tena wo afidie so.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Wɔde wo beaeɛ bu Nyamefrɛ mmerɛ pɛpɛɛpɛ ma baabi a wowɔ na, sɛ “Mewɔ masjid” abue a, ɛde bue Nyamefrɛ tebea sɛ wokɔ masjid mu a. Wo beaeɛ tena wo afidie so.",
+  "NSLocationAlwaysUsageDescription": "Wɔde wo beaeɛ yɛ Nyamefrɛ mmerɛ foforo ankasa sɛ wosesa kuropɔn a na, sɛ “Mewɔ masjid” abue a, ɛde bue Nyamefrɛ tebea sɛ wokɔ masjid mu a. Wo beaeɛ tena wo afidie so.",
+  "NSCameraUsageDescription": "Wɔde wo kamera kyerɛ Qibla fam wɔ kamera nhwɛ so na wɔde hwɛ nkitahodie kood a ɛwɔ wo TV so. Wɔnsie mfoni no na ɛmfiri wo afidie so da.",
+  "NSCalendarsUsageDescription": "Wɔde kalenda kwan de Nyamefrɛ mmerɛ ka wo kalenda ho na, sɛ wobue a, wɔhwɛ sɛ dwumadie a ɛwɔ wo kalenda mu ne Nyamefrɛ berɛ hyia anaa. Wo kalenda nsɛm tena wo afidie so.",
+  "NSCalendarsFullAccessUsageDescription": "Wɔde kalenda kwan de Nyamefrɛ mmerɛ ka wo kalenda ho na, sɛ wobue a, wɔhwɛ sɛ dwumadie a ɛwɔ wo kalenda mu ne Nyamefrɛ berɛ hyia anaa. Wo kalenda nsɛm tena wo afidie so.",
+  "NSLocalNetworkUsageDescription": "App no bɔ TV a ɛwɔ wo ntam nkitahodie so mu de wo Nyamefrɛ mmerɛ ne Nyamefrɛ a woakyerɛ kɔ so. Wɔahintaw nsɛm no na ɛkɔ afidie mmienu no ntam nko ara.",
+  "NSAlarmKitUsageDescription": "Nkaeɛ anammɔn a wopaw “Alaam ankasa” no, wɔhyɛ no sɛ alaam, sɛdeɛ wobɛte ɛmpo sɛ wo fon yɛ komm anaa Focus abue a.",
+  "\"Vakti kıldım\"": "Mayɛ Nyamefrɛ",
   "\"Kıble\"": "Qibla"
 }

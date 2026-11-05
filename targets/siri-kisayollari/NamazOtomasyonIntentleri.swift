@@ -663,11 +663,10 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Di, da pan natandaan."
     )
 
-    // ÇEVİRİ: ak (one/other)
     static let ak = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} bɛhyɛ ase sima {n} mu.", "other": "{ad} bɛhyɛ ase sima {n} mu."],
+        evetKilindi: "Aane, wɔakyerɛ sɛ wɔayɛ.",
+        hayirKilinmadi: "Daabi, wɔnnya nkyerɛɛ."
     )
 
     static let ceb = OtomasyonMetinleri(

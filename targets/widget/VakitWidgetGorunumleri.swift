@@ -1930,29 +1930,28 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Pedtandaan a midsambayang su sambayang saguna."
     )
 
-    // ÇEVİRİ: ak
     static let ak = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Nyamefrɛ berɛ",
+        galeriAciklama: "Nyamefrɛ berɛ a ɛkɔ so, berɛ a aka ansa na aba awieɛ ne ɛnnɛ Nyamefrɛ mmerɛ.",
+        veriEski: "Bue app no na yɛ Nyamefrɛ mmerɛ foforo",
+        konumYok: "Bue app no na hyɛ wo beaeɛ",
+        kilindiSiradaki: "Wɔayɛ {ad} · {sonraki} {saat}",
+        adCikis: "{ad} · ɛba awieɛ {saat}",
+        siradakiAdSaat: "Deɛ ɛdi hɔ {ad} {saat}",
+        vaktiCikisErisim: "{ad} berɛ, ɛba awieɛ {saat}",
+        siradakiErisim: "Deɛ ɛdi hɔ {ad}, {saat}",
+        cikisSaat: "Ɛba awieɛ {saat}",
+        bitisSaat: "Ɛba awieɛ {saat}",
+        kilindiBaslik: "Wɔayɛ {ad}",
+        siradaki: "Ɛdi hɔ",
+        siradakiAd: "Deɛ ɛdi hɔ {ad}",
+        kildimErisim: "Mayɛ {ad}",
+        gunSatiriKilindi: ", wɔayɛ",
+        bitti: "Aba awieɛ",
+        vakitCikti: "Nyamefrɛ berɛ atwam",
+        kabulAlt: "Wɔayɛ {ad}",
+        kontrolAdi: "Mayɛ Nyamefrɛ",
+        kontrolAciklama: "Ɛkyerɛ Nyamefrɛ a ɛkɔ so no sɛ wɔayɛ."
     )
 
     static let ceb = WidgetMetinleri(
