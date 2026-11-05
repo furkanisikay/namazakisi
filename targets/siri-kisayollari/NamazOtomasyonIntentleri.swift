@@ -670,11 +670,10 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: ceb (one/other)
     static let ceb = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "Magsugod ang {ad} sulod sa {n} ka minuto.", "other": "Magsugod ang {ad} sulod sa {n} ka minuto."],
+        evetKilindi: "Oo, gimarkahan na nga nakaampo na.",
+        hayirKilinmadi: "Dili, wala pa kini mamarkahi."
     )
 
     // ÇEVİRİ: nqo (other)

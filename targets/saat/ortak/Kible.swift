@@ -1208,16 +1208,15 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: ceb (CLDR ceb: binlik ayırıcı ",")
     public static let ceb = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Sa inyong luyo",
+        saga: "Tuo {derece}°",
+        sola: "Wala {derece}°",
+        hizali: "Nag-atubang kamo sa Qibla",
+        arkadaErisim: "Ang Qibla anaa sa inyong luyo",
+        sagdaErisim: "Ang Qibla anaa {derece} ka degree sa inyong tuo",
+        soldaErisim: "Ang Qibla anaa {derece} ka degree sa inyong wala",
+        kabede: "Anaa kamo sa Kaaba",
         mesafe: "{km} km",
         binlikAyirici: ","
     )

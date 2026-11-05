@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ceb — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">Ihaum ang QR code sa screen sa TV sulod sa frame</string>
+    <string name="tvesleme_qr_vazgec">Kanselaha</string>
+    <string name="tvesleme_qr_vazgec_erisim">Kanselaha ang pag-scan</string>
+    <string name="tvesleme_qr_yabanci">Kining QR code dili iya sa Namaz Akışı TV. I-scan ang code sa TV.</string>
+    <string name="tvesleme_qr_okundu">Na-scan ang code</string>
 </resources>

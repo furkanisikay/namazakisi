@@ -1,18 +1,17 @@
-/* ÇEVİRİ: ceb */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "Kanus-a ang sunod nga Salah sa ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} sunod nga Salah";
+"${applicationName} ile sıradaki namazı söyle" = "Isulti ang sunod nga Salah gamit ang ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} oras sa Salah";
+"${applicationName} şu anki vakti kıldım" = "Nag-ampo ko sa karon nga Salah sa ${applicationName}";
+"${applicationName} namazımı kıldım" = "Nag-ampo ko sa ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Markahi nga nakaampo na ang karon nga Salah sa ${applicationName}";
+"${applicationName} kıbleyi aç" = "Ablihi ang Qibla sa ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Ipakita ang Qibla gamit ang ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} hulagway sa bersikulo sa adlaw";
+"${applicationName} ile günün ayeti görselini hazırla" = "Himoa ang hulagway sa bersikulo sa adlaw gamit ang ${applicationName}";

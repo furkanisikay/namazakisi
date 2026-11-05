@@ -1218,19 +1218,18 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: ceb
     static let ceb = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Pilia ang inyong siyudad",
+        ilMerkezi: "Ang mga oras sa Salah gikuwenta alang sa sentro sa probinsya. Mausab ninyo unya ang inyong gipili.",
+        ilSecErisim: "{il}, pilia",
+        kalan: "Nahabilin hangtod sa {ad}",
+        kalanErisim: "Nahabilin hangtod sa {ad}: {sure}",
+        konumuDegistirin: "Usba ang lokasyon",
+        kerahatSuruyor: "Makruh nga oras: {tur}, matapos {bitis}. {aciklama}",
+        siradakiKerahat: "Sunod nga makruh nga oras: {tur} {bas}–{bit}",
+        cumaBilgisi: "Biyernes karon. Ang Jum'ah himoon sa oras sa Dhuhr (magsugod {giris}).",
+        suAnkiEk: ", karon nga Salah",
+        siradakiEk: ", sunod nga Salah"
     )
 
     // ÇEVİRİ: nqo

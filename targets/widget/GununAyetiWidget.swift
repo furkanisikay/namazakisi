@@ -1116,18 +1116,17 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: ceb
     static let ceb = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Bersikulo sa adlaw",
+        galeriAciklama: "Usa ka bersikulo ug ang hubad niini nga mausab matag adlaw sa Fajr.",
+        etiket: "BERSIKULO SA ADLAW",
+        uygulamayiAcin: "Ablihi ang app aron makita ang bersikulo sa adlaw",
+        ornekSigmiyor: "Dili mohaom niining gidak-on ang bersikulo karon. I-tap aron basahon.",
+        ornekAcin: "Ablihi",
+        ornekArapcaKaynagi: "Arabiko: Tanzil",
+        ornekMeal: "Sa pagkatinuod uban sa matag kalisdanan moabut ang kasayon (kaharuhay).",
+        ornekKisaKunye: "Qur'an 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.1.3"
     )
 
     // ÇEVİRİ: nqo

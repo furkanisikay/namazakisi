@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
+  "NSLocationWhenInUseUsageDescription": "Gamiton ang inyong lokasyon aron husto nga makuwenta ang mga oras sa Salah sa inyong nahimutangan. Ang inyong lokasyon magpabilin sa inyong device.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Gamiton ang inyong lokasyon aron husto nga makuwenta ang mga oras sa Salah sa inyong nahimutangan ug, kon naka-on ang Anaa sa masjid, aron ma-on ang Mode sa Salah inig sulod ninyo sa masjid. Ang inyong lokasyon magpabilin sa inyong device.",
+  "NSLocationAlwaysUsageDescription": "Gamiton ang inyong lokasyon aron awtomatikong ma-update ang mga oras sa Salah kon mobalhin kamo og siyudad ug, kon naka-on ang Anaa sa masjid, aron ma-on ang Mode sa Salah inig sulod ninyo sa masjid. Ang inyong lokasyon magpabilin sa inyong device.",
+  "NSCameraUsageDescription": "Gamiton ang inyong kamera aron ipakita ang direksyon sa Qibla ibabaw sa view sa kamera ug aron i-scan ang pairing code sa inyong TV. Dili tipigan ang mga hulagway ug dili kini mogawas sa inyong device.",
+  "NSCalendarsUsageDescription": "Gamiton ang access sa kalendaryo aron idugang ang mga oras sa Salah sa inyong kalendaryo ug, kon i-on ninyo, aron susihon kon ang mga kalihokan sa inyong kalendaryo nagdungan sa oras sa Salah. Ang datos sa inyong kalendaryo magpabilin sa inyong device.",
+  "NSCalendarsFullAccessUsageDescription": "Gamiton ang access sa kalendaryo aron idugang ang mga oras sa Salah sa inyong kalendaryo ug, kon i-on ninyo, aron susihon kon ang mga kalihokan sa inyong kalendaryo nagdungan sa oras sa Salah. Ang datos sa inyong kalendaryo magpabilin sa inyong device.",
+  "NSLocalNetworkUsageDescription": "Mokonektar ang app sa TV sa inyong lokal nga network aron ipadala niini ang inyong mga oras sa Salah ug ang mga Salah nga inyong gimarkahan. Naka-encrypt ang datos ug moagi lang tali sa duha ka device.",
+  "NSAlarmKitUsageDescription": "Ang mga lakang sa pahinumdom diin inyong gipili ang “Tinuod nga alarm” i-set isip alarm, aron madungog ninyo kini bisan naka-silent ang telepono o naka-on ang Focus.",
+  "\"Vakti kıldım\"": "Nag-ampo ko",
   "\"Kıble\"": "Qibla"
 }

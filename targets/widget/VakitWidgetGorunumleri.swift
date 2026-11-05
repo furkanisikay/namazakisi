@@ -1955,29 +1955,28 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: ceb
     static let ceb = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Oras sa Salah",
+        galeriAciklama: "Ang karon nga oras sa Salah, ang nahabilin hangtod matapos kini ug ang mga oras sa Salah karon.",
+        veriEski: "Ablihi ang app aron ma-update ang mga oras sa Salah",
+        konumYok: "Ablihi ang app aron i-set ang inyong lokasyon",
+        kilindiSiradaki: "{ad}: nakaampo na · {sonraki} {saat}",
+        adCikis: "{ad} · matapos {saat}",
+        siradakiAdSaat: "Sunod {ad} {saat}",
+        vaktiCikisErisim: "Oras sa {ad}, matapos {saat}",
+        siradakiErisim: "Sunod {ad}, {saat}",
+        cikisSaat: "Matapos {saat}",
+        bitisSaat: "Matapos {saat}",
+        kilindiBaslik: "{ad}: nakaampo na",
+        siradaki: "Sunod",
+        siradakiAd: "Sunod {ad}",
+        kildimErisim: "Nag-ampo ko sa {ad}",
+        gunSatiriKilindi: ", nakaampo na",
+        bitti: "Natapos",
+        vakitCikti: "Natapos na ang oras sa Salah",
+        kabulAlt: "{ad}: nakaampo na",
+        kontrolAdi: "Nag-ampo ko",
+        kontrolAciklama: "Markahan nga nakaampo na ang karon nga Salah."
     )
 
     // ÇEVİRİ: nqo

@@ -1,40 +1,49 @@
-// ÇEVİRİ: ceb — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Nafile karşılığı "dugang nga Salah" (QE 17:79 "dugang" = ek); ad olarak DOĞRULANMADI. */
 export const nafile: Sozluk['nafile'] = {
   adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
   kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Magsugod mga 45 ka minuto human sa pagsubang sa adlaw ug molungtad hangtod 10 ka minuto una sa Dhuhr. Ang Ishraq mao ang pinakasayo niining oras; ang labing maayo human molabay ang unang ikaupat sa adlaw.',
+    evvabin: 'Himoon human sa Maghrib, hangtod sa oras sa Isha.',
+    teheccud: 'Himoon human sa pagkatulog ug pagmata human sa Isha, hangtod sa oras sa Fajr. Ang labing maayong oras niini mao ang katapusang ikatulo sa gabii.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nKaron: {bas} – {son}',
+  enFaziletli: ' · labing maayo human sa {saat}',
+  sonUcteBir: ' · katapusang ikatulo {saat}',
+  durumAktif: 'Misulod na ang oras · matapos {saat}',
+  durumNafile: 'Dugang nga Salah · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Oras sa Duha',
+    kuslukSuruyor: 'Nagpadayon ang oras sa Duha; makaampo kamo hangtod {son}.',
+    kuslukGirdi: "Misulod na ang oras sa Duha. Maayong higayon alang sa duha ka rak'ah; molungtad kini hangtod {son}.",
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: "{n} ka minuto na lang ang nahabilin sa oras sa Duha. Maayong higayon alang sa duha ka rak'ah; molungtad kini hangtod {son}.",
+      other: "{n} ka minuto na lang ang nahabilin sa oras sa Duha. Maayong higayon alang sa duha ka rak'ah; molungtad kini hangtod {son}.",
     }),
     evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinSuruyor: 'Aduna pay oras alang sa Awwabin. Magsugod ang Isha sa {son}.',
+    evvabinGirdi: 'Human sa Maghrib, maayong higayon alang sa Awwabin. Magsugod ang Isha sa {son}.',
+    evvabinKalan: cogul({
+      one: '{n} ka minuto na lang alang sa Awwabin. Magsugod ang Isha sa {son}.',
+      other: '{n} ka minuto na lang alang sa Awwabin. Magsugod ang Isha sa {son}.',
+    }),
+    teheccudBaslik: 'Oras sa Tahajjud',
+    uyandirSonUcte: 'Bangon na; nagsugod na ang katapusang ikatulo sa gabii. Magsugod ang Fajr sa {son}.',
+    uyandirKalan: cogul({
+      one: 'Bangon na; {n} ka minuto na lang hangtod sa Fajr. Magsugod ang Fajr sa {son}.',
+      other: 'Bangon na; {n} ka minuto na lang hangtod sa Fajr. Magsugod ang Fajr sa {son}.',
+    }),
+    sonUcteBaslik: 'Ang katapusang ikatulo sa gabii',
+    sonUcteGovde: 'Ang labing bulahan nga mga oras alang sa Tahajjud. Magsugod ang Fajr sa {son}.',
+    teheccudKalan: cogul({
+      one: '{n} ka minuto na lang hangtod sa Fajr. Maayong oras alang sa Tahajjud.',
+      other: '{n} ka minuto na lang hangtod sa Fajr. Maayong oras alang sa Tahajjud.',
+    }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Pagmata alang sa Tahajjud',
+  uyandirmaKanaliAciklama: 'Pukawon kamo alang sa Salah sa gabii; motingog bisan naka-silent',
 };

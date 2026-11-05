@@ -247,8 +247,7 @@ enum NamazAlarmCekirdegi {
         "mdh": "Ipendeg",
         // ÇEVİRİ: ak
         "ak": "Stop",
-        // ÇEVİRİ: ceb
-        "ceb": "Stop",
+        "ceb": "Hunonga",
         // ÇEVİRİ: nqo
         "nqo": "Stop",
     ]

@@ -1,10 +1,10 @@
-// ÇEVİRİ: ceb — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Anahtar kelime başlığın içinde AYNEN geçer (rutin "bildirimde şu metin varsa" ile eşler). */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'misulod na ang oras',
+  vakitGirdiBasligi: '{ad}: misulod na ang oras',
+  herhangiVakit: 'Kung mosulod ang bisan unsang oras sa Salah',
+  yalnizVakit: 'Kung mosulod lang ang oras sa {ad}',
+  camide: 'Kung makita nga anaa kamo sa masjid (naka-on ang Anaa sa masjid)',
 };

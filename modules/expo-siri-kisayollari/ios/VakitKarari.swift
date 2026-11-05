@@ -2414,31 +2414,30 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: ceb
     public static let ceb = VakitMetinleri(
         dil: "ceb",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Pagsubang sa adlaw",
+        konumYok: "Ablihi ang app ug i-set ang inyong lokasyon aron makuwenta ang mga oras sa Salah.",
+        veriEski: "Karaan na ang mga oras sa Salah. Ablihi ang app kausa aron ma-update kini.",
+        girisBugun: "sa {saat}",
+        girisYarin: "ugma sa {saat}",
+        suAnVakti: "Oras na karon sa {ad}.",
+        suAnVaktiCikis: "Oras na karon sa {ad}; matapos kini sa {saat}.",
+        siradakiNamaz: "Ang sunod nga Salah mao ang {ad} {giris}.",
+        isaretlendi: "{ad}: gimarkahan nga nakaampo na. {dua}.",
+        zatenKilindi: "{ad}: gimarkahan na nga nakaampo na.",
+        vakitYok: "Walay Salah nga markahan karon.",
+        vakitYokSiradaki: "Walay Salah nga markahan karon. Sunod ang {ad} {giris}.",
+        onay: "Markahan ba ang {ad} nga nakaampo na?",
+        vakitDegisti: "Nausab ang oras sa Salah, busa walay namarkahan. Sulayi pag-usab.",
+        kabulDuasi: "Dawaton unta sa Allah",
+        kildim: "Nag-ampo ko",
+        kilindi: "Nakaampo na",
+        kontrolKildim: "{ad} · Nag-ampo ko",
+        kontrolKilindi: "{ad}: nakaampo na",
+        kontrolVakitYok: "Walay Salah nga markahan",
+        uygulamayiAcin: "Ablihi ang app"
     )
 
     // ÇEVİRİ: nqo

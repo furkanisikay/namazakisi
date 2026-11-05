@@ -1,61 +1,60 @@
-// ÇEVİRİ: ceb — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı: zamirsiz kısa emir ("Mag-ampo na"), zamir gerekirse saygılı çoğul "kamo/ninyo";
+ * "po" yok (Sebuanoda yok), "palihug" ve "!" yok (sahip kararı). Secde karşılığı YAZILMAZ →
+ * "mag-ampo na". Başlıkta süre birimi "m": "Maghrib · 655m na" ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}m na · oras na sa Salah ⏰',
+    giris2: '{ad} · {dk}m na · ayaw langana ang Salah ⚠️',
+    giris3: '{ad} · {dk}m na · naghulat ang Salah 🔥',
+    giris4: '{ad} · {dk}m na · MAG-AMPO NA 🚨',
+    erken3: '{ad} · {dk}m pa · naghulat ang Salah 🔥',
+    erken4: '{ad} · {dk}m pa · MAG-AMPO NA 🚨',
+    cikis1: '{ad} · {dk}m pa ⏰',
+    cikis2: '{ad} · {dk}m · nagkadiyot na ang oras ⚠️',
+    cikis3: '{ad} · {dk}m · hapit na mahurot ang oras 🔥',
+    cikis4: '{ad} · {dk}m · HAPIT NA MATAPOS ANG ORAS 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Oras na sa Salah; mag-ampo samtang may higayon pa.', 'Mag-ampo samtang anaa pa ang oras; ayaw kini langana.'],
+    s2: ['Kon dugay langanon, mas mobug-at; ayaw ibilin ang Salah sa katapusan.', 'Nagpadayon ang oras — mag-ampo na karon.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Kon dugay malangan, mas duol nga malabyan kini; mag-ampo na karon.',
+      'Ayaw ingna nga "unya na lang ko mag-ampo"; makaampo kamo karon.',
+      'Barog na karon kaysa moingon og "unta" human sa pipila ka minuto.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Ayaw na langana ang Salah — mag-ampo na karon.', 'Biyai una ang inyong gibuhat ug barog alang sa Salah.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Nagsugod na pagkadiyot ang oras; mag-ampo samtang may higayon pa.',
+    s2: 'Ayaw ibilin ang Salah sa katapusan; maayong higayon karon sa pag-ampo.',
+    s3: 'Hapit na mahurot ang oras; makaampo pa kamo karon.',
+    s4: 'Kon nakaampo na kamo, i-tap ang "Nag-ampo ko"; kon wala pa, mag-ampo na karon.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'AYAW LANGANA ANG SALAH. Mag-ampo na karon. (milabay ang {dk} min)',
+    giris2: 'Nagpadayon ang oras; ayaw ibilin ang Salah sa katapusan. (milabay ang {dk} min)',
+    giris1: cogul({ one: '{n} ka minuto na sukad misulod ang oras sa Salah.', other: '{n} ka minuto na sukad misulod ang oras sa Salah.' }),
+    erken4: 'Ayaw langana ang Salah; mag-ampo na karon. ({dk} min pa)',
+    cikis4: 'HAPIT NA MATAPOS ANG ORAS. Mag-ampo na karon. ({dk} min pa)',
+    cikis2: 'Nagkadiyot na ang oras; ayaw ibilin ang Salah sa katapusan. ({dk} min pa)',
+    cikis1: cogul({ one: '{n} ka minuto na lang una matapos ang oras sa Salah.', other: '{n} ka minuto na lang una matapos ang oras sa Salah.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · mag-ampo una matulog ⏰',
+    govde: 'Magsugod ang hilom nga oras sulod sa {dk} min; mag-ampo sa Isha una matulog.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Nagsugod na pagkadiyot ang oras; mag-ampo samtang may higayon pa.',
+    sonaBirakma: 'Ayaw ibilin ang Salah sa katapusan; maayong higayon karon sa pag-ampo.',
+    fisilti: 'Ayaw ingna nga "unya na lang ko mag-ampo"; hapit na mahurot ang oras, makaampo pa kamo karon.',
+    omur: 'Nagpadayon ang panahon; may higayon pa kamo nga mag-ampo niini sa husto nga oras.',
+    keske: 'Barog na karon kaysa moingon og "unta" human sa pipila ka minuto.',
+    namazaDur: 'Kon nakaampo na kamo, i-tap ang "Nag-ampo ko"; kon wala pa, mag-ampo na karon.',
+    sonDakika: 'Ang katapusang mga minuto. Biyai una ang inyong gibuhat ug barog alang sa Salah.',
   },
 };

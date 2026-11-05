@@ -4044,65 +4044,64 @@ object TvDiliAk : TvDili {
     override val iftaraKalan = "Time left until iftar"
 }
 
-// ÇEVİRİ: ceb
 // CLDR ceb: Filipince kuralı (son hanesi 4, 6, 9 OLMAYAN tekil; JS `cogul.ts > filipince`); Latin; Android `values-b+ceb`.
 object TvDiliCeb : TvDili {
     override val kod = "ceb"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
         Vakit.IMSAK -> "Fajr"
-        Vakit.GUNES -> "Sunrise"
+        Vakit.GUNES -> "Pagsubang sa adlaw"
         Vakit.OGLE -> "Dhuhr"
         Vakit.IKINDI -> "Asr"
         Vakit.AKSAM -> "Maghrib"
         Vakit.YATSI -> "Isha"
     }
-    override val cuma = "Jumu'ah"
+    override val cuma = "Jum'ah"
     override val aylar = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "Enero", "Pebrero", "Marso", "Abril", "Mayo", "Hunyo",
+        "Hulyo", "Agosto", "Septyembre", "Oktubre", "Nobyembre", "Disyembre",
     )
-    override val gunler = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
+    override val gunler = listOf("Lunes", "Martes", "Miyerkules", "Huwebes", "Biyernes", "Sabado", "Domingo")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $ay $gun, $yil"
 
-    override val birimSa = "h"
+    override val birimSa = "oras"
     override val birimDk = "min"
-    override val birimSn = "s"
+    override val birimSn = "seg"
     override val birimAyirici = " "
     override val parcaAyirici = " "
-    /** CLDR ceb (JS `cogul.ts > filipince`; tam sayı). */
+    /** CLDR ceb (JS `cogul.ts > filipince`; tam sayı). Ad sayıyla çekilmez ("5 ka minuto"). */
     fun cogulKategorisi(n: Int): String {
         val s10 = n % 10
         return if (s10 == 4 || s10 == 6 || s10 == 9) "other" else "one"
     }
 
     override fun saatSesli(n: Int) = when (cogulKategorisi(n)) {
-        "one" -> "$n hour"
-        else -> "$n hours"
+        "one" -> "$n ka oras"
+        else -> "$n ka oras"
     }
     override fun dakikaSesli(n: Int) = when (cogulKategorisi(n)) {
-        "one" -> "$n minute"
-        else -> "$n minutes"
+        "one" -> "$n ka minuto"
+        else -> "$n ka minuto"
     }
-    override val birDakikadanAz = "less than 1 minute"
+    override val birDakikadanAz = "ubos sa 1 ka minuto"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Sunrise"
-        Kerahat.Tur.ISTIVA -> "Zenith"
-        Kerahat.Tur.GURUB -> "Sunset"
+        Kerahat.Tur.SURUK -> "Pagsubang"
+        Kerahat.Tur.ISTIVA -> "Kinatumyan"
+        Kerahat.Tur.GURUB -> "Pagsalop"
     }
 
     override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Praying is makruh until the sun has risen well."
-        Kerahat.Tur.ISTIVA -> "Praying is makruh while the sun is at its zenith."
-        Kerahat.Tur.GURUB -> "Praying is makruh while the sun is setting."
+        Kerahat.Tur.SURUK -> "Makruh ang pag-ampo hangtod makasubang og maayo ang adlaw."
+        Kerahat.Tur.ISTIVA -> "Makruh ang pag-ampo samtang anaa ang adlaw sa kinatumyan."
+        Kerahat.Tur.GURUB -> "Makruh ang pag-ampo samtang nagsalop ang adlaw."
     }
 
-    override fun bant(ad: String, dk: Long) = "Time for $ad is running short · $dk min"
-    override val kabulDuasi = "May Allah accept it"
-    override val iftarSelami = "Blessed iftar"
-    override val cumaSelami = "Jumu'ah Mubarak"
-    override val sahuraKalan = "Time left for suhoor"
-    override val iftaraKalan = "Time left until iftar"
+    override fun bant(ad: String, dk: Long) = "Hapit na mahurot ang oras sa $ad · $dk min"
+    override val kabulDuasi = "Dawaton unta sa Allah"
+    override val iftarSelami = "Bulahan nga iftar"
+    override val cumaSelami = "Jum'ah Mubarak"
+    override val sahuraKalan = "Nahabilin nga oras sa suhur"
+    override val iftaraKalan = "Nahabilin hangtod sa iftar"
 }
 
 // ÇEVİRİ: nqo
