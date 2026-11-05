@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "המיקום שלכם משמש לחישוב מדויק של זמני התפילה במקום שבו אתם נמצאים. המיקום נשאר במכשיר שלכם.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "המיקום שלכם משמש לחישוב מדויק של זמני התפילה במקום שבו אתם נמצאים, ואם התכונה אני במסגד פעילה, להפעלת מצב תפילה כשנכנסים למסגד. המיקום נשאר במכשיר שלכם.",
+  "NSLocationAlwaysUsageDescription": "המיקום שלכם משמש לעדכון אוטומטי של זמני התפילה כשאתם עוברים עיר, ואם התכונה אני במסגד פעילה, להפעלת מצב תפילה כשנכנסים למסגד. המיקום נשאר במכשיר שלכם.",
+  "NSCameraUsageDescription": "המצלמה משמשת להצגת כיוון הקיבלה על תמונת המצלמה ולסריקת קוד הצימוד בטלוויזיה. התמונות לא נשמרות ולא יוצאות מהמכשיר.",
+  "NSCalendarsUsageDescription": "הגישה ליומן משמשת להוספת זמני התפילה ליומן, ואם תפעילו זאת, לבדיקה אם אירועים ביומן חופפים לזמן תפילה. נתוני היומן נשארים במכשיר שלכם.",
+  "NSCalendarsFullAccessUsageDescription": "הגישה ליומן משמשת להוספת זמני התפילה ליומן, ואם תפעילו זאת, לבדיקה אם אירועים ביומן חופפים לזמן תפילה. נתוני היומן נשארים במכשיר שלכם.",
+  "NSLocalNetworkUsageDescription": "האפליקציה מתחברת לטלוויזיה ברשת המקומית כדי לשלוח אליה את זמני התפילה ואת התפילות שסימנתם. הנתונים מוצפנים ועוברים רק בין שני המכשירים.",
+  "NSAlarmKitUsageDescription": "שלבי תזכורת שבהם בחרתם ”מעורר אמיתי” נקבעים כמעוררים, כך שתשמעו אותם גם כשהטלפון במצב שקט או כשמצב ריכוז פעיל.",
+  "\"Vakti kıldım\"": "התפללתי",
+  "\"Kıble\"": "קיבלה"
 }

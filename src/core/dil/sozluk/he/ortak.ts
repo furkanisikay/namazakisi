@@ -1,15 +1,14 @@
-// ÇEVİRİ: he — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'המשך',
+  vazgecin: 'ביטול',
+  kapatin: 'סגירה',
+  ayarlariAcin: 'פתיחת ההגדרות',
+  simdilikGecin: 'דילוג בינתיים',
+  tekrarDeneyin: 'ניסיון חוזר',
+  evet: 'כן',
+  hayir: 'לא',
+  ayrintilariAcar: 'פותח את הפרטים',
   marka: 'Namaz Akışı',
 };

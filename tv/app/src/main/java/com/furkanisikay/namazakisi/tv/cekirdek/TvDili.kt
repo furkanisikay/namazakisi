@@ -3364,29 +3364,30 @@ object TvDiliKm : TvDili {
     override val iftaraKalan = "ពេលនៅសល់ដល់ស្រាយបួស"
 }
 
-// ÇEVİRİ: he
+// he
 // CLDR he: one = 1, two = 2, other (JS `cogul.ts > ibranice`; tam sayı); İbrani harfli, SAĞDAN SOLA; Android kaynağı `values-iw`.
+// İbrani harfleri Kotlin'de tanımlayıcı karakteridir: şablonda "${ad}" (süslü parantezli) yazılır. Tarih CLDR "5 בנובמבר 2026" (JS `he/tarih.ts`).
 object TvDiliHe : TvDili {
     override val kod = "he"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
-        Vakit.IMSAK -> "Fajr"
-        Vakit.GUNES -> "Sunrise"
-        Vakit.OGLE -> "Dhuhr"
-        Vakit.IKINDI -> "Asr"
-        Vakit.AKSAM -> "Maghrib"
-        Vakit.YATSI -> "Isha"
+        Vakit.IMSAK -> "פג'ר"
+        Vakit.GUNES -> "זריחה"
+        Vakit.OGLE -> "זוהר"
+        Vakit.IKINDI -> "עצר"
+        Vakit.AKSAM -> "מגרב"
+        Vakit.YATSI -> "עשאא"
     }
-    override val cuma = "Jumu'ah"
+    override val cuma = "ג'ומעה"
     override val aylar = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
+        "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר",
     )
-    override val gunler = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
+    override val gunler = listOf("יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "שבת", "יום ראשון")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "${gunAdi}, ${gun} ב${ay} ${yil}"
 
-    override val birimSa = "h"
-    override val birimDk = "min"
-    override val birimSn = "s"
+    override val birimSa = "שע׳"
+    override val birimDk = "דק׳"
+    override val birimSn = "שנ׳"
     override val birimAyirici = " "
     override val parcaAyirici = " "
     /** CLDR he (JS `cogul.ts > ibranice`; tam sayı). */
@@ -3399,35 +3400,36 @@ object TvDiliHe : TvDili {
     }
 
     override fun saatSesli(n: Int) = when (cogulKategorisi(n)) {
-        "one" -> "$n hour"
-        "two" -> "$n hours"
-        else -> "$n hours"
+        "one" -> "${n} שעה"
+        "two" -> "שעתיים"
+        else -> "${n} שעות"
     }
+    // Dakikanın her biçimi sayıyla başlar (JS `he/sure.ts` ile aynı).
     override fun dakikaSesli(n: Int) = when (cogulKategorisi(n)) {
-        "one" -> "$n minute"
-        "two" -> "$n minutes"
-        else -> "$n minutes"
+        "one" -> "${n} דקה"
+        "two" -> "${n} דקות"
+        else -> "${n} דקות"
     }
-    override val birDakikadanAz = "less than 1 minute"
+    override val birDakikadanAz = "פחות מדקה"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Sunrise"
-        Kerahat.Tur.ISTIVA -> "Zenith"
-        Kerahat.Tur.GURUB -> "Sunset"
+        Kerahat.Tur.SURUK -> "זריחה"
+        Kerahat.Tur.ISTIVA -> "צהריים"
+        Kerahat.Tur.GURUB -> "שקיעה"
     }
 
     override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Praying is makruh until the sun has risen well."
-        Kerahat.Tur.ISTIVA -> "Praying is makruh while the sun is at its zenith."
-        Kerahat.Tur.GURUB -> "Praying is makruh while the sun is setting."
+        Kerahat.Tur.SURUK -> "מכרוה להתפלל עד שהשמש תעלה היטב."
+        Kerahat.Tur.ISTIVA -> "מכרוה להתפלל כשהשמש בשיאה."
+        Kerahat.Tur.GURUB -> "מכרוה להתפלל בזמן שהשמש שוקעת."
     }
 
-    override fun bant(ad: String, dk: Long) = "Time for $ad is running short · $dk min"
-    override val kabulDuasi = "May Allah accept it"
-    override val iftarSelami = "Blessed iftar"
-    override val cumaSelami = "Jumu'ah Mubarak"
-    override val sahuraKalan = "Time left for suhoor"
-    override val iftaraKalan = "Time left until iftar"
+    override fun bant(ad: String, dk: Long) = "זמן ${ad} עומד להסתיים · ${dk} דק׳"
+    override val kabulDuasi = "אללה יקבל"
+    override val iftarSelami = "אפטאר מבורך"
+    override val cumaSelami = "יום ג'ומעה מבורך"
+    override val sahuraKalan = "הזמן שנותר לסחור"
+    override val iftaraKalan = "הזמן שנותר עד האפטאר"
 }
 
 // ka — Gürcüce (beta); terimler src/core/dil/sozluk/ka

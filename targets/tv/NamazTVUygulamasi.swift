@@ -1024,19 +1024,19 @@ struct TvArayuzMetinleri {
         siradakiEk: " សឡាតបន្ទាប់"
     )
 
-    // ÇEVİRİ: he
+    // he
     static let he = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "בחרו את המחוז",
+        ilMerkezi: "זמני התפילה מחושבים לפי מרכז המחוז. אפשר לשנות את הבחירה מאוחר יותר.",
+        ilSecErisim: "{il}, בחירה",
+        kalan: "הזמן שנותר עד {ad}",
+        kalanErisim: "הזמן שנותר עד {ad}: {sure}",
+        konumuDegistirin: "שינוי המיקום",
+        kerahatSuruyor: "זמן מכרוה: {tur}, מסתיים ב-{bitis}. {aciklama}",
+        siradakiKerahat: "זמן המכרוה הבא: {tur} {bas}–{bit}",
+        cumaBilgisi: "היום יום שישי. תפילת ג'ומעה מתקיימת בזמן זוהר (מתחיל ב-{giris}).",
+        suAnkiEk: ", התפילה הנוכחית",
+        siradakiEk: ", התפילה הבאה"
     )
 
     // ka — Gürcüce (beta); terimler src/core/dil/sozluk/ka

@@ -1026,17 +1026,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: he (CLDR he: binlik ayırıcı ",")
+    // he (CLDR he: binlik ayırıcı ","; Kâbe "הכעבה", JS `he/kible.ts`)
     public static let he = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "מאחוריכם",
+        saga: "ימינה {derece}°",
+        sola: "שמאלה {derece}°",
+        hizali: "אתם פונים לכיוון הקיבלה",
+        arkadaErisim: "הקיבלה מאחוריכם",
+        sagdaErisim: "הקיבלה {derece} מעלות מימינכם",
+        soldaErisim: "הקיבלה {derece} מעלות משמאלכם",
+        kabede: "אתם בכעבה",
+        mesafe: "{km} ק״מ",
         binlikAyirici: ","
     )
 

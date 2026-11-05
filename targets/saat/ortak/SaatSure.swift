@@ -580,12 +580,13 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: he (one/two/other)
+    // he (one/two/other; CLDR he kısa birimler). Her kalıp "{n}" taşır (test §15b): JS'in sayısız
+    // ikilik biçimi ("שעתיים") yerine `two` sayılı çoğul.
     public static let he = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "two": "{n} hours", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "two": "{n} minutes", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "two": "{n} seconds", "other": "{n} seconds"],
+        birimSa: "שע׳", birimDk: "דק׳", birimSn: "שנ׳",
+        saat: ["one": "{n} שעה", "two": "{n} שעות", "other": "{n} שעות"],
+        dakika: ["one": "{n} דקה", "two": "{n} דקות", "other": "{n} דקות"],
+        saniye: ["one": "{n} שנייה", "two": "{n} שניות", "other": "{n} שניות"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

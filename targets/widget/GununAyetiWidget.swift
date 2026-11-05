@@ -935,18 +935,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.4"
     )
 
-    // ÇEVİRİ: he
+    // he — JS `sozluk/he/gununAyeti.ts`; meal 94:6 `gununAyetiHavuzu.ts` (hebrew_darussalam, BİREBİR)
     static let he = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "פסוק היום",
+        galeriAciklama: "פסוק ותרגומו, מתחדש בכל יום בפג'ר.",
+        etiket: "פסוק היום",
+        uygulamayiAcin: "פתחו את האפליקציה כדי לראות את פסוק היום",
+        ornekSigmiyor: "הפסוק של היום לא נכנס בגודל הזה. הקישו כדי לקרוא.",
+        ornekAcin: "פתיחה",
+        ornekArapcaKaynagi: "ערבית: Tanzil",
+        ornekMeal: "אכן, לאחר המצוקה תבוא הרווחה.",
+        ornekKisaKunye: "הקוראן 94:6",
+        ornekMealKaynagi: "Darussalam Association, QuranEnc 1.0.3"
     )
 
     // ka — Gürcüce (beta); meal QuranEnc georgian_rwwad 1.0.7 (gununAyetiHavuzu ile aynı)

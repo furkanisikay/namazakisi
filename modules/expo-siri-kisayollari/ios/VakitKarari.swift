@@ -2064,31 +2064,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "បើកកម្មវិធី"
     )
 
-    // ÇEVİRİ: he
+    // he
     public static let he = VakitMetinleri(
         dil: "he",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "פג'ר", "ogle": "זוהר", "ikindi": "עצר", "aksam": "מגרב", "yatsi": "עשאא"],
+        gunes: "זריחה",
+        konumYok: "כדי לחשב את זמני התפילה, פתחו את האפליקציה והגדירו את המיקום.",
+        veriEski: "זמני התפילה לא מעודכנים. פתחו את האפליקציה פעם אחת כדי לעדכן.",
+        girisBugun: "בשעה {saat}",
+        girisYarin: "מחר בשעה {saat}",
+        suAnVakti: "עכשיו זמן {ad}.",
+        suAnVaktiCikis: "עכשיו זמן {ad}; הוא מסתיים בשעה {saat}.",
+        siradakiNamaz: "התפילה הבאה: {ad}, {giris}.",
+        isaretlendi: "תפילת {ad} סומנה כבוצעה. {dua}.",
+        zatenKilindi: "תפילת {ad} כבר מסומנת כבוצעה.",
+        vakitYok: "אין עכשיו תפילה לסימון.",
+        vakitYokSiradaki: "אין עכשיו תפילה לסימון. התפילה הבאה: {ad}, {giris}.",
+        onay: "לסמן את תפילת {ad} כבוצעה?",
+        vakitDegisti: "זמן התפילה השתנה, ולכן לא סומן דבר. נסו שוב.",
+        kabulDuasi: "אללה יקבל",
+        kildim: "התפללתי",
+        kilindi: "בוצעה",
+        kontrolKildim: "{ad} · התפללתי",
+        kontrolKilindi: "{ad} בוצעה",
+        kontrolVakitYok: "אין תפילה לסימון",
+        uygulamayiAcin: "פתיחת האפליקציה"
     )
 
     // ka — Gürcüce (beta); terimler src/core/dil/sozluk/ka (CekirdekMetinleri ka ile aynı)

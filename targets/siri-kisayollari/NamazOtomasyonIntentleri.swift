@@ -579,11 +579,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "ទេ វាមិនទាន់ត្រូវបានសម្គាល់ទេ។"
     )
 
-    // ÇEVİRİ: he (one/two/other)
+    // he (one/two/other)
     static let he = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "two": "{ad} begins in {n} minutes.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "זמן {ad} מתחיל בעוד {n} דקה.", "two": "זמן {ad} מתחיל בעוד {n} דקות.", "other": "זמן {ad} מתחיל בעוד {n} דקות."],
+        evetKilindi: "כן, היא מסומנת כבוצעה.",
+        hayirKilinmadi: "לא, היא עוד לא סומנה."
     )
 
     // ka (one/other; sayıdan sonra isim tekil, iki kategori aynı kalıp)

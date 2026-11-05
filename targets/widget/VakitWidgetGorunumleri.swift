@@ -1631,29 +1631,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "សម្គាល់សឡាតបច្ចុប្បន្នថាបានសឡាត។"
     )
 
-    // ÇEVİRİ: he
+    // he
     static let he = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "זמן תפילה",
+        galeriAciklama: "זמן התפילה הנוכחי, הזמן שנותר עד שהוא מסתיים וזמני התפילה של היום.",
+        veriEski: "פתחו את האפליקציה כדי לעדכן את זמני התפילה",
+        konumYok: "פתחו את האפליקציה כדי להגדיר את המיקום",
+        kilindiSiradaki: "{ad} בוצעה · {sonraki} {saat}",
+        adCikis: "{ad} · סיום {saat}",
+        siradakiAdSaat: "הבאה {ad} {saat}",
+        vaktiCikisErisim: "זמן {ad}, מסתיים ב-{saat}",
+        siradakiErisim: "הבאה {ad}, {saat}",
+        cikisSaat: "סיום {saat}",
+        bitisSaat: "סיום {saat}",
+        kilindiBaslik: "{ad} בוצעה",
+        siradaki: "הבאה",
+        siradakiAd: "הבאה {ad}",
+        kildimErisim: "התפללתי את {ad}",
+        gunSatiriKilindi: ", בוצעה",
+        bitti: "הסתיים",
+        vakitCikti: "זמן התפילה הסתיים",
+        kabulAlt: "{ad} בוצעה",
+        kontrolAdi: "התפללתי",
+        kontrolAciklama: "מסמן את התפילה הנוכחית כבוצעה."
     )
 
     // ka — Gürcüce (beta); terimler src/core/dil/sozluk/ka
