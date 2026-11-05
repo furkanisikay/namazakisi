@@ -466,11 +466,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ni wowe (wenyine) dusenga, kandi ni wowe (wenyine) twiyambaza",
       "rn": "Ni Wewe gusa twiyegereza mu vyo dukora vyose tukanagusenga, kandi ni Wewe gusa dutakambira mu gusaba imfashanyo.",
       "ln": "Yonde (Allah) tozali kobondela mpe epai nayo tozali kosenga lisalisi.",
-      "dag": "Yaa ti Duuma Naawuni) ! A ko ka ti jεmda, A mi ko sani ka ti bɔri sɔŋsim.",
+      "dag": "Yaa ti Duuma Naawuni) ! A ko ka ti jɛmda, A mi ko sani ka ti bɔri sɔŋsim.",
       "mos": "Foo Wẽnd bal la d tũuda leb n yaa Foo Wẽnd bal la d kot sõngre.",
       "aa": "Diggah nanu Ni Rabbow koo inkittosnaah Qibaada dibuk koo caglisna, nanu ni-caagiidah inkih cato koo esserra.",
       "mdh": "Seka bu (Allah) i pedsimban endu seka bu (Allah) i bangeniyan nami sa tabang.",
-      "ak": "(Awurade), Wonko ara na yε’resom Woͻ, na Wonko ara Wohͻ na yε’hwehwε mmoa.",
+      "ak": "(Awurade), Wonko ara na yɛ’resom Woɔ, na Wonko ara Wohɔ na yɛ’hwehwɛ mmoa.",
       "ceb": "Kanimo lamang kami magasimba ug Kanimo lang kami magadangop ug magapangayo ug tabang,",
       "nqo": "ߊ߲ ߧߴߌߟߋ ߟߋ߫ ߓߊ߬ߕߏ߬ ߟߊ߫ ߸ ߊ߲ ߧߴߌߟߋ ߟߋ߬ ߡߊߕߙߊ߫ ߟߊ߫"
     }
@@ -543,10 +543,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ese (yewe Muhamadi) ntuzi ko Allah afite ubwami bw’ibirere n’ubw’isi? Nta wundi murinzi cyangwa umutabazi mufite utari Allah.",
       "ln": "Boye oyebi te ete ya sôló Allah azali na bokonzi ya likolo na mabele, mpe bozali na mobateli mosusu te, mpe mosalisi te liboso ya Allah?",
       "dag": "(Yaa nyini ŋun gbilsiri tibli)! Di ni -bɔŋɔ, a bi mi ni achiika! Sagbana ayɔpɔin mini tiŋgbani yiko bela Naawuni sani? Yi (ninsalinim‟) mi ka ŋun taɣiri ya, bee ŋun yɛn sɔŋ ya, ka pa ni Naawuni.",
-      "mos": "Fo pɑ bãng tɩ Wẽnd n so Sɑɑs lɑ Tẽng Nɑɑm, lɑ yãmb pɑ tɑr zẽng sẽn pɑ Wẽnde; lɑlld bɩ sõngd ye!",
+      "mos": "Fo pa bãng tɩ Wẽnd n so Saas la Tẽng Naam, la yãmb pa tar zẽng sẽn pa Wẽnde; lalld bɩ sõngd ye!",
       "aa": "Nabiyow Diggah Yalli Qaranwaa kee Baaxö reeda-lem maaxaginnitoo? isin Yallak kalah hebeltoh Awlaytuy sin caagiida wagta mantuunuuy cateynay Yallih digaalak sin cata mantun.",
       "mdh": "Ngintu di nengka katawan i saben-sabenal na su Allah na sekanin i kigkuwan kanu pitu lapis a langit endu lupa, endu dala sa lekanu i salakaw kanu Allah a pedtuganul endu pedtabang?",
-      "ak": "Anaasε wonnim sε ͻsoro ne asaase so ahennie nyinaa wͻ Nyankopͻn, na Nyankopɔn akyi no monni okyitaafoͻ anaasε ͻboafoͻ biara?",
+      "ak": "Anaasɛ wonnim sɛ ɔsoro ne asaase so ahennie nyinaa wɔ Nyankopɔn, na Nyankopɔn akyi no monni okyitaafoɔ anaasɛ ɔboafoɔ biara?",
       "ceb": "Wala ba kamo mahibalo nga lya sa Allah (lamang) ang Gingharian sa mga langit ug sa yuta? Ug gawas Kang Allah kamo walay tigpanalipod (manluluwas) o magtatabang.",
       "nqo": "ߌ ߡߴߊ߬ ߟߐ߲߫ ߓߊ߬ ߞߏ߫ ߊߟߊ߫ ߟߋ߬ ߕߊ߫ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫؟ ߊ߬ ߣߌ߫ ߞߏ߫ ߊߟߊ߫ ߓߐ߫ ߞߐ߫ ߕߍ߫ ߸ ߢߌ߲߰ ߕߍ߫ ߊߟߎ߫ ߟߊ߫ ߘߍ߬ߡߍ߲߬ߓߊ߯ ߕߍ߫؟"
     }
@@ -617,11 +617,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "o ianareo mpino, mangataha famonjena amin’ny alàlan’ny faharetana sy ny vavaka Soalat ianareo. Tena marina fa Allah dia miaraka mandrakariva amin’ireo manam-paharetana.",
       "lg": "Abange mmwe Abakkiriza, mweyambise obugumiikiriza n'okusaala olw'okubanga mazima Allah ali wamu n'abagumiikiriza.",
       "ln": "Eh bino bandimi! Boluka lisalisi okati ya losambo mpe na koyika mpiko. Mpamba te Allah azali elongo na bakangi mitema.",
-      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni. yεlimaŋli! Bom ya sɔŋsim ni suɣulo ni jiŋli puhibu (n-zaŋ kpa yi daadiini mini yi Dunia yεla polo). Achiika! Naawuni mini suɣulonima m-be.",
-      "mos": "Yɑɑ yãmb neb nins sẽn kõ sɩd ne Wẽnde! kos-y sõngr ne sugr mɑɑneg lɑ pʋʋsgo, ɑd Wẽnd lɑgma sugrã rãmbã.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni. yɛlimaŋli! Bom ya sɔŋsim ni suɣulo ni jiŋli puhibu (n-zaŋ kpa yi daadiini mini yi Dunia yɛla polo). Achiika! Naawuni mini suɣulonima m-be.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! kos-y sõngr ne sugr maaneg la pʋʋsgo, ad Wẽnd lagma sugrã rãmbã.",
       "aa": "Yeemeneh yan maraw Addunyaay Akeerä caagidil inkih Yallak cato Sabrii kee Salaatal essera, Diggah Yalli catoo kee dacayrih yasbire mará luk yanik.",
       "mdh": "Hay sekanu a manga bamalityala (bamangimbenal)! Patabang kanu (sa Allah) sa ukit na katigkel endu kadsambayang, saben-sabenal na su Allah na salta kanu manga matigkel.",
-      "ak": "Mo a moagye adie, monfa aboterε ne mpaebͻ nhwehwε mmoa (wͻ Nyankopͻn hͻ); nokorε sε Nyankopͻn ka aboterεfoͻ no ho.",
+      "ak": "Mo a moagye adie, monfa aboterɛ ne mpaebɔ nhwehwɛ mmoa (wɔ Nyankopɔn hɔ); nokorɛ sɛ Nyankopɔn ka aboterɛfoɔ no ho.",
       "ceb": "Oh mga magtutuo, pangitaa ang tabang pinaagi sa pagpailub ug pag-ampo. Sa pagkatinuod, ang Allah anaa uban sa mga mapailubon.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߯ ߘߍ߲߬ߡߍ߲߬ߠߌ߲߬ߢߌߣߌ߲ ߞߍ߫ ߡߎ߬ߢߎ߲ ߣߌ߫ ߛߊߟߌ ߞߊ߲߬ ߘߋ߬ ߸ ߓߊ ߊߟߊ߯ ߡߎ߬ߢߎ߲߬ߓߊ߮ ߟߎ߫ ߟߋ߫ ߝߍ߬"
     }
@@ -691,9 +691,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Yemwe bantu! Nimurye mu biri ku isi byaziruwe kandi byiza, ntimuzanakurikire inzira za Shitani. Mu by’ukuri, yo ni umwanzi wanyu ugaragara.",
       "ln": "Eh Bino bato! bolia biye bizali na mabele, biye bizali malamu mpe bilingisami mpona bino, kasi bolanda banzela ya satana te, pamba te azali monguna na bino ya polele.",
       "dag": "Yaa yinim’ ninsalinima! Dim ya din be tiŋgbani yaaŋa zuɣu ka nyɛla halalsi ni kasi n-tin ya, ka miri ya ka yi doli shintaŋ napɔŋboba. Achiika! O (shintaŋ) nyɛla dima n-tin ya polo ni.",
-      "mos": "Yɑɑ yãmb ɑ nebɑ! rɩ-y sẽn be tẽngã zug n yɑɑ Hɑlɑɑl n yɑɑ Yɩlgemdã lɑ y rɑ pʋg ɑ Sʋtãan nɑo ye, ɑd ɑ yɑɑ bε sẽn yɑɑ vẽenegɑ ne yãmbɑ.",
+      "mos": "Yaa yãmb a neba! rɩ-y sẽn be tẽngã zug n yaa Halaal n yaa Yɩlgemdã la y ra pʋg a Sʋtãan nao ye, ad a yaa bɛ sẽn yaa vẽenega ne yãmba.",
       "mdh": "Hay sekanu a manga taw! Kan kanu kanu nganin sya kanu lupa sa halal a mapya, endu di nu bagunuti i manga sangkad nu manga shaytan, saben-sabenal na su shaytan na satru nu a mapayag.",
-      "ak": "Adasamma, moni deε εwͻ asaase so a εkwan wͻ ho, na εyε (anaasε εho teε); na monhwε yie na moanni ͻbonsam anamͻn akyi, nokorε sε ͻyε motamfo a ͻda adi pefee.",
+      "ak": "Adasamma, moni deɛ ɛwɔ asaase so a ɛkwan wɔ ho, na ɛyɛ (anaasɛ ɛho teɛ); na monhwɛ yie na moanni ɔbonsam anamɔn akyi, nokorɛ sɛ ɔyɛ motamfo a ɔda adi pefee.",
       "ceb": "O katawhan, kaon sa mga gikatugot ug mga maayo sa unsay anaa sa kayutaan, ug ayaw ninyo sunda ang mga tunob (mga paagi) ni Satanas; Sa pagkatinuod siya usa ka dayag nga kaaway nganha kaninyo.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߡߐ߱ ߟߎ߬ ߸ ߊߟߎ߫ ߦߋ߫ ߘߎ߰ߞߟߏ ߞߊ߲߬ ߝߋ߲߫ ߘߤߊ߬ߣߍ߲߬ ߢߌߡߊ ߓߍ߯ ߘߏ߫ ߘߊߥߎ߲߫ ߸ ߊߟߎ߫ ߞߣߊ߫ ߜߍ߬ߘߍ ߜߋ߬ߙߋ ߟߎ߫ ߟߋ߬ ߟߊߓߊ߬ߕߏ߬، ߓߊ ߏ߬ ߦߋ߫ ߊߟߎ߫ ߖߎ߯ ߘߐߜߍ ߟߋ߬ ߘߌ߫"
     }
@@ -766,10 +766,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Yemwe abemeye! Murye mu byiza twabafunguriye kandi mushimire Allah niba koko ari We wenyine musenga.",
       "rn": "Emwe bemeramana! Nimurye mu vyiza Twabafunguriye, muheze mushimire vy’ukuri Imana Allah ku nema zayo nimwaba koko ari Yo gusa mwiyegereza mu vyo mukora vyose mukanayisenga.",
       "ln": "Eh bino baye bondima! bolia biloko ya malamu biye topesaki bino, mpe botondo Allah soki ya sôló bozali kobondela ye.",
-      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Dim ya bindirisuŋ shɛŋa Ti (Tinim’ Naawuni) ni largi ya puuni, ka paɣi ya Naawuni, di yi shiri nyɛla Ŋuna (Naawuni) ka yi jɛmda.",
-      "mos": "Yɑɑ yãmb sẽn kõ-b sɩdɑ! rɩ-y bõn-yɩlmɑ tõnd sẽn rɩlg yãmbã lɑ y pʋʋs Wẽnd bɑrk tɩ sã n yɑɑ Yẽ lɑ y tũudã.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Dim ya bindirisuŋ shɛŋa Ti (Tinim’ Naawuni) ni largi ya puuni, ka paɣi ya Naawuni, di yi shiri nyɛla Ŋuna (Naawuni) ka yi jɛmda.",
+      "mos": "Yaa yãmb sẽn kõ-b sɩda! rɩ-y bõn-yɩlma tõnd sẽn rɩlg yãmbã la y pʋʋs Wẽnd bark tɩ sã n yaa Yẽ la y tũudã.",
       "mdh": "Hay sekanu a manga namalityala (namangimbenal): kan kanu ebpun kanu manga mapya a nganin a inirizki nami sa lekanu endu edsukur kanu sa kanu Allah amayka ya nu kaaden i sekanin i padsimban nu.",
-      "ak": "Mo a moagye adie, monidi mfiri nnepa a yεde abͻ mo akͻnhoma no mu, na monfa aseda ma Nyankopͻn, sε Ɔno mmom na moresom no ampa a.",
+      "ak": "Mo a moagye adie, monidi mfiri nnepa a yɛde abɔ mo akɔnhoma no mu, na monfa aseda ma Nyankopɔn, sɛ Ɔno mmom na moresom no ampa a.",
       "ceb": "Oh mga magtutuo, kaon kamo sa mga maayong butang nga Among gihatag kaninyo, ug pagpasalamat sa Allah, kun Siya (lamang) mao ang inyong ginasimba.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߯ ߝߋ߲߫ ߢߌߡߊ ߟߎ߬ ߘߏ߫ ߘߊߥߎ߲߫ ߊ߲ ߞߵߊߟߎ߫ ߤߊ߬ߙߌ߬ߖߍ߰ ߡߍ߲ ߠߎ߬ ߟߊ߫߸ ߊ߬ ߣߴߊߟߎ߯ ߞߏߢߌߡߊߟߐ߲ ߞߍ߫ ߊߟߊ߫ ߦߋ߫ ߣߴߊߟߎ߫ ߦߋ߫ ߓߊ߬ߕߏ ߞߍ߫ ߟߴߊ߬ߟߋ ߟߋ߬ ߦߋ߫"
     }
@@ -835,10 +835,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe Abakkiriza, muyingire mu Busiraamu muggweeremu. Temugobereranga makubo ga Sitaane, mazima yye mulabe wa mmwe owoolwatu.",
       "rw": "Yemwe abemeye! Nimwinjire mu buyisilamu nyabyo (mwubahiriza amategeko n’amabwiriza byabwo), kandi ntimuzakurikire inzira za Shitani. Mu by’ukuri, ni umwanzi wanyu ugaragara.",
       "ln": "Eh bino baye bondima! bokota mobimba o nzela ya islamu, mpe bolanda nzela ya satana te, ya sôló ye azali monguna wa bino ya polele.",
-      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Kpεm ya Muslinsi daadiini puuni zaasa, ka miri ya ka yi doli shintaŋ napɔmboba. Achiika! O nyɛla dima n-tin ya polo ni.",
-      "mos": "Yɑɑ yãmbɑ sɩd-kõtbɑ! kẽ-y Dĩinã zãngɑ, lɑ y rɑ pʋg ɑ sʋtãan nɑo ye, ɑd ɑ yɑɑ bε sẽn yɑɑ vẽeneg ne yãmbɑ.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Kpɛm ya Muslinsi daadiini puuni zaasa, ka miri ya ka yi doli shintaŋ napɔmboba. Achiika! O nyɛla dima n-tin ya polo ni.",
+      "mos": "Yaa yãmba sɩd-kõtba! kẽ-y Dĩinã zãnga, la y ra pʋg a sʋtãan nao ye, ad a yaa bɛ sẽn yaa vẽeneg ne yãmba.",
       "mdh": "Hay sekanu a manga bamalityala (bamangimbenal)! Ludep kanu sa Islam sa langun, endu di nu munuti su manga sangkad nu Shaytan, saben-sabenal na sekanin sa lekanu na satru a mapayag.",
-      "ak": "Mo a moagye adie, monfa moakoma nyinaa nwura Islam mu, na monhwε yie na moanni ͻbonsam anamͻn akyi. Nokorε sε ͻyε motamfo a ͻda adi pefee.",
+      "ak": "Mo a moagye adie, monfa moakoma nyinaa nwura Islam mu, na monhwɛ yie na moanni ɔbonsam anamɔn akyi. Nokorɛ sɛ ɔyɛ motamfo a ɔda adi pefee.",
       "ceb": "Oh mga magtutuo, sulod kamo sa Islam sa kinatibuk-an niini, ug ayaw kamo pagsunod sa mga lakang ni Satanas, sa pagkatinuod siya alang kaninyo usa ka dayag nga kaaway.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߋ߫ ߓߍ߯ ߘߏ߲߬ ߖߐ (ߢߐ߲߯ߞߟߍߓߊߟߌߦߊ) ߘߐ߫ ߞߐߘߍ߫ ߸ ߊߟߎ߫ ߞߊߣߊ߬ ߢߌߣߌ߲߫ ߜߍ߬ߘߍ ߜߋ߬ߙߋ ߟߎ߫ ߡߊ߬ ( ߘߓߌ߬ߘߐ߬ߦߊ ߞߟߍ߬ߘߐ߬ߞߏ ߟߎ߬ ߟߊߥߌ߬ߟߌ ߘߐ߫)߸ ߓߊ ߏ߬ ߦߴߊߟߎ߫ ߖߎ߯ ߘߐߜߍ ߟߋ߬ ߘߌ߫"
     }
@@ -907,10 +907,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Ekigambo eky'obuntubulamu n'okusonyiwa ky'ekirungi okusinga saddaaka egoberezebwako ebigambo ebikosa, bulijjo Allah si mwetaavu (era) Waakisa kingi.",
       "rw": "Imvugo nziza ndetse n’imbabazi biruta ituro rikurikijwe inabi, kandi Allah ni Uwihagije, Udahubuka.",
       "ln": "Liloba ya kitoko mpe bolimbisi, ezali malamu koleka likabo liye lilandisami na liloba ya mabe. Allah azali na bosenga na eloko te, mpe atonda bolamu.",
-      "dag": "Yɛltɔɣa suŋ (zilimballi) ni chεmpaŋ n-nyɛ din gari sara shɛli bɛrim ni doli di nyaaŋa. Yaha! Naawuni nyɛla Bundana, ni Suɣulolana titali.",
-      "mos": "Koεεg sẽn mɑneg lɑ yɑɑf-n-bɑse, ɑ sõmblem yɩɩdɑ doaɑg (kũuni) nɑmsg sẽn tũnugd-ɑ, lɑ Wẽnd yɑɑ Sek-m-meng Soɑbɑ n yɑɑ sugr Soɑbɑ",
+      "dag": "Yɛltɔɣa suŋ (zilimballi) ni chɛmpaŋ n-nyɛ din gari sara shɛli bɛrim ni doli di nyaaŋa. Yaha! Naawuni nyɛla Bundana, ni Suɣulolana titali.",
+      "mos": "Koɛɛg sẽn maneg la yaaf-n-base, a sõmblem yɩɩda doaag (kũuni) namsg sẽn tũnugd-a, la Wẽnd yaa Sek-m-meng Soaba n yaa sugr Soaba",
       "mdh": "Su kadtalu a mananaw endu kaampun na labi a mapya kumin kanu sadaqah a pedtundugan sekanin sa makagkayd, endu su Allah i labi a kawasa a mamelasam.",
-      "ak": "Kasa pa ne bͻnefakyε yε kyεn adͻeε a ͻhaw di akyire. Nyankopͻn deε Ɔne Otumfoͻ a Ɔde Neho na Wanya Neho a Onhia obiara biribiara, Ɔne Ntoboaseε Hene.",
+      "ak": "Kasa pa ne bɔnefakyɛ yɛ kyɛn adɔeɛ a ɔhaw di akyire. Nyankopɔn deɛ Ɔne Otumfoɔ a Ɔde Neho na Wanya Neho a Onhia obiara biribiara, Ɔne Ntoboaseɛ Hene.",
       "nqo": "ߞߊ߲߫ ߓߘߍ߫ ߝߐ ߣߌ߫ ߡߊ߬ߞߕߏ߬ߟߌ ߟߋ߬ ߦߊ߯ ߝߌ߬ߛߊ߬ ߛߘߊߞߊ߫ ( ߓߐ߫ ) ߘߌ߫ ߕߙߐߦߊ ߦߋ߫ ߡߍ߲ ߡߊߛߊ߯ߘߊ߫ ߟߊ߫، ߊߟߊ߫ ߘߏ߲߬ ߞߊ߯ߙߌߓߊ߯ ߡߎ߬ߢߎ߲߬ߓߊ߮ ߟߋ߬ ߘߌ߫"
     }
   },
@@ -964,8 +964,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "he": "השטן מבטיח לכם את העוני, ומצווה עליכם להיות מושחתים, ואילו אללה מבטיח לכם סליחה ממנו וברכה, ואללה הוא רב-אמצעים ויודע כול.",
       "lg": "Sitaane ebatiisa okwavuwala (bwe munaasaddaaka) n'ebalagira okukola ebibi so nga Allah abalagaanyisa kusonyiyibwa okuva Gy'ali nakubawa birungi. Bulijjo Allah Mugazi nnyo mu by'agaba Mumanyi nnyo.",
       "rw": "Shitani abakangisha ko (nimwitanga) muzakena, akanabategeka gukora ibibi. Naho Allah, abasezeranya imbabazi n’ingabire bimuturukaho. Kandi Allah ni Nyiringabire zagutse, Umumenyi uhebuje.",
-      "mos": "A Sʋtãɑn bugsdɑ yãmb ne tɑlemd lɑ ɑ sɑgend yãmb ne yel-beedo, lɑ Wẽnd pʋlemdɑ yãmb ne yɑɑfg sẽn yi A nengẽ lɑ kũuni, lɑ Wẽnd yɑɑ bãng yɑleng Soɑbɑ n yɑa Mitɑ.",
-      "ak": "Ɔbonsam de ohia hunahuna mo, san hyε mo ma mobͻ ahohwi bra; Onyankopͻn deε Ɔde bͻne fakyε a εwͻ Nehͻ ne adom na Ɛrehyε mo bͻ. Onyankopͻn deε N’adom so paa, Ɔne Onimdefoͻ.",
+      "mos": "A Sʋtãan bugsda yãmb ne talemd la a sagend yãmb ne yel-beedo, la Wẽnd pʋlemda yãmb ne yaafg sẽn yi A nengẽ la kũuni, la Wẽnd yaa bãng yaleng Soaba n yaa Mita.",
+      "ak": "Ɔbonsam de ohia hunahuna mo, san hyɛ mo ma mobɔ ahohwi bra; Onyankopɔn deɛ Ɔde bɔne fakyɛ a ɛwɔ Nehɔ ne adom na Ɛrehyɛ mo bɔ. Onyankopɔn deɛ N’adom so paa, Ɔne Onimdefoɔ.",
       "nqo": "ߜߍ߬ߘߍ ߦߴߊߟߎ߫ ߦߟߌߡߊߜߏߦߊ߫ ߟߊ߫ ߓߟߏߞߏߟߏ߲ߧߊ ߟߋ߬ ߟߊ߫ ߞߵߊߟߎ߫ ߟߐ߬ ߞߏߙߏ߲ߧߊ ߟߊ߫، ߊߟߊ߫ ߘߏ߲߬ ߦߴߊߟߎ߫ ߦߟߌߡߊߘߌߦߊ߫ ߟߴߊ߬ ߟߊ߫ ߡߊ߬ߞߕߏ߬ߟߌ ߣߴߊ߬ ߟߊ߫ ߢߊ߬ߒߡߊ߭ ߟߋ߬ ߟߊ߫، ߊߟߊ߫ ߘߏ߲߬ ߦߙߌߥߊߓߊ߯ ߟߐ߲ߠߌ߲ߠߊ ߟߋ߬ ߘߌ߫"
     }
   },
@@ -1016,7 +1016,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "as": "নিশ্চয় যিসকলে ঈমান আনিছে, নেক আমল কৰিছে, ছালাত প্ৰতিষ্ঠা কৰিছে আৰু যাকাত প্ৰদান কৰিছে, তেওঁলোকৰ প্ৰতিদান আছে তেওঁলোকৰ প্ৰতিপালকৰ ওচৰত; তেওঁলোকৰ কোনো ভয় নাই আৰু তেওঁলোক চিন্তিতও নহ’ব।",
       "he": "אלה אשר האמינו ועושי הטובות והקימו את התפילה ונתנו את הזכאת (צדקת חובה), להם גמולם אצל ריבונם, אין חשש לגורלם ולא ייעצבו.",
       "lt": "Tikrai, tie, kurie tiki ir daro teisingus darbus, ir atlieka As-Salat (Ikamat-as-Salat), ir duoda Zakat, - gaus atlygį pas savąjį Viešpatį. Nebus jiems baimės, anei jie liūdės.",
-      "mos": "Sẽn kõ-b sɩd lɑ b tʋm sõmã wã lɑ b duum ne pʋʋsgã lɑ b kõ zɑkã b tɑrɑ b keoor b Soɑbã nengẽ lɑ rɑbeem kɑ ne-bɑ b pɑ sãɑmd b sũy ye.",
+      "mos": "Sẽn kõ-b sɩd la b tʋm sõmã wã la b duum ne pʋʋsgã la b kõ zakã b tara b keoor b Soabã nengẽ la rabeem ka ne-ba b pa sãamd b sũy ye.",
       "nqo": "ߒ߬ߓߊ߬ ߡߍ߲ ߠߎ߬ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߸ ߞߊ߬ ߛߊߟߌ ߟߐ߬ ߞߊ߬ ߖߞߊ ߘߌ߫ ߸ ߏ߬ ߟߎ߫ ߛߊ߬ߙߊ ߟߴߊ߬ߟߎ߬ ߦߋ߫ ߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߓߘߊ߸ ߛߌߟߊ߲߫ ߕߴߏ߬ ߟߎ߬ ߟߊ߫߸ ߛߎ߬ߣߎ߲߫ ߘߏ߲߬ ߕߍ߫ ߊ߬ߟߎ߫ ߡߊ߬"
     }
   },
@@ -1091,10 +1091,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rn": "Mu vy’ukuri, ubumenyi bw’Imana Allah bukikije ibiremwa vyose, nta kintu na kimwe kw’isi canke mw’ijuru cinyegeje Imana Allah, n’aho coba akantu kanzunya.",
       "ln": "Ya sôló eloko moko te ebombami epai na Allah. Ezala na nsé to na likolo.",
       "dag": "Achiika! Naawuni, binshɛɣubi sɔɣiri ka chɛri O tiŋgbani ni, bee sagbana ni.",
-      "mos": "Ad Wẽnde bũmb pɑ solgd-A tẽngã pʋgẽ pɑ sɑɑsẽ wã.",
+      "mos": "Ad Wẽnde bũmb pa solgd-A tẽngã pʋgẽ pa saasẽ wã.",
       "aa": "Diggah Yallak Baaxol tanim kee Qaraanal taniimik tu-kaak ma- Qellitta.",
       "mdh": "Saben-sabenal na su Allah na da makapagena sa lekanin a enggaisa sya sa lupa endu sya sa langit.",
-      "ak": "Nokorε sε, biribiara nsuma Nyankopͻn wͻ asase so anaasε ͻsoro.",
+      "ak": "Nokorɛ sɛ, biribiara nsuma Nyankopɔn wɔ asase so anaasɛ ɔsoro.",
       "ceb": "Sa pagkatinuod, ang Allāh, walay matago nga butang gikan Kaniya sa kayutaan ug sa mga kalangitan.",
       "nqo": "ߊߟߊ߫ ߸ ߝߏߦߌ߬ ߕߍ߫ ߘߏ߲߰ ߠߴߊ߬ߟߋ ߡߊ߬ ߞߏߦߌ߫ ߸ ߘߎ߱ ߡߊ߬ ߥߟߊ߫ ߛߊ߲ ߘߐ߫"
     }
@@ -1168,11 +1168,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ni We ubagenera imiterere uko ashaka mukiri muri nyababyeyi. Nta yindi mana iriho ikwiye gusengwa uretse We. Ni Nyiricyubahiro bihebuje, Nyirubugenge buhambaye.",
       "rn": "Ni Yo Yonyene Ibarema mu bitereko vy’abavyeyi banyu ukuntu Ishaka. Nta mana ibwirijwe gusengwa vy’ukuri atari Yo, Nyenintsinzi-Mutaneshwa, Intungane mu vyo Ikora.",
       "ln": "Ye nde azali kopesa bino balolenge kowuta na mabumu ya bamama na bino yambo ete bobotama ndenge alingi. Nzambe mosusu azali te sé ye wa bokasi atonda bwányá.",
-      "dag": "Ŋuna (Naawuni) n-nyɛŊun tiri ya ŋmahiŋgbana (yi manim’) tolansi ni, ni Oni bɔri lishεm. Duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna. Ŋuna n-nyɛ Nyɛŋda, Yεmgoliŋgalana.",
-      "mos": "Yẽndɑ n nɑɑnd yãmb rog-wʋʋsẽ wã wɑlɑ A sẽn tʋlle, soɑb kɑ be sẽn tɩlgde rẽndɑ Yẽndɑ sẽn yɑɑ a Wilb Nɑɑbã n yɑɑ Bʋʋd-Mitã.",
+      "dag": "Ŋuna (Naawuni) n-nyɛŊun tiri ya ŋmahiŋgbana (yi manim’) tolansi ni, ni Oni bɔri lishɛm. Duuma jɛmdigu n-kani ni yɛlimaŋli naɣila Ŋuna. Ŋuna n-nyɛ Nyɛŋda, Yɛmgoliŋgalana.",
+      "mos": "Yẽnda n naand yãmb rog-wʋʋsẽ wã wala A sẽn tʋlle, soab ka be sẽn tɩlgde rẽnda Yẽnda sẽn yaa a Wilb Naabã n yaa Bʋʋd-Mitã.",
       "aa": "Yalla kinni sin inaanih maxaxal isih elle faxa innal sin gintaah weeloola Siinih taceem, kaak-sa cakkil yaqbuden Yalli mayan, Yalli mayso-li Naggaara.",
       "mdh": "Sekanin (Allah) i papebpalas sa lekanu sya kanu manga wawatan (nu manga ina) sa panun i egkahandan nin, da kadenan ya tabya sekanin a labi a mapulu a mataw.",
-      "ak": "Ɔno ne Nea Ɔnwenee mo wͻ (mo maame nom) awodeε mu sεdeε Ɔpε; awurade foforͻ biara nni hͻ gyesε Ɔno nko ara, Ɔne Otumfoͻ no a Otumi ade nyinaa yε, na Ɔne Onyansafoͻ no.",
+      "ak": "Ɔno ne Nea Ɔnwenee mo wɔ (mo maame nom) awodeɛ mu sɛdeɛ Ɔpɛ; awurade foforɔ biara nni hɔ gyesɛ Ɔno nko ara, Ɔne Otumfoɔ no a Otumi ade nyinaa yɛ, na Ɔne Onyansafoɔ no.",
       "ceb": "Siya Mao ang Naghulma kaninyo sulod sa mga sabakan sumala sa Iyang pagbuot; walay dios (nga angayan simbahon) gawas Kaniya, ang Hingpit nga Gamhanan, ang Hingpit nga Maalam.",
       "nqo": "ߊ߬ߟߋ ߟߵߊߟߎ߫ ߝߊ߬ߘߌ߬ߡߦߊ߬ ߟߊ߫ ߘߋ߲ߛߏ ߟߎ߬ ߘߐ߫ ߊ߬ ߢߣߊ߫ ߢߊ ߡߊ߬ ( ߦߌߟߡߊ ߟߎ߬ ߘߐ߫ )، ߡߊ߰ߙߌ߬ ߛߌ߫ ߕߴߊ߬ߟߋ߬ ߞߐ߫، ߣߌ߬ߣߌ߬ߟߊ߫ ߟߋ߬ ߥߘߋ߬ߥߘߋ߬ߟߌ߬ߟߊ߫ ߟߋ߬"
     }
@@ -1238,7 +1238,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "dag": "Achiika! Tuuli yili shɛli bɛ ni zaŋ zali ninsalinima (Naawuni jɛma zuɣu) n-nyɛ din be Makka la (Ka’aba), ka di nyɛla albarika shee, ka nyɛ dolsigu n-zaŋ ti binnamda.",
       "mos": "Ad rãeenem roog b sẽn ning nebã yĩnga, yaa sẽn be Bakatã (Makã), tɩ bark be be, n leb n yaa kãndgr ne bõn-naandsã.",
       "mdh": "Saben-sabenal na ya paganay a walay a inibetad kanu manga taw na su lu sa Makkah a barakat endu tutulu kanu sakalyan alam.",
-      "ak": "Nokorε sε, (Nyamesom) Fie a edikan a yεde sii hͻ maa adasamma ne deε εwͻ Bakata (Maka) no; εyε nhyira ne tenenee dema amansan nyinaa.",
+      "ak": "Nokorɛ sɛ, (Nyamesom) Fie a edikan a yɛde sii hɔ maa adasamma ne deɛ ɛwɔ Bakata (Maka) no; ɛyɛ nhyira ne tenenee dema amansan nyinaa.",
       "ceb": "Ang unang balay (sa pagsimba) nga gikatudlo alang sa katawhan mao ang Bakkah (Makkah), nga Gipanalanginan, ug usa ka Giya alang sa tanang kanasuran.",
       "nqo": "ߞߏ߬ߞߏ߫ ߓߏ߲߫ ߝߟߐ ߡߍ߲ ߟߐ߬ ߘߊ߫ ߡߐ߱ ߟߎ߬ ߦߋ߫ ߏ߬ ߟߋ ߓߞߊ߫ ߕߊ ߘߌ߫، ߓߊ߲ߓߊ߲߫ ߦߙߐ ߟߋ߬ ߸ ߊ߬ ߣߌ߫ ߞߊ߲ߘߦߊ߫ ߦߙߐ ߟߋ߬ ߖߊ߯ߓߊ ߟߎ߬ ߦߋ߫"
     }
@@ -1311,11 +1311,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe Abakkiriza mutye Allah mu butuufu bw'okumutya era temufanga okuggyako nga muli Basiraamu.",
       "rw": "Yemwe abemeye! Nimungandukire Allah uko bikwiye, kandi ntimuzapfe mutari Abayisilamu (nyakuri).",
       "ln": "Eh bino baye bondimi! Bobanga Allah bobangi ya sôló, mpe liwa ekuta bino te sé bozali Na kati ya komisokia.",
-      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Zom ya Naawuni zobu ni yɛlimaŋli, ka miri ya ka yi kpi naɣila yi nyɛla Muslinnima.",
-      "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! zoe-y Wẽnde, A zoees tεkẽ, la y ra wa ki, rẽndame tɩ y yaa sak-n-tũ rãmba;",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Zom ya Naawuni zobu ni yɛlimaŋli, ka miri ya ka yi kpi naɣila yi nyɛla Muslinnima.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! zoe-y Wẽnde, A zoees tɛkẽ, la y ra wa ki, rẽndame tɩ y yaa sak-n-tũ rãmba;",
       "aa": "Yeemeneh yan maraw Yallak Nummâ meesih meesitaay marabina isin muslimiinih Anuk Rabtan sin Akke waytek.",
       "mdh": "Hay sekanu a namalityala (namangimbenal)! Ikagilek nu su Allah sa tidtu a gilek sa lekanin, endu di kanu den a benal matay ya tabya na sekanu na namedsangkup.",
-      "ak": "Mo a moagye adie, monsuro Nyankopͻn sεdeε Ɔfata sε yesuro no kͻpem biara; na monhwε yie na moanwu gyesε moyε Muslimifoͻ.",
+      "ak": "Mo a moagye adie, monsuro Nyankopɔn sɛdeɛ Ɔfata sɛ yesuro no kɔpem biara; na monhwɛ yie na moanwu gyesɛ moyɛ Muslimifoɔ.",
       "ceb": "Oh mga magtutuo, kahadloki ninyo ang Allah, uban sa labing tinuod nga pagkahadlok nga angay Kaniya; ug ayaw kamo kamatay gawas nga kamo mga Muslim (nagpasakop sa Kabubut-on sa Diyos).",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬ ߝߊ߲ߕߊ߲ߞߊߢߊ ߕߌ߯ߕߌ߮ ߟߊ߫، ߊߟߎ߫ ߞߣߊ߫ ߛߊ߬ ߝߋߎ߫ ߝߏ߫ ߊߟߎ߫ ߖߘߍ߬ߞߟߏ߬ߦߊ߬ߓߊ߰ߟߊ߬ߡߊ"
     }
@@ -1390,11 +1390,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Kandi ibiri mu birere n’ibiri mu isi ni ibya Allah, ndetse kwa Allah ni ho ibintu byose bizasubizwa.",
       "rn": "Imana Allah ni na Yo Rugaba Igaba Ikaganza ibiri mu majuru n’ibiri mw’isi n’ibiri hagati yavyo. Kandi rero ibiremwa vyose bizosubira kuri Yo kugira Ihembe kimwe cose ku rugero rw’ibigikwiye.",
       "ln": "Mpe manso mazali olikolo mpe na nsé mazali ya Allah. Mpe Epai na Allah Makambo manso makozongisama.",
-      "dag": "Yaha! Naawuni n-nyɛŊun su din be sagbana ni, ni din be tiŋgbani ni. Yaha! Naawuni sani ka bɛ yɛn ti labsi yεllikam (Zaadali).",
-      "mos": "Lɑ Wẽnd n so sẽn be sɑɑsẽ lɑ tẽngẽ, lɑ yɑɑ Wẽnd nengẽ lɑ yεlã lebdɑ.",
+      "dag": "Yaha! Naawuni n-nyɛŊun su din be sagbana ni, ni din be tiŋgbani ni. Yaha! Naawuni sani ka bɛ yɛn ti labsi yɛllikam (Zaadali).",
+      "mos": "La Wẽnd n so sẽn be saasẽ la tẽngẽ, la yaa Wẽnd nengẽ la yɛlã lebda.",
       "aa": "Yalli Qaranwal tanim kee Baaxö Bagul tanim dibuk usuk leeh ginö caagiida inkih Yallâ fanah gacsimta.",
       "mdh": "Endu kanu Allah su nganin a sya kanu manga langit endu su nganin a sya kanu lupa endu lu kanu Allah makambalingan su manga galebekan.",
-      "ak": "Nyankopͻn na deε εwͻ soro ne deε εwͻ asaase so (nyinaa) yε Nedea. Nyankopͻn hͻ na nsεm no nyinaa san kͻ.",
+      "ak": "Nyankopɔn na deɛ ɛwɔ soro ne deɛ ɛwɔ asaase so (nyinaa) yɛ Nedea. Nyankopɔn hɔ na nsɛm no nyinaa san kɔ.",
       "ceb": "Iya sa Allāh ang bisan unsa nga anaa sa mga langit, ug ang tanan nga anaa sa yuta; ug ngadto sa Allāh ang tanang butang igabalik (alang sa paghukom).",
       "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߞߣߐ߫ ߝߋ߲ ߠߎ߬ ߘߌ߫ ߸ ߊ߬ ߣߌ߫ ߘߎ߱ ߞߣߐ߫ ߝߋ߲ ߠߎ߬، ߞߏ ߟߎ߫ ߘߏ߲߬ ߟߊߛߊ߬ߦߌ߬ߕߐ߫ ߊߟߊ߫ ߟߋ߫ ߡߊ߬"
     }
@@ -1469,10 +1469,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ibi (Qur’an) ni ibisobanuro ku bantu, bikaba umuyoboro n’inyigisho ku batinyamana.",
       "rn": "Iyi Qor’ani, ni impanuro ku bantu bose bashaka kurongoka, ikaba n’uburongozi n’urwibutso ku bagamburukiramana.",
       "dag": "Ŋɔ maa nyɛla kahigibu n-zaŋ ti ninsalinima, ni dolsigu, ka di lahi nyɛ wa’azu n-ti wuntizɔriba.",
-      "mos": "Wãnde yɑɑ vẽnegr ne nebã lɑ kãndgre lɑ sɑglgɑ ne Wẽnd-zoetbã.",
+      "mos": "Wãnde yaa vẽnegr ne nebã la kãndgre la saglga ne Wẽnd-zoetbã.",
       "aa": "Tama Qhuraan Sinaamah cakki gitih Baxxaqqaay tirto, usuk Yallak meesita marah kassiisi usun kaat yantifiqeenimih Sabbatah.",
       "mdh": "Namba (su Qur’an), a pebpayag kanu manga taw, endu tutulu endu indawan kanu manga magilek.",
-      "ak": "(Qur’aan) woi yε nkyerεkyerεmu pefee dema adasamma, na εyε kwankyerε ne afutusεm dema Nyame-surofoͻ no.",
+      "ak": "(Qur’aan) woi yɛ nkyerɛkyerɛmu pefee dema adasamma, na ɛyɛ kwankyerɛ ne afutusɛm dema Nyame-surofoɔ no.",
       "nqo": "(ߡߊ߲߬ߞߕߎ߫ ߕߊ߬ߡߌ߲߬ߣߍ߲ ) ߣߌ߲߬ ߦߋ߫ ߟߊ߬ߛߋ߬ߒ߬ߞߊ߲߬ߠߊ ߟߋ߬ ߘߌ߫ ߡߐ߱ ߟߎ߫ ߡߊ߬، ߊ߬ ߣߌ߫ ߞߊ߲ߘߦߊ߫ ߣߌ߫ ߟߊ߬ߟߌ߬ߟߌ߫ ߟߋ߬ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߬ ߦߋ߫"
     }
   },
@@ -1534,10 +1534,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Allah singa abataasa teri ayinza kubawangula naye singa aba abaabulidde ani oyo ayinza okubataasa atali Yye? Allah Yekka Abakkiriza Gwe baba bassaamu obwesige.",
       "rw": "Allah aramutse abatabaye ntawabatsinda, anabatereranye ni nde wundi utari We wabatabara? Bityo, abemera bajye biringira Allah (wenyine).",
       "ln": "Soki Allah apesi bino lisungi, moko te akoki kolonga bino. Soki asundoli bino, nani mosusu sima naye akosunga bino? Epai ya Allah nde bandimi batia elikia.",
-      "dag": "Naawuni yi tin ya nasara, tɔ! So n-kani yɛn tooi nyεŋ ya. O mi yi filim ya, tɔ! So lahi kani n-yɛn tooi sɔŋ ya di nyaaŋa. Yaha! Ban ti yɛlimaŋli dalimmila Naawuni koŋko zuɣu.",
-      "mos": "Ad Wẽnd sã n sõng yãmba wind pɑ be ne yãmb ye, lɑ A sã n bɑs yãmb yɑɑ ãnd n nɑ n sõng yãmb t'A sã n yãk A toɑɑgɑ? Lɑ kõ-sɩd-rãmb bobl b mens ne Wẽnde.",
+      "dag": "Naawuni yi tin ya nasara, tɔ! So n-kani yɛn tooi nyɛŋ ya. O mi yi filim ya, tɔ! So lahi kani n-yɛn tooi sɔŋ ya di nyaaŋa. Yaha! Ban ti yɛlimaŋli dalimmila Naawuni koŋko zuɣu.",
+      "mos": "Ad Wẽnd sã n sõng yãmba wind pa be ne yãmb ye, la A sã n bas yãmb yaa ãnd n na n sõng yãmb t'A sã n yãk A toaaga? La kõ-sɩd-rãmb bobl b mens ne Wẽnde.",
       "mdh": "Amayka tabangan kanu nu Allah na da makataban sa lekanu endu amayka ibaba kanu nin na entayn san i makadtabang sa lekanu kanu ulyan nin, endu kanu Allah semalig su manga bamalityala (bamangimbenal).",
-      "ak": "Sε Nyankopͻn boa mo a, obiara ntumi nni moso nkonim, nasε Ɔpa moakyi a εneε Ɔno N’akyi hwan na ͻbεboa mo? Enti agyidiefoͻ no mfa wͻn ho nto Nyankopͻn so.",
+      "ak": "Sɛ Nyankopɔn boa mo a, obiara ntumi nni moso nkonim, nasɛ Ɔpa moakyi a ɛneɛ Ɔno N’akyi hwan na ɔbɛboa mo? Enti agyidiefoɔ no mfa wɔn ho nto Nyankopɔn so.",
       "nqo": "ߣߌ߫ ߊߟߊ߫ ߞߵߊߟߎ߫ ߘߍ߬ߡߍ߲߬ ߸ ߛߋ߫ ߕߍ߫ ߞߍ߫ ߊߟߎ߫ ߟߊ߫ ߡߎ߬ߕߎ߲߬، ߞߏ߬ߣߌ߲߬ ߣߴߊ߬ ߞߵߊߟߎ߫ ߟߊߓߌ߬ߟߊ߬߸ ߖߍߣߍ߲ ߘߴߊߟߎ߫ ߘߍ߬ߡߍ߲߫ ߊ߬ߟߋ߬ ߞߐ߫ ߛߊ߫؟ ߒ߬ߓߊ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߴߊ߬ߟߎ߫ ߛߍ߲߬ߓߍ߬ ߊߟߊ߫ ߟߋ߬ ߟߊ߫"
     }
   },
@@ -1598,10 +1598,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Allah ayagala abannyonnyole era abaluŋŋamye eri enkola y’abo abaabakulembera, era akkirize okwenenya kwa mmwe. Bulijjo Allah Mumanyi nnyo ate agoba nsonga.",
       "rw": "Allah arashaka kubagaragariza (ibyo muziruriwe n’ibyo muziririjwe) no kubayobora inzira z’abababanjirije, ndetse no kwakira ukwicuza kwanyu; kandi Allah ni Umumenyi uhebuje, Nyirubugenge buhambaye.",
       "ln": "Allah alingi kolimbolela bino, mpe alingi kokamba bino na nzela ya baye balekaki liboso na bino, mpe andima batubela na bino. Mpe Allah azali moyebi atonda bwanya.",
-      "dag": "Naawuni bɔrimi ni O kahigi ya, ka dolsi ya ninvuɣu shεba ban daa kana poi ni yinim’ maa soya, ka lahi deei yi tuuba. Yaha! Naawuni nyɛla Baŋda, Yεmgolinga lana.",
-      "mos": "Wẽnd tʋllɑme n nɑ n vẽneg yãmb lɑ A kãndg yãmb sẽn reng-b yãmb tɑoorã sor lɑ A reeg yãmb tuubgu, lɑ Wẽnd yɑɑ mitɑ, n yɑɑ Bʋʋd-Mitɑ.",
+      "dag": "Naawuni bɔrimi ni O kahigi ya, ka dolsi ya ninvuɣu shɛba ban daa kana poi ni yinim’ maa soya, ka lahi deei yi tuuba. Yaha! Naawuni nyɛla Baŋda, Yɛmgolinga lana.",
+      "mos": "Wẽnd tʋllame n na n vẽneg yãmb la A kãndg yãmb sẽn reng-b yãmb taoorã sor la A reeg yãmb tuubgu, la Wẽnd yaa mita, n yaa Bʋʋd-Mita.",
       "mdh": "Ya kalinyan nu Allah na makapayag nin sa lekanu endu matutulu kanu nin sa kanu manga lalan nu silan a nangawna sa lekanu, endu matawbat kanu nin, endu su Allah na labi a mataw a mawngangen.",
-      "ak": "Nyankopͻn pεsε Ɔkyerεkyerε (ͻsom no ho mmra) mu pefee kyerε mo, na Ɔkyerε mo wͻn a w’ͻdii moanim kan no kwan no, na Ɔgye moadwen sakra. Onyankopͻn ne Onimdefoͻ, Ɔne Onyansafoͻ",
+      "ak": "Nyankopɔn pɛsɛ Ɔkyerɛkyerɛ (ɔsom no ho mmra) mu pefee kyerɛ mo, na Ɔkyerɛ mo wɔn a w’ɔdii moanim kan no kwan no, na Ɔgye moadwen sakra. Onyankopɔn ne Onimdefoɔ, Ɔne Onyansafoɔ",
       "nqo": "ߊߟߊ߫ ߦߴߊ߬ ߝߍ߬ ߞߊ߬ ߢߊߦߌߘߊߟߌ ߟߋ߬ ߞߍ߫ ߊߟߎ߫ ߟߊ߫، ߞߵߊߟߎ߫ ߞߊ߲ߘߴߊߟߎ߫ ߢߍߓߊ߯ ( ߢߌߡߊ ߟߎ߬ ) ߟߊ߫ ߛߌߟߊ ߟߎ߫ ߡߊ߬߸ ߊ߬ ߣߌ߫ ߞߊ߬ ߖߘߍ߬ߟߊ߬ߛߊߦߌ ߡߌ߬ߘߵߊߟߎ߫ ߦߋ߫ ( ߞߐߛߊߦߌ߲ ߘߐ߫ ߏ ߡߊ߬ )، ߓߊ ߊߟߊ߫߸ ߟߐ߲ߠߌ߲ߠߊ߫ ߥߘߋ߬ߥߘߋ߬ߟߊ ߟߋ߬ ߘߌ߫"
     }
   },
@@ -1671,11 +1671,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Kandi Allah arashaka kwakira ukwicuza kwanyu, ariko ba bandi bakurikira irari ryabo bifuza ko (mwe abemera) mwatana bihambaye (mugata inzira igororotse).",
       "rn": "Imana Allah Ishaka kubumvira ukwigaya kwanyu Iheze Ibababarire, mu gihe abatwarwa n’ivyipfuzo vyabo bashaka ko muhengama cane mugata inzira y’idini;",
       "ln": "Mpe Allah alingi kondima tubela ya bino, kasi baye bazali kolanda bamposa na bango ya nzoto, bazali kolinga ete bobunga libunga moko ya monene.",
-      "dag": "Yaha! Naawuni bɔrimi ni O deei yi tuuba, ka ninvuɣu shεba ban doli Dunia kɔrsimaa mi bɔri ni yi gbilgi gbilgibu din galsi.",
-      "mos": "Lɑ Wẽnd tʋllɑme n nɑ n reeg yãmb tuubgu lɑ sẽn pʋgd-b yõor yɑmleedã tʋllɑme tɩ yãmb kɩll kɩllg tεkẽ.",
+      "dag": "Yaha! Naawuni bɔrimi ni O deei yi tuuba, ka ninvuɣu shɛba ban doli Dunia kɔrsimaa mi bɔri ni yi gbilgi gbilgibu din galsi.",
+      "mos": "La Wẽnd tʋllame n na n reeg yãmb tuubgu la sẽn pʋgd-b yõor yamleedã tʋllame tɩ yãmb kɩll kɩllg tɛkẽ.",
       "aa": "Yalli kaal gacteenik Siinil gacaah dambi siinih cabam faxa, yahuud kee Nasaarak dalwa aba maray sinni Nafsi fayxi kataata isin cakkik kaxxam daggawtaanam siinik faxan.",
       "mdh": "Endu su Allah na ya nin kalinyan na matawbat kanu nin, endu ya kalinyan nu silan a pebpatyunut sa kanu kyug na ginawa na makadsulamig kanu sa kadsulamig a masela.",
-      "ak": "Nyankopͻn pεsε Ɔgye moadwen sakra, nanso wͻn a wͻ’di akͻnnͻ akyire no hwehwε sε anka mobεmane (afri kwan tenenee no so) akͻ akyirikyiri paa.",
+      "ak": "Nyankopɔn pɛsɛ Ɔgye moadwen sakra, nanso wɔn a wɔ’di akɔnnɔ akyire no hwehwɛ sɛ anka mobɛmane (afri kwan tenenee no so) akɔ akyirikyiri paa.",
       "ceb": "Ang Allah nakagusto sa pagdawat sa inyong paghinulsol, apan sila nga nagsunod (sa ilang) mga kaibog, nakagusto nga kamo (mga magtutuo) nga pagtipas sa bug-os (gikan sa Hustong Dalan sa Islam).",
       "nqo": "ߊߟߊ߫ ߦߴߊ߬ ߝߍ߬ ߞߊ߬ ߖߘߍ߬ߟߊ߬ߛߊߦߌ ߟߋ߫ ߡߌ߬ߘߵߊߟߎ߫ ߡߊ߬، ߣߋ߬ߦߌ߬ ߟߊ߬ߓߊ߬ߕߏ߬ߟߊ ߟߎ߫ ߘߏ߲߬ ߦߴߊ߬ ߝߍ߬ ߟߋ߬ ߊߟߎ߫ ߦߋ߫ ߖߍ߲߬ߞߍ߫ ߖߍ߲߬ߞߍ߬ߟߌ߬ ߝߊ߯ߙߌ ߟߊ߫"
     }
@@ -1747,10 +1747,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Bwe muneewala ebyonoono ebinene bye mugaanibwa, tujja kubasangulako ebibi ebitonotono era tubayingize mu kifo ekirungi.",
       "rw": "Nimuramuka mwirinze ibyaha bikomeye mubujijwe gukora, tuzabababarira ibyaha byanyu byoroheje, tunabinjize mu irembo ryubahitse (Ijuru).",
       "ln": "Soki bomitie mosika na masumu ya minene na maye miye bapekisi bino yango, tokoboma masumu na bino mpe tokokotisa bino na ekoteli ya malamu.",
-      "dag": "Yiyi niŋ katiŋ’ ni tuumbekara shεŋabɛ ni mɔŋdi ya,tɔ! Ti (Tinim’ Naawuni) ni nyεhi yi taya din nyɛ zaɣibihi. Yaha! Ka Ti zaŋ ya kpεhi kpɛhili shee din mali jilma (Alizanda).",
-      "mos": "Ad y sã n zãɑgd zũnuub bεdã b sẽn gɩdgd yãmb n yi wã D nɑ bɑs tɩ loog yãmb yĩngɑ y yel-wẽnsã, lɑ D kẽes-y kõom zĩig sẽn yɑɑ wɑgle.",
+      "dag": "Yiyi niŋ katiŋ’ ni tuumbekara shɛŋabɛ ni mɔŋdi ya,tɔ! Ti (Tinim’ Naawuni) ni nyɛhi yi taya din nyɛ zaɣibihi. Yaha! Ka Ti zaŋ ya kpɛhi kpɛhili shee din mali jilma (Alizanda).",
+      "mos": "Ad y sã n zãagd zũnuub bɛdã b sẽn gɩdgd yãmb n yi wã D na bas tɩ loog yãmb yĩnga y yel-wẽnsã, la D kẽes-y kõom zĩig sẽn yaa wagle.",
       "mdh": "Amayka edsanggilan nu i manga dusa a masela a ipedsapal sa lekanu na punasen nami sa lekanu su manga mawag nu endu paludepen nami sekanu sa kaludepan a mapulu (surga).",
-      "ak": "Sε motwe mo ho firi bͻne akεseε a y’abra mo no ho a, Y’εbεpepa mo bͻne afri mo so, na Yε’de mo akͻwura Animuonyam bea no mu.",
+      "ak": "Sɛ motwe mo ho firi bɔne akɛseɛ a y’abra mo no ho a, Y’ɛbɛpepa mo bɔne afri mo so, na Yɛ’de mo akɔwura Animuonyam bea no mu.",
       "ceb": "Kung kamo maglikay sa dagkong mga kasal-anan nga gidili kaninyo, Among wagtangon ang inyong ginagmay nga mga sala, ug pasudlon kamo sa usa ka Halangdon nga Pagsulod (Paraiso).",
       "nqo": "ߣߴߊߟߎ߫ ߞߵߊߟߎ߫ ߡߊߓߐ߫ ߊߟߎ ߜߍ߲ߒߡߊߞߏ ߟߎ߬ ߘߐ߫ ߓߟߋ߬ߓߟߋ ߟߎ߬ ߟߊ߫߸ ߊ߲ ߘߴߊߟߎ߫ ߖߎ߯ߡߊ߲߫ ߞߍߣߐ ߟߎ߬ ߟߊߓߋ߬ ߊߟߎ߫ ߦߋ߫، ߞߵߊߟߎ߫ ߟߊߘߏ߲߬ ߘߏ߲߬ ߦߙߐ߬ ߢߌߡߊ߫ ߝߍ߬"
     }
@@ -1818,11 +1818,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Tena marina fa I Allah dia tsy manambaka na dia mitovy amin’ny lanjan’ny atôma aza. Ary na dia asa tsara iray monja aza dia ampitomboiny avo heny izany, ary omeny valisoa lehibe avy Aminy izany.",
       "lg": "Mazima Allah talyazaamaanya wadde ekigero ky'akasekerezi, bwe kiba kirungi akikubisaamu anti bulijjo awa okuva Gy'ali empeera ennene.",
       "ln": "Ya sôló, Allah abubaka moto te na mosala naye ata moke lokola mbuma. Mpe soki ezali mosala ya malamu, (Allah) akobakisela bango mbala ebele. Mpe akopesa mbano enene kowuta epai naye.",
-      "dag": "Achiika! Naawuni bi diri zualinsi salinsaʒee pɔrlim kotomsi, amaa! Di yi nyɛla tuunviεlli, ka O (Naawuni) nabgi li, ka ti (ninsala) laara din galsi O sani.",
-      "mos": "Ad Wẽnd pɑ wẽgd bɑ sɑlensɑɑg bilgr ye, lɑ sã n yɑɑ neere A fãood-ɑ lɑme, lɑ A pɑɑs sẽn yi A nengẽ keoor sẽn yɑɑ zɩsgo.",
+      "dag": "Achiika! Naawuni bi diri zualinsi salinsaʒee pɔrlim kotomsi, amaa! Di yi nyɛla tuunviɛlli, ka O (Naawuni) nabgi li, ka ti (ninsala) laara din galsi O sani.",
+      "mos": "Ad Wẽnd pa wẽgd ba salensaag bilgr ye, la sã n yaa neere A fãood-a lame, la A paas sẽn yi A nengẽ keoor sẽn yaa zɩsgo.",
       "aa": "Diggah Yalli hebeltô num mayadluma Abiteemik Qasxuuneyti gide Qilsak takkeh gide takkeway, maqaane Qasxuuneyti gide Qilsak takkeway Yalli tet dirribisaah isi xaquk kaxxa galto kaah yacee.",
       "mdh": "Saben-sabenal na su Allah na di edsalimbut sa (apya) mana tepung, endu su amayka maaden sekanin (a mana tepung) sa mapya na takepen nin sekanin endu inggay nin ebpun sa lekanin i balas a masla.",
-      "ak": "Nokorε sε Nyankopͻn nsisi (obi) ketekete tesε aboboaa (a ani ntumi nhunu); sε papa bi (na obi bεyε a), Ɔde (n’akatua no) bͻ ho, na W’ama no akatua a efri Ne hͻ a εsom bo.",
+      "ak": "Nokorɛ sɛ Nyankopɔn nsisi (obi) ketekete tesɛ aboboaa (a ani ntumi nhunu); sɛ papa bi (na obi bɛyɛ a), Ɔde (n’akatua no) bɔ ho, na W’ama no akatua a efri Ne hɔ a ɛsom bo.",
       "nqo": "ߊߟߊ߫ ߓߊ߬߸ ߊ߬ ߕߍ߫ ߝߕߌ߫ ߖߌߘߊ߲ ߢߐ߲߰ ߕߐ߬ߢߍ߮ ߞߍ߫ ߟߊ߫، ߣߴߏ߬ ߞߍ߫ ߘߊ߫ ߢߌ߬ߡߊ ߘߌ߫ ߝߊ߲߭߸ ߊ߬ ߦߴߏ߬ ߓߊߟߌ߫ ߟߊ߫ ߟߋ߬ ߸ ߊ߬ ߣߌ߫ ߞߊ߬ ߛߙߊ߬ߓߊ ߘߌ߫ ߞߊ߬ ߝߘߴߊ߬ ߖߍ߬ߘߍ ߟߊ߫"
     }
   },
@@ -1882,10 +1882,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Allah Y'ateekeddwa okusinzibwa mu butuufu Yekka, mazima ddala agenda kubakuŋŋaanya ku Lunaku lw'Enkomerero, teruliimu kubuusabuusaa, ate bulijjo ani ayogera amazima okusinga Allah!",
       "rw": "Allah! Nta yindi mana ikwiye gusengwa mu kuri uretse We. Rwose azabakoranyiriza hamwe ku munsi w’imperuka udashidikanywaho. None se ni nde wavuga ukuri kurusha Allah?",
       "ln": "Allah, nzambe mosusu azali te sé ye. Akosangisa bino mokolo ya suka, wana ezali na tembe te, mpe nani yango aleki Allah na maloba ya bosembo?",
-      "dag": "Naawuni! Duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna. Achiika! O ni ti laɣim ya Zaadali ka zilsigu ka di puuni. Yaha! Ŋuni n­leei lahi yɛri yɛlimaŋli n-ti paai Naawuni?",
-      "mos": "Yaa Wẽnde, soɑb kɑe sẽn tũud n tɩlge rẽndɑ Yẽ, A nɑ n tigmɑ yãmb n peeg n tʋg dũni-yikr rãarã, sik kɑ be, lɑ ãnd goɑm sɩd n le yɩɩd Wẽnde?",
+      "dag": "Naawuni! Duuma jɛmdigu n-kani ni yɛlimaŋli naɣila Ŋuna. Achiika! O ni ti laɣim ya Zaadali ka zilsigu ka di puuni. Yaha! Ŋuni n­leei lahi yɛri yɛlimaŋli n-ti paai Naawuni?",
+      "mos": "Yaa Wẽnde, soab kae sẽn tũud n tɩlge rẽnda Yẽ, A na n tigma yãmb n peeg n tʋg dũni-yikr rãarã, sik ka be, la ãnd goam sɩd n le yɩɩd Wẽnde?",
       "mdh": "Su Allah, da kadenan ya tabya na sekanin, di ebplis na buligen kanu nin sa gay a mawli a dala kanduwa-duwa lun, endu entayn i labi a bantang kumin kanu Allah a bityala?",
-      "ak": "Onyankopͻn, Awurade foforͻ biara nni hͻ gyesε Ɔno nko ara. Nokorε sε Ɔbεboa moano wͻ Wusͻreε da no a akyinnyeε biara nni ho no mu; na hwan na na’sεm yε nokorε kyεn Nyankopͻn?",
+      "ak": "Onyankopɔn, Awurade foforɔ biara nni hɔ gyesɛ Ɔno nko ara. Nokorɛ sɛ Ɔbɛboa moano wɔ Wusɔreɛ da no a akyinnyeɛ biara nni ho no mu; na hwan na na’sɛm yɛ nokorɛ kyɛn Nyankopɔn?",
       "nqo": "ߊߟߊ߫߸ ߡߊ߰ߙߌ߬ ߜߘߍ߫ ߕߍ߫ ߊ߬ߟߋ߬ ߞߐ߫، ߊ߬ ߘߌߣߵߊߟߎ߫ ߟߊߘߍ߬ ߟߐ߬ߓߊ ߟߏ߲ ߘߐ߫ ߟߋ߬ ߘߍ߯ ߕߎ߲߬ߞߎ߬ߙߎ߲߬ ߛߌ߫ ߕߴߏ߬ ߘߐ߫، ߖߍߣߍ߲ ߘߏ߲߬ ߕߎ߬ߢߊ߬ ߊߟߊ߫ ߘߌ߫ ߞߎߡߊ ߘߐ߫؟"
     }
   },
@@ -1953,11 +1953,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Omuntu ayagala empeera y’okunsi, Allah y'afuga empeera y’okunsi ne ney'Enkomerero, bulijjo Allah awulira era alaba nnyo.",
       "rw": "Ushaka ibihembo byo ku isi, (azirikane ko) mu by’ukuri kwa Allah hari ibihembo by’isi n’imperuka. Kandi Allah ni Uwumva cyane, Ubona bihebuje.",
       "ln": "Moto oyo akolinga lifuta ya bomoyi ya mokili, ayeba ete lifuta ya bomoyi ya mokili na ya mokolo ya suka ezali epai na Allah. Mpe Allah azali moyoki mpe momoni.",
-      "dag": "Ninvuɣu so ŋun bɔri Dunia sanyoo, tɔ! Naawuni sani ka Dunia ni Chiyaama sanyoo be. Yaha! Naawuni nyεla Wumda, Nyara.",
-      "mos": "Sẽn dɑtɑ dũni pʋɩɩre, ɑd dũni lɑ yɑoolem-rɑɑrã rolb bee Wẽnd nengẽ, lɑ Wẽnd yɩɩme n yɑɑ Wʋmdɑ n yɑɑ Netɑ.",
+      "dag": "Ninvuɣu so ŋun bɔri Dunia sanyoo, tɔ! Naawuni sani ka Dunia ni Chiyaama sanyoo be. Yaha! Naawuni nyɛla Wumda, Nyara.",
+      "mos": "Sẽn data dũni pʋɩɩre, ad dũni la yaoolem-raarã rolb bee Wẽnd nengẽ, la Wẽnd yɩɩme n yaa Wʋmda n yaa Neta.",
       "aa": "Sinaamey Siinik Aba taamat dubuk Addunyâ galtó faxa Num, toysa Yallih xaqul Addunyâ galtoó kee Akeerâ galtó inkih tanik kaal esseritay, Yalli isi Naqoosah maxcooca yaabbi ken taamoomi yabali kinni.",
       "mdh": "Entayn i ya nin kaaden i pegkyug sa balas sa dunya na lu kanu Allah i balas sa dunya endu gay a mawli, endu ya kaaden nu Allah na labi a pakakineg a pakailay.",
-      "ak": "Obi a ͻpε wiase mu akatua no, Nyankopͻn hͻ na wiase mu akatua ne Daakye no nyinaa wͻ. Onyankopͻn na Ɔte biribiara na Ohu biribiara nso.",
+      "ak": "Obi a ɔpɛ wiase mu akatua no, Nyankopɔn hɔ na wiase mu akatua ne Daakye no nyinaa wɔ. Onyankopɔn na Ɔte biribiara na Ohu biribiara nso.",
       "ceb": "Bisan kinsa nga nagtinguha sa ganti niining kalibutana, nan anaa sa Allah ang ganti niini nga kalibutan ug sa Pikas Kinabuhi. Ang Allah mao ang Labing Makadungog, Labing Makakita.",
       "nqo": "ߡߍ߲ ߓߊ߯ ߞߍ߫ ߘߎߢߊ߫ ߛߊ߬ߙߊ ߝߍ߬ ߸ ߒ߬ߓߊ߬ ߘߎߢߊ߫ ߛߊ߬ߙߊ ߣߌ߫ ߟߊߞߌߙߊ߫ ߕߊ ߓߍ߯ ߦߋ߫ ߊߟߊ߫ ߓߟߏ߫ ߘߋ߬ ߸ ߊߟߊ߫ ߘߏ߲߬ ߡߍ߲ߠߌ߲ߠߊ߫ ߦߋߟߌߟߊ ߟߋ߬ ߘߌ߫"
     }
@@ -2022,10 +2022,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Allah tayagala kwatuukiriza kigambo kibi (ku muntu) okuggyako oyo aba alangiddwa obwereere, bulijjo Allah awulira era amanyi nnyo.",
       "rw": "Allah ntakunda (ko umuntu) yigamba ibibi yakoze mu ruhame, uretse uwarenganyijwe (ushobora kuvuga ibibi by’uwamurenganyije). Kandi Allah ni Uwumva bihebuje, Umumenyi uhebuje.",
       "ln": "Allah alingaka te basakola maloba ya mabe, sé soki na moto oyo abubami Allah azali oyo ayokaka atonda boyebi.",
-      "dag": "Naawuni bi bɔri yεltɔɣa biɛɣu polo ni yihibu, naɣila bɛ ni di so zualinsi. Yaha! Naawuni nyεla Wumda, Baŋda.",
-      "mos": "Wẽnd pɑ nong gom-beed vẽnegre, sã n pɑ b sẽn wẽg ɑ soɑbɑ, lɑ Wẽnd yɩɩme n yɑɑ wʋmd n yɑɑ mitɑ.",
+      "dag": "Naawuni bi bɔri yɛltɔɣa biɛɣu polo ni yihibu, naɣila bɛ ni di so zualinsi. Yaha! Naawuni nyɛla Wumda, Baŋda.",
+      "mos": "Wẽnd pa nong gom-beed vẽnegre, sã n pa b sẽn wẽg a soaba, la Wẽnd yɩɩme n yaa wʋmd n yaa mita.",
       "aa": "Yalli maxcoocak uma maxco fayya haanam makicni yundullume num kaa yudlume numih umaanet yaabam kaah xiqtam akke waytek, Yalli fayya heenim hinnay Ramma heenim yaabbi, Qellut Abeenim yaaxigi kinni.",
       "mdh": "Di kalinyan nu Allah i kapayag sa mawag a kadtalu, ya tabya na entayn i sinalimbut, endu ya kaaden nu Allah na labi a pakakineg a mataw.",
+      "ak": "Nyankopɔn mpɛ sɛ kasa bɔne bɛda adi wɔ badwam, gyesɛ nea obi ayɛ no bᴐne. Onyankopɔn ne Otiefoɔ a Ɔte biribiara, Ɔne Onimdefoɔ.",
       "nqo": "ߊߟߊ߫ ߕߍ߫ ߞߎߡߊߖߎ߯ ߝߐ ߜߍߘߐߕߊ ߝߍ߬ ߝߋߎ߫، ߝߏ߫ ߣߌ߫ ߡߍ߲ ߕߐ߬ߢߍ߰ߣߍ߲ ߞߍ߫ ߘߊ߫ ( ߊ߬ ߕߐ߬ߢߍ߰ ߢߊ ߘߊ߲߬ߕߍ߰ ߟߊ߫ )، ߊߟߊ߫ ߘߏ߲߬ ߦߋ߫ ߡߍ߲ߠߌ߲ߠߊ߫ ߟߐ߲ߠߌ߲ߠߊ߫ ߟߋ߬ ߘߌ߫"
     }
   },
@@ -2098,10 +2099,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Allah yalagaanyisa abo abakkiriza nebakola emirimu emirungi, nti balina ekisonyiwo nempeera ensukkulumu.",
       "rw": "Allah yasezeranyije ba bandi bemeye bakanakora ibikorwa byiza, kuzabababarira no kuzabagororera ibihembo bihambaye.",
       "ln": "Allah azali kopesa elaka na ba oyo bandimi mpe bazali kosala misala ya malamu, bazali na bolimbisi mpe lifuta linene.",
-      "dag": "Naawuni gbaai ninvuɣu shεba banti yεlimaŋli ka tum tuunsuma alikauli ni kadama bɛ mali chɛmpaŋ, ni laara din galsi (Zaadali).",
+      "dag": "Naawuni gbaai ninvuɣu shɛba banti yɛlimaŋli ka tum tuunsuma alikauli ni kadama bɛ mali chɛmpaŋ, ni laara din galsi (Zaadali).",
       "mos": "Wẽnd pʋlma sẽn kõ-b sɩdã la b tʋm sõmã wã, tɩ b tara yaafg la keoor sẽn yaa bedre.",
       "mdh": "Pibpasadan nu Allah su manga bamaginugut endu minggalebek sa manga mapya, kanilan su ampun endu balas a masla.",
-      "ak": "Nyankopͻn ahyε wͻn a wͻ’agye adie na wͻ’di dwuma pa no bͻ sε: “Wͻn wͻ bͻnefakyε ne akatua a εsoo paa”.",
+      "ak": "Nyankopɔn ahyɛ wɔn a wɔ’agye adie na wɔ’di dwuma pa no bɔ sɛ: “Wɔn wɔ bɔnefakyɛ ne akatua a ɛsoo paa”.",
       "ceb": "Si Allah nagsaad niadtong mituo ug nagbuhat og mga maayo og nga sila kapasayloan ug dakong ganti.",
       "nqo": "ߊߟߊ߫ ߓߘߊ߫ ߟߊߒߠߦߊߓߊ߯ ߢߌ߬ߡߊ߬ ߞߍ߬ߟߊ ߟߎ߬ ߦߟߌߡߊߘߌߦߊ߫ ߸ ߞߏ߫ ߡߊ߬ߞߕߏ߬ߟߌ ߣߌ߫ ߛߙߊ߬ ߓߟߋߓߟߋ ߟߴߊ߬ߟߎ߬ ߦߋ߫"
     }
@@ -2167,11 +2168,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe abakkiriza mutye Allah era munoonye ekkubo erituuka Gy'ali, era munyiikire nnyo mu kuweereza mu Kkubo lye, ekiribayamba okubeera mu balituuka ku buwanguzi (ku Lunaku lw’Enkomerero).",
       "rw": "Yemwe abemeye! Mugandukire Allah munakore ibikorwa bituma mumwiyegereza, kandi muharanire inzira ye kugira ngo mukiranuke.",
       "ln": "Eh bino bandimi! Bobanga Allah, mpe boluka kosala eloko oyo ekopusanisa bino penepene na Allah, mpe bobunda na nzela naye mpo ete bozua elonga.",
-      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawunni yεlimaŋli! Zom ya Naawuni, ka bon ya so’ shεŋa din yɛn zaŋ ya miri O. Yaha! Tuhimi ya O soli zuɣu, achiika! Yi nyɛla ban yɛn tilgi (Zaadali).",
-      "mos": "Yaa yãmb sɩd-kõtbɑ! Zoe-y Wẽnd lɑ y bɑo pẽnegr n tʋg A nengẽ lɑ y nidg pãng A sorã zugu, sãnd-sãnd y nɑ tɩlge.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawunni yɛlimaŋli! Zom ya Naawuni, ka bon ya so’ shɛŋa din yɛn zaŋ ya miri O. Yaha! Tuhimi ya O soli zuɣu, achiika! Yi nyɛla ban yɛn tilgi (Zaadali).",
+      "mos": "Yaa yãmb sɩd-kõtba! Zoe-y Wẽnd la y bao pẽnegr n tʋg A nengẽ la y nidg pãng A sorã zugu, sãnd-sãnd y na tɩlge.",
       "aa": "Yeemeneh yan maraw Yallak meesitaay kay amri oggola, Yallat sin xayyossam gurrusaay kay gital ingicilliya kay jannatal yaffoofee mara takkeenimkeh.",
       "mdh": "Hay sekanu a manga bamalityala (bamangimbenal)! Ikagilek nu su Allah endu pagapas nu i lalan a kasupeg nu sa Allah, endu en-jihad kanu sa lalan sa Allah ka malemu lemu sa lekanu i maka-untung kanu.",
-      "ak": "Mo a moagye adie, monsuro Nyankopɔn, na monhwehwε ͻkwan a εde mo bεbεn no, na momͻ moho mmɔden wͻ Ne kwan no so sεdeε mo bedi nkonim.",
+      "ak": "Mo a moagye adie, monsuro Nyankopɔn, na monhwehwɛ ɔkwan a ɛde mo bɛbɛn no, na momɔ moho mmɔden wɔ Ne kwan no so sɛdeɛ mo bedi nkonim.",
       "ceb": "Oh mga magtutuo, kahadloki ninyo ang Allah ug pangitaa ang paagi aron mahiduol Kaniya ug panlimbasog kamo ngadto sa Iyang Dalan aron kamo molampos.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬߸ ߊ߬ ߣߴߊߟߎ߫ ߦߴߊ߬ ߟߊߛߐ߬ߘߐ߲߬ ߛߌߟߊ ߢߌߣߌ߲߫ ( ߢߌ߬ߡߊ߬ ߞߍ ߟߊ߫ )߸ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߖߘߍ߬ߘߌ ߞߍ߫ ߊ߬ ߟߊ߫ ߛߌߟߊ ߞߊ߲߬ ߖߐ߲߰ߛߴߊߟߎ߫ ߘߌ߫ ߛߎߘߊ߲߫"
     }
@@ -2238,9 +2239,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Tomanyi nti mazima ddala obufuzi bw'eggulu (omusanvu) n'e nsi bwa Allah, abonereza gw'aba ayagadde ate n'asonyiwa gw'aba ayagadde, bulijjo Allah Muyinza ku buli kintu kyonna.",
       "rw": "Ese ntuzi ko Allah afite ubwami bw’ibirere n’ubw’isi? Ahana uwo ashaka akanababarira uwo ashaka. Kandi Allah ni Ushobora byose.",
       "ln": "Boye, oyebi te ete ya sôló, bokonzi bwa likolo na nsé bozali ya Allah? Apesaka etumbu na oyo alingi, mpe alimbisaka na oyo alingi? Mpe Allah azali na bokoki mpo ya biloko binso.",
-      "mos": "Fo pɑ bãng tɩ Wẽnd n so sɑɑs lɑ tẽng nɑɑmã la? N sɩbgd A sẽn tʋll ɑ soɑbɑ lɑ A yɑɑfd A sẽn tʋll ɑ soɑbɑ, lɑ Wẽnd yɑɑ tõod ne bũmbã fãɑ.",
+      "mos": "Fo pa bãng tɩ Wẽnd n so saas la tẽng naamã la? N sɩbgd A sẽn tʋll a soaba la A yaafd A sẽn tʋll a soaba, la Wẽnd yaa tõod ne bũmbã fãa.",
       "aa": "Nabiyow diggah Yalli Qaranwaa kee baaxo Reedaleeh, usuk isih faxa mara digaalaah isih faxa marah dambi cabam Maaxaginnitoo? Yalli ummaan iimih dudda-li kinni.",
-      "ak": "Wonnnim sε ͻsoro ne asaase so ahennie nyinaa wͻ Nyankopͻn? Ɔtwe obi a Ɔpε aso, εna Ɔde obi a Ɔpε nso bͻne kyε no. Onyankopͻn na Ɔwͻ biribiara so tumi.",
+      "ak": "Wonnnim sɛ ɔsoro ne asaase so ahennie nyinaa wɔ Nyankopɔn? Ɔtwe obi a Ɔpɛ aso, ɛna Ɔde obi a Ɔpɛ nso bɔne kyɛ no. Onyankopɔn na Ɔwɔ biribiara so tumi.",
       "nqo": "ߌ ߡߴߊ߬ ߟߐ߲߫ ߞߏ߫ ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫؟ ߊ߬ ߘߌ߫ ߡߐ߰ ߖߊ߲߰ߞߕߊ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫، ߊ߬ ߘߌ߫ ߡߐ߰ ߡߊߞߕߏ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫؟، ߓߊߏ߬ ߊ߬ߟߋ ߟߋ߬ ߛߋߣߍ߲߫ ߞߏ ߓߍ߯ ߟߊ߫"
     }
   },
@@ -2306,7 +2307,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Yãmb a sɩd-kõtba! Ra gɩdg-y y mens ne bõn-yɩlem-nins Wẽnd sẽn kõ sor ne yãmbã ye, la y ra zʋʋg toadg ye, ad Wẽnd ka nong maan-n-zʋʋg-rãmb ye.",
       "aa": "Yeemeneh yan maraw! Yalli meqeemik yakmeenih yaaqubeenim kee Agabuk siinih calalloysem sinnil ma- carammoysina, Yalli siinil carammoyseemit matatrina, diggah Yalli umaanet caddok tatra mara makicnik.",
       "mdh": "Hay sekanu anan a manga bamamaginugut (babay-mama)! Di nu ipedsapal su manga mapya a ini-halal nu Allah sa lekanu endu di kanu pedsupak, su Allah na benal a di nin kalilinyan su manga taw a pedsupak.",
-      "ak": "Mo a moagye adie, monhwε na moammra nnepa a yama mo ho kwan wͻ ho no, na monhwε na moanto mmra. Nokorε sε, Nyankopͻn mpε mmra tofoͻ no asεm.",
+      "ak": "Mo a moagye adie, monhwɛ na moammra nnepa a yama mo ho kwan wɔ ho no, na monhwɛ na moanto mmra. Nokorɛ sɛ, Nyankopɔn mpɛ mmra tofoɔ no asɛm.",
       "ceb": "Oh mga magtutuo, ayaw ninyo idili ang mga butang nga maayo, nga gihimo ni Allah nga gikatugot kaninyo. ug ayaw paglapas. Sa pagkatinuod, si Allāh wala mahigugma sa mga malapason.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߞߊߣߊ߬ ߝߋ߲߫ ߢߌߡߊ ߟߎ߬ ߟߊߕߣߊ߬ߡߊ߬ߦߊ߫ ߘߋ߬ ߊߟߊ߫ ߞߊ߬ ߡߍ߲ ߠߎ߬ ߟߊߘߤߵߊߟߎ߫ ߦߋ߫، ߊߟߎ߫ ߘߏ߲߬ ߞߣߊ߫ ߘߊ߲߬ߠߊ߬ߕߊߡߌ߲ ߞߍ߫ ߸ ߓߊߏ߬ ߘߊ߲߬ߠߕߊ߬ߡߌ߲߬ߠߊ ߟߎ߬ ߡߊ߲߫ ߘߌ߫ ߊߟߊ߫ ߦߋ߫"
     }
@@ -2364,9 +2365,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima ddala Sitaane eyagala okussa wakati wammwe obulabe n’obukyayi nga eyita mu mwenge ne zzaala, era ebawugule ku kutendereza Allah n’okusaala, abaffe ebikolwa ebyo munaabireka?",
       "rw": "Mu by’ukuri, Shitani ashaka kubateza ubugome n’inzangano hagati yanyu akoresheje ibisindisha n’urusimbi, akanababuza kwibuka Allah ndetse no gusali. None se ubwo ntimukwiye kubireka?",
       "ln": "Ya sôló, satana alingi kotia kati na bino koyinana mpe kosuana kowuta na masanga mpe masano ya mabe, mpe apekisa bino losambo mpe bokanisi Allah, boye bokotika yango?",
-      "dag": "Achiika! Shintaŋ bɔrimi ni o zaŋ dimli mini sujee niŋ yi sunsuuni n-zaŋ chaŋ dam nyubu mini chacha polo, ka taɣiri ya ni yi di teei Naawuni yɛla, ni jiŋli puhibu. Di ni bɔŋɔ, yi nyɛla ban yɛn chε?",
-      "mos": "Ad a Sʋtãan tʋllame n na n kẽes beem la gẽeg yãmb sʋka, rãamã la tentεεgã pʋgẽ, la a gɩd yãmb n yi Wẽnd yʋʋrã tẽegre la Pʋʋsgã, la rẽ yĩnga yãmb nɑ n basame bɩɩ?",
-      "ak": "Deε ͻbonsam pε ne sε, ͻbεfa nsa ne dehu toͻ so de ͻtan ne ahii ato montεm na w’asi mo Nyankopͻn nkaekaeε ne Nyame frε nso ho kwan, enti monntwe moho mfri (ho) anaa?",
+      "dag": "Achiika! Shintaŋ bɔrimi ni o zaŋ dimli mini sujee niŋ yi sunsuuni n-zaŋ chaŋ dam nyubu mini chacha polo, ka taɣiri ya ni yi di teei Naawuni yɛla, ni jiŋli puhibu. Di ni bɔŋɔ, yi nyɛla ban yɛn chɛ?",
+      "mos": "Ad a Sʋtãan tʋllame n na n kẽes beem la gẽeg yãmb sʋka, rãamã la tentɛɛgã pʋgẽ, la a gɩd yãmb n yi Wẽnd yʋʋrã tẽegre la Pʋʋsgã, la rẽ yĩnga yãmb na n basame bɩɩ?",
+      "ak": "Deɛ ɔbonsam pɛ ne sɛ, ɔbɛfa nsa ne dehu toɔ so de ɔtan ne ahii ato montɛm na w’asi mo Nyankopɔn nkaekaeɛ ne Nyame frɛ nso ho kwan, enti monntwe moho mfri (ho) anaa?",
       "nqo": "ߜߍ߬ߘߍ ߦߴߊ߬ ߝߍ߬ ߞߊ߬ ߖߎ߯ߦߊ ߣߌ߫ ߞߐߣߌ߲ߧߊ ߟߋ߬ ߟߊߘߏ߲߬ ߊߟߎ߫ ߕߍ߫ ߘߐ߬ߟߐ ߣߌ߫ ߛߏ߬ߝߘߊ߬ߓߋ ߘߐ߫، ߊ߬ ߣߌ߫ ߞߵߊߟߎ߫ ߞߎ߲߬ߠߊߛߊ߬ߦߌ߬ ߊߟߊ߫ ߞߏߝߐ ߣߌ߫ ߛߊߟߌ ߡߊ߬، ߦߊ߯ߟߴߊߟߎ߫ ߓߘߊ߫ ߝߘߊ߫ ߏ߬ ߘߐ߫ ߓߊ߬؟"
     }
   },
@@ -2437,11 +2438,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mumenye ko Allah ari Nyiribihano bikaze, kandi ko Allah ari Ubabarira ibyaha, Nyirimpuhwe.",
       "rn": "Bantu! Nimumenye ko Imana Allah Ihana Igahasha ibigaba, n’uko Imana Allah ari Nyenimbabazi-ntangere ku bigaya, Nyenimbabazi ku batoni bayo.",
       "ln": "Boyeba ete ya sôló, Allah apesaka etumbu ya makasi mpe ya sôló, Allah azali molimbisi atonda mawa.",
-      "dag": "Baŋmi ya ni Achiika! Naawuni nyɛla azaabakpeeni lana. Yaha! Naawuni nyɛla Chεmpaŋlana, Zaadali Nambɔzobonaa.",
-      "mos": "Bãng-y tɩ Wẽnd sɩbgrã yaa kεgenga, la Wẽnd yaa Yaafda n yaa Yolsda.",
+      "dag": "Baŋmi ya ni Achiika! Naawuni nyɛla azaabakpeeni lana. Yaha! Naawuni nyɛla Chɛmpaŋlana, Zaadali Nambɔzobonaa.",
+      "mos": "Bãng-y tɩ Wẽnd sɩbgrã yaa kɛgenga, la Wẽnd yaa Yaafda n yaa Yolsda.",
       "aa": "Sinaamey diggah Yalli isi Amri cine maral digaala kaak gibdih, diggah Yalli isi Amri oggoleeh kaal gace marah dambi cabti-li xuwaw- li kinnim ixiga.",
       "mdh": "Sabuti nu su Allah na mapasang i siksa nin, na endu su Allah na bangampun a malimu.",
-      "ak": "Monhunu sε, nokorε Nyankopͻn asotwee ano yεden paa, nokorε nso sε Ɔne Bͻnefakyε Hene, na Ɔne Mmͻborͻhunufoͻ Hene.",
+      "ak": "Monhunu sɛ, nokorɛ Nyankopɔn asotwee ano yɛden paa, nokorɛ nso sɛ Ɔne Bɔnefakyɛ Hene, na Ɔne Mmɔborɔhunufoɔ Hene.",
       "ceb": "Hibaloi nga ang Allah mahugtanon sa pagsilot, ug ang Allah Labing Mapinasayluon, ang Labing Maluloy-on.",
       "nqo": "ߊ߬ ߣߴߊߟߎ߫ ߦߴߊ߬ ߟߐ߲߫ ߸ ߞߏ߫ ߊߟߊ߫ ߦߋ߫ ߓߌ߲߬ߓߊ߬ߥߏ߬ ߜߍߟߍ߲ ߕߌ߰ ߘߌ߫ ߸ ߊ߬ ߣߌ߫ ߊߟߊ߫ ߦߋ߫ ߡߊ߬ߞߕߏ߬ߟߌ߬ߟߊ߫ ߤߌߣߟߊ߫ ߟߋ߬ ߘߌ߫"
     }
@@ -2519,7 +2520,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Wẽnd n so saas la tẽng naam la sẽn be b pʋgẽ wã, la A yaa Tõod ne bũmbã fãa.",
       "aa": "Qaranwaa kee Baaxooy ken Nammayih Addal taniimih Reeda inkih Yalli-le, usuk ummaan iimih dudda-li kinni.",
       "mdh": "Kanu Allah su manga langit endu su lupa endu su dalem nin, endu kagaga nin i langun enggagaisa.",
-      "ak": "Ɔsoro ne asaase ne deε εwͻ mu no nyinaa ahennie wͻ Nyankopͻn, na Ɔno na Ɔwͻ biribiara so tumi.",
+      "ak": "Ɔsoro ne asaase ne deɛ ɛwɔ mu no nyinaa ahennie wɔ Nyankopɔn, na Ɔno na Ɔwɔ biribiara so tumi.",
       "ceb": "Iya (ni) Allah ang ginharian sa manga kalangitan ug kalibutan, ug ang tanan nga manga anaa niini. Ug Siya bug-os ang gahom ibabaw sa tanang mga butang.",
       "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߴߏ߬ ߟߎ߬ ߞߣߐ߫ ߸ ߓߊߏ߬ ߊ߬ߟߋ ߟߋ߬ ߛߋ߫ ߟߊ߫ ߞߏ ߓߍ߯ ߟߊ߫"
     }
@@ -2585,11 +2586,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Oyo nno ye Allah Omulabirizi Wammwe, tewali kintu kyonna kisinzibwa mu butuufu okuggyako Yye Yekka, Omutonzi Wa buli kintu, kale nno Gwe muba musinza, era bulijjo Y’alina obuyinza ku buli kintu.",
       "rw": "Uwo ni Allah Nyagasani wanyu! Nta yindi mana ikwiye gusengwa uretse We, Umuremyi wa byose. Ku bw’ibyo nimumusenge (wenyine), kandi ni We Muhagararizi wa byose.",
       "ln": "Wana Allah Nkolo na bino, nzambe mosusu ya kobondela na bosóló azali te sé ye, mokeli ya biloko binso bobondela ye, mpe azali mobateli ya biloko binso.",
-      "dag": "Ŋumbɔŋɔ maa n-nyɛ Naawuni so Ŋun nyɛ yi Duuma maa, Duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna, Ŋuna n-nyɛŊun nam binshɛɣu kam, dinzuɣujεmmi ya O. Yaha! Ŋuna n-nyɛ binshɛɣu kam ni dalim So.",
+      "dag": "Ŋumbɔŋɔ maa n-nyɛ Naawuni so Ŋun nyɛ yi Duuma maa, Duuma jɛmdigu n-kani ni yɛlimaŋli naɣila Ŋuna, Ŋuna n-nyɛŊun nam binshɛɣu kam, dinzuɣujɛmmi ya O. Yaha! Ŋuna n-nyɛ binshɛɣu kam ni dalim So.",
       "mos": "Soab-kãngã la yãmb Soabã, bɩ y tũ-A , la Yẽ la bũmbã fãa bobenda.",
       "aa": "Korosey toh Yallaay sin gine Rabbi kinniih kaak-sa Qibaada Cakkisita Yalli mayan, usuk ummaanim ginek Toysa dibuk kaa uqbuda, usuk ummaanim dacrisaah isi ginóh caagiida dibuk gexsa.",
       "mdh": "Sekanin a Allah a Kadenan nu, dala kadenan a salakaw sa lekanin, binaluy nin i langun a enggaga-isa, na simba nu, endu sekanin (Allah) kanu langun a enggaga-isa na pedtuganulen nin.",
-      "ak": "Mo Wura Nyankopͻn no ne no, awurade foforͻ biara nnihͻ, gyesε Ɔno (nko ara) Ɔne biribiara Bͻfo; enti monsom no. Ɔno na biribiara twere no.",
+      "ak": "Mo Wura Nyankopɔn no ne no, awurade foforɔ biara nnihɔ, gyesɛ Ɔno (nko ara) Ɔne biribiara Bɔfo; enti monsom no. Ɔno na biribiara twere no.",
       "nqo": "ߊߟߊ߫ ߏ߬ ߟߋ ߦߴߊߟߎ߫ ߡߊ߰ߙߌ ߘߌ߫ ߸ ߡߊ߰ߙߌ߬ ߛߌ߫ ߕߴߏ߬ ߞߐ߫، ߝߋ߲ ߓߍ߯ ߘߊ߲ߓߊ߮ ߞߊ߬ߣߌ߲߫، ߒ߬ߓߵߊߟߎ߫ ߦߴߏ߬ ߘߐߙߐ߲߫ ߠߋ߫ ߓߊ߬ߕߏ߫ ߘߋ߬، ߓߊ ߏ߬ ߟߋ ߟߐ߬ߣߍ߲߬ ߝߋ߲ ߓߍ߯ ߟߊ߫ ߞߏ ߟߊ߫"
     }
   },
@@ -2663,11 +2664,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ ukuri Nyagasani wawe ni We uzi neza abayobye inzira ye, kandi ni We Uzi neza abayobotse.",
       "rn": "Mu vy’ukuri, Imana yawe Rurema Allah, ni Yo Izi bikwiye uwahuvye inzira yayo, ni na Yo Izi neza n'abagororotsi.",
       "ln": "Ya solo Nkolo nayo ayebi banani babungi nzela naye mpe ayebi banani bakambami malamu.",
-      "dag": "Achiika! A Duuma (Naawuni) n-nyɛŊun mi ninvuɣu so ŋun bɔrgi ka chɛ O soli. Yaha! Ŋuna n-nyɛŊun mi ninvuɣu shεba ban dolsi.",
+      "dag": "Achiika! A Duuma (Naawuni) n-nyɛŊun mi ninvuɣu so ŋun bɔrgi ka chɛ O soli. Yaha! Ŋuna n-nyɛŊun mi ninvuɣu shɛba ban dolsi.",
       "mos": "Bãng tɩ fo Soabã, Yẽ n yɩɩd minim ne ned ning sẽn menem-a n bas A sorã, Yẽ n leb n yɩɩd minim ne kãndgdbã.",
       "aa": "Diggah Nabiyow ku-Rabbi isi gitak makkootc marat siinik yayseeh keenik yayseh, usuk isi gital tirri iyye marat kulli marak yayseh.",
       "mdh": "Saben-sabenal su Kadenan nengka i mataw sa kanu gatading kanu agama nin, endu sekanin bun i mataw sa natutulu.",
-      "ak": "(Nkͻmhyεni), nokorε sε wo Wura Nyankopͻn na Onim obi a w’ayera afri Ne kwan no soͻ, εna Onim obi nso a watene.",
+      "ak": "(Nkɔmhyɛni), nokorɛ sɛ wo Wura Nyankopɔn na Onim obi a w’ayera afri Ne kwan no soɔ, ɛna Onim obi nso a watene.",
       "ceb": "Sa pagkatinuod, ang (Allah) nga imong Ginoo, siya ang matuod nga nasayud kun kinsa ang nahisalaag gikan sa sa Iyang Dalan, ug nasayod Siya kun kinsa ang husto nga nagiyahan.",
       "nqo": "ߌ ߡߊ߰ߙߌ ߟߋ߫ ߞߊ߬ ߡߐ߰ ߟߐ߲߫ ߡߍ߲ ߦߋ߫ ߝߟߌ߬ ߟߴߊ߬ ߟߊ߫ ߛߌߟߊ ߡߊ߬߸ ߊ߬ߟߋ ߟߋ߫ ߞߊ߬ ߞߊ߲ߘߊߓߊ߯ߕߐ ߟߎ߬ ߝߣߊ߫ ߟߐ߲ߓߊ ߞߍ߫"
     }
@@ -2729,11 +2730,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Arahanareo izay nampidinina teo aminareo avy amin’ny Tomponareo, ary aza manaraka Mpiahy hafa ankoatrany ianareo. Nefa kely dia kely ny ahatsiarovanareo.",
       "lg": "Mugoberere ebyo ebyassibwa gye muli nga biva ewa Mukama Omulabirizi Wammwe, naye temugobereranga abalala, wabula mujjukira kitono.",
       "rw": "Nimukurikire ibyo mwahishuriwe biturutse kwa Nyagasani wanyu. Kandi ntimuzakurikire ibitari We mubigira abafasha. Ni gake mwibuka!",
-      "dag": "Doli ya bɛ ni siɣisi shɛli n-tin ya na yi Duuma (Naawuni) sani, ka di doli ya duuma shεba kapa ni Ŋuna, biɛla ka yi teeri Naawuni yɛla.",
+      "dag": "Doli ya bɛ ni siɣisi shɛli n-tin ya na yi Duuma (Naawuni) sani, ka di doli ya duuma shɛba kapa ni Ŋuna, biɛla ka yi teeri Naawuni yɛla.",
       "mos": "Tũ-y bũmb ning b sẽn sik n kõ yãmbã, sẽn yi y Soabã nengẽ wã, la y ra wa tũ lall-n-taas zẽms sẽn pa Yẽ ye. Paood yãmb sẽn tagsd n getẽ.",
       "aa": "Sinaamey sin Rabbik siinil obsime kitab kee Nabii sunna (Nabii cadis kinnuk) kataataay Yallak kalah tanim awlah haysitteenih makataatina isin amahal kaskassowtaanam siinik dagoh.",
       "mdh": "Unuti nu su initulun sa lekanu (Qur’an) ebpun sa Kadenan nu, na da kanu munut sa salakaw lun i kamalan nu, ka paydu i katadem nu ataw ka maka- indaw sa lekanu.",
-      "ak": "Monni deε yɛasiane afiri mo Wura Nyankopͻn hͻ aberε mo no akyi, na monhwε na moamfiri N’akyi ankodi akyitaafoͻ biara akyi, (nanso nnipa, anaa asεm no mu) kakraa bi na mokaeε.",
+      "ak": "Monni deɛ yɛasiane afiri mo Wura Nyankopɔn hɔ aberɛ mo no akyi, na monhwɛ na moamfiri N’akyi ankodi akyitaafoɔ biara akyi, (nanso nnipa, anaa asɛm no mu) kakraa bi na mokaeɛ.",
       "ceb": "Sunda ninyo kung unsay gipadayag kaninyo gikan sa (Allah) nga inyong Ginoo, ug ayaw kamog sunod sa bisan unsa nga mini nga mga dios ug mga ginoo imbes nga Kaniya. Diyutay lang ang inyong pagtagad.",
       "nqo": "ߊߟߎ߫ ߦߋ߫ ߝߋ߲߫ ߠߋ߬ ߟߊߓߊ߬ߕߏ߬ ߡߍ߲ ߠߊߖߌ߰ߣߴߊߟߎ߫ ߡߵߊߟߎ߫ ߡߊ߰ߙߌ ߓߟߏ߫، ߊߟߎ߫ ߞߣߊ߫ ߢߌ߲߬ ߜߘߍ߫ ߟߎ߫ ߟߊߓߊ߬ߕߏ߫ ߘߋ߬ ߞߵߏ߬ ߕߏ߫، ߞߏ߬ߣߵߊߟߎ߫ ߕߊ߰ߛߌ߬ߞߏ ߟߋ߬ ߦߊ߯ ߘߐ߯"
     }
@@ -2805,11 +2806,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ukuri ba bandi batinya Allah, iyo igishuko cya shitani kibagezeho, bibuka (Allah) maze bakaba maso (bakitandunya n’ibyaha).",
       "rn": "Mu vy’ukuri, abagamburukira Imana Allah iyo bakozweko n’inyoshambi za shetani, baca bagaruka ku Mana Allah bakigaya, bagashoka bavavanura n’ibicumuro.",
       "ln": "Ya soló, baye bazali na bobangi Allah soki emoniseli ya satana ekoteli bango, bakanisi nsima, tala bango ndenge bakomi ekenge.",
-      "dag": "Achiika! Ninvuɣu shεba ban mali wuntia maa, shintaŋ laɣiŋgu yi ti yɛn shihi ba, ka bɛ teei Naawuni yεla,kaa nya ba ka bɛ nyɛla ban suhiri ne.",
-      "mos": "Bang tɩ wẽn-zoetbã, yɑm-yoob lɑ kɩllg sã n pɑɑm bãmbɑ sẽn yi ɑ sʋɩtãɑn nengẽ, lɑ b sẽn tẽegd Wẽnd yellã, tɩ b yɑmã yɑɑ sẽn be pukri.",
+      "dag": "Achiika! Ninvuɣu shɛba ban mali wuntia maa, shintaŋ laɣiŋgu yi ti yɛn shihi ba, ka bɛ teei Naawuni yɛla,kaa nya ba ka bɛ nyɛla ban suhiri ne.",
+      "mos": "Bang tɩ wẽn-zoetbã, yam-yoob la kɩllg sã n paam bãmba sẽn yi a sʋɩtãan nengẽ, la b sẽn tẽegd Wẽnd yellã, tɩ b yamã yaa sẽn be pukri.",
       "aa": "Diggah Yallak meesita mara Sheytan waswasak tu ken xagtek Yallih digaalaa kee Yallih meqe galto kassitan, tokkel usun bagi intih Yallih cakki yableeniih Yalli Niqbaamak yaxxeereenih.",
       "mdh": "Su manga taw a nagilekan sa Allah na amayka sinasat nu shaytan na tumadem silan sa Allah, na nakaimaman silan.",
-      "ak": "Wͻn a wͻsuro Nyankopͻn no, sε ͻbosam de adwen bͻne bi ma wͻn a, wͻkae Nyankopͻn, εba saa a, εma wͻn aniso da hͻ kann (kae Nyankopͻn asotwee ne N’adom a εwͻ hͻ Daakye).",
+      "ak": "Wɔn a wɔsuro Nyankopɔn no, sɛ ɔbosam de adwen bɔne bi ma wɔn a, wɔkae Nyankopɔn, ɛba saa a, ɛma wɔn aniso da hɔ kann (kae Nyankopɔn asotwee ne N’adom a ɛwɔ hɔ Daakye).",
       "ceb": "Kadtong nagmanggihadlukon Kang Allah; sa diha nga ang usa ka dautang hunghong muabot kanila gikan kang Satanas, sila nakahinumdom (sa Allah), ug sa pagkatinuod sila makakita (ug matarong).",
       "nqo": "ߡߍ߲ ߠߎ߬ ߦߴߊ߬ߟߎ߬ ߝߊ߲ߕߊ߲߬ߞߊ߬ ߟߊ߫߸ ߣߌ߫ ߘߌߡߌ߲߫ ߞߏߣߍ߲߫ ߡߊ߰ ߘߴߊ߬ߟߎ߬ ߟߊ߫ ߞߊ߬ ߝߘߊ߫ ߜߍ߬ߘߍ ߟߊ߫ ߸ ߊ߬ߟߎ߬ ߘߴߊ߬ߟߎ߫ ߖߊ߲߬ߓߌ߬ߟߊ߬، ߘߊ߬ߡߊ߲߬ߛߊ߫ ߊ߬ߟߎ߬ ߘߴߏ߬ ߦߋ߫ ߊ߬ߟߎ߬ ߦߟߌ ߟߊ߫ ( ߞߊ߬ ߓߐ߫ ߝߌ߬ߟߌ ߘߐ߫ )"
     }
@@ -2874,11 +2875,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Marina fa ireo izay anatrehan’ny Tomponao (ireo Anjely) dia tsy manambony tena amin’ny fanompoana Azy. Ary midera ny voninahiny sy miankohoka Aminy izy ireo.",
       "lg": "Mazima abo abali ewa Mukama Omulabirizi Wo, tebeekuluntaza ne batamusinza, era bamutendereza, era nga Yye Yekka, Gwe bavunnamira.",
       "rw": "Mu by’ukuri ba bandi bari kwa Nyagasani wawe (abamalayika) ntibajya bibona ngo bumve ko batamugaragira, ahubwo baramusingiza, bakaba ari na We (Allah) wenyine bubamira.",
-      "dag": "Achiika! Ban be a Duuma sani maa (Malaaikanima) bi tibgiri bɛ maŋ’ ka chɛ Ojεma, ka simsiri O, Ŋuna kabε lahi niŋdi suzuuda n-tira.",
-      "mos": "Bãng tɩ sẽn be-b fo Soɑbã nengẽ wã kɑ maɑnd wɑoog-m-meng n bɑsd A tũudmã ye, lɑ b le yɩlgd-A lɑme; lɑ b tiuund ( mɑɑn suguud) A yĩngɑ.",
+      "dag": "Achiika! Ban be a Duuma sani maa (Malaaikanima) bi tibgiri bɛ maŋ’ ka chɛ Ojɛma, ka simsiri O, Ŋuna kabɛ lahi niŋdi suzuuda n-tira.",
+      "mos": "Bãng tɩ sẽn be-b fo Soabã nengẽ wã ka maand waoog-m-meng n basd A tũudmã ye, la b le yɩlgd-A lame; la b tiuund ( maan suguud) A yĩnga.",
       "aa": "Diggah Nabiyow ku Rabbih xaqul yan mari (malayka kinnuk) kay Qibaadak ma kaxxamariinitan, usun kaa ceele waytaamak kaa Saytunnoysaanaah dibuk kaah kummaatan.",
       "mdh": "Su manga malaikat lu sa Allah na di silan pemamasla sa kasimba sa Allah endu pedtasbih silan sa Allah endu pedsugyud silan sa Allah Ta’ala.",
-      "ak": "Nokorε sε, wͻn a wͻwͻ wo Wura Nyankopͻn hͻ (Soro abͻfoͻ) no, wͻnyε ahomasoͻ wͻ Nesom ho, na mmom wͻbͻ no abodin na Ɔno na wͻde wͻn anim butu fͻm ma no.",
+      "ak": "Nokorɛ sɛ, wɔn a wɔwɔ wo Wura Nyankopɔn hɔ (Soro abɔfoɔ) no, wɔnyɛ ahomasoɔ wɔ Nesom ho, na mmom wɔbɔ no abodin na Ɔno na wɔde wɔn anim butu fɔm ma no.",
       "ceb": "Sa pagkatinuod, kadtong mga 'anghel` nga duol sa imong Ginoo 'Allāh' wala nagmapahitas-on sa pagsimba Kaniya. Sila naghimaya ug magdayeg Kaniya ug sila maghapa (ingon nga magatuman ngadto Kaniya).",
       "nqo": "ߡߍ߲ ߠߎ߬ ߦߴߌ ߡߊ߰ߙߌ ߓߘߊ ( ߞߋ߲ߛߐ߲ ߠߎ߬ ߘߌ߫ )߸ ߏ߬ ߟߎ߬ ߕߴߊ߬ߟߎ߫ ߖߘߍ߬ߘߐߓߏ߲߬ߧߊ߬ ߟߴߊ߬ ߓߊ߬ߕߏ ߡߊ߬߸ ߊ߬ߟߎ߫ ߘߏ߲߬ ߦߴߊ߬ ߛߊߣߌ߲ߧߊ ߝߐ߫ ߟߊ߫߸ ߊ߬ ߣߴߊ߬ߟߎ߬ ߦߋ߫ ߕߌ߲ߓߌߘߌ߲ ߞߍ߫ ߟߴߊ߬ ߦߋ߫"
     }
@@ -2951,9 +2952,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ukuri Allah ni Nyirubwami bw'ibirere n'ubw’isi. Ni We utanga ubuzima n'urupfu. Kandi nta wundi murinzi cyangwa umutabazi mwagira utari Allah.",
       "ln": "Ya sôló, Allah azali na bokonzi ya likolo mpe ya nsé, apesaka bomoyi mpe liwa, mpe bozali na mobateli te mpe mosungi te sé kaka Allah.",
       "dag": "Achiika! Naawuni n-su sagbana mini tiŋgbani yiko, Ŋuna n-neeri ka kura. Yaha! Yi ka ŋun yɛn taɣi ya, bee ŋun yɛnsɔŋ ya ka pa ni Naawuni.",
-      "mos": "Ad Wẽnd n tɑr sɑɑs lɑ tẽng nɑɑm, Yẽ n kõt vɩɩm la a kʋʋda, yãmb pa tar lalld zẽng sẽn pɑ Wẽnde, y pa tar Sõngd me.",
+      "mos": "Ad Wẽnd n tar saas la tẽng naam, Yẽ n kõt vɩɩm la a kʋʋda, yãmb pa tar lalld zẽng sẽn pa Wẽnde, y pa tar Sõngd me.",
       "mdh": "Su Allah na lekanin su pitu lapis a langit endu lupa, banguyag a bangimatay, endu dala se lakanu i salakaw sa Allah i tumuldu endu dala tumabang sa lekanu.",
-      "ak": "Nokorε sε, Nyankopͻn na ͻsoro ne asaase so ahennie no wͻ no. Ɔno na Ɔma nkwa εna Ɔkum, na monni Okyitaafoͻ anaasε ͻboafoͻ biara wͻ Nyankopͻn akyi.",
+      "ak": "Nokorɛ sɛ, Nyankopɔn na ɔsoro ne asaase so ahennie no wɔ no. Ɔno na Ɔma nkwa ɛna Ɔkum, na monni Okyitaafoɔ anaasɛ ɔboafoɔ biara wɔ Nyankopɔn akyi.",
       "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫ ߸ ߊ߬ߟߋ ߟߋ߫ ߟߊ߬ߢߣߊ߬ߡߦߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߞߊ߬ ߛߊ߬ߟߌ ߝߣߊ߫ ߞߍ߫، ߣߌ߫ ߊߟߊ߫ ߕߍ߫ ߸ ߞߏߕߌ߯ ߛߌ߫ ߣߌ߫ ߘߍ߬ߡߍ߲߬ߓߊ߯ ߕߍ߫ ߊߟߎ߫ ߟߊ߫"
     }
   },
@@ -3027,10 +3028,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Yemwe abemeye! Mujye mutinya Allah kandi mube hamwe n'abanyakuri.",
       "rn": "Emwe bemeye Imana Allah n’Intumwa yayo bakubahiriza n’amabwirizwa yayo! Nimutinye Imana Allah mu kwubahiriza amabwirizwa yayo, kandi mwame na ntaryo muri kumwe n’imvugakuri.",
       "ln": "Eh bino bandimi! Bobanga Allah mpe bozala elongo moko na bato ya bosembo.",
-      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yεlimaŋli! Zom ya Naawuni, ka leei ya ninvuɣu shɛba ban be niyεlimaŋli nima.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Zom ya Naawuni, ka leei ya ninvuɣu shɛba ban be niyɛlimaŋli nima.",
       "mos": "Yaa yãmb neb nins sẽn kõ sɩda! Zoe-y Wẽnd la y yɩ n naag togs sɩd rãmbã.",
       "mdh": "Sekanu a manga bamaginugut, ikagilek nu su Allah endu embenal kanu sa kadtalu, da kanu endalbut.",
-      "ak": "Mo a moagye adie, Monsuro Nyankopͻn na monka nokwafoͻ no ho.",
+      "ak": "Mo a moagye adie, Monsuro Nyankopɔn na monka nokwafoɔ no ho.",
       "ceb": "Oh mga magtutuo, magmahinadlukon kamo sa Allah ug mahimong kauban sa mga matinud-anon (sa pulong ug buhat).",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߞߍ߫ ߕߎ߬ߢߊ߬ߕߌ߮ ߟߎ߫ ߝߍ߬"
     }
@@ -3088,8 +3089,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Omubaka yabajjira nga ava mu mmwe mwennyini nga kimuzitoowerera nnyo ekyo ekibakaluubiriza abalumirwa nnyo, era eri Abakkiriza bonna Waakisa Musaasizi.",
       "rw": "Mu by’ukuri mwagezweho n’Intumwa ibakomokamo; iremererwa n’ingorane muhura na zo, ibitaho (kugira ngo muyoboke by’ukuri), kandi ni Inyempuhwe nyinshi, ikaba n’Inyembabazi ku bemera.",
       "rn": "Bemeramana! Mwarashikiriwe n’Intumwa ivuye muri mwebwe nyene, ituntuzwa n’ibibabangamira, yitwararika ko muba abemeramana koko, irangwa n’ikigongwe n’impuhwe nyinshi ku bemeramana.",
-      "mos": "Sɩd la hakɩɩka, ad Tẽn-tʋʋm b sẽn yiis yãmb pʋgẽ waa yãmb nengẽ, bũmb sẽn namsd yãmb fãa yaa zɩsg ne-a, n maand yão-bood ne yãmb (neere), n yaa nimbãan-zoεt la yoalsd ne sɩd-kõatba.",
+      "mos": "Sɩd la hakɩɩka, ad Tẽn-tʋʋm b sẽn yiis yãmb pʋgẽ waa yãmb nengẽ, bũmb sẽn namsd yãmb fãa yaa zɩsg ne-a, n maand yão-bood ne yãmb (neere), n yaa nimbãan-zoɛt la yoalsd ne sɩd-kõatba.",
       "mdh": "Saben-sabenal a nakwma i sinugu ebpun sa lekanu a mapulu sa lekanin i makapasang kanu ummat nin a masagikel sa lekanu sa kagkapya nu, malasam a malimu kanu ummat nin.",
+      "ak": "Ampa sɛ, Ɔsomafoɔ firi mo mu aba mo nkyɛn; deɛ ɛha no paa ne sɛ morekɔtɔ ɔsɛeɛ mu, na (ɔyɛ) ntimmɔborɔ ne mmɔborɔhunufoɔ dema agyidiefoɔ no.",
       "nqo": "ߞߋߟߊ ߘߏ߫ ߓߘߊ߫ ߓߊ߲߫ ߣߊ߬ ߟߴߊߟߎ߫ ߡߊ߬ ߊߟߎ߫ ߖߍ߬ߘߍ ߘߐ߫ ߸ ߊߟߎ߫ ߕߙߐ߫ ߞߏ ߜߍ߬ߟߍ߲߬ߡߊ߲߫ ߊ߬ ߡߊ߬߸ ߊߟߎ߫ ߘߌߡߊ߲ߓߊ ߦߴߊ߬ ߦߋ߫، ߊ߰ ߞߌ߬ߣߌ߲߬ߞߌ߬ߣߌ߲߬ߓߊ߯ ߣߌ߫ ߤߌߣߟߊ߫ ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߟߊ߫"
     }
   },
@@ -3154,11 +3156,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "he": "אכן בחילוף הלילה והיום ובאשר ברא אללה בשמים ובארץ אותות לאנשים אשר יראים.",
       "lg": "Mazima okwawukana kw'ekiro n'emisana n'ebyo Allah bye yatonda mu ggulu omusanvu n'ensi ddala mulimu obubonero eri abantu abatya Allah (obubayamba okutegeera ekitiibwa n'obuyinza bwa Allah).",
       "rw": "Mu by’ukuri mu gusimburana kw’ijoro n’amanywa, ndetse n’ibyo Allah yaremye mu birere n’isi, harimo ibimenyetso ku bantu batinya (Allah).",
-      "dag": "Achiika! Yuŋ mini wuntaŋni taɣibu puuni, ni Naawuni ni nam shɛli sagbana mini tiŋgbana puuni, achiika! Di nyɛla Naawuni nam yɛlikpahinda n-zaŋ ti ninvuɣu shεba ban mali wuntia.",
+      "dag": "Achiika! Yuŋ mini wuntaŋni taɣibu puuni, ni Naawuni ni nam shɛli sagbana mini tiŋgbana puuni, achiika! Di nyɛla Naawuni nam yɛlikpahinda n-zaŋ ti ninvuɣu shɛba ban mali wuntia.",
       "mos": "Ad bee yʋndã la wĩndsã sẽn ledsd taabã, la Wẽnd sẽn naan saasã la tẽngã, tagmase ne neb sẽn zoet Wẽnde.",
       "aa": "Diggah bar kee laqó ittal abta ciggiltuu kee Yalli qaranwaa kee baaxól ginni heemit Yallak meesita marah kay dudda tascasse astooti tan.",
       "mdh": "Su kapedsukeliya nu magabi endu malamag, endu su binaluy nu Allah kanu manga langit endu su lupa na manga tanda a kapeg-kagaga nu Allah kanu manga taw, ka endu silan kagilekan.",
-      "ak": "Nokorε sε abirabͻ a εwͻ adesaeε ne adekyeε mu, ne nneεma a Nyankopͻn abͻ a εwͻ soro ne asaase soͻ no (nyinaa) yε nsεnkyerεnee dema amanfoͻ a wͻsuro Nyame yε ahwεyie.",
+      "ak": "Nokorɛ sɛ abirabɔ a ɛwɔ adesaeɛ ne adekyeɛ mu, ne nneɛma a Nyankopɔn abɔ a ɛwɔ soro ne asaase soɔ no (nyinaa) yɛ nsɛnkyerɛnee dema amanfoɔ a wɔsuro Nyame yɛ ahwɛyie.",
       "nqo": "ߛߎ ߣߌ߫ ߕߟߋ߬ߘߐ߬ߟߊ ߟߊ߫ ߓߐߢߐ߲߰ߡߊ ߣߌ߫ ߊߟߊ߫ ߟߊ߫ ߝߋ߲߫ ߘߊ߲ߣߍ߲ ߡߍ߲ ߠߎ߬ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߐ߫ ߸ ߕߊ߰ߛߌ߬ߞߏ߫ ߟߴߏ߬ ߟߎ߬ ߘߌ߫ ߡߌ߬ߙߌ߲߬ߘߌ߬ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߬ ߦߋ߫"
     }
   },
@@ -3233,7 +3235,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Sɩd la hakɩɩka, Wẽnd pa wẽgd nebã ye, ad yaa nebã bal n wẽgd b mense.",
       "aa": "Diggah Yalli sinam tut mayadluma umaane keenit ossee kee hinnay maqaane keenik daggoyse yakkeemit, kinnih immay sinam isi nafsi isih tadlume koroosannuu kee Yallih amri cinaanamat.",
       "mdh": "Saben-sabenal su Allah na di nin dupangen su manga taw sa apiya paydu, ugayd na su manga taw bun i pendupang sa ginawa nilan.",
-      "ak": "Nokorε sε, Nyankopͻn nsisi nnipa wͻ hwee ho, na mmom nnipa no ara na wͻsisi wͻn ho.",
+      "ak": "Nokorɛ sɛ, Nyankopɔn nsisi nnipa wɔ hwee ho, na mmom nnipa no ara na wɔsisi wɔn ho.",
       "ceb": "Sa pagkatinuod, si Allah wala maglapas sa hustisya taliwala sa mga tawo sa bisan unsa apan ang mga tawo sa ilang kaugalingon naglapas sa hustisya 'pinaagi sa pagsupak sa ilang Magbubuhat'.",
       "nqo": "ߒ߬ߓߵߊߟߊ߫ ߕߍ߫ ߡߐ߱ ߟߎ߫ ߕߐ߬ߢߍ߰ ߟߊ߫ ߝߏߦߌ߬ ߟߊ߫ ߘߋ߬ ߸ ߡߐ߱ ߟߎ߫ ߟߴߊ߬ߟߎ߫ ߖߍ߬ߘߍ߫ ߕߐ߬ߢߍ߰ ߟߊ߫"
     }
@@ -3305,10 +3307,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange, mazima bya Allah, ebiri mu ggulu omusanvu ne mu nsi, abange mazima Endagaano ya Allah ya mazima, naye mazima abantu abasinga obungi tebamanyi.",
       "rw": "Nta gushidikanya ko mu by’ukuri ibiri mu birere n’ibiri mu isi byose ari ibya Allah. Nta gushidikanya ko mu by’ukuri isezerano rya Allah ari ukuri. Nyamara abenshi muri bo ntibabizi.",
       "ln": "Maye manso mazali kati na likolo na mabele, mazali ma Allah. Elaka ya Allah ezali solo, kasi ebele kati na bango bazali koyeba te.",
-      "dag": "Wumma! Binshɛɣu din be sagbana mini tiŋgbani ni nyɛla Naawuni dini. Wumma! Achiika! Naawuni daalikauli nyɛla yεlimaŋli. Amaa! Ninsalinim’ pam bi mi.",
+      "dag": "Wumma! Binshɛɣu din be sagbana mini tiŋgbani ni nyɛla Naawuni dini. Wumma! Achiika! Naawuni daalikauli nyɛla yɛlimaŋli. Amaa! Ninsalinim’ pam bi mi.",
       "mos": "Sɩd la hakɩɩka, ad sẽn be saasẽ la tẽngẽ yaa Wẽnd n so, ad Wẽnd pʋlengã yaa sɩda, la nebã sẽn waoog fãa pa mi ye.",
       "mdh": "Saben-sabenal a kanu Allah su pitu lapis a langit endu su lupa, saben-sabenal kanu pasad nu Allah na haqq, ugayd na ya madakel kanilan i di nilan katawan.",
-      "ak": "Hwε, nokorε sε, deε εwͻ soro ne asaase so (nyinaa) wͻ Nyankopͻn. Hwε, nokorε sε, Onyankopͻn bͻhyε yε nokorε, nanso nnipa pii nnim.",
+      "ak": "Hwɛ, nokorɛ sɛ, deɛ ɛwɔ soro ne asaase so (nyinaa) wɔ Nyankopɔn. Hwɛ, nokorɛ sɛ, Onyankopɔn bɔhyɛ yɛ nokorɛ, nanso nnipa pii nnim.",
       "ceb": "Sigurado, ngadto Kang Allah ang pagpanag-iya sa tanan nga anaa sa kalangitan ug kayutaan. Sigurado, ang Saad sa Allah tinuod. Apan ang kadaghanan kanila wala makabalo.",
       "nqo": "ߤߊߕߍ߫ ߸ ߞߏ߬ߞߏ߫ ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߣߐߝߋ߲ ߘߌ߫ ߞߍ߬؟ ߤߊߕߍ߫ ߸ ߞߏ߬ߞߏ߫ ߊߟߊ߫ ߟߊ߫ ߦߟߌߡߊߘߌߦߊ ߦߋ߫ ߕߎ߬ߢߊ߫ ߟߋ߬ ߘߌ߫ ߞߍ߬؟ ߞߏ߬ߣߌ߲߬ ߊ߬ ߝߊ߲߬ߓߊ ߟߋ߬ ߕߍ߫ ߊ߬ ߟߐ߲߫"
     }
@@ -3386,7 +3388,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Yaa Yẽ n kõt vɩɩm, leb n yaa Yẽ n kõt kũum, yaa Yẽ nengẽ la y na n lebe",
       "aa": "Diggah Yalli yaynuwweeh qidah, isin rabteeniik lakal kaâ fanah gacsimtaanaah taamak abba hayteenimil sin gaițele.",
       "mdh": "Sekanin i banguyag-bangimatay, endu sekanin i gauliyan.",
-      "ak": "Ɔno na Ɔma nkwa εna Ɔkum, na Nehͻ na mobεsan akͻ.",
+      "ak": "Ɔno na Ɔma nkwa ɛna Ɔkum, na Nehɔ na mobɛsan akɔ.",
       "ceb": "Siya lamang ang naghatag ug kinabuhi, ug hinungdan sa kamatayon, ug kamong tanan ngadto Kaniya mubalik 'alang sa Paghukom'.",
       "nqo": "‹ ߊߟߊ߫ › ߟߋ߫ ߟߊ߬ߣߌ߬ߡߦߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߞߊ߬ ߛߊ߬ߟߌ ߞߍ߫، ߊ߬ ߣߴߊߟߎ߫ ߟߊߛߊ߬ߦߌ߬ߕߐ߫ ߊ߬ߟߋ ߟߋ߫ ߡߊ߬"
     }
@@ -3449,7 +3451,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe abantu okubuulirira kubajjidde okuvudde eri Mukama Omulabirizi Wammwe era nga kyakuvumula eri ebyo byonna ebiri mu bifuba, era nga buluŋŋamu era nga kusaasira eri Abakkiriza.",
       "mos": "Yaa yãmb neba! Hakɩɩka, waazʋ waa yãmba, waazʋ sẽn yi y Soabã nengẽ, n yaa tɩpg ne bũmb ning sẽn be yãmb sũyẽ wã, la kãndagr, la yolsg ne sɩd-kõatbã.",
       "mdh": "Sekanu a manga taw nakawma sa lekanu su indawan ebpun sa kanu Kadenan nu, endu gamut kanu dalem nu manga laleb nu, endu tutulu endu limu kanu manga mu'min.",
-      "ak": "Adasamma, ampa sε Afutusεm ne akoma mu (yadeε ho) ayaresa ne kwankyerε, ne ahummͻborͻ dema agyidiefoͻ no, firi mo Wura Nyankopͻn hͻ aba mo hͻ.",
+      "ak": "Adasamma, ampa sɛ Afutusɛm ne akoma mu (yadeɛ ho) ayaresa ne kwankyerɛ, ne ahummɔborɔ dema agyidiefoɔ no, firi mo Wura Nyankopɔn hɔ aba mo hɔ.",
       "ceb": "Oh katawhan! Miabot kaninyo ang maayong pagpanambag (Qur’an) gikan sa inyong Ginoo, ug usa ka kaayuhan (sa balatian) nga anaa sa inyong mga dughan - usa ka Giya ug Kaluoy alang sa mga magtutuo.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߡߐ߱ ߟߎ߬ ߸ ߟߊ߬ߟߌ߬ߟߌ߬ߞߊ߲ ߓߘߊ߫ ߣߵߊߟߎ߫ ߡߊ߬ ߞߊ߬ ߝߘߴߊߟߎ߫ ߡߊ߰ߙߌ ߟߊ߫ ߸ ߊ߬ ߣߌ߫ ߓߊߛߌ ߛߌߛߌ ߘߐ߫ ߞߏ ߟߎ߬ ߞߊߡߊ߬، ߊ߬ ߣߌ߫ ߞߊ߲ߘߦߊ ߣߌ߫ ߤߌߣߊ ߟߋ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫"
     }
@@ -3522,11 +3524,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima abo Abakkiriza ne bakola emirimu emirongoofu ne bamenyekera Mukama Omulabirizi Waabwe abo be bannannyini Jjana, bo mu yo baakutuulamu bugenderevu.",
       "rw": "Mu by’ukuri ba bandi bemeye bakanakora ibikorwa byiza, ndetse bakanicisha bugufi kuri Nyagasani wabo; bazaba mu Ijuru ubuziraherezo.",
       "ln": "Ya soló, baye bandimaki mpe basalaki misala milamu, mpe babangaki Nkolo wa bango, bango nde bato ya lola, bakozalaka libela o kati na yango.",
-      "dag": "Achiika! Ninvuɣu shεba ban ti Naawuni yεlimaŋli ka tum tuunviεla, ka filim bɛ maŋa n-ti bɛ Duuma (Naawuni), tɔ! Bannim’ maa n-nyɛ Alizanna bihi, ka bɛ nyɛla ban yɛn ti kpalim di puuni.",
-      "mos": "Ad neb nins sẽn kõ sɩd la b tʋm sõmã wã la b sikd b mens ne b Soabã, bãmbã la arzãn koɑmbã, b na n duuma beenẽ.",
+      "dag": "Achiika! Ninvuɣu shɛba ban ti Naawuni yɛlimaŋli ka tum tuunviɛla, ka filim bɛ maŋa n-ti bɛ Duuma (Naawuni), tɔ! Bannim’ maa n-nyɛ Alizanna bihi, ka bɛ nyɛla ban yɛn ti kpalim di puuni.",
+      "mos": "Ad neb nins sẽn kõ sɩd la b tʋm sõmã wã la b sikd b mens ne b Soabã, bãmbã la arzãn koambã, b na n duuma beenẽ.",
       "aa": "Diggah Yallaa kee kay farmoyta nummayseeh meqe taamoomi abbaasiteeh sinni Rabbih yuqunxee mari, woo mari usun Jannatti maraay usun kaal waaran.",
       "mdh": "Su manga mu'min endu minggalebek sa manga mapya, endu linemumping kanu Kadenan nilan na silan i kigkuwan kanu surga, na silan na dala den kalyu nilan sa surga.",
-      "ak": "Nokorε sε, wͻn a wͻagye adie na wͻdi dwuma pa, na wͻbrε wͻn ho ase ma wͻn Wura Nyankopͻn no, saa nkorͻfoͻ no ne Soro aheman no mu foͻ no, na emu na wͻbεtena afe bͻͻ.",
+      "ak": "Nokorɛ sɛ, wɔn a wɔagye adie na wɔdi dwuma pa, na wɔbrɛ wɔn ho ase ma wɔn Wura Nyankopɔn no, saa nkorɔfoɔ no ne Soro aheman no mu foɔ no, na emu na wɔbɛtena afe bɔɔ.",
       "nqo": "ߡߍ߲ ߠߎ߬ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߛߊ߫߸ ߊ߬ ߣߌ߫ ߞߵߊ߬ߟߎ߫ ߖߘߍ߬ߡߊߖߌ߰ ߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߦߋ߫ ߸ ߏ߬ ߟߎ߫ ߟߋ߬ ߡߍ߲ߘߌߦߊ߫ ߡߊ߲߬ߕߎ߬ߙߋ ߟߎ߬ ߘߌ߫ ߸ ߏ߬ ߟߎ߬ ߕߏߕߐ߫ ߦߋ߲߬ ߠߋ߬ ߞߘߊߎ߫"
     }
   },
@@ -3583,7 +3585,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Apetrako amin’i Allah, ilay Tompoko sy Tomponareo ny fitokisana. Tsy misy zava-manan’aina izay tsy ho eo ambany fahefany. Tena marina fa ny Tompoko dia amin’ny làla-mahitsy.",
       "rw": "“Mu by’ukuri njye niringiye Allah, Nyagasani wanjye akaba na Nyagasani wanyu. Nta kiremwa na kimwe gifite ubugingo Allah atagenga. Rwose, Nyagasani wanjye ni We ufite inzira igororotse.”",
       "dag": "“Achiika! Mani dalimla Naawuni so Ŋun nyɛ n Duuma ni yi gba Duuma. Biŋkob’ so n-ka tiŋgbani yaaŋa zuɣu naɣila Ŋuna (Naawuni) n-nyɛŊun gbibi di gbetaa. Achiika! N Duuma nyɛla Ŋun be sochibgu zuɣu.",
-      "mos": "Ad mam bobla m meng ne Wẽnde, sẽn yaa maam la yãmb Soabã. Bõn-vɩt ka be rẽndame t'A wõr-ɑ lame t'ɑ be A soolmẽ wã. Ad mam Soabã bee tẽeg-tɩrg zugu.",
+      "mos": "Ad mam bobla m meng ne Wẽnde, sẽn yaa maam la yãmb Soabã. Bõn-vɩt ka be rẽndame t'A wõr-a lame t'a be A soolmẽ wã. Ad mam Soabã bee tẽeg-tɩrg zugu.",
       "nqo": "ߒߠߋ ߓߘߊ߫ ߒ ߛߍ߲߬ߓߍ߬ ߊߟߊ߫ ߟߊ߫߸ ߒ ߡߊ߰ߙߌ ߣߴߊߟߎ߫ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫، ߓߊ ߡߊ߬ߛߍ߲߬ߛߍ߲߬ߓߊ߰ ߛߌ߫ ߕߍ߫ ߣߌ߫ ߡߍ߲ ߕߋ߲ߛߌ ߕߴߊ߬ ߓߟߏ߫، ߤߊ߲߫߸ ߒ ߡߊ߰ߙߌ ߦߋ߫ ߛߌߟߊ߫ ߕߋߟߋ߲ߣߍ߲ ߠߋ߫ ߞߊ߲߬ ߘߋ߬"
     }
   },
@@ -3653,10 +3655,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "(Kuri Allah) uhisha imvugo n’uyigaragaza muri mwe, uwitwikira ijoro ndetse n’ugaragara ku manywa, bose ni bamwe.",
       "rn": "Ni co kimwe rero kuri Yo, uwugize ico avuga muri mwebwe mw’ibanga canke ku mugaragaro, n’uwugize ico akora yikinze agahumbezi k’ijoro canke ku murango izuba riva, Imana Allah Irabimenya.",
       "ln": "Bakeseni te epai naye oyo azali kobomba maloba naye, mpe oyo mosusu azali kobimisa ya ye polele, oyo azali komibomba na butu, mpe oyo azali komibimisa na moyi.",
-      "dag": "Di nyɛla yim, yi puuni ŋun sɔɣiyεltɔɣali ni ŋun yihi li polo ni, ni ŋun sɔɣiri yuŋ, ni ŋun yihi omaŋ’ polo ni wuntaŋ’ ni.",
-      "mos": "Zema taab Yẽ nengẽ, ned ning sẽn solg a koεεg lɑ sẽn vẽneg-ɑ, lɑ sẽn solg ɑ meng yʋngo lɑ sẽn rɑeeda ne ɑ tʋʋm wĩndga.",
+      "dag": "Di nyɛla yim, yi puuni ŋun sɔɣiyɛltɔɣali ni ŋun yihi li polo ni, ni ŋun sɔɣiri yuŋ, ni ŋun yihi omaŋ’ polo ni wuntaŋ’ ni.",
+      "mos": "Zema taab Yẽ nengẽ, ned ning sẽn solg a koɛɛg la sẽn vẽneg-a, la sẽn solg a meng yʋngo la sẽn raeeda ne a tʋʋm wĩndga.",
       "mdh": "Magidsan su ipedsulen nin i kadtalu nin ebpun sa lekanu ataw ka su ipebpayag in, endu su ibagena nin kanu magabi endu su ipembuyayang in (ipebpayag nin) sa malamag.",
-      "ak": "Sε momu bi de n’asεm suma o, anaasε ͻda no adi o, anaasε osie anadwo o, anaa opie awia o, εyε asεm korͻ (ma Nyankopͻn sε Onim biribiara).",
+      "ak": "Sɛ momu bi de n’asɛm suma o, anaasɛ ɔda no adi o, anaasɛ osie anadwo o, anaa opie awia o, ɛyɛ asɛm korɔ (ma Nyankopɔn sɛ Onim biribiara).",
       "ceb": "Kini managsama ngadto ˹Kaniya˺ bisan kinsa kaninyo nga nagsulti sa tago o sa dayag, kon ang usa nagtago sa kangitngit sa kagabhion o naglakaw sa kahayag sa adlaw.",
       "nqo": "ߊߟߎ߫ ߡߍ߲ ߓߊ߯ ߞߎߡߊ ߜߎ߲߬ߘߎ߫ ߊ߬ ߣߌ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߟߊ߲ߞߣߍߡߊ߫߸ ߊ߬ ߣߴߊߟߎ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߢߡߊߘߏ߲߰ ߛߎ ߘߐ߫ ߊ߬ ߣߌ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߖߘߍ߬ߟߊߓߐ߫ ߕߋ߬ߟߋ ߘߐ߫ ߸ ߏ߬ ߓߍ߯ ߞߢߊߡߊ߲߫ ߠߋ߬ ߖߐ߲"
     }
@@ -3703,8 +3705,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ne": "अल्लाहले जसको रोजी चाहन्छ बढाउँछ र जसको चाहन्छ घटाइदिन्छ । यिनी त सांसरिक जीवनमा मस्त भइहाले । अतः दुनियाँ त अन्तिम प्रतिफलको तुलनामा अत्यन्तै तुच्छ छ ।",
       "si": "අල්ලාහ් ඔහු අභිමත කරන අයට ජීවන පහසුකම් දිගු හරියි. තවද ඔහු (එය) සීමා කරයි. තවද ඔවුහු මෙලොව ජීවිතය පිළිබඳව සතුටු වෙති. තවද මෙලොව ජීවිතය මතු ලොවෙහි (ස්වල්ප) භුක්ති විඳීමක් මිස වෙනකක් නො වේ.",
       "he": "אללה מפרנס ביד רחבה או בהפחתה את מי שירצה. ונהנו מהעולם הזה, אך חיי העולם הזה הם רק הנאה חולפת לעומת העולם הבא.",
-      "dag": "Naawuni yεlgirila arzichi n-tiri O ni bɔri so, ka mirsiri O ni bɔri so. Yaha! Bɛ (chεfurinim’ maa) niŋla suhupεlli ni Dunia bεhigu. Dunia bεhigu mi pala shɛli Chiyaama puuni naɣila nyɛɣisim biɛla.",
-      "mos": "Wẽnd n yalgd rɩtlã n kõ A sẽn rat ned ninga la A weoogdẽ, la kɩfr-dãmbã kɩdemdɑ ne dũni vɩɩmã, la dũni vɩɩmã pa fʋɩ yɑoolem rɑɑrã taoor rẽndame tɩ yaa wʋm-noog sẽn yɑɑ gɩrg bɑlɑ.",
+      "dag": "Naawuni yɛlgirila arzichi n-tiri O ni bɔri so, ka mirsiri O ni bɔri so. Yaha! Bɛ (chɛfurinim’ maa) niŋla suhupɛlli ni Dunia bɛhigu. Dunia bɛhigu mi pala shɛli Chiyaama puuni naɣila nyɛɣisim biɛla.",
+      "mos": "Wẽnd n yalgd rɩtlã n kõ A sẽn rat ned ninga la A weoogdẽ, la kɩfr-dãmbã kɩdemda ne dũni vɩɩmã, la dũni vɩɩmã pa fʋɩ yaoolem raarã taoor rẽndame tɩ yaa wʋm-noog sẽn yaa gɩrg bala.",
       "nqo": "ߊߟߊ߫ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫، ߊ߬ ߣߴߊ߬ ߘߴߊ߬ ߘߐߜߙߐ߬ ߟߊ߫، ߊ߬ߟߎ߬ ߓߘߊ߫ ߛߍߥߊ߫ ߘߎߢߊ߫ ߢߣߊߡߦߊ ߟߊ߫߸ ߘߎߢߊ߫ ߢߣߊߡߦߊ ߘߏ߲߬ ߕߍ߫ ߝߏߦߌ߬ ߘߌ߫ ߛߎ߬ߟߊ߫ ( ߕߊ ߘߊߝߍ߬ ) ߝߏ߫ ߘߊ߰ߡߎ߲߬ߣߍ߲߫"
     }
   },
@@ -3759,9 +3761,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lt": "Argi nematote, kaip Allahas nustatė palyginimus? Gražus žodis kaip gražus medis, kurio šaknys tvirtai įtaisytos ir kurio šakos (siekia) dangų (t. y. labai aukštai).",
       "mg": "Tsy hitanao va ahoana no nanaovan’i Allah fanoharana ny teny tsara ? Dia mitovy amin’ny hazo tsara iray, izay miorina tsara ny fakany, ary ny rantsany dia manakatra ny habakabaka.",
       "ln": "Boye, ozali kornona te ete: Allah apeși ndakisa ya liloba lilamu lizali lokola nzete elamu eye misisa mia yango mikangama malamu, mpe bitape bia yango bibimi na likolo?",
-      "dag": "(Yaa nyini ŋun gbilsiri tibli)! Di nibɔŋɔ, a bi nya Naawuni ni ti ŋmahinli ni yεltɔɣa suŋ, di ŋmanila ti’ shεli din viεla, ka di nyεbli mali yaa tiŋgbani ni, ka di wula be zuɣusaa.",
-      "mos": "Rẽ yĩnga fo pa bãng Wẽnd sẽn rɩk bilgri, gom-sõng wẽnda wala tɩ-sõngo, a yẽgrã sudɑme t'a wuilã tão n tees saasẽ wã.",
+      "dag": "(Yaa nyini ŋun gbilsiri tibli)! Di nibɔŋɔ, a bi nya Naawuni ni ti ŋmahinli ni yɛltɔɣa suŋ, di ŋmanila ti’ shɛli din viɛla, ka di nyɛbli mali yaa tiŋgbani ni, ka di wula be zuɣusaa.",
+      "mos": "Rẽ yĩnga fo pa bãng Wẽnd sẽn rɩk bilgri, gom-sõng wẽnda wala tɩ-sõngo, a yẽgrã sudame t'a wuilã tão n tees saasẽ wã.",
       "mdh": "Dala nengka katawi i pinambuat nu Allah i upaman nu kadtalu a mapya (laa ilaaha illa Allah), na mana bun kayu a midtakena i dalidin (sya sa lupa) endu panganin (sapak) na lu sa langit.",
+      "ak": "Wonhunuu sɛdeɛ Nyankopɔn de asɛm pa yɛ mfatoho? (Asɛm pa} tesɛ dua pa a nenhini no si hɔ pintinn na ne mman no nso kɔ soro paa,-",
       "ceb": "Wala ba kamo makakita kung giunsa sa Allah paghimo sa usa ka panag-ingnan sa maayong pulong (nga) sama sa maayong kahoy, kansang gamut lig-on, ug kansang mga sanga padulong ngadto sa langit,",
       "nqo": "ߌ ߡߴߊ߬ ߦߋ߫ ߊߟߊ߫ ߣߊ߬ ߛߊ߲߬ߘߊ ߟߊ߫ ߟߊ߫ ߢߊ ߡߍ߲ ߸ ߞߏ߫ ߞߎߡߊ߫ ߢߌߡߊ ߦߋ߫ ߟߋ߬ ߦߏ߫ ߦߙߌ߫ ߢߌߡߊ߸ ߡߍ߲ ߖߎ߭ ߓߊ߲ߓߊ߲ߣߍ߲߫ ߜߡߊ߫߸ ߊ߬ ߓߏߟߏ߲ ߦߋ߫ ߛߊ߲ߘߐ߫"
     }
@@ -3822,9 +3825,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Kuno kutuusa (Obubaka) eri abantu era babe nga balabulwa na bwo (ebyaziyizibwa), era babe nga bamanya nti mazima Yye ali Omusinzibwa omu, kale nno abalina amagezi beebuulirire.",
       "rw": "Iyi (Qur’an) ni ubutumwa ku bantu, kugira ngo bukoreshwe mu kubaburira, no kugira ngo banamenye ko (Allah) ari We Mana imwe rukumbi, ndetse no kugira ngo abafite ubwenge babikuremo isomo.",
       "dag": "Ŋɔ maa nyɛla tuuntali n-zaŋ ti ninsalinima, domin bɛ (Naawuni) zaŋ li kpɛhi ba dabiɛm, ka bɛ lahi baŋ ni achiika! O (Naawuni) nyɛla Duuma yino, ka haŋkayanim’ lahi zaŋ li teei Naawuni yɛla.",
-      "mos": "Ad woto (Alkʋrãanã) yaa taasg ne nebã, lɑ sẽn na yɩl tɩ b bugs b mensã ne-a, la sẽn na yɩl tɩ b bãng t'A yaa Soɑb a yembr tãa, lɑ yam-bεεl rãmbã tall n tẽege.",
+      "mos": "Ad woto (Alkʋrãanã) yaa taasg ne nebã, la sẽn na yɩl tɩ b bugs b mensã ne-a, la sẽn na yɩl tɩ b bãng t'A yaa Soab a yembr tãa, la yam-bɛɛl rãmbã tall n tẽege.",
       "mdh": "Namba i pinasampay kanu manga taw endu ipapegkagilek kanilan, ka endu nilan katawan i satiman bu su Allah, endu ma-indaw su aden manga pusungin na makatadem.",
-      "ak": "(Qur’aan) woi yε asεm no ho dawubͻ dema adasamma sεdeε wͻde bεbͻ wͻn ho kͻkͻ, na wͻ’de behunu sε Ɔne Awurade Baako, na nnipa mu mmadwemmafoᴐ no nso de bεto wͻn adwene mu.",
+      "ak": "(Qur’aan) woi yɛ asɛm no ho dawubɔ dema adasamma sɛdeɛ wɔde bɛbɔ wɔn ho kɔkɔ, na wɔ’de behunu sɛ Ɔne Awurade Baako, na nnipa mu mmadwemmafoᴐ no nso de bɛto wɔn adwene mu.",
       "nqo": "ߣߌ߲߬ ߦߋ߫ ߟߊ߬ߛߋ߬ߟߌ߫ ߟߋ߬ ߘߌ߫ ߡߐ߱ ߟߎ߫ ߡߊ߬ ߛߴߊ߬ߟߎ߬ ߘߌ߫ ߡߊߛߌߟߊ߲߫ ߊ߬ ߟߊ߫ ، ߊ߬ ߣߌ߫ ߛߴߊ߬ߟߎ߬ ߘߴߊ߬ ߟߐ߲߫ ߞߏ߫ ߊ߬ߟߋ ߟߋ߫ ߡߊ߰ߙߌ߬ ߞߋߟߋ߲ ߘߌ߫ ߸ ߊ߬ ߣߌ߫ ߖߐ߲߰ߛߊ߫ ߦߟߌߡߊ ߟߎ߬ ߘߌ߫ ߦߟߌߟߊߓߌ߬ߟߊ߬"
     }
   },
@@ -3890,7 +3893,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad yaa Tõnd n sik Alkʋrãanã, la ad yaa Tõnd n gũud-a.",
       "aa": "Diggah Nabii Mucammadal ﷺ Qhuraan oobissem Nee, diggah kaa (Qhuraan kinnuk) dacrissam nee tu kaat ossaanaah tu kaak daggoysaanamak.",
       "mdh": "(Tig nu Allah): saben-sabenal a sekami na initulun nami su Qur’an, endu sekami bun i pebparihala lun. (sa di kawmanan-dikakulangan).",
-      "ak": "Nokorε sε, Yεn na Yɛ sianee (Qur’aan) Afutusεm no, na nokorε sε, Yεn na Yεbεbͻ ho ban.",
+      "ak": "Nokorɛ sɛ, Yɛn na Yɛ sianee (Qur’aan) Afutusɛm no, na nokorɛ sɛ, Yɛn na Yɛbɛbɔ ho ban.",
       "ceb": "Sa pagkatinuod Kami , Kami mao ang nagpadayag sa Pahinumdom (Qur’an) ug Kami sa pagkatinuod magabantay ug magatipig niini (gikan sa tanang pagtuis).",
       "nqo": "ߒ߬ߠߎ߫ ߟߋ߫ ߣߊ߬ ߞߊ߬ߥߊ߲߬ߘߌ ߟߊߖߌ߰ ߟߊ߫߸ ߒ߬ߠߎ߫ ߟߋ߫ ߘߏ߲߬ ߦߴߊ߬ ߞߣߐ߬ߜߍ߲߬ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
@@ -3968,7 +3971,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad fo Soabã la Naanda, n yaa minim Naaba.",
       "aa": "Diggah Nabiyow ku Rabbi ummaanim gineeh isi naqoosah caaloota yaaxigi kinni.",
       "mdh": "Benal su Kadenan nengka i bamaluy a mataw.",
-      "ak": "Nokorε sε, wo Wura Nyankopͻn ne Ɔbͻͻ adeε no, Ɔne Onimdefo no.",
+      "ak": "Nokorɛ sɛ, wo Wura Nyankopɔn ne Ɔbɔɔ adeɛ no, Ɔne Onimdefo no.",
       "ceb": "Sa pagkatinuod ang 'Allah' imong Ginoo mao ang Magbuluhat sa tanang butang, ang Labing Nakahibalo sa Tanan.",
       "nqo": "ߌ ߡߊ߰ߙߌ ߟߋ߬ ߘߊ߲ߠߌ߲ߠߊ߫ ߞߎߛߊ߲ ߘߌ߫ ߘߋ߬ ߸ ߞߟߊ߬ߡߊ߬ߓߊ߮ ߟߋ߬"
     }
@@ -4041,11 +4044,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Yatonda eggulu omusanvu n'ensi lwa nsonga, Musukkulumu nnyo ku ebyo bye bamugattako.",
       "rw": "Yaremye ibirere n’isi ku mpamvu z’ukuri. Ubutagatifu ni ubwe kandi nta ho ahuriye n’ibyo bamubangikanya na byo.",
       "ln": "Akela likolo na mabele na bosóló, azali likolo lia baye bazali kosangisa (ye).",
-      "dag": "O namla sagbana mini tiŋgbani ni yεlimaŋli, O nam duya ka chɛ bɛ ni laɣindi O mini shɛli n-jεmdi maa.",
+      "dag": "O namla sagbana mini tiŋgbani ni yɛlimaŋli, O nam duya ka chɛ bɛ ni laɣindi O mini shɛli n-jɛmdi maa.",
       "mos": "A naana saasã la tẽngã ne sɩda, A Naam yɩ wagell n yi b sẽn maand-A lagem-n-taar ne wã.",
       "aa": "Qaranwaa kee baaxo cakkil gine Rabbi agleh kaat hayya haanamak saytunnooweeh, fayya iyyeeh nabah.",
       "mdh": "Binaluy nin su manga langit endu lupa sa haqq, (benal) mapulu su Allah kanu (langun) a ipedsakutu nilan.",
-      "ak": "Ɔde nokorε no na abͻ soro ne asaase, Ɔyε Okokuroko korͻn paa kyεn deε wͻde bata Ne ho no.",
+      "ak": "Ɔde nokorɛ no na abɔ soro ne asaase, Ɔyɛ Okokuroko korɔn paa kyɛn deɛ wɔde bata Ne ho no.",
       "ceb": "Gibuhat sa Allah ang mga langit ug ang yuta sa tinuod nga katuyuan, Labing Halangdon Siya, labaw sa tanan nga ilang gipakig-uban Kaniya (sa mga diyosdiyos).",
       "nqo": "ߊߟߊ߫ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲߫ ߕߎ߬ߢߊ߫ ߟߋ߬ ߟߊ߫، ߊ߬ ߞߘߐߕߊ߬ߣߍ߲߫ ߊ߬ߟߎ߬ ߟߊ߫ ߜߙߊ߬ߢߐ߲߮ ߠߎ߫ ߡߊ߬"
     }
@@ -4119,7 +4122,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Yẽnd n sikd koom saasẽ wã yãmb yũub yĩnga, la A yiisd tɩɩs ne koomã tɩ yãmb wãbend y rũmsi.",
       "aa": "Sinaamey Yalla kinni Qaraanak lee (rob kinnuk) siinih oobissem, taaquben lee teetik siinih heeh, cooxuy sinni lac elle taylooleeni siinih edde yuysubuke.",
       "mdh": "Su Allah i napatulun ebpun sa langit (i ig) a lekanu lu ba i baginumen nu, endu bagetu su kayu a pegken nu binatang nu.",
-      "ak": "Ɔno na Ɔsane nsuo firi soro a emu bi na monom, εna ebi nso na yεdema nnua a mo nyεmmoa die no nso (nyini),",
+      "ak": "Ɔno na Ɔsane nsuo firi soro a emu bi na monom, ɛna ebi nso na yɛdema nnua a mo nyɛmmoa die no nso (nyini),",
       "ceb": "Siya (Allah) mao ang nagpakanaog sa ulan gikan sa panganod; gikan niini kamo nagainom, ug pinaagi niini (mitubo) ang mga tanom diin kamo nagasibsib (sa inyong mga hayopan).",
       "nqo": "ߊ߬ߟߋ ߟߋ߫ ߞߊ߬ ߖߌ ߟߊߖߌ߰ ߞߊ߬ ߓߐ߫ ߡߐ߲ߕߐ߲ ߘߐ߫ ، ߡߌ߲߬ߖߌ ߦߴߊߟߎ߫ ߦߋ߫ ߊ߬ ߘߐ߫ ߸ ߦߙߌ ߟߎ߬ ߦߋ߫ ߝߍߘߍ߲߫ ߠߴߏ߬ ߟߋ ߘߐ߫ ߸ ߊߟߎ߫ ߦߋ߫ ߓߌߦߊ߲ ߠߎ߬ ߘߡߊߢߌߣߌ߲߫ ߠߊ߫ ߡߍ߲ ߠߎ߬ ߘߐ߫"
     }
@@ -4180,9 +4183,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lt": "Juo Jis priverčia užaugti jums javus, alyvuoges, datulių palmes, vynuoges ir visų rūšių vaisius. Iš tiesų, tame tikrai yra aiškus įrodymas ir akivaizdus ženklas žmonėms, kurie mąsto.",
       "lg": "Abamereza nayo ebirimwa n'emizeyituuni n'emitende n'enzabbibu na buli bibala byonna, mazima mu ekyo mulimu akabonero (akalaga obuyinza) bwa Allah eri abantu abafumiitiriza.",
       "rw": "Ayameresha ibihingwa, imizeti, imitende, imizabibu ndetse na buri bwoko bw’imbuto. Mu by’ukuri muri ibyo harimo inyigisho ku bantu batekereza.",
-      "dag": "Ka O mali li yihiri bimbila n-tiri ya, ni zaituuni mini dobino, ni inabi (sinsaba), n-ti pahi binwola balibu kam. Achiika! Ŋɔ maa puuni mali kpahimbu n-ti ninvuɣu shεbu ban tεhira.",
-      "mos": "A bulsda ne-ɑ koodã lɑ zaetʋʋnã la tɑmar tɩɩsã la sib-rãmbã lɑ tɩ-biisã buud fãɑ, ad bee rẽ pʋgẽ tagmas ne neb sẽn tagsde.",
-      "ak": "(Ɔsan nso) de ma mfudeε ne ngo nnua ne akyiresua nnua, ne bobe ne nnuaba ahodoͻ nyini ma mo. Nokorε sε, nsεnkyerεnee wͻ wei nom mu dema nnipa a wͻdwen.",
+      "dag": "Ka O mali li yihiri bimbila n-tiri ya, ni zaituuni mini dobino, ni inabi (sinsaba), n-ti pahi binwola balibu kam. Achiika! Ŋɔ maa puuni mali kpahimbu n-ti ninvuɣu shɛbu ban tɛhira.",
+      "mos": "A bulsda ne-a koodã la zaetʋʋnã la tamar tɩɩsã la sib-rãmbã la tɩ-biisã buud fãa, ad bee rẽ pʋgẽ tagmas ne neb sẽn tagsde.",
+      "ak": "(Ɔsan nso) de ma mfudeɛ ne ngo nnua ne akyiresua nnua, ne bobe ne nnuaba ahodoɔ nyini ma mo. Nokorɛ sɛ, nsɛnkyerɛnee wɔ wei nom mu dema nnipa a wɔdwen.",
       "ceb": "Siya nagpatubo niini alang kaninyo sa mga tanom, mga olibo, mga palmera, mga ubas, ug sa tanang mga bunga; sa pagkatinuod adunay Timaan niini alang sa katawhan nga namalandong.",
       "nqo": "ߊ߰ ߛߣߍ߬ߝߋ߲ ߠߎ߬ ߟߊߝߍߘߍ߲߫ ߠߴߊߟߎ߫ ߦߋ߫ ߊ߬ ߟߊ߫ ߸ ߊ߬ ߣߌ߫ ߛߏߞߏ߬ߘߏ ߣߌ߫ ߕߌ߲߬ߖߐ߲ ߣߌ߫ ߖߐ߬ߓߌ߬ߙߋ߲ ߠߎ߬ ، ߊ߬ ߣߌ߫ ߦߙߌߘߋ߲ ߛߎ߮ ߓߍ߯ ߘߏ߫ ، ߕߐ߰ߡߊ߬ߛߙߋ߫ ߟߴߏ߬ ߘߐ߫ ߡߌ߬ߙߌ߲߬ߘߌ߬ ߛߌߡߟߊ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
@@ -4248,11 +4251,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Allah Wammwe ali Allah Omu, abo abatakkiriza Lunaku lwa Nkomerero emitima gyabwe gikiwakanya era nga bo beekuza.",
       "rw": "Imana yanyu ni Imana imwe. Ariko ba bandi batemera imperuka, imitima yabo ihakana (ubumwe bwa Allah), kandi babaswe n’ubwibone.",
       "ln": "Nzambe wa bino (Allah) azali Nzambe sé moko ya kobondela na bosôló, mpe baye bazali kondima na mokolo mwa suka te, mitema mia bango miboya bomoko bwa Allah, mpe batondi na lolendo.",
-      "dag": "Yi Duuma (Naawuni) nyɛla Duuma yino, amaa! Ninvuɣu shεba ban bi ti Chiyaama yεlimaŋli maa, bɛ suhiri nyɛla din zaɣisira (Naawuni gaŋsibu), ka bɛ lahi nyɛla ban tibgi bɛ maŋa.",
-      "mos": "Yãmb Soabã yaa Soɑb yεnga, lɑ neb nins sẽn pa kõt sɩd ne yɑoolem rɑɑrã, b sũyã kɩɩsda rẽ tɩ b yaa waoog-m-mens rãmba.",
+      "dag": "Yi Duuma (Naawuni) nyɛla Duuma yino, amaa! Ninvuɣu shɛba ban bi ti Chiyaama yɛlimaŋli maa, bɛ suhiri nyɛla din zaɣisira (Naawuni gaŋsibu), ka bɛ lahi nyɛla ban tibgi bɛ maŋa.",
+      "mos": "Yãmb Soabã yaa Soab yɛnga, la neb nins sẽn pa kõt sɩd ne yaoolem raarã, b sũyã kɩɩsda rẽ tɩ b yaa waoog-m-mens rãmba.",
       "aa": "Sinaamey sin Yallay dubuk qibaada cakkisita usuk inki Yalla, tokkel ellecaboh Ayro nummayse waa mari ken lubbitte Yallih inkittinaanc tangaddch, usun cakki oggolaanamak kaxxamariinitak.",
       "mdh": "Su Kadenan nu na satiman bu na su di bangimbenal sa gay a mawli na pedsupak i atay nilan, endu silan na pemamasla silan.",
-      "ak": "Mo Nyankopͻn no yε Awurade baako. Wͻn a wͻnnye Daakye no nnie no, wͻn akoma kyiri (sε wͻbεte sε Nyankopͻn yε baako), na wͻyε ahomasoͻ.",
+      "ak": "Mo Nyankopɔn no yɛ Awurade baako. Wɔn a wɔnnye Daakye no nnie no, wɔn akoma kyiri (sɛ wɔbɛte sɛ Nyankopɔn yɛ baako), na wɔyɛ ahomasoɔ.",
       "nqo": "ߊߟߎ߫ ߡߊ߰ߙߌ ߦߋ߫ ߡߊ߰ߙߌ߬ ߞߋߟߋ߲߫ ߔߋ߫ ߟߋ߬ ߘߌ߫ ، ߡߍ߲ ߠߎ߬ ߕߍ߫ ߟߊ߫ ߟߊ߫ ߛߎ߬ߟߊ߬ߞߏ ߟߊ߫ ߸ ߏ߬ ߟߎ߫ ߟߋ߫ ߛߣߐ߬ߡߍ ߟߎ߫ ߖߘߍ߬ߘߐ߬ߓߦߊ߬ߕߐ ߦߋ߫ ߡߊ߬ߛߐ߬ߛߐ߬ߟߌ ߟߊ߬"
     }
   },
@@ -4315,9 +4318,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abaffe tebatunuulira ne balaba ebintu Allah bye yatonda, ebisiikirize by'abo engeri gye bikyukamu ku ddyo ne ku kkono nga bivunnamira Allah era nga bimugondera?",
       "rw": "Ese ntibabona uko ibicucucucu by’ibintu Allah yaremye bibogamira iburyo n’ibumoso byumvira Allah, ndetse binicisha bugufi (ku mategeko ye)?",
       "ln": "Boye bazali kornona te ete maye manso Allah akela, bililingi na yango bitelama alima na ngambu ya loboko ya mobali mpe na loboko ya mwasi, nyoso bizali kofukamela Allah na limemia mpe nakomikitisa?",
-      "mos": "Rẽ yĩnga b pa yãnd tɩ bũmb fãa Wẽnd sẽn nɑɑnã maasem yɑɑ sẽn kɩlld goɑbg lɑ rɩdgo, n maand suguud ne Wẽnde, tɩ b yɑɑ sẽn sik b mense?",
+      "mos": "Rẽ yĩnga b pa yãnd tɩ bũmb fãa Wẽnd sẽn naanã maasem yaa sẽn kɩlld goabg la rɩdgo, n maand suguud ne Wẽnde, tɩ b yaa sẽn sik b mense?",
       "mdh": "Ngintu dala nilan mailay su binaluy nu Allah a enggaga-isa a pakandulay-dulay su alung-alungin sa biwang-kawanan sa ipedsugyud nilan sa Allah endu silan na bangalimbaban sa Allah.",
-      "ak": "Anaasε wͻnhunuu nneεma a Nyankopͻn abͻ; sεdeε ne sunsum dane kͻ nifa so ne benkum so, brε ne ho ase ma Nyankopͻn wͻ ahobraseε paa mu?",
+      "ak": "Anaasɛ wɔnhunuu nneɛma a Nyankopɔn abɔ; sɛdeɛ ne sunsum dane kɔ nifa so ne benkum so, brɛ ne ho ase ma Nyankopɔn wɔ ahobraseɛ paa mu?",
       "nqo": "ߊ߬ ߝߐ߫ ߊ߬ߟߎ߬ ߡߴߊ߬ ߡߊߝߟߍ߫ ߓߊ߬ ߊߟߊ߫ ߞߊ߬ ߝߋ߲ ߡߍ߲ ߓߍ߯ ߘߊ߲߫߸ ߏ߬ ߟߎ߬ ߘߎߟߋ߲ ߠߎ߬ ߦߴߊ߬ߟߎ߬ ߕߊ߯ߣߌߛߊ߬ߦߌ߬ ߟߊ߫ ߞߌߣߌ߲ ߣߌ߫ ߣߎߡߊ߲ ߠߎ߫ ߝߍ߬ ߕߌ߲ߓߌߘߌ߲ ߘߌ߫ ߊߟߊ߫ ߦߋ߫ ߸ ߊ߬ ߣߌ߫ ߖߘߍ߬ߘߐ߯ߦߊ ߘߌ߫"
     }
   },
@@ -4375,8 +4378,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abaffe tebatunuulira ebinyonyi nga byagondezebwa (okubuuka) waggulu mubbanga tewali abiwanirira okuggyako Allah. Mazima mw'ekyo mulimu obubonero eri abantu abakkiriza.",
       "rw": "Ese ntibabona ko inyoni zoroherejwe kuguruka mu kirere nta kindi kizifashe kitari Allah? Mu by’ukuri muri ibyo harimo inyigisho ku bantu bemera.",
       "ln": "Boye bozali kornona te ete! Ba ndeke baye bazali kopumbwa o likolo, eloko ya kosimba bango ezali te sé Allah? Ya sólo, wana ezali elembo mpo bato bakoka kondima.",
-      "mos": "Rẽ yĩnga yãmb pa get luiili wã tɩ yɑɑ sẽn nom tɩ b be sɑɑsã ween-n-vɩʋʋgẽ, tɩ bũmb pa gãd-ba, rẽnda Wẽnd bala, ad bee woto pʋga sẽn yɑɑ tagmas-rãmb ne neb nins sẽn kõt sɩdã.",
-      "ak": "Enti wͻnhunuu nnomaa a wͻtu nenam mframa mu wͻ ewiem no? Obiara nni hͻ a ɔkuta wͻn mu, na mmom Onyankopͻn. Nokorε sε nsεnkyerεnee wͻ wei mu dema nnipa a wͻgye die no.",
+      "mos": "Rẽ yĩnga yãmb pa get luiili wã tɩ yaa sẽn nom tɩ b be saasã ween-n-vɩʋʋgẽ, tɩ bũmb pa gãd-ba, rẽnda Wẽnd bala, ad bee woto pʋga sẽn yaa tagmas-rãmb ne neb nins sẽn kõt sɩdã.",
+      "ak": "Enti wɔnhunuu nnomaa a wɔtu nenam mframa mu wɔ ewiem no? Obiara nni hɔ a ɔkuta wɔn mu, na mmom Onyankopɔn. Nokorɛ sɛ nsɛnkyerɛnee wɔ wei mu dema nnipa a wɔgye die no.",
       "ceb": "Wala ba nila (mga manlilimod) makita ang mga langgam, nga nagalupad-lupad sa kawanangan? Walay nagpaluyo kanila gawas sa Allah; sa pagkatinuod adunay mga Timailhan niini alang sa mga tawo nga mituo.",
       "nqo": "ߊ߬ߟߎ߬ ߕߍ߫ ߞߐ߬ߣߐ ߟߎ߬ ߞߟߏߣߍ߲ ߦߋ߫ ߟߊ߫ ߛߊ߲ ߝߏ߬ߟߏ߲߬ߝߊ߬ߟߊ߲߬ߕߍ ߘߐ߫ ߓߊ߬؟ ߝߏߦߌ߬ ߕߴߏ߬ ߟߎ߬ ߘߐߡߌ߬ߘߊ߬ ߟߊ߫ ߝߏ߫ ߊߟߊ߫ ، ߕߊ߰ߛߌ߬ߞߏ߫ ߟߎ߫ ߟߴߏ߬ ߘߐ߫ ߡߌ߬ߙߌ߲߬ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
@@ -4424,6 +4427,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "he": "אכן אללה מצווה לעשות צדק, לגמול חסד ולעזור לקרוב המשפחה (הנזקק), הוא אוסר את התועבה, ואת המגונה, והקיפוח, והוא מזהירכם למען היזכרו.",
       "lg": "Mazima Allah alagira obwenkanya, n'okuyisa, obulungi n'okugabira ab'oluganda olw'okumpi. Era aziza eby'obuwemu n'empisa embi n'okwewaggula, ababuulirira mube nga mujjukira.",
       "mos": "Ad Wẽnd sagenda ne tẽeg-tɩrg la manegre, la rog-pẽts sõngre, la A gɩdgd tʋʋm yood la yel-kiti la wẽgbo, A sagenda yãmb tɩ sãnd-sãnde y na tags n gese.",
+      "ak": "Nokorɛ sɛ, deɛ Nyankopɔn rehyɛ mo sɛ monyɛ ne: Nokorɛ die, ne ayɛmyɛ, ɛna afei (mobɛboa) abusua; afei Ɔrebra mo ahohwisɛm ne amumuyɛ; (Nyankopɔn) retu mofo sɛdeɛ mobɛfa adwen.",
       "nqo": "ߊߟߊ߫ ߦߋ߫ ߟߐ߬ ߞߍ߫ ߟߊ߫ ߕߋߟߋ߲ ߣߌ߫ ߢߊ߬ߟߌ ߣߌ߫ ߡߊ߬ߛߎ߬ߘߎ߲߬ߧߊ߬ߓߊ߮ ߟߎ߬ ߛߐ ߟߋ߬ ߟߊ߫ ߸ ߞߊ߬ ߜߍ߲ߠߌ߲ ߞߍ߫ ߞߏߙߏ߲ߧߊ ߣߌ߫ ߞߐ߲ߞߏ ߣߌ߫ ߓߊ߰ߒߡߊ ߡߊ߬ ، ߊ߬ ߦߴߊߟߎ߫ ߞߊ߬ߥߊ߲߬ߘߌ߬ ߟߊ߫ ߟߋ߬ ߛߴߊߟߎ߫ ߘߴߊߟߎ߫ ߕߊ߰ߛߌ߫"
     }
   },
@@ -4488,7 +4492,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ibyo mutunze bizashira, ariko ibiri kwa Allah bizahoraho. Kandi rwose, ba bandi bihanganye tuzabagororera ibihembo byabo byiza kurusha ibyo bakoraga.",
       "mos": "Bũmb ning sẽn be yãmb nengẽ wã satame, la sẽn be Wẽnd nengẽ wã n paade, la ad Tõnd na n rola sug-maandbã b keoor neerem sẽn yɩɩd b sẽn da tʋmdã.",
       "mdh": "Ka langun a san sa lekanu na gadala, langun a lu sa Allah i gasama, endu balasan nami su manga taw a midsabar kanu balasin, sa ya pan mapya kanu penggalebeken nilan (sya sa dunya).",
-      "ak": "Deε εwͻ mo nkyεn no bɛtwam, na deε εwͻ Nyankopͻn hᴐ no deε εwͻ hͻ daa. Nokorε sε, wͻn a wͻsii aboterε no dwumadi pa a wͻdiiε no, yεbεma wͻn ho akatua pa paa.",
+      "ak": "Deɛ ɛwɔ mo nkyɛn no bɛtwam, na deɛ ɛwɔ Nyankopɔn hᴐ no deɛ ɛwɔ hɔ daa. Nokorɛ sɛ, wɔn a wɔsii aboterɛ no dwumadi pa a wɔdiiɛ no, yɛbɛma wɔn ho akatua pa paa.",
       "nqo": "ߝߋ߲ ߡߍ߲ ߦߴߊߟߎ߫ ߓߟߴߏ߬ ߦߋ߫ ߓߊ߲߫ ߠߊ߫ ߟߋ߬ ߸ ߡߍ߲ ߦߋ߫ ߊߟߊ߫ ߓߟߏ߫ ߛߊ߫߸ ߏ߬ ߦߋ߫ ߕߏߟߴߊ߬ ߡߊ߬ ߟߋ߬ ، ߊ߲ ߣߊ߬ߕߐ߫ ߟߋ߫ ߡߎ߬ߢߎ߲߬ߓߊ߮ ߟߎ߬ ߛߐ߫ ߟߴߊ߬ߟߎ߫ ߛߊ߬ߙߊ ߟߊ߫ ߞߵߊ߬ ߓߍ߲߬ ߊ߬ߟߎ߬ ߗߋߥߊߟߌ ߘߐ߫ ߢߌ߬ߡߊ ߡߊ߬ ߛߎߋ߫"
     }
   },
@@ -4559,11 +4563,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima Allah ali wamu n'abo abamutya, era abo abalongoosa.",
       "rw": "Mu by’ukuri Allah ari kumwe na ba bandi bamugandukira, ndetse na ba bandi bakora ibyiza.",
       "ln": "Ya sólo, Allah azali elongo na babangi mpe basali bolamu.",
-      "dag": "Achiika! Naawuni mini ninvuɣu shɛba ban zɔri Ŋun’ Naawuni m-be, n-ti pahi ninvuɣu shεba ban viɛlgiri bɛ tuma",
+      "dag": "Achiika! Naawuni mini ninvuɣu shɛba ban zɔri Ŋun’ Naawuni m-be, n-ti pahi ninvuɣu shɛba ban viɛlgiri bɛ tuma",
       "mos": "Ad Wẽnd bee ne neb nins sẽn zoet-A wã la neb nins sẽn yaa manegdbã.",
       "aa": "Diggah Yalli isik meesita maraa kee isi taama yaymaaqe mará luk yan catoo kee qokoluh.",
       "mdh": "Saben-sabenal su Allah na salta kanu manga taw a magilek sa lekanin, endu silan a pebpiyapiya.",
-      "ak": "Nokorε sε, Nyankopͻn ka wͻn a wͻsuro Nyame, ne wͻn a wͻyε ayεmyε no ho.",
+      "ak": "Nokorɛ sɛ, Nyankopɔn ka wɔn a wɔsuro Nyame, ne wɔn a wɔyɛ ayɛmyɛ no ho.",
       "ceb": "Sa pagkatinuod si Allāh uban kanila nga nagmanggihadlukon ngadto Kaniya ug naglikay sa dautan ug nagbuhat ug maayo.",
       "nqo": "ߊߟߊ߫ ߦߋ߫ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߫ ߟߋ߫ ߝߍ߬ ߘߋ߬ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߠߎ߬ ߦߋ߫ ߢߊ߬ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
@@ -4638,10 +4642,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rn": "Muntu! Ntukabangikanye Imana Allah n’iyindi mana, ngo wisange utewe ivyatsi n’Imana Allah, wongere unagirirwe n’umwikomo na Yo maze uteterwe.",
       "ln": "Kosangisa Allah na nzambe mosusu te, noki te okomikuta o kati ya baboyami mpe bakweisami.",
       "dag": "(Yaa nyini ninsala)! Di bo Duuma so m-pahi Naawuni zuɣu, ka tileei bɛ ni galindi so, ni ŋun filiŋ.",
-      "mos": "Ra wa tũ soɑb zẽng n lagem Wẽnd ye, tɩ fo wat n bɑɑsɑme n yɑɑ b sẽn sabs a soaba, b sẽn bas a soabɑ.",
+      "mos": "Ra wa tũ soab zẽng n lagem Wẽnd ye, tɩ fo wat n baasame n yaa b sẽn sabs a soaba, b sẽn bas a soaba.",
       "aa": "Kee seehadaytow Yallâ luk aka Yalla agleh kaat mahin qibaadal, toysa atu Yallih xaqul sahtimeeh wacarriysime num akkettok.",
       "mdh": "Da ka mumbal sa isa a kadenan a lyu sa Allah, ka maka-ayan ka sa kalusak i mabpalas nengka.",
-      "ak": "Hwε na wanfa awurade foforͻ bi anka Nyankopͻn ho, anhwε a watena ase (wͻ Amanehunu gyem wͻ) animguaseε ne ahokyere mu.",
+      "ak": "Hwɛ na wanfa awurade foforɔ bi anka Nyankopɔn ho, anhwɛ a watena ase (wɔ Amanehunu gyem wɔ) animguaseɛ ne ahokyere mu.",
       "ceb": "Ayaw pagbutang ug kauban sa Allah sa bisan unsa nga laing dios, aron dili ka magpabilin (maglingkod) nga gipakaulawan, ug gibiyaan.",
       "nqo": "ߌ ߞߊߣߊ߬ ߡߊ߰ߙߌ߬ ߜߘߍ߫ ߞߍ߫ ߊߟߊ߫ ߝߍ߬ ߘߋ߬ ، ߌ ߡߊ߲߬ߜߏߡߊ߲߫ ߟߊߓߌߟߊ߬ߣߍ߲ ߘߴߌ ߛߌ߰ ߏ߬ ߘߐ߫"
     }
@@ -4707,11 +4711,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima Mukama Omulabirizi Wo ayanjululiza obugabirizi oyo gw'aba ayagadde, n'awa mu ngeri y'empola (eri omulala) anti mazima Yye bulijjo amanyidde ddala ebikwata ku baddu Be era alaba.",
       "rw": "Mu by’ukuri Nyagasani wawe atuburira amafunguro uwo ashaka, akanatubiriza (uwo ashaka). Mu by’ukuri azi kandi abona byimazeyo iby’abagaragu be.",
       "ln": "Ya soló, Nkolo wayo apesaka bozui na oyo alingi mpe akutolaka. Mpe ya sólo, azali na sango mpe amonaka bawumbu naye.",
-      "dag": "Achiika! A Duuma (Naawuni) yεrgirila arzichi tiri O ni bɔri so, ka tahiri miisim na n-ti tiri O ni bɔri so. Achiika! O nyɛla Ŋunmidin sɔɣi O daba tuuntumsa ni, ka lahi nyɛ Nyara.",
-      "mos": "Ad yaa fo Soabã n yalgd rɩtlã n kõt A sẽn rat ɑ soab la A weoogd A sẽn tʋll ɑ soɑb zugu. Ad A yaa Mit n yɑɑ Net ne A yembsã.",
+      "dag": "Achiika! A Duuma (Naawuni) yɛrgirila arzichi tiri O ni bɔri so, ka tahiri miisim na n-ti tiri O ni bɔri so. Achiika! O nyɛla Ŋunmidin sɔɣi O daba tuuntumsa ni, ka lahi nyɛ Nyara.",
+      "mos": "Ad yaa fo Soabã n yalgd rɩtlã n kõt A sẽn rat a soab la A weoogd A sẽn tʋll a soab zugu. Ad A yaa Mit n yaa Net ne A yembsã.",
       "aa": "Diggah seehadaytow ku Rabbi isih kah faxa marah rizqhi farakka haah, isih kah faxa maral kaa ceyissi haa, diggah usuk isi naqoosak adda yaaxigi yabali kinni.",
       "mdh": "Saben-sabenal su Kadenan nengka na belatenin i rizki nin kanu kagkahanda nin endu simpitanin, ka sekanin a Allah kanu manga ulipenin na katawanin na gailay nin.",
-      "ak": "Nokorε sε, wo Wura Nyankopͻn bae akͻnhoma no mu dema obi a Ɔpε, εna Osusu (nso ma obi a Ɔpε). Nokorε sε N’ani tua Nenkoa (dwumadie) na Ohu nso..",
+      "ak": "Nokorɛ sɛ, wo Wura Nyankopɔn bae akɔnhoma no mu dema obi a Ɔpɛ, ɛna Osusu (nso ma obi a Ɔpɛ). Nokorɛ sɛ N’ani tua Nenkoa (dwumadie) na Ohu nso..",
       "nqo": "ߌ ߡߊ߰ߙߌ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߘߋ߬ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫ ، ߊ߬ ߣߴߊ߬ ߦߴߊ߬ ߜߟߍ߬ߦߊ߬ ߟߊ߫ ، ߊ߬ ߘߏ߲߬ ߞߍߣߍ߲߫ ߘߎ߰ߙߋ߲߫ ߦߋߟߌߓߊ߯ ߟߋ߬ ߘߌ߫ ߊ߬ ߟߊ߫ ߖߐ߲߭ ߠߎ߬ ߟߊ߫"
     }
   },
@@ -4783,7 +4787,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Yãmb Soabã n kẽnesd kogendã mogrã zug sẽn na yɩl tɩ yãmb bao A kũunã, ad A yɩɩme n yaa Yoalsd ne yãmba.",
       "aa": "Sinaamey Sin Rabbiy qibaada cakkisita kinni badal dawaanik siinih gexissam kay rizqhi edde gurrusuttaanamkeh, diggah usuk (Yalla kinnuk) siinih xuwaw li kinni.",
       "mdh": "Su Kadenan nu i pabpagiseg sa lekanu kanu bageda nu sya sa lagat ka mapangilay nu su limu nin, ka sekanin a Allah na malimu gayd sa lekanu.",
-      "ak": "Mo Wura Nyankopͻn no na Ɔma nsuo mu hyεn kͻ yͻͻ mamo wͻ ͻpo so sεdeε mode bεhwehwε N’adom. Nokorε sε Onyankopͻn hu mo mmͻbͻ.",
+      "ak": "Mo Wura Nyankopɔn no na Ɔma nsuo mu hyɛn kɔ yɔɔ mamo wɔ ɔpo so sɛdeɛ mode bɛhwehwɛ N’adom. Nokorɛ sɛ Onyankopɔn hu mo mmɔbɔ.",
       "nqo": "ߊߟߎ߫ ߡߊ߰ߙߌ ߟߋ߬ ߞߎߟߎ߲ ߛߊ߬ߡߊ߲߬ ߠߴߊߟߎ߫ ߦߋ߫ ߟߌ߲ߓߊ߲ ߞߊ߲߬ ߛߴߊߟߎ߫ ߘߴߊ߬ ߟߊ߫ ߢߊ߬ߒߡߊ߭ ߘߏ߫ ߢߌߣߌ߲߫ ، ߓߊߏ߬ ߊ߬ ߞߍߣߍ߲߫ ߤߌߣߟߊ߫ ߟߋ߬ ߘߌ߫ ߊߟߎ߫ ߟߊ߫"
     }
   },
@@ -4853,11 +4857,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima Ffe twassa ku nsi ebigiriko nga bya kuginyiriza olwo nno tubagezese ani asinga okukola ebirungi.",
       "rw": "Mu by’ukuri ibiri ku isi twabigize umutako wayo kugira ngo (abantu) tubagerageze, maze tugaragaze abarusha abandi gukora ibikorwa byiza.",
       "ln": "Ya soló, maye mazuami o likolo ya mabele, totiyaki yango ezala na bonzenga na yango mpo été ezala bomekami epai ya bato mpe totala nani kati na bango akosala bolamu.",
-      "dag": "Achiika! Ti (Tinim’ Naawuni) zaŋla dinbe tiŋgbani yaaŋa zuɣu leei naɣachinsi n-ti li, domin Ti dahim ba (bɛ ninsalinima) ka nya bɛ puuni ŋuni n-yɛnvεlgi o tuma.",
-      "mos": "Ad Tõnd maana sẽn be tẽngã zugã tɩ yɑɑ faas-teed ne-ɑ sẽn na yɩl n zarb-b n ges ned ning sẽn yɩɩda ne tʋʋm sõmblem.",
+      "dag": "Achiika! Ti (Tinim’ Naawuni) zaŋla dinbe tiŋgbani yaaŋa zuɣu leei naɣachinsi n-ti li, domin Ti dahim ba (bɛ ninsalinima) ka nya bɛ puuni ŋuni n-yɛnvɛlgi o tuma.",
+      "mos": "Ad Tõnd maana sẽn be tẽngã zugã tɩ yaa faas-teed ne-a sẽn na yɩl n zarb-b n ges ned ning sẽn yɩɩda ne tʋʋm sõmblem.",
       "aa": "Nanu diggah baaxô bagul eneyyi ittam baaxoh bila abneeh teetil yan marah tuxxiq abne, mcqc taamah keenik yayse maraa kee uma taamah keenik gaca mara keenik mokkorraah naaxigemkeh.",
       "mdh": "Saben-sabenal sa lekami na binaluy nami kanu lupa i namangetu a mapya i palasin, ka endu nami gabatalu u entayn i mapya i galebekin.",
-      "ak": "Nokorε sε, Yɛayε deε εwͻ asaase soͻ no afεɛfεdeε ama (asaase) no, sεdeε Yεde bεyε nnipa nsͻhwε, (agyina so ahwε) wͻn mu obi a odi dwuma pa.",
+      "ak": "Nokorɛ sɛ, Yɛayɛ deɛ ɛwɔ asaase soɔ no afɛɛfɛdeɛ ama (asaase) no, sɛdeɛ Yɛde bɛyɛ nnipa nsɔhwɛ, (agyina so ahwɛ) wɔn mu obi a odi dwuma pa.",
       "ceb": "Sa pagkatinuod Kami (Allah) nagbuhat sa unsay anaa sa yuta ingon nga usa ka dayandayan alang niini, aron Among sulayan sila kon kinsa kanila ang labing maayo sa pamatasan ug sa buhat.",
       "nqo": "ߒ߬ߠߎ߫ ߣߊ߬ ߘߎ߱ ߞߊ߲߬ߝߋ߲ ߠߎ߬ ߞߍ߫ ߟߴߊ߬ ߡߊ߬ߢߍ߯ߙߍ ߘߌ߫ ߟߋ߬ ߸ ߞߵߊ߬ ߟߊߥߌ߬ߟߌ߫ ߊ߬ߟߎ߬ ߞߘߐߓߐ ߡߵߊ߬ߟߎ߬ ߡߍ߲ ߗߋߥߊߟߌ ߞߊ߫ ߢߌ߲߬ ߓߊ߯ ߞߍ߫"
     }
@@ -4929,11 +4933,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Marina fa ireo izay mino sy manao asa soa, tena marina fa Izahay dia tsy hanary ny valin’asan’ireo izay manao ny tsara.",
       "lg": "Mazima abo abakkiriza ne bakola emirimu emirongoofu mazima Ffe tetugenda butasasula mpeera y'oyo eyalongoosa emirimu.",
       "rw": "Mu by’ukuri ba bandi bemeye bakanakora ibikorwa byiza, rwose ntituzaburizamo ibihembo by’uwakoze ibikorwa bye neza.",
-      "dag": "Achiika! Ninvuɣu shεba ban ti Naawuni yεlimaŋli, ka tum tuunvεla, tɔ! Ti (Tinim’ Naawuni) ku chɛ ka ninvuɣu shεba ban tum tuunsuma sanyoo bahi yoli.",
+      "dag": "Achiika! Ninvuɣu shɛba ban ti Naawuni yɛlimaŋli, ka tum tuunvɛla, tɔ! Ti (Tinim’ Naawuni) ku chɛ ka ninvuɣu shɛba ban tum tuunsuma sanyoo bahi yoli.",
       "mos": "Ad neb nins sẽn kõ-b sɩdã la b tʋm tʋʋm-sõmã wã, ad Tõnd pa yeebd ned ning sẽn maneg a tʋʋmd keoor ye.",
       "aa": "Diggah yeemeneeh meqe taamoomi abbaasite mari kaxxa galto-le, diggah nanu taama yeymeeqe marih galto mabayisna.",
       "mdh": "Saben-sabenal su manga taw menem a manga mu'min a minggalebek sa manga mapya na di nami dadagen su balas nu entayn imapya i galebekin.",
-      "ak": "Nokorε sε wͻn a wͻagye adie na wͻdi dwuma pa no, nokorε sε, Yεmma wͻn a wͻdi dwuma pa no akatua nnyε kwa.",
+      "ak": "Nokorɛ sɛ wɔn a wɔagye adie na wɔdi dwuma pa no, nokorɛ sɛ, Yɛmma wɔn a wɔdi dwuma pa no akatua nnyɛ kwa.",
       "ceb": "Kadtong mituo ug nagbuhat ug matarong nga mga maayong buhat, Kami dili mag-usik-usik sa ganti niadtong nagbuhat ug maayong buhat.",
       "nqo": "ߡߍ߲ ߠߎ߫ ߞߏ߬ߣߌ߲ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ، ߊ߲ߠߎ߫ ߞߏ߬ߣߌ߲ ߸ ߒ߬ ߕߍ߫ ߡߐ߱ ߛߊ߬ߙߊ ߕߌߢߍ߫ ߟߊ߫ ߡߍ߲ ߞߊ߬ ߗߋߥߊߟߌ ߟߊߢߊ߬"
     }
@@ -5010,7 +5014,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad yaa Tõnd n rɩkd tẽngã faad la bũmb nins sẽn be a zugã fãa faado, la b lebgr zĩig me yaa Tõnd nengẽ.",
       "aa": "Diggah Nanu baaxoo kee baaxô bagul tanim inkih nanu nagarraah usun cisab kee galtoh nee fan gacsiman.",
       "mdh": "(Tig nu Allah) benal a sekami i mawaris kanu lupa endu su dalemin, endu syabun makambalingan sa lekami.",
-      "ak": "Nokorε sε, Yεn na Yɛbɛdi adeε wͻ asaase no soͻ na Yεn hͻ na wͻn (nyinaa) bεsan aba.",
+      "ak": "Nokorɛ sɛ, Yɛn na Yɛbɛdi adeɛ wɔ asaase no soɔ na Yɛn hɔ na wɔn (nyinaa) bɛsan aba.",
       "ceb": "Sa pagkatinuod Kami (Allah) makapanunod sa yuta ug sa tanan nga ania niini, ug nganhi Kanamo (Allah) sila (sa kataposan) ibalik (alang sa Paghukom).",
       "nqo": "ߒ߬ߠߎ߫ ߞߊ߬ߣߌ߲ ߸ ߊ߲ߠߎ߫ ߟߋ߫ ߘߎ߱ ߗߍߕߊ߬ ߟߊ߫ ߊ߬ ߣߴߊ߬ ߞߊ߲߬ ߡߐ߮، ߊ߬ߟߎ߬ ߟߊߛߊ߬ߦߌ߬ߕߐ߫ ߒ߬ߠߎ߫ ߟߋ߫ ߡߊ߬"
     }
@@ -5084,11 +5088,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ese umuntu ntiyibuka ko mbere y’ibyo, ari twe twamuremye kandi nta cyo yari cyo?",
       "rn": "Mbega umuntu w'umugarariji yibagiye ico ari co! Burya ntiyibuka ko Twebwe Allah Twamuremye ubwa mbere kandi atari bwabeho!",
       "ln": "Boye moto azali kokanisa te ndenge tokelaki ye liboso mpe ye azalaki eloko te?",
-      "dag": "Di ni bɔŋɔ, ninsala bi teeri kadama Ti (Tinim’ Naawuni) n-daa nam o ka o pa shεli pɔi ni lala?",
-      "mos": "Rẽ yĩnga ninsaal pa tẽr tɩ Tõnd naan-a-lɑ sẽn dɑ looge, t'a ra pa baa fʋɩ?",
+      "dag": "Di ni bɔŋɔ, ninsala bi teeri kadama Ti (Tinim’ Naawuni) n-daa nam o ka o pa shɛli pɔi ni lala?",
+      "mos": "Rẽ yĩnga ninsaal pa tẽr tɩ Tõnd naan-a-la sẽn da looge, t'a ra pa baa fʋɩ?",
       "aa": "A-seehadaytuy tamah iyya nanu diggah naharsi adda usuk tuh suge kalah kaa ginnem makassitaa?",
       "mdh": "Ngintu di katademan nu manga manusya (kafir) i binaluy nami sekanin sa unan a dala pan mabaluy na dala (bun) sekanin?",
-      "ak": "Enti onipa nkae sε, nokorε sε Yɛdii kan bͻͻ no aberε a na ͻnyε hwee?",
+      "ak": "Enti onipa nkae sɛ, nokorɛ sɛ Yɛdii kan bɔɔ no aberɛ a na ɔnyɛ hwee?",
       "ceb": "Wala ba makahinumdom ang tawo nga Kami (Allah) naglalang kaniya kaniadto, sa diha nga siya wala pay bisan unsa.",
       "nqo": "ߊ߬ ߕߍ߫ ߊ߬ ߦߟߌߓߌ߬ߟߊ߬ ߟߊ߫ ߓߊ߬ ߞߏ߫ ߒ߬ߠߎ߫ ߟߋ߫ ߞߵߊ߬ ߘߊ߲߫ ߞߘߐ߬ߡߊ߲߫ ߞߵߊ߬ ߛߐ߬ߘߐ߲߬ ߊ߬ ߕߍ߫ ߝߏߦߌ߬ ߘߌ߫؟"
     }
@@ -5166,7 +5170,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad bũmb ning sẽn be saasẽ wã la tẽngẽ wã fãa wata yolsg Naab nengẽ tɩ b yaa yembse n gãneg b mense.",
       "aa": "Yallih ginok Hebelttô ginoy qaranwaa kee baaxol tani matan külli num keenik Racmaan kinni Rabbi fanah naqasuy Ramma iyyaah xixxibaanc-lih yanih yamaate kaa akke waytek Qhiyaamah ayro.",
       "mdh": "Ka dala kanu dalem nu langit endu su lupa a di kena ulipen nu Allah.",
-      "ak": "Deε εwͻ soro ne asaase so no mu biara ba Ahummͻborͻ Hene no hͻ wͻ akoa din mu.",
+      "ak": "Deɛ ɛwɔ soro ne asaase so no mu biara ba Ahummɔborɔ Hene no hɔ wɔ akoa din mu.",
       "ceb": "Walay bisan kinsa sa mga langit ug sa yuta apan moduol ni (Allah) ang Labing Madagayaon ingon nga usa ka ulipon (mapainubsanon ingon nga siya gibuhat sa sinugdanan).",
       "nqo": "ߣߌߡߊ߫ ߛߌ߫ ߕߍ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߊ߲߬ ߝߴߏ߬ ߖߐ߲߬ߠߊ߬ߡߊ ߦߋ߫ ߣߊ߬ ߤߌߣߊߒߕߋ ߕߘߍ߬"
     }
@@ -5242,7 +5246,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Yẽnd n so bũmb ning sẽn be sãasẽ wã la tẽngẽ wã la sẽn be b yiibã sʋka la sẽn be tẽn-tomã tẽngrã.",
       "aa": "Qaranwal taniimiiy baaxol tanim, kaadu ken nammayih fanal taniimiiy baaxok gubat tanim inkih Yalli Íe.",
       "mdh": "Lekanin a (Allah) su dalem nu pitu lapis a langit endu lupa endu su pageletan nin, endu su kababan nu lupa.",
-      "ak": "Deε εwͻ soro ne deε εwͻ asaase so, ne deε εwͻ ne mmienu mfinifii ne deε εwͻ asaase ase nyinaa yε Ne dea.",
+      "ak": "Deɛ ɛwɔ soro ne deɛ ɛwɔ asaase so, ne deɛ ɛwɔ ne mmienu mfinifii ne deɛ ɛwɔ asaase ase nyinaa yɛ Ne dea.",
       "ceb": "Iya ang tanang anaa sa mga kalangitan ug ang tanan anaa sa kayutaan ug ang anaa sa taliwala niining duha ug ang anaa sa ilalom sa yuta.",
       "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߝߋ߲ ߘߌ߫ ߡߍ߲ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߞߣߐ߫ ߸ ߡߍ߲ ߦߋ߫ ߘߎ߱ ߞߣߐ߫ ߸ ߡߍ߲ ߦߴߏ ߝߌ߬ߟߊ ߕߍ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߋ߫ ߓߎ߰ߘߌ߬ ߦߌߟߌ߲ߣߍ߲ ߞߘߐ߫"
     }
@@ -5316,10 +5320,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Allah! Nta yindi mana iriho ikwiye gusengwa by’ukuri uretse We. Afite amazina meza.",
       "rn": "Allah ni Yo Mana ata yindi mana ibwirijwe gusengwa atari Yo, Ifise amazina meza cane n’amatazirano ayiranga.",
       "ln": "Allah, nzambe mosusu azali te ya kobondela na bosóló sé ye, mpe azali na bankombo ya kitoko koleka.",
-      "dag": "Naawuni, duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna, O malila yuli vɛla.",
+      "dag": "Naawuni, duuma jɛmdigu n-kani ni yɛlimaŋli naɣila Ŋuna, O malila yuli vɛla.",
       "mos": "Wẽnde, Soab ka be rẽnda Yẽnda, yʋ-yɩlems yaa Yẽnd n so.",
       "mdh": "Su Allah-da kadenan a wagib a simban ya tabiya na sekanin a manga mapya i ngala nin.",
-      "ak": "Onyankopͻn, awurade foforͻ biara nnihͻ gyesε Ɔno nko ara. Ɔno na abodin pa nyinaa wͻ no.",
+      "ak": "Onyankopɔn, awurade foforɔ biara nnihɔ gyesɛ Ɔno nko ara. Ɔno na abodin pa nyinaa wɔ no.",
       "ceb": "Si Allah - walay dios (nga angayan simbahon) gawas Kaniya; ngadto Kaniya ang iya sa Labing Nindot nga mga Ngalan.",
       "nqo": "ߊߟߊ߫ ߞߏ߬ߣߌ߲ ߸ ߡߊ߰ߙߌ߬ ߛߌ߫ ߕߍ߫ ߊ߬ߟߋ߬ ߞߐ߫ ، ߕߐ߯ ߢߌߡߊ ߟߎ߬ ߦߴߊ߬ߟߋ ߟߋ߬ ߟߊ߫"
     }
@@ -5392,11 +5396,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Twabaremye tubakomoye mu gitaka, ni na cyo tubasubizamo (igihe mwapfuye), ndetse ni na cyo tuzongera kubavanamo ku yindi nshuro (igihe cyo kuzurwa).",
       "rn": "Bantu! Ni mw’ivu Twabaremye, ni na ryo nyene Tuzobasubizamwo mumaze gupfa, ni na ryo nyene kandi Tuzobazuramwo ku musi w’izuka kugira muharurirwe, muheze muhemberwe ivyo mwakoze.",
       "ln": "Tokelaki bino kowuta na yango (mabele) mpe kati na yango nde tokozongisa bino, mpe tokobimisa bino lisusu okati na yango mbala mosusu.",
-      "dag": "Di (tiŋgbani) puuni ka Ti (Tinim’ Naawuni) nam ya, di puuni ka Ti lahi labsiri ya (yi gbala ni). Yaha! Di puuni ka Ti ti lahi yɛn ti yihi ya na wokati shεli yaha (Zaadali).",
-      "mos": "(Tẽn-gãngã) zug la D naan yãmba, la yaa be la D na n lebs yãmba, leb n yaa beenẽ la D na n yik yãmb yik-zẽng yεsa.",
+      "dag": "Di (tiŋgbani) puuni ka Ti (Tinim’ Naawuni) nam ya, di puuni ka Ti lahi labsiri ya (yi gbala ni). Yaha! Di puuni ka Ti ti lahi yɛn ti yihi ya na wokati shɛli yaha (Zaadali).",
+      "mos": "(Tẽn-gãngã) zug la D naan yãmba, la yaa be la D na n lebs yãmba, leb n yaa beenẽ la D na n yik yãmb yik-zẽng yɛsa.",
       "aa": "Sinaamey baaxok sin ginneeh, teetit sin gacisna rabteeniik lakat, kaadu teetik sin nayyaaqe aka adda Qhiyaamah ayro cisab kee galtoh.",
       "mdh": "Nakebpun kanu sa lupa, makambalingan kanu bun sa lupa, endu pambuwaten nami bun sekanu ebpaluman kanu kabangkit sa dunya.",
-      "ak": "{Asaase} mu na Yεbͻͻ mo firiiɛ, na emu na Yεbεma moasan akͻ, na emu na Yεbεsan ama mo apue afri wͻ εberε a εtͻso bio (no mu).",
+      "ak": "{Asaase} mu na Yɛbɔɔ mo firiiɛ, na emu na Yɛbɛma moasan akɔ, na emu na Yɛbɛsan ama mo apue afri wɔ ɛberɛ a ɛtɔso bio (no mu).",
       "ceb": "Gikan sa yuta Among gibuhat kamo, ug ngadto niini Kami mobalik kaninyo, ug gikan niini Kami modala kaninyo pag-usab (alang sa Paghukom).",
       "nqo": "ߊ߲ ߞߵߊߟߎ߫ ߘߊ߲߫ ߊ߬ߟߋ ߟߋ߬ ߘߐ߫ ߸ ߊ߲ ߞߍߕߐ߫ ߊߟߎ߫ ߟߊߛߊ߬ߦߌ߬ ߟߴߊ߬ߟߋ ߟߋ߬ ߘߐ߫ ، ߊ߲ ߣߊ߬ߕߐ߫ ߊߟߎ߫ ߟߊߓߐ߫ ߟߴߊ߬ߟߋ ߟߋ߬ ߘߐ߫ ߛߋ߲߬ߢߊ߬ ߜߘߍ߫"
     }
@@ -5469,6 +5473,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Yẽ n so sẽn be saasẽ la tẽngẽ, la sẽn be b Yẽ nengẽ wã b pa maan waoog-m-meng ne A tũudmã ye, b yamã leb n pa lakd me ye.",
       "aa": "Kaadu Qaranwaa kee baaxól tanim inkih Yalli-le, kaadu Malaykak Kay xaqul yan mari Kay qibaadak makaxxa-mariinitaay, mataqba (manakura).",
       "mdh": "Endu kanu Allah su dalem nu manga langit endu su lupa endu su malaikat na di silan pemamasla sa simba nilan sa Allah endu di silan gasemu na di galugat.",
+      "ak": "Nea ɛwɔ soro ne asaase soɔ (nyinaa) yɛ Ne dea. Wɔn a wɔn wɔ Ne hɔ (Soro abɔfoɔ) no nyɛ Ne som ho ahomasoᴐ, na ɛnha wɔn anaasɛ wɔmmrɛ nso (wɔ Ne som ho).",
       "ceb": "Iya ang tanan nga anaa sa kalangitan ug kalibutan. Ug kadtong mga (anghel) nga haduol Kaniya dili mapahitas-on sa pagsimba Kaniya, ni sila kapuyan (sa pagsimba Kaniya).",
       "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߣߌ߫ ߘߎ߱ ߣߌߡߊ ߘߌ߫ ، ߡߍ߲ ߠߎ߬ ߦߴߊ߬ ߕߍ߰ߟߊ ߘߐ߫ ߏ߬ ߟߎ߬ ߕߍ߫ ߊ߬ߟߎ߫ ߖߘߍ߬ߘߐߓߏ߲߬ߧߊ߬ ߟߴߊ߬ ߓߊ߬ߕߏ ߡߊ߬ ߸ ߊ߬ߟߎ߫ ߘߏ߲߬ ߕߍ߫ ߛߍ߰ ߟߊ߫"
     }
@@ -5528,11 +5533,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lt": "Jei tame (danguose ir žemėje) būtų aliha (dievų) šalia Allaho, tada tikrai abu būtų sugriauti. Pašlovintas yra Allahas, Sosto Viešpats, (Aukštai yra Jis) virš viso to (blogio, kurį) jie Jam priskiria!",
       "lg": "Singa (ensi n'eggulu) byalimu ebisinzibwa atali Katonda omu byombi byandyonoonese, (ekyo nno kikulage nti) Allah yasukkuluma Nnannyini Arishi kw'ebyo bye boogera.",
       "ln": "Soki o kati ya likolo na o nsé ezalaka na banzambe mosusu elongo na Allah, mbele mobulu ekotaki kati na yango (mapata na mabele), mpe nkembo na Allah kolo ya ngwende na maye bazali kokokisa.",
-      "dag": "Duuma shεba yi di be di (sagbana mini tiŋgbani) ni ka pa ni Naawuni, tɔ! Di naan saɣim. Dinzuɣu, Naawuni nam niŋ kasi, Ŋuna n-nyɛ Al’arshi Duuma ka chɛ bɛ ni mali O ŋmahindi shεli maa.",
+      "dag": "Duuma shɛba yi di be di (sagbana mini tiŋgbani) ni ka pa ni Naawuni, tɔ! Di naan saɣim. Dinzuɣu, Naawuni nam niŋ kasi, Ŋuna n-nyɛ Al’arshi Duuma ka chɛ bɛ ni mali O ŋmahindi shɛli maa.",
       "mos": "Soab-zẽms sẽn pa Wẽnd sã n da beẽ saagẽ wã bɩ tẽngã zugu, b yiibã (saagã la tẽngã) fãa ra na sãame, yɩleng be ne Wẽnd, sẽn yaa Al-ʿars wagellã Naaba, n yi bãmb sẽn sɩfdã.",
       "aa": "Qaranwaa kee baaxól Yallak kalah yallitte aninnay, ken nammay bayak yen, tokkel Qarshi Rabbi usun Kaa edde weelossu haanamak saytunih.",
       "mdh": "U naduwa timan bu i kadenan atawa aden bu manga kadenan a salakaw sa Allah na nabinasa su dunya, mahasuti su Allah a Kadenan nu Ar'sh kanu langun nu kadtalu nu manga mushrik.",
-      "ak": "Sε anyame bi wͻ soro ne asaase so ka Nyankopͻn ho a anka (ͻsoro ne asaase) mmienu (nyinaa) asεe. Kronkron Hene ne Nyankopͻn, Animuonyam ahennie Wura no, Ɔso kyεn sεdeε wͻde susu no no.",
+      "ak": "Sɛ anyame bi wɔ soro ne asaase so ka Nyankopɔn ho a anka (ɔsoro ne asaase) mmienu (nyinaa) asɛe. Kronkron Hene ne Nyankopɔn, Animuonyam ahennie Wura no, Ɔso kyɛn sɛdeɛ wɔde susu no no.",
       "nqo": "ߣߌ߫ ߡߊ߰ߙߌ߬ ߜߘߍ߫ ߟߎ߫ ߕߎ߲߬ ߞߍ߫ ߘߊ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߐ߫ ߣߌ߫ ߊߟߊ߫ ߕߍ߫ ߸ ߊ߬ߟߎ߫ ߕߎ߲߬ ߘߌ߫ ߕߌߢߍ߫ ߟߋ߬ ߘߍ߯ ، ߒ߬ߓߵߊߟߊ߫ ߛߊߣߌ߲ߡߊ߲߫߸ ߛߍ߬ߡߍ ߕߌ߱ ߞߊ߬ߣߌ߲߫ ߞߊ߬ ߓߐ߫ ߊ߬ߟߎ߬ ߟߊ߫ ߡߊ߲߬ߞߕߎ߬ߒ߬ߞߊ߲߬ߠߊ ߟߎ߫ ߡߊ߬"
     }
   },
@@ -5581,7 +5586,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ese abahakanye ntibabonye ko ibirere n’isi byari bifatanye nyuma tukabitandukanya, kandi ko buri kinyabuzima cyose twakiremye mu mazi? Ese ubwo ntibemera?",
       "ln": "Boye bapengwi bazali kornona te, ete likolo na mabele bizalaki ya kokangama mpe to fungoli yango? Mpe tokela bomoyi nyonso kowuta na mayi? Boye bazali kondima te?",
       "mos": "Rẽ yĩnga kɩfr-rãmbã pa yã tɩ saasã la tẽngã rag n taba taaba? Tɩ Tõnd welg b yiibã, la Tõnd maana bõn-vɩɩl fãa n yi koomẽ, b pa kõt sɩd la?",
-      "ak": "Enti (Kaafirfoͻ) boniayεfoͻ no nhunuu sε na anka ͻsoro ne asaase bͻ mu (baako) εna Yεpaee mu? Ɛna adeε a εwͻ nkwa biara Yεde nsuo na εyͻeε, enti wͻnnye nni anaa?",
+      "ak": "Enti (Kaafirfoɔ) boniayɛfoɔ no nhunuu sɛ na anka ɔsoro ne asaase bɔ mu (baako) ɛna Yɛpaee mu? Ɛna adeɛ a ɛwɔ nkwa biara Yɛde nsuo na ɛyɔeɛ, enti wɔnnye nni anaa?",
       "nqo": "ߊ߬ ߝߐ߫ ߓߊ߲߬ߓߊ߮ ߟߎ߬ ߡߴߊ߬ ߦߋ߫ ߓߊ߬ ߞߏ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߣߙߊߣߍ߲߫ ߠߋ߫ ߕߘߍ߬ ߢߐ߲߮ ߠߊ߫ ߒ߬ߠߎ߫ ߟߋ߫ ߞߵߊ߬ߟߎ߫ ߥߊ߬ߟߏ߲߬ ߢߐ߲߮ ߠߊ߫ ߸ ߊ߬ ߣߴߊ߲ ߞߊ߬ ߝߋ߲߫ ߣߌߡߊ ߓߍ߯ ߘߊ߲߫ ߖߌ ߟߋ߬ ߘߐ߫، ߊ߬ ߝߐ߫ ߊ߬ߟߎ߬ ߕߍ߫ ߟߊ߫ ߟߴߏ߬ ߟߊ߫ ߟߋ߫ ߓߊ߬؟"
     }
   },
@@ -5650,11 +5655,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Buli muntu wa kukomba ku kufa era tubagezesa n'obubi n'obulungi nga kikemo era Gyetuli gye mujja okudda.",
       "rw": "Buri wese azasogongera ku rupfu, kandi tuzabagerageresha ibibi n’ibyiza. Ndetse iwacu ni ho muzagarurwa.",
       "ln": "Molimo nyoso mokomeka liwa (moto nyoso akokufaka), mpe tokomeka bino na mabe mpe na malamu mpe epai na biso nde bokozongisama.",
-      "dag": "Nyɛvuli kam nyɛla din yɛn lam kum. Yaha! Ti (Tinim’ Naawuni) dahindi ya mi ni din be mini din vεla, ka di shiri nyɛla dahimbu. Yaha! Ti sani ka bɛ yɛn ti labsi ya na.",
+      "dag": "Nyɛvuli kam nyɛla din yɛn lam kum. Yaha! Ti (Tinim’ Naawuni) dahindi ya mi ni din be mini din vɛla, ka di shiri nyɛla dahimbu. Yaha! Ti sani ka bɛ yɛn ti labsi ya na.",
       "mos": "Yõor fãa na n lemba kũum, la D na n zarba yãmb ne sõng la wẽnga, la yaa Tõnd nengẽ la y na n lebg n wa.",
       "aa": "Ummaan nafsi raba tammoysele! Umaanée (gibdaabina kinnuk) kee maqaanél (niqmoota kinnuk) mokkoroh (aqayyaare kinnuk) sin mokkorennooh, cisab kee galtóh Nee fanah gacsimetton.",
       "mdh": "Langun na barangyawa na makananam sa kapatay endu pembatalun nami sekanu sa mapasang endu mapya (sya sa dunya) endu siya kanu bun makambalingan sa laki.",
-      "ak": "Ɔkra biara bεka owuo ahwε. Yεde bͻne ne papa nso bεsͻ mo ahwε, na Yεhͻ na mobεsan aba.",
+      "ak": "Ɔkra biara bɛka owuo ahwɛ. Yɛde bɔne ne papa nso bɛsɔ mo ahwɛ, na Yɛhɔ na mobɛsan aba.",
       "ceb": "Ang Matag kalag mokatilaw sa kamatayon. Ug Kami magsulay kaninyo pinaagi sa daotan ug sa maayo (nga kahimtang) ingon nga pagsulay; ug ngadto sa (Allah) kamong tanan mubalik (alang sa Paghukom).",
       "nqo": "ߣߌߡߊ ߓߍ߯ ߘߌ߫ ߛߊ߬ߦߊ ߡߊߜߙߏ߬ ، ߊ߲ ߧߴߊߟߎ߫ ߞߘߐߓߐ߫ ߟߊ߫ ߜߊ߬ߟߏ ߣߌ߫ ߤߙߊ ߟߊ߫ ߘߐ߬ߜߍ߬ߟߌ ߟߋ߫ ߡߊ߬ ، ߊߟߎ߫ ߛߊ߬ߦߌ߲߬ߕߐ߫ ߒ߬ߠߎ߫ ߟߋ߫ ߡߊ߬"
     }
@@ -5719,10 +5724,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima Allah aliyingiza Ejjana abo abaakola emirimu emirungi, nga emigga gikulukutira wansi waazo, mazima Allah akola ekyo ky'aba ayagadde.",
       "rw": "Mu by’ukuri ba bandi bemeye bakanakora ibikorwa byiza, Allah azabinjiza mu busitani butembamo imigezi (Ijuru), kuko rwose Allah akora ibyo ashaka.",
       "ln": "Ya soló, Allah akokotisa bandimi baye bazalaki kosala misala ya malamu na lola oyo ezali kolekisa na nsé na yango mingala. Ya soló, Allah asalaka oyo alingi.",
-      "dag": "Achiika! Naawuni nyɛla Ŋun yɛn kpεhi ninvuɣu shεba ban ti yεlimaŋli ka tum tuunvεla Alizanda yili shεŋa kulibɔna ni yɛn tizɔri gindi di gbinni. Achiika! Naawuni tumdila O ni bɔri shεli.",
+      "dag": "Achiika! Naawuni nyɛla Ŋun yɛn kpɛhi ninvuɣu shɛba ban ti yɛlimaŋli ka tum tuunvɛla Alizanda yili shɛŋa kulibɔna ni yɛn tizɔri gindi di gbinni. Achiika! Naawuni tumdila O ni bɔri shɛli.",
       "mos": "Ad Wẽnd kẽesda neb nins sẽn kõ sɩda la b tʋm tʋʋm-sõmsã arzãna, tɩ kʋɩls zoet a tẽngrã, ad Wẽnd maanda A sẽn rate.",
       "mdh": "Benal su Allah na paludepen nin su manga mu'min a minggalebek sa manga mapya sa manga surga a belagilay sa kababan nin i manga pulangi, su Allah na enggalebekenin i kahanda nin.",
-      "ak": "Nokorε sε Nyankopͻn de wͻn a wͻagye adie na wͻdi dwuma pa no bewura Aheman a nsubͻnten nenam aseε no mu. Nokorε sε, Nyankopͻn deε Ɔyε deε Ɔpε.",
+      "ak": "Nokorɛ sɛ Nyankopɔn de wɔn a wɔagye adie na wɔdi dwuma pa no bewura Aheman a nsubɔnten nenam aseɛ no mu. Nokorɛ sɛ, Nyankopɔn deɛ Ɔyɛ deɛ Ɔpɛ.",
       "nqo": "ߊߟߊ߫ ߦߋ߫ ߟߊߒߠߦߊߓߊ߯ ߢߌ߬ߡߊ߬ ߞߍ߬ߟߊ ߟߎ߫ ߟߋ߬ ߟߊߘߏ߲߬ ߠߊ߫ ߣߊߞߐ ߟߎ߬ ߘߐ߫ ߸ ߞߐ߬ߢߊ ߟߎ߬ ߦߋ߫ ߥߦߏ߬ ߟߊ߫ ߡߍ߲ ߠߎ߬ ߞߘߐߟߊ ߟߎ߬ ߘߐ߫ ، ߊߟߊ߫ ߦߋ߫ ߞߏ߫ ߟߋ߬ ߞߍ߫ ߟߊ߫ ߘߋ߬ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫"
     }
   },
@@ -5794,11 +5799,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ukuri Allah arengera abemeye. Rwose Allah ntakunda umuhemu wese w’umuhakanyi (w’indashima).",
       "rn": "Mu vy’ukuri Imana Allah, Irakingira abemeramana akadenderezo k’abagarariji; mu vy’ukuri Imana Allah, ntikunda namba umuhemu atubahiriza isezerano ryayo, yihakana inema zayo.",
       "ln": "Ya soló, Allah abundelaka bandimi, ya solo, Allah alingaka te mokosi oyo nyoso azanga botondi.",
-      "dag": "Achiika! Naawuni taɣirila ninvuɣu shεba ban tiyεlimaŋli (ka chɛ chɛfurinim’ barina). Achiika! Naawuni bi bɔri bilkɔŋsilana kam, ni gutulunsi lana.",
-      "mos": "Ad Wẽnd sõngda neb nins sẽn kõ sɩda, ad Wẽnd pa nong zãmb soab fãa sẽn yɑɑ yel-sõm-zɩt ye.",
+      "dag": "Achiika! Naawuni taɣirila ninvuɣu shɛba ban tiyɛlimaŋli (ka chɛ chɛfurinim’ barina). Achiika! Naawuni bi bɔri bilkɔŋsilana kam, ni gutulunsi lana.",
+      "mos": "Ad Wẽnd sõngda neb nins sẽn kõ sɩda, ad Wẽnd pa nong zãmb soab fãa sẽn yaa yel-sõm-zɩt ye.",
       "aa": "Diggah Yalli isi nummayse mara cataah koros umaané keenik gutqaah waasah, diggah Yalli ummaan ganoliy amaanoota makay Yallih niqmat yangaddee makicna.",
       "mdh": "Benal su Allah na pangalawanin sa makagkayd su manga mu'min, su Allah na di nin kyugan su di kasaligan.",
-      "ak": "Nokorε sε Nyankopͻn bͻ wͻn a wͻagye adie no ho ban. Nokorε sε Nyankopͻn mpε (onipa) biara a odi hwammͻ, na wͻ’yε boniayεni no asεm.",
+      "ak": "Nokorɛ sɛ Nyankopɔn bɔ wɔn a wɔagye adie no ho ban. Nokorɛ sɛ Nyankopɔn mpɛ (onipa) biara a odi hwammɔ, na wɔ’yɛ boniayɛni no asɛm.",
       "ceb": "Sa pagkatinuod ang Allah nagdepensa ug manalipod niadtong mituo (sa Kamatuoran); sa pagkatinuod ang Allah dili makagusto sa bisan kinsa nga dili matinud-anon, ug dili mapasalamaton (manmilimod).",
       "nqo": "ߊߟߊ߫ ߦߋ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߡߊߞߊ߲ߞߊ߲߫ ߠߊ߫ ߟߋ߫ ߘߋ߬ ، ߓߊ ߖߊ߲߬ߝߊ߬ߒߕߋ߫ ߝߌߕߙߌߥߊߟߋ ߘߊ߬ߡߊ ߡߊ߲߫ ߘߌ߫ ߊߟߊ߫ ߦߋ߫"
     }
@@ -5873,7 +5878,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Yẽ n so bũmb ning sẽn be saasẽ la tẽngẽ, la ad Wẽnd seka A meng (n yi bõn-naandsã) n yaa pẽgr Naaba.",
       "aa": "Qaranwal taniimiiy, baaxól tanim inkih Yalli Íe, kaadu diggah Yalli usuk gaddaliy tuk ceytewaay, kulli caalatal faylali kinni.",
       "mdh": "Lekanin a (Allah) su dalem na pitu lapis a langit endu lupa, endu su Allah i kawasa a pebpugin.",
-      "ak": "Adeε a εwͻ soro ne adeε a εwͻ asaase so (nyinaa) yε Nedea. Nokorε sε Nyankopͻn ne (Otumfoͻ a) Wanya Neho a Onhia obiara biribiara, na Ɔno ne Ayeyie Wura no.",
+      "ak": "Adeɛ a ɛwɔ soro ne adeɛ a ɛwɔ asaase so (nyinaa) yɛ Nedea. Nokorɛ sɛ Nyankopɔn ne (Otumfoɔ a) Wanya Neho a Onhia obiara biribiara, na Ɔno ne Ayeyie Wura no.",
       "ceb": "Iya sa (Allah lamang) ang tanan nga anaa sa kalangitan ug ang tanan nga anaa sa kayutaan. Sa pagkatinuod ang Allah mao ang Igo sa Kaugalingon, ang Dalaygon.",
       "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߞߣߐߝߋ߲ ߣߌ߫ ߘߎ߱ ߞߣߐߝߋ߲ ߘߌ߫ ، ߊ߬ ߣߌ߫ ߞߏ߫ ߊߟߊ߫ ߸ ߊ߬ߟߋ ߟߋ߬ ߞߊ߯ߙߌߓߊ߮ ߘߌ߫ ߸ ߕߊ߲߬ߘߏ߬ߕߊ ߟߋ߬"
     }
@@ -5941,9 +5946,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Allah alonda mu Bamalayika Ababaka, bw'atyo ne mu bantu, mazima Allah awulira nnyo era alaba nnyo.",
       "rw": "Allah atoranya Intumwa mu bamalayika no mu bantu. Mu by’ukuri Allah ni Uwumva cyane, Ubona bihebuje.",
       "dag": "Naawuni gahindila tuun’ shɛba Malaaikanim’ puuni, ka lahi gahindi ninsalinim’ puuni. Achiika! Naawuni nyɛla Wumda, Nyara.",
-      "mos": "Wẽnd n tũusd Malεgsã n maand Tẽn-tʋʋm-rãmba, la nebã sʋk me (Wẽnd n tũusd n maan Tẽn-tʋʋm-rãmba) ad Wẽnd yaa wʋmd n yaa neta.",
+      "mos": "Wẽnd n tũusd Malɛgsã n maand Tẽn-tʋʋm-rãmba, la nebã sʋk me (Wẽnd n tũusd n maan Tẽn-tʋʋm-rãmba) ad Wẽnd yaa wʋmd n yaa neta.",
       "mdh": "Su Allah i bamili kanu malaikat sa manga sinugu, endu sya kanu manga taw, su Allah i pakakineg a pakailay.",
-      "ak": "Nyankopͻn yi asomafoͻ fri Soro abͻfoͻ mu, εna nnipa mu nso (saa ara). Nokorε sε Nyankopͻn na Ɔte biribiara, na Ohunu biribiara.",
+      "ak": "Nyankopɔn yi asomafoɔ fri Soro abɔfoɔ mu, ɛna nnipa mu nso (saa ara). Nokorɛ sɛ Nyankopɔn na Ɔte biribiara, na Ohunu biribiara.",
       "ceb": "Ang Allah nagpili ug mga mensahero gikan sa mga anghel ug gikan sa mga tawo; sa pagkatinuod ang Allah mao ang Labing Nakadungog sa Tanan, Labing Nakakita.",
       "nqo": "ߊߟߊ߫ ߦߋ߫ ߞߋߟߊ ߘߏ߫ ߟߎ߫ ߛߎߥߊ߲ߘߌ߫ ߟߊ߫ ߞߋ߲ߛߐ߲ ߠߎ߬ ߘߐ߫ ߊ߬ ߣߌ߫ ߡߐ߱ ߟߎ߬ ߘߐ߫ ، ߊߟߊ߫ ߦߋ߫ ߡߍ߲ߠߌ߲ߠߊ߫ ߦߋߟߌߟߊ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬"
     }
@@ -6011,11 +6016,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe abakkiriza mukutame (nga mukutte ku maviivi) era muvunname, musinze Mukama Omulabirizi Wammwe, era mukole obulungi musobole okutuuka ku buwanguzi.",
       "rw": "Yemwe abemeye! Nimwuname, mwubame, kandi mugaragire Nyagasani wanyu, ndetse munakore ibyiza kugira ngo muzahirwe.",
       "ln": "Eh bino bandimi! Bongumbama, bofukama mpe bobondela Nkolo na bino mpe bosala malamu mpo ete bolonga.",
-      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yεlimaŋli! Kurummi ya ka ŋmε gbiεɣu n-ti Naawuni, ka jεm ya yi Duuma (Naawuni), ka tum ya din viɛla, achiika! Yi nyɛla ban yɛn tilgi.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Kurummi ya ka ŋmɛ gbiɛɣu n-ti Naawuni, ka jɛm ya yi Duuma (Naawuni), ka tum ya din viɛla, achiika! Yi nyɛla ban yɛn tilgi.",
       "mos": "Yaa yãmb neb nins sẽn kõ sɩda! Maan-y ruku, la suguudu la tũ-y y Soabã, la y maan tʋʋm-sõma, tɩ tõe tɩ y tɩlge.",
       "aa": "Yeemene maraw salat abtan waqdi Salaatat rukuuq kee sujuud abaay, sinni Rabbi uqbuda qibaadá kaah caglisak, kaadu maqaanc aba! Jannatal taffoofeeniih Ruffu ittaanamkeh.",
       "mdh": "Sekanu a manga mu'min ruku' kanu endu sugyud kanu, endu simba nu su Kadenan nu, endu enggalebek nu i mapya, ka malemu sa lekanu i makauntung kanu.",
-      "ak": "Mo a moagye adie, momͻ momu ase, na monfa moanim mmutu fͻm, na monsom mo Wura Nyankopͻn, na monyε papa sεdeε mobedi nkonim.",
+      "ak": "Mo a moagye adie, momɔ momu ase, na monfa moanim mmutu fɔm, na monsom mo Wura Nyankopɔn, na monyɛ papa sɛdeɛ mobedi nkonim.",
       "ceb": "Mga magtutuo, iyukbo ug ihapa ang inyong mga kaugalingon ug simbaha ang inyong Ginoo (Allah lamang), ug buhata ang maayo - aron kamo mouswag.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߞߐߡߊߓߌߘߌ߲ ߞߍ߫ ߞߊ߬ ߕߌ߲ߓߌߘߌ߲ ߞߍ߫ ߞߵߊߟߎ߫ ߡߊ߰ߙߌ ߓߊ߬ߕߏ߬ ߸ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߤߙߊ߫ ߟߋ߬ ߞߍ߫ ߖߐ߲߬ߛߴߊߟߎ߫ ߘߌ߫ ߛߎߘߊ߲߫"
     }
@@ -6089,7 +6094,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Wẽnd n leebd yʋngã la wĩndgã, ad tags-n-ges bee yel-kãngã pʋgẽ ne pʋ-tẽ-nin rãmba.",
       "aa": "Yallih dudda tascasse astootik tanim, Yalli bar kee laqot aba korankorsiyya ken nammayak tiiy tiil keenik ciggiilisak, diggah tohut bagi inti-le marah kas edde geyaanam tan.",
       "mdh": "Papegkelid-keliden nu Allah su magabi endu malamag, nakadalem lu ba su tanda a kapegkagaga nu Allah kanu manga taw a aden pusungin.",
-      "ak": "Nyankopͻn di adesaeε ne adekyeε adane-adanee. Nokorε sε, adesua wͻ woi mu ma wͻn a wͻn wͻ ani (dehwε adeε).",
+      "ak": "Nyankopɔn di adesaeɛ ne adekyeɛ adane-adanee. Nokorɛ sɛ, adesua wɔ woi mu ma wɔn a wɔn wɔ ani (dehwɛ adeɛ).",
       "ceb": "Ang Allah nagpapulipuli sa gabii ug sa adlaw, sa pagkatinuod adunay usa ka pagtulun-an niini alang niadtong adunay panan-aw.",
       "nqo": "ߊߟߊ߫ ߦߋ߫ ߛߎ ߣߌ߫ ߕߟߋ߬ߘߐ߬ߟߊ ߦߟߍ߬ߡߊ߲߬ ߠߊ߫ ߢߐ߲߮ ߞߐ߫ ߸ ߕߊ߰ߛߌ߬ߟߌ߫ ߟߴߏ߬ ߘߐ߫ ߢߟߊߞߊ ߕߌ߰ߟߊ߬ߡߐ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
@@ -6165,6 +6170,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad Tõnd sika Aayay vẽenese, la yaa Wẽnd n kãndgd A sẽn rat a soab n tʋg so-tɩrga.",
       "aa": "Nummah A-Qhuraanih addal baxxaqqa itta Aayootay cakki baxxaqqa hayta oobisne, Yalli isi naqoosak isih faxa mara massa-le gitâ (islaamaninanâ di i ni kinnuk) fanah tirri haa.",
       "mdh": "Saben-sabenal a initulun nami su manga ayat a mapayag, endu su Allah i pedtutulu sa magkahanda nin sa lalan a matidtu.",
+      "ak": "Ampa sɛ, Yɛasiane nsɛm pefee (wɔ saa Qur’aan yi mu). Na Nyankopɔn deɛ Ɔkyerɛ obi a Ɔpɛ kwan kᴐ kwan tenenee no so.",
       "ceb": "Sa pagkatinuod Kami nagpakanaog ug Tin-aw nga mga Bersikulo, ug ang Allah mugiya sa kinsay Iyang gusto ngadto sa Matul-id nga Dalan (sa Islam).",
       "nqo": "ߊ߲ ߓߘߊ߫ ߟߝߊߙߌ߫ ߘߐߞߣߍߣߍ߲ ߠߎ߬ ߟߊߖߌ߰ ߸ ߒ߬ߞߵߊߟߊ߫ ߦߋ߫ ߡߐ߰ ߟߋ߬ ߞߊ߲ߘߊ߫ ߟߊ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫ ߛߌߟߊ߫ ߕߋߟߋ߲ߣߍ߲ ߞߊ߲߬"
     }
@@ -6220,7 +6226,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ln": "Ya soló, liloba ya bandimi ezalaka soki babengi bango epai ya Allah na motindami waye mpo akata (makambo) kati na bango, bakoloba: Toyoki mpe totosi, mpe baye wana nde balongi.",
       "mos": "Ad sɩd-kõtbã koees ra yɩɩme, tɩ b sã n bool-ba, n tʋg Wẽnd la A Tẽn-tʋʋmã nengẽ, n na n tɩ bʋ b sʋka, b yetame: \"d wʋmame la d sakame\"; la yaa bãmbã-rãmbã la tɩlgdba.",
       "mdh": "Benal su manga mu'min na ya nilan kadtalu amayka enggaten silan sa kukuman nu Allah endu su sinugu nin, ka endu makukum silan na tig nilan: nakineg nami endu naginugut kami, endu silan i namakauntung.",
-      "ak": "Agyidiefoͻ no deε sε yεfrε wͻn kͻ Nyankopͻn ne Ne somafoͻ no hͻ sε yεrekͻ bu wͻn ntεm atεn a, deε wͻka ne sε: “Yɛate na yεbɛdi so“. Saa nkorͻfoͻ no ne nkonimdifoͻ no.",
+      "ak": "Agyidiefoɔ no deɛ sɛ yɛfrɛ wɔn kɔ Nyankopɔn ne Ne somafoɔ no hɔ sɛ yɛrekɔ bu wɔn ntɛm atɛn a, deɛ wɔka ne sɛ: “Yɛate na yɛbɛdi so“. Saa nkorɔfoɔ no ne nkonimdifoɔ no.",
       "nqo": "ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߟߊ߫ ߞߎߡߊ ߞߍߣߍ߲߫ ߡߍ߲ ߘߌ߫ ߊ߬ߟߎ߬ ߞߟߌ߫ ߕߎߡߊ ߊߟߊ߫ ߣߴߊ߬ ߟߊ߫ ߞߋߟߊ ߡߊ߬ ߞߴߏ߬ ߦߋ߫ ߞߕߌ߫ ߊ߬ߟߎ߬ ߕߍ߫ ߸ ߏ߬ ߟߴߊ߬ ߝߐ ߘߌ߫ ߞߏ߫ ߊ߲ ߓߘߴߊ߬ ߡߍ߲߫ ߞߵߊ߬ ߡߌ߬ߘߊ߬ ، ߒ߬ߓߊ߬ ߏ߬ ߟߎ߫ ߟߋ߬ ߛߎߘߊ߲ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
   },
@@ -6294,7 +6300,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "dag": "Duuma so Ŋun zaŋ saŋmar’ kara niŋ sagbana ni, ka zaŋ furila (wuntaŋa) niŋ di puuni, n-ti pahi goli din neeri pam.",
       "mos": "Naab ning sẽn ninga ãdsã saasẽ wã yɩ wagelle, la A maan fɩtl (wĩntoogo) beenẽ la kiuug sẽn vẽene.",
       "mdh": "Mahasuti su Allah a binaluy nin sya sa langit i manga lalan nu bitun, endu binaluy nin i senang endu ulan-ulan a pedsigay.",
-      "ak": "Nhyira ne Nea Wayε nsoromma akεseε wͻ soro, εna Wayε (awia sε) kanea wͻ mu, εna bosome nso εma nhyerεnee.",
+      "ak": "Nhyira ne Nea Wayɛ nsoromma akɛseɛ wɔ soro, ɛna Wayɛ (awia sɛ) kanea wɔ mu, ɛna bosome nso ɛma nhyerɛnee.",
       "ceb": "Himayaon Siya (Allah) maoy nagbutang sa langit ug dagkong mga bituon ug nagbutang niini ug (nagdilaab) nga suga (ang adlaw) ug usa ka nagdan-ag nga bulan.",
       "nqo": "ߒ߬ߓߊ߬ߘߍ ߦߋ߫ ߡߍ߲ ߦߋ߫ ߸ ߏ߬ ߟߋ ߞߊ߬ ߛߘߍߟߏߟߏ ߟߎ߬ ߞߍ߫ ߛߊ߲ ߡߊ߬ ߞߊ߬ ߕߊߘߎ߲ ߞߍ߫ ߊ߬ ߞߣߐ߫ ߸ ߊ߬ ߣߌ߫ ߞߊߙߏ߫ ߦߋߟߋ߲ߠߊ"
     }
@@ -6371,7 +6377,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad A yaa Wʋmd n yaa Mita.",
       "aa": "Diggah Yalli usuk yaabbi yaaxigi kinni.",
       "mdh": "Ka sekanin i pakakineg endu mataw.",
-      "ak": "Nokorε sε, Ɔne Otiefoͻ no a Ɔte biribiara, na Ɔne Onimdefoͻ no.",
+      "ak": "Nokorɛ sɛ, Ɔne Otiefoɔ no a Ɔte biribiara, na Ɔne Onimdefoɔ no.",
       "ceb": "Sa pagkatinuod Siya mao ang Labing Makadungog sa Tanan, ang Nakahibalo sa Tanan.",
       "nqo": "ߊߟߊ߫߸ ߏ߬ ߟߋ ߡߍ߲ߠߌ߲ߠߊ ߘߌ߫ ߸ ߟߐ߲ߠߌ߲ߠߊ ߟߋ߬"
     }
@@ -6433,7 +6439,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ese ntibabona ko twabashyiriyeho ijoro kugira ngo bariruhukemo, n’amanywa kugira ngo babashe kubona (bityo bashake ibibabeshaho)? Mu by’ukuri muri ibyo harimo ibimenyetso ku bantu bemera.",
       "mos": "Rẽ yĩnga b pa yã tɩ Wẽnd naana yʋngã tɩ b vʋʋs a pʋgẽ la wĩndgã tɩ yaa vẽenega, ad bee woto pʋga tagmas ne neb sẽn kõt sɩda.",
       "mdh": "Ngintu da nilan katawi i binaluy nami su magabi sa kanilan a ibangintelenan nilan endu su malamag a kailay nilan, nadalem samba su manga tanda a kapegkagaga nu Allah kanu manga taw a bamaginugut.",
-      "ak": "Enti wͻnhunuu sε Yɛayε anadwo ama wͻn a wͻde gye wͻn ahome, εna adekyeε nso wͻde hunu adeε (de hwehwε akͻnhoma)? Nokorε sε nsεnkyerεnee wͻ woi mu ma amanfoͻ a wͻgye die.",
+      "ak": "Enti wɔnhunuu sɛ Yɛayɛ anadwo ama wɔn a wɔde gye wɔn ahome, ɛna adekyeɛ nso wɔde hunu adeɛ (de hwehwɛ akɔnhoma)? Nokorɛ sɛ nsɛnkyerɛnee wɔ woi mu ma amanfoɔ a wɔgye die.",
       "nqo": "ߊ߬ߟߎ߬ ߕߍ߫ ߊ߬ ߦߋ߫ ߟߊ߫ ߓߊ߬ ߞߏ߫ ߒ߬ߠߎ߫ ߞߊ߬ ߛߎ ߞߍ߫ ߟߋ߬ ߛߴߊ߬ߟߎ߬ ߘߴߊ߬ߟߎ߬ ߡߝߊ߫ ߏ߬ ߘߐ߫؟ ߞߊ߬ ߕߟߋ߬ߘߐ߬ߟߊ ߞߍ߫ ߦߋߟߌ߫ ߕߎߡߊ߫ ߘߌ߫؟ ߕߊ߰ߛߌ߬ߟߌ߫ ߟߴߏ߬ ߘߐ߫ ߡߌ߬ߙߌ߲߬ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫"
     }
   },
@@ -6500,11 +6506,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Oyo yenna alijja n'ekirungi agenda kuweebwa ekirungi ekikisingako, era abo baliwona entiisa y'Olunaku olwo.",
       "rw": "(Kuri uwo munsi) uzaba yarakoze icyiza (ku isi) azabona icyiza kikiruta, kandi kuri uwo munsi bazaba batekanye, nta bwoba bafite.",
       "ln": "Oyo akoyaka na bolamu moko, akozalaka na bolamu koleka wana. Mpe mokolo wana bakozala mosika na bobangi.",
-      "dag": "Ŋun ti kana (Zaadali) ni tuunviεlli, tɔ! O mali (sanyoo) din viεla n­gari lala, ka bɛ nyɛla banyɛn ti be suhudoo ni ka chɛ dindali maa suhudamli.",
+      "dag": "Ŋun ti kana (Zaadali) ni tuunviɛlli, tɔ! O mali (sanyoo) din viɛla n­gari lala, ka bɛ nyɛla banyɛn ti be suhudoo ni ka chɛ dindali maa suhudamli.",
       "mos": "Ned ning sẽn waa ne yel-sõmde, a tara yel-sõmd sẽn yɩɩd rẽnda, la ra-kãng raare b paamda bas-m-yam n yi raarã wẽnga.",
       "aa": "Maqaane luk yemeete num (iimaan kee meqe taama kinnuk) Qhiyaamah ayró, usuk teetik kayrih tayse galtó le Yallih xaqul (jannat kinnuk), kaadu usun woo ayró meesii kee wariggak (Saayah) amaanah yanin.",
       "mdh": "Su taw a mapya i napananggit nin, na muna pan i kapya na balas a makwa nin endu di silan katekawan (makalesing) kanu kayup kanu sanggakala.",
-      "ak": "Obi a ͻde papa bi bεba no ͻwͻ ho nhyira a εkyεn saa, na wͻn na saa Da no hubͻ no mu no wͻbɛnya ahotᴐ.",
+      "ak": "Obi a ɔde papa bi bɛba no ɔwɔ ho nhyira a ɛkyɛn saa, na wɔn na saa Da no hubɔ no mu no wɔbɛnya ahotᴐ.",
       "ceb": "Bisan kinsa nga moabut uban sa maayo nga buhat, siya makabaton ug mas maayo pa kay niini; ug sila luwas gikan sa katalagman nianang Adlaw 'sa Pagkabanhaw'.",
       "nqo": "ߡߍ߲ ߓߊ߯ ߣߊ߬ ߢߌ߬ߡߊ߬ ߘߌ߫ ߸ ߝߋ߲߫ ߘߌ߫ ߞߍ߫ ߏ߬ ߦߋ߫ ߡߍ߲ ߦߋ߫ ߝߌ߬ߛߊ߫ ߏ߬ ߘߌ߫ ߸ ߏ߬ ߟߎ߫ ߞߎ߲߬ߠߊ߬ߝߎߟߋ߲ߣߍ߲߫ ߠߋ߫ ߞߊ߬ ߓߐ߫ ߟߏ߲ ߏ߬ ߞߎ߲߬ߡߊ߬ߜߊ߲ ߡߊ߬"
     }
@@ -6567,11 +6573,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Ny fiainana any ankoatra, dia nataonay ho an’ireo izay tsy mitady fahamboniana eto an-tany, sy tsy manao asa fanimbana. Ary ny fiafarana sambatra dia ho an’ireo izay manam-patahorana.",
       "lg": "Eyo ennyumba ey'Enkomerero (Ejjana) tugiteerawo abo abatayagala kwesukkulumya mu nsi wadde okwonoona, era enkomerero ennungi y'abo abatya Allah.",
       "rw": "Ubwo buturo bwa nyuma (Ijuru) twabugeneye ba bandi badashaka kwishyira hejuru cyangwa ngo bakore ubwononnyi ku isi. Kandi iherezo ryiza ni iry’abagandukira Allah.",
-      "dag": "Chiyaama yili maa, Ti (Tinim’ Naawuni) zaŋ li mi zali, ka di nyε ninvuɣu shεba ban bi bɔri bɛ maŋ’ tibgibu tiŋgbani yaaŋa zuɣu dini, ka mi bi bɔri saɣiŋgu. Yaha! Bahindisuŋ nyɛla wuntizɔriba dini.",
-      "mos": "Woto yaa yaoolem Roogã, D maand-a lame n kõ neb nins sẽn ka rat zẽk-m-meng la sãang tẽngã zugu. La ad yaoolem tɩlgrã bee ne Wẽn-zoεtbã.",
+      "dag": "Chiyaama yili maa, Ti (Tinim’ Naawuni) zaŋ li mi zali, ka di nyɛ ninvuɣu shɛba ban bi bɔri bɛ maŋ’ tibgibu tiŋgbani yaaŋa zuɣu dini, ka mi bi bɔri saɣiŋgu. Yaha! Bahindisuŋ nyɛla wuntizɔriba dini.",
+      "mos": "Woto yaa yaoolem Roogã, D maand-a lame n kõ neb nins sẽn ka rat zẽk-m-meng la sãang tẽngã zugu. La ad yaoolem tɩlgrã bee ne Wẽn-zoɛtbã.",
       "aa": "Too akeerâ dabqih niqmat, baaxô bagul cakkik kaxxamariinite waah teetil umaané abam faxe waa marah kaa abna, kaadu ellecabó dabqay (jannat kinnuk) fayla-le Yallak meesita mari-le.",
       "mdh": "Su surga sa gay a mawli na baluyn nami a kanu manga taw a da sa ginawa nilan i kabpapulu endu da sa kanilan i makabinasa, ya bun mapya i mawli nin su manga gilek sa Allah.",
-      "ak": "Saa Daakye asetena no, Yɛayε de ama wͻn a wͻnnyε ahomasoͻ wͻ asaase no soͻ, na wͻnni nsεmͻnee. Na awieε (pa) no deε εwͻ Nyame-surofoͻ no.",
+      "ak": "Saa Daakye asetena no, Yɛayɛ de ama wɔn a wɔnnyɛ ahomasoɔ wɔ asaase no soɔ, na wɔnni nsɛmɔnee. Na awieɛ (pa) no deɛ ɛwɔ Nyame-surofoɔ no.",
       "nqo": "ߛߎ߬ߟߊ߫ ߛߏ ߝߟߍ߫ ߣߌ߲߬ ߸ ߊ߲ ߧߴߏ߬ ߞߍ߫ ߟߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߠߎ߬ ߕߍ߫ ߖߘߍ߬ߕߊ߬ ߞߍ߫ ߟߊ߫ ( ߕߐ߭ ߟߎ߫ ߡߊ߬ )߸ ߊ߬ߟߎ߫ ߘߏ߲߬ ߕߍ߫ ߕߌߢߍߟߌ߫ ߢߌߣߌ߲߫ ߠߊ߫ ߘߎ߱ ߞߊ߲߬ ، ߟߊ߬ߓߊ߲ ߦߋ߫ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߫ ߟߋ߬ ߦߋ߫"
     }
   },
@@ -6642,11 +6648,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ese abantu bibaza ko bazabaho batageragezwa kubera ko bavuze bati “Twaremeye?”",
       "rn": "Mbega abantu bibaza ko mu gihe bavuze bati: “Twemeye”, borekwa gutyo gusa batabanje kugeragezwa mw’iyubahirizwa ry’amabwirizwa y’Imana Allah!",
       "ln": "Bato bakanisi ete bakotika bango baloba ete tondimi, mpe bamekama te?",
-      "dag": "Di ni bɔŋɔ, ninsalinim’ tεhimi ni bɛ kuli yɛn chɛ bami, kabɛ yεli ni bɛ ti Naawuni yεlimaŋli,ka bɛ bi dahim shεba (ka nya bɛ iimaansili)?",
-      "mos": "Rẽ yĩngɑ nebã tẽedɑme tɩ b nɑ n bɑs-b-lɑ woto b sẽn yeele:\"tõnd kõo sɩda\". Tɩ b kɑ zɑrb-b n gese?",
+      "dag": "Di ni bɔŋɔ, ninsalinim’ tɛhimi ni bɛ kuli yɛn chɛ bami, kabɛ yɛli ni bɛ ti Naawuni yɛlimaŋli,ka bɛ bi dahim shɛba (ka nya bɛ iimaansili)?",
+      "mos": "Rẽ yĩnga nebã tẽedame tɩ b na n bas-b-la woto b sẽn yeele:\"tõnd kõo sɩda\". Tɩ b ka zarb-b n gese?",
       "aa": "Sinam cabbimtu waytam takkalce neemeneh iyyaanamal, usun woo iimaanal mokkorime kalah?",
       "mdh": "Antapan nu taw i da den manggula nin (sya sa dunya) amayka nangimbenal den sa di den mafitna.",
-      "ak": "Enti nnipa dwen sε yεbɛgyae wͻn sε, wͻn aka sε: Yɛagye adi, wͻ aberε a yεnsͻ wͻn nhwε?",
+      "ak": "Enti nnipa dwen sɛ yɛbɛgyae wɔn sɛ, wɔn aka sɛ: Yɛagye adi, wɔ aberɛ a yɛnsɔ wɔn nhwɛ?",
       "ceb": "Naghunahuna ba ang mga tawo nga pasagdan sila 'lamang' sa pag-ingon: \"Kami mituo,\" samtang sila wala gisulayan?",
       "nqo": "ߊ߬ ߦߋ߫ ߡߐ߱ ߟߎ߬ ߢߣߊ߫ ߟߋ߫ ߓߊ߬ ߞߏ߫ ߊ߬ߟߎ߬ ߦߋ߫ ߕߏ߫ ߦߋ߲߬ ߕߋ߲߬ ߊ߬ߟߎ߬ ߦߴߊ߬ ߝߐ߫ ߜߊ߲ߛߊ߲߫ ߞߏ߫ ߊ߲ ߓߘߊ߫ ߞߍ߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߵߊ߬ ߕߘߍ߬ ߊ߬ߟߎ߬ ߕߍ߫ ߞߘߐߓߐ߫ ߟߊ߫؟"
     }
@@ -6715,10 +6721,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Uwizera kuzahura na Allah, mu by’ukuri igihe ntarengwa Allah yagennye kizagera nta kabuza. Kandi We ni Uwumva bihebuje, Umumenyi uhebuje.",
       "ln": "Oyo azali kolikia kokutana na Allah, ya solo elaka ya Allah ekoyaka. Mpe azali moyoki atonda boyebi.",
       "dag": "Ninvuɣu so ŋun niŋdi kore ni Naawuni laɣimbu, tɔ! Achiika! Naawuni (laɣimbu) saha nyɛla din yɛn kana. Yaha! Ŋuna n-nyɛ Wumda, Baŋda.",
-      "mos": "Ned ning sẽn tẽed Wẽnd sεgbã, bɩ ɑ bãng tɩ Wẽnd sɑsɑ wã wɑtɑme, lɑ Yẽndã la Wʋmda la Bãngda.",
+      "mos": "Ned ning sẽn tẽed Wẽnd sɛgbã, bɩ a bãng tɩ Wẽnd sasa wã watame, la Yẽndã la Wʋmda la Bãngda.",
       "aa": "Yallih angaaraw qaagitaah, kay galtóh sangeela num, tokkel diggah Yalli isi ginóh ugtiyyah xagana kah hee wakti amaatele, kaadu usuk isi ginóh maxcoocá yaabbi, ken taamoomi yaaxigi.",
       "mdh": "Su taw a bagingarap sa kabaratemu sa Allah na su ajal (lumpakan) na makawma endu sekanin (Allah) i pakakineg endu mataw.",
-      "ak": "Obi a ͻwͻ Nyankopͻn Nhyiamu no ho anidaasoͻ no, nokorε sε Nyankopͻn berε a Wahyε no reba. Ɔne Otiefoͻ no a Ɔte biribiara, na Ɔne Onimdefoͻ no a Ɔnim biribiara no.",
+      "ak": "Obi a ɔwɔ Nyankopɔn Nhyiamu no ho anidaasoɔ no, nokorɛ sɛ Nyankopɔn berɛ a Wahyɛ no reba. Ɔne Otiefoɔ no a Ɔte biribiara, na Ɔne Onimdefoɔ no a Ɔnim biribiara no.",
       "ceb": "Bisan kinsa nga naglaum alang ang panagtagbo uban ni Allah, ˹ipahibalo sila nga˺ ang tinudlong panahon ni Allah siguradong moabot. Ug Siya ang Hingpit nga Nakadungog, ang Hingpit nga Nakahibalo.",
       "nqo": "ߡߍ߲ ߓߊ߯ ߞߍ߫ ߊߟߊ߫ ߓߍ߲߬ߢߐ߲߰ߦߊ߬ߞߏ ߖߌ߰ ߟߊ߫ ߸ ߊߟߊ߫ ߟߊ߫ ߛߕߊ ߣߊ߬ߕߐ߫ ߟߋ߫ ߘߋ߬ ، ߊ߬ߟߋ ߟߋ߬ ߡߍ߲ߠߌ߲ߠߊ ߘߌ߫ ߸ ߟߐ߲ߠߌ߲ߠߊ ߟߋ߬"
     }
@@ -6786,11 +6792,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Moa ve tsy hitan’izy ireo ahoana no nanombohan’I Allah ny fahariana, avy eo dia mamerina izany indray Izy ? Tena marina fa mora amin’I Allah izany.",
       "lg": "Abaffe tebalaba engeri Allah gy'atandikamu ebitonde (ne bivaawo) oluvannyuma n'abizzaawo, mazima ekyo kyangu nnyo ku Allah.",
       "rw": "Ese (abahakanyi) ntibabona uko Allah yaremye ibiremwa (bitari biriho) hanyuma akazanabigarura (nyuma yo gupfa)? Mu by’ukuri ibyo kuri Allah biroroshye.",
-      "dag": "Di ni bɔŋɔ,bɛ (chεfurinim’ maa) bi nya Naawuni ni piindi nama shεm, din nyaaŋa kaOyɛn ti labsi li na (Zaadali). Achiika! Lala maa nyɛla soochi n-zaŋ ti Naawuni.",
-      "mos": "Rẽ yĩngɑ bãmb kɑ yã Wẽnd sẽn sɩngd naanegã to-to lɑ A leb n wɑ vʋʋg-ɑ wã lɑ? Ad wã yɑɑ yol-yol ne Wẽnde.",
+      "dag": "Di ni bɔŋɔ,bɛ (chɛfurinim’ maa) bi nya Naawuni ni piindi nama shɛm, din nyaaŋa kaOyɛn ti labsi li na (Zaadali). Achiika! Lala maa nyɛla soochi n-zaŋ ti Naawuni.",
+      "mos": "Rẽ yĩnga bãmb ka yã Wẽnd sẽn sɩngd naanegã to-to la A leb n wa vʋʋg-a wã la? Ad wã yaa yol-yol ne Wẽnde.",
       "aa": "Kaadu mayablaanaa! Yalli ginó aneewaytik elle qimbisaah, rabteek lakat elle tet gacsanna. Diggah toh Yallal xabcinih.",
       "mdh": "Ngintu da nu katawi u panun i kabpagebpun nu Allah sa kabpamaluy nin, mawli na pauliten nin sa ulyan na kapatay, malemu gayd (intu) sa kanu Allah.",
-      "ak": "Anaasε wͻ’nhunuu sεdeε Nyankopͻn hyεε abͻdeε aseε na Ɔsan de (foforͻ) ba bio? Nokorε sε, εno deε εyε (adeε a εyε) mmrε ma Nyankopͻn.",
+      "ak": "Anaasɛ wɔ’nhunuu sɛdeɛ Nyankopɔn hyɛɛ abɔdeɛ aseɛ na Ɔsan de (foforɔ) ba bio? Nokorɛ sɛ, ɛno deɛ ɛyɛ (adeɛ a ɛyɛ) mmrɛ ma Nyankopɔn.",
       "ceb": "Wala ba nila lantawa kun giunsa pagsugod sa Allah ang paglalang, unya banhawon kini? Sa pagkatinuod kini sayon lang sa Allah.",
       "nqo": "ߊ߬ߟߎ߬ ߕߍ߫ ߊ߬ ߦߋ߫ ߟߊ߫ ߓߵߊߟߊ߫ ߦߋ߫ ߘߊ߲ߠߌ߲ ߠߊߝߟߐ߫ ߟߊ߫ ߢߊ ߡߍ߲ ߞߊ߬ ߓߊ߲߫ ߞߵߊ߬ ߡߊߛߊ߬ߦߌ߬؟ ߏ߬ ߣߐ߲߰ߡߊ߲߬ߓߊ ߟߋ߬ ߊߟߊ߫ ߡߊ߬"
     }
@@ -6843,8 +6849,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Ireo izay nandray mpiaro hafa ankoatr’I Allah dia mitovy amin’ny hala izay miantehitra amin’ny tranony. Marina fa ny trano tena marefo indrindra dia ny tranon-kala, raha toa ka mba fantatr’izy ireo !",
       "lg": "Ekifaananyi ky'abo abeeteerawo abataasa ne baleka Allah, bali nga nnabbubi eyeezimbira ennyumba ate nga ennyumba esinga obunafu y’ennyumba ya nnabbubi singa baali bamanyi.",
       "ln": "Ndakisa ya baye bazui babateli na botiki Allah, ezali lokola limpulututu oyo atongi ndako ya motawu, nzoka nde ndako oyo ezali motawu koleka, ezali ndako ya limpulututu. Soki solo bazali koyeba.",
-      "mos": "Neb nins sẽn dɩk zẽng sẽn kɑ Wẽnd n mɑɑn b lɑll-n-tɑɑsã bilgr yɑɑ wɑlɑ sʋlg sẽn wʋg ɑ roogo, lɑ ad roog sẽn yɩɩd vɑleng yɑɑ sʋlg roogo, tɩ b sã n da miime.",
-      "ak": "Wͻn a wͻ’fri Nyankopͻn akyi fa akyitaafoͻ no mfatoho tesε ananse a wasi fie (ama neho). Nokorε sε efie a enni ahoͻden koraa ne ananse fie, sε anka wͻ’nim ampa a”.",
+      "mos": "Neb nins sẽn dɩk zẽng sẽn ka Wẽnd n maan b lall-n-taasã bilgr yaa wala sʋlg sẽn wʋg a roogo, la ad roog sẽn yɩɩd valeng yaa sʋlg roogo, tɩ b sã n da miime.",
+      "ak": "Wɔn a wɔ’fri Nyankopɔn akyi fa akyitaafoɔ no mfatoho tesɛ ananse a wasi fie (ama neho). Nokorɛ sɛ efie a enni ahoɔden koraa ne ananse fie, sɛ anka wɔ’nim ampa a”.",
       "nqo": "ߡߍ߲ ߠߎ߫ ߣߵߊ߬ߟߎ߬ ߓߟߏߞߍ߫ ߟߊ߫ ߞߏߕߌ߯ ߜߘߍ߫ ߟߎ߫ ߟߊ߫ ߞߵߊߟߊ߫ ߕߏ߫ ߸ ߏ߬ ߟߎ߬ ߟߊߒߡߊ ߟߋ߬ ߦߏ߫ ߕߊߟߏ߲ߕߊߟߏ߲ߓߊ ߦߋ߫ ߢߊ ߡߍ߲ ߊ߬ ߟߊ߫ ߓߏ߲ߕߌ߯ߦߊ ߘߐ߫ ߸ ߓߏ߲ ߠߎ߬ ߓߍ߯ ߘߐ߫ ߖߐ߲ߝߐ߲ߣߍ߲ ߠߋ߬ ߕߊߟߏ߲ߕߊߟߏ߲ߓߊ ߕߊ ߘߌ߫ ߣߴߊߟߎ߫ ߓߍ߫ ߊ߬ ߟߐ߲߫ ߠߊ߫"
     }
   },
@@ -6913,11 +6919,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Nahary ireo lanitra sy tany tamim-pahamarinana I Allah. Marina fa ao anatin’izany dia misy porofo ho an’ireo mpino.",
       "lg": "Allah yatonda eggulu omusanvu, n'ensi mu ngeri entuufu, mazima mu ekyo mulimu eky'okuyiga eri Abakkiriza.",
       "rw": "Allah yaremye ibirere n’isi mu kuri. Mu by’ukuri muri ibyo harimo ikimenyetso ku bemera.",
-      "dag": "Naawuni namla sagbana mini tiŋgbani ni yεlimaŋli. Achiika! Ŋɔ maa puuni mali kpahimbu n-zaŋ ti ninvuɣu shεba ban ti Naawuni yεlimaŋli.",
-      "mos": "Wẽnd nɑɑnɑ sɑɑsã lɑ Tẽngã sɩd yĩngɑ, ad wãnde pʋgẽ wã yel-soalem bee beenẽ sɩd-kõtbã yĩngɑ.",
+      "dag": "Naawuni namla sagbana mini tiŋgbani ni yɛlimaŋli. Achiika! Ŋɔ maa puuni mali kpahimbu n-zaŋ ti ninvuɣu shɛba ban ti Naawuni yɛlimaŋli.",
+      "mos": "Wẽnd naana saasã la Tẽngã sɩd yĩnga, ad wãnde pʋgẽ wã yel-soalem bee beenẽ sɩd-kõtbã yĩnga.",
       "aa": "Yalli qaranwaa kee baaxó nummal gine, diggah tohut Yallal yeemene marah astá tan.",
       "mdh": "Binaluy nu Allah su manga langit endu su lupa sa haqq, saben-sabenal a nakadalem kanu namba i tanda (kapegkagaga) sya kanu manga bamamaginugut.",
-      "ak": "Nokorε na Nyankopͻn debͻͻ soro ne asaase. Nokorε sε nsεnkyerεnee wͻ woi mu dema agyidiefoͻ no.",
+      "ak": "Nokorɛ na Nyankopɔn debɔɔ soro ne asaase. Nokorɛ sɛ nsɛnkyerɛnee wɔ woi mu dema agyidiefoɔ no.",
       "ceb": "Ang Allah ang naglalang sa mga kalangitan ug kayutaan lamang nga adunay tinuod katuyoan. Sa pagkatinuod adunay usa ka timaan niini alang sa mga magtotoo.",
       "nqo": "ߊߟߊ߫ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲߫ ߕߎ߬ߢߊ߫ ߟߋ߬ ߟߊ߫ ، ߕߊ߰ߛߌ߬ߟߌ߫ ߟߴߏ߬ ߘߐ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
@@ -6987,10 +6993,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe abaddu Bange Abakkiriza (bwe muba nga muli mu kunyigirizibwa) mazima ensi Yange ngazi (musenguke munsinzize awalala), era Nze Nzekka Nze gwe muba musinza.",
       "rw": "Yemwe bagaragu banjye bemeye! (Niba mubuzwa kugaragira Allah, muzimuke kuko) mu by’ukuri isi yanjye ni ngari. Bityo, mube ari Njye musenga Njyenyine.",
       "ln": "Eh bawumbu na ngai! Baye bandimelaki ngai! Ya sólo mabele na ngai mazali monene, bobondela ngai.",
-      "dag": "“Yaa yinim’ N dab’ shεba ban ti yεlimaŋli: “Achiika! N (Mani Naawuni) tiŋgbani nyɛladin yɛlimma, dinzuɣu, jεmmi ya Ma (luɣulikam yi ni be).”",
-      "mos": "Yaa yãmb M yembs nins sẽn kõ sɩdɑ! Ad Mɑm Tẽngã yɑlmɑme, bɩ y tũ Mɑɑm bɑlɑ.",
+      "dag": "“Yaa yinim’ N dab’ shɛba ban ti yɛlimaŋli: “Achiika! N (Mani Naawuni) tiŋgbani nyɛladin yɛlimma, dinzuɣu, jɛmmi ya Ma (luɣulikam yi ni be).”",
+      "mos": "Yaa yãmb M yembs nins sẽn kõ sɩda! Ad Mam Tẽngã yalmame, bɩ y tũ Maam bala.",
       "mdh": "Sekanu a manga ulipen ku a nangimbenal, su lupa ku na mawlad, saki nu i simba.",
-      "ak": "Menkoa a moagye adie, M’asaase no trε; enti Menko ara na monsom Me.",
+      "ak": "Menkoa a moagye adie, M’asaase no trɛ; enti Menko ara na monsom Me.",
       "ceb": "Oh Akong mga ulipon (sa katawhan ug jinn) nga mituo (sa Kamatuoran), kasigurohan nga ang Akong yuta lapad, busa simbaha Ako lamang (niini).",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߒ ߠߊ߫ ߖߐ߲߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߒ ߠߊ߫ ߘߎ߰ߞߟߏ ߘߐߥߙߊ߬ߣߍ߲߬ߓߊ ߟߋ߬ ߸ ߒ߬ߓߵߊߟߎ߫ ߒߠߋ ߟߋ߫ ߓߊ߬ߕߴߏ߬ ߘߐ߫ ߘߋ߬"
     }
@@ -7063,10 +7069,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rn": "Zina-kiremwa cose gifise ubuzima, kizohonja urupfu; hanyuma muheze musubizwe iwacu Twebwe Allah, kugira muhemberwe ivyo mwakoze.",
       "ln": "Molimo nyoso mokomekaka liwa, sima bokozongisama epai na biso.",
       "dag": "Nyɛvuli kam nyɛla din yɛn lam kum, din nyaaŋa Ti (Tinim’ Naawuni) sani ka bɛ yɛn ti labsi ya na.",
-      "mos": "Yõor fãɑ nɑ n lembɑ kũum, rẽ poorẽ yɑɑ Tõnd nengẽ lɑ b nɑ n lebs yãmbɑ.",
+      "mos": "Yõor fãa na n lemba kũum, rẽ poorẽ yaa Tõnd nengẽ la b na n lebs yãmba.",
       "aa": "Ummaan nafsiy nuwwi raba tammoysele tohuk lakal Nee fan gacsimtan cisab kee galtóh.",
       "mdh": "Uman isa na makananam sa kapatay, entupan a makambalingan kanu sa laki.",
-      "ak": "Ɔkra biara bεka owuo ahwε, na afei Yεn hͻ na mobεsan aba.",
+      "ak": "Ɔkra biara bɛka owuo ahwɛ, na afei Yɛn hɔ na mobɛsan aba.",
       "ceb": "Ang matag kalag makatilaw sa kamatayon, ug unya ngadto sa Allah kamo (tanan) ibalik (alang sa Paghukom).",
       "nqo": "ߣߌߡߊ ߞߋ߬ߟߋ߲߬ߞߋ߬ߟߋ߲߬ߠߊ ߘߌ߫ ߛߊ߬ߦߊ ߡߊߜߊ߬ߙߏ߫ ߟߋ߬ ߕߘߋ߫ ، ߏ߬ ߟߋ ߞߐ߫ ߊߟߎ߫ ߘߌ߫ ߛߊ߬ߦߌ߫ ߒ߬ߠߎ߫ ߡߊ߬"
     }
@@ -7138,11 +7144,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Allah agaziyiza omuntu gw'aba ayagadde ebyenfuna mu baddu Be ate n'afundiza oyo gw'aba (ayagadde), mazima Allah ku buli kintu Mumanyi nnyo.",
       "rw": "Allah yongerera amafunguro uwo ashaka mu bagaragu be akanayagabanya ku wo ashaka. Mu by’ukuri Allah ni Umumenyi wa byose.",
       "ln": "Allah apesaka bozui na oyo alingi mpe abotoloko yango na oyo alingi kati ya bawumbu naye. Ya soló, Allah azali na boyebi ya biloko binso.",
-      "dag": "Naawuni yεlgirila arzichi n-tiri O ni bɔri so O daba puuni, ka kpaŋsiri bɛhigu n-tiri O. Achiika! Naawuni nyɛla Ŋun mi binshɛɣu kam.",
-      "mos": "Wẽnd yɑlgdɑ rɩtlã n kõt A sẽn dɑt-b rãmb A yembsã pʋgẽ lɑ A weoogd A sẽn dɑt-b rãmbɑ; ad Wẽnd yɑɑ Mit ne bũmb fãɑ.",
+      "dag": "Naawuni yɛlgirila arzichi n-tiri O ni bɔri so O daba puuni, ka kpaŋsiri bɛhigu n-tiri O. Achiika! Naawuni nyɛla Ŋun mi binshɛɣu kam.",
+      "mos": "Wẽnd yalgda rɩtlã n kõt A sẽn dat-b rãmb A yembsã pʋgẽ la A weoogd A sẽn dat-b rãmba; ad Wẽnd yaa Mit ne bũmb fãa.",
       "aa": "Yalli isi naqoosak isih kah faxa marah rizqhi (quusi) farakka haah, isih kah faxa maral keenik ceyissi haa, diggah Yalli ummaanimil ixxiga-li.",
       "mdh": "Su Allah i papegkakalag sa rizki nu kagkahanda nin kanu manga ulipen nin endu pedsimpitan nin, su Allah kanu langun na enggaga-isa na katawan nin.",
-      "ak": "Nyankopͻn ma akͻnhoma no bu Nenkoa no mu nea Ɔpε so, εna (Nenkoa a Ɔpε nso) Osusu dema wͻn. Nokorε sε Nyankopͻn ne biribiara ho Nimdefoͻ.",
+      "ak": "Nyankopɔn ma akɔnhoma no bu Nenkoa no mu nea Ɔpɛ so, ɛna (Nenkoa a Ɔpɛ nso) Osusu dema wɔn. Nokorɛ sɛ Nyankopɔn ne biribiara ho Nimdefoɔ.",
       "nqo": "ߊߟߊ߫ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߴߊ߬ ߟߊ߫ ߖߐ߲߭ ߠߎ߬ ߘߐ߫ ߊ߬ ߣߴߊ߬ ߘߴߊ߬ ߘߐߜߙߐ߬ ، ߊߟߊ߫ ߦߋ߫ ߝߋ߲ ߓߍ߯ ߟߐ߲ߓߊ߮ ߟߋ߬ ߘߌ߫ ߘߋ߬"
     }
   },
@@ -7212,10 +7218,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Allah ni We wahanze ibiremwa bitari biriho, akazanabigarura (abizura), hanyuma Iwe ni ho muzasubizwa.",
       "ln": "Allah nde abandaka bokeli mpe sima azongeli yango, mpe epai naye nde bokozongisama.",
       "dag": "Naawuni n-nyɛŊun piindi nambu, din nyaaŋa ka O labsiri li (di kpibu nyaaŋa), din nyaaŋa Osanikabɛ yɛn ti labsi ya na (Zaadali).",
-      "mos": "Wẽnd n sɩngd naoonegã, rẽ poorẽ n lebs n yɩlm-ɑ, rẽ poorẽ yɑɑ Yẽ nengẽ lɑ y nɑ n lebe.",
+      "mos": "Wẽnd n sɩngd naoonegã, rẽ poorẽ n lebs n yɩlm-a, rẽ poorẽ yaa Yẽ nengẽ la y na n lebe.",
       "aa": "Yalli ginó dibuk qimbisaah, tohuk lakat tet gacsah rabeeniik lakat, tohuk lakat cisab kee galtóh kaa fan gacsimtan.",
       "mdh": "Su Allah i minebpun sa kinabaluy sa manusya mawli na paulitan nin menem mawli na makambalingan tanu sa lekanin.",
-      "ak": "Nyankopͻn na Ɔhyεε abͻdeε aseε, εna Ɔsan bͻ no bio, afei Ne hͻ na mo bεsan akͻ.",
+      "ak": "Nyankopɔn na Ɔhyɛɛ abɔdeɛ aseɛ, ɛna Ɔsan bɔ no bio, afei Ne hɔ na mo bɛsan akɔ.",
       "ceb": "Ang Allah maoy nagpasiugda sa paglalang ug Iya kining sublion (banhawon kini pag-usab human mamatay), ug ngadto Kaniya kamo (tanan) ibalik (alang sa Paghukom).",
       "nqo": "ߊߟߊ߫ ߟߋ߬ ߘߊ߲ߠߌ߲ ߠߊߝߟߐ߫ ߟߊ߫ ߞߊ߬ ߓߊ߲߫ ߞߵߊ߬ ߡߊߛߊ߬ߦߌ߬ ، ߏ߬ ߟߋ ߞߐ߫ ߊߟߎ߫ ߘߌߣߊ߬ ߟߊߛߊ߬ߦߌ߲߫ ߊ߬ ߡߊ߬"
     }
@@ -7290,9 +7296,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rn": "Imana Allah, ni Yo Rugaba w’ibiri mu majuru n’isi. Mu vy’ukuri Imana Allah, ni Uwikenuye Yikenuye muri vyose, Nyenugushimwa, Ishimwa ku mazina, ku matazirano no ku bikorwa vyayo mu bihe vyose.",
       "ln": "Manso mazali o likolo mpe o nsé mazali ya Allah. Ya soló, Allah atonda bomengo atonda masanzoli.",
       "dag": "Naawuni n-su din kam be sagbana mini tiŋgbani ni, achiika ! Naawuni nyɛla Bundana, Duuma paɣrigu.",
-      "mos": "Lɑ sẽn be sɑɑsẽ lɑ Tẽngẽ yɑɑ Wẽnd soolem, ad Wẽnde, Yẽ lɑ sek-m-meng Soɑb n yɑɑ pẽgr Soɑbɑ.",
+      "mos": "La sẽn be saasẽ la Tẽngẽ yaa Wẽnd soolem, ad Wẽnde, Yẽ la sek-m-meng Soab n yaa pẽgr Soaba.",
       "aa": "Qaranwaa kee baaxól tanim Yalli- le, diggah Yalli Usuk isi ginók gadda-li, kulli caalatal faylá-li.",
       "mdh": "Kanu Allah su dalem nu manga langit endu lupa, sekanin (Allah) i kawasa a pebpugin.",
+      "ak": "Deɛ ɛwɔ soro ne asaase so (nyinaa) wɔ Nyankopɔn. Nokorɛ sɛ Nyankopɔn deɛ Ɔne Ɔdefoᴐ, Ɔne Ayeyie Wura no.",
       "ceb": "Iya sa Allah (lamang) ang bisan unsa nga anaa sa mga langit ug sa yuta; sa pagkatinuod ang Allah mao ang Igo sa Kaugalingon, ang Dalaygon.",
       "nqo": "ߊߟߊ߫ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߣߐߝߋ߲ ߘߌ߫ ، ߊߟߊ߫ ߓߊ߬߸ ߞߊ߯ߙߌߓߊ߯ ߟߴߊ߬ ߘߌ߫ ߸ ߕߊ߲߬ߘߏ߬ߕߊ߫ ߟߋ߬"
     }
@@ -7352,10 +7359,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima abakkiriza Ebigambo Byaffe, beebo nga buli lwe baba babuuliriddwa nabyo beeyala wansi ne bavunnama era ne batendereza amatendo ga Mukama Omulabirizi Waabwe, era bulijjo bo tebeekuza.",
       "rw": "Mu by’ukuri abemera amagambo yacu, ni ba bandi baca bugufi bakubama igihe bayibukijwe, basingiza ishimwe n’ikuzo bya Nyagasani wabo, kandi batibona.",
       "ln": "Ya soló, baye bandimaka na mikapo mia biso nde baye bazalaka soki bakundoleli bango yango, bakiti na bogumbami mpe bakumisi lokumu ya Nkolo wa bango, mpe bakosalaka lolendo te.",
-      "mos": "Ad sẽn kõt-b sɩd ne Tõnd goɑmã yɑɑ neb nins tɩ b sã n tẽeg-b ne-a lɑ b sẽn lʋɩt n yɑɑ tukdb lɑ b yɩlgd b Soɑbã yʋʋr ne pẽgr lɑ b kɑ mɑɑnd wɑoog-m-meng ye.",
+      "mos": "Ad sẽn kõt-b sɩd ne Tõnd goamã yaa neb nins tɩ b sã n tẽeg-b ne-a la b sẽn lʋɩt n yaa tukdb la b yɩlgd b Soabã yʋʋr ne pẽgr la b ka maand waoog-m-meng ye.",
       "aa": "Cagalah Ni-aayoota nummaysa mari, teetil (Qhuraan aayoota kinnuk) ken kassiisan waqdi sujuuduh gomboh radan kaadu sinni Rabbi saytunnoysak faylisan usun Kaa yaqbudeenimik kaxxa- mariinitekal.",
       "mdh": "Ya bu mangimbenal kanu manga ayatan nami na su manga taw a amayka patademen silan na sumugyud endu tumasbih sa pugi nilan kanu Kadenan nilan, endu di silan mamasela.",
-      "ak": "Wͻn a wͻgye Yε nsεm no die no ne wͻn a sε yεde Yε nsεm no tu wͻn fo a, wͻde wͻn ho kͻ fͻm de wͻn anim butu fͻm, na wͻbͻ wͻn Wura Nyankopͻn abodin kamfo no, na wͻnyε ahomasoͻ.",
+      "ak": "Wɔn a wɔgye Yɛ nsɛm no die no ne wɔn a sɛ yɛde Yɛ nsɛm no tu wɔn fo a, wɔde wɔn ho kɔ fɔm de wɔn anim butu fɔm, na wɔbɔ wɔn Wura Nyankopɔn abodin kamfo no, na wɔnyɛ ahomasoɔ.",
       "ceb": "Kadto lamang ang nagtuo sa Among mga bersikulo sa dihang gipahinumdoman, sila mohapa ug maghimaya uban sa pagdayeg sa ilang Ginoo samtang sila dili mapahitas-on.",
       "nqo": "ߡߐ߰ ߟߎ߫ ߟߋ߬ ߟߊߣߍ߲߫ ߒ߬ ߠߊ߫ ߟߝߊߙߌ ߟߎ߬ ߟߊ߫ ߡߍ߲ ߠߎ߬ ߓߊ߯ ߞߊ߬ߥߊ߲߬ߘߌ߫ ߊ߬ ߟߊ߫ ߊ߬ߟߎ߬ ߘߴߊ߬ߟߎ߫ ߓߋ߬ ߕߌ߲ߓߌߘߌ߲ ߘߌ߫ ߞߊ߬ ߛߊߣߌ߲ߧߊ ߞߍ߫ ߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߕߊ߲߬ߘߏ ߘߌ߫ ߸ ߊ߬ߟߎ߫ ߘߏ߲߬ ߕߍ߫ ߊ߬ߟߎ߫ ߖߘߍ߬ ߘߐߓߏ߲߬ߧߊ߬ ߟߊ߫"
     }
@@ -7429,10 +7436,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mwagira icyo mugaragaza (nk’umugambi wo kurongora abagore b’Intumwa nyuma y’uko itabarutse) cyangwa mukagihisha, mu by’ukuri Allah ni Umumenyi wa byose.",
       "ln": "Oyo bozali komonisa polele na oyo bozali kobomba yango, ya solo Allah azali moyebi wa biloko binso.",
       "dag": "Yi yi yihi shɛli polo ni, bee ka yi sɔɣi li, tɔ! Achiika! Naawuni nyɛla Ŋunmi yɛllikam.",
-      "mos": "Yãmb sɑ n vẽneg bũmb bɩ y soɑlg-ɑ lɑme, ad Wẽnd yɩɩme n yɑɑ bũmb fãɑ Mitɑ.",
+      "mos": "Yãmb sa n vẽneg bũmb bɩ y soalg-a lame, ad Wẽnd yɩɩme n yaa bũmb fãa Mita.",
       "aa": "Sinaamey Nabii adá abba haytaamak-tu tuybulleenik hinnay qellisseenik, toysa diggah Yalli ummaanim yaaxigi kinni kaak qellittam matan.",
       "mdh": "Amayka aden ipebpayag nu atawaka ipedsulen nu na su Allah na langun na enggaga-isa na katawan nin.",
-      "ak": "Sε moda biribi adi o, anaasε mode suma o, nokorε sε Nyankopͻn ne biribiara ho Nimdefoͻ.",
+      "ak": "Sɛ moda biribi adi o, anaasɛ mode suma o, nokorɛ sɛ Nyankopɔn ne biribiara ho Nimdefoɔ.",
       "ceb": "Bisan ikaw nagpadayag sa usa ka butang o nagtago niini, sa pagkatinuod ang Allah adunay hingpit nga Kahibalo sa tanan nga mga butang.",
       "nqo": "ߣߴߊߟߎ߫ ߞߊ߬ ߞߏ ߘߏ߫ ߟߊ߲ߞߣߍߡߊ߫ ߓߊ߬ ߸ ߥߟߴߊߟߎ߫ ߞߵߊ߬ ߘߏ߲߰ ߸ ߊߟߊ߫ ߞߏ߬ߣߌ߲ ߞߍߣߍ߲߫ ߞߏ ߓߍ߯ ߟߐ߲ߓߊ߮ ߟߋ߬ ߘߌ߫"
     }
@@ -7493,8 +7500,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Tena marina fa Allah sy ireo Anjeliny dia mitahy an’ny Mpaminany; ô ianareo izay mino! Mangataha fitahiana ho azy, ary mangataha fiadanana ho azy ianareo.",
       "lg": "Mazima Allah ne Bamalayika Be basaasira Nnabbi, abange mmwe Abakkiriza mumusabirenga era mumulamuse olulamusa (olumuwa ekitiibwa).",
       "rw": "Mu by’ukuri Allah ahundagaza impuhwe ze ku Muhanuzi (Muhamadi) ndetse n’Abamalayika bakazimusabira. Yemwe abemeye! Nimumusabire impuhwe munamwifurize amahoro.",
-      "mos": "Ad Wẽnd ne A Malεgsã pʋʋsda Nabiyaamã, yãmb ɑ neb nins sẽn kõ sɩdɑ! Pʋʋs-y-yã-a lɑ y kos tɩlgr sẽn yɑɑ kẽoong n kõ-a.",
+      "mos": "Ad Wẽnd ne A Malɛgsã pʋʋsda Nabiyaamã, yãmb a neb nins sẽn kõ sɩda! Pʋʋs-y-yã-a la y kos tɩlgr sẽn yaa kẽoong n kõ-a.",
       "mdh": "Saben-sabenal su Allah endu su malaikat na pedsalawatan nilan su rasul, na sekanu a manga bamaginugut na salawati nu su rasul endu lepas a malilintad.",
+      "ak": "Nokorɛ sɛ Nyankopɔn ne N’asoro abɔfoɔ hyira Nkɔmhyɛni. Mo a moagye adie, monsrɛ nhyira mma no na monkyea no wɔ asomdwoeɛ mu.",
       "nqo": "ߊߟߊ߫ ߣߴߊ߬ ߟߊ߫ ߞߋ߲ߛߐ߲ ߠߎ߬ ߦߋ߫ ߕߌ߲ߞߌ߫ ߠߊ߫ ߟߊ߬ߝߐ߬ߓߊ߮ ߦߋ߫ ߟߋ߫ ߞߍ߬ߣߍ߲ ، ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߊߟߎ߫ ߝߣߊ߫ ߕߌ߲ߞߌ ߞߍ߫ ߊ߬ ߦߋ߫ ߸ ߊ߬ ߣߴߊߟߎ߫ ߦߴߊ߬ ߝߏ߬ ߟߋ߬ ߘߏ߲߯"
     }
   },
@@ -7565,11 +7573,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe Abakkiriza mutye Allah era mwogere ebigambo ebituufu.",
       "rw": "Yemwe abemeye! Nimugandukire Allah kandi mujye muvuga imvugo z’ukuri.",
       "rn": "Emwe bemeye Imana Allah n’Intumwa yayo bakubahiriza n’amabwirizwa yayo! Nimugamburukire Imana Allah mu kwubahiriza amabwirizwa yayo, maze muvuge amajambo aroranye mu bihe vyose;",
-      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Zom ya Naawuni, ka yεli ya yεltɔɣa din tuhi.",
-      "mos": "Yaa yãmb neb nins sẽn kõ sɩdɑ! Zoe-y Wẽnd lɑ y yeel gom-tɩrse.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Zom ya Naawuni, ka yɛli ya yɛltɔɣa din tuhi.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩda! Zoe-y Wẽnd la y yeel gom-tɩrse.",
       "aa": "Kee yeemene maraw! Yallak meesitaay, massah tan maxcóy dirab kee deedalak tu-edde aneewayta ixxica.",
       "mdh": "Hay sekanu anan a bamaginugut! Ikagilek nu su Allah endu edtalu kanu sa kadtalu a bantang-matidtu.",
-      "ak": "Mo a moagye adie, monsuro Nyankopͻn na (εberε biara mu no) monka kasa pa.",
+      "ak": "Mo a moagye adie, monsuro Nyankopɔn na (ɛberɛ biara mu no) monka kasa pa.",
       "ceb": "Oh mga magtutuo, kahadloki ang Allah, likayi ang daotan, ug isulti ang pulong nga husto, tinuod, ug makiangayon,",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬ ߸ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߞߎߡߊ߫ ߖߐ߲ߖߐ߲ ߝߐ߫"
     }
@@ -7637,11 +7645,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Amanyi ebyo ebiyingira mu nsi n'ebigifuluma, n'ebyo ebikka okuva mu ggulu n'ebyambuka mu lyo, era Yye Ye Musaasizi Omusonyiyi.",
       "rw": "Azi ibyinjira mu butaka n’ibibusohokamo, ibimanuka mu kirere ndetse n’ibikizamukamo. Kandi ni Nyirimpuhwe, Nyir’ukubabarira ibyaha.",
       "ln": "Ayebi maye mazali kokota na mabele na maye mazali kobima o kati na yango, mpe maye mazali kokita kowuta na likolo mpe na maye mazali komata. Azali wa ngolu atonda bolimbisi.",
-      "dag": "O mila din kpεri tiŋgbani ni, ni din yiri di puuni na, ka mi din yiri zuɣusaa na, ni din duri di puuni. Ŋuna lahi n-nyɛ Zaadali Nambɔzobonaa, Chεmpaŋlana.",
-      "mos": "A mii sẽn kẽed Tẽngã pʋgẽ lɑ sẽn yit ɑ pʋgẽ; lɑ sẽn yit sɑɑgẽ lɑ sẽn dʋʋd ɑ pʋgẽ; lɑ Yẽ lɑ Yolsd lɑ Yaafda.",
+      "dag": "O mila din kpɛri tiŋgbani ni, ni din yiri di puuni na, ka mi din yiri zuɣusaa na, ni din duri di puuni. Ŋuna lahi n-nyɛ Zaadali Nambɔzobonaa, Chɛmpaŋlana.",
+      "mos": "A mii sẽn kẽed Tẽngã pʋgẽ la sẽn yit a pʋgẽ; la sẽn yit saagẽ la sẽn dʋʋd a pʋgẽ; la Yẽ la Yolsd la Yaafda.",
       "aa": "Yalli baaxót cullu ittam kee teetik bukku ittam yaaxigeh, kaadu qaraanak obbu ittam kee kaa fan eweqqi ittam yaaxigeh, Usuk xuwawli, dambi cabti-li.",
       "mdh": "Katawan nin i peludep kanu lupa endu belyu lun, endu su pedtulun ebpun sa langit endu su pebpapulu endu sekanin a malimu a bangampun.",
-      "ak": "Onim deε εkͻ asaase mu, ne deε epue firi mu, ne deε esane firi soro ne deε εforo kͻ hͻ, Ɔne Mmͻborͻhunufoͻ Hene no, Bͻnefakyε Wura no.",
+      "ak": "Onim deɛ ɛkɔ asaase mu, ne deɛ epue firi mu, ne deɛ esane firi soro ne deɛ ɛforo kɔ hɔ, Ɔne Mmɔborɔhunufoɔ Hene no, Bɔnefakyɛ Wura no.",
       "nqo": "ߊ߬ ߞߵߊ߬ ߟߐ߲߫ ߡߍ߲ ߦߋ߫ ߘߏ߲߬ ߠߊ߫ ߘߎ߱ ߘߐ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߋ߫ ߓߐ߫ ߟߴߊ߬ ߘߐ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߋ߫ ߖߌ߰ ߟߊ߫ ߞߊ߬ ߓߐ߫ ߛߊ߲ ߘߐ߫ ߸ ߊ߬ ߣߌ߫ ߡߍ߲ ߦߋ߫ ߦߟߍ߬ ߟߴߊ߬ ߘߐ߫ ، ߊߟߋ ߟߋ߫ ߡߊ߬ߤߌ߬ߣߊ߬ߟߊ ߘߌ߫ ߸ ߡߊ߬ߞߕߏ߬ߟߌ߬ߟߊ ߟߋ߬"
     }
   },
@@ -7695,8 +7703,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lt": "Ką iš gailestingumo (t. y. gėrio) Allahas gali suteikti žmonijai, niekas negali to sulaikyti; o ką Jis gali sulaikyti, niekas po to negali to suteikti. Ir Jis yra Visa Galingas, Visa Išmintingas.",
       "lg": "Okusaasira kw'aba agguliddewo abantu tewali ayinza kukulemesa, ate okwo kw'alemesa tewali ayinza kukuleeta atali Yye, era Yye Ye Nnantakubwakumukono Mugobansonga.",
       "rw": "Ibyo Allah aha abantu mu mpuhwe (ze mu byiza n’ibindi) nta wabikumira, ndetse n’ibyo yahagaritse nta wabirekura usibye We. Kandi ni We Munyembaraga zihebuje, Nyirubugenge buhambaye.",
-      "dag": "Naawuni ni yolsi ninsalinim’ shɛli O nambɔzɔbo puuni, tɔ! So n­kani yɛn tooi mɔŋ ba li.O mi ni mɔŋ ba shɛli, to so n-kaniyɛn tooi yolsi ba li O nyaaŋa. Yaha! Ŋuna n-nyɛ Nyɛŋda, Yεmgoliŋga lana.",
-      "mos": "Wẽnd sẽn pɑkd sẽn yi A yolsgẽ wã n kõ nebã, gɩdgd kae ye; A sẽn mong me, kõt kɑ be ɑ loogr poor ye, lɑ Yẽ lɑ Zɩsg lɑ bʋʋd minim Soaba.",
+      "dag": "Naawuni ni yolsi ninsalinim’ shɛli O nambɔzɔbo puuni, tɔ! So n­kani yɛn tooi mɔŋ ba li.O mi ni mɔŋ ba shɛli, to so n-kaniyɛn tooi yolsi ba li O nyaaŋa. Yaha! Ŋuna n-nyɛ Nyɛŋda, Yɛmgoliŋga lana.",
+      "mos": "Wẽnd sẽn pakd sẽn yi A yolsgẽ wã n kõ nebã, gɩdgd kae ye; A sẽn mong me, kõt ka be a loogr poor ye, la Yẽ la Zɩsg la bʋʋd minim Soaba.",
       "aa": "Yalli racmatak (rizqhiiy, roobuuy, niqmootak) sinaamah fakem toysa tet tabbixeeh cintam matan kaadu Usuk yibbixeeh waasem taceem matan kaak wadir, Yalli Usuk mayso-li, naggaara.",
       "nqo": "ߊߟߊ߫ ߓߊ߯ ߤߌߣߊ ߡߍ߲ ߘߊߦߍ߬ߟߍ߫ ߡߐ߱ ߟߎ߬ ߦߋ߫ ߘߐ߬ߡߌ߬ߘߊ߬ߓߊ߯ ߕߍ߫ ߏ߬ ߟߊ߫ ، ߊ߬ ߓߊ߯ ߡߍ߲ ߝߣߊ߫ ߘߐߡߌ߬ߘߊ߬ ߟߊ߬ߓߌ߬ߟߊ߬ߓߊ߯ ߕߍ߫ ߏ߬ ߟߴߊ߬ߟߋ߬ ߞߐ߫ ، ߓߊ ߊ߬ߟߋ ߟߋ߫ ߣߌ߬ߣߌ߬ߟߊ ߘߌ߫ ߸ ߥߘߋ߬ߥߘߋ߬ߟߌ߬ߟߊ ߟߋ߬"
     }
@@ -7762,11 +7770,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Ry olombelona! Marina ny fampanantenan’i Allah. Ka aza avela hamitaka anareo ny fiainana an-tany, ary aoka tsy hahavoafitaka anareo ihany koa ilay mpamitaka mikasika an’i Allah.",
       "lg": "Abange mmwe abantu mazima Endagaano ya Allah ya mazima, obulamu bw'ensi tebubagayaazanga era ebigayaaza byonna tebibaggyanga ku Allah.",
       "rw": "Yemwe bantu! Mu by’ukuri isezerano rya Allah ni ukuri. Bityo rero ubuzima bw’isi ntibuzabarangaze, kandi rwose Shitani ntizabashuke (ngo ibakure mu nzira ya) Allah.",
-      "dag": "Yaa yinim’ ninsalinima! Achiika! Naawuni daalikauli nyɛla yεlimaŋli, dinzuɣu,di chɛn ya ka Dunia biεhigu yɔhim ya. Yaha! Di chɛn ya ka yɔhim lana (shintaŋ)yɔhim ya.",
-      "mos": "Yaa yãmb nebɑ! Ad Wẽnd pʋlengã yɑɑ sɩda, bɩ y rɑ bɑs tɩ dũni wã vɩɩm belg yãmb n tõog ye, lɑ y rɑ wɑ sɑk tɩ bεlgdã me wɑ belg yãmb n tõog ye.",
+      "dag": "Yaa yinim’ ninsalinima! Achiika! Naawuni daalikauli nyɛla yɛlimaŋli, dinzuɣu,di chɛn ya ka Dunia biɛhigu yɔhim ya. Yaha! Di chɛn ya ka yɔhim lana (shintaŋ)yɔhim ya.",
+      "mos": "Yaa yãmb neba! Ad Wẽnd pʋlengã yaa sɩda, bɩ y ra bas tɩ dũni wã vɩɩm belg yãmb n tõog ye, la y ra wa sak tɩ bɛlgdã me wa belg yãmb n tõog ye.",
       "aa": "Kee a-sinaamey diggah Yallih xagni numma, toysa addunyâ mano sin duquuruse waytay kaadu Yallak sin duquuruse waay duquuruseyni (sheetan kinnuk).",
       "mdh": "Hay sekanu anan a bamaginugut na saben-sabenal na su pasad nu Allah na benal a matuman, na da kanu mapasimpang sa kapaguyag sa dunya, endu da kanu mapasimpang lu sa Allah kanu manga shaytan.",
-      "ak": "Adasamma, ampa sε Onyankopͻn bͻhyε yε nokorε, enti momma wiase asetena yi nnaadaa mo, na momma nnaadaafoͻ hene (bonsam) no nnaadaa mo fa Onyankopͻn ho",
+      "ak": "Adasamma, ampa sɛ Onyankopɔn bɔhyɛ yɛ nokorɛ, enti momma wiase asetena yi nnaadaa mo, na momma nnaadaafoɔ hene (bonsam) no nnaadaa mo fa Onyankopɔn ho",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߡߐ߱ ߟߎ߬ ߸ ߊߟߊ߫ ߟߊ߫ ߛߘߊߡߊߒߞߊ߲ߠߊ ߦߋ߫ ߕߎ߬ߢߊ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬، ߒ߬ߓߊ߬ ߘߎߢߊ߫ ߢߣߊߡߦߊ ߞߊߣߵߊߟߎ߫ ߜߍߙߍ߲ߞߍ߫ ߸ ߜߍߙߍ߲ߞߍߟߓߊ ߘߏ߲߬ ߞߊߣߵߊߟߎ߫ ߜߍߙߍ߲ߞߍ߫ ߊߟߊ߫ ߡߊ߬"
     }
   },
@@ -7837,10 +7845,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ukuri Shitani ni umwanzi wanyu; bityo nimumufate nk’umwanzi. Ahamagarira abambari be kugira ngo babe mu bantu bo mu muriro ugurumana.",
       "ln": "Ya sólo, satana azali monguna na bino, bozua ye mpe monguna. Ya sólo, azali kobenga bato naye sé mpo bazala balongani ya moto ya lifelo.",
       "dag": "Achiika! Shintaŋ nyɛla dim’ zaŋ tin ya, dinzuɣugbibi ya o ka o nyɛ yi dima, achiika! O boondila o laɣiŋguni bɛ ti pahi Sa’iir buɣum bihi ni.",
-      "mos": "Ad Sʋɩtãanã yɑɑ bε yãmb yĩngɑ, bɩ y rɩk-ɑ n mɑɑn y bε, ad a boondɑ a sullã bʋɩl yĩng lɑ b nɑ nɑɑg Bugum rãmbẽ wã bɑlɑ.",
+      "mos": "Ad Sʋɩtãanã yaa bɛ yãmb yĩnga, bɩ y rɩk-a n maan y bɛ, ad a boonda a sullã bʋɩl yĩng la b na naag Bugum rãmbẽ wã bala.",
       "aa": "Diggah sheetanti siinik naqboytak toysa naqboytah kaa haysita, cagalah isi cizbiy isi kataate makoh fan seeca saqiir deqsitta urta giráh mara yakkeenî gidah.",
       "mdh": "Kagina saben-sabenal su shaytan na satru nu (kuntra nu) na baluy nu a satru nu, bangenggat (su shaytan) sa tagapeda nin ka endu silan makalu sa naraka a pegkalaw-kalaw.",
-      "ak": "Nokorε sε ͻbonsam yε ͻtamfo ma mo, enti momfa no nyε motamfo. Deε ͻrefrε nenkorͻfoͻ no akͻ ara ne sε deε wͻbεyε Ogya no mu foͻ.",
+      "ak": "Nokorɛ sɛ ɔbonsam yɛ ɔtamfo ma mo, enti momfa no nyɛ motamfo. Deɛ ɔrefrɛ nenkorɔfoɔ no akɔ ara ne sɛ deɛ wɔbɛyɛ Ogya no mu foɔ.",
       "ceb": "Sa pagkatinuod, si Satanas maoy dayag nga kaaway batok kaninyo, busa tagda siya ingon nga usa ka kaa-way, siya nagdapit lamang sa iyang mga panon ngadto sa nag-silaob nga kalayo sa Imperno.",
       "nqo": "ߜߍ߬ߘߍ ߦߴߊߟߎ߫ ߖߎ߮ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߒ߬ߓߵߊߟߎ߫ ߝߣߊ߫ ߦߴߊ߬ ߡߌ߬ߘߊ߬ ߖߎ߮ ߘߌ߫ ، ߊ߬ߟߋ ߘߏ߲߬ ߦߴߊ߬ ߟߊ߫ ߞߙߎߞߊ ߟߎ߬ ߞߟߌ߫ ߟߊ߫ ߟߋ߬ ߛߴߊ߬ߟߎ߬ ߘߌ߫ ߞߍ߫ ߖߌ߯ߖߌ߮ ߘߏ߲߬ߞߏ ߟߎ߬ ߘߏ߫ ߘߌ߫"
     }
@@ -7913,10 +7921,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Yemwe bantu! Muri abakene imbere ya Allah. Ariko Allah niwe Uwihagije, Ushimwa cyane.",
       "ln": "Eh bino bato! Bozali babola epai ya Allah, mpe Allah nde atonda bomengo mpe akumama.",
       "dag": "Yaa yinim’ ninsalinima! Yi nyɛla ban mali bukaata zaŋ chaŋ Naawuni sani. Yaha! Naawuni nyɛla Bundana, Duuma paɣirigu.",
-      "mos": "Yãmb ɑ nebã! Yãmb lɑ tʋlsem dãmb ne Wẽnde, lɑ Wẽnde, Yẽ lɑ Sek-m-meng Soɑb n yɑɑ pẽgr Naaba.",
+      "mos": "Yãmb a nebã! Yãmb la tʋlsem dãmb ne Wẽnde, la Wẽnde, Yẽ la Sek-m-meng Soab n yaa pẽgr Naaba.",
       "aa": "Kaadu sin finqisaah, qusba ginó baaham Yallal magibdi.",
       "mdh": "Hay sekanu anan a manga manusya! Sekanu i faqeer lu sa Allah, endu su Allah na sekanin i kawasa a pebpugin.",
-      "ak": "Adasamma, mo na mohia Nyankopͻn, na Onyankopͻn deε Ɔne Ͻdefoᴐ no, Ɔne Ayɛyie Wura no.",
+      "ak": "Adasamma, mo na mohia Nyankopɔn, na Onyankopɔn deɛ Ɔne Ɔdefoᴐ no, Ɔne Ayɛyie Wura no.",
       "ceb": "Oh katawhan, kamo ang nanginahanglan sa Allah (Dios), apan ang Allah, Siya ang Igo sa Kaugalingon, ang Labing Dalaygon.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߡߐ߱ ߟߎ߬ ߸ ߊߟߎ ߟߋ߫ ߡߊ߬ߞߏ ߦߋ߫ ߊߟߊ߫ ߟߴߊߟߊ߫ ߟߋ߬ ߞߊ߯ߙߌߓߊ߮ ߘߌ߫ ߸ ߕߊ߲߬ߘߏ߬ߕߊ ߟߋ߬"
     }
@@ -7989,10 +7997,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Abishatse yabakuraho maze akazana ibindi biremwa bishya (bimwumvira kubarusha).",
       "rn": "Ishatse rero, Yobahonya mukagenda mwese amazimayongo, Igaheza Ikazana ibindi biremwa biyumvira bikayisenga Yo Yonyene Itabangikanywa.",
       "ln": "Soki alingi, akolimwisa bino mpe akoya na bikelamu ya sika, (bato)",
-      "dag": "O (Naawuni) yi bɔra, kaO nyεhi ya, ka tahi binnamdi pala na.",
-      "mos": "A sã n dɑtɑ A loogdɑ ne yãmb lɑ A wɑ ne bõn-nɑɑnds pɑɑlɑ.",
+      "dag": "O (Naawuni) yi bɔra, kaO nyɛhi ya, ka tahi binnamdi pala na.",
+      "mos": "A sã n data A loogda ne yãmb la A wa ne bõn-naands paala.",
       "mdh": "Amayka ya kyug nu Allah i dalang kanu nin na pambuwaten nin i bagu a binaluy nin.",
-      "ak": "Sε Ɔpε a Ɔbɛyi mo afiri hͻ na Ɔde abɔdeε foforͻ aba (abɛsi moanan mu).",
+      "ak": "Sɛ Ɔpɛ a Ɔbɛyi mo afiri hɔ na Ɔde abɔdeɛ foforɔ aba (abɛsi moanan mu).",
       "ceb": "Kon Siya mobuot, mahimo Niyang wagtangon kamo, ug magpagula ug bag-ong binuhat.",
       "nqo": "ߣߴߊ߬ ߞߵߊ߬ ߘߌߦߊ߫ ߸ ߊ߬ ߘߴߊߟߎ߫ ߟߊߕߊ߯ ߞߊ߬ ߣߊ߬ ߘߊ߲ߠߌ߲߫ ߞߎߘߊ߫ ߘߌ߫"
     }
@@ -8028,9 +8036,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ka": "ნუთუ არ გინახავს, რომ ალლაჰმა ციდან წყალი გარდმოავლინა, რომლის მეშვეობითაც ჩვენ გამოვიყვანეთ სხვადასხვა ფერის ნაყოფები? და მთებში არის გზები — თეთრი, წითელი — სხვადასხვა ფერის, და ძალიან, ძალიან შავი.",
       "lt": "Argi jūs nematote, kad Allahas nuleidžia vandenį (lietų) iš dangaus ir Mes pagaminame juo įvairių spalvų vaisius, ir tarp kalnų yra balti ir raudoni ruožai, įvairių spalvų ir (kiti) labai juodi.",
       "lg": "Abaffe tolaba nti Allah assa amazzi okuva waggulu ne tumeza nago ebibala ebya langi ez'enjawulo nga ne mu nsozi mulimu amakubo ameeru n'amamyufu nga langi zaago njawukamu n'amaddugavu ttibittibi.",
-      "mos": "Fo kɑ yã tɩ Wẽnd sikɑ koom tɩ yi sɑɑsẽ wã tɩ Tõnd tɑll-ɑ n yiis tɩ-biis kõbg sẽn yõs tɑɑbɑ. Bee tãmsã pʋgẽ, soay sẽn yɑɑ miid lɑ pεεla tɩ b kõbgã yõs tɑɑbɑ, lɑ soɑy sɑblem sẽn tar pãnga.",
+      "mos": "Fo ka yã tɩ Wẽnd sika koom tɩ yi saasẽ wã tɩ Tõnd tall-a n yiis tɩ-biis kõbg sẽn yõs taaba. Bee tãmsã pʋgẽ, soay sẽn yaa miid la pɛɛla tɩ b kõbgã yõs taaba, la soay sablem sẽn tar pãnga.",
       "aa": "Diggah Yallih kitab (Qhuraan kinnuk) yakriyeeh, salat le-waktil soolisaah, rizhqik keenih neceemik qellisak ayballuk yacee mari, inkinnah finqite wayta tellemmo qaagitan Yallak.",
-      "ak": "Wonhunuu sε Onyankopͻn sane nsuo firi soro, dema nnuaba puepue a εho sononko-sononko, εna mmepͻ mu nso akwan fufuo ne kͻkͻͻ a egu sononko-sononko wͻ mu, (ebi) nso yε tuntum."
+      "ak": "Wonhunuu sɛ Onyankopɔn sane nsuo firi soro, dema nnuaba puepue a ɛho sononko-sononko, ɛna mmepɔ mu nso akwan fufuo ne kɔkɔɔ a egu sononko-sononko wɔ mu, (ebi) nso yɛ tuntum."
     }
   },
   {
@@ -8161,7 +8169,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Rwose ni twe tuzura abapfuye, tukanandika ibyo bakoze n’ibyo basize (ibyiza n’ibibi), kandi buri kintu twakibaruye mu gitabo gisobanutse.",
       "mos": "Ad Tõnd n vʋʋgd kũ-rãmbã, la D gʋlsd bũmb ning b sẽn tʋm tɩ reng taoorã, la b vũunã, la bũmbã fãa Tõnd tigim-a-la gaf-vẽeneg pʋgẽ.",
       "aa": "Diggah nanu rabtem inkih naynuwweeh, addunyal maqaanék umaanék uysukummu heenim kee ken raatitte naktubeh, kaadu ummaanim baxxaqqa-le kitaabal (lowcal macfuuz kinnuk) lowsisne (ixxisne).",
-      "ak": "Nokorε sε, Yεn na Yɛnyane awufoͻ no, na Yεtwerε deε (adasamma ayε) de ato (wͻn) anim ne (faako a) wͻn anamͻn (anante akͻduru biara), na Yɛasese biribiara wͻ Nwoma pefee no mu.",
+      "ak": "Nokorɛ sɛ, Yɛn na Yɛnyane awufoɔ no, na Yɛtwerɛ deɛ (adasamma ayɛ) de ato (wɔn) anim ne (faako a) wɔn anamɔn (anante akɔduru biara), na Yɛasese biribiara wɔ Nwoma pefee no mu.",
       "nqo": "ߒ߬ߠߎ߫ ߸ ߊ߲ߠߎ߫ ߞߊ߬ߣߌ߲߫ ، ߊ߲ ߧߋ߫ ߛߎ߭ ߟߎ߬ ߟߊߣߌߡߦߊ߫ ߟߊ߫ ߸ ߊ߬ ߣߴߊ߲ ߧߴߊ߬ߟߎ߬ ߟߊ߫ ߓߊ߯ߙߊ߫ ߢߍߓߌ߬ߟߊ߬ߣߍ߲ ߠߎ߬ ߛߓߍ߫ ߟߊ߫ ߸ ߊ߬ ߣߴߊ߬ߟߎ߫ ߝߏ߲߬ߝߏ߲ ߠߎ߬ ، ߊ߲ ߣߊ߬ ߝߋ߲ ߓߍ߯ ߡߊߘߊ߲߫ ߠߊ߫ ߟߋ߬ ߟߍߙߊ߫ ߘߐߜߍ ߞߣߐ߫ ߞߐߘߍ߫"
     }
   },
@@ -8235,6 +8243,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Pa segd ne Wĩndtoogã t'a paam Kiuugã, yʋngã me pa rengd wĩndgã; la b fãa be ween-n-vɩɩgẽ n rugda.",
       "aa": "Ayróh matakka alsá eleltam, kaadu barah matakka laqók yaakumem, ummaan tiya keenik isi maroh addal giirissa.",
       "mdh": "Dala kanu senang i sumenang kanu magabi na dala bun kanu ulan-ulan, endu dala kanu magabi i egkagabi sa malamag, maytu bun ba su malamag, uman isa na bagukit sa kanu lalan nin.",
+      "ak": "Ɛmma sɛ awia bɛto bosome, anaasɛ anadwo bɛsan adekyeɛ ho. Wᴐn mu biara nam ne kwan so yᴐᴐ.",
       "ceb": "Dili itugot nga ang adlaw makaabot sa bulan, ni ang kagabhion makaapas sa adlaw, apan ang matag usa, sa usa ka orbito, naglangoy.",
       "nqo": "ߊ߬ ߕߍ߫ ߓߍ߲߬ ߕߋ߬ߟߋ ߡߊ߬ ߞߊ߬ ߞߍ߫ ߞߊߙߏ ߘߐ߫ ߸ ߥߟߊ߫ ߛߎ ߦߋ߫ ߞߐ߲߰ ߕߟߋ߬ߘߐ߬ߟߊ ߢߍ߫ ، ߓߊ ߊ߬ ߓߍ߯ ߦߋ߫ ߞߊߡߊ߲ ߠߋ߬ ߞߣߐ߫ ߞߎߟߎ߲ߞߎߟߎ߲ ߠߊ߬"
     }
@@ -8309,7 +8318,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Rẽ yĩnga Soab ning sẽn naana saasã pa tõe n naan b bilgr sɩda? A toeeme! La Yẽnda la naaneg tõog Soaba n yaa Mita.",
       "aa": "Kaadu qaranwaa kee baaxó gine Rabbi seehadah innah tanim ginaah gacsam ma-duudaa? Yeey, Usuk duudah. Kaadu Usuk ummaanim giné, ummaanim yaaxigi.",
       "mdh": "Su Allah i minaluy sa pitu lapis a manga langit endu lupa sa kagaga nin i mamaluy pamun sa pagidsan nin, su Allah i bamaluy a mataw.",
-      "ak": "Enti Nea Ɔbͻͻ soro ne asaase no, Onni tumi sε Ɔtumi bͻ ne sε so? Aane; Ɔne Ɔbͻͻ Adeε, Nimdefoͻ no.",
+      "ak": "Enti Nea Ɔbɔɔ soro ne asaase no, Onni tumi sɛ Ɔtumi bɔ ne sɛ so? Aane; Ɔne Ɔbɔɔ Adeɛ, Nimdefoɔ no.",
       "ceb": "Dili ba Siya (ang Allah) nga naglalang sa kalangitan ug kalibutan, makahimo sa paglalang sa sama kanila? Oo, ug Siya mao ang Magbuluhat (sa tanan), ang Labing Nahibalo.",
       "nqo": "ߊ߬ ߝߐ߫ ߡߍ߲ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲߫ ߏ߬ ߕߍ߫ ߛߴߊ߬ߟߎ ߢߐ߲߰ ߘߊ߲߫ ߠߊ߫ ߓߊ߬؟ ߏ߬ ߘߌ߫ ߛߋ߫ ߏ߬ ߟߊ߫ ߞߍ߬ ߸ ߓߊ ߏ߬ ߟߋ ߦߋ߫ ߘߊ߲ߠߌ߲ߠߓߊ ߘߌ߫ ߸ ߟߐ߲ߠߌ߲ߠߊ ߟߋ߬"
     }
@@ -8383,11 +8392,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ukuri itegeko rye iyo ashaka ko ikintu kiba, arakibwira ngo “Ba, nuko kikaba!”",
       "rn": "Ni ukuri, iyo Imana Allah Ishatse ikintu ico ari co cose ko kiba, Ikibwira gusa Iti: “Ba” kigaca kiba ubwo nyene.",
       "ln": "Ya sólo soki alingi (kosala) eloko akolobaka se, zala, mpe ezalisami.",
-      "dag": "Achiika! O (Naawuni) nam zaligu ni nyɛ shεli, Oyi ti yu shɛli, O yɛri li mi: “Leema,” ka di shiri leei.”",
+      "dag": "Achiika! O (Naawuni) nam zaligu ni nyɛ shɛli, Oyi ti yu shɛli, O yɛri li mi: “Leema,” ka di shiri leei.”",
       "mos": "Ad A sã n rat bũmbu, yaa A yeel-a bala: \"yɩ\" . T'a be yɩɩbẽ.",
       "aa": "Yalli tu-abam faxa waqdi cagalah kay amri wohiimik tik-iyyaama, edde luk wohim edde takke!",
       "mdh": "Saben-sabenal su Allah na amayka aden pegkahanda nin na ya nin bu edtalun na pangaden ka na maaden.",
-      "ak": "Nokorε, sε Ɔpεsε Ɔyε biribi a, N’ahyεdeε ara ne sε Ɔbεka sε: “ Yε!” Na ayε.",
+      "ak": "Nokorɛ, sɛ Ɔpɛsɛ Ɔyɛ biribi a, N’ahyɛdeɛ ara ne sɛ Ɔbɛka sɛ: “ Yɛ!” Na ayɛ.",
       "ceb": "Ang Iyang sugo, sa diha nga Siya magbuot sa usa ka butang, mao ang pag-ingon lamang niini: \"Mahimo,\" unya kini mahitabo.",
       "nqo": "ߊ߬ ߟߊ߫ ߟߐ߬ߟߌ ߦߋ߫ ߟߋ߬ ߸ ߣߴߊ߬ ߞߊ߬ ߞߏ ߘߏ߫ ߟߊߢߌߣߌ߲߫ ߸ ߊ߬ ߦߴߊ߬ ߝߐ߫ ߏ ߡߊ߬ ߘߐߙߐ߲߫ ߞߏ߫ ߞߍ߫ ߸ ߏ߬ ߘߌ߫ ߞߍ߫ ߌߞߘߐ߫"
     }
@@ -8461,11 +8470,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mukama Omulabirizi Wo wo, Nnannyini buyinza Musukkulumu ku ebyo bye boogera.",
       "rw": "Ubutagatifu ni ubwa Nyagasani wawe, Nyagasani Nyiricyubahiro! Nta ho ahuriye n’ibyo bamwitirira!",
       "rn": "Nihaninahazwe rero Imana yawe Rurema Allah, Nyenicubahiro c’iteka mu buryo burengeye cane ivyo ababangikanyamana bayomekera.",
-      "dag": "A Duuma (Naawuni) nam simsiya, Ŋuna n-nyɛ nyɛŋsim Duuma ka chɛ bɛ (chεfurinim’) ni mali O ŋmahindi shεli maa.",
+      "dag": "A Duuma (Naawuni) nam simsiya, Ŋuna n-nyɛ nyɛŋsim Duuma ka chɛ bɛ (chɛfurinim’) ni mali O ŋmahindi shɛli maa.",
       "mos": "Fo Soabã yɩlgame, sẽn yaa zɩslem Soabã n yi bũmb ninga b sẽn bilgdã.",
       "aa": "Nabiyow ku-Rabbi saytunnoowch maysó-le Rabbi, kaa ceele waytaamay kaa cdde weelossu haanak.",
       "mdh": "Mahasuti su Allah a Kadenan nengka a Kadenan a mapulu kanu langun nu kadtalu nilan a kadusan a masela.",
-      "ak": "Kronkron Hene ne wo Wura Nyankopͻn, Tumi ne Animuonyam Wura ne no (Ne ho te sen) sεdeε wͻsusu no no.",
+      "ak": "Kronkron Hene ne wo Wura Nyankopɔn, Tumi ne Animuonyam Wura ne no (Ne ho te sen) sɛdeɛ wɔsusu no no.",
       "ceb": "Himayaon ang imong Ginoo 'Allāh' —ang Ginoo sa Kadungganan ug Gahom—labaw sa unsay ilang giangkon!",
       "nqo": "ߌ ߡߊ߰ߙߌ ߛߊߣߌ߲ߡߊ߲߫ ߸ ߜߟߌߦߊ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫ ߞߊ߬ ߓߐ߫ ߊ߬ߟߎ߬ ߟߊ߫ ߡߊ߲߬ߞߕߎ߬ߒ߬ߞߊ߲߬ߠߊ ߟߎ߫ ߡߊ߬"
     }
@@ -8531,10 +8540,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abaffe tebamanyi nti mazima Allah ayanjuluza ebigabibwa eri oyo gw'aba ayagadde ate oluusi n'afunza, mazima mu ekyo mulimu eby'okuyiga eri abantu abakkiriza.",
       "rw": "Ese ntibazi ko Allah yongerera amafunguro uwo ashaka akanayagabanyiriza uwo ashaka? Mu by’ukuri muri ibyo hari ibimenyetso ku bantu bemera.",
       "ln": "Boye bazali koyeba te ete ya soló, Allah apesaka bozui na oyo alingi mpe akutolaka? Wana ezali bilembo mpo bato bakoka kondima.",
-      "mos": "Rẽ yĩnga, b ka mi tɩ yaa Wẽnd n yεdgd rɩtlã n kõt A sẽn rat a soaba, la A yõbgdẽ? Ad bee woto pʋgẽ, tagmas-rãmb ne neb sẽn kõt sɩda.",
+      "mos": "Rẽ yĩnga, b ka mi tɩ yaa Wẽnd n yɛdgd rɩtlã n kõt A sẽn rat a soaba, la A yõbgdẽ? Ad bee woto pʋgẽ, tagmas-rãmb ne neb sẽn kõt sɩda.",
       "aa": "Kaadu a-mari maaxaginnoonuu? diggah Yalli rizqhi isih kah faxa marah farakka haah, isih kah faxa maral keenik ceyissi haam? Diggah tohut astooti tan Yallih amri nummaysa marah.",
       "mdh": "Di nilan gatawan su Allah na pagkalagen nin sa rizki su pegkyugan nin endu pedsimpitan nin (su pegkyugan nin), na nakadalem lu ba i manga tanda kanu manga taw a bangimbenal.",
-      "ak": "Enti wͻnnim sε Nyankopͻn bae akyεdeε no mu ma obi a Ɔpε, εna Osusu nso (de ma obi a Ɔpε?) Nokorε sε nsεnkyerεnee wͻ woi mu de ma amanfoͻ a wͻgye die.",
+      "ak": "Enti wɔnnim sɛ Nyankopɔn bae akyɛdeɛ no mu ma obi a Ɔpɛ, ɛna Osusu nso (de ma obi a Ɔpɛ?) Nokorɛ sɛ nsɛnkyerɛnee wɔ woi mu de ma amanfoɔ a wɔgye die.",
       "nqo": "ߊ߬ߟߎ߬ ߡߴߊ߬ ߟߐ߲߫ ߓߊ߬ ߞߏ߫ ߊߟߊ߫ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫ ߸ ߊ߬ ߘߴߊ߬ ߘߐߜߙߐ߬ ߝߣߊ߫؟، ߕߊ߰ߛߌ߬ߟߌ߫ ߟߴߏ߬ ߘߐ߫ ߡߌ߬ߙߌ߲߬ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
   },
@@ -8612,7 +8621,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Wẽnd la bũmbã fãa Naanda, Yẽ me la bũmb fãa bobl a meng ne-A.",
       "aa": "Yalli ummaanim ginéey, Usuk (Yalli) ummaanimih wakiili (dacayri-li).",
       "mdh": "Su Allah i minaluy sa langun, endu sekanin i pedtuldu lun.",
-      "ak": "Nyankopͻn ne biribiara Bͻfo, na Ɔne biribiara Kyitaafoᴐ.",
+      "ak": "Nyankopɔn ne biribiara Bɔfo, na Ɔne biribiara Kyitaafoᴐ.",
       "ceb": "Si Allāh mao ang Magbubuhat ug Tigsalig sa tanang butang, ug Siya ang (bugtong) Magbalantay ug Tigdumala sa mga kalihokan (sa Iyang mga linalang).",
       "nqo": "ߊߟߊ߫ ߟߋ߬ ߝߋ߲ ߓߍ߯ ߘߊ߲ߓߊ߮ ߘߌ߫ ߸ ߊ߬ߟߋ ߟߋ߫ ߘߏ߲߬ ߟߐ߬ߣߍ߲߬ ߝߋ߲ ߓߍ߯ ߟߊ߫ ( ߞߏ ߟߊ߫ )"
     }
@@ -8682,11 +8691,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Era y'alina ebiyimiriddeko entambula y'eggulu omusanvu n'ensi, ate abo abaawakanya Ebigambo bya Allah, abo be b'okufaafaaganirwa.",
       "rw": "Ni We nyir’imfunguzo z’ibiri mu birere no mu isi. Naho ba bandi bahakanye ibimenyetso bya Allah, ni bo bazaba abanyagihombo.",
       "ln": "Azali na bafungola ya likolo na mabele, mpe baye baza kopengwa na mikapo mia Allah, bango nde bazangi.",
-      "dag": "Ŋuna n-su sagbana mini tiŋgbani daarzichi saafenima. Ninvuɣu shεba mi ban niŋ chεfuritali ni Naawuni aayanima, bana n­nyɛ ninvuɣu shεba ban kɔhi lu.",
+      "dag": "Ŋuna n-su sagbana mini tiŋgbani daarzichi saafenima. Ninvuɣu shɛba mi ban niŋ chɛfuritali ni Naawuni aayanima, bana n­nyɛ ninvuɣu shɛba ban kɔhi lu.",
       "mos": "A soo saas la Tẽng kʋɩlen-biisi, la neb nins sẽn kɩfl ne Wẽnd Aaya-rãmbã, bãmb la bõn rãmba.",
       "aa": "Yalli qaranwaa kee baaxô mafaatic- le. Yallih aayootal koroosite marii, woo mari usun finqiteeh kasaarite mara addunyaay akeeral.",
       "mdh": "Lekanin a Allah su bengawan nu langit endu lupa, su manga kafir na simupak kanu ayatan nu Allah, na nalugi silan.",
-      "ak": "Ɔsoro ne asaase so akoradeε (nyinaa) yε Ne dea; wͻn a wͻnnye Nyankopͻn Nsεm no nnie no, saa nkorᴐfoᴐ no ne berεguofoͻ no.",
+      "ak": "Ɔsoro ne asaase so akoradeɛ (nyinaa) yɛ Ne dea; wɔn a wɔnnye Nyankopɔn Nsɛm no nnie no, saa nkorᴐfoᴐ no ne berɛguofoɔ no.",
       "ceb": "Kaniya (lamang) ang mga bahandi sa mga langit ug sa yuta. Kadtong naglimod sa mga timaan sa Allah, sila mao kadtong mga pildero.",
       "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߏ߲ߢߌ߲ ߠߎ߬ ߘߌ߫، ߡߍ߲ ߠߎ߫ ߓߊ߲߬ߣߍ߲߬ ߊߟߊ߫ ߟߊ߫ ߟߝߊߙߌ ߟߎ߬ ߘߐ߫ ߛߊ߫߸ ߏ߬ ߟߎ߫ ߟߋ߫ ߓߣߐ߬ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
@@ -8763,7 +8772,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "A mii nin sẽn zãmbde, la bũmb ning yãad sẽn solgde.",
       "aa": "Yalli yaaxigeh ganó wagitto abta intiitaa kee alilwa qellissi haytam maqaanée kee umaanék.",
       "mdh": "Katawan nu Allah su kadupang nu pipilek endu su dalem nu pusung.",
-      "ak": "Nyankopͻn Nim hwammͻ a (onipa) ani die, ne deε (onipa) akoma desie (nyinaa).",
+      "ak": "Nyankopɔn Nim hwammɔ a (onipa) ani die, ne deɛ (onipa) akoma desie (nyinaa).",
       "ceb": "Siya (Allah) nasayod sa malimbongon nga mga mata, ug ang mga tinagoan sa mga kasing-kasing.",
       "nqo": "‹ ߊߟߊ߫ › ߞߊ߬ ߢߊ ߟߎ߬ ߟߊ߫ ߖߊ߲߬ߝߊ ߟߐ߲߫ ߊ߬ ߣߌ߫ ߛߌߛߌ ߟߎ߬ ߦߋ߫ ߡߍ߲ ߘߏ߲߰ ߠߊ߫"
     }
@@ -8836,11 +8845,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "“ Ry vahoakako! Hamafisina, fa fahafinaretana mandalo ihany ity fiainana eto an-tany ity, fa ny any ankoatra kosa no fonenana maharitra ”.",
       "lg": "Abange bantu bange mazima obulamu bw'ensi buno bwa kiyitamulujja, era mazima Enkomerero, y’enyumba ey'olubeerera.",
       "rw": "“Yemwe bantu banjye! Mu by’ukuri ubu buzima bw’isi ni umunezero w’igihe gito, kandi rwose (ubuzima bw’) imperuka ni bwo buturo buzahoraho.”",
-      "dag": "“Yaa yinim’ n niriba! Achiika! Dunia ŋɔ maa biεhigu nyɛla nyεɣisim biɛla, amaa! Chiyaama n-nyɛ kpaliŋkpaa yili.”",
+      "dag": "“Yaa yinim’ n niriba! Achiika! Dunia ŋɔ maa biɛhigu nyɛla nyɛɣisim biɛla, amaa! Chiyaama n-nyɛ kpaliŋkpaa yili.”",
       "mos": "Mam nebã! Ad dũni wã vɩ-kãngã yaa wʋm-noogo, la ad laahrã, yẽ la tablg roogo.",
       "aa": "Yi-maraw addunyâ manó cagalah dago duyyê (afeynâ) baxay gaba kaltaay, diggaluk akeera is-waar dabqa.",
       "mdh": "Hay sekanu a manga pagali ku, saben-sabenal su kabpaguyag sa dunya na pegkakalinyan bu, su akhirat i dalpa a dayun sa dayun.",
-      "ak": "Menkorͻfoͻ, nokorε sε, wiase asetena yi deε εyε anigyesεm bi kwa, na nokorε sε Daakye no ne asetena a εwͻ hͻ daa.",
+      "ak": "Menkorɔfoɔ, nokorɛ sɛ, wiase asetena yi deɛ ɛyɛ anigyesɛm bi kwa, na nokorɛ sɛ Daakye no ne asetena a ɛwɔ hɔ daa.",
       "ceb": "Oh akong katawhan, kini nga kinabuhi sa kalibutan usa lamang ka (lumalabay nga) mga kalipay 'nga maputol', ug sa pagkatinuod ang Pikas Kinabuhi mao ang Puloy-anan nga magpabilin sa kahangturan;",
       "nqo": "ߊ߬ ߞߏ߫ ߒ ߡߌ߬ߙߌ߲߬ߘߌ ߸ ߘߎߢߊ߫ ߢߣߊߡߦߊ ߣߌ߲߬ ߦߋ߫ ߘߊ߰ߡߎ߲߬ ߘߐߙߐ߲߫ ߠߋ߬ ߘߌ߫ ߸ ߛߎ߬ߟߊ߫ ߟߋ߬ ߡߊ߬ߝߊ ߛߏ ߘߌ߫ ߖߙߌ߫"
     }
@@ -8912,7 +8921,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Saasã la Tẽngã naaneg bedrem n yɩɩd nebã naanego, la ad nebã wʋsg fãa pa mi ye.",
       "aa": "Yalli qaranwaa kee baaxdt abe gind sinaamat abe ginok nabah, kinnih immay woh sinaamak maggo mari ma-yaaxiga.",
       "mdh": "Kinabaluy sa manga langit endu lupa na ya malgen sa kinabaluy sa manusya, ugayd na ya madakel sa kanu manusya na di nilan katawan.",
-      "ak": "Nokorε sε, ͻsoro ne asaase mmͻeε no so kyεn nnipa mmͻeε nanso nnipa pii nnim.",
+      "ak": "Nokorɛ sɛ, ɔsoro ne asaase mmɔeɛ no so kyɛn nnipa mmɔeɛ nanso nnipa pii nnim.",
       "ceb": "Sa pagkatinuod ang paglalang sa mga langit ug sa yuta mas dako pa kay sa paglalang sa mga tawo, apan kasagaran sa mga tawo wala mahibalo.",
       "nqo": "ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲ ߠߋ߫ ߜߍ߬ߟߍ߲߬ߡߊ߲߫ ߡߐ߱ ߟߎ߬ ߘߊ߲ ߘߌ߫ ߔߊߎ߲߫ ߸ ߞߏ߬ߣߌ߲߬ ߡߐ߱ ߝߊ߲߬ߓߊ ߟߋ߬ ߕߍ߫ ߟߐ߲ߠߌ߲߫ ߞߍ߫ ߟߊ߫"
     }
@@ -8984,11 +8993,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Hamafisina, fa ho avy tokoa ilay ora, tsy misy hisalasalana ny amin’izany, nefa ny ankamaroan’ny olona dia tsy mino izany.",
       "lg": "Mazima Olunaku lw’Enkomerero lwa kutuuka teruliimu kubuusabuusa, naye ddala abantu abasinga obungi tebakkiriza.",
       "rw": "Mu by’ukuri imperuka izaza nta kuyishidikanyaho, ariko abenshi mu bantu ntibabyemera.",
-      "dag": "Achiika! Saha (Chiyaama yiɣisibu) nyɛla din yɛn kana ka bεhim ka di ni, amaa! Ninsalinim’ pam bi tiri Naawuni yεlimaŋli.",
+      "dag": "Achiika! Saha (Chiyaama yiɣisibu) nyɛla din yɛn kana ka bɛhim ka di ni, amaa! Ninsalinim’ pam bi tiri Naawuni yɛlimaŋli.",
       "mos": "Ad dũni wã yikr watame, sik ka a pʋgẽ ye, la ad nebã wʋsg pa kõt sɩd ye.",
       "aa": "Diggah Qhiyaamah ayro amaatc- le, tet mamut agay waaga mali, kinnih immay sinaamak maggo mari (koros kinnuk) tet mamut ma- nummaysa.",
       "mdh": "Su gay a mawli na dili ebplis na makawma, ugayd na ya madakel kanu manga taw na di bangimbenal.",
-      "ak": "Nokorε sε Dͻnhwere no reba a akyinnyeε biara nni ho, nanso nnipa pii nnye nni.",
+      "ak": "Nokorɛ sɛ Dɔnhwere no reba a akyinnyeɛ biara nni ho, nanso nnipa pii nnye nni.",
       "ceb": "Sa pagkatinuod, ang Takna (ang Adlaw sa Pagkabanhaw ug Paghukom) moabotay, walay pagduhaduha niini, apan kadaghanan sa mga tawo dili motuo.",
       "nqo": "ߟߐ߬ߓߊ ߕߎ߬ߡߊ ߣߊ߬ߕߐ߫ ߟߋ߬ ߸ ߕߎ߲߬ߞߎ߬ߙߎ߲߬ ߛߌ߫ ߕߍ߫ ߊ߬ ߘߐ߫ ߞߏ߬ߣߌ߲߬ ߡߐ߱ ߝߊ߲߬ߓߊ ߟߋ߬ ߕߍ߫ ߟߊ߫ ߟߴߊ߬ ߟߊ߫"
     }
@@ -9057,11 +9066,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Oyo nno ye Allah Omulabirizi Wammwe, Omutonzi wa buli kintu, tewali kisinzibwa mu butuufu okuggyako Yye ate muwugulwa mutya?",
       "rw": "Uwo ni Allah Nyagasani wanyu, Umuremyi wa buri kintu, nta yindi mana ibaho itari We. Ese ni gute mureka ukuri (mugasenga ibitari Allah)?",
       "rn": "Uwabagiriye ivyo vyiza rero, ni Yo Mana yanyu Rurema Allah, Yaremye ibintu vyose, nta mana yindi ibwirijwe gusengwa vy’ukuri atari Yo. None, ni gute muyibangikanya ha kuyisenga ari Imwe Rudende!",
-      "dag": "Ŋuna n-nyɛ Naawuni yi Duuma, Ŋun nam binshɛɣu kam, duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna, ka bo n-leei chɛ ka bɛ ŋmalgiri ya (ka chεri yɛlimaŋli)?",
+      "dag": "Ŋuna n-nyɛ Naawuni yi Duuma, Ŋun nam binshɛɣu kam, duuma jɛmdigu n-kani ni yɛlimaŋli naɣila Ŋuna, ka bo n-leei chɛ ka bɛ ŋmalgiri ya (ka chɛri yɛlimaŋli)?",
       "mos": "Woto yaa Wẽnde, yẽnda la y Soab hakɩɩka, bũmbã fãa Naandã, Soab kae tɩ sã n pa Yẽ ye. La yaa bõe tɩ y wẽnemsdẽ?",
       "aa": "Toh siinih abtem Yalla, sin Rabbi, ummaanim giné. Qibaadá cakkisita Yalli mayan kaak sah, toysa iimaanak mannal daggawtaanaah Yallak kalihim taqbuden waqdi?",
       "mdh": "Entu ba su Allah a Kadenan nu a minaluy kanu engaga-isa, dala kadenan ya tabya na su Allah, na panun i kapapendalbut nu?",
-      "ak": "Wei ne mo Wura Nyankopͻn no, Adeε nyinaa Bͻfo no, awurade foforͻ biara nnihͻ gyesε Ɔno nko ara. Na εhen na moredane moho korͻ yi?",
+      "ak": "Wei ne mo Wura Nyankopɔn no, Adeɛ nyinaa Bɔfo no, awurade foforɔ biara nnihɔ gyesɛ Ɔno nko ara. Na ɛhen na moredane moho korɔ yi?",
       "nqo": "ߏ߬ ߟߋ ߊߟߊ߫ ߘߌ߫ ߊߟߎ߫ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫ ߸ ߝߋ߲ ߓߍ߯ ߘߊ߲ߓߊ߮ ߟߋ߬ ߸ ߡߊ߰ߙߌ߬ ߛߌ߫ ߕߍ߫ ߝߏ߫ ߊ߬ߟߋ߬ ߸ ߊߟߎ߫ ߦߋ߫ ߞߕߐߡߊߛߊ߬ߦߌ߬ ߟߊ߫ ߘߌ߬ ߓߏ߲߰؟"
     }
   },
@@ -9135,11 +9144,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ukuri ba bandi bemeye bakanakora ibikorwa byiza bazagororerwa ibihembo bihoraho.",
       "rn": "Mu vy’ukuri abemeye Imana Allah, Intumwa yayo n’Ibitabu vyayo, bagakora n’ivyiza bitegetswe ku bw’Imana Allah, barategekanirijwe impembo ihambaye yamaho.",
       "ln": "Ya soló, baye bandimaki mpe basalaki misala milamu, bakozalaka na lifuta liye likokatanaka te.",
-      "dag": "Achiika! Ninvuɣu shεba ban ti Naawuni yεlimaŋli, ka tum tuunviεla, bɛ mali laara din bi ŋmaara.",
+      "dag": "Achiika! Ninvuɣu shɛba ban ti Naawuni yɛlimaŋli, ka tum tuunviɛla, bɛ mali laara din bi ŋmaara.",
       "mos": "Ad neb nins sẽn kõ-b sɩd la b tʋm sẽn sõmbã, b tara keoor sẽn pa wãagde.",
       "aa": "Diggah yeemcneeh mcqc taamoomi abbaasite mari Yallah tet caglisak aggiriqqe sinni galtd-lon Yallih garil.",
       "mdh": "Saben-sabenal na su manga bamaginugut endu minggalebek sa manga mapya na aden sa kanilan i balas a dala pinda nin.",
-      "ak": "Nokorε sε, wͻn a wͻagye adie na wͻredi dwuma pa no wͻ akatua a εtoͻ ntwa da.",
+      "ak": "Nokorɛ sɛ, wɔn a wɔagye adie na wɔredi dwuma pa no wɔ akatua a ɛtoɔ ntwa da.",
       "ceb": "Sa pagkatinuod sila nga mituo 'kang Allāh ug sa Iyang mga mensahero' ug nagbuhat ug maayong mga buhat, sila sa pagkatinuod makabaton ug ganti nga dili gayud matapos \"Paraiso\".",
       "nqo": "ߡߍ߲ ߠߎ߫ ߞߏ߬ߣߌ߲ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߓߊ߲߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߸ ߛߙߊ߬ ߓߟߏߕߍ߰ߓߊߟߌ ߟߴߏ߬ ߟߎ߬ ߦߋ߫"
     }
@@ -9208,11 +9217,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Oyo akola omulimu omulongoofu akolera mwoyo gwe, ate oyo ayonoona akabi k'ekyo kadda ku gwo, ate nga Mukama Omulabirizi Wo si mulyazaamaanyi eri abaddu (Be).",
       "rw": "Ukoze igikorwa cyiza aba acyikoreye, ndetse n’ukoze ikibi aba acyikoreye. Kandi Nyagasani wawe ntarenganya abagaragu be.”",
       "ln": "Oyo akosala malamu, ezali mpona ye moko, mpe oyo akobebisa ezali sé mpona ye moko. Kasi Nkolo wayo abubaka kati kati ya bawumbu naye te.",
-      "dag": "Ninvuɣu so ŋun tum tuunviεlli, tɔ! O maŋ’ zuɣu ka o tum, ŋun mi tum tuumbεɣu, tɔ! O maŋ’ zuɣu ka o lahi tum. Yaha! A Duuma (Naawuni) pala Ŋun diri daba zualinsi.",
-      "mos": "Ned ning sẽn tʋma sẽn sõmbe yaa a meng yĩnga, la ned ning sẽn wẽnga be ne-a, f Soabã pa yɩ n yaa wẽgd baɑ bilfu ne A yembsã ye.",
+      "dag": "Ninvuɣu so ŋun tum tuunviɛlli, tɔ! O maŋ’ zuɣu ka o tum, ŋun mi tum tuumbɛɣu, tɔ! O maŋ’ zuɣu ka o lahi tum. Yaha! A Duuma (Naawuni) pala Ŋun diri daba zualinsi.",
+      "mos": "Ned ning sẽn tʋma sẽn sõmbe yaa a meng yĩnga, la ned ning sẽn wẽnga be ne-a, f Soabã pa yɩ n yaa wẽgd baa bilfu ne A yembsã ye.",
       "aa": "Maqaané abita num isi nafsih abitaah, umaané aba num isi nafsil abaah, ku-Rabbi naqoosa yadlumi hinna.",
       "mdh": "Su taw enggalebek sa mapya na kanu ginawa nin bun, su taw menem a enggalebek sa malat na maytu bun, ka su Allah na di dumupang kanu manga ulipen nin.",
-      "ak": "Obi a ͻyε papa no, ͻyε ma ne ho, na nea ͻyε bͻne no nso etia ͻno ara. Wo Wura Nyankopͻn deε Ɔnni Nenkoa amim.",
+      "ak": "Obi a ɔyɛ papa no, ɔyɛ ma ne ho, na nea ɔyɛ bɔne no nso etia ɔno ara. Wo Wura Nyankopɔn deɛ Ɔnni Nenkoa amim.",
       "nqo": "ߡߍ߲ ߓߊ߯ ߢߌ߬ߡߊ߬ ߞߍ߫ ߏ߬ ߦߴߊ߬ ߖߍ߬ߘߍ߫ ߟߋ߬ ߦߋ߫ ߏ߬ ߘߐ߫ ߸ ߣߌ߫ ߡߍ߲ ߞߊ߬ ߖߎ߯ߦߊ߫ ߞߍ߫ ߏ߬ ߦߴߏ߬ ߞߍ߫ ߟߴߊ߬ ߖߍ߬ߘߍ߫ ߟߋ߬ ߟߊ߫ ߸ ߌ ߡߊ߰ߙߌ ߞߏ߬ߣߌ߲߬ ߕߍ߫ ߓߊ߰ ߟߊ߫ ߖߐ߲߭ ߠߎ߫ ߡߊ߬"
     }
   },
@@ -9276,11 +9285,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Yekka y'alina ebisumuluzo by'amawanika g'eggulu omusanvu n'ensi, ayanjuluza ebyenfuna eri oyo gw'aba ayagadde, ate n'afunza (kw'oyo gw'aba ayagadde) mazima Yye Ye Mumanyi ennyo ku buli kintu.",
       "rw": "Afite imfunguzo z’ibiri mu birere no mu isi. Atuburira amafunguro uwo ashaka akanayatubiriza uwo ashaka. Mu by’ukuri ni Umumenyi wa byose.",
       "ln": "Bafungola ya bomengo ya likolo na ya mabele bizali bia ye, apesaka bozui na oyo alingi mpe akutolaka na oyo alingi. Azali na boyebi ya biloko binso.",
-      "dag": "Ŋuna (Naawuni) n-su sagbana mini tiŋgbani saafenima, ka O yεlgiri arzichi tiri O ni bɔri so, ka kirsiri biɛhigu tiri O ni bɔri so. Achiika! O shiri nyɛla binshɛɣu kam Baŋda.",
-      "mos": "A soo saas la Tẽng kʋɩlen-biisi, A yεdgda rɩtlã ne A sẽn rat a soaba, la A kẽgsd ne A sẽn rat a soaba, ad A yaa Mit ne bũmbã fãa gilli.",
+      "dag": "Ŋuna (Naawuni) n-su sagbana mini tiŋgbani saafenima, ka O yɛlgiri arzichi tiri O ni bɔri so, ka kirsiri biɛhigu tiri O ni bɔri so. Achiika! O shiri nyɛla binshɛɣu kam Baŋda.",
+      "mos": "A soo saas la Tẽng kʋɩlen-biisi, A yɛdgda rɩtlã ne A sẽn rat a soaba, la A kẽgsd ne A sẽn rat a soaba, ad A yaa Mit ne bũmbã fãa gilli.",
       "aa": "Qaranwaa kee baaxô reedá Yalli leeh, racmat kee rizqhi mafaatic kay gabal yan, isih kah faxa marah rizqhi farakka haah, isih kah faxa maral ceyissi haa, Usuk diggaluk ummaanimil ixxiga-li.",
       "mdh": "Lekanin a Allah su gunsi nu manga langit endu su lupa, kalagan nin sa rizki su pegkyugan nin, pakasimpitan nin su pegkyugan nin, sekanin a Allah i mataw sa langun na enggaga-isa.",
-      "ak": "Ɔsoro ne asaase so akoradeε safoa wͻ no, Ɔbae N’adom no mu ma obi a Ɔpε, εna Ɔsusu nso (ma obi a Ɔpε). Nokorε sε Ɔne biribiara ho Nimdefoͻ.",
+      "ak": "Ɔsoro ne asaase so akoradeɛ safoa wɔ no, Ɔbae N’adom no mu ma obi a Ɔpɛ, ɛna Ɔsusu nso (ma obi a Ɔpɛ). Nokorɛ sɛ Ɔne biribiara ho Nimdefoɔ.",
       "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߏ߲ߧߌ߲ ߠߎ߬ ߘߌ߫ ߸ ߊ߬ ߦߋ߫ ߤߊ߬ߙߌ߬ߖߍ߮ ߘߐߝߎߟߋ߲߫ ߠߊ߫ ߡߐ߰ ߟߋ߬ ߦߋ߫ ߡߍ߲ ߓߊ߯ ߊ߬ ߘߌߦߊ߫ ߸ ߊ߬ ߦߴߊ߬ ߘߐߜߙߐ߬ ߟߊ߫ ߝߣߊ߫ ߸ ߓߊ ߊ߬ߟߋ ߟߋ߬ ߞߏ ߓߍ߯ ߟߐ߲ߓߊ߮ ߘߌ߫"
     }
   },
@@ -9346,10 +9355,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Allah ni We wahishuye igitabo gikubiyemo ukuri n’ubutabera. Ese ni iki cyakubwira ko imperuka itari hafi?",
       "ln": "Allah nde akitisa buku na bosôló, mpe na emekelo. Mpe yo oyebi te tango mosusu ngonga yango ebelemi.",
       "dag": "Naawuni n-nyɛŊun siɣisi litaafi (Alkur’aani) na yɛlimaŋli mini aadalsi. (Yaa nyini ŋun wumda)! Ka bo n-leei yɛn chɛ ka a baŋ kadama diyi pa shɛli ka Chiyaama yiɣisibu be yoma?",
-      "mos": "Wẽnd la Soab ning sẽn sika gafã ne sɩd la tẽeg-tɩrga. Lɑ bõe n wilgd foo tɩ dũni yikr pɑ pẽ?",
+      "mos": "Wẽnd la Soab ning sẽn sika gafã ne sɩd la tẽeg-tɩrga. La bõe n wilgd foo tɩ dũni yikr pa pẽ?",
       "aa": "Yalla kinni Qhuraan kee raqqate kitooba cakkil oobissem kaadu miidaan (qadli kinnuk) cakkil oobise sinam fan massal kaal meklaanam keh kaadu nabiyow iyyi koo yiysixxigeeh qhiyaamah uddur xayi way.",
       "mdh": "Su Allah i napatulun kanu kitab (Qur’an) a haqq endu timbangan, endu di nengka katawan (Muhammad) na tabya bun ka masupeg den i gay a mawli.",
-      "ak": "Nyankopͻn na Ɔde nokorε no asane Nwoma no, εne nsania. Na deεn na εbεkyerε wo sε ebia Dͻnhwere no abεn?",
+      "ak": "Nyankopɔn na Ɔde nokorɛ no asane Nwoma no, ɛne nsania. Na deɛn na ɛbɛkyerɛ wo sɛ ebia Dɔnhwere no abɛn?",
       "ceb": "Siya ang Allah Maoy nagpakanaog sa Libro (Qur’an) sa kamatuoran ug sa Timbangan, ug unsa ba ang makapahibalo kaninyo nga tingali ang Takna (sa kalaglagan) haduol na?",
       "nqo": "ߊߟߊ߫ ߟߋ߫ ߞߊ߬ ߟߍߙߊ ߟߊߖߌ߰ ߕߎ߬ߢߊ ߟߊ߫ ߊ߬ ߣߌ߫ ߖߊ߭ ߸ ߖߍߣߍ߲ ߘߴߌߟߋ ߟߊߟߐ߲ߣߌ߲߫ ߕߎ߬ߡߊ߬ߘߐ߫ ߞߏ߫ ߟߐ߬ߓߊ ߓߘߊ߫ ߛߎ߬ߘߎ߲߬ߧߊ߫؟"
     }
@@ -9427,7 +9436,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Tõnd maan-a lame t'a yaa Alkʋrãan sẽn yaa larabiindu, sãnd-sãnde y na tall yam.",
       "aa": "Nanu diggah Qhuraan Nabii Mucammadal ﷺ Qarab afat oobisne kaa taaxigeeniih kay maqna cubbussaanamkeh.",
       "mdh": "Saben-sabenal a binaluy nami sa basa Arab, ka malemu-lemu i katagwan silan na akal.",
-      "ak": "Nokorε, Yɛayε Qur’aan no wͻ Arab kasa mu sεdeε mobεte aseε.",
+      "ak": "Nokorɛ, Yɛayɛ Qur’aan no wɔ Arab kasa mu sɛdeɛ mobɛte aseɛ.",
       "ceb": "Sa pagkatinuod, Kami naghimo niini nga perpekto nga Qur’an sa Arabik (nga pinulongan), aron kamo makasabut.",
       "nqo": "ߒ߬ߠߎ߫ ߟߋ߫ ߣߵߊ߬ ߞߍ߫ ߟߊ߫ ߘߐߛߊߙߌߕߊ ߘߌ߫ ߊߙߊߓߎ ߘߐ߫ ߛߴߊߟߎ߫ ߘߴߊ߬ ߤߊ߲ߞߟߌߡߦߊ߫"
     }
@@ -9504,7 +9513,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Yɩlgemd be ne saas la Tẽng Naabã sẽn yaa Al-ʿars Naabã n yi bũmb ning bãmb sẽn sɩfdã.",
       "aa": "Qaranwaa kee baaxó Rabbiiy, Qarshi Rabbi saytunnooweh koros kaa edde weelossu haytaamak.",
       "mdh": "Mahasuti su Kadenan nu manga langit endu su lupa a Kadenan nu Arsh sa kanu langun na pedtalun nu manga mushrik.",
-      "ak": "Kronkron Hene ne ͻsoro ne asaase Wura Nyankopͻn, Tumi Ahennwa Wura no Ɔkorͻn, so kyεn deε wͻde susu no no.",
+      "ak": "Kronkron Hene ne ɔsoro ne asaase Wura Nyankopɔn, Tumi Ahennwa Wura no Ɔkorɔn, so kyɛn deɛ wɔde susu no no.",
       "ceb": "Ang Himaya (ug Kadungganan) maanaa sa (Allah) ang Ginoo sa mga langit ug sa yuta, ug Ginoo sa Trono, layo labaw sa tanan (kabakakan) ang ilang gipahinungod Kaniya.",
       "nqo": "ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߰ߙߌ ߛߊߣߌ߲ߡߊ߲߫ ߸ ߛߍ߬ߡߍ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫ ߞߊ߬ ߓߐ߫ ߊ߬ߟߎ߬ ߟߊ߫ ߡߊ߲߬ߞߕߎ߬ߒ߬ߞߊ߲߬ߠߊ ߡߊ߬"
     }
@@ -9579,11 +9588,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Nta yindi mana iriho itari We (Allah). Ni we utanga ubuzima n’urupfu. Ni Nyagasani wanyu akaba ari na We Nyagasani w’abakurambere banyu.",
       "rn": "Nta yindi mana ibwirijwe gusengwa atari Yo. Ni Yo Itanga ubuzima Ikanabwaka. Ni Yo Mana yanyu Rurema, Ikaba n’Imana ya ba so bo hambere yanyu, nimuyisenge rero mutayibangikanya na kimwe mu biremwa.",
       "ln": "Nzambe mosusu azali te ya kobondela na bosóló sé ye apesaka bomoyi na liwa, Nkolo wa bino mpe Nkolo ya bankoko na bino wa yambo.",
-      "dag": "Duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna, O neeri mi ka kura. Yi Duuma, ni yi banim’ ban daŋ tooni maa Duuma.",
+      "dag": "Duuma jɛmdigu n-kani ni yɛlimaŋli naɣila Ŋuna, O neeri mi ka kura. Yi Duuma, ni yi banim’ ban daŋ tooni maa Duuma.",
       "mos": "Soab ka be sẽn na n tũ n tɩlg tɩ pa Yẽ ye, A kʋʋdame la A vʋʋgdẽ, yaa yãmb Soaba, yaa y baaba-rãmb sẽn reng taoor me Soaba.",
       "aa": "Yallak sah cakkil yaqbuden Yalli mayan Usuk yaynuwweeh qidaah sin Rabbiiy, siinik naharsi abbobtih Rabbi kinnik kaa inkittoysaay kaa uqbuda sinaamey.",
       "mdh": "Da kadenan ya tabya su Allah, a banguyag a bangimatay, a Kadenan nu endu su manga lukes nu nangawna.",
-      "ak": "Awurade foforͻ biara nni hͻ gyesε Ɔno nko ara, Ɔma nkwa εna Ɔkum; (Ɔne) mo Wura Nyankopͻn ne moagyanom tetefoͻ no nso Wura Nyankopͻn no.",
+      "ak": "Awurade foforɔ biara nni hɔ gyesɛ Ɔno nko ara, Ɔma nkwa ɛna Ɔkum; (Ɔne) mo Wura Nyankopɔn ne moagyanom tetefoɔ no nso Wura Nyankopɔn no.",
       "ceb": "Walay dios (nga takos simbahon) gawas Kaniya 'Allāh'. Siya ang naghatag ug kinabuhi ug nagpahinabog kamatayon, (Siya ang) inyong Ginoo, ug ang Ginoo sa inyong mga katigulangan.",
       "nqo": "ߡߊ߰ߙߌ߬ ߜߘߍ߫ ߕߍ߫ ߊ߬ߟߋ ߞߐ߫ ߸ ߊ߬ߟߋ ߟߋ߫ ߟߊ߬ߣߌ߬ߡߦߊ߬ߟߌ ߣߌ߫ ߟߊ߬ߣߌ߬ߒ߬ߕߊ߲߬ߧߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߸ ߊߟߎ߫ ߡߊ߰ߙߌ ߣߴߊߟߎ߫ ߝߊ߬ ߝߟߐ ߟߎ߫ ߡߊ߰ߙߌ ߞߊ߬ߣߌ߲߫"
     }
@@ -9656,11 +9665,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Misy porofo ho an’ireo mpino tokoa eny amin’ny lanitra sy ety an-tany.",
       "lg": "Mazima mu (ggulu omusanvu n'ensi mulimu obubonero obwenkukunala (obulaga obuyinza bwa Allah) eri Abakkiriza.",
       "rw": "Mu by’ukuri, mu birere no mu isi harimo ibimenyetso ku bemeramana.",
-      "dag": "Achiika! Sagbana mini tiŋgbani puuni nyεla yεlikpahinda n-zaŋ ti ninvuɣu shɛba ban ti Naawuni yεlimaŋli.",
-      "mos": "Ad be saasẽ la Tẽngã zugu, yel-soalem-dãmbɑ ne sɩd-kõtba.",
+      "dag": "Achiika! Sagbana mini tiŋgbani puuni nyɛla yɛlikpahinda n-zaŋ ti ninvuɣu shɛba ban ti Naawuni yɛlimaŋli.",
+      "mos": "Ad be saasẽ la Tẽngã zugu, yel-soalem-dãmba ne sɩd-kõtba.",
       "aa": "Diggah qaranwaa kee baaxô ginooy, ken nammayih addal ginoonak taniimit yeemenc marah Yallih nabnaa kee dudda tascasse astooti tan.",
       "mdh": "Saben-sabenal kanu manga langit endu su lupa na manga tanda (nu kaisa-isa nu Allah) kanu manga taw a manga bamaginugut.",
-      "ak": "Nokorε sε nsεnkyerεnee wͻ ͻsoro ne asaase so de ma agyidiefoͻ no.",
+      "ak": "Nokorɛ sɛ nsɛnkyerɛnee wɔ ɔsoro ne asaase so de ma agyidiefoɔ no.",
       "ceb": "Sa pagkatinuod (dinha) sa mga langit ug sa yuta adunay mga Timaan (sa Pagkausa sa Diyos) alang sa mga magtotoo.",
       "nqo": "ߕߊ߰ߛߌ߬ߞߏ߫ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߐ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߘߋ߬"
     }
@@ -9732,7 +9741,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "۞Wẽnd la Soab ning sẽn wõr mogrã n kõ yãmbã, bʋɩl yĩng tɩ koom kogendã na zoe a zug ne A sagelle, la y sẽn na paam A kũunã yĩnga, tɩ sãnd-sãnde y na pʋʋs barka.",
       "aa": "Yalla kinni bad siinih qanteeh xabbacossem kay amrih dawaanik elle gexuuy, kay rizqhi elle gurrusuttoonu kaadu isin wohul kaa faatittoonu.",
       "mdh": "Su Allah na pinandaya nin sa lekanu su lagat ka endu makapalalaguy su bagedan nu sa kahanda nu Allah ka endu nu mapangilay su limu nu Allah endu kanu makadsukur.",
-      "ak": "Onyankopͻn na Wabrε ͻpo ase ama mo, sεdeε nsuom hyεn bεnante so wͻ Ne tumi mu, ne sεdeε mobεhwehwε N’adom, ne sεdeε mobɛyi (no) ayε.",
+      "ak": "Onyankopɔn na Wabrɛ ɔpo ase ama mo, sɛdeɛ nsuom hyɛn bɛnante so wɔ Ne tumi mu, ne sɛdeɛ mobɛhwehwɛ N’adom, ne sɛdeɛ mobɛyi (no) ayɛ.",
       "ceb": "Si Allāh maoy naghimo sa dagat nga nagpasakop kaninyo aron ang mga barko makalawig niini pinaagi sa Iyang Pagmando, ug aron kamo mangita sa Iyang kadagaya ug magmapasalamaton (Kaniya).",
       "nqo": "ߊߟߊ߫ ߟߋ߫ ߞߊ߬ ߓߊ ߞߟߏ߫ ߊߟߎ߫ ߦߋ߫ ߛߊ߫ ߞߎߟߎ߲ ߘߌ߫ ߞߎߟߎ߲ߞߎߟߎ߲߫ ߊ߬ ߞߊ߲߬ ߊ߬ ߟߊ߫ ߥߊߟߌߢߊ ߟߊ߫ ߸ ߊ߬ ߣߌ߫ ߛߴߊߟߎ߫ ߘߴߊ߬ ߟߊ߫ ߢߊ߬ߒߡߊ߭ ߘߏ߫ ߢߌߣߌ߲߫ ߊ߬ ߣߌ߫ ߛߴߊߟߎ߫ ߘߌ߫ ߞߏߢߌߡߊߟߐ߲ ߞߍ߫"
     }
@@ -9800,11 +9809,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lt": "Kas daro gerą darbą, tai dėl savęs pačio, o kas daro blogą – tai prieš (save patį). Tada pas savo Viešaptį jūs būsite priversti sugrįžti.",
       "lg": "Oyo akola emirimu emirungi akolera mwoyo gwe, ate oyo ayonoona (akabi k'okwonoona kwe) kadda eri mwoyo gwe, oluvanyuma eri Mukama Omulabirizi Wammwe gye mulizzibwa.",
       "rw": "Ukoze ibikorwa byiza aba abyikoreye, ndetse n’ukoze ikibi aba acyikoreye. Hanyuma kwa Nyagasani wanyu ni ho muzasubizwa.",
-      "dag": "Ŋun tum tuunviεlli, tɔ! O maŋ’ zuɣu ka o tum, ŋun mi tum tuumbiεɣu, tɔ! O maŋ’ zuɣu ka o lahi tum, din nyaaŋa yi Duuma (Naawuni) sani ka bɛ yɛn ti labsi ya.",
+      "dag": "Ŋun tum tuunviɛlli, tɔ! O maŋ’ zuɣu ka o tum, ŋun mi tum tuumbiɛɣu, tɔ! O maŋ’ zuɣu ka o lahi tum, din nyaaŋa yi Duuma (Naawuni) sani ka bɛ yɛn ti labsi ya.",
       "mos": "Sẽn tʋma sõama, yaa a meng yĩnga, la sẽn wẽnga me yaa a meng zugu; rẽ poorẽ yaa y Soabã nengẽ la b na n lebs yãmbã.",
       "aa": "Meqe taamá abe num isi nafsih sabbatah abaah, uma taamá abe num isi nafsik-tu kala, sinaamey sarra sinni Rabbí fan gacsimetton qhiyaamah ayró.",
       "mdh": "Su taw a enggalebek sa mapya na lekanin bun, su mawag menem na maytu bun ba, mawli na lu kanu bun makambalingan sa Allah.",
-      "ak": "Obia ͻbɛdi dwuma pa no εwͻ ͻno ara kraa, na obi nso a ͻbɛdi dwuma bͻne no nso etia ͻno ara kraa; na εno akyiri no, mo Wura Nyankopͻn hͻ na mobεsan akͻ.",
+      "ak": "Obia ɔbɛdi dwuma pa no ɛwɔ ɔno ara kraa, na obi nso a ɔbɛdi dwuma bɔne no nso etia ɔno ara kraa; na ɛno akyiri no, mo Wura Nyankopɔn hɔ na mobɛsan akɔ.",
       "nqo": "ߡߍ߲ ߓߊ߯ ߢߌ߬ߡߊ߬ ߞߍ߫ ߏ߬ ߦߴߊ߬ ߖߍ߬ߘߍ߫ ߟߋ߬ ߦߋ߫ ߸ ߡߍ߲ ߓߊ߯ ߖߎ߯ߦߊ߫ ߏ߬ ߦߴߏ߬ ߖߍ߬ߘߍ߫ ߟߋ߫ ߡߊ߬ ، ߏ߬ ߓߍ߯ ߞߐ߫ ߊߟߎ߫ ߟߊߛߊ߬ߦߌ߬ߕߐ߫ ߊߟߎ߫ ߡߊ߰ߙߌ ߟߋ߫ ߡߊ߬"
     }
   },
@@ -9876,11 +9885,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Loharanom-pahazavana ho an’ny olombelona izy ity (Koroany), tari-dalana sy famindram-po ho an’ireo olona mino tanteraka.",
       "lg": "Eno (Kulaani) kitangaala eri abantu, era buluŋŋamu na kusaasira eri abantu abatya Allah abannamaddala.",
       "rw": "Iyi (Qur’an) ni urumuri ku bantu, ikaba umuyoboro n’impuhwe ku bizera badashidikanya.",
-      "dag": "Ŋɔ maa (Alkur’aani) nyɛla zalikpana din neera n-zaŋ ti ninsalinima, ni dolsigu mini nambɔzɔbo n-zaŋ ti ninvuɣu shεba ban dihitabli (ni Chiyaama yiɣisibu).",
+      "dag": "Ŋɔ maa (Alkur’aani) nyɛla zalikpana din neera n-zaŋ ti ninsalinima, ni dolsigu mini nambɔzɔbo n-zaŋ ti ninvuɣu shɛba ban dihitabli (ni Chiyaama yiɣisibu).",
       "mos": "Wãnde yaa vẽenem ne nebã la kãndgr la yolsg ne bãng-n-wãak rãmba.",
       "aa": "Nabiyow a-Qhuraanay kol oobisne sinaamah sorkocobbaxi intiitaay, tirtooy, xuwaw kinni, yaamineeh yasmite marah.",
       "mdh": "Namba (su Qur’an) i palitan nu manga taw, endu tutulu, endu limu kanu manga taw a natagu sa ginawa nin su gay a mawli.",
-      "ak": "(Qur’aan) woi yε anibue (Nwoma) de ma adasamma, na εsan yε kwan kyerε ne ahummͻborͻ de ma amanfoͻ a wͻgye die.",
+      "ak": "(Qur’aan) woi yɛ anibue (Nwoma) de ma adasamma, na ɛsan yɛ kwan kyerɛ ne ahummɔborɔ de ma amanfoɔ a wɔgye die.",
       "ceb": "Kini ang tin-aw mga Pamatuod alang sa mga tawo, ug usa ka Giya ug Kalooy alang sa usa katawhan nga adunay Pagtoo uban sa kasigurohan.",
       "nqo": "ߣߌ߲߬ ߦߋ߫ ߢߟߊߞߊߞߏ߫ ߟߎ߫ ߟߋ߬ ߘߌ߫ ߡߐ߱ ߟߎ߬ ߦߋ߫ ߸ ߊ߬ ߣߌ߫ ߞߊ߲ߘߦߊ ( ߘߐ߬ߛߊߙߌ ) ߣߌ߫ ߤߌߣߊ ߟߋ߫ ߡߌ߬ߙߌ߲߬ߘߌ߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫"
     }
@@ -9942,10 +9951,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Tsy noharianay ny lanitra sy ny tany sy izay eo anelanelany raha tsy tamim-pahamarinana, ary ho amin'ny fotoana voafetra.Tsy miraharaha amin'izay nampitandremana azy ireo ny tsy mpino.",
       "rw": "Ntitwaremye ibirere n’isi n’ibiri hagati yabyo bitari ku mpamvu z’ukuri, ndetse binagenerwa igihe ntarengwa (bizabaho). Nyamara ba bandi bahakanye, ibyo baburirwa barabyirengagiza.",
       "ln": "Tokelaki likolo na mabele na maye manso mazali otei na yango nyoso mibale na bosóló na tango eye eyebani. Bapengwi bazali koboya na maye bazali kokebisa bango.",
-      "mos": "Tõnd pa naan saasã la Tẽngã la bũmb nins sẽn be b yiibã sʋka, rẽnda ne sɩd la wakat sẽn tar tεka, la neb nins sẽn kɩfl-bã yaa balldb n yit bũmb ning b sẽn bugsd-ba.",
+      "mos": "Tõnd pa naan saasã la Tẽngã la bũmb nins sẽn be b yiibã sʋka, rẽnda ne sɩd la wakat sẽn tar tɛka, la neb nins sẽn kɩfl-bã yaa balldb n yit bũmb ning b sẽn bugsd-ba.",
       "aa": "Qaranwaa kee baaxooy ken nammayih fanat tanim magininnino cakkii kee muggaqsimeh yan waktih (udduruh) akkewaytek. Kaadu koroosite mari ken akak mcesiiseenimit (takkaawiseenimit) derre cabe.",
       "mdh": "Da kinabaluy nami kanu manga langit endu lupa endu su pageletan nin ya tabya na bantang endu mawa bun, endu su manga kafir na pimbalwagan nilan su inipakagilek sa kanilan.",
-      "ak": "Yεde nokorε no na abͻ ͻsoro ne asaase ne deε εwͻ mfinfii no, εna yɛahyehyε εberε ato ho. Wͻn a wͻnnye (Nokorε no) nnie no dane wͻn ho firi deε yεrebͻ wͻn kͻkͻ wͻ ho no ho.",
+      "ak": "Yɛde nokorɛ no na abɔ ɔsoro ne asaase ne deɛ ɛwɔ mfinfii no, ɛna yɛahyehyɛ ɛberɛ ato ho. Wɔn a wɔnnye (Nokorɛ no) nnie no dane wɔn ho firi deɛ yɛrebɔ wɔn kɔkɔ wɔ ho no ho.",
       "nqo": "ߊ߲ ߡߊ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߣߴߏ ߝߌ߬ߟߊ ߕߍߝߋ߲ ߠߎ߬ ߘߊ߲߫ ߝߏߦߌ߬ ߟߊ߫ ߝߏ߫ ߕߎ߬ߢߊ ߣߌ߫ ߛߕߊ߫ ߟߐ߯ߟߊߣߍ߲ ߸ ߡߍ߲ ߠߎ߫ ߓߊ߲߬ߓߊ߰ߦߊ߬ߣߍ߲߫ ߛߊ߫ ߏ߬ ߟߎ߬ ߞߐߘߏ߲߬ߣߍ߲߫ ߖߊ߬ߛߙߋ߬ߡߊ߬ߟߌ߬ߞߊ߲߫ ߟߐ߬ߣߍ߲ ߠߴߊ߬ߟߎ߫ ߡߊ߬ ߟߋ߬"
     }
   },
@@ -9992,9 +10001,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "he": "הלא יראו כי אללה, אשר ברא את השמים ואת הארץ, ולא התעייף בבריאתם, יוכל גם להחיות את המתים? אמנם כן, הוא הכל-יכול.",
       "lt": "Argi jie nesupranta, kad Allahas, Kuris sukūrė dangus ir žemę, ir nebuvo nuo to nuvargintas, gali prikelti mirusius? Taip, iš tiesų Jis gali padaryti bet ką.",
       "rw": "Ese ntibabona ko Allah waremye ibirere n’isi akaba atarananijwe no kubirema, ko ari We ushobora guha ubuzima abapfuye? Yego! Rwose ni We ufite ubushobozi kuri buri kintu.",
-      "mos": "Rẽ yĩnga bãmb pa yã tɩ Wẽnd ning sẽn naana saasã la Tẽngã n pa yε ne b naanegã, A yaa Tõogd ne A na vʋʋg kũ-rãmba. Yaa sɩda, ad Yẽnda, A yaa Tõod ne bũmb fãa.",
+      "mos": "Rẽ yĩnga bãmb pa yã tɩ Wẽnd ning sẽn naana saasã la Tẽngã n pa yɛ ne b naanegã, A yaa Tõogd ne A na vʋʋg kũ-rãmba. Yaa sɩda, ad Yẽnda, A yaa Tõod ne bũmb fãa.",
       "aa": "Diggah yallay qaranwaa kee baaxo gine ken ginot taqbewee rabtcm yaynuwweemih duddalem ma yaaxigaanaa? Yeey, Yalli woh duudah, diggaluk usuk ummaanimih abtol dudda-li.",
-      "ak": "Enti wͻnhunuu sε Onyankopͻn no a Ɔbͻͻ soro ne asaase, na Wammerε wͻ ne mmͻeε no ho no wͻ tumi sε Ɔnyane awufoͻ? Aane! Nokorε sε Ɔwͻ tumi wͻ biribiara so.",
+      "ak": "Enti wɔnhunuu sɛ Onyankopɔn no a Ɔbɔɔ soro ne asaase, na Wammerɛ wɔ ne mmɔeɛ no ho no wɔ tumi sɛ Ɔnyane awufoɔ? Aane! Nokorɛ sɛ Ɔwɔ tumi wɔ biribiara so.",
       "nqo": "ߊ߬ߟߎ߬ ߡߴߊ߬ ߦߋ߫ ߓߊ߬ ߞߏ߫ ߊߟߊ߫ ߡߍ߲ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߊ߲߫ ߊ߬ ߘߏ߲߬ ߡߊ߫ ߛߍ߰ ߏ߬ ߟߎ߬ ߘߊ߲ ߘߐ߫ ߸ ߞߴߏ߬ ߘߌ߫ ߛߋ߫ ߞߊ߬ ߛߎ߭ ߟߎ߬ ߟߊߞߎߣߎ߲߫؟ ߤߊ߯ߟߌ߫ ߸ ߏ߬ ߟߋ ߦߋ߫ ߞߏ ߓߍ߯ ߣߐ߬ ߟߊ߫ ߘߋ߬"
     }
   },
@@ -10064,11 +10073,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe abakkiriza singa mutaasa Allah, ajja kubataasa, era anyweze ebigere byammwe (abagumye).",
       "rw": "Yemwe abemeye! Nimuharanira inzira ya Allah, azabatabara anabakomereze igihagararo.",
       "ln": "Oh bino baye bondima (na Allah)! soki bosalisi Allah, akolongisa bino mpe akolendisa matambi na bino.",
-      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yεlimaŋli! Yiyi sɔŋ Naawuni, O ni sɔŋ ya, ka ba yi naba zali.",
-      "mos": "Yãmb ɑ neb nins sẽn kõ sɩd ne Wẽnde! Y sã n sõng Wẽnde, A sõngd-y lame, la A tabl y nao-kadma.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Yiyi sɔŋ Naawuni, O ni sɔŋ ya, ka ba yi naba zali.",
+      "mos": "Yãmb a neb nins sẽn kõ sɩd ne Wẽnde! Y sã n sõng Wẽnde, A sõngd-y lame, la A tabl y nao-kadma.",
       "aa": "Kee yalla nummayse maraw! Yalla qokolten sin tekkek (Yallih diinil), usuk qokle sin leeh, sin dadooba daabisele.",
       "mdh": "Hay sekanu anan a bamaginugut! Amayka edtabangan nu (su agama nu) Allah, na edtabangan kanu nin (idsabek kanu nin) endu tigel nin su manga ay nu sekanu.",
-      "ak": "Mo a moagye adie, sε moboa Nyankopͻn a Ɔno nso bεboa mo, na Wama moagyina moanan so pintin.",
+      "ak": "Mo a moagye adie, sɛ moboa Nyankopɔn a Ɔno nso bɛboa mo, na Wama moagyina moanan so pintin.",
       "ceb": "Oh mga magtutuo, kon kamo motabang (sa Kawsa sa) Allah, Siya usab motabang kaninyo, ug mopalig-on sa inyong mga tiil (nga mahimong malig-on).",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߣߴߊߟߎ߫ ߞߵߊߟߊ߫ ߘߍ߬ߡߍ߲߬ ߊ߬ ߘߴߊߟߎ߫ ߘߍ߬ߡߍ߲߫ ߞߵߊߟߎ߫ ߛߋ߲߭ ߠߎ߬ ߓߊ߲ߓߊ߲߫"
     }
@@ -10139,11 +10148,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe abakkiriza mugondere Allah, era mugondere Omubaka, era temwonoonanga emirimu gyammwe.",
       "rw": "Yemwe abemeye! Nimwumvire Allah, munumvire Intumwa (Muhamadi). Kandi ibikorwa byanyu ntimukabigire imfabusa.",
       "ln": "Oh bino baye bondima! Botosa Allah mpe botosa motindami (na ye) kasi bobebisa misala mia bino te.",
-      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yεlimaŋli! Doli ya Naawuni, ka doli O tumo (Annabi Muhammadu), ka di saɣim ya yi tuuntumsa.",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Doli ya Naawuni, ka doli O tumo (Annabi Muhammadu), ka di saɣim ya yi tuuntumsa.",
       "mos": "Yãmb neb nins sẽn kõ sɩd ne Wẽnde! Tũ-y Wẽnde, la y tũ Tẽn-tʋʋmã la y ra sãam y tʋʋm ye.",
       "aa": "Kee nummayse maraaw! Yalla oggolaay, Yallih-farmoyta oggolaay, taamoomi sinnik mabaysina.",
       "mdh": "Hay sekanu anan manga bamaginugut! Paginugunuti nu su Allah endu paginuguti nu su sinugu nin, endu dili nu pembatala su galebek nu.",
-      "ak": "Mo a moagye adie, monyε sotie mma Nyankopͻn ne ne Somafoͻ no, na monhwε na moansεe mo nnwuma.",
+      "ak": "Mo a moagye adie, monyɛ sotie mma Nyankopɔn ne ne Somafoɔ no, na monhwɛ na moansɛe mo nnwuma.",
       "ceb": "Oh mga magtutuo, tumana ang Allah ug tumana ang Mensahero (Muhammad), ug ayaw himoa nga makawang ang inyong (maayo) nga mga buhat.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߦߋ߫ ߊߟߊ߫ ߞߊ߲ߡߌ߬ߘߊ߬ ߞߊ߬ ߞߋߟߊ ߞߊ߲ߡߌ߬ߘߊ߬ ߸ ߊߟߎ߫ ߞߊߣߵߊߟߎ߫ ߟߊ߫ ߓߊ߯ߙߊ ߟߎ߬ ߕߌߢߍ߫ ߘߋ߬"
     }
@@ -10207,11 +10216,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Lalao sy fialam-boly ihany ny fiainana eto an-tany, kanefa raha mino sy matahotra an’I Allah ianareo, dia omeny valisoa ianareo, ary tsy hangataka ny fanananareo Izy.",
       "lg": "Mazima obulamu bw'ensi muzannyo na binyumu, naye bwe mukkiriza era ne mutya Allah, ajja kubawa empeera yammwe, ate nga tabasabye mmaali yammwe.",
       "ln": "Ya soló, bomoyi ya mokili ezali sé lisano mpe liseki. Soki bondimi mpe bobangi, (Allah) akopesa bino bolamu na bino mpe akosenga bino bomengo te.",
-      "dag": "Achiika! Dunia biεhigu nyɛla diɛma mini kpεrigu. Yaha! Yi yi ti Naawuni yεlimaŋli ka mali wuntia, tɔ! O ni tin ya yi tuunviεla sanyoo, O mi ku bɔhi ya yi daarzichi yεla.",
-      "mos": "Ad Dũni wã vɩɩmã yaa wɩsg la reem. La yãmb sã n kõ sɩd la y zoe Wẽnde, A kõta yãmb y keoorã, la A pa modgd yãmb y arzεkẽ wã ye.",
+      "dag": "Achiika! Dunia biɛhigu nyɛla diɛma mini kpɛrigu. Yaha! Yi yi ti Naawuni yɛlimaŋli ka mali wuntia, tɔ! O ni tin ya yi tuunviɛla sanyoo, O mi ku bɔhi ya yi daarzichi yɛla.",
+      "mos": "Ad Dũni wã vɩɩmã yaa wɩsg la reem. La yãmb sã n kõ sɩd la y zoe Wẽnde, A kõta yãmb y keoorã, la A pa modgd yãmb y arzɛkẽ wã ye.",
       "aa": "Diggah addunyâ manó cagalah digiriiy, cantalbaka (duquurisiyya). Teemeneeniih Yallak meesitteenik, sin galtoota siinih aceeleeh, sin maalu inkih sin Messera.",
       "mdh": "Saben-sabenal su kabpaguyag sa dunya na kandadalemet bu, kadsimpang, na amayka mangimbenal kanu endu magilek kanu na inggay nin sa lekanu su balas nu endu di kanu nin pangenyan sa tamuk.",
-      "ak": "Wiase asetena yi yε agorͻ ne ahurusie; na sε mogye di na mosuro Nyame a, Ɔde moakatua bεma mo, na Ɔmmisa mo moagyapadeε.",
+      "ak": "Wiase asetena yi yɛ agorɔ ne ahurusie; na sɛ mogye di na mosuro Nyame a, Ɔde moakatua bɛma mo, na Ɔmmisa mo moagyapadeɛ.",
       "nqo": "ߘߎߢߊ߫ ߢߣߊߡߦߊ ߦߋ߫ ߕߏߟߏ߲߫ ߣߌ߫ ߣߊ߰ߣߊ߯ ߟߋ߬ ߘߌ߫ ߸ ߣߴߊߟߎ߫ ߞߍ߫ ߘߊ߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߛߊ߫ ߞߵߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߊ߫ ߸ ߊ߬ ߘߴߊߟߎ߫ ߛߊ߬ߙߊ ߟߎ߬ ߘߴߊߟߎ߫ ߡߊ߬ ، ߊ߬ ߘߏ߲߬ ߕߍ߫ ߊߟߎ߫ ߟߊ߫ ߣߊ߲߬ߝߟߏ ߟߎ߬ ߢߌߣߌ߲߫ ߊߟߎ߫ ߟߊ߫"
     }
   },
@@ -10278,11 +10287,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Izy no nandefa ny irany miaraka amin’ny tari-dalana sy ny finoana marina, mba hametrahany azy ho ambonin’ny finoana hafa rehetra. Ampy hahita (ny zava-drehetra)I Allah.",
       "lg": "(Allah) Yye, y'Oyo eyatuma Omubaka We n'aleeta obuluŋŋamu n'Eddiini eyaamazima abe ng'alaga ekifo kyayo ekyawaggulu ku madiini gonna, kimala okuba nti Allah Ye Mujulizi (kw'ekyo).",
       "rw": "Ni We wohereje Intumwa ye (Muhamadi) izanye umuyoboro (Qur’an) n’idini by’ukuri, kugira ngo arisumbishe andi madini yose. Kandi Allah arahagije kuba umuhamya.",
-      "dag": "Ŋuna (Naawuni) n-nyɛŊun tim O tumo (Annabi Muhammadu) na ni dolsigu mini yεlimaŋli daadiini, domin O chɛ ka di nyɛ nasara adiini kam zuɣu. Yaha! Naawuni saɣi Shɛhiradira.",
+      "dag": "Ŋuna (Naawuni) n-nyɛŊun tim O tumo (Annabi Muhammadu) na ni dolsigu mini yɛlimaŋli daadiini, domin O chɛ ka di nyɛ nasara adiini kam zuɣu. Yaha! Naawuni saɣi Shɛhiradira.",
       "mos": "Yẽ la Naab ning sẽn tʋms A Tẽn-tʋʋmã ne kãndgr la sɩd dĩini, bʋɩl yĩng t'A na wils-a Dĩin-rãmbã fãa zugu, la kaset seka ne Wẽnde.",
       "aa": "Yalla kinni isi farmoyta Mucammad tirtoo kee cakki diinil rubtem, ummaan diinik iró (amol) kaa raaqisuh, kaadu Yalli sumaaqah koo duudah nabiyow.",
       "mdh": "Sekanin (Allah) i simugu kanu (Muhammad) sa tutulu endu agama a benal, ka endu nin mapayag kanu langun nu manga agama, endu su Allah i mapya gayd a saksi.",
-      "ak": "Ɔno na Ɔde tenenee no ne nokorε som no asoma ne Somafoͻ no, sεdeε Ɔbεma no akata ͻsom biara soͻ. Onyankopͻn som bo sε Ɔdansefoͻ.",
+      "ak": "Ɔno na Ɔde tenenee no ne nokorɛ som no asoma ne Somafoɔ no, sɛdeɛ Ɔbɛma no akata ɔsom biara soɔ. Onyankopɔn som bo sɛ Ɔdansefoɔ.",
       "nqo": "ߊ߬ߟߋ ߟߋ߫ ߞߵߊ߬ ߟߊ߫ ߞߋߟߊ ߗߋ߫ ߞߊ߲ߘߦߊ ߣߌ߫ ߣߊߡߎ߲߫ ߕߎ߬ߢߊ߬ߡߊ ߘߌ߫ ߛߴߊ߬ ߘߴߏ߬ ߟߊߦߟߍ߬ ߣߊߡߎ߲ ߓߍ߯ ߞߊ߲߬ ، ߊߟߊ߫ ߞߊ߬ ߥߛߊ߬ ߞߍ߫ ߛߙߋ߫ ߘߌ߫"
     }
   },
@@ -10332,7 +10341,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Yemwe abemeye! Inkozi y’ibibi niramuka ibazaniye inkuru, mujye mushishoza kugira ngo mudahohotera abantu mutabizi, maze mukaza kwicuza ibyo mwakoze.",
       "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! Dĩin yit sã n wa yãmb nengẽ ne kibare, bɩ y bao vẽenem, la y ra rʋʋg neb ne zɩɩlem tɩ yãmb lebg n maan mims ne yãmb sẽn tʋm bũmb ningã ye.",
       "mdh": "Hay sekanu anan a bamaginugut! Amayka pinanudtulan kanu na taw a faasiq na pagamada kanu ka basi makapanggula nu i taw sa di nu katawan, mawli na makadsendit kanu sa kanu galebek nu.",
-      "ak": "Mo a moagye adie, sε onipa bͻnefoͻ bi de amaneε bi bεbͻ mo a, monhwehwε mu yie (ansa na moatu ho anamͻn), na moanfa agyimisεm so ankͻ ha amanfoͻ bi, ankͻnu mo ho wͻ deε moayε no ho.",
+      "ak": "Mo a moagye adie, sɛ onipa bɔnefoɔ bi de amaneɛ bi bɛbɔ mo a, monhwehwɛ mu yie (ansa na moatu ho anamɔn), na moanfa agyimisɛm so ankɔ ha amanfoɔ bi, ankɔnu mo ho wɔ deɛ moayɛ no ho.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߣߌ߫ ߔߊߟߊ߲ߞߊߓߊ߯ ߣߊ߬ ߘߴߊߟߎ߫ ߡߊ߬ ߖߊ߲߬ߖߏ߲ ߘߏ߫ ߘߌ߫ ߸ ߊߟߎ߯ ߊ߬ ߘߐߜߍߦߊ߫ ߘߋ߬ ߊߟߎ߫ ߞߣߊ߫ ߛߋ߫ ߡߌ߬ߙߌ߲߬ߘߌ ߘߏ߫ ߡߊ߬ ߞߏߟߐ߲ߓߊߟߌߦߊ ߘߌ߫ ߸ ߊߟߎ߫ ߦߋ߫ ߓߊ߲߫ ߞߊ߬ ߣߡߌߛߴߊߟߎ߫ ߟߊ߫ ߞߏ߫ ߞߍߣߍ߲ ߡߊ߬"
     }
   },
@@ -10404,11 +10413,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ukuri abemeramana ni abavandimwe. Bityo, mujye mwunga abavandimwe banyu (igihe bashyamiranye), kandi mugandukire Allah kugira ngo mugirirwe impuhwe.",
       "rn": "Ni ukuri abemeramana, ni abavukanyi mw’idini, muraheza rero munywanishe hagati y’abavukanyi banyu baramutse batase, maze mutinye Imana Allah muri ukwo kunywanisha kugira mugirirwe impuhwe na Yo.",
       "ln": "Ya soló, bandimi bazali bandeko, mpe bobongisa bondeko kati na bino. Mpe bobanga Allah mpo ete bozua ngolu naye.",
-      "dag": "Achiika! Ninvuɣu shεba ban ti Naawuni yεlimaŋli (Muslinnim’) nyɛla mabihili, dinzuɣu malimi ya yi mabihili maa sunsuuni. Yaha! Zom ya Naawuni, achiika! Yi nyɛla bɛ ni yɛn zo shɛba nambɔɣu.",
+      "dag": "Achiika! Ninvuɣu shɛba ban ti Naawuni yɛlimaŋli (Muslinnim’) nyɛla mabihili, dinzuɣu malimi ya yi mabihili maa sunsuuni. Yaha! Zom ya Naawuni, achiika! Yi nyɛla bɛ ni yɛn zo shɛba nambɔɣu.",
       "mos": "Ad Muumin-rãmbã yaa ma-biisi, bɩ y maneg-y ma-biirã ne taab sʋka, la y zoe Wẽnde, ti sãnd-sãnde, b na yols yãmba.",
       "aa": "Cagalah moominiin toobokok, sin namma toobokoh fan bicisaay, Yallak meesita, Yalli siinih xuwaawankeeh.",
       "mdh": "Saben-sabenal su manga bamaginugut na ebpagalya, na pagkapya nu su pagali nu, endu ikagilek nu su Allah ka malemu sa lekanu su limu sa lekanu.",
-      "ak": "Agyediefoͻ no yε anuanom, enti monsisie mo nuanom ntεm, na monsuro Nyankopͻn sεdeε ebia yɛbɛhu mo mmͻbͻ.",
+      "ak": "Agyediefoɔ no yɛ anuanom, enti monsisie mo nuanom ntɛm, na monsuro Nyankopɔn sɛdeɛ ebia yɛbɛhu mo mmɔbɔ.",
       "ceb": "Ang mga magtutuo maoy tinuod nga managsoon, busa himoa ang kalinaw taliwala sa inyong mga igsoon, ug pagtuman sa mga Kasugoan sa Allāh, aron kamo mapanalanginan sa lyang Kaluoy.",
       "nqo": "ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߋ߫ ߓߊߘߋ߲ߡߊ ߟߎ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߸ ߒ߬ߓߵߊߟߎ߯ ߕߍߘߐߓߍ߲ ߠߋ߬ ߞߍ߫ ߊߟߎ߫ ߓߊߘߋ߲ߡߊ ߟߎ߬ ߕߍ߫ ߊ߬ ߣߌ߫ ߊߟߎ߫ ߦߴߊߟߎ߫ ߝߊ߲ߕߊ߲߬ߞߵߊߟߊ߫ ߡߊ߬ ߛߊ߫ ߤߌߣߊ߫ ߘߌ߫ ߞߍ߫ ߊߟߎ߫ ߟߊ߫"
     }
@@ -10486,7 +10495,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad Wẽnd mii saasẽ yel-soondɩ la Tẽng zug yel-soondɩ. Wẽnd yaa Mit ne bũmb ning yãmb sẽn tʋmdã.",
       "aa": "Diggah Yalli qaranwaa kee baaxot qellitti ittam yaaxige kaadu Yalli isin abba haytaanam yabali wohuk tu-kaak maqellitaay sin elle galatele.",
       "mdh": "Saben-sabenal su Allah na katawan nin i gayb kanu langun nu langit endu su lupa, endu su Allah na gailay nin i langun na penggalebeken nu.",
-      "ak": "Nokorε sε Nyankopͻn Nim ͻsoro ne asaase so ahuntasεm (nyinaa). Onyankopͻn deε N’ani tua dwuma a modie (nyinaa).",
+      "ak": "Nokorɛ sɛ Nyankopɔn Nim ɔsoro ne asaase so ahuntasɛm (nyinaa). Onyankopɔn deɛ N’ani tua dwuma a modie (nyinaa).",
       "ceb": "Sa pagkatinuod, ang Allah nahibalo sa dili makita nga mga butang sa mga langit ug sa yuta. Ang Allah kanunay nga Nakakita sa unsay inyong gibuhat (nga maayo o dautan).",
       "nqo": "ߊߟߊ߫ ߟߋ߫ ߞߊ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߞߏߘߏ߲߰ߣߍ߲ ߟߐ߲߫ ߘߋ߬ ߸ ߊߟߊ߫ ߘߏ߲߬ ߦߴߊߟߎ߫ ߗߋߥߊߟߌ ߟߎ߬ ߟߊߛߊ߬ߓߊ߮ ߟߋ߬ ߘߌ߫"
     }
@@ -10563,7 +10572,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Rẽ yĩnga bãmb pa get n tʋgd saagã bãmb zugẽ wã, wãn-wãn la Tõnd me-a la D nags-a, t'a pa tar pãrgre?",
       "aa": "Keenik iró yan qaraanâ fan mawagitaanaa? kaa elle xisneeh kaa elle bilqisne inna, usuk foxooxa aalle waak.",
       "mdh": "Ngintu di nilan gadsuliman su langit kanu pulu nilan upama manan i kinambalay nami lun? Endu dala manga pesu nin dala palos nin.",
-      "ak": "Enti wͻn nhwε ͻsoro a εwͻ wͻn apampamu no, sεdeε Yεsi abͻ no, asiesie no a tokuro anaa apaepaeε biara nni mu?",
+      "ak": "Enti wɔn nhwɛ ɔsoro a ɛwɔ wɔn apampamu no, sɛdeɛ Yɛsi abɔ no, asiesie no a tokuro anaa apaepaeɛ biara nni mu?",
       "ceb": "Wala ba sila makalantaw sa kala-ngitan ibabaw kanila, kun giunsa Namo sa pag-pahimutang ug gidayandayanan kini (sa mga bitoon), ug wala kiniy mga liki?",
       "nqo": "ߊ߬ߟߎ߬ ߕߍ߫ ߛߊ߲ ߡߊߝߟߍ߫ ߟߴߊ߬ߟߎ߫ ߞߎ߲߬ߘߐ߫ ߓߊ߬ ߸ ߊ߲ ߞߵߏ ߟߐ߬ ߢߊ ߡߍ߲ ߞߵߊ߬ ߡߊߛߌ߬ߘߌ߬ ߥߏ߬ߘߊ߫ ߟߎ߫ ߖߘߍ߬ ߕߍ߫ ߊ߬ ߟߊ߫"
     }
@@ -10637,11 +10646,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "(Umuntu) nta jambo na rimwe yavuga ngo habure umugenzuzi umuri hafi (uryandika).",
       "rn": "Nta n’ijambo na rimwe riva mu kanwa kiwe, kiretse ko aba afise umumalayika amucungereye aheza akaryandika, akaba ari na co gusa ajejwe;",
       "ln": "Akoloba liloba moko te kino ekozala pembeni naye oyo azali kotala mpe azali kokoma.",
-      "dag": "O (ninsala) bi yɛri yεltɔɣali, naɣila o malila gula (Malaaika so ŋun guli o), ka be o sani (ni o sabi li zali).",
-      "mos": "A pa be sẽn na yeel gomde, rẽndame tɩ gũusd n sεgl a meng n be a zugu.",
+      "dag": "O (ninsala) bi yɛri yɛltɔɣali, naɣila o malila gula (Malaaika so ŋun guli o), ka be o sani (ni o sabi li zali).",
+      "mos": "A pa be sẽn na yeel gomde, rẽndame tɩ gũusd n sɛgl a meng n be a zugu.",
       "aa": "Inki qangara maqida seehadayti dacrisey (namma malaykattu kinnuk) wohuh massoyseeni kay garil yanih akke waytek.",
       "mdh": "Da kadtalu nu taw a di kena kadtulikan nilan a pakasulat.",
-      "ak": "Asεm a εbefri n’ano aba biara no ͻwεnfoͻ wͻhͻ (a ͻretwerε asεm a ͻbεka biara).",
+      "ak": "Asɛm a ɛbefri n’ano aba biara no ɔwɛnfoɔ wɔhɔ (a ɔretwerɛ asɛm a ɔbɛka biara).",
       "ceb": "Siya (ang tawo) walay isulti nga (bisan) usa ka pulong gawas kon adunay usa ka tigpaniid (nga anghel) sa iyang kiliran nga gipahinungod (sa pagtala sa iyang sa mga pulong ug mga buhat).",
       "nqo": "ߊ߬ ߕߍ߫ ߞߎߡߊ߫ ߛߌ߫ ߝߐ߫ ߝߏ߫ ߛߓߍߓߊ߯ ߘߐߓߍ߲߬ߣߍ߲߫ ߦߋ߫ ߞߍ߫ ߏ߬ ߞߊߡߊ߬"
     }
@@ -10718,7 +10727,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad Tõndo, bũmbã fãa D naan-a-la ne geelgo.",
       "aa": "Diggah nanu ummaanim Íe caddol mekelleh ginne.",
       "mdh": "Saben-sabenal a binaluy nami su langun na enggaga-isa sa aden ukul nin.",
-      "ak": "Nokorε sε Yεde nhyehyεeε na abͻ biribiara.",
+      "ak": "Nokorɛ sɛ Yɛde nhyehyɛeɛ na abɔ biribiara.",
       "nqo": "ߊ߲ߠߎ߫ ߘߏ߲߬ ߣߊ߬ ߝߋ߲ ߓߍ߯ ߘߊ߲߫ ߠߊ߫ ߘߡߊ߬ߦߌߙߊ ߟߋ߬ ߟߊ߫"
     }
   },
@@ -10791,11 +10800,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ese hari igihembo cy’ibyiza kitari ibyiza?",
       "rn": "Mbega ineza ntiyiturwa iyindi! Indishi y’ubugwaneza rero ni uguhabwa Ubwami bw’ijuru!",
       "ln": "Boye bolamu efutamaka te sé na bolamu?",
-      "dag": "Di ni bɔŋɔ, viɛnyɛla mali sanyoo m-pahila vεnyɛla?",
+      "dag": "Di ni bɔŋɔ, viɛnyɛla mali sanyoo m-pahila vɛnyɛla?",
       "mos": "Rẽ yĩnga manegr tara rolb tɩ sã n pa manegre?",
       "aa": "Addunyal maqaanc abe marih galto akeeral jannatak sa macaay?",
       "mdh": "Dala balas nu mapya a di kena mapya.",
-      "ak": "Enti εnyε papa akatua ne papa?",
+      "ak": "Enti ɛnyɛ papa akatua ne papa?",
       "nqo": "ߡߎ߲߬ ߜߘߍ߫ ߟߋ߬ ߢߌ߬ߡߊ ߛߊ߬ߙߊ ߘߌ߫ ߣߌ߫ ߢߌ߬ߡߊ ߕߍ߫"
     }
   },
@@ -10873,7 +10882,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Fo Soabã yʋʋr tar barka, sẽn yaa Waooglem la Waoogr Naaba.",
       "aa": "Ku Rabbih migaq saytuniih, kay kayri maggoh, usuk dudda le nabna leeh, kaal yeemene marah mattaccoo leeh, konnaba le.",
       "mdh": "Mahasuti su ngala nu Kadenan nengka a mapulu a malimu.",
-      "ak": "Nhyira ne wo Wura Nyankopͻn din, Ɔno na Kεseyε ne Animuonyam yε Ne dea.",
+      "ak": "Nhyira ne wo Wura Nyankopɔn din, Ɔno na Kɛseyɛ ne Animuonyam yɛ Ne dea.",
       "ceb": "Bulahan ang Ngalan sa (Allah) imong Ginoo, nga nanag-iya sa tanang Kahalangdon, Pasidungog, ug Grasya.",
       "nqo": "ߌ ߡߊ߰ߙߌ ߕߐ߮ ߓߘߊ߫ ߟߊߜߍ߫ ߸ ߏ߬ ߡߍ߲ ߞߟߊ߬ߒ߬ߞߋ߬ߦߊ ߕߌ߱ ߣߌ߫ ߞߊ߬ߡߙߊ߬ߒ߬ߞߋ߬ߦߊ ߕߌ߱ ߘߌ߫"
     }
@@ -10948,11 +10957,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ko mu by’ukuri (iyi) ari Qur’an Ntagatifu,",
       "rn": "Mu vy’ukuri, iyi Qor’ani yahishuriwe Muhamadi (nyakugira amahoro n’impuhwe z’Imana Allah), ni Qor’ani yubashwe, irimwo ubumenyi n’ivyiza vyinshi;",
       "ln": "Ya soló, kurani oyo ezali na lokumu,",
-      "dag": "Achiika! Di (Alkur’aani) nyɛla bɛ ni karindi shεli, ka di mali jilma.",
+      "dag": "Achiika! Di (Alkur’aani) nyɛla bɛ ni karindi shɛli, ka di mali jilma.",
       "mos": "Ad a yaa Alkʋrãan wagelle.",
       "aa": "Diggah, ta Qhuraan Nabii Mucammadal ﷺ oobisne, Qhuraanay nabay maqaane maggo kinni.",
       "mdh": "Saben-sabenal su Qur’an na mapulu.",
-      "ak": "Nokorε sε, εyε Qur’aan animuonyam (Nwoma) noa,",
+      "ak": "Nokorɛ sɛ, ɛyɛ Qur’aan animuonyam (Nwoma) noa,",
       "ceb": "Sa pagkatinuod kini usa ka Pinasidunggan nga Qur'an,",
       "nqo": "‹ ߞߎ߬ߙߊ߬ߣߊ › ߦߋ߫ ߘߐ߬ߛߊ߬ߙߌ߬ ߞߟߊߒߞߋ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬"
     }
@@ -11031,7 +11040,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Saas la Tẽng naam yaa Yẽ n so, A vɩɩmsdame la A kʋʋda, Yẽ n leb n yaa Tõod ne bũmbã fãa gilli.",
       "aa": "Yalli qaranwaa kee baaxó mulki-le (reeda-le), usuk yaynuwweeh qidah kaadu Usuk ummaanimil qamal geyto-li (xiqto li).",
       "mdh": "Lekanin (Allah) su manga langit endu su lupa endu banguyag a bangimatay, endu kagaga nin su langun na enggaga-isa.",
-      "ak": "Ɔno na ͻsoro ne asaase so ahennie yε Ne dea. Ɔno na Ɔma nkwa εna Ɔma (obi) wuo, na Ɔno na Ɔwͻ biribiara so tumi.",
+      "ak": "Ɔno na ɔsoro ne asaase so ahennie yɛ Ne dea. Ɔno na Ɔma nkwa ɛna Ɔma (obi) wuo, na Ɔno na Ɔwɔ biribiara so tumi.",
       "ceb": "Iya ang Ginharian sa langit ug sa yuta; Siya naghatag ug kinabuhi ug nagpahinabog kamatayon; ug Siya (Allah) adunay gahom sa tanang butang.",
       "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊ ߘߌ߫ ߸ ߊ߬ ߦߋ߫ ߟߊ߬ߣߌ߬ߡߦߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߸ ߊ߬ ߦߋ߫ ߟߊ߬ߣߌ߬ߒ߬ߕߊ߲߬ߧߊ߬ߟߌ ߞߍ߫ ߟߊ߫ ߸ ߊ߬ ߣߴߊ߬ߟߋ ߟߋ߬ ߦߋ߫ ߛߋ߫ ߟߊ߫ ߞߏ ߓߍ߯ ߟߊ߫"
     }
@@ -11106,10 +11115,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ubwami bw’ibirere n’isi ni ubwe. Kandi kwa Allah ni ho ibintu byose bisubizwa.",
       "rn": "Nyenubwami, Igaba Ikaganza amajuru n’isi n’ibiri muri vyo. Kandi ibiremwa vyose bizosubira kuri Yo, kugira Ihembe kimwe cose ku rugero rw’ibigikwiye.",
       "ln": "Bokonzi ya likolo na ya mabele bozali bwa ye. Mpe makambo nyoso makozongisama nde epai ya Allah.",
-      "dag": "Ŋuna n-su sagbana mini tiŋgbani yiko. Yaha! Naawuni sani ka bɛ labsiri yεllikam.",
-      "mos": "Saas la Tẽng naam yaa Yẽ n so, la Wẽnd nengẽ la b lebsd yεlã.",
+      "dag": "Ŋuna n-su sagbana mini tiŋgbani yiko. Yaha! Naawuni sani ka bɛ labsiri yɛllikam.",
+      "mos": "Saas la Tẽng naam yaa Yẽ n so, la Wẽnd nengẽ la b lebsd yɛlã.",
       "aa": "Qaranwaa kee baaxó mulki-le (reeda-le), ginó caagiida inkih Yallâ fanah gacta.",
       "mdh": "Endu sekanin (Allah) na gamilikan nin su manga langit endu su lupa, endu lu bun sa lekanin i kadsunudan u langun nu pakarajan nin.",
+      "ak": "Ɔno na ɔsoro ne asaase so ahennie yɛ Ne dea. Nyankopɔn hɔ na nsɛm nyinaa kɔwie.",
       "ceb": "Iya ang gingharian sa langit ug sa yuta; ug ngadto sa Allah ang (tanang) mga butang ibalik (alang sa Paghukom).",
       "nqo": "ߊ߬ ߕߊ ߟߋ߬ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߡߊ߲߬ߛߊ߬ߦߊߘߌ߫ ߞߏ ߓߍ߯ ߘߏ߲߬ ߦߋ߫ ߛߊ߬ߦߌ߬ ߟߴߊߟߊ߫ ߟߋ߫ ߡߊ߬"
     }
@@ -11182,11 +11192,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Yinjiza ijoro mu manywa, akaninjiza amanywa mu ijoro. Kandi ni We Mumenyi uhebuje w’ibiri mu bituza (by’abantu).",
       "rn": "Yinjiza igice c’ijoro mu murango, maze umurango ukaba muremure; Ikinjiza igice c’umurango mw’ijoro, maze ijoro rikaba rirerire. Ni Yo rero Izi n’ibihishijwe mu mishaha.",
       "ln": "Akotisaka butu na mokolo, mpe akotisaka mokolo na butu. Mpe azali moyebi ya maye mabombami o kati ya mitema.",
-      "dag": "Ozaŋdila yuŋ kpεhiri wuntaŋ’ ni, ka zaŋdi wuntaŋ’ kpεhiri yuŋ puuni. Yaha! O nyɛla Ŋun mi din be suhiri ni.",
+      "dag": "Ozaŋdila yuŋ kpɛhiri wuntaŋ’ ni, ka zaŋdi wuntaŋ’ kpɛhiri yuŋ puuni. Yaha! O nyɛla Ŋun mi din be suhiri ni.",
       "mos": "A kẽesda yʋng wĩndg pʋgẽ, la A kẽesd wĩndg yʋng pʋgẽ, la Yẽnda me yaa Mit ne bũmb ning sẽn be yãadẽ.",
       "aa": "Yalli bar laqot culsaah, laqó barat çulsa, kaadu Usuk isi naqoosah alilwah addat tanim yaaxigi.",
       "mdh": "Paludepen su magabi kanu malamag, endu paludepen nin su malamag kanu magabi, endu sekanin (Allah) na katawan nin su gatagu kanu laleb nu.",
-      "ak": "Ɔma adesaeε wura adekyeε mu, εna Ɔma adekyeε nso wura adesaeε mu. Ɔno na Onim deε εwͻ akoma mu.",
+      "ak": "Ɔma adesaeɛ wura adekyeɛ mu, ɛna Ɔma adekyeɛ nso wura adesaeɛ mu. Ɔno na Onim deɛ ɛwɔ akoma mu.",
       "ceb": "Iyang gipasulod ang kagabion sa adlaw, ug Iya usab nga gipasulod ang adlaw ngadto sa kagabion, ug Siya adunay hingpit nga Kahibalo sa bisan unsa nga anaa sa mga dughan (sa katawhan).",
       "nqo": "ߊ߬ ߦߋ߫ ߛߎ ߟߊߘߏ߲߬ ߠߊ߫ ߕߟߋ߬ߘߐ߬ߟߊ ߘߐ߫ ߸ ߞߊ߬ ߕߟߋ߬ߘߐ߬ߟߊ ߝߣߊ߫ ߟߊߘߏ߲߬ ߛߎ ߘߐ߫ ߸ ߊ߬ ߣߴߊߟߋ ߟߋ߬ ߛߌߛߌ ߟߎ߬ ߘߐߞߏ ߟߎ߬ ߟߐ߲ߓߊ߯ߓߊ ߘߌ߫"
     }
@@ -11249,10 +11259,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Yye y'Oyo assa ku muddu We (Muhammadi) Ebigambo ebinnyonnyofu, abe nga abaggya mu bizikiza mudde eri ekitangaala, era mazima Allah Mukwatampola ku mmwe, Musaasizi nnyo.",
       "rw": "Ni We uhishurira umugaragu we (Muhamadi) amagambo asobanutse, kugira ngo abakure mu mwijima abaganisha ku rumuri. Rwose Allah ni Umunyempuhwe nyinshi kuri mwe, Umunyembabazi.",
       "ln": "Ye nde akitisaka mikapo ya polele epai ya mowumbu naye, mpo elongola bino na molili (bökende) na bongengi. Mpe ya soló, Allah azali na mawa mingi mpona bino atonda boboto.",
-      "mos": "Yẽ la Soab ning sẽn sik yãmb zug Aayay-vẽenesã, t'a na yiis yãmb ligsẽ wã n tʋg vẽenmẽ wã, la Wẽnd yaa ninbãan-zoεt n yaa yoalsd ne yãmba.",
+      "mos": "Yẽ la Soab ning sẽn sik yãmb zug Aayay-vẽenesã, t'a na yiis yãmb ligsẽ wã n tʋg vẽenmẽ wã, la Wẽnd yaa ninbãan-zoɛt n yaa yoalsd ne yãmba.",
       "aa": "Yalla kinni isi naqsu Nabii Mucammadal ﷺ Qhuraan aayootay baxxaqqa itta oobissam, wohul koroosanni diteetak iimaan noorï fanah sin yayyaaqe gidah. Kaadu diggah Yalli xuwaw li nacrur li.",
       "mdh": "Sekanin (Allah) i papedtulun kanu ulipen nin kanu manga ayat a mapayag, ka endu nin makapalyu kanu malibuteng lu kanu sigay, endu su Kadenan nu na malasem endu malimu sa lekanu.",
-      "ak": "Ɔno na Ɔsiane nsεnkyerεnee pefee ma N’akoa sεdeε ɔbɛyi mo afiri esum no mu akͻ εhyεn no mu. Nokorε sε, Nyankopͻn yε ayεmyε hene ma mo, na Ɔne Mmͻborͻhunufoͻ.",
+      "ak": "Ɔno na Ɔsiane nsɛnkyerɛnee pefee ma N’akoa sɛdeɛ ɔbɛyi mo afiri esum no mu akɔ ɛhyɛn no mu. Nokorɛ sɛ, Nyankopɔn yɛ ayɛmyɛ hene ma mo, na Ɔne Mmɔborɔhunufoɔ.",
       "nqo": "ߊ߬ߟߋ ߟߋ߬ ߟߝߊߙߌ߫ ߘߐߞߣߍߣߍ߲ ߠߎ߬ ߟߊߖߌ߰ ߟߴߊ߬ ߟߊ߫ ߖߐ߲߭ ߡߊ߬ ߛߴߊ߬ ߘߴߊߟߎ߫ ߟߊߓߐ߫ ߘߌ߬ߓߌ ߟߎ߬ ߘߐ߫ ߞߊ߬ ߕߊ߯ ߦߋߟߋ߲ ߡߊ߬ ، ߤߊ߲߫ ߸ ߊߟߊ߫ ߦߋ߫ ߞߌ߬ߣߌ߲߬ߞߌ߬ߣߌ߲߬ߠߊ߫ ߤߌߣߟߊ߫ ߟߋ߬ ߘߴߊߟߎ߫ ߟߊ߫ ߘߋ߬"
     }
   },
@@ -11317,10 +11327,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima abasajja abasaddaaka, n'abakyala abasaddaaka, era ne bawola Allah oluwola olulungi, (bye bawaayo) Allah abibakubisizaamu, era balina empeera eyeekitiibwa.",
       "rw": "Mu by’ukuri ba bandi batanga amaturo b’abagabo n’abagore, bakanaguriza Allah inguzanyo nziza, (Allah azabishyura) abakubiye inshuro nyinshi, ndetse azanabagororera ibihembo bihebuje.",
       "ln": "Ya soló, baye kati ya mibali mpe ya basi bazali kosala bolamu mpe bakotiseli Allah nyongo ya malamu, bakobakisela bango yango mpe bakozua lifuta lilamu.",
-      "dag": "Achiika! Ninvuɣu shεba ban tiri sara dobba ni paɣaba, ka paŋ Naawuni paŋdi suŋ,tɔ! (Naawuni) ni nabgi li n-ti ba, ka bɛ lahi mali laara din galsi.",
+      "dag": "Achiika! Ninvuɣu shɛba ban tiri sara dobba ni paɣaba, ka paŋ Naawuni paŋdi suŋ,tɔ! (Naawuni) ni nabgi li n-ti ba, ka bɛ lahi mali laara din galsi.",
       "mos": "Bãng-y tɩ sãrã maandb-roapã, la sãrã maandb-pogsã la nins sẽn peng Wẽnd pengr sẽn be neerã, b fãoodame n kõ bãmba, bãmb leb n tara keoor sẽn bedme.",
       "mdh": "Saben-sabenal su mama-babay a midsadaqah, endu pinautang nilan su Allah sa mapya, na takepen sa kanilan (su rizki) endu aden pan balas sa kanilan a mapulu.",
-      "ak": "Nokorε sε mmarima a wͻyε adͻeε ne mmaa a wɔyε adͻeε na wͻbͻ Nyankopͻn bosea pa no, yεde bεbͻ ho ama wͻn, na wͻn wͻ animuonyam akatua (da hͻ Daakye).",
+      "ak": "Nokorɛ sɛ mmarima a wɔyɛ adɔeɛ ne mmaa a wɔyɛ adɔeɛ na wɔbɔ Nyankopɔn bosea pa no, yɛde bɛbɔ ho ama wɔn, na wɔn wɔ animuonyam akatua (da hɔ Daakye).",
       "nqo": "ߕߎ߬ߢߊ߬ߒ߬ߕߋ߬ߦߊ߬ߟߊ ߗߍ߬ߡߊ߲ ߠߎ߬ ߣߴߊ߬ ߡߛߏ߬ߡߊ߲ ߠߎ߫ ߓߊ߬ ߸ ߊ߬ ߣߴߊ߬ߟߎ߫ ߞߵߊߟߊ߫ ߘߐ߲ߘߐ߫ ߘߐ߲ߘߐߟߌ߫ ߢߌߡߊ߫ ߟߊ߫ ߸ ߊ߬ ߘߌ߫ ߓߊߟߌߟߌ ߞߍ߫ ߏ߬ ߟߎ߬ ߦߋ߫ ߟߋ߬ ߘߍ߯ ߛߙߊ߬ ߞߟߊߒߞߋ߫ ߟߋ߬ ߝߣߴߊ߬ߟߎ߬ ߦߋ߫"
     }
   },
@@ -11393,11 +11403,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Allah yaciye iteka agira ati “Rwose, njye n’Intumwa zanjye tuzatsinda.” Mu by’ukuri Allah ni Umunyembaraga, Umunyacyubahiro bihebuje.",
       "rn": "Imana Allah, Yaramaze guca iteka, Iti: “Ni ukuri, Nzotsinda Jewe Allah hamwe n’Intumwa zanje”. Mu vy’ukuri Imana Allah, ni Yo Nyeninguvu, Nyenintsinzi-Mutaneshwa.",
       "ln": "Allah asila kokana été: Nakolonga ngai na batindami na ngai. Ya sólo Allah azali makasi atonda nguya.",
-      "dag": "Naawuni zali zaligu (ka yεli): “Achiika! M (Mani Naawuni) mini N tuumba n-nyɛ ban yɛn nyɛŋ. Achiika! Naawuni nyɛla Kpεŋlana, Nyεŋda.",
+      "dag": "Naawuni zali zaligu (ka yɛli): “Achiika! M (Mani Naawuni) mini N tuumba n-nyɛ ban yɛn nyɛŋ. Achiika! Naawuni nyɛla Kpɛŋlana, Nyɛŋda.",
       "mos": "Wẽnd gʋlsame: \"M na wil neer-neere, Maam ne M Tẽn-tʋʋmbã, ad Wẽnd yaa pãng Soaba, n yaa zɩslem Naaba.",
       "aa": "Yalli lawcal macfuuzul madqeeh mekleh, diggah Yoo kee Yi farmoytit aysenno iyyaanam, diggah Yalli Qande li, Mayso li.",
       "mdh": "Inimasad nu Allah lu sa Lawh al-Mahfudh i saki (Allah) endu su manga sinugu ku i temalaw, saben-sabenal su Allah i mabagel a mapulu.",
-      "ak": "Nyankopͻn ahyehyε sε: “Ampa sε Me ne M’asomafoͻ no bɛdi nkonim”. Nokorε sε Nyankopͻn Ne Ɔhoͻdenfoͻ, na Ɔne Otumfoͻ a Otumi ade nyinaa yε.",
+      "ak": "Nyankopɔn ahyehyɛ sɛ: “Ampa sɛ Me ne M’asomafoɔ no bɛdi nkonim”. Nokorɛ sɛ Nyankopɔn Ne Ɔhoɔdenfoɔ, na Ɔne Otumfoɔ a Otumi ade nyinaa yɛ.",
       "ceb": "Si Allāh Nagmando: \"Ako sa pagkatinuod modaog, Ako ug ang Akong mga mensahero\"; sa pagkatinuod si Allāh maoy Kusgan, Labing Gamhanan.",
       "nqo": "ߊߟߊ߫ ߓߘߴߊ߬ ߛߓߍ߫ ߞߏ߫ ߒߠߋ ߘߌߣߊ߬ ߛߋ߫ ߟߋ߬ ߘߍ߯ ߊ߬ ߣߌ߫ ߒ ߠߊ߫ ߞߋߟߊ ߟߎ߬ ߸ ߊߟߊ߫ ߦߋ߫ ߝߊ߲߬ߞߊ߬ߡߊ߫ ߣߌ߬ߣߌ߬ߟߊ ߟߋ߬ ߘߌ߫ ߘߋ߬"
     }
@@ -11451,9 +11461,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Ianareo mpino ! Matahora an’I Allah ianareo. Aoka samy handinika tsara izay nataony ho an’ny rahampitso ny tsirairay ary matahora an’I Allah ianareo, fa mahafantatra tanteraka izay ataonareo Allah.",
       "lg": "Abange mmwe abakkiriza mutye Allah, era omuntu atunule mu by'ategekedde olunaku lw'enkya. Bulijjo muteekwa okutya Allah, anti mazima Allah amanyidde ddala buli kye mukola.",
       "rw": "Yemwe abemeye! Nimugandukire Allah kandi buri muntu arebe ibyo yiteganyirije ejo. Munatinye Allah, mu by’ukuri Allah azi neza ibyo mukora.",
-      "mos": "Yãmb ɑ neb nins sẽn kõ sɩd ne Wẽnde! Zoe-y Wẽnde, la yõor fãa ges bũmb ning a sẽn tʋm tɩ reng taoor beoog yĩnga, la y zoe Wẽnde, ad Wẽnd yaa kiba-Mit ne bũmb ning yãmb sẽn tʋmdã.",
+      "mos": "Yãmb a neb nins sẽn kõ sɩd ne Wẽnde! Zoe-y Wẽnde, la yõor fãa ges bũmb ning a sẽn tʋm tɩ reng taoor beoog yĩnga, la y zoe Wẽnde, ad Wẽnd yaa kiba-Mit ne bũmb ning yãmb sẽn tʋmdã.",
       "mdh": "Hay sekanu anan a bamaginugut ikagilek nu su Allah endu uman isa na ilayn nin u ngin ba i galebek nin a makwa nin namag, ikagilek nu su Allah ka langun na galebek nu na katawan nin.",
-      "ak": "Mo a moagye adie, monsuro Nyankopͻn, na ͻkra biara (ntwa n’ani) nhwε dwuma a (wadi) de ato hͻ ama (ne ho) ͻkyena; na monsuro Nyankopͻn. Nokorε sε Nyankopͻn ne dwuma a modie nyinaa ho amane bͻ Wura."
+      "ak": "Mo a moagye adie, monsuro Nyankopɔn, na ɔkra biara (ntwa n’ani) nhwɛ dwuma a (wadi) de ato hɔ ama (ne ho) ɔkyena; na monsuro Nyankopɔn. Nokorɛ sɛ Nyankopɔn ne dwuma a modie nyinaa ho amane bɔ Wura."
     }
   },
   {
@@ -11526,11 +11536,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "(Mumenye ko) abantu bo mu muriro n’abantu bo mu Ijuru badahwanye. Abantu bo mu Ijuru ni bo bazatsinda.",
       "rn": "Abantu bari mu bihano vyo mu muriro udahera, si nk’abari mu nema zo mu Bwami bw’ijuru. Abari mu nema zo mu Bwami bw’ijuru, ni bo benintsinzi.",
       "ln": "Bato ya moto mpe bato ya lola bakozalaka lolenge moko te. Kasi bato ya lola nde balongi.",
-      "dag": "Buɣum bihi mini Alizanda bihi ku niŋ yim, Alizanda bihi n-nyɛ ninvuɣu shεba ban nyɛ tarli.",
+      "dag": "Buɣum bihi mini Alizanda bihi ku niŋ yim, Alizanda bihi n-nyɛ ninvuɣu shɛba ban nyɛ tarli.",
       "mos": "Bugum koamb ne arzãn rãmb pa makd taab ye; arzãn koambã, bãmb la pʋɩɩr paamdba.",
       "aa": "Girä maraa kee jannatti mara Mamassowta, jannatti mari usun yisillimeeh yessemeqqe mara (limaye mara).",
       "mdh": "Di makapagidsan su taw sa naraka endu su taw sa surga, su taw sa surga na sa kanilan a badtugan a mapya.",
-      "ak": "Amanehunu gya no mu foͻ no ne ͻsoro aheman no mu foͻ no nnsε. Ɔsoro aheman no mu foͻ no wͻne nkonimdifoͻ no.",
+      "ak": "Amanehunu gya no mu foɔ no ne ɔsoro aheman no mu foɔ no nnsɛ. Ɔsoro aheman no mu foɔ no wɔne nkonimdifoɔ no.",
       "ceb": "Dili managsama ang mga pumoluyo sa Imperno ug ang mga pumoluyo sa Paraiso, ang mga pumoluyo sa Paraiso mao ang mga nakakab-ot (sa dakong Kalamposan ug kadaugan).",
       "nqo": "ߕߊ ߘߏ߲߬ߞߏ ߟߎ߬ ߣߌ߫ ߡߍ߲ߘߌߦߊ߫ ߘߏ߲߬ߞߏ ߟߎ߬ ߕߍ߫ ߞߢߊ߫ ߸ ߡߍ߲ߘߌߦߊ߫ ߘߏ߲߬ߞߏ ߟߎ߫ ߟߋ߫ ߣߌ߬ ߛߐ߬ߘߐ߲߬ߠߊ ߟߎ߬ ߘߌ߫"
     }
@@ -11580,9 +11590,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lt": "Jei Mes būtume nuleidę šį Koraną ant kalno, tu būtum matęs jį nusižeminusį ir skylantį iš baimės Allahui. Ir šiuos pavyzdžius Mes suteikiame žmonėms tam, kad galbūt jie susimąstys.",
       "lg": "Singa twassa Kulaani eno ku nsozi wandizirabye nga zigonze, era nga zimerenguse olw'okutya Allah. Ebifaananyi ng'ebyo tubikubira abantu bibasoboseze okufumiitiriza (bategeere Allah).",
       "rw": "Iyo iyi Qur’an tuza kuyimanurira ku musozi, wari kuwubona wibombaritse ndetse ukanasatagurika kubera gutinya Allah. Izo ni ingero duha abantu kugira ngo batekereze.",
-      "mos": "Tõnd sã n da sikẽ Alkʋrãan-kãngã tãng zugu, fo na yãẽ-a t'a yaa sẽn boog n sãeeg Wẽnd yaeesg keelem. La yel-bũn-kãensã Tõnd wẽed-b-la ne nebã, sãnd-sãnde bãmb na tagsd n gεtẽ.",
+      "mos": "Tõnd sã n da sikẽ Alkʋrãan-kãngã tãng zugu, fo na yãẽ-a t'a yaa sẽn boog n sãeeg Wẽnd yaeesg keelem. La yel-bũn-kãensã Tõnd wẽed-b-la ne nebã, sãnd-sãnde bãmb na tagsd n gɛtẽ.",
       "mdh": "Upama bu ka initulun nami su Qur’an sa palaw na mailay nengka su palaw a malupet magugul sa gilek nin sa Allah endu entu ba na upaman a inenggay nami sa manga taw, ka endu silan makapamikir.",
-      "ak": "Sε Yɛsianee saa Qur’aan yi maa bepͻ a, anka wobɛhunu sε (bepͻ no) de ahobraseε redwidwa εnam Nyankopͻn ho suro nti. Yεreyε saa mfatoho yi ama nnipa sεdeε wͻbεfa adwen.",
+      "ak": "Sɛ Yɛsianee saa Qur’aan yi maa bepɔ a, anka wobɛhunu sɛ (bepɔ no) de ahobraseɛ redwidwa ɛnam Nyankopɔn ho suro nti. Yɛreyɛ saa mfatoho yi ama nnipa sɛdeɛ wɔbɛfa adwen.",
       "ceb": "Kon Kami nagpakanaog niini nga Qur'an sa usa bukid, makita nimo kini nga nagpaubos ug nag-uwang tungod sa kataha Kang sa Allāh. Kini mao ang Among sambingay alang sa katawhan, aron sila mamalandong.",
       "nqo": "ߣߴߊ߲ ߕߎ߲߬ ߞߊ߬ ߘߐ߬ߛߊߙߌ ߣߌ߲߬ ߠߊߖߌ߰ ߞߎ߬ߙߎ ߘߏ߫ ߡߊ߬ ߌ ߕߘߍ߬ ߘߴߏ߬ ߢߍ߬ߣߍ߲߬ߕߐ ߛߍ߲ߞߍߕߐ ߦߋ߫ ߊߟߊ߫ ߢߍߢߍߣߍ߲ ߡߊ߬ ، ߒ߬ߓߊ߬ ߞߏߟߊߒߞߏߡߊ ߟߎ߫ ߟߋ߬ ߣߌ߲߬ ߊ߲ ߧߴߏ߬ ߟߊ߫ ߟߊ߫ ߡߐ߱ ߟߎ߬ ߦߋ߫ ߟߋ߬ ߛߴߊ߬ߟߎ߬ ߘߴߊ߬ߟߎ߬ ߞߣߐߘߐߡߙߌ߫"
     }
@@ -11656,11 +11666,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe abakkiriza lwaki mwogera ebyo bye mutakola.",
       "rw": "Yemwe abemeye! Kuki muvuga ibyo mudakora?",
       "ln": "Oh bino bandimi! Mpona nini bolobaka maye bosalaka te?",
-      "dag": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Bozuɣu ka yiyεriyi ni bi mali shɛli n-tumdi tuma?",
-      "mos": "yãmb ɑ neb nins sẽn kõ sɩd ne Wẽnde! Yaa bõe tɩ y yet bũmb ning y sẽn pa tʋmde?",
+      "dag": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Bozuɣu ka yiyɛriyi ni bi mali shɛli n-tumdi tuma?",
+      "mos": "yãmb a neb nins sẽn kõ sɩd ne Wẽnde! Yaa bõe tɩ y yet bũmb ning y sẽn pa tʋmde?",
       "aa": "Yallaa kee kay farmoyta nummayse maraw! Xaganay duuduse waytoonu waytaanaa kee hinnay abinat asse waytoonu waytan maxco macah ittaanaa?",
       "mdh": "Hay sekanu anan a bamaginugut! Ngintu ka pedtalun nu na di nu penggalebeken.",
-      "ak": "Mo a moagye adie, adεn nti na moka asεm a monnyε?",
+      "ak": "Mo a moagye adie, adɛn nti na moka asɛm a monnyɛ?",
       "ceb": "Oh mga magtutuo, Ngano nga kamo nagsulti (o nagwali) sa dili ninyo buhaton?",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߡߎ߲߬ ߠߴߊߟߎ߫ ߦߋ߫ ߝߋ߲߫ ߝߐ߫ ߟߴߊߟߎ߫ ߕߍ߫ ߡߍ߲ ߞߍ߫ ߟߊ߫؟"
     }
@@ -11735,11 +11745,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ibyo Allah abyanga bikomeye kuba muvuga ibyo mudakora!",
       "rn": "Birashavuza cane Imana Allah kuvuga ivyo mudakora.",
       "ln": "(Kosala bongo) ezali lisumu monene epai ya Allah, koloba maye bozali kosalela te.",
-      "dag": "Di nyɛla din sujee galsi Naawuni sani, ni yi yεriyini bi mali shɛli tumdi tuma.",
+      "dag": "Di nyɛla din sujee galsi Naawuni sani, ni yi yɛriyini bi mali shɛli tumdi tuma.",
       "mos": "Gẽeb yɩ bedr Wẽnd nengẽ ne yãmb sẽn na n yet bũmb ning yãmb sẽn pa tʋmde.",
       "aa": "Tama taamay abe waytoonu waytaana Yallih garil naqabuh tembeh.",
       "mdh": "Masla gayd a kadusan lu sa Allah i pedtalun nu na di nu penggalebeken.",
-      "ak": "Ɛyε abufusεm kεse wͻ Nyankopͻn anim sε mobεka asεm na monyε.",
+      "ak": "Ɛyɛ abufusɛm kɛse wɔ Nyankopɔn anim sɛ mobɛka asɛm na monyɛ.",
       "ceb": "Kini labing gikasilagan sa panan-aw sa Allāh nga kamo mosulti (o magsangyaw) sa unsay wala ninyo buhata.",
       "nqo": "ߝߋ߲߫ ߝߐ ߊߟߎ߫ ߓߟߏ߫ ߊߟߎ߫ ߕߍ߫ ߡߍ߲ ߞߍ߫ ߟߊ߫ ߸ ߏ߬ ߦߋ߫ ߕߍ߰ߒ߬ߛߏ߬ߦߊ߬ߓߊ߫ ߟߋ߬ ߘߌ߫ ߊߟߊ߫ ߓߘߊ"
     }
@@ -11811,8 +11821,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Abange mmwe abakkiriza, ebyobugagga byamwe n'abaana bammwe tebibawugulanga ne bibaggya ku kwogera ku Allah, oyo yenna akikola, abo nno be bookufaafaaganirwa.",
       "rw": "Yemwe abemeye! Imitungo yanyu n’abana banyu ntibikabarangaze ngo bibabuze kwibuka Allah. Abakora ibyo ni bo bazaba abanyagihombo.",
       "ln": "Eh bino baye bondima! Misolo na bana na bino mibosanisa bino bokundoli ya Allah te. Mpe oyo akosala yango baye wana nde bazangi.",
-      "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! Yãmb arzεk ra wa maan yãmb soagla, la yãmb koamb ra maan yãmb soagl tɩ y bɑs Wẽnd yʋʋr tẽegr ye. Ned ning sẽn wa n maanda rẽnda, ad bãmbã, bãmb la bõn rãmba.",
+      "mos": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! Yãmb arzɛk ra wa maan yãmb soagla, la yãmb koamb ra maan yãmb soagl tɩ y bas Wẽnd yʋʋr tẽegr ye. Ned ning sẽn wa n maanda rẽnda, ad bãmbã, bãmb la bõn rãmba.",
       "mdh": "Hay sekanu anan a bamaginugut! Da kanu mapasimpang kanu manga tamuk nu endu manga wata nu kanu tadem ku Allah, ka su taw a enggalebeken nin su entuba na silan i nalugi.",
+      "ak": "Mo a moagye adie, monhwɛ na moamma mo agyapadeɛ ne mo mma annsi mo Nyankopɔn nkaekaeɛ ho kwan; na obia ɔbɛyɛ saa no, saa nkorɔfoɔ no ne berɛguofoɔ no.",
       "nqo": "ߤߍ߲߬ ߊߟߎ߬ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߸ ߊߟߎ߫ ߟߊ߫ ߣߊ߲߬ߝߟߏ ߟߎ߬ ߣߴߊߟߎ߫ ߘߋ߲ ߠߎ߬ ߞߊߣߵߊߟߎ߫ ߓߟߏߞߘߐߜߊ߬ ߊߟߊ߫ ߞߏߝߐ ߡߊ߬ ߘߋ߬ ، ߡߍ߲ ߓߊ߯ ߏ߬ ߞߍ߫ ߸ ߏ߬ ߟߎ߫ ߟߋ߫ ߓߣߐ߬ߓߊ߮ ߟߎ߬ ߘߌ߫"
     }
   },
@@ -11885,7 +11896,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "dag": "Ŋuna n-nyɛŊun nam ya, ka chɛfura be yi ni, ka ŋun ti Naawuni yɛlimaŋli gba be yi ni. Yaha! Naawuni nyɛla Ŋun nyari yi tuuntumsa.",
       "mos": "Yẽ la Soab ning sẽn naana yãmba : kɩfr bee yãmb pʋgẽ, muumin me bee yãmb pʋgẽ. Wẽnde, A yaa Mit ne yãmb sẽn tʋm bũmb ningã.",
       "mdh": "Sekanin (Allah) na binaluy nin i aden kafir sa lekanu endu aden bamaginugut, su Allah na katawan nin i manga galebek nu.",
-      "ak": "Ɔno na Ɔbͻͻ mo, εna mo mu bi yε agyidiefoͻ, εna mo mu bi nso yε (Kaafirfoͻ) boniayεfoͻ. Onyankopͻn deε Ohu deε moyε nyinaa.",
+      "ak": "Ɔno na Ɔbɔɔ mo, ɛna mo mu bi yɛ agyidiefoɔ, ɛna mo mu bi nso yɛ (Kaafirfoɔ) boniayɛfoɔ. Onyankopɔn deɛ Ohu deɛ moyɛ nyinaa.",
       "ceb": "Siya mao ang naglalang kaninyo, unya ang uban kaninyo mga manlilimod ug ang uban mga magtutuo; ug ang Allah Labing Naka-kita sa tanan ninyong mga buhat.",
       "nqo": "ߊߟߋ ߟߋ߫ ߞߵߊߟߎ߫ ߘߊ߲߫ ߸ ߓߊ߲߬ߓߊ߯ ߦߴߊߟߎ߫ ߘߐ߫ ߟߊߒߠߦߊߓߊ߯ ߦߴߊߟߎ߫ ߘߐ߫ ߸ ߊߟߊ߫ ߘߏ߲߬ ߦߴߊߟߎ߫ ߗߋߥߊߟߌ ߟߎ߬ ߟߊߛߊ߬ߓߊ߮ ߟߋ߬ ߘߌ߫"
     }
@@ -11961,7 +11972,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "A mii bũmb ning sẽn be saasẽ la Tẽngẽ, la A mi bũmb ning yãmb sẽn solgde la yãmb sẽn vẽnegde. Wẽnd yaa Mit ne bũmb ning sẽn be sũyẽ.",
       "aa": "Yalli yaaxigeh qaranwaa kee baaxóh addat tanim, kaadu yaaxigeh qellissaanam kee taybulleenim, kaadu Yalli alilwah addat tanim yaaxigi kinni.",
       "mdh": "Katawan nin (Allah) su dalem nu langit endu su lupa endu katawan nin su ipedsulen nu endu su ipebpayag nu, su Allah na gatawan ni su dalem nu pusung nu.",
-      "ak": "Ɔnim deε εwͻ soro ne asaase so (nyinaa), εna Ɔnim deε mode suma ne deε moda no adie. Nyankopͻn na Ɔnim deε εwͻ akoma mu (nyinaa).",
+      "ak": "Ɔnim deɛ ɛwɔ soro ne asaase so (nyinaa), ɛna Ɔnim deɛ mode suma ne deɛ moda no adie. Nyankopɔn na Ɔnim deɛ ɛwɔ akoma mu (nyinaa).",
       "ceb": "Siya nahibalo kon unsa ang anaa sa mga langit ug sa yuta, ug Siya nahibalo sa unsay inyong gitagoan o gidayag. Ang Allah mao ang Labing Nakahibalo sa unsay anaa sa mga dughan (sa katawhan).",
       "nqo": "ߊ߬ ߞߵߊ߬ ߟߐ߲߫ ߝߋ߲ ߡߍ߲ ߦߋ߫ ߛߊ߲ ߠߎ߬ ߣߌ߫ ߘߎ߱ ߘߐ߫ ߸ ߊ߬ ߣߴߊ߬ ߞߵߊ߬ ߟߐ߲߫ ߊߟߎ߫ ߦߋ߫ ߡߍ߲ ߜߎ߲߬ߘߎ߬ ߟߊ߫ ߸ ߊ߬ ߣߴߊߟߎ߫ ߦߋ߫ ߡߍ߲ ߟߊ߲ߞߣߍߡߊ߫ ߟߊ߫ ، ߛߌߛߌ ߟߎ߬ ߘߐ߫ ߞߏ ߟߎ߬ ߟߐ߲ߓߊ߮ ߟߋ߫ ߘߏ߲߬ ߦߋ߫ ߊߟߊ߫ ߘߌ߫"
     }
@@ -12025,11 +12036,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Tsy misy loza mahazo ny olona, raha tsy alalana avy amin’Allah fa izay mino an’Andriamanitra dia hitari-dalana ny fony Izy. Mahalala ny zava-drehetra Allah.",
       "lg": "Tewali buzibu bwonna butuuka ku muntu okuggyako nga Allah akkirizza, oyo yenna akkiriza Allah, Allah aluŋŋamya omutima gwe. Mazima bulijjo Allah Mumanyi nnyo Wa buli kintu.",
       "rw": "Nta kibi gishobora kuba (ku muntu) bitari ku burenganzira bwa Allah. Ndetse n’uwemeye Allah, (Allah) ayobora umutima we (mu kwemera nyako). Kandi Allah ni Umumenyi uhebuje wa buri kintu.",
-      "dag": "Yɛlibiɛɣu na ʒin nya (ninsalinima) naɣila ni Naawuni yɛda. Dinzuɣu, ninvuɣu so ŋun ti Naawuni yεlimaŋli, tɔ! O ni dolsi o suhu. Yaha! Naawuni nyɛla Ŋum mi binshɛɣu kam.",
+      "dag": "Yɛlibiɛɣu na ʒin nya (ninsalinima) naɣila ni Naawuni yɛda. Dinzuɣu, ninvuɣu so ŋun ti Naawuni yɛlimaŋli, tɔ! O ni dolsi o suhu. Yaha! Naawuni nyɛla Ŋum mi binshɛɣu kam.",
       "mos": "Masɩɩb pa yɩ sẽn na paam rẽndame tɩ yɩɩ ne Wẽnd sor-kũuni, la ned ning sẽn kõ sɩd ne Wẽnde, A kãndgda a sũurã. Wẽnd yaa Mit ne bũmbã fãa gilli.",
       "aa": "Umaane inki num maxagta Yallih meklaay kay idini akke waytek, kaadu woh Yallak is xagtem nummayse num, Yalli kay sorkocobbaxa tirri haa wohul yisbireemih taagah, Yalli ummaanim yaaxigi kinni.",
       "mdh": "Da tyuba ebpun kanu manga tyuba ya tabya na kahanda nu Allah, su taw a nangimbenal sa Allah na natutulu su atay (pusung) nin, endu su Allah a langun na enggaga-isa na katawan nin.",
-      "ak": "Mmusuo biara a εbesie no na Nyankopͻn ama ho kwan. Obiara a ͻbεgye Nyankopͻn adie no Ɔtene n’akoma. Onyankopͻn ne biribiara ho Nimdefoͻ.",
+      "ak": "Mmusuo biara a ɛbesie no na Nyankopɔn ama ho kwan. Obiara a ɔbɛgye Nyankopɔn adie no Ɔtene n’akoma. Onyankopɔn ne biribiara ho Nimdefoɔ.",
       "ceb": "Walay katalagman nga mahitabo (kang bisan kinsa) gawas sa Pagtugot sa Allah; ug bisan kinsa nga mituo sa Allah, Siya nagtultol sa iyang kasingkasing. Ang Allāh naka-ila sa tanan.",
       "nqo": "ߛߐ߬ߘߐ߲߬ߞߏ߬ ߛߌ߫ ߕߍ߫ ߊߟߎ߫ ߛߐ߬ߘߐ߲߬ ߕߣߊ߬ߡߊ߫ ߘߐ߫ ߝߏ߫ ߊߟߊ߫ ߟߊ߫ ߘߌ߬ߢߍ ߟߊ߫ ߸ ߡߍ߲ ߞߏ߬ߣߌ߲ ߓߊ߯ ߟߴߊߟߊ߫ ߟߊ߫ ߊ߬ ߘߴߏ ߛߣߐ߬ߡߍ ߞߊ߲ߘߊ߫ ߸ ߊߟߊ߫ ߟߋ߫ ߘߏ߲߬ ߦߋ߫ ߞߏ ߓߍ߯ ߟߐ߲ߓߊ߮ ߘߌ߫"
     }
@@ -12104,11 +12115,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Allah! Nta yindi mana itari We. Bityo, abemeramana ngaho nibiringire Allah (wenyine).",
       "rn": "Allah, ni Yo Mana ata yindi mana ibwirijwe gusengwa atari Yo. Abemeramana rero, nibishimikize Imana Allah bayizere.",
       "ln": "Allah, nzambe mosusu azali te ya kobondela na bosóló sé ye. Mpe epai ya Allah esengeli na bandimi bamikaba.",
-      "dag": "Naawuni, duuma jεmdigu n-kani ni yεlimaŋli naɣila Ŋuna. Yaha! Ninvuɣu shεba ban ti Naawuni yεlimaŋli dalimmi la Naawuni ko zuɣu.",
+      "dag": "Naawuni, duuma jɛmdigu n-kani ni yɛlimaŋli naɣila Ŋuna. Yaha! Ninvuɣu shɛba ban ti Naawuni yɛlimaŋli dalimmi la Naawuni ko zuɣu.",
       "mos": "Wẽnde! Soaba kae tɩ sã n pa Yẽ ye, bɩ muumin-rãmbã bobl b mens ne Wẽnde.",
       "aa": "Yalli inkittu kaak sa qibaada cakkisita Yalli mayan, tokkel moominiin dibuk sinni caagiidah Yallal kelittay.",
       "mdh": "Allah, da kadenan ya tabya na sekanin (Allah) endu su Allah ipedsaligan nu manga bamaginugut.",
-      "ak": "Nyankopͻn, awurade foforͻ biara nni hͻ gyesε Ɔno. Onyankopͻn na agyidiefoͻ no mfa wͻn ho nto Ne soͻ.",
+      "ak": "Nyankopɔn, awurade foforɔ biara nni hɔ gyesɛ Ɔno. Onyankopɔn na agyidiefoɔ no mfa wɔn ho nto Ne soɔ.",
       "ceb": "Ang Allah, wala nay laing diyos gawas Kaniya; ug ngadto sa Allah (lamang) himoa nga ang mga magtotoo mosalig.",
       "nqo": "ߊߟߊ߫߸ ߡߊ߰ߙߌ߬ ߕߍ߫ ߊ߬ߟߋ߬ ߞߐ߫ ߸ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߦߴߊ߬ߟߎ߫ ߛߍ߲߬ߓߍ߬ ߊߟߊ߫ ߟߋ߬ ߟߊ߫"
     }
@@ -12181,10 +12192,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rn": "Mu vy’ukuri amatungo yanyu n’ibibondo vyanyu, ni ibigeragezo kuri mwebwe. Imana Allah na Yo, Irafise impembo ihambaye.",
       "ln": "Ya sólo, misolo na bana na bino ezali mimekano, mpe epayi na Allah nde lifuta linene lizali.",
       "dag": "Achiika! Yi daarzichi mini yi bihi nyɛla dahimbu tin ya, Naawuni mi sani ka sanyoo (laara) din galsi be.",
-      "mos": "Ad yãmb arzεgsã, la yãmb koambã yaa zarb-n-gesgɑ, la bee Wẽnd nengẽ keoor sẽn yaa bedre.",
+      "mos": "Ad yãmb arzɛgsã, la yãmb koambã yaa zarb-n-gesga, la bee Wẽnd nengẽ keoor sẽn yaa bedre.",
       "aa": "Cagalah sin maaluu kee sin xaylo siinih aqayyaare (mokkoro), Yalli kaxxa galto Íe (kay oggol doorite marah).",
       "mdh": "Saben-sabenal su manga tamuk nu endu su manga wata nu na fitna, lu saAllah i balas a masla.",
-      "ak": "Mo agyapadeε ne mo mma yε nsͻhwε ma mo, na Nyankopͻn hͻ na akatua kεseε paa wͻ.",
+      "ak": "Mo agyapadeɛ ne mo mma yɛ nsɔhwɛ ma mo, na Nyankopɔn hɔ na akatua kɛseɛ paa wɔ.",
       "ceb": "Ang inyong bahandi ug ang inyong mga anak usa lamang ka pagsulay, samtang ngadto sa Allah adunay Dakong Ganti.",
       "nqo": "ߊߟߎ߫ ߟߊ߫ ߣߊ߲߬ߝߟߏ ߟߎ߬ ߣߴߊߟߎ߫ ߘߋ߲ ߠߎ߬ ߦߋ߫ ߞߘߐߓߐߟߌ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߸ ߛߙߊ߬ߓߊ߫ ߟߋ߫ ߘߏ߲߬ ߦߋ߫ ߊߟߊ߫ ߓߟߏ߫ ߊ߬ ߕߍ߬ߟߊ ߘߐ߫"
     }
@@ -12259,11 +12270,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Umumenyi w’ibitagaragara n’ibigaragara, Umunyacyubahiro uhebuje, Nyirubugenge buhambaye.",
       "rn": "Izi ibinyegeje n’ibiboneka. Ni Yo Nyenintsinzi-Mutaneshwa, Intungane mu vyo Ikora.",
       "ln": "Ayebi maye mabombami na maye mazali polele (azali) wa bokasi atonda bwanya.",
-      "dag": "O (Naawuni) nyɛla Ŋun mi din sɔɣi, ni din be polo ni, Nyεŋda, Yεmgoliŋgalana.",
-      "mos": "N yaa sẽn solg Mit la sẽn vẽneg Mita, n yaa zɩslem Naaba n yaa yam-bedr Soaba (Bʋʋd-Mitɑ).",
+      "dag": "O (Naawuni) nyɛla Ŋun mi din sɔɣi, ni din be polo ni, Nyɛŋda, Yɛmgoliŋgalana.",
+      "mos": "N yaa sẽn solg Mit la sẽn vẽneg Mita, n yaa zɩslem Naaba n yaa yam-bedr Soaba (Bʋʋd-Mita).",
       "aa": "Yalli qellitti ittam kee umbullu ittam inkih yaaxigi kinni, usuk isi reedal maysoli, isi abtol naggaara.",
       "mdh": "Katawan nin (Allah) su gayb endu su mapayag, sekanin (Allah) i mapulu a mataw mapandadayta.",
-      "ak": "Kokoam ne Badwam Nimdefoͻ no, Otumfoͻ no a Ɔtumi ade nyinaa yε, Onyansafoͻ no.",
+      "ak": "Kokoam ne Badwam Nimdefoɔ no, Otumfoɔ no a Ɔtumi ade nyinaa yɛ, Onyansafoɔ no.",
       "ceb": "(Siya mao) ang Nakahibalo sa dili makita ug sa makita, ang Hingpit Gamhanan, ang Hingpit Maalamon.",
       "nqo": "ߘߏ߲߰ߣߍ߲ ߣߌ߫ ߟߊ߲ߞߣߍߡߊߣߍ߲ ߟߐ߲ߓߊ߮ ߟߋ߬ ߸ ߣߌ߬ߣߌ߬ߟߊ ߟߋ߬ ߸ ߥߘߋ߬ߥߘߋ߬ߟߌ߬ߟߊ ߟߋ߬"
     }
@@ -12335,11 +12346,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "lg": "Mazima abo abatya omulezi Waabwe awamu n'okuba nga talabika, bagenda kufuna ekisonyiwo n'empeera ennene.",
       "rw": "Mu by’ukuri abatinya Nyagasani wabo batamubona, bazababarirwa ibyaha ndetse banahabwe ibihembo bihebuje.",
       "ln": "Ya soló, baye bazali kobanga Nkolo na bango nakobombama bakozuaka lifuta linene.",
-      "dag": "Achiika! Ninvuɣu shεba ban zɔri bɛ Duuma ni sɔɣisinli, tɔ! Bɛ mali chɛ mpaŋ, ni laara din galsi (Zaadali).",
-      "mos": "Ad neb nins sẽn yaeesd b Soabã ne A sẽn solgã fãa, bãmb tara yaafg la keoor sẽn bεdme.",
+      "dag": "Achiika! Ninvuɣu shɛba ban zɔri bɛ Duuma ni sɔɣisinli, tɔ! Bɛ mali chɛ mpaŋ, ni laara din galsi (Zaadali).",
+      "mos": "Ad neb nins sẽn yaeesd b Soabã ne A sẽn solgã fãa, bãmb tara yaafg la keoor sẽn bɛdme.",
       "aa": "Diggah, ablekal sinni Rabbik meesita mari, dambi cabtii kee kaxxa galató le.",
       "mdh": "Saben-sabenal su manga taw a ipegkagilek nilan su Kadenan nilan sa gayb na sa kanilan su balas a masla.",
-      "ak": "Nokorε sε wͻn a wͻ’suro wͻn Wura (Nyankopͻn) wͻ kokoamu no benya bͻnefakyε ne akatua kεseε paa.",
+      "ak": "Nokorɛ sɛ wɔn a wɔ’suro wɔn Wura (Nyankopɔn) wɔ kokoamu no benya bɔnefakyɛ ne akatua kɛseɛ paa.",
       "ceb": "Apan alang kanila nga mga mahinadlokon sa ilang Ginoo (Allah) bisan pa dili nila siya makita, sila sa pagkatinuod makabaton og Kapasayloan ug usa ka Dakong Ganti.",
       "nqo": "ߒ߬ߓߊ߬ ߡߍ߲ ߠߎ߬ ߦߋ߫ ߛߌߟߊ߲߫ ߠߴߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߢߍ߫ ߊ߬ ߢߊߞߕߐߡߊ߫ ߸ ߜߊ߲ߒߞߎ߲ߠߊߟߌ ߟߴߏ߬ ߟߎ߬ ߦߋ߫ ߊ߬ ߣߌ߫ ߛߙߊ߬ ߓߟߋߓߟߋ"
     }
@@ -12399,9 +12410,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mg": "Tsy hitan'izy ireo va ireo voro-manidina eo amboniny, izay mamelatra sy manakombona ny elany? Ilay be fiantrana ihany no mihazona azy ireny, fa mahita ny zavatra rehetra tokoa Izy.",
       "lg": "Abaffe tebalaba ebinyonyi ebibuukira waggulu waabwe nga byanjuluza ebiwaawaatiro era nga bwe bibiwumbako, tewali kibikuumira mu bbanga okuggyako Allah Omusaasizi, mazima Yye alaba buli kintu.",
       "rw": "Ese ntibabona inyoni hejuru yabo uko ziguruka zirambura amababa yazo zikanayahina? Ntawe uzifata (ngo zitagwa hasi) usibye (Allah) Nyirimpuhwe. Mu by’ukuri ni Ubona buri kintu bihebuje.",
-      "mos": "Rẽ yĩnga bãmb pa get liuuli wã bãmb zugẽ tɩ b yaa sẽn yεdgd b pɩgsã la b gõtẽ, bũmb pa gãt-b sã n pa Ar-rahmaan Naab ye; ad Yẽnda yaa Net ne bũmbã fãa gilli.",
+      "mos": "Rẽ yĩnga bãmb pa get liuuli wã bãmb zugẽ tɩ b yaa sẽn yɛdgd b pɩgsã la b gõtẽ, bũmb pa gãt-b sã n pa Ar-rahmaan Naab ye; ad Yẽnda yaa Net ne bũmbã fãa gilli.",
       "aa": "Kaadu mayablaanaa keenik amól tan haadá galwá fakta waqdii kee xambaqta waqdi takkem? raddaamak tet tabbixeeh dacrissam matan Racmaan kinni Rabbi akke waytek, diggah usuk ummaanim yabali kinni.",
-      "ak": "Anaasε wͻ’nhunuu nnomaa a wͻn wͻ wͻn apampamu a, wͻ’tu bae wͻn ntaban mu san ka to mu no? Obiara nkuta wͻn mu, na mmom Ahummͻborͻ Hene no ara. Nokorε sε, Ɔno na Ohunu biribiara.",
+      "ak": "Anaasɛ wɔ’nhunuu nnomaa a wɔn wɔ wɔn apampamu a, wɔ’tu bae wɔn ntaban mu san ka to mu no? Obiara nkuta wɔn mu, na mmom Ahummɔborɔ Hene no ara. Nokorɛ sɛ, Ɔno na Ohunu biribiara.",
       "nqo": "ߊ߬ߝߐ߫ ߊ߬ߟߎ߬ ߕߍ߫ ߞߐ߬ߣߐ ߟߎ߫ ( ߞߊ߬ߡߊ߲ ߠߎ߬ ) ߘߐߝߎߟߋ߲ߣߍ߲ ߦߋ߫ ߟߴߊ߬ߟߎ߫ ߞߎ߲߬ߘߐ߫ ߓߊ߬ ߸ ߊ߬ ߣߴߊ߬ߟߎ߬ ߦߴߊ߬ ߟߊߛߌ߭ ߡߍ߲ ߞߍ߫ ߟߊ߫؟، ߒ߬ߓߊ߬ ߝߏߦߌ߬ ߕߴߏ߬ ߟߎ߬ ߘߐߡߌ߬ߘߊ߬ ߟߊ߫ ߝߏ߫ ߡߊ߬ߤߌ߬ߣߊ߬ߟߊ ߸ ߓߊ ߏ߬ ߟߋ ߢߊ߯ ߞߏ ߓߍ߯ ߟߊ߫"
     }
   },
@@ -12479,7 +12490,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad wẽn-zoetbã tarame b Soabã nengẽ, neema arzãn-rãmba.",
       "aa": "Diggah Yallak meesita mari, sinni Rabbih xaqul waara niqmat elle yan jannoota Ion.",
       "mdh": "Saben-sabenal su magilek sa Allah na aden sa kanilan i manga pamulan a limu lu kanu Kadenan nilan.",
-      "ak": "Nokorε sε, Nyamesurofoͻ no bɛnya Anigyeε Aheman no wͻ wͻn Wura Nyankopͻn hͻ.",
+      "ak": "Nokorɛ sɛ, Nyamesurofoɔ no bɛnya Anigyeɛ Aheman no wɔ wɔn Wura Nyankopɔn hɔ.",
       "ceb": "Ang mga matarung makabaton og mga tanaman sa Kabulahanan duol sa ilang Ginoo (Allāh).",
       "nqo": "ߡߍ߲ߘߌߦߊ߫ ( ߛߏ ) ߟߎ߫ ߟߋ߬ ߝߊ߲ߕߊ߲ߞߟߊ ߟߎ߬ ߦߋ߫ ߊ߬ߟߎ߫ ߡߊ߰ߙߌ ߕߍ߰ߟߊ ߘߐ߫ ߘߋ߬"
     }
@@ -12550,11 +12561,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Mu by’ukuri ibi ni urwibutso. Bityo ushaka nayoboke inzira imuganisha kwa Nyagasani we.",
       "rn": "Mu vy’ukuri, izi Aayah za Qor’ani zigabisha, zirimwo urwibutso ku bantu. Uwushaka kwibuka rero, niyumvire Imana Allah, maze afate inzira igana ku Mana yiwe Rurema Allah.",
       "ln": "Ya sólo, oyo ezali bokundoli, oyo alingi, azua nzela epai na Nkolo naye.",
-      "dag": "Achiika! Ŋɔ maa nyɛla teebu, dinzuɣu ninvuɣu so ŋun bɔra, tɔ! Ŋun gbibi soviεlli n-zaŋ chaŋ o Duuma (Naawuni) sani.",
+      "dag": "Achiika! Ŋɔ maa nyɛla teebu, dinzuɣu ninvuɣu so ŋun bɔra, tɔ! Ŋun gbibi soviɛlli n-zaŋ chaŋ o Duuma (Naawuni) sani.",
       "mos": "Ad wãnde yaa tẽegre, la ned ning sẽn tʋlla, a baooda sor n tʋg a Soabã nengẽ.",
       "aa": "Diggah ta aayoota sinaamah kassiisik, toysa qakkaloowaah, isi nafsih maqaané faxe num isi Rabbi fanah gita yabbaxay Yallak meesii kee taaqatal.",
       "mdh": "Saben-sabenal i nya ba indawan, entayn i pegkyug (sa surga) na mumbal silan sa lalan sa Allah.",
-      "ak": "Nokorε sε, woi yε Afutusεm, enti obi a ͻpε no ͻnfa kwan a εkͻ ne Wura Nyankopͻn hͻ no so.",
+      "ak": "Nokorɛ sɛ, woi yɛ Afutusɛm, enti obi a ɔpɛ no ɔnfa kwan a ɛkɔ ne Wura Nyankopɔn hɔ no so.",
       "ceb": "Sa pagkatinuod, kini usa ka Pasidaan, busa, si bisan kinsa nga mobuot, makahimo sa pagsubay sa Dalan sa iyang Ginoo (Allāh).",
       "nqo": "( ߦߟߌߡߊߘߌߦߊ ߣߌ߫ ߞߐ߲߬ߞߐ߲߬ߒߡߊ ߟߝߊߙߌ ) ߢߌ߲߬ ߠߎ߬ ߦߋ߫ ߖߊ߲߬ߓߌ߬ߟߊ߬ߟߌ߫ ߟߋ߬ ߘߌ߫ ߘߋ߬ ߸ ߒ߬ߓߵߊ߬ ߓߊ߯ ߡߍ߲ ߘߌߦߊ߫ ߏ߬ ߦߋ߫ ߛߌߟߊ߫ ߡߌ߬ߘߴߊ߬ ߡߊ߰ߙߌ ߝߍ߬ ߞߋߟߋ߲߬"
     }
@@ -12632,7 +12643,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Rẽ yĩnga Yẽnda pa yɩ n yaa Tõod n na n vʋʋg kũ-rãmbã?",
       "aa": "Yallay toh abe rabtem yaynuwweemih qamal geytoli hinnaa? (yeey kinnih).",
       "mdh": "Su Allah na ya nin pan di magaga i kapanguyagan kanu minatay.",
-      "ak": "Enti (Nyankopͻn a, ͻnam anwanwa kwan a yɛakyerε yi so bͻͻ onipa no), Onni tumi sε Ɔbɛnyane owufoͻ aba nkwa mu (bio)?",
+      "ak": "Enti (Nyankopɔn a, ɔnam anwanwa kwan a yɛakyerɛ yi so bɔɔ onipa no), Onni tumi sɛ Ɔbɛnyane owufoɔ aba nkwa mu (bio)?",
       "nqo": "ߦߊ߯ߟߊ߫ ߏ߬ ( ߟߎ߬ ) ߞߍߓߊ߮ ߕߴߛߋ߫ ߛߎ߭ ߟߎ߬ ߟߊߞߎߣߎ߲߫ ߠߊ߫ ߓߊ߬؟"
     }
   },
@@ -12704,6 +12715,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Tõnd vẽnega-la sorã, ma t'a yaa sõm-zɩta ma bark pʋʋsda.",
       "aa": "Diggah nanu tirtô gitaa kee makô gita kaah baxxaqisneh moomintuy faatita akkee kee korostay yangadde akke yakke immay.",
       "mdh": "Saben-sabenal na tinutulu nami sekanin sa lalan a mapya, na u di kena edsukur sekanin (a manusya) na egkafir.",
+      "ak": "Nokorɛ sɛ, Yakyerɛ no ɔkwan no;- Deɛ ɔfa so a ɔbɛyi (Nyankopɔn) ayɛ anaa deɛ ɔfa so a ɔbɛyi (Nyankopɔn) boniayɛ.",
       "ceb": "Among gipakita kaniya ang husto nga Dalan: din niini siya magapasalamat o dili mapasalamaton.",
       "nqo": "ߊ߲ ߞߵߊ߬ ߞߊ߲ߘߊ߫ ߛߌߟߊ ߡߊ߬ ߛߊ߫ ߸ ߞߋߟߋ߲߫ ߊ߰ ߞߍ߫ ߞߏߢߌߡߊߟߐ߲ߠߊ߫ ߘߌ߫ ߥߟߴߊ߬ ߦߋ߫ ߞߍ߫ ߞߏߢߌߡߊߟߐ߲ߓߊߟߌ߫ ߘߌ߫"
     }
@@ -12779,10 +12791,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rn": "Mbega Twebwe Allah, ntitwagize isi nk’isaso!",
       "ln": "Tozalisaki te mabele etando?",
       "dag": "Di ni bɔŋɔ, Ti (Tinim’ Naawuni) bi zaŋ tiŋgbani leei binyɛrgili?",
-      "mos": "Tõnd pa maan Tengã t'a yaa sẽn yεdge?",
+      "mos": "Tõnd pa maan Tengã t'a yaa sẽn yɛdge?",
       "aa": "Baaxó fidó siinih maabinninoo?",
       "mdh": "Ngintu da nami baluya su lupa sa belat?",
-      "ak": "Yεnfaa asaase nsεε hͻ ntrεε mu?",
+      "ak": "Yɛnfaa asaase nsɛɛ hɔ ntrɛɛ mu?",
       "ceb": "Wala ba Kami nagbuhat sa yuta ingon nga patag nga dapit pahulayanan alang kaninyo?",
       "nqo": "ߦߊ߯ߟߴߊ߲ ߡߊ߫ ߘߎ߱ ߞߍ߫ ߖߍ߰ߖߍ߮ ߘߌ߫ ߓߊ߬؟"
     }
@@ -12856,7 +12868,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "dag": "Achiika! Ninvuɣu shɛba ban ti Naawuni yɛlimaŋli, ka tum tuunsuma, bɛ mali Alizanda yili shɛŋa kulibona ni yɛn ti zɔri gindi di lɔŋ ni, dina n-nyɛ tarli din galsi.",
       "mos": "Ad neb nins sẽn kõ-b sɩdã la b tʋm sẽn sõmbã, Arzãn bee ne-ba, tɩ ko-sood zoet a tẽngrã, ad wãndã la paoong sẽn bedme.",
       "mdh": "Saben-sabenal na silan antu a namalityala endu minggagalebek sa manga mapya na aden kanilan i kasulgan a pelagilay kanu kababan nin su manga lawas a ig entuba su bantugan a masla.",
-      "ak": "Nokorε sε, wͻn a wͻagye adie, na wͻdii dwuma pa no, wͻbɛnya Ahemman a, nsubͻnten nenam aseε; na εno ne Nkonimdie kεseε no.",
+      "ak": "Nokorɛ sɛ, wɔn a wɔagye adie, na wɔdii dwuma pa no, wɔbɛnya Ahemman a, nsubɔnten nenam aseɛ; na ɛno ne Nkonimdie kɛseɛ no.",
       "ceb": "Kadtong mga mituo ug nagbuhat sa matarung nga mga buhat, sila makabaton og mga Tanaman nga sa ubos niini anaa ang mga suba nga nagadagayday, kana mao ang Dakong Kalamposan.",
       "nqo": "ߡߍ߲ ߠߎ߫ ߞߏ߬ߣߌ߲ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߟߎ߬ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߡߍ߲ߘߌߦߊ ߟߎ߫ ߟߴߏ߬ ߟߎ߬ ߦߋ߫ ، ߞߐ߬ߢߊ ߟߎ߬ ߦߋ߫ ߥߦߏ߬ ߟߴߏ߬ ߟߎ߬ ߞߘߐߟߊ ߟߎ߬ ߘߐ߫ ߸ ߏ߬ ߘߏ߲߬ ߦߋ߫ ߣߌ߬ߓߊ߫ ߓߟߋ߬ߓߟߋ߫ ߟߋ߬ ߘߌ߫"
     }
@@ -12935,7 +12947,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad yaa Yẽ n sɩngd (naanegã) la A lebsdẽ.",
       "aa": "Diggah usuk ginó suge way tik qimbisaah, ken bayseek geeral ken gacisah.",
       "mdh": "Saben-sabenal na sekanin (Allah) i pangebpun endu papembalingan.",
-      "ak": "Nokorε sε, Ɔno na Ɔhyεε aseε bͻͻ adeε, εna Ɔbεsan de aba nkwa mu bio.",
+      "ak": "Nokorɛ sɛ, Ɔno na Ɔhyɛɛ aseɛ bɔɔ adeɛ, ɛna Ɔbɛsan de aba nkwa mu bio.",
       "ceb": "Sa pagkatinuod ang Allah mao ang nagbuhat (sa tanang butang) gikan sa sinugdanan, ug magpabalik niini (sa kinabuhi human sa kamatayon alang sa Paghukom),",
       "nqo": "ߊ߬ߟߋ ߞߊ߬ߣߌ߲ ߸ ߊ߬ߟߋ ߟߋ߬ ߟߊ߬ߝߟߐ߬ߟߌ ߞߍ߫ ߟߊ߫ ߞߊ߬ ߣߐ߬ߡߛߊ߬ߦߌ߬ߟߌ ߝߣߊ߫ ߞߍ߫"
     }
@@ -13010,7 +13022,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad yõor fãa, a tara gũusda.",
       "aa": "Hebeltô nafsi mayan malaykatti dacayrih amol kaak yanih akke waytek.",
       "mdh": "Uman isa a balangyawa na aden lun i pedtiyakap.",
-      "ak": "Ɔkra biara nni hͻ a, ͻwεnfoͻ nni ne soͻ.",
+      "ak": "Ɔkra biara nni hɔ a, ɔwɛnfoɔ nni ne soɔ.",
       "ceb": "Walay usa nga kalag apan sa ibabaw niini adunay magbalantay (anghel).",
       "nqo": "ߣߌߡߊ߫ ߛߌ߫ ߕߴߦߋ߲߬ ߸ ߝߏ߫ ߞߣߐ߬ߜߍ߲߬ߓߊ߯ ߦߋ߫ ߞߍ߫ ߊ߬ ߟߊ߫"
     }
@@ -13083,10 +13095,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rn": "Ntumwa y’Imana! Mu vy’ukuri Imana yawe Rurema Allah, ni Umureretsi w’ivyo bakoze, Iratenyenya ntiyibagira.",
       "ln": "Mpo ete Nkolo nayo azali kotala.",
       "dag": "A nya ninsala, o Duuma yi dahimmi o ka tibgi o, ka niŋ o",
-      "mos": "Ad fo Soabã yaa gũusda ( kordɑ).",
+      "mos": "Ad fo Soabã yaa gũusda ( korda).",
       "aa": "Nabiyow diggah, ku Rabbi külli seehadaytih taama dacrisaah ken elle gälte le.",
       "mdh": "Saben-sabenal na su Kadenan nengka (Muhammad) na labi masuliman.",
-      "ak": "Nokorε sε, wo Wura Nyankopͻn tε hͻ rewεn.",
+      "ak": "Nokorɛ sɛ, wo Wura Nyankopɔn tɛ hɔ rewɛn.",
       "ceb": "Sa pagkatinuod! Ang imong Ginoo (Allah) kanunay nga Mabinantayon.",
       "nqo": "ߓߊ ߌ ߡߊ߰ߙߌ ߦߋ߫ ߜߟߊ߬ߟߊ߬ߛߌ߰ ߦߙߐ ߘߐ߫ ߟߋ߫ ߘߋ߬"
     }
@@ -13160,7 +13172,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rw": "Ese ntitwamuhaye amaso abiri,",
       "rn": "Mbega, Twebwe Allah Ntitwamuhaye amaso abiri abonesha!",
       "dag": "Di ni bɔŋɔ, Ti (Tinim’ Naawuni) bi zali o ka o mali nina ayi?",
-      "mos": "Tõnd pa maan nin a yiib n kõ-a sɩdɑ?",
+      "mos": "Tõnd pa maan nin a yiib n kõ-a sɩda?",
       "aa": "Namma inti kaah mahanninoo edde yabaluh?",
       "mdh": "Ngintu da nami baluya sa lekanin i duwa a mata?",
       "ak": "Yɛamma no ani mmienu,-",
@@ -13241,7 +13253,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad yãmb tʋʋmã yaa toay-toaya.",
       "aa": "Diggah sin taama sissinih, isin addunyah taamita maraa kee akeerah taamita marah anuk.",
       "mdh": "Saben-sabenal na langun u galebekan nu na midsempad-sempad.",
-      "ak": "“Nokorε, mo mmͻdemmͻ gu sonoko-sonoko”.",
+      "ak": "“Nokorɛ, mo mmɔdemmɔ gu sonoko-sonoko”.",
       "ceb": "Sa pagkamatuod ang inyong manga paninguha nag-kadaiya,",
       "nqo": "ߤߋ߫ ߸ ߊߟߎ߫ ߗߋߥߊߟߌ ( ߟߎ߬) ߝߘߊߝߘߊߣߍ߲߫ ߠߋ߫ ߘߋ߬"
     }
@@ -13320,7 +13332,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Bɩ f bãng tɩ yol-yol pʋgda keelmã.",
       "aa": "Toysa diggah gibdaabinâ luk xabca tan.",
       "mdh": "Na saben-sabenal na makasaleta kanu malegen su malemu.",
-      "ak": "Nokorε sε, ahokyerε akyi ahotͻ na εwͻ hͻ.",
+      "ak": "Nokorɛ sɛ, ahokyerɛ akyi ahotɔ na ɛwɔ hɔ.",
       "ceb": "Kay sa pagkatinuod uban sa matag kalisdanan adunay kasayon (kaharuhay).",
       "nqo": "ߒ߬ߓߊ߬ ߣߐ߰ߦߊ ߦߋ߫ ߜߟߍ߬ߦߊ ߟߋ߫ ߝߍ߬ ߘߋ߬"
     }
@@ -13397,7 +13409,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad yol-yol pʋgda keelmã",
       "aa": "Diggah gibdaabinâ luk xabca tan.",
       "mdh": "Saben-sabenal na makasaleta kanu malegen su malemu.",
-      "ak": "Nokorε sε, ahokyerε akyi ahotͻ na εwͻ hͻ.",
+      "ak": "Nokorɛ sɛ, ahokyerɛ akyi ahotɔ na ɛwɔ hɔ.",
       "ceb": "Sa pagkatinuod uban sa matag kalisdanan moabut ang kasayon (kaharuhay).",
       "nqo": "ߣߐ߰ߦߊ ߦߋ߫ ߜߟߍ߬ߦߊ ߟߋ߫ ߝߍ߬ ߝߊ߯ߛߌ߫"
     }
@@ -13475,7 +13487,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Rẽ yĩnga pa Wẽnd n yɩɩd bʋʋdbã fãa ne bʋʋd minim?",
       "aa": "Yalli mekla abba haytaamak meklah yaysi hinnaa? Yeey, kinnih.",
       "mdh": "Ngintu kena ba su Allah i labi a matidtu i kakukumin kanu langun nu manga pakukukum?",
-      "ak": "Enti εnnyε Nyankopͻn ne atemmufoͻ no mu Otemmufo?",
+      "ak": "Enti ɛnnyɛ Nyankopɔn ne atemmufoɔ no mu Otemmufo?",
       "nqo": "ߊ߬ ߝߐ߫ ߊߟߊ߫ ߕߍ߫ ߞߕߌߕߍ߯ߟߊ ߟߎ߬ ߘߐ߫ ߞߕߌߕߍ߯ߟߊ߫ ߞߎߛߊ߲ ߘߌ߫ ߘߍ߫؟"
     }
   },
@@ -13549,10 +13561,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "rn": "Mu vy’ukuri uburuhukiro bwiwe, ni ku Mana yawe Rurema Allah, Izomuhembera ivyo yakoze.",
       "ln": "Nzoka nde bozongi ezali epai ya Nkolo nayo.",
       "dag": "Achiika! Labbu shee nyɛla a Duuma (Naawuni) sani.",
-      "mos": "Ad lεbengã pata f Soabã nengẽ.",
+      "mos": "Ad lɛbengã pata f Soabã nengẽ.",
       "aa": "Diggah madaara ku Rabbí fanah takke Nabiyow.",
       "mdh": "Saben-sabenal (Muhammad) na lu kanu Kadenan nengka i kambalinganan.",
-      "ak": "Nokorε sε, wo Wura Nyankopͻn hͻ ne (onipa) nnkyi.",
+      "ak": "Nokorɛ sɛ, wo Wura Nyankopɔn hɔ ne (onipa) nnkyi.",
       "ceb": "Sa pagkatinuod, ngadto sa (Allah) nga imong Ginoo mao ang (katapusan) nga Pagbalik (sa tanan).",
       "nqo": "ߞߐߛߊߦߌ߲ ߘߏ߲߬ ߞߍߕߐ߫ ߌ ߡߊ߰ߙߌ ߟߋ߫ ߡߊ߬ ߘߋ߬"
     }
@@ -13626,7 +13638,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Kordgã yʋng sõmblem yɩɩda kiis-tusri.",
       "aa": "Leylatul Qhadri usuk baray muxxó ley, alfi alsak kayrih aysuk raaqa kinni.",
       "mdh": "Su magabi a inukul na ya tumu kumin kanu sangibu a ulan-ulan.",
-      "ak": "Tumi anaa Nhyehyεe Anadwo no (mu nhyira) kyεn bosome apem.",
+      "ak": "Tumi anaa Nhyehyɛe Anadwo no (mu nhyira) kyɛn bosome apem.",
       "ceb": "Ang Gabii sa himaya ug gahum - Dekreto- labing maayo pa kay sa usa ka libo ka mga bulan.",
       "nqo": "ߟߊ߬ߕߍ߮ ߛߎ ߓߊ߬ ߸ ߏ߬ ߦߊ߯ ߝߌ߬ߛߊ߬ ߞߊߙߏ߫ ߥߊ߯ߞߋߟߋ߲߫ ߘߌ߫"
     }
@@ -13705,7 +13717,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "mos": "Ad neb nins sẽn kõ-b sɩdã, la b tʋm tʋʋm-sõmsã wã, bãmb la bõn-naandsã fãa sẽn yɩɩd sõma.",
       "aa": "Diggah yeemeneeh meqe taamoomi abe marí, woo mari usun ginok tayse ginó kinnon.",
       "mdh": "Saben-sabenal a su silan a namalitiyaya endu minggalebek sa mapya na silan ba antu su pinakamapya a pinamaluy.",
-      "ak": "Nokorε sε, wͻn a wɔagye adie na wͻdi dwuma pa no, saa nkorͻfoͻ no ne abͻdeε papa no.",
+      "ak": "Nokorɛ sɛ, wɔn a wɔagye adie na wɔdi dwuma pa no, saa nkorɔfoɔ no ne abɔdeɛ papa no.",
       "ceb": "Kanila nga mituo ug nagbuhat sa matarung nga mga buhat, sa pagkatinuod sila mao ang labing maayo sa tanang binuhat.",
       "nqo": "ߒ߬ߓߊ߬ ߡߍ߲ ߠߎ߬ ߞߍߣߍ߲߫ ߟߊߒߠߦߊߓߊ߮ ߘߌ߫ ߞߊ߬ ߢߌ߬ߡߊ ߟߎ߬ ߞߍ߫ ߛߊ߫ ߸ ߏ߬ ߟߎ߫ ߟߋ߬ ߘߊ߲ߝߋ߲ ߠߎ߬ ߘߐ߫ ߢߌ߬ߡߊ ߟߎ߬ ߘߌ߫"
     }

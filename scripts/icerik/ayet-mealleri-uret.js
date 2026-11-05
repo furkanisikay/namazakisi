@@ -178,6 +178,19 @@ const CUMLE_SONU_NOTU = /([.?!।])\p{Nd}+(?![\p{L}\p{M}])/gu;
  */
 const YILDIZ_SILINEN = new Set(['ja']);
 const YILDIZ = /\*/g;
+/**
+ * Harfi düzeltilen mealler (dalga 13): `asante_harun`, `dagbani_ghatubo` ve `moore_rwwad` Afrika Latin harfleri yerine
+ * görünüşte aynı Yunan/Kiril harfleri yazar (ε ͻ Ͻ → ɛ ɔ Ɔ; Kiril ԑ Ԑ → ɛ Ɛ); Mooré meali "a" yerine baştan sona Latin
+ * alfa "ɑ" kullanır (Mooré alfabesinde ɑ yok). Eşleme indirilen ham metne, öteki kurallardan ÖNCE uygulanır; ekran,
+ * arama ve yazı tipi denetimi gerçek Latin harfini görür. `gunun-ayeti-uret.js > HARF_DUZELT` ile AYNI.
+ */
+const HARF_DUZELT = {
+  ak: { 'ε': 'ɛ', 'ͻ': 'ɔ', 'Ͻ': 'Ɔ', 'ԑ': 'ɛ', 'Ԑ': 'Ɛ' },
+  dag: { 'ε': 'ɛ' },
+  mos: { 'ε': 'ɛ', 'ɑ': 'a' },
+};
+const harfDuzelt = (dil, metin) =>
+  HARF_DUZELT[dil] ? metin.replace(/./gu, (h) => HARF_DUZELT[dil][h] ?? h) : metin;
 /** Latin harf taşıyamayan meal dilleri (`gunun-ayeti-uret.js > LATIN_HARF_BOZUK` ile AYNI). */
 const LATIN_HARF_BOZUK = new Set(['te', 'kn', 'mr', 'as', 'ne', 'si', 'km', 'he', 'ka', 'nqo']);
 /** Latin harfli dalga 13 meal dilleri ve yabancı harf deseni (`gunun-ayeti-uret.js > YABANCI_HARF_BOZUK` ile AYNI; gerekçe orada). */
@@ -237,6 +250,7 @@ async function main() {
       const { result } = await json(`https://quranenc.com/api/v1/translation/aya/${anahtar}/${sure}/${ayet}`);
       // Urducada ve Bengalcede yalnız "[1]" / "[১]" türü not numarası silinir (gunun-ayeti-uret.js).
       if (NFC_DILLER.has(dil)) result.translation = result.translation.normalize('NFC');
+      result.translation = harfDuzelt(dil, result.translation);
       if (NOT_NUMARASI_SILINEN.has(dil)) result.translation = result.translation.replace(NOT_NUMARASI, '').trim();
       if (YILDIZ_SILINEN.has(dil)) result.translation = result.translation.replace(YILDIZ, '');
       if (NOKTASIZ_AYET_NO_SILINEN.has(dil)) result.translation = result.translation.replace(NOKTASIZ_AYET_NO, '');

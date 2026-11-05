@@ -809,11 +809,11 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
     "surum": "1.0.0",
     "baslik": "Dagbani Translation - Muhammad Baba Ghutubo",
     "ayetler": {
-      "2:153": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni. yεlimaŋli! Bom ya sɔŋsim ni suɣulo ni jiŋli puhibu (n-zaŋ kpa yi daadiini mini yi Dunia yεla polo). Achiika! Naawuni mini suɣulonima m-be.",
-      "2:238": "Gum ya yi jiŋaanu, n-ti pahi sunsuuni jiŋli (lahisari jiŋli).Yaha! Yiɣisim ya zani n-ti Naawuni ka nyɛla ninvuɣu shεba ban gbargiri bɛ maŋa.",
+      "2:153": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni. yɛlimaŋli! Bom ya sɔŋsim ni suɣulo ni jiŋli puhibu (n-zaŋ kpa yi daadiini mini yi Dunia yɛla polo). Achiika! Naawuni mini suɣulonima m-be.",
+      "2:238": "Gum ya yi jiŋaanu, n-ti pahi sunsuuni jiŋli (lahisari jiŋli).Yaha! Yiɣisim ya zani n-ti Naawuni ka nyɛla ninvuɣu shɛba ban gbargiri bɛ maŋa.",
       "4:103": "Dinzuɣu yi yi puhi jiŋli naai, tɔ! Yin teemi ya Naawuni yɛla ka di nyɛla yi ʒela zuɣusaa, bee yi ʒila tiŋgbani ni, bee ka yi dola yi luɣa zuɣu.Yi mi yi ti mali yɛmbahiga, tɔ! Yin puhimi ya jiŋli. Achiika! Jiŋli nyɛla talahi, ka nyɛla din mali saha n-zaŋ ti ninvuɣu shɛba ban ti Naawuni yɛlimaŋli.",
-      "29:45": "(Yaa nyini Annabi)! Karimmi bɛ ni siɣisi shɛli wahayi n-ti a na kundili (Alkur’aani) puuni. Yaha! Puhimi jiŋli. Achiika! Jiŋli puhibu mɔŋdila kavi tuma mini Naawuni ni je shεli. Yaha! Naawuni yɛla teebu n-nyɛ din bara. Yaha! Naawuni mi yi tuuntumsa ni nyɛ shɛli.",
-      "62:9": "Yaa yinim’ ninvuɣu shεba ban ti Naawuni yεlimaŋli! Bɛ yi ti moli jiŋli Alizumma dabsili puuni, tɔ! Yin garimi ya n-chaŋ Naawuni yεla teebu (hutuba wumbu mini zumba jiŋli puhibu) ka chɛn ya daabilim, dina n-nyɛ din gari nzaŋ tin ya, yi yi nyɛla ninvuɣu shεba ban mi."
+      "29:45": "(Yaa nyini Annabi)! Karimmi bɛ ni siɣisi shɛli wahayi n-ti a na kundili (Alkur’aani) puuni. Yaha! Puhimi jiŋli. Achiika! Jiŋli puhibu mɔŋdila kavi tuma mini Naawuni ni je shɛli. Yaha! Naawuni yɛla teebu n-nyɛ din bara. Yaha! Naawuni mi yi tuuntumsa ni nyɛ shɛli.",
+      "62:9": "Yaa yinim’ ninvuɣu shɛba ban ti Naawuni yɛlimaŋli! Bɛ yi ti moli jiŋli Alizumma dabsili puuni, tɔ! Yin garimi ya n-chaŋ Naawuni yɛla teebu (hutuba wumbu mini zumba jiŋli puhibu) ka chɛn ya daabilim, dina n-nyɛ din gari nzaŋ tin ya, yi yi nyɛla ninvuɣu shɛba ban mi."
     }
   },
   "mos": {
@@ -821,12 +821,12 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
     "surum": "1.0.2",
     "baslik": "Moore Translation - Rowwad Translation Center",
     "ayetler": {
-      "2:153": "Yɑɑ yãmb neb nins sẽn kõ sɩd ne Wẽnde! kos-y sõngr ne sugr mɑɑneg lɑ pʋʋsgo, ɑd Wẽnd lɑgma sugrã rãmbã.",
-      "2:238": "Gũus-y pʋʋs-rãmbã lɑ sʋk pʋʋsgã (Lɑɑnsɑrã Pʋʋsgã), lɑ y yãnes ne Pʋʋsgã, Wẽnd a ye yĩngɑ, tɩ y yɑɑ gãneg-m-mens rãmbɑ ( Wẽnd tũudbɑ).",
-      "4:103": "Lɑ yãmb sã n sε Pʋʋsgã bɩ y tẽeg Wẽnd yʋʋrã tɩ y yɑɑ sẽn yãse, sẽn zĩ bɩ kɩlle, lɑ y sã n yõgne bɩ y yãnes tɩrg ne Pʋʋsgã, ɑd Pʋʋsgã yɩɩme n yɑɑ tɩlɑe n yãk wɑkɑt tɩ rog sɩd-kõtbã zugu.",
+      "2:153": "Yaa yãmb neb nins sẽn kõ sɩd ne Wẽnde! kos-y sõngr ne sugr maaneg la pʋʋsgo, ad Wẽnd lagma sugrã rãmbã.",
+      "2:238": "Gũus-y pʋʋs-rãmbã la sʋk pʋʋsgã (Laansarã Pʋʋsgã), la y yãnes ne Pʋʋsgã, Wẽnd a ye yĩnga, tɩ y yaa gãneg-m-mens rãmba ( Wẽnd tũudba).",
+      "4:103": "La yãmb sã n sɛ Pʋʋsgã bɩ y tẽeg Wẽnd yʋʋrã tɩ y yaa sẽn yãse, sẽn zĩ bɩ kɩlle, la y sã n yõgne bɩ y yãnes tɩrg ne Pʋʋsgã, ad Pʋʋsgã yɩɩme n yaa tɩlae n yãk wakat tɩ rog sɩd-kõtbã zugu.",
       "11:114": "La yãnes Pʋʋsgã wĩndg kɩrems a yiibã la yʋngã wakat sãnda, ad tʋʋm-sõmsã yẽesda tʋʋm-yoodã, ad woto yaa saglg ne neb nins sẽn tagsdã.",
-      "29:45": "Kɑrem b sẽn tʋm tɩ wɑ fo nengẽ tɩ be Gafẽ wã, lɑ f yɑls Pʋʋsgã, ad Pʋʋsgã gũudɑme n yit yel-wẽn lɑ yel-kiti tʋʋmɑ, lɑ ad Wẽnd yʋʋrã tẽegrã n yɩɩd bedrem, lɑ Wẽnd mii yãmb sẽn mɑɑndã.",
-      "62:9": "Yãmb ɑ neb nins sẽn kõ sɩd ne Wẽnde! B sã n wa bool tɩ y wa pʋʋs arzũmã raare, bɩ y yãg n tʋg Wẽnd yʋʋrã tẽegrẽ la y bas koosmã; yãmb maan-kãng la sõma ne yãmb tɩ yãmb sã n da miẽ."
+      "29:45": "Karem b sẽn tʋm tɩ wa fo nengẽ tɩ be Gafẽ wã, la f yals Pʋʋsgã, ad Pʋʋsgã gũudame n yit yel-wẽn la yel-kiti tʋʋma, la ad Wẽnd yʋʋrã tẽegrã n yɩɩd bedrem, la Wẽnd mii yãmb sẽn maandã.",
+      "62:9": "Yãmb a neb nins sẽn kõ sɩd ne Wẽnde! B sã n wa bool tɩ y wa pʋʋs arzũmã raare, bɩ y yãg n tʋg Wẽnd yʋʋrã tẽegrẽ la y bas koosmã; yãmb maan-kãng la sõma ne yãmb tɩ yãmb sã n da miẽ."
     }
   },
   "aa": {
@@ -860,12 +860,12 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
     "surum": "1.0.3",
     "baslik": "Akan Translation (Asante) - Harun Ismail",
     "ayetler": {
-      "2:153": "Mo a moagye adie, monfa aboterε ne mpaebͻ nhwehwε mmoa (wͻ Nyankopͻn hͻ); nokorε sε Nyankopͻn ka aboterεfoͻ no ho.",
-      "2:238": "Monhwε mo Nyamefrε (mprε num no) so yie, titiriw adantamu (Asr) Nyamefrε no, na monfa anidie ne ahobraseε nyina hͻ ma Nyankopͻn.",
-      "4:103": "Sε mofrε Nyame no wie a, monkae Nyankopͻn wͻ (εberε a mo) gyina hͻ ne (εberε a mo) te hͻ ne (εberε) a moda monkyεn mu no mu. Nasε monya ahotᴐ a, εneε monfrε Nyame no (sεdeε yakyerε mo dada no). Nokorε sε, Nyamefrε yε adeε a yahyehyε no brε-ano-brε-ano ato agyidiefoͻ no soͻ",
-      "11:114": "Enti frε Nyame wͻ adekyeε mfitiaseε ne n’awieε hͻ, εna anadwo dͻnhwere no mu bi nso. Nokorε sε, papayε pepa bͻne. Woi yε afutusεm dema nkaekaeεfoͻ no.",
-      "29:45": "(Nkͻmhyεni), kenkan deε yayi ama wo wͻ Nwoma no mu no, na frε Nyame wͻ nebrε mu. Nokorε sε, Nyamefrε bra akohwisεm ne amumuyε; na Nyankopͻn ho nkaekaeε yε ade kεseε papaapa (wͻ onipa abrabͻ mu). Onyankopͻn deε Onim deε moyε (nyinaa).",
-      "62:9": "Mo a moagye adie, sε yεyε Azaan dema Efiada Nyame frε no a, monyε no ntεm nkͻkaekae Nyankopͻn, na monyae adwadie no. Woi na εyε papa ma mo, sε anka monim a."
+      "2:153": "Mo a moagye adie, monfa aboterɛ ne mpaebɔ nhwehwɛ mmoa (wɔ Nyankopɔn hɔ); nokorɛ sɛ Nyankopɔn ka aboterɛfoɔ no ho.",
+      "2:238": "Monhwɛ mo Nyamefrɛ (mprɛ num no) so yie, titiriw adantamu (Asr) Nyamefrɛ no, na monfa anidie ne ahobraseɛ nyina hɔ ma Nyankopɔn.",
+      "4:103": "Sɛ mofrɛ Nyame no wie a, monkae Nyankopɔn wɔ (ɛberɛ a mo) gyina hɔ ne (ɛberɛ a mo) te hɔ ne (ɛberɛ) a moda monkyɛn mu no mu. Nasɛ monya ahotᴐ a, ɛneɛ monfrɛ Nyame no (sɛdeɛ yakyerɛ mo dada no). Nokorɛ sɛ, Nyamefrɛ yɛ adeɛ a yahyehyɛ no brɛ-ano-brɛ-ano ato agyidiefoɔ no soɔ",
+      "11:114": "Enti frɛ Nyame wɔ adekyeɛ mfitiaseɛ ne n’awieɛ hɔ, ɛna anadwo dɔnhwere no mu bi nso. Nokorɛ sɛ, papayɛ pepa bɔne. Woi yɛ afutusɛm dema nkaekaeɛfoɔ no.",
+      "29:45": "(Nkɔmhyɛni), kenkan deɛ yayi ama wo wɔ Nwoma no mu no, na frɛ Nyame wɔ nebrɛ mu. Nokorɛ sɛ, Nyamefrɛ bra akohwisɛm ne amumuyɛ; na Nyankopɔn ho nkaekaeɛ yɛ ade kɛseɛ papaapa (wɔ onipa abrabɔ mu). Onyankopɔn deɛ Onim deɛ moyɛ (nyinaa).",
+      "62:9": "Mo a moagye adie, sɛ yɛyɛ Azaan dema Efiada Nyame frɛ no a, monyɛ no ntɛm nkɔkaekae Nyankopɔn, na monyae adwadie no. Woi na ɛyɛ papa ma mo, sɛ anka monim a."
     }
   },
   "ceb": {

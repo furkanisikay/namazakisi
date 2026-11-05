@@ -262,6 +262,19 @@ const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
  * `ayet-mealleri-uret.js > NFC_DILLER` ile AYNI.
  */
 const NFC_DILLER = new Set(['yo', 'fil']);
+/**
+ * Harfi düzeltilen mealler (dalga 13): `asante_harun`, `dagbani_ghatubo` ve `moore_rwwad` Afrika Latin harfleri yerine
+ * görünüşte aynı Yunan/Kiril harfleri yazar (ε ͻ Ͻ → ɛ ɔ Ɔ; Kiril ԑ Ԑ → ɛ Ɛ); Mooré meali "a" yerine baştan sona Latin
+ * alfa "ɑ" kullanır (Mooré alfabesinde ɑ yok). Eşleme indirilen ham metne, öteki kurallardan ÖNCE uygulanır; ekran,
+ * arama ve yazı tipi denetimi gerçek Latin harfini görür. `ayet-mealleri-uret.js > HARF_DUZELT` ile AYNI.
+ */
+const HARF_DUZELT = {
+  ak: { 'ε': 'ɛ', 'ͻ': 'ɔ', 'Ͻ': 'Ɔ', 'ԑ': 'ɛ', 'Ԑ': 'Ɛ' },
+  dag: { 'ε': 'ɛ' },
+  mos: { 'ε': 'ɛ', 'ɑ': 'a' },
+};
+const harfDuzelt = (dil, metin) =>
+  HARF_DUZELT[dil] ? metin.replace(/./gu, (h) => HARF_DUZELT[dil][h] ?? h) : metin;
 // Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27);
 // Marathi ("१५३. ") ve Nepalce ("१५३) ") de (dalga 12, aynı karar); dalga 13'te Litvanca ve Afarca ("255. "), Dagbani
 // ("255. ", "5.Yaa") ve İbranice ("255 ": noktasız, `NOKTASIZ_AYET_NO_SILINEN`).
@@ -325,7 +338,7 @@ const LATIN_HARF_BOZUK = new Set(['te', 'kn', 'mr', 'as', 'ne', 'si', 'km', 'he'
  * `asante_harun` ɛ/ɔ yerine Kiril "ԑ" ve İbrani "כ", `malagasy_rwwad` 2:208 "خ هanareo", `bisayan_rwwad` 3:138 cümle
  * ortasında satır sonu. Kayıt alınmaz (`bozuk-karakter`). Salavat bağı ﷺ (U+FDFA) ve ۞ bilinçli işarettir, kalır
  * (`italian_rwwad` emsali). Yunan "ε" (U+03B5) ve "ͻ" (U+037B) dag/mos/ak meallerinde ɛ/ɔ yerine çeviri boyunca
- * tutarlı yazıldığı için ELENMEZ (görünüşte aynı; elenirse Akan havuzu 1'e iner) — sahibe soruldu.
+ * tutarlı yazılır: elenmez, `HARF_DUZELT` ile gerçek Latin harfine çevrilir.
  * Öteki dillere uygulanmaz (eski Latin meallerde Kiril/Yunan harf yok, 2026-11-04 tarandı; veri değişmesin).
  */
 const YABANCI_HARF_BOZUK = new Set(['lt', 'mg', 'lg', 'rw', 'rn', 'ln', 'dag', 'mos', 'aa', 'mdh', 'ak', 'ceb']);
@@ -508,7 +521,7 @@ async function main() {
         await indir(`https://quranenc.com/api/v1/translation/sura/${anahtar}/${sure}`, onbellek, `${anahtar}_${sure}.json`),
       );
       for (const r of result) {
-        const metin = NFC_DILLER.has(dil) ? r.translation.normalize('NFC') : r.translation;
+        const metin = harfDuzelt(dil, NFC_DILLER.has(dil) ? r.translation.normalize('NFC') : r.translation);
         mealler[dil][ref(Number(r.sura), Number(r.aya))] = notNumarasiz(dil, metin);
         mealler.ham[dil][ref(Number(r.sura), Number(r.aya))] = metin;
       }
