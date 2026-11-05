@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Esta notificação fica em silêncio com Não incomodar ativado.',
     turkceTts: 'Não foi encontrado um pacote de voz em português; a leitura em voz alta pode não se ouvir.',
     turkceTtsIos: 'Não foi encontrado um pacote de voz em português; a leitura em voz alta pode não se ouvir. Transfira uma voz em português nas definições de Acessibilidade.',
+    ttsDilYok: 'Os telemóveis ainda não têm uma voz para esta língua; a leitura em voz alta não se ouve.',
     alarmSesi: 'O volume do alarme está desligado; o despertar não se vai ouvir.',
     canliGuncelleme: 'As atualizações em direto estão desativadas; a contagem não aparece na barra de estado.',
     yuzeySamsung: 'na barra de estado e na Now Bar',

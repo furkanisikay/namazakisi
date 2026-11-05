@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     turkceTts: 'Nu s-a găsit un pachet de voce în limba română; citirea cu voce tare s-ar putea să nu se audă.',
     turkceTtsIos:
       'Nu s-a găsit un pachet de voce în limba română; citirea cu voce tare s-ar putea să nu se audă. Descărcați o voce română din setările de Accesibilitate.',
+    ttsDilYok: 'Telefoanele nu au încă o voce pentru această limbă; citirea cu voce tare nu se aude.',
     alarmSesi: 'Volumul alarmei este oprit; trezirea nu se va auzi.',
     canliGuncelleme: 'Actualizările live sunt dezactivate; numărătoarea nu va apărea în bara de stare.',
     yuzeySamsung: 'în bara de stare și în Now Bar',

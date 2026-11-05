@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Kibar-kãngã pa tar koɛɛg "Do Not Disturb" sã n pakame.',
     turkceTts: 'B pa yã Moore goam koɛɛg ye; b tõe n pa wʋm karengo ne koɛɛg ye.',
     turkceTtsIos: 'B pa yã Moore goam koɛɛg ye; b tõe n pa wʋm karengo ne koɛɛg ye. Sik-y Moore koɛɛg Accessibility seglgã pʋgẽ.',
+    ttsDilYok: 'Telefõn-rãmbã pa tar goam-kãngã koɛɛg hal masã ye; b pa na n wʋm karengo ne koɛɛg ye.',
     alarmSesi: 'Y alaarm koɛɛgã pagame; b pa na n wʋm yikrã ye.',
     canliGuncelleme: 'Kibar sẽn vɩɩme pagame; sõdgã pa na n puk kibar zĩigẽ ye.',
     yuzeySamsung: 'kibar zĩigẽ la Now Bar pʋgẽ',

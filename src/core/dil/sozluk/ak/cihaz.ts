@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Amaneɛbɔ yi yɛ komm berɛ a Do Not Disturb abue.',
     turkceTts: 'Wɔanhunu Akan nne kasa nhyehyɛe; wɔrente nne kenkan no.',
     turkceTtsIos: 'Wɔanhunu Akan nne kasa nhyehyɛe; wɔrente nne kenkan no. Twe Akan nne wɔ Accessibility nhyehyɛe mu.',
+    ttsDilYok: 'Fon ahorow so nni kasa yi nne nnya; enti wɔrente nne kenkan no.',
     alarmSesi: 'Wo alaam nnyegyeeɛ ato mu; wɔrente nyanee no.',
     canliGuncelleme: 'Amaneɛbɔ a ɛkɔ so ato mu; berɛ a aka renna adi wɔ tebea nsensanee no so.',
     yuzeySamsung: 'wɔ tebea nsensanee ne Now Bar mu',

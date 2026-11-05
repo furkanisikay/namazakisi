@@ -28,6 +28,8 @@ export const cihaz = {
     dnd: 'Rahatsız Etmeyin açıkken bu bildirim susar.',
     turkceTts: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir.',
     turkceTtsIos: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir. Erişilebilirlik ayarlarından Türkçe ses indirin.',
+    /** Telefonlarda bu dilin konuşma sesi hiç yok (`core/dil/sesliOkuma`): indirme önerilmez. */
+    ttsDilYok: 'Telefonlarda bu dil için konuşma sesi henüz yok; sesli okuma duyulmaz.',
     alarmSesi: 'Alarm ses düzeyiniz kapalı; uyandırma duyulmaz.',
     canliGuncelleme: 'Canlı güncellemeler kapalı; sayaç durum çubuğunda görünmez.',
     yuzeySamsung: "durum çubuğunda ve Now Bar'da",

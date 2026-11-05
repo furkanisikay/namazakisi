@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Iri menyesha ricecekeshwa igihe uburyo bwo kutabangamirwa bufunguye.',
     turkceTts: 'Nta jwi ry’Ikinyarwanda ryabonetse; gusoma mu ijwi bishobora kutumvikana.',
     turkceTtsIos: 'Nta jwi ry’Ikinyarwanda ryabonetse; gusoma mu ijwi bishobora kutumvikana. Mukuremo ijwi ry’Ikinyarwanda mu igenamiterere rya Accessibility.',
+    ttsDilYok: 'Telefoni ntiziragira ijwi ry’uru rurimi; gusoma mu ijwi ntibyumvikana.',
     alarmSesi: 'Ijwi rya alarume rirafunze; ijwi ryo gukangura ntirizumvikana.',
     canliGuncelleme: 'Amavugurura azima arafunze; igihe gisigaye ntikizagaragara mu murongo w’imimerere.',
     yuzeySamsung: 'mu murongo w’imimerere no muri Now Bar',

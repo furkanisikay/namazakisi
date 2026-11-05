@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Do Not Disturb faka waqdi ama warsa xongolo malik raaqta.',
     turkceTts: 'Afak kawsiyyah xongolo geyime wee; afak kawsiyya ma yaabbimtam yakke.',
     turkceTtsIos: 'Afak kawsiyyah xongolo geyime wee; afak kawsiyya ma yaabbimtam yakke. Accessibility massossiyya addal xongolo obsa.',
+    ttsDilYok: 'Telefoonitte ama afih xongolo hinna; afak kawsiyya ma yaabbimta.',
     alarmSesi: 'Sinni alarm xongolo alifime; ugussa ma yaabbimta.',
     canliGuncelleme: 'Live qusbisiyya alifime; loowiyya status bar addal ma ubbulta.',
     yuzeySamsung: 'status bar kee Now Bar addal',

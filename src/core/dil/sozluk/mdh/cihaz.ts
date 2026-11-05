@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Da suara nu notification ini amayka naka-on su Do Not Disturb.',
     turkceTts: 'Da natuntay a suara para sa basa ini; maaden a di makineg su kabatya.',
     turkceTtsIos: 'Da natuntay a suara para sa basa ini; maaden a di makineg su kabatya. I-download su suara kanu setting a Accessibility.',
+    ttsDilYok: 'Da pan suara para sa basa ini kanu manga telepono; di makineg su kabatya.',
     alarmSesi: 'Naka-off su volume nu alarm; di makineg su kapabangun.',
     canliGuncelleme: 'Naka-off su live update; di mailay su countdown sa status bar.',
     yuzeySamsung: 'sa status bar endu Now Bar',

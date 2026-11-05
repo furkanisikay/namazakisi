@@ -46,6 +46,7 @@ import { sesliOku, sesliOkumaDestekleniyorMu } from '../../../domain/services/Se
 import { aktifDil, bicim } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
+import { sesliOkumaSesiYok } from '../../../core/dil/sesliOkuma';
 
 export interface SadeGorunumProps {
   vakit: SadeVakitKodu | null;
@@ -316,7 +317,7 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
           )}
           {okumaVar && ttsDestegi === false && (
             <Text style={{ color: renkler.metin, fontSize: 14, textAlign: 'center', marginTop: 6 }}>
-              {metinler.sade.sesIndirin}
+              {sesliOkumaSesiYok(aktifDil()) ? metinler.cihaz.durum.ttsDilYok : metinler.sade.sesIndirin}
             </Text>
           )}
 

@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: '开启勿扰模式时，此通知会被静音。',
     turkceTts: '未找到中文语音包；可能听不到朗读。',
     turkceTtsIos: '未找到中文语音包；可能听不到朗读。在辅助功能设置中下载中文语音。',
+    ttsDilYok: '手机还没有适用于此语言的语音；听不到朗读。',
     alarmSesi: '闹钟音量已关闭；将听不到唤醒。',
     canliGuncelleme: '实时更新已关闭；倒计时不会出现在状态栏中。',
     yuzeySamsung: '状态栏和 Now Bar 中',

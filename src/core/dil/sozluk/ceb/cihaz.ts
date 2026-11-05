@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Gipahilom kining pahibalo samtang naka-on ang Do Not Disturb.',
     turkceTts: 'Walay nakit-ang speech pack nga Cebuano; mahimong dili madungog ang pagbasa og kusog.',
     turkceTtsIos: 'Walay nakit-ang speech pack nga Cebuano; mahimong dili madungog ang pagbasa og kusog. I-download ang tingog nga Cebuano sa mga setting sa Accessibility.',
+    ttsDilYok: 'Wala pay tingog alang niini nga pinulongan sa mga telepono; dili madungog ang pagbasa og kusog.',
     alarmSesi: 'Naka-off ang volume sa inyong alarm; dili madungog ang pagmata.',
     canliGuncelleme: 'Naka-off ang live updates; dili makita ang countdown sa status bar.',
     yuzeySamsung: 'sa status bar ug Now Bar',

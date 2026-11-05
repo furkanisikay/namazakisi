@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Ova se obavijest utišava dok je uključena značajka Ne uznemiravaj.',
     turkceTts: 'Nije pronađen hrvatski govorni paket; čitanje naglas možda se neće čuti.',
     turkceTtsIos: 'Nije pronađen hrvatski govorni paket; čitanje naglas možda se neće čuti. Preuzmite hrvatski glas u postavkama pristupačnosti.',
+    ttsDilYok: 'Telefoni još nemaju glas za ovaj jezik; čitanje naglas neće se čuti.',
     alarmSesi: 'Glasnoća alarma je isključena; buđenje se neće čuti.',
     canliGuncelleme: 'Ažuriranja uživo su isključena; odbrojavanje se neće prikazivati na traci stanja.',
     yuzeySamsung: 'na traci stanja i na traci Now Bar',

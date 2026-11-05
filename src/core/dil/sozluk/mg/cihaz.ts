@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Mangina ity fampandrenesana ity raha mandeha ny « Aza manelingelina ».',
     turkceTts: 'Tsy nisy fonosana feo malagasy hita; mety tsy ho re ny famakiana mafy.',
     turkceTtsIos: "Tsy nisy fonosana feo malagasy hita; mety tsy ho re ny famakiana mafy. Misintona feo malagasy ao amin'ny fikirana Accessibility.",
+    ttsDilYok: "Mbola tsy misy feo ho an'ity fiteny ity amin'ny finday; tsy ho re ny famakiana mafy.",
     alarmSesi: "Maty ny feon'ny fanairanao; tsy ho re ny fanairana.",
     canliGuncelleme: "Tsy mandeha ny fanavaozana mivantana; tsy hiseho eo amin'ny tsipika fampahalalana ny fanisana.",
     yuzeySamsung: "eo amin'ny tsipika fampahalalana sy ny Now Bar",

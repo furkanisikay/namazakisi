@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'To powiadomienie jest wyciszone, gdy włączony jest tryb Nie przeszkadzać.',
     turkceTts: 'Nie znaleziono polskiego pakietu mowy; odczyt na głos może być niesłyszalny.',
     turkceTtsIos: 'Nie znaleziono polskiego pakietu mowy; odczyt na głos może być niesłyszalny. Pobierz polski głos w ustawieniach Dostępności.',
+    ttsDilYok: 'Telefony nie mają jeszcze głosu dla tego języka; odczyt na głos nie będzie słyszalny.',
     alarmSesi: 'Głośność alarmu jest wyłączona; pobudka nie będzie słyszalna.',
     canliGuncelleme: 'Aktualizacje na żywo są wyłączone; odliczanie nie pojawi się na pasku stanu.',
     yuzeySamsung: 'na pasku stanu i na Now Bar',

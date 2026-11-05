@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Questa notifica è silenziata mentre Non disturbare è attivo.',
     turkceTts: 'Non è stato trovato alcun pacchetto vocale italiano; la lettura ad alta voce potrebbe non sentirsi.',
     turkceTtsIos: 'Non è stato trovato alcun pacchetto vocale italiano; la lettura ad alta voce potrebbe non sentirsi. Scarichi una voce italiana nelle impostazioni di Accessibilità.',
+    ttsDilYok: 'I telefoni non hanno ancora una voce per questa lingua; la lettura ad alta voce non si sente.',
     alarmSesi: 'Il volume della sveglia è a zero; la sveglia non si sentirà.',
     canliGuncelleme: 'Gli aggiornamenti live sono disattivati; il conto alla rovescia non comparirà nella barra di stato.',
     yuzeySamsung: 'nella barra di stato e nella Now Bar',

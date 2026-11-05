@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Thông báo này bị tắt tiếng khi Không làm phiền đang bật.',
     turkceTts: 'Không tìm thấy gói giọng nói tiếng Việt; có thể không nghe được phần đọc to.',
     turkceTtsIos: 'Không tìm thấy gói giọng nói tiếng Việt; có thể không nghe được phần đọc to. Hãy tải giọng tiếng Việt trong cài đặt Trợ năng.',
+    ttsDilYok: 'Điện thoại chưa có giọng nói cho ngôn ngữ này; không nghe được phần đọc to.',
     alarmSesi: 'Âm lượng báo thức đang tắt; sẽ không nghe được tiếng đánh thức.',
     canliGuncelleme: 'Cập nhật trực tiếp đang tắt; đếm ngược sẽ không hiện trên thanh trạng thái.',
     yuzeySamsung: 'trên thanh trạng thái và Now Bar',

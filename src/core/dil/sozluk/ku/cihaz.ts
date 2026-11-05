@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Dema Do Not Disturb vekirî be ev agahdarî bêdeng e.',
     turkceTts: 'Pakêta axaftinê ya Kurdî nehate dîtin; dibe ku bi deng xwendin neyê bihîstin.',
     turkceTtsIos: 'Pakêta axaftinê ya Kurdî nehate dîtin; dibe ku bi deng xwendin neyê bihîstin. Di mîhengên Accessibility de dengekî Kurdî daxin.',
+    ttsDilYok: 'Di telefonan de hîn ji bo vî zimanî deng tune ye; bi deng xwendin nayê bihîstin.',
     alarmSesi: 'Dengê alarma we girtî ye; şiyarkirin nayê bihîstin.',
     canliGuncelleme: 'Nûkirinên zindî girtî ne; jimartin di darika rewşê de xuya nabe.',
     yuzeySamsung: 'di darika rewşê û Now Bar de',

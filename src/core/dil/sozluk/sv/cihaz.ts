@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Den här aviseringen tystas medan Stör ej är på.',
     turkceTts: 'Inget svenskt talpaket hittades; uppläsningen kanske inte hörs.',
     turkceTtsIos: 'Inget svenskt talpaket hittades; uppläsningen kanske inte hörs. Ladda ner en svensk röst i inställningarna för Hjälpmedel.',
+    ttsDilYok: 'Telefoner har ännu ingen röst för det här språket; uppläsningen hörs inte.',
     alarmSesi: 'Alarmvolymen är avstängd; väckningen hörs inte.',
     canliGuncelleme: 'Liveuppdateringar är avstängda; nedräkningen visas inte i statusfältet.',
     yuzeySamsung: 'i statusfältet och Now Bar',

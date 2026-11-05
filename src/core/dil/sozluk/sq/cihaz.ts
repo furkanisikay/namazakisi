@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Ky njoftim heshtet kur "Mos shqetëso" është aktiv.',
     turkceTts: 'Nuk u gjet paketë zëri në shqip; leximi me zë mund të mos dëgjohet.',
     turkceTtsIos: 'Nuk u gjet paketë zëri në shqip; leximi me zë mund të mos dëgjohet. Shkarkoni një zë në shqip te cilësimet e Aksesueshmërisë.',
+    ttsDilYok: 'Telefonat ende nuk kanë zë për këtë gjuhë; leximi me zë nuk dëgjohet.',
     alarmSesi: 'Volumi i alarmit është i fikur; zgjimi nuk do të dëgjohet.',
     canliGuncelleme: 'Përditësimet e drejtpërdrejta janë joaktive; numërimi nuk do të shfaqet në shiritin e statusit.',
     yuzeySamsung: 'në shiritin e statusit dhe në Now Bar',

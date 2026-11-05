@@ -13,7 +13,8 @@
  */
 import type { IsletimSistemiSurumu } from './surum';
 import type { AlarmKitDurumu } from '../muhafiz/ios/alarmKit';
-import { canli, metin } from '../dil/aktifDil';
+import { aktifDil, canli, metin } from '../dil/aktifDil';
+import { sesliOkumaSesiYok } from '../dil/sesliOkuma';
 
 /** Okunan izin durumu: `null` = bilinmiyor. */
 export type IzinDurumu = 'verildi' | 'sorulabilir' | 'reddedildi';
@@ -147,6 +148,8 @@ export function durumNotu(kosul: DurumKosulu, d: CihazDurumu): DurumNotu | null 
                 : null;
         case 'turkceTts':
             if (d.turkceTts !== false) return null;
+            // Telefonlarda bu dilin sesi hiç yok: "indirin" demek yanıltır, düğmesiz bilgi satırı.
+            if (sesliOkumaSesiYok(aktifDil())) return { tip: 'bilgi', metin: m.ttsDilYok };
             return android
                 ? { tip: 'uyari', metin: m.turkceTts, eylem: 'ttsIndir' }
                 : {

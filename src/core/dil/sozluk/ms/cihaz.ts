@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Pemberitahuan ini disenyapkan ketika Jangan Ganggu dihidupkan.',
     turkceTts: 'Pakej pertuturan bahasa Melayu tidak ditemui; bacaan suara mungkin tidak kedengaran.',
     turkceTtsIos: 'Pakej pertuturan bahasa Melayu tidak ditemui; bacaan suara mungkin tidak kedengaran. Muat turun suara Melayu dalam tetapan Kebolehcapaian.',
+    ttsDilYok: 'Telefon belum mempunyai suara untuk bahasa ini; bacaan suara tidak akan kedengaran.',
     alarmSesi: 'Kelantangan penggera anda dimatikan; kejutan tidak akan kedengaran.',
     canliGuncelleme: 'Kemas kini langsung dimatikan; kiraan detik tidak dipaparkan di bar status.',
     yuzeySamsung: 'di bar status dan Now Bar',

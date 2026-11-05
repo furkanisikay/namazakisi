@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Deze melding zwijgt als Niet storen aanstaat.',
     turkceTts: 'Er is geen Nederlands spraakpakket gevonden; voorlezen is mogelijk niet te horen.',
     turkceTtsIos: 'Er is geen Nederlands spraakpakket gevonden; voorlezen is mogelijk niet te horen. Download een Nederlandse stem in de instellingen voor Toegankelijkheid.',
+    ttsDilYok: 'Telefoons hebben nog geen stem voor deze taal; voorlezen is niet te horen.',
     alarmSesi: 'Het alarmvolume staat uit; de wekker is niet te horen.',
     canliGuncelleme: 'Live updates staan uit; de aftelling verschijnt niet in de statusbalk.',
     yuzeySamsung: 'in de statusbalk en de Now Bar',

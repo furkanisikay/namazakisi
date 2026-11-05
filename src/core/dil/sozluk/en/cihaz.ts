@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'This notification is silenced while Do Not Disturb is on.',
     turkceTts: "No English speech pack was found; read aloud may not be heard.",
     turkceTtsIos: 'No English speech pack was found; read aloud may not be heard. Download an English voice in Accessibility settings.',
+    ttsDilYok: "Phones don't have a voice for this language yet, so read aloud can't be heard.",
     alarmSesi: "Your alarm volume is off; the wake-up won't be heard.",
     canliGuncelleme: "Live updates are off; the countdown won't appear in the status bar.",
     yuzeySamsung: 'in the status bar and Now Bar',

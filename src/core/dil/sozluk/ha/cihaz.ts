@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Ana yin shiru da wannan sanarwa lokacin da Kada a dame ni ke kunne.',
     turkceTts: 'Ba a sami fakitin murya na Hausa ba; ƙila ba za a ji karatu da murya ba.',
     turkceTtsIos: 'Ba a sami fakitin murya na Hausa ba; ƙila ba za a ji karatu da murya ba. Ku sauke muryar Hausa a saitunan Accessibility.',
+    ttsDilYok: 'Wayoyi ba su da muryar wannan harshe tukuna; ba za a ji karatu da murya ba.',
     alarmSesi: 'Ƙarar ƙararrawarku a kashe take; ba za a ji tashin ba.',
     canliGuncelleme: 'Sabuntawa kai tsaye a kashe take; ƙidaya ba za ta bayyana a sandar matsayi ba.',
     yuzeySamsung: 'a sandar matsayi da Now Bar',

@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Kai įjungtas režimas „Netrukdyti“, šis pranešimas tyli.',
     turkceTts: 'Lietuvių kalbos šnekos paketas nerastas; skaitymas garsiai gali būti negirdimas.',
     turkceTtsIos: 'Lietuvių kalbos šnekos paketas nerastas; skaitymas garsiai gali būti negirdimas. Atsisiųskite lietuvišką balsą pritaikymo neįgaliesiems nustatymuose.',
+    ttsDilYok: 'Telefonuose dar nėra šios kalbos balso; skaitymas garsiai nebus girdimas.',
     alarmSesi: 'Žadintuvo garsumas išjungtas; žadinimo nesigirdės.',
     canliGuncelleme: 'Tiesioginiai atnaujinimai išjungti; skaitiklis būsenos juostoje nerodomas.',
     yuzeySamsung: 'būsenos juostoje ir „Now Bar“',

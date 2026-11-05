@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Bei „Bitte nicht stören“ bleibt diese Benachrichtigung stumm.',
     turkceTts: 'Kein deutsches Sprachpaket gefunden; das Vorlesen ist möglicherweise nicht zu hören.',
     turkceTtsIos: 'Kein deutsches Sprachpaket gefunden; das Vorlesen ist möglicherweise nicht zu hören. Laden Sie in den Bedienungshilfen eine deutsche Stimme.',
+    ttsDilYok: 'Telefone haben noch keine Stimme für diese Sprache; das Vorlesen ist nicht zu hören.',
     alarmSesi: 'Ihre Weckerlautstärke ist aus; das Wecken ist nicht zu hören.',
     canliGuncelleme: 'Live-Updates sind aus; der Countdown erscheint nicht in der Statusleiste.',
     yuzeySamsung: 'in der Statusleiste und in der Now Bar',

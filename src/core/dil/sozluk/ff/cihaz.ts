@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Tintinal ngal deƴƴinaama tuma "Wota haɓɓu" huɓɓinaa.',
     turkceTts: 'Alaa hito Pular heɓaaɗo; janngugol e hito hino waawi nanaaki.',
     turkceTtsIos: 'Alaa hito Pular heɓaaɗo; janngugol e hito hino waawi nanaaki. Aawtee hito e teelte Accessibility.',
+    ttsDilYok: 'Alaa hito ɗemngal ngal e talifonji haa jooni; janngugol e hito nanataake.',
     alarmSesi: 'Sowto alarm mon ñifaama; finninde ndee nanataake.',
     canliGuncelleme: 'Hesɗitine wuurɗe ñifaama; saa’i heddiiɗo ɓanngataa e palal ngonka.',
     yuzeySamsung: 'e palal ngonka e Now Bar',

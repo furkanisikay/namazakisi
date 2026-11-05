@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Arifa hii inanyamazishwa wakati Usinisumbue imewashwa.',
     turkceTts: 'Hakuna kifurushi cha sauti ya Kiswahili kilichopatikana; kusoma kwa sauti huenda kusisikike.',
     turkceTtsIos: 'Hakuna kifurushi cha sauti ya Kiswahili kilichopatikana; kusoma kwa sauti huenda kusisikike. Pakua sauti ya Kiswahili katika mipangilio ya Ufikivu.',
+    ttsDilYok: 'Simu bado hazina sauti ya lugha hii; kusoma kwa sauti hakutasikika.',
     alarmSesi: 'Sauti ya kengele yako imezimwa; kengele ya kuamsha haitasikika.',
     canliGuncelleme: 'Masasisho ya moja kwa moja yamezimwa; muda uliobaki hautaonekana kwenye upau wa hali.',
     yuzeySamsung: 'kwenye upau wa hali na Now Bar',

@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'A pa ìfitónilétí yìí lẹ́nu mọ́ nígbà tí “Má ṣe yọ mí lẹ́nu” bá wà ní títàn.',
     turkceTts: 'A kò rí àpò ohùn Yorùbá; a lè má gbọ́ kíkà sókè.',
     turkceTtsIos: 'A kò rí àpò ohùn Yorùbá; a lè má gbọ́ kíkà sókè. Ẹ gba ohùn sílẹ̀ nínú ètò Accessibility.',
+    ttsDilYok: 'Fóònù kò tíì ní ohùn fún èdè yìí; a kò ní gbọ́ kíkà sókè.',
     alarmSesi: 'Ohùn aago ìdágìrì yín wà ní pípa; a kò ní gbọ́ ìjíǹde.',
     canliGuncelleme: 'Ìmúdójúìwọ̀n láàyè wà ní pípa; ìkàsẹ̀yìn kò ní hàn nínú ọ̀pá ipò.',
     yuzeySamsung: 'nínú ọ̀pá ipò àti Now Bar',

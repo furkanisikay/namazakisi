@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Esta notificación se silencia cuando «No molestar» está activado.',
     turkceTts: 'No se encontró una voz en español; es posible que no se oiga la lectura en voz alta.',
     turkceTtsIos: 'No se encontró una voz en español; es posible que no se oiga la lectura en voz alta. Descargue una voz en español en los ajustes de accesibilidad.',
+    ttsDilYok: 'Los teléfonos aún no tienen una voz para este idioma; la lectura en voz alta no se oye.',
     alarmSesi: 'El volumen de las alarmas está desactivado; el despertador no se oirá.',
     canliGuncelleme: 'Las actualizaciones en directo están desactivadas; la cuenta atrás no aparecerá en la barra de estado.',
     yuzeySamsung: 'en la barra de estado y en la Now Bar',

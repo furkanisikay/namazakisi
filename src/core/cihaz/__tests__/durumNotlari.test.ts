@@ -42,6 +42,22 @@ describe('durumNotu — ölçebildiğini sorma', () => {
         expect(durumNotu('turkceTts', android({ turkceTts: true }))).toBeNull();
     });
 
+    it('telefonlarda sesi olmayan dilde "indirin" denmez: düğmesiz bilgi satırı, ses varsa sus', () => {
+        try {
+            aktifDiliKur('en');
+            expect(durumNotu('turkceTts', android({ turkceTts: false }))?.eylem).toBe('ttsIndir');
+            aktifDiliKur('ak');
+            for (const d of [android({ turkceTts: false }), ios({ turkceTts: false })]) {
+                const not = durumNotu('turkceTts', d);
+                expect(not?.tip).toBe('bilgi');
+                expect(not?.eylem).toBeUndefined();
+            }
+            expect(durumNotu('turkceTts', android({ turkceTts: true }))).toBeNull();
+        } finally {
+            aktifDilSifirla();
+        }
+    });
+
     it('metinler kibar, teknik terimsiz ve tek cümle; her eylemin etiketi var', () => {
         const hepsi = durumNotlari(
             ['bildirimIzni', 'konumIzni', 'tamAlarm', 'tamEkran', 'pil', 'dndErisimi', 'turkceTts', 'alarmSesi', 'canliGuncelleme'],

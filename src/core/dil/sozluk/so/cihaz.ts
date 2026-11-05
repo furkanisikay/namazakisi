@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Ogeysiiskan waa la aamusiyaa inta "Ha i khalkhalin" shidan yahay.',
     turkceTts: 'Lama helin xirmo hadal Soomaali ah; akhrinta codka waxaa laga yaabaa in aan la maqlin.',
     turkceTtsIos: 'Lama helin xirmo hadal Soomaali ah; akhrinta codka waxaa laga yaabaa in aan la maqlin. Ka soo deji cod Soomaali ah dejinta "Accessibility".',
+    ttsDilYok: 'Taleefannada weli cod luqaddan uma laha; akhrinta codka lama maqlayo.',
     alarmSesi: 'Codka alaarmigaagu waa dansan yahay; toosinta lama maqli doono.',
     canliGuncelleme: 'Cusboonaysiinta tooska ah waa dansan tahay; tirintu kama muuqan doonto xarigga xaaladda.',
     yuzeySamsung: 'xarigga xaaladda iyo Now Bar',

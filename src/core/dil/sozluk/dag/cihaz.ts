@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Lahabali ŋɔ ka kukoli Do Not Disturb yi yooya.',
     turkceTts: 'Bɛ bi nya Dagbanli kukoli karimbu; yi ni tooi bi wum kukoli karimbu.',
     turkceTtsIos: 'Bɛ bi nya Dagbanli kukoli karimbu; yi ni tooi bi wum kukoli karimbu. Deemi ya kukoli Accessibility malizali ni.',
+    ttsDilYok: 'Tilifoŋ nima ka balli ŋɔ kukoli hali ni zuŋɔ; yi ku wum kukoli karimbu.',
     alarmSesi: 'Yi alaam kukoli kpariya; bɛ ku wum yiɣisibu.',
     canliGuncelleme: 'Lahabaya din tumdi kpariya; saha kalibu ku yi zuɣusaa kuligu ni.',
     yuzeySamsung: 'zuɣusaa kuligu mini Now Bar ni',

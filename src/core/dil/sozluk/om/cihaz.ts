@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: "Beeksisni kun yeroo \"Hin jeeqinaa\" banaa ta'e ni callisa.",
     turkceTts: "Paakeejiin dubbii Afaan Oromoo hin argamne; sagaleen dubbifamu dhaga'amuu dhiisuu danda'a.",
     turkceTtsIos: "Paakeejiin dubbii Afaan Oromoo hin argamne; sagaleen dubbifamu dhaga'amuu dhiisuu danda'a. Qindaa'ina Accessibility keessatti sagalee Afaan Oromoo buufadhaa.",
+    ttsDilYok: "Bilbiloonni afaan kanaaf hanga ammaatti sagalee hin qaban; sagaleen dubbifamu hin dhaga'amu.",
     alarmSesi: "Sagaleen alaarmii keessanii cufaa dha; dammaqsi hin dhaga'amu.",
     canliGuncelleme: "Haaromsi kallattii cufaa dha; lakkoofsi duubaa sarara haalaa keessatti hin mul'atu.",
     yuzeySamsung: 'sarara haalaa fi Now Bar keessatti',

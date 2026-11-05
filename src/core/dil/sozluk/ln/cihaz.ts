@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Liyebisi oyo ezali nyɛɛ ntango "Do Not Disturb" efungwami.',
     turkceTts: 'Mongongo ya Lingala emonani te; kotanga na mongongo ekoki koyokana te.',
     turkceTtsIos: 'Mongongo ya Lingala emonani te; kotanga na mongongo ekoki koyokana te. Bokitisa mongongo na mibongiseli ya Accessibility.',
+    ttsDilYok: 'Ba telefone bazali naino na mongongo ya lokota oyo te; kotanga na mongongo ekoyokana te.',
     alarmSesi: 'Lokito ya alarme na bino ekangami; kolamusa ekoyokana te.',
     canliGuncelleme: 'Mayebisi ya mbalakaka ekangami; kotanga ntango ekomonana te na barre ya likolo.',
     yuzeySamsung: 'na barre ya likolo mpe na Now Bar',

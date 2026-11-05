@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Tahimik ang notification na ito habang naka-on ang Huwag Istorbohin.',
     turkceTts: 'Walang nakitang speech pack na Filipino; maaaring hindi marinig ang pagbasa nang malakas.',
     turkceTtsIos: 'Walang nakitang speech pack na Filipino; maaaring hindi marinig ang pagbasa nang malakas. Mag-download ng boses na Filipino sa mga setting ng Accessibility.',
+    ttsDilYok: 'Wala pang boses para sa wikang ito sa mga telepono; hindi maririnig ang pagbasa nang malakas.',
     alarmSesi: 'Naka-off ang volume ng alarm; hindi maririnig ang paggising.',
     canliGuncelleme: 'Naka-off ang mga live update; hindi lalabas ang countdown sa status bar.',
     yuzeySamsung: 'sa status bar at sa Now Bar',

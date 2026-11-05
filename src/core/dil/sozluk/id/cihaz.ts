@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Notifikasi ini diam saat Jangan Ganggu aktif.',
     turkceTts: 'Paket suara bahasa Indonesia tidak ditemukan; pembacaan suara mungkin tidak terdengar.',
     turkceTtsIos: 'Paket suara bahasa Indonesia tidak ditemukan; pembacaan suara mungkin tidak terdengar. Unduh suara bahasa Indonesia di pengaturan Aksesibilitas.',
+    ttsDilYok: 'Ponsel belum memiliki suara untuk bahasa ini; pembacaan suara tidak akan terdengar.',
     alarmSesi: 'Volume alarm Anda nol; pembangun tidak akan terdengar.',
     canliGuncelleme: 'Pembaruan langsung nonaktif; hitung mundur tidak tampil di bilah status.',
     yuzeySamsung: 'di bilah status dan Now Bar',

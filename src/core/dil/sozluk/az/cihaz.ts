@@ -27,6 +27,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: '"Narahat etməyin" açıq olanda bu bildiriş susur.',
     turkceTts: 'Azərbaycan dilində danışıq paketi tapılmadı; səsli oxuma eşidilməyə bilər.',
     turkceTtsIos: 'Azərbaycan dilində danışıq paketi tapılmadı; səsli oxuma eşidilməyə bilər. Əlçatanlıq parametrlərindən səs endirin.',
+    ttsDilYok: 'Telefonlarda bu dil üçün hələ səs yoxdur; səsli oxuma eşidilmir.',
     alarmSesi: 'Siqnalın səs səviyyəsi sönükdür; oyatma eşidilməyəcək.',
     canliGuncelleme: 'Canlı yeniləmələr bağlıdır; sayğac status panelində görünmür.',
     yuzeySamsung: 'status panelində və Now Bar-da',

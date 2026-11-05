@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Dok je uključeno Ne ometaj, ovo obavještenje je utišano.',
     turkceTts: 'Glas za jezik aplikacije nije pronađen; čitanje naglas se možda neće čuti.',
     turkceTtsIos: 'Glas za jezik aplikacije nije pronađen; čitanje naglas se možda neće čuti. Preuzmite glas u postavkama pristupačnosti.',
+    ttsDilYok: 'Telefoni još nemaju glas za ovaj jezik; čitanje naglas se neće čuti.',
     alarmSesi: 'Jačina zvuka alarma je isključena; buđenje se neće čuti.',
     canliGuncelleme: 'Ažuriranja uživo su isključena; odbrojavanje se ne vidi u statusnoj traci.',
     yuzeySamsung: 'u statusnoj traci i u Now Baru',

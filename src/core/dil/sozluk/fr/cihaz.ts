@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Cette notification est silencieuse quand « Ne pas déranger » est activé.',
     turkceTts: 'Aucune voix française n’a été trouvée ; la lecture à voix haute risque de ne pas être entendue.',
     turkceTtsIos: 'Aucune voix française n’a été trouvée ; la lecture à voix haute risque de ne pas être entendue. Téléchargez une voix française dans les réglages d’accessibilité.',
+    ttsDilYok: 'Les téléphones n’ont pas encore de voix pour cette langue ; la lecture à voix haute ne sera pas entendue.',
     alarmSesi: 'Le volume de vos alarmes est coupé ; le réveil ne sera pas entendu.',
     canliGuncelleme: 'Les mises à jour en direct sont désactivées ; le compte à rebours n’apparaîtra pas dans la barre d’état.',
     yuzeySamsung: 'dans la barre d’état et la Now Bar',

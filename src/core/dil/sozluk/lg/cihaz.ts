@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Obubaka buno busirisibwa nga Totaataaganya eri ku.',
     turkceTts: 'Tewali ddoboozi lya Luganda lizuuliddwa; okusoma mu ddoboozi kuyinza obutawulirwa.',
     turkceTtsIos: 'Tewali ddoboozi lya Luganda lizuuliddwa; okusoma mu ddoboozi kuyinza obutawulirwa. Wanula eddoboozi mu ntegeka za Accessibility.',
+    ttsDilYok: 'Essimu tezinnaba kufuna ddoboozi lya lulimi luno; okusoma mu ddoboozi tekuwulirwa.',
     alarmSesi: 'Eddoboozi lya alaamu yo liggaddwa; okuzuukusa tekujja kuwulirwa.',
     canliGuncelleme: 'Ebipya mu butereevu biggyiddwako; okubala ekiseera tekujja kulabika mu bbaala y’embeera.',
     yuzeySamsung: 'mu bbaala y’embeera ne mu Now Bar',

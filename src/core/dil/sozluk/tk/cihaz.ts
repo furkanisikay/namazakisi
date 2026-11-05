@@ -26,6 +26,7 @@ export const cihaz: Sozluk['cihaz'] = {
     dnd: 'Bu habarnama "Biynjalyk etmeli däl" açyk wagty sessiz bolýar.',
     turkceTts: 'Türkmen dilindäki gürleýiş toplumy tapylmady; sesli okamak eşidilmezligi mümkin.',
     turkceTtsIos: 'Türkmen dilindäki gürleýiş toplumy tapylmady; sesli okamak eşidilmezligi mümkin. Elýeterlilik sazlamalaryndan türkmen sesini ýükläň.',
+    ttsDilYok: 'Telefonlarda bu dil üçin heniz ses ýok; sesli okamak eşidilmeýär.',
     alarmSesi: 'Budilnigiň sesi öçük; oýarma eşidilmez.',
     canliGuncelleme: 'Janly täzelenmeler öçük; sanaw ýagdaý setirinde görünmez.',
     yuzeySamsung: 'ýagdaý setirinde we Now Bar-da',
