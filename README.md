@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.70.1-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.71.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.70.1** · Mağazada: Google Play: **0.70.1** · App Store: **0.70.1**
+Kaynak koddaki sürüm: **0.71.0** · Mağazada: Google Play: **0.70.1** · App Store: **0.70.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -135,8 +135,28 @@ Kaynak koddaki sürüm: **0.70.1** · Mağazada: Google Play: **0.70.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/44-adim-detay-tekrar-acik.webp" width="160" alt="Adım detay tekrar acik" title="Adım detay tekrar acik">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/45-zaman-seridi-tekrar.webp" width="160" alt="Zaman şeridi tekrar" title="Zaman şeridi tekrar">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/50-ayarlar-guc-tasarrufu-cipi.webp" width="160" alt="Ayarlar güç tasarrufu cipi" title="Ayarlar güç tasarrufu cipi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/50-bolge-takvimi.webp" width="160" alt="Bolge takvimi" title="Bolge takvimi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/51-ana-ekran-jakim.webp" width="160" alt="Ana ekran jakim" title="Ana ekran jakim">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/51-esitleme-durum.webp" width="160" alt="Esitleme durum" title="Esitleme durum">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/52-esitleme-otomatik.webp" width="160" alt="Esitleme otomatik" title="Esitleme otomatik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/52-hesap-yontemi.webp" width="160" alt="Hesap yontemi" title="Hesap yontemi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/53-hesap-yontemi-ikindi.webp" width="160" alt="Hesap yontemi ikindi" title="Hesap yontemi ikindi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/55-konum-dunya.webp" width="160" alt="Konum dunya" title="Konum dunya">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/56-ulke-listesi.webp" width="160" alt="Ulke listesi" title="Ulke listesi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/57-sehir-arama.webp" width="160" alt="Sehir arama" title="Sehir arama">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/58-konum-kuala-lumpur.webp" width="160" alt="Konum kuala lumpur" title="Konum kuala lumpur">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/59-gunun-ayeti.webp" width="160" alt="Gunun ayeti" title="Gunun ayeti">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/60-gunun-ayeti-onceki.webp" width="160" alt="Gunun ayeti onceki" title="Gunun ayeti onceki">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/61-gunun-ayeti-ayar.webp" width="160" alt="Gunun ayeti ayar" title="Gunun ayeti ayar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/62-gunun-ayeti-duvar-onay.webp" width="160" alt="Gunun ayeti duvar onay" title="Gunun ayeti duvar onay">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/63-gunun-ayeti-widget-ekle.webp" width="160" alt="Gunun ayeti widget ekle" title="Gunun ayeti widget ekle">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/64-gunun-ayeti-duvar-onizleme.webp" width="160" alt="Gunun ayeti duvar önizleme" title="Gunun ayeti duvar önizleme">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/65-gunun-ayeti-ana-ekran.webp" width="160" alt="Gunun ayeti ana ekran" title="Gunun ayeti ana ekran">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/66-gunun-ayeti-kilit.webp" width="160" alt="Gunun ayeti kilit" title="Gunun ayeti kilit">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/67-dil-secimi.webp" width="160" alt="Dil seçimi" title="Dil seçimi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/68-dil-secimi-alt.webp" width="160" alt="Dil seçimi alt" title="Dil seçimi alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/69-bolge-takvimi-baku.webp" width="160" alt="Bolge takvimi baku" title="Bolge takvimi baku">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/70-ana-ekran-qmi.webp" width="160" alt="Ana ekran qmi" title="Ana ekran qmi">
 </p>
 
 </details>
@@ -199,8 +219,28 @@ Kaynak koddaki sürüm: **0.70.1** · Mağazada: Google Play: **0.70.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/44-adim-detay-tekrar-acik.webp" width="160" alt="Adım detay tekrar acik" title="Adım detay tekrar acik">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/45-zaman-seridi-tekrar.webp" width="160" alt="Zaman şeridi tekrar" title="Zaman şeridi tekrar">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/50-ayarlar-guc-tasarrufu-cipi.webp" width="160" alt="Ayarlar güç tasarrufu cipi" title="Ayarlar güç tasarrufu cipi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/50-bolge-takvimi.webp" width="160" alt="Bolge takvimi" title="Bolge takvimi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/51-ana-ekran-jakim.webp" width="160" alt="Ana ekran jakim" title="Ana ekran jakim">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/51-esitleme-durum.webp" width="160" alt="Esitleme durum" title="Esitleme durum">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/52-esitleme-otomatik.webp" width="160" alt="Esitleme otomatik" title="Esitleme otomatik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/52-hesap-yontemi.webp" width="160" alt="Hesap yontemi" title="Hesap yontemi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/53-hesap-yontemi-ikindi.webp" width="160" alt="Hesap yontemi ikindi" title="Hesap yontemi ikindi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/55-konum-dunya.webp" width="160" alt="Konum dunya" title="Konum dunya">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/56-ulke-listesi.webp" width="160" alt="Ulke listesi" title="Ulke listesi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/57-sehir-arama.webp" width="160" alt="Sehir arama" title="Sehir arama">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/58-konum-kuala-lumpur.webp" width="160" alt="Konum kuala lumpur" title="Konum kuala lumpur">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/59-gunun-ayeti.webp" width="160" alt="Gunun ayeti" title="Gunun ayeti">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/60-gunun-ayeti-onceki.webp" width="160" alt="Gunun ayeti onceki" title="Gunun ayeti onceki">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/61-gunun-ayeti-ayar.webp" width="160" alt="Gunun ayeti ayar" title="Gunun ayeti ayar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/62-gunun-ayeti-duvar-onay.webp" width="160" alt="Gunun ayeti duvar onay" title="Gunun ayeti duvar onay">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/63-gunun-ayeti-widget-ekle.webp" width="160" alt="Gunun ayeti widget ekle" title="Gunun ayeti widget ekle">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/64-gunun-ayeti-duvar-onizleme.webp" width="160" alt="Gunun ayeti duvar önizleme" title="Gunun ayeti duvar önizleme">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/65-gunun-ayeti-ana-ekran.webp" width="160" alt="Gunun ayeti ana ekran" title="Gunun ayeti ana ekran">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/66-gunun-ayeti-kilit.webp" width="160" alt="Gunun ayeti kilit" title="Gunun ayeti kilit">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/67-dil-secimi.webp" width="160" alt="Dil seçimi" title="Dil seçimi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/68-dil-secimi-alt.webp" width="160" alt="Dil seçimi alt" title="Dil seçimi alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/69-bolge-takvimi-baku.webp" width="160" alt="Bolge takvimi baku" title="Bolge takvimi baku">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/70-ana-ekran-qmi.webp" width="160" alt="Ana ekran qmi" title="Ana ekran qmi">
 </p>
 
 </details>
@@ -388,18 +428,22 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 ### 🆕 Son Eklenenler
 
 <!-- OTOMATIK:BASLA yenilikler -->
+- **Günün ayeti ana ekranınızda** — Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza widget olarak ekleyebilir, isterseniz kilit ekranınızın duvar kâğıdı yapabilirsiniz. <sub>Android · 0.71.0</sub>
+- **Günün ayeti ana ekranınızda** — Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza ve kilit ekranınıza widget olarak ekleyebilirsiniz. <sub>iOS · 0.71.0</sub>
+- **Uygulamayı İngilizce de kullanabilirsiniz** — Ayarlar › Dil bölümünden İngilizceyi seçebilirsiniz. Bildirimler, sesli okuma ve widget da seçtiğiniz dilde olur. <sub>Android · iOS · 0.71.0</sub>
+- **Dünyanın her yerinde doğru vakit** — Türkiye dışındaki bir şehri de seçebilirsiniz. Vakitler o ülkenin camilerinin uyduğu takvime göre hesaplanır. <sub>Android · iOS · 0.71.0</sub>
 - **Allah kabul etsin** — Namazı işaretlediğinizde artık "Kılındı" değil, "Allah kabul etsin" yazar. Cuma, kandil, bayram ve Ramazan günlerinde başlıkta kısa bir selam görürsünüz. <sub>Android · iOS · 0.70.0</sub>
 - **Verileriniz Tüm Cihazlarınızda** — Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir. <sub>Android · 0.69.0</sub>
 - **Telefon ve tablet birlikte** — Tabletinizi telefonunuza ekleyin: birinde işaretlediğiniz namaz öbürüne de geçer. Hesap yok, sunucu yok; yalnız evinizin Wi-Fi ağı. <sub>Android · iOS · 0.60.0</sub>
 - **TV kıldığınız namazları da bilir** — Cihazlarım sayfasından evdeki TV’leri yönetin. İsterseniz TV, kıldığınız namazları bilir; vakit daralırken kılmadıysanız ekranın altında sessiz bir bant gösterir. <sub>Android · iOS · 0.65.0</sub>
+
+<details>
+<summary>Diğer 40 özellik</summary>
+
 - **Vakit girince kendi sesiniz çalsın** — Her vakit için bildirim sesini ayrı seçin; telefonunuzdaki bir ses dosyasını, örneğin sevdiğiniz bir ezan kaydını da ekleyebilirsiniz. <sub>Android · 0.64.0</sub>
 - **Camide telefonunuz sessize geçsin** — Namaz odağını bir kez kurun: camiye ya da kendi belirlediğiniz bir yere varınca iPhone sessize geçer, ayrılınca eski hâline döner. <sub>iOS · 0.55.0</sub>
 - **Vakitler Televizyonda** — Evdeki Android TV’de Namaz Akışı’nı açın, ekrandaki kare kodu telefonunuzla okutun: konumunuz TV’ye gelir, vakitler büyük ekranda sizin şehrinize göre görünür. <sub>Android · iOS · 0.55.0</sub>
 - **Kıbleyi Kamerayla Bulun** — Kıble sekmesinde telefonunuzu dik tutup kamerayla çevrenize bakın: Kâbe işareti kıble yönünde belirir, yanında Kâbe’ye uzaklığınız yazar. Pusula açılır açılmaz döner ve titremeden akar. <sub>Android · iOS · 0.52.0</sub>
-
-<details>
-<summary>Diğer 36 özellik</summary>
-
 - **Daha sade uygulama** — Daha az bildirim, gece sessiz saatler ve tüm hatırlatmalar tek sayfada. Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar. <sub>Android · iOS · 0.50.0</sub>
 - **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.47.0</sub>
 - **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar ve sesli okuma. <sub>Android · iOS · 0.40.0</sub>
