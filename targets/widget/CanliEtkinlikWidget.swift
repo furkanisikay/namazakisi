@@ -19,6 +19,7 @@ struct NamazCanliEtkinlikWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: NamazCanliNitelikleri.self) { context in
             CanliKilitEkraniGorunumu(durum: context.state, eskidi: context.isStale)
+                .nkoVarsayilanYaziTipi()
                 .activityBackgroundTint(Color(.systemBackground).opacity(0.9))
                 .widgetURL(WidgetSabitleri.acilis)
         } dynamicIsland: { context in
@@ -30,11 +31,13 @@ struct NamazCanliEtkinlikWidget: Widget {
                         .font(YaziTipi.stil(.headline))
                         .foregroundStyle(WidgetSabitleri.yesil)
                         .lineLimit(1)
+                        .nkoVarsayilanYaziTipi()
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     CanliSayac(durum: durum, eskidi: eskidi)
                         .font(YaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                         .frame(maxWidth: 90, alignment: .trailing)
+                        .nkoVarsayilanYaziTipi()
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(alignment: .leading, spacing: 6) {
@@ -47,6 +50,7 @@ struct NamazCanliEtkinlikWidget: Widget {
                             CanliKildimDugmesi(durum: durum, eskidi: eskidi)
                         }
                     }
+                    .nkoVarsayilanYaziTipi()
                 }
             } compactLeading: {
                 Image(systemName: CanliMetin.ikon(durum))
@@ -55,6 +59,7 @@ struct NamazCanliEtkinlikWidget: Widget {
                 CanliSayac(durum: durum, eskidi: eskidi)
                     .font(YaziTipi.stil(.caption2).weight(.semibold))
                     .frame(maxWidth: 48)
+                    .nkoVarsayilanYaziTipi()
             } minimal: {
                 Image(systemName: CanliMetin.ikon(durum))
                     .foregroundStyle(WidgetSabitleri.yesil)

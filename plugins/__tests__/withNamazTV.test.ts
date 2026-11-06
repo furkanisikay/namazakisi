@@ -119,6 +119,10 @@ describe('withNamazTV — Xcode hedefi', () => {
         expect(fs.readFileSync(path.join(KOK, 'targets/tv/TvYaziTipi.swift'), 'utf8')).toContain(
             'static let nkoAdi = "NotoSansNKo-Regular"'
         );
+        // Font vermeyen metin kökten N'Ko yazı tipini alır.
+        expect(fs.readFileSync(path.join(KOK, 'targets/tv/NamazTVUygulamasi.swift'), 'utf8')).toMatch(
+            /TvKokGorunumu\(\)\s*\.nkoVarsayilanYaziTipi\(\)/
+        );
         fs.rmSync(gecici, { recursive: true, force: true });
     });
 });

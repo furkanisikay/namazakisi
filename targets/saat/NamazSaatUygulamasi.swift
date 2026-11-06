@@ -25,6 +25,7 @@ struct NamazSaatUygulamasi: App {
             AnaEkran()
                 .environmentObject(SaatBaglantisi.paylasilan)
                 .environmentObject(SaatUyandirici.paylasilan)
+                .nkoVarsayilanYaziTipi()
         }
         // Uygulama kapaliyken gelen yuk (telefonda vakit/kilinmislik degisti): sistem
         // saati arka planda uyandirir; teslim bitene kadar beklenir ki komplikasyonlar

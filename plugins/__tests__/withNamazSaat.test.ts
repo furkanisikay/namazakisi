@@ -171,6 +171,14 @@ describe('withNamazSaat — kaynak kopyalama', () => {
             expect(fs.readFileSync(path.join(KOK, 'targets/saat/gorunum/SaatYaziTipi.swift'), 'utf8')).toContain(
                 'static let nkoAdi = "NotoSansNKo-Regular"'
             );
+            // Font vermeyen metin: kökler (uygulama, tam ekran sunum, komplikasyon) ve sistem yuvaları.
+            const oku = (yol: string): string => fs.readFileSync(path.join(KOK, yol), 'utf8');
+            expect(oku('targets/saat/NamazSaatUygulamasi.swift')).toContain('.nkoVarsayilanYaziTipi()');
+            expect(oku('targets/saat/AnaEkran.swift')).toContain('.nkoVarsayilanYaziTipi()');
+            const komplikasyon = oku('targets/saat-widget/SaatKomplikasyonu.swift');
+            expect(komplikasyon).toContain('.nkoVarsayilanYaziTipi()');
+            // gauge etiketi + iki köşe `widgetLabel`'ı
+            expect(komplikasyon.match(/\.nkoYaziTipi\(\.caption2\)/g)).toHaveLength(3);
         } finally {
             fs.rmSync(gecici, { recursive: true, force: true });
         }

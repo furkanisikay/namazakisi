@@ -1233,6 +1233,7 @@ struct GununAyetiWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: GununAyetiKarari.widgetTuru, provider: GununAyetiSaglayici()) { girdi in
             GununAyetiGorunumu(girdi: girdi)
+                .nkoVarsayilanYaziTipi()
         }
         .configurationDisplayName(GununAyetiYerelMetinleri.simdiki.galeriAdi)
         .description(GununAyetiYerelMetinleri.simdiki.galeriAciklama)

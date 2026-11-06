@@ -100,6 +100,8 @@ struct AnaEkran: View {
             if let kayit = uyandirici.calan {
                 UyandirmaEkrani(kayit: kayit)
                     .environmentObject(uyandirici)
+                    // Sunum ayri bir kok: ortam aktarimina guvenmeden kapi burada da.
+                    .nkoVarsayilanYaziTipi()
             }
         }
         .onChange(of: sahne) { _, yeni in

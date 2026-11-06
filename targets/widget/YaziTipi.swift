@@ -52,3 +52,27 @@ enum YaziTipi {
         }
     }
 }
+
+extension View {
+    /// Kok gorunume: `.font` VERMEYEN metin (duz `Text`, `Label`) ortamdan N'Ko yazi tipini
+    /// (govde stili) alsin. YALNIZ N'Ko'da ortami degistirir; aksi halde `self` (gorunum birebir).
+    /// Kendi yazi tipini ortamin USTUNE koyan sistem stilleri (gauge etiketi, `widgetLabel`) icin
+    /// `Text.nkoYaziTipi(_:)`.
+    @ViewBuilder
+    func nkoVarsayilanYaziTipi() -> some View {
+        if YaziTipi.nkoMu {
+            environment(\.font, YaziTipi.stil(.body))
+        } else {
+            self
+        }
+    }
+}
+
+extension Text {
+    /// Sistem stilinin cizdigi etiket (gauge `label:`): ortam yazi tipi stilin kendi yazi tipine
+    /// yenilir, bu yuzden N'Ko'da yazi tipi `Text`'in KENDISINE yazilir. Donus tipi `Text` kalir
+    /// (etiket yuvalari `Text` bekler); N'Ko degilse `self` (birebir).
+    func nkoYaziTipi(_ stil: Font.TextStyle) -> Text {
+        YaziTipi.nkoMu ? font(YaziTipi.stil(stil)) : self
+    }
+}

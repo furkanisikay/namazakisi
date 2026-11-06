@@ -15,6 +15,7 @@ struct NamazTVUygulamasi: App {
     var body: some Scene {
         WindowGroup {
             TvKokGorunumu()
+                .nkoVarsayilanYaziTipi()
         }
     }
 }

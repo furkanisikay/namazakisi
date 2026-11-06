@@ -55,3 +55,28 @@ enum SaatYaziTipi {
         }
     }
 }
+
+extension View {
+    /// Kok gorunume (saat `WindowGroup` icerigi, tam ekran sunum, komplikasyon): `.font`
+    /// VERMEYEN metin (duz `Text`, `Label`) ortamdan N'Ko yazi tipini (govde stili) alsin.
+    /// YALNIZ N'Ko'da ortami degistirir; aksi halde `self` (gorunum birebir). Kendi yazi tipini
+    /// ortamin USTUNE koyan sistem stilleri (gauge etiketi, `widgetLabel`) icin `Text.nkoYaziTipi(_:)`.
+    @ViewBuilder
+    func nkoVarsayilanYaziTipi() -> some View {
+        if SaatYaziTipi.nkoMu {
+            environment(\.font, SaatYaziTipi.stil(.body))
+        } else {
+            self
+        }
+    }
+}
+
+extension Text {
+    /// Sistemin cizdigi etiket (gauge `label:`, kose komplikasyonunun `widgetLabel`'i): ortam
+    /// yazi tipi stilin/sistemin kendi yazi tipine yenilir, bu yuzden N'Ko'da yazi tipi `Text`'in
+    /// KENDISINE yazilir. Donus tipi `Text` kalir (`widgetLabel` yalniz Text/Gauge/ProgressView
+    /// cizer); N'Ko degilse `self` (birebir).
+    func nkoYaziTipi(_ stil: Font.TextStyle) -> Text {
+        SaatYaziTipi.nkoMu ? font(SaatYaziTipi.stil(stil)) : self
+    }
+}

@@ -152,6 +152,7 @@ struct NamazSaatKomplikasyonu: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "NamazSaatKomplikasyonu", provider: SaatSaglayici()) { girdi in
             KomplikasyonGorunumu(girdi: girdi)
+                .nkoVarsayilanYaziTipi()
         }
         .configurationDisplayName(KomplikasyonMetin.m.komplikasyonAdi)
         .description(KomplikasyonMetin.m.komplikasyonAciklama)
@@ -224,7 +225,7 @@ private struct Dairesel: View {
             ProgressView(
                 timerInterval: SaatDeposu.tarih(s.aktif.ms)...SaatDeposu.tarih(max(s.aktif.ms, s.bitis)),
                 countsDown: false,
-                label: { Text(KomplikasyonMetin.ad(s.aktif.vakit)) },
+                label: { Text(KomplikasyonMetin.ad(s.aktif.vakit)).nkoYaziTipi(.caption2) },
                 currentValueLabel: {
                     Text(timerInterval: KomplikasyonMetin.aralik(girdi.date, s.bitis), countsDown: true, showsHours: false)
                         .font(SaatYaziTipi.boy(11, agirlik: .semibold))
@@ -269,8 +270,11 @@ private struct Kose: View {
                 .font(.title3)
                 .widgetAccentable()
                 .widgetLabel {
+                    // `widgetLabel` metnini sistem kendi yazi tipiyle cizer (ortami yok sayar):
+                    // N'Ko'da yazi tipi Text'in kendisine.
                     Text(timerInterval: KomplikasyonMetin.aralik(girdi.date, s.bitis), countsDown: true)
                         .monospacedDigit()
+                        .nkoYaziTipi(.caption2)
                 }
                 .accessibilityLabel(KomplikasyonMetin.cikisErisim(s.aktif.vakit, s.bitis))
         } else if let g = girdi.gorunum, let sonraki = g.sonraki {
@@ -279,6 +283,7 @@ private struct Kose: View {
                 .widgetAccentable()
                 .widgetLabel {
                     Text("\(KomplikasyonMetin.ad(sonraki.vakit)) \(SaatDeposu.saatMetni(sonraki.ms))")
+                        .nkoYaziTipi(.caption2)
                 }
         } else {
             Image(systemName: "moon.stars")

@@ -92,6 +92,15 @@ describe('withNamazWidget — EAS uzantı bildirimi', () => {
     const kapi: string = fs.readFileSync(path.join(__dirname, '../../targets/widget/YaziTipi.swift'), 'utf8');
     expect(kapi).toContain('static let nkoAdi = "NotoSansNKo-Regular"');
   });
+
+  it('font vermeyen N\'Ko metni için her kök ve gauge etiketi kapıdan geçer', () => {
+    const fs = require('fs');
+    const oku = (ad: string): string => fs.readFileSync(path.join(__dirname, '../../targets/widget', ad), 'utf8');
+    for (const ad of ['VakitWidgetGorunumleri.swift', 'GununAyetiWidget.swift', 'CanliEtkinlikWidget.swift', 'AlarmCanliEtkinlikWidget.swift']) {
+      expect(oku(ad)).toContain('.nkoVarsayilanYaziTipi()');
+    }
+    expect(oku('VakitWidgetGorunumleri.swift')).toContain('label: { Text(WidgetMetin.ad(aktif.vakit)).nkoYaziTipi(.caption2) }');
+  });
 });
 
 describe('withNamazWidget — uzantı kaynakları', () => {

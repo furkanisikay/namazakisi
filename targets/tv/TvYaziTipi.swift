@@ -22,3 +22,17 @@ enum TvYaziTipi {
         return Font.system(size: boyut, weight: agirlik, design: tasarim)
     }
 }
+
+extension View {
+    /// Kok gorunume: `.font` VERMEYEN metin ortamdan N'Ko yazi tipini alsin (tvOS govde stili
+    /// 29 pt, Apple HIG tvOS tablosu). YALNIZ N'Ko'da ortami degistirir; aksi halde `self`
+    /// (gorunum birebir).
+    @ViewBuilder
+    func nkoVarsayilanYaziTipi() -> some View {
+        if TvYaziTipi.nkoMu {
+            environment(\.font, Font.custom(TvYaziTipi.nkoAdi, size: 29, relativeTo: .body))
+        } else {
+            self
+        }
+    }
+}

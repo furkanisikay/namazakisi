@@ -2089,6 +2089,7 @@ struct NamazVakitWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WidgetSabitleri.tur, provider: VakitSaglayici()) { girdi in
             VakitWidgetGorunumu(girdi: girdi)
+                .nkoVarsayilanYaziTipi()
         }
         .configurationDisplayName(WidgetMetin.m.galeriAdi)
         .description(WidgetMetin.m.galeriAciklama)
@@ -2171,7 +2172,7 @@ private struct DaireselGorunum: View {
             ProgressView(
                 timerInterval: VakitSaglayici.tarih(aktif.ms)...VakitSaglayici.tarih(bitis),
                 countsDown: false,
-                label: { Text(WidgetMetin.ad(aktif.vakit)) },
+                label: { Text(WidgetMetin.ad(aktif.vakit)).nkoYaziTipi(.caption2) },
                 currentValueLabel: {
                     VStack(spacing: 0) {
                         Image(systemName: WidgetMetin.ikon(aktif.vakit)).font(.system(size: 10))

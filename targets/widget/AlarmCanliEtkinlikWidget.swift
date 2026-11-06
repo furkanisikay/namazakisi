@@ -29,6 +29,7 @@ struct NamazAlarmCanliEtkinlikWidget: Widget {
                 baslik: context.attributes.presentation.alert.title,
                 renk: context.attributes.tintColor
             )
+            .nkoVarsayilanYaziTipi()
             .widgetURL(WidgetSabitleri.acilis)
         } dynamicIsland: { context in
             let renk = context.attributes.tintColor
@@ -42,6 +43,7 @@ struct NamazAlarmCanliEtkinlikWidget: Widget {
                     Text(context.attributes.presentation.alert.title)
                         .font(YaziTipi.stil(.headline))
                         .lineLimit(2)
+                        .nkoVarsayilanYaziTipi()
                 }
             } compactLeading: {
                 Image(systemName: "alarm.fill")
