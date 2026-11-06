@@ -613,13 +613,16 @@ jobs:
           BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
           xcrun simctl install "$UDID" "$APP"
           mkdir -p kareler-tv
+          # TV dili `Locale.preferredLanguages`'tan okur (`TvDili.cihaz`); `-AppleLanguages`
+          # arguman alani bunu yalniz bu acilis icin ezer. Dil girdisi yoksa Turkce.
+          DIL_ARG=(-AppleLanguages "($TOHUM_DIL)")
           # 1) Ilk acilis: il secimi (kayit yok).
-          xcrun simctl launch "$UDID" "$BUNDLE"
+          xcrun simctl launch "$UDID" "$BUNDLE" "${DIL_ARG[@]}"
           sleep 12
           xcrun simctl io "$UDID" screenshot kareler-tv/01-il-secimi.png
           xcrun simctl terminate "$UDID" "$BUNDLE" || true
           # 2) Pano: `-il_plaka 34` arguman alani UserDefaults okumasini ezer (Istanbul).
-          xcrun simctl launch "$UDID" "$BUNDLE" -il_plaka 34
+          xcrun simctl launch "$UDID" "$BUNDLE" -il_plaka 34 "${DIL_ARG[@]}"
           sleep 12
           xcrun simctl io "$UDID" screenshot kareler-tv/02-pano.png
           for f in kareler-tv/*.png; do echo "$f -> $(sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' ')"; done
