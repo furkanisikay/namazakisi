@@ -472,9 +472,13 @@ function playMetinleri() {
             }
         }
 
-        const commit = await api('POST', '/edits/' + editId + ':commit');
+        let commit = await api('POST', '/edits/' + editId + ':commit');
+        // Play bazen (yonetilen yayin, reddedilmis surum) otomatik incelemeye gondermeyi reddeder;
+        // edit yine kaydedilir, incelemeye gonderme Play Console > Yayin ozeti'nden yapilir.
+        const elleGonderilecek = commit.kod === 400 && JSON.stringify(commit.j).includes('changesNotSentForReview');
+        if (elleGonderilecek) commit = await api('POST', '/edits/' + editId + ':commit?changesNotSentForReview=true');
         if (commit.kod >= 300) throw new Error('commit basarisiz: ' + commit.kod + ' ' + JSON.stringify(commit.j).slice(0, 300));
-        console.log('YAYINLANDI (edit commit edildi).');
+        console.log(elleGonderilecek ? 'KAYDEDILDI; incelemeye gonderme Play Console > Yayin ozeti\'nden yapilmali.' : 'YAYINLANDI (edit commit edildi).');
         return;
     } catch (e) {
         // Commit edilmemis edit'i birak: magazada hicbir sey degismez ama
