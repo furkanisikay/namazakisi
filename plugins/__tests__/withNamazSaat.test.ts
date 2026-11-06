@@ -110,6 +110,10 @@ describe('withNamazSaat — EAS hedef bildirimi', () => {
         const uzanti = eklenti.widgetInfoPlist('0.31.0', '1760000000');
         expect(uzanti).toContain('com.apple.widgetkit-extension');
         expect(uzanti).not.toContain('WKApplication');
+        // N'Ko: watchOS'ta sistem yazı tipi yok → İKİ hedef de kendi paketindeki yazı tipini kaydeder.
+        const fontKaydi = /<key>UIAppFonts<\/key>\s*<array>\s*<string>NotoSansNKo-Regular\.ttf<\/string>\s*<\/array>/;
+        expect(saat).toMatch(fontKaydi);
+        expect(uzanti).toMatch(fontKaydi);
     });
 });
 
@@ -140,6 +144,37 @@ describe('withNamazSaat — kaynak kopyalama', () => {
             fs.rmSync(gecici, { recursive: true, force: true });
         }
     });
+
+    it("gerçek yazım: SwiftUI ortak dosyası (N'Ko kapısı) ve yazı tipi İKİ hedefe; yazı tipi Sources'a girmez", async () => {
+        const gecici = fs.mkdtempSync(path.join(os.tmpdir(), 'namaz-saat-'));
+        try {
+            const { saatKaynaklari, widgetKaynaklari } = await eklenti.saatDosyalariniYaz({
+                projectRoot: KOK,
+                platformKoku: gecici,
+                ikonYolu: path.join(KOK, 'assets/icon.png'),
+                surum: '1.0.0',
+                derleme: '1',
+                anaKimlik: 'com.ornek',
+            });
+            const font = fs.readFileSync(path.join(KOK, 'assets/fonts/NotoSansNKo-Regular.ttf'));
+            for (const [hedef, adlar] of [
+                ['NamazSaat', saatKaynaklari],
+                ['NamazSaatWidget', widgetKaynaklari],
+            ] as const) {
+                expect(adlar).toContain('SaatYaziTipi.swift');
+                expect(adlar.filter((ad: string) => !ad.endsWith('.swift'))).toEqual([]);
+                expect(fs.readFileSync(path.join(gecici, hedef, 'NotoSansNKo-Regular.ttf'))).toEqual(font);
+            }
+            // `ortak/` saf kalır (CI'da çıplak swiftc derler): SwiftUI kapısı orada DEĞİL.
+            expect(fs.existsSync(path.join(KOK, 'targets/saat/ortak/SaatYaziTipi.swift'))).toBe(false);
+            expect(eklenti.SAAT_FONTLARI).toEqual(['NotoSansNKo-Regular.ttf']);
+            expect(fs.readFileSync(path.join(KOK, 'targets/saat/gorunum/SaatYaziTipi.swift'), 'utf8')).toContain(
+                'static let nkoAdi = "NotoSansNKo-Regular"'
+            );
+        } finally {
+            fs.rmSync(gecici, { recursive: true, force: true });
+        }
+    });
 });
 
 describe('withNamazSaat — Xcode hedefleri (Expo şablonu üzerinde)', () => {
@@ -160,7 +195,10 @@ describe('withNamazSaat — Xcode hedefleri (Expo şablonu üzerinde)', () => {
         const fazlar = hedef.buildPhases.map((f: { comment: string }) => f.comment);
         expect(fazlar).toEqual(['Sources', 'Frameworks', 'Resources', 'Embed Foundation Extensions']);
         const kaynak = nesneler(proje).PBXResourcesBuildPhase[hedef.buildPhases[2].value];
-        expect(kaynak.files.map((f: { comment: string }) => f.comment)).toEqual(['Assets.xcassets in Resources']);
+        expect(kaynak.files.map((f: { comment: string }) => f.comment)).toEqual([
+            'Assets.xcassets in Resources',
+            'NotoSansNKo-Regular.ttf in Resources',
+        ]);
     });
 
     it('komplikasyon uzantısı: watchOS app-extension, saat uygulamasına gömülür ve ona bağımlıdır', () => {
@@ -178,6 +216,9 @@ describe('withNamazSaat — Xcode hedefleri (Expo şablonu üzerinde)', () => {
         expect(gomme.files[0].comment).toBe('NamazSaatWidget.appex in Embed Foundation Extensions');
         const bag = nesneler(proje).PBXTargetDependency[saat.dependencies[0].value];
         expect(nesneler(proje).PBXNativeTarget[bag.target].name).toBe('NamazSaatWidget');
+        // Komplikasyon da N'Ko metni çizer: yazı tipi uzantının KENDİ Resources fazında.
+        const kaynak = nesneler(proje).PBXResourcesBuildPhase[uzanti.buildPhases[2].value];
+        expect(kaynak.files.map((f: { comment: string }) => f.comment)).toEqual(['NotoSansNKo-Regular.ttf in Resources']);
     });
 
     it('ana uygulama saati Watch klasörüne, betik fazlarından ÖNCE gömer; ana hedef hâlâ İLK application', () => {

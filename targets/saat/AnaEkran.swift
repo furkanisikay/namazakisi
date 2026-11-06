@@ -292,7 +292,7 @@ struct SimdiSayfasi: View {
                         } icon: {
                             Image(systemName: durum.gorunum.aktif != nil ? "hourglass.bottomhalf.filled" : "arrow.right.circle.fill")
                         }
-                        .font(.caption2)
+                        .font(SaatYaziTipi.stil(.caption2))
                         .foregroundStyle(.secondary)
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel(m.bicim(durum.gorunum.aktif != nil ? m.cikisSaat : m.girisSaat, ["saat": SaatDeposu.saatMetni(hedefMs)]))
@@ -312,7 +312,7 @@ struct SimdiSayfasi: View {
         if kilindiMi && kabulGoster {
             // Kildim ANI: birkac saniye dua, sonra siradaki vakit (sahip istegi).
             Text(vm.kabulDuasi)
-                .font(.footnote.weight(.semibold))
+                .font(SaatYaziTipi.stil(.footnote).weight(.semibold))
                 .foregroundStyle(SaatGorunum.yesil)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
@@ -328,7 +328,7 @@ struct SimdiSayfasi: View {
                         .symbolRenderingMode(.hierarchical)
                         .foregroundStyle(SaatGorunum.renk(s.vakit))
                 }
-                .font(.footnote.weight(.semibold))
+                .font(SaatYaziTipi.stil(.footnote).weight(.semibold))
                 .accessibilityLabel(m.bicim(m.siradakiErisim, ["ad": vm.ad(s.vakit), "saat": SaatDeposu.saatMetni(s.ms)]))
             }
         } else if let aday, !sonuk {
@@ -336,7 +336,7 @@ struct SimdiSayfasi: View {
                 onayAcik = true
             } label: {
                 Label(vm.kildim, systemImage: "checkmark")
-                    .font(.headline)
+                    .font(SaatYaziTipi.stil(.headline))
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity, minHeight: 40)
                     .background(Capsule().fill(ton))
@@ -351,11 +351,11 @@ struct SimdiSayfasi: View {
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(ton)
             }
-            .font(.footnote)
+            .font(SaatYaziTipi.stil(.footnote))
             .accessibilityLabel(m.bicim(m.sessizUyandirma, ["saat": SaatDeposu.saatMetni(u.ms)]))
         } else if surumYeni, !sonuk {
             Label(m.guncelleyin, systemImage: "arrow.down.app")
-                .font(.footnote)
+                .font(SaatYaziTipi.stil(.footnote))
                 .foregroundStyle(.secondary)
         }
     }
@@ -407,10 +407,10 @@ struct BirimliSure: View {
             HStack(alignment: .firstTextBaseline, spacing: bosluk.birimAyirici.isEmpty ? 0 : 2) {
                 ForEach(Array(SaatSure.parcalar(kalanMs: kalan, saniyesiz: sonuk, dil: dil).enumerated()), id: \.offset) { i, p in
                     Text(p.sayi)
-                        .font(.system(size: cap * 0.2, weight: .semibold, design: .rounded))
+                        .font(SaatYaziTipi.boy(cap * 0.2, agirlik: .semibold, tasarim: .rounded))
                         .monospacedDigit()
                     Text(p.birim)
-                        .font(.system(size: cap * 0.085, weight: .medium, design: .rounded))
+                        .font(SaatYaziTipi.boy(cap * 0.085, agirlik: .medium, tasarim: .rounded))
                         .foregroundStyle(.secondary)
                         .padding(.trailing, i == 0 && !bosluk.parcaAyirici.isEmpty ? 4 : 0)
                 }

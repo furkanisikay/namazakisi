@@ -227,7 +227,7 @@ private struct Dairesel: View {
                 label: { Text(KomplikasyonMetin.ad(s.aktif.vakit)) },
                 currentValueLabel: {
                     Text(timerInterval: KomplikasyonMetin.aralik(girdi.date, s.bitis), countsDown: true, showsHours: false)
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(SaatYaziTipi.boy(11, agirlik: .semibold))
                         .monospacedDigit()
                         .multilineTextAlignment(.center)
                         .minimumScaleFactor(0.5)
@@ -244,7 +244,7 @@ private struct Dairesel: View {
                         .font(.system(size: 11))
                         .widgetAccentable()
                     Text(SaatDeposu.saatMetni(sonraki.ms))
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(SaatYaziTipi.boy(12, agirlik: .semibold))
                         .monospacedDigit()
                         .minimumScaleFactor(0.6)
                 }
@@ -294,34 +294,34 @@ private struct Dikdortgen: View {
         VStack(alignment: .leading, spacing: 1) {
             if let s = surenVakit(girdi) {
                 Label(KomplikasyonMetin.ad(s.aktif.vakit), systemImage: KomplikasyonMetin.ikon(s.aktif.vakit))
-                    .font(.headline)
+                    .font(SaatYaziTipi.stil(.headline))
                     .widgetAccentable()
                 Text(timerInterval: KomplikasyonMetin.aralik(girdi.date, s.bitis), countsDown: true)
-                    .font(.system(.title3, design: .rounded).weight(.semibold))
+                    .font(SaatYaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                     .monospacedDigit()
                 Label(SaatDeposu.saatMetni(s.bitis), systemImage: "hourglass.bottomhalf.filled")
-                    .font(.caption2)
+                    .font(SaatYaziTipi.stil(.caption2))
                     .foregroundStyle(.secondary)
                     .accessibilityLabel(KomplikasyonMetin.m.bicim(KomplikasyonMetin.m.cikisSaat, ["saat": SaatDeposu.saatMetni(s.bitis)]))
             } else if let g = girdi.gorunum, let sonraki = g.sonraki {
                 if let aktif = g.aktif, g.kilindi {
                     Label(KomplikasyonMetin.m.bicim(KomplikasyonMetin.m.kilindiBaslik, ["ad": KomplikasyonMetin.ad(aktif.vakit)]), systemImage: "checkmark.circle.fill")
-                        .font(.headline)
+                        .font(SaatYaziTipi.stil(.headline))
                         .widgetAccentable()
                 } else {
                     Label(KomplikasyonMetin.m.siradaki, systemImage: "clock")
-                        .font(.headline)
+                        .font(SaatYaziTipi.stil(.headline))
                         .widgetAccentable()
                 }
                 Text("\(KomplikasyonMetin.ad(sonraki.vakit)) \(SaatDeposu.saatMetni(sonraki.ms))")
-                    .font(.system(.title3, design: .rounded).weight(.semibold))
+                    .font(SaatYaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                 Text(timerInterval: KomplikasyonMetin.aralik(girdi.date, sonraki.ms), countsDown: true)
-                    .font(.caption2)
+                    .font(SaatYaziTipi.stil(.caption2))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
             } else {
                 Text(girdi.veriEski ? KomplikasyonMetin.m.komplikasyonVeriEski : KomplikasyonMetin.m.vakitlerIphonedan)
-                    .font(.caption2)
+                    .font(SaatYaziTipi.stil(.caption2))
                     .foregroundStyle(.secondary)
                     .minimumScaleFactor(0.7)
             }

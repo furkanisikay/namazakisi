@@ -5,6 +5,7 @@
  * uygulamasi bagimsiz bir urundur) ve ana hedefe bagimli DEGILDIR → EAS'in iOS build'i
  * (ana sema) onu hic derlemez. Kaynak: `targets/tv/` (uygulama) + `targets/tv/ortak/`
  * (saf cekirdek: adhan JS'in Turkey yolunun Swift tasimasi, pano durumu, bicim) +
+ * N'Ko yazi tipi `assets/fonts/NotoSansNKo-Regular.ttf` (Resources + `UIAppFonts`) +
  * `tv/app/src/main/assets/iller.json` (Android TV ile AYNI dosya, tek kaynak
  * `scripts/tv/tv-verisi-uret.js`). `targets/tv/test/` hicbir hedefe girmez (Linux/macOS
  * `swiftc` test kosucusu; telefonun adhan fiksturuyle epoch ms birebir).
@@ -37,6 +38,15 @@ const KOK = path.join(__dirname, '..');
 const TV_KAYNAGI = path.join(KOK, 'targets', 'tv');
 const ORTAK_KAYNAK = path.join(TV_KAYNAGI, 'ortak');
 const ILLER = path.join(KOK, 'tv', 'app', 'src', 'main', 'assets', 'iller.json');
+/**
+ * Paketlenen yazi tipleri (ad → kaynak). Noto Sans NKo (OFL 1.1, lisans `assets/fonts/OFL.txt`):
+ * tvOS'ta sistem N'Ko yazi tipi YOK, kaydedilen yazi tipi sistemin yedek listesine girmez →
+ * N'Ko metni `TvYaziTipi` kapisindan cizilir. Tek kaynak ana uygulamanin dosyasi.
+ */
+const FONT_KAYNAKLARI = {
+  'NotoSansNKo-Regular.ttf': path.join(KOK, 'assets', 'fonts', 'NotoSansNKo-Regular.ttf'),
+};
+const TV_FONTLARI = Object.keys(FONT_KAYNAKLARI);
 
 const TV_HEDEFI = 'NamazTV';
 /** tvOS 17: `TimelineView`, `LazyVGrid`, `.monospacedDigit()` Font, iki parametreli `onChange`. */
@@ -62,7 +72,8 @@ function xmlKacir(s) {
 }
 
 /** tvOS uygulamasinin Info.plist'i. Surum ana uygulamayla AYNI tutulur. */
-function tvInfoPlist(surum, derleme) {
+function tvInfoPlist(surum, derleme, fontlar = TV_FONTLARI) {
+  const fontSatirlari = fontlar.map((ad) => `    <string>${xmlKacir(ad)}</string>`).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -87,6 +98,10 @@ function tvInfoPlist(surum, derleme) {
   <string>${xmlKacir(derleme)}</string>
   <key>ITSAppUsesNonExemptEncryption</key>
   <false/>
+  <key>UIAppFonts</key>
+  <array>
+${fontSatirlari}
+  </array>
   <key>UILaunchScreen</key>
   <dict/>
   <key>UIRequiredDeviceCapabilities</key>
@@ -148,6 +163,7 @@ function tvHedefiniEkle(proje, { anaKimlik, kaynaklar }) {
 
   const kaynakDosyalari = kaynaklar.map((d) => yapiDosyasi(dosyaRefEkle(d, 'sourcecode.swift'), d, 'Sources'));
   const varliklar = [yapiDosyasi(dosyaRefEkle('iller.json', 'text.json'), 'iller.json', 'Resources')];
+  for (const ad of TV_FONTLARI) varliklar.push(yapiDosyasi(dosyaRefEkle(ad, 'file'), ad, 'Resources'));
   dosyaRefEkle('Info.plist', 'text.plist.xml');
 
   const grupUuid = proje.generateUuid();
@@ -243,6 +259,8 @@ function tvDosyalariniYaz(platformKoku, surum, derleme) {
     throw new Error(`[withNamazTV] Kaynaklarda ayni adli dosya var: ${adlar.join(', ')}`);
   }
   fs.copyFileSync(ILLER, path.join(dizin, 'iller.json'));
+  // Yazi tipleri kaynak (Swift degil): kopyalanir, Sources listesine GIRMEZ.
+  for (const ad of TV_FONTLARI) fs.copyFileSync(FONT_KAYNAKLARI[ad], path.join(dizin, ad));
   fs.writeFileSync(path.join(dizin, 'Info.plist'), tvInfoPlist(surum, derleme));
   return adlar.sort();
 }
@@ -270,3 +288,4 @@ module.exports.tvInfoPlist = tvInfoPlist;
 module.exports.tvHedefiniEkle = tvHedefiniEkle;
 module.exports.tvDosyalariniYaz = tvDosyalariniYaz;
 module.exports.TV_HEDEFI = TV_HEDEFI;
+module.exports.TV_FONTLARI = TV_FONTLARI;

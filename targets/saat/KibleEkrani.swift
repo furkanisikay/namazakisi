@@ -133,17 +133,17 @@ struct KibleEkrani: View {
 
             if pusula.yon == nil {
                 Text(m.pusulaHazirlaniyor)
-                    .font(.footnote)
+                    .font(SaatYaziTipi.stil(.footnote))
                     .foregroundStyle(.secondary)
             } else if hizali {
                 Label(Kible.erisimMetni(0, hizali: true, dil: dil), systemImage: "checkmark.circle.fill")
-                    .font(.headline)
+                    .font(SaatYaziTipi.stil(.headline))
                     .foregroundStyle(SaatGorunum.yesil)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             } else {
                 Text(Kible.donusMetni(Kible.hedefAcisi(kibleAcisi: kibleAcisi, yon: pusula.yon ?? 0), dil: dil))
-                    .font(.system(.title3, design: .rounded).weight(.semibold))
+                    .font(SaatYaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                     .monospacedDigit()
                     .lineLimit(1)
             }
@@ -153,7 +153,7 @@ struct KibleEkrani: View {
                     Label("\(Int(kibleAcisi.rounded()))°", systemImage: "safari")
                     Label(Kible.mesafeMetni(Kible.mesafeKm(enlem: konum.lat, boylam: konum.lng), dil: dil), systemImage: "location.fill")
                 }
-                .font(.caption2)
+                .font(SaatYaziTipi.stil(.caption2))
                 .foregroundStyle(.secondary)
                 .labelStyle(.titleAndIcon)
                 .lineLimit(1)
@@ -161,7 +161,7 @@ struct KibleEkrani: View {
             }
             if pusula.dogrulukDusuk {
                 Label(m.sekizCizin, systemImage: "arrow.triangle.2.circlepath")
-                    .font(.caption2)
+                    .font(SaatYaziTipi.stil(.caption2))
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
@@ -182,7 +182,7 @@ struct KibleEkrani: View {
             ZStack {
                 Circle().stroke(Color.secondary.opacity(0.35), lineWidth: 2)
                 Text(m.kuzeyHarfi)
-                    .font(.caption2.weight(.bold))
+                    .font(SaatYaziTipi.stil(.caption2).weight(.bold))
                     .foregroundStyle(.secondary)
                     .offset(y: -40)
                 Image(systemName: "location.north.fill")
@@ -193,10 +193,10 @@ struct KibleEkrani: View {
             .frame(width: 96, height: 96)
             .accessibilityHidden(true)
             Text("\(Int(aci.rounded()))°")
-                .font(.system(.title3, design: .rounded).weight(.semibold))
+                .font(SaatYaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                 .monospacedDigit()
             Text(m.kuzeyeCevirin)
-                .font(.caption2)
+                .font(SaatYaziTipi.stil(.caption2))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
@@ -219,7 +219,7 @@ struct BilgiKarti: View {
                 .foregroundStyle(SaatGorunum.yesil)
                 .accessibilityHidden(true)
             Text(metin)
-                .font(.footnote)
+                .font(SaatYaziTipi.stil(.footnote))
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.7)
         }
@@ -268,7 +268,7 @@ private struct PusulaGulu: View {
                     .rotationEffect(.degrees(Double(i) * 30))
             }
             Text(kuzey)
-                .font(.system(size: 10, weight: .bold, design: .rounded))
+                .font(SaatYaziTipi.boy(10, agirlik: .bold, tasarim: .rounded))
                 .foregroundStyle(Color.red.opacity(sonuk ? 0.5 : 0.9))
                 .offset(y: -32)
         }

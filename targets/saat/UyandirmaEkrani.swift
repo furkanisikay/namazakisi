@@ -43,11 +43,11 @@ struct UyandirmaEkrani: View {
                     .frame(width: 30, height: 30)
                     .accessibilityHidden(true)
                     Text(ad)
-                        .font(.headline)
+                        .font(SaatYaziTipi.stil(.headline))
                         .lineLimit(1)
                 }
                 Text(Date(), style: .time)
-                    .font(.system(size: 30, weight: .semibold, design: .rounded))
+                    .font(SaatYaziTipi.boy(30, agirlik: .semibold, tasarim: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
@@ -56,7 +56,7 @@ struct UyandirmaEkrani: View {
                 } icon: {
                     Image(systemName: kayit.nafile ? "sun.horizon.fill" : "hourglass.bottomhalf.filled")
                 }
-                .font(.footnote)
+                .font(SaatYaziTipi.stil(.footnote))
                 .foregroundStyle(.secondary)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(m.bicim(kayit.nafile ? m.imsakSaat : m.vaktinSonu, ["saat": SaatDeposu.saatMetni(kayit.sonMs)]))
@@ -65,7 +65,7 @@ struct UyandirmaEkrani: View {
                         uyandirici.kildim()
                     } label: {
                         Label(vm.kildim, systemImage: "checkmark")
-                            .font(.headline)
+                            .font(SaatYaziTipi.stil(.headline))
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                             .frame(maxWidth: .infinity)

@@ -78,9 +78,19 @@ describe('withNamazWidget — EAS uzantı bildirimi', () => {
     expect(plist).toContain('com.apple.widgetkit-extension');
   });
 
-  it('Info.plist günün ayeti fontunu UIAppFonts ile kaydeder (yoksa Arapça sistem fontuna düşer)', () => {
+  it('Info.plist günün ayeti ve N\'Ko fontunu UIAppFonts ile kaydeder (yoksa sistem fontuna düşer / kutu çizilir)', () => {
     const plist: string = eklenti.infoPlistIcerigi('1.0.0', '1');
-    expect(plist).toMatch(/<key>UIAppFonts<\/key>\s*<array>\s*<string>AmiriQuran-Regular\.ttf<\/string>\s*<\/array>/);
+    expect(plist).toMatch(
+      /<key>UIAppFonts<\/key>\s*<array>\s*<string>AmiriQuran-Regular\.ttf<\/string>\s*<string>NotoSansNKo-Regular\.ttf<\/string>\s*<\/array>/
+    );
+  });
+
+  it('N\'Ko yazı tipi tek kaynaktan (ana uygulamanın dosyası) gelir; Swift kapısı aynı PostScript adını kullanır', () => {
+    const fs = require('fs');
+    expect(eklenti.UZANTI_FONTLARI).toEqual(['AmiriQuran-Regular.ttf', 'NotoSansNKo-Regular.ttf']);
+    expect(fs.existsSync(path.join(__dirname, '../../targets/widget/fontlar/NotoSansNKo-Regular.ttf'))).toBe(false);
+    const kapi: string = fs.readFileSync(path.join(__dirname, '../../targets/widget/YaziTipi.swift'), 'utf8');
+    expect(kapi).toContain('static let nkoAdi = "NotoSansNKo-Regular"');
   });
 });
 
@@ -100,6 +110,11 @@ describe('withNamazWidget — uzantı kaynakları', () => {
       for (const ad of eklenti.UZANTI_FONTLARI as string[]) {
         expect(fs.existsSync(path.join(dizin, 'NamazWidget', ad))).toBe(true);
       }
+      // N'Ko yazı tipi ana uygulamanın dosyasının birebir kopyası; kapı uzantıda derlenir.
+      expect(fs.readFileSync(path.join(dizin, 'NamazWidget', 'NotoSansNKo-Regular.ttf'))).toEqual(
+        fs.readFileSync(path.join(__dirname, '../../assets/fonts/NotoSansNKo-Regular.ttf'))
+      );
+      expect(adlar).toContain('YaziTipi.swift');
     } finally {
       fs.rmSync(dizin, { recursive: true, force: true });
     }
@@ -118,13 +133,14 @@ describe('withNamazWidget — Xcode hedefi (Expo şablonu üzerinde)', () => {
     return proje;
   };
 
-  it('günün ayeti fontu uzantının Resources fazındadır (Sources\'ta değil)', () => {
+  it('günün ayeti ve N\'Ko fontu uzantının Resources fazındadır (Sources\'ta değil)', () => {
     const proje = kur();
     const hedef = proje.pbxTargetByName('NamazWidget');
     const nesneler = proje.hash.project.objects;
     const kaynakFazi = hedef.buildPhases.find((f: { comment: string }) => f.comment === 'Resources');
     expect(nesneler.PBXResourcesBuildPhase[kaynakFazi.value].files.map((f: { comment: string }) => f.comment)).toEqual([
       'AmiriQuran-Regular.ttf in Resources',
+      'NotoSansNKo-Regular.ttf in Resources',
     ]);
   });
 

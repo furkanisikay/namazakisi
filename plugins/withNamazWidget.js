@@ -5,7 +5,8 @@
  *   - vakit widget'i: kilit ekrani aksesuarlari (dairesel / dikdortgen / satir ici),
  *     StandBy ve ana ekran (kucuk / orta),
  *   - gunun ayeti widget'i (#380): kucuk / orta / buyuk + kilit ekrani dikdortgen; Arapca
- *     fontu (Amiri Quran) `targets/widget/fontlar/`'dan Resources + `UIAppFonts`,
+ *     fontu (Amiri Quran) `targets/widget/fontlar/`'dan Resources + `UIAppFonts` (N'Ko yazi
+ *     tipi de ayni yoldan, `assets/fonts/`'tan; bkz. `FONT_KAYNAKLARI`),
  *   - canli etkinlik (Live Activity): Dinamik Ada + kilit ekrani geri sayimi.
  * Kaynak: `targets/widget/` (yalniz bu uzanti) + `targets/widget/ortak/` (uzanti VE ana
  * hedef: "Kildim" dugmesinin `LiveActivityIntent`'i) + pod'dan kopyalanan saf dosyalar
@@ -57,12 +58,19 @@ const POD_KOPYALARI = ['VakitKarari.swift', 'SiriDeposu.swift', 'WidgetKarari.sw
 const ALARMKIT_KAYNAGI = path.join(KOK, 'targets', 'muhafiz-alarmkit');
 const ALARMKIT_KOPYALARI = ['NamazAlarmVerisi.swift'];
 /**
- * Gunun ayeti widget'inin Arapca fontu (Amiri Quran, OFL 1.1; lisans `targets/widget/fontlar/OFL.txt`).
- * Uzantinin Resources fazina girer ve Info.plist `UIAppFonts` ile kaydedilir. Ana uygulamaya
- * EKLENMEZ: "Gunun ayeti gorseli" intent'i Arapca cizmez (iOS duvar kagidinda Arapca yok).
+ * Uzantinin paketledigi yazi tipleri (ad → kaynak dosya). Resources fazina girer ve Info.plist
+ * `UIAppFonts` ile kaydedilir; ana uygulamaya EKLENMEZ.
+ *   - Amiri Quran (OFL 1.1; lisans `targets/widget/fontlar/OFL.txt`): gunun ayeti widget'inin
+ *     Arapcasi. "Gunun ayeti gorseli" intent'i Arapca cizmez (iOS duvar kagidinda Arapca yok).
+ *   - Noto Sans NKo (OFL 1.1; lisans `assets/fonts/OFL.txt`): iOS'ta sistem N'Ko yazi tipi YOK ve
+ *     kaydedilen yazi tipi sistemin yedek listesine girmez → N'Ko arayuzde metin `YaziTipi`
+ *     kapisindan bu yazi tipiyle cizilir. Tek kaynak ana uygulamanin dosyasi (kopya tutulmaz).
  */
-const FONT_KAYNAGI = path.join(UZANTI_KAYNAGI, 'fontlar');
-const UZANTI_FONTLARI = ['AmiriQuran-Regular.ttf'];
+const FONT_KAYNAKLARI = {
+  'AmiriQuran-Regular.ttf': path.join(UZANTI_KAYNAGI, 'fontlar', 'AmiriQuran-Regular.ttf'),
+  'NotoSansNKo-Regular.ttf': path.join(KOK, 'assets', 'fonts', 'NotoSansNKo-Regular.ttf'),
+};
+const UZANTI_FONTLARI = Object.keys(FONT_KAYNAKLARI);
 /**
  * Bu uzantinin canli etkinlik CIZDIGINI soyleyen Info.plist anahtari. `NSSupportsLiveActivities`
  * artik sinyal degil: AlarmKit icin uzantidan bagimsiz yazilir (`withMuhafizAlarmKit`).
@@ -426,7 +434,7 @@ function uzantiDosyalariniYaz(platformKoku, surum, derleme) {
   for (const ad of POD_KOPYALARI) kopyala(POD_KAYNAGI, ad);
   for (const ad of ALARMKIT_KOPYALARI) kopyala(ALARMKIT_KAYNAGI, ad);
   // Fontlar kaynak (Swift degil): kopyalanir ama `adlar`'a (Sources) girmez.
-  for (const ad of UZANTI_FONTLARI) fs.copyFileSync(path.join(FONT_KAYNAGI, ad), path.join(hedefDizin, ad));
+  for (const ad of UZANTI_FONTLARI) fs.copyFileSync(FONT_KAYNAKLARI[ad], path.join(hedefDizin, ad));
   fs.writeFileSync(path.join(hedefDizin, 'Info.plist'), infoPlistIcerigi(surum, derleme));
   fs.writeFileSync(path.join(hedefDizin, `${HEDEF_ADI}.entitlements`), entitlementsIcerigi());
   // Ayni ad iki kaynakta olmamali (sessizce ezilirdi).

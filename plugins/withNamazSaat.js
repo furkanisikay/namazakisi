@@ -7,9 +7,12 @@
  *   - `NamazSaatWidget` (komplikasyonlar, watchOS WidgetKit uzantisi; `<ana>.watchkitapp.widget`)
  *     → saat uygulamasina "Embed Foundation Extensions" ile gomulur.
  * Kaynak: `targets/saat/` (yalniz saat uygulamasi), `targets/saat-widget/` (yalniz uzanti),
- * `targets/saat/ortak/` (ikisi; saf) + pod'dan kopyalanan saf dosyalar (`VakitKarari`,
+ * `targets/saat/ortak/` (ikisi; saf) + `targets/saat/gorunum/` (ikisi; SwiftUI, ornegin N'Ko
+ * yazi tipi kapisi `SaatYaziTipi`) + pod'dan kopyalanan saf dosyalar (`VakitKarari`,
  * `WidgetKarari`, `SaatIletisi` — iPhone widget'iyla AYNI karar, telefonla AYNI ileti
  * sozlesmesi). `targets/saat/test/` hicbir hedefe girmez (Linux `swiftc` test kosucusu).
+ * Iki hedef de N'Ko yazi tipini (`assets/fonts/NotoSansNKo-Regular.ttf`) Resources +
+ * `UIAppFonts` ile tasir: watchOS'ta sistem N'Ko yazi tipi yok.
  *
  * Saat YALNIZ GOSTERIR (Wear OS ilkesi): vakitler telefonda hesaplanir, Wear yukunun
  * aynisi WatchConnectivity ile gelir; telefon tarafi `modules/expo-siri-kisayollari`
@@ -42,7 +45,19 @@ try {
 const KOK = path.join(__dirname, '..');
 const SAAT_KAYNAGI = path.join(KOK, 'targets', 'saat');
 const ORTAK_KAYNAK = path.join(SAAT_KAYNAGI, 'ortak');
+/** Iki hedefin ortak SwiftUI dosyalari (`ortak/` saf kalir: CI'da ciplak `swiftc` derler). */
+const GORUNUM_KAYNAGI = path.join(SAAT_KAYNAGI, 'gorunum');
 const WIDGET_KAYNAGI = path.join(KOK, 'targets', 'saat-widget');
+/**
+ * Iki hedefin paketledigi yazi tipleri (ad → kaynak). Noto Sans NKo (OFL 1.1, lisans
+ * `assets/fonts/OFL.txt`): watchOS'ta sistem N'Ko yazi tipi YOK, kaydedilen yazi tipi sistemin
+ * yedek listesine girmez → N'Ko metni `SaatYaziTipi` kapisindan cizilir. Tek kaynak ana
+ * uygulamanin dosyasi (kopya tutulmaz).
+ */
+const FONT_KAYNAKLARI = {
+  'NotoSansNKo-Regular.ttf': path.join(KOK, 'assets', 'fonts', 'NotoSansNKo-Regular.ttf'),
+};
+const SAAT_FONTLARI = Object.keys(FONT_KAYNAKLARI);
 const POD_KAYNAGI = path.join(KOK, 'modules', 'expo-siri-kisayollari', 'ios');
 /** Pod'dan saat hedeflerine kopyalanan SAF dosyalar (yalniz Foundation). */
 const POD_KOPYALARI = ['VakitKarari.swift', 'WidgetKarari.swift', 'SaatIletisi.swift'];
@@ -107,6 +122,16 @@ function ortakAnahtarlar(surum, derleme) {
   <string>${xmlKacir(surum)}</string>
   <key>CFBundleVersion</key>
   <string>${xmlKacir(derleme)}</string>
+${yaziTipiAnahtari()}`;
+}
+
+/** Paketlenen yazi tiplerinin kaydi; ad Resources'taki dosya adidir (iki hedefte de). */
+function yaziTipiAnahtari(fontlar = SAAT_FONTLARI) {
+  const satirlar = fontlar.map((ad) => `    <string>${xmlKacir(ad)}</string>`).join('\n');
+  return `  <key>UIAppFonts</key>
+  <array>
+${satirlar}
+  </array>
 `;
 }
 
@@ -216,7 +241,7 @@ function fazEkle(proje, tur, yorum, dosyalar) {
  * Bir watchOS hedefi kurar: dosya referanslari + grup, Sources/Frameworks/Resources,
  * derleme ayarlari (Debug + Release) ve urun. Hedef uuid'i ve urun bilgisini doner.
  */
-function hedefKur(proje, { ad, urunTuru, urunUzantisi, dosyaTuru, kaynaklar, katalog, ayarlar, kosul }) {
+function hedefKur(proje, { ad, urunTuru, urunUzantisi, dosyaTuru, kaynaklar, katalog, paketKaynaklari = [], ayarlar, kosul }) {
   const nesneler = proje.hash.project.objects;
   const { firstProject } = proje.getFirstProject();
 
@@ -241,6 +266,8 @@ function hedefKur(proje, { ad, urunTuru, urunUzantisi, dosyaTuru, kaynaklar, kat
 
   const kaynakDosyalari = kaynaklar.map((dosya) => yapiDosyasi(dosyaRefEkle(dosya, 'sourcecode.swift'), dosya, 'Sources'));
   const kaynakVarliklari = katalog ? [yapiDosyasi(dosyaRefEkle(katalog, 'folder.assetcatalog'), katalog, 'Resources')] : [];
+  // Paket kaynaklari (yazi tipi): Resources fazina (Sources'a GIRMEZ).
+  for (const dosya of paketKaynaklari) kaynakVarliklari.push(yapiDosyasi(dosyaRefEkle(dosya, 'file'), dosya, 'Resources'));
   dosyaRefEkle('Info.plist', 'text.plist.xml');
   dosyaRefEkle(`${ad}.entitlements`, 'text.plist.entitlements');
 
@@ -403,6 +430,7 @@ function saatHedefleriniEkle(proje, { anaHedefUuid, anaKimlik, saatKaynaklari, w
     urunUzantisi: 'appex',
     dosyaTuru: 'wrapper.app-extension',
     kaynaklar: widgetKaynaklari,
+    paketKaynaklari: SAAT_FONTLARI,
     kosul: 'NAMAZ_SAAT_WIDGET',
     ayarlar: {
       APPLICATION_EXTENSION_API_ONLY: 'YES',
@@ -419,6 +447,7 @@ function saatHedefleriniEkle(proje, { anaHedefUuid, anaKimlik, saatKaynaklari, w
     dosyaTuru: 'wrapper.application',
     kaynaklar: saatKaynaklari,
     katalog: 'Assets.xcassets',
+    paketKaynaklari: SAAT_FONTLARI,
     kosul: 'NAMAZ_SAAT_UYGULAMASI',
     ayarlar: {
       ASSETCATALOG_COMPILER_APPICON_NAME: 'AppIcon',
@@ -499,8 +528,12 @@ async function ikonuYaz(projectRoot, ikonYolu, hedefDosya) {
 async function saatDosyalariniYaz({ projectRoot, platformKoku, ikonYolu, surum, derleme, anaKimlik }) {
   const saatDizini = path.join(platformKoku, SAAT_HEDEFI);
   const widgetDizini = path.join(platformKoku, WIDGET_HEDEFI);
-  const saatKaynaklari = kaynaklariKopyala(saatDizini, [SAAT_KAYNAGI, ORTAK_KAYNAK]);
-  const widgetKaynaklari = kaynaklariKopyala(widgetDizini, [WIDGET_KAYNAGI, ORTAK_KAYNAK]);
+  const saatKaynaklari = kaynaklariKopyala(saatDizini, [SAAT_KAYNAGI, ORTAK_KAYNAK, GORUNUM_KAYNAGI]);
+  const widgetKaynaklari = kaynaklariKopyala(widgetDizini, [WIDGET_KAYNAGI, ORTAK_KAYNAK, GORUNUM_KAYNAGI]);
+  // Yazi tipleri kaynak (Swift degil): iki hedefe kopyalanir, Sources listesine GIRMEZ.
+  for (const dizin of [saatDizini, widgetDizini]) {
+    for (const ad of SAAT_FONTLARI) fs.copyFileSync(FONT_KAYNAKLARI[ad], path.join(dizin, ad));
+  }
 
   fs.writeFileSync(path.join(saatDizini, 'Info.plist'), saatInfoPlist(surum, derleme, anaKimlik));
   fs.writeFileSync(path.join(saatDizini, `${SAAT_HEDEFI}.entitlements`), entitlementsIcerigi());
@@ -558,6 +591,8 @@ module.exports.saatInfoPlist = saatInfoPlist;
 module.exports.widgetInfoPlist = widgetInfoPlist;
 module.exports.saatHedefleriniEkle = saatHedefleriniEkle;
 module.exports.kaynaklariKopyala = kaynaklariKopyala;
+module.exports.saatDosyalariniYaz = saatDosyalariniYaz;
+module.exports.SAAT_FONTLARI = SAAT_FONTLARI;
 module.exports.SAAT_HEDEFI = SAAT_HEDEFI;
 module.exports.WIDGET_HEDEFI = WIDGET_HEDEFI;
 module.exports.PLIST_ANAHTARI = PLIST_ANAHTARI;

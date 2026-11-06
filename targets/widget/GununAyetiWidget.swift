@@ -1288,7 +1288,7 @@ private struct AyetEtiketi: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
         }
-        .font(.caption2.weight(.semibold))
+        .font(YaziTipi.stil(.caption2).weight(.semibold))
         .foregroundStyle(WidgetSabitleri.yesil)
         .widgetAccentable()
         .accessibilityAddTraits(.isHeader)
@@ -1304,7 +1304,7 @@ private struct MealMetni: View {
         // birebir kalir.
         Text(WidgetMetin.rakam(meal))
             // Ge'ez, Tamil, Malayalam, Tay, Korece ve Cince meal sistem tasariminda (serif tasarimda bu yazilar yok).
-            .font(.system(stil, design: GununAyetiKarari.mealSerifMi(meal) ? .serif : .default))
+            .font(YaziTipi.stil(stil, tasarim: GununAyetiKarari.mealSerifMi(meal) ? .serif : .default))
             .foregroundStyle(.primary)
             .fixedSize(horizontal: false, vertical: true)
     }
@@ -1329,7 +1329,7 @@ private struct KunyeSatiri: View {
     let metin: String
     var body: some View {
         Text(WidgetMetin.rakam(metin))
-            .font(.caption2)
+            .font(YaziTipi.stil(.caption2))
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
     }
@@ -1343,11 +1343,11 @@ private struct SigmiyorKarti: View {
         VStack(alignment: .leading, spacing: 6) {
             AyetEtiketi(metin: metin.etiket)
             Text(WidgetMetin.rakam(kayit.kisaKunye))
-                .font(.system(.headline, design: GununAyetiKarari.mealSerifMi(kayit.kisaKunye) ? .serif : .default))
+                .font(YaziTipi.stil(.headline, tasarim: GununAyetiKarari.mealSerifMi(kayit.kisaKunye) ? .serif : .default))
                 .lineLimit(2)
                 .minimumScaleFactor(0.7)
             Text(metin.sigmiyor)
-                .font(.caption)
+                .font(YaziTipi.stil(.caption))
                 .foregroundStyle(.secondary)
                 .minimumScaleFactor(0.6)
         }
@@ -1426,7 +1426,7 @@ private struct BuyukAyetGorunumu: View {
             Spacer(minLength: 4)
             if let tarih = AyetTarihi.metin(kayit.gun, dil: dil) {
                 Text(tarih)
-                    .font(.caption2)
+                    .font(YaziTipi.stil(.caption2))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
@@ -1469,25 +1469,25 @@ private struct KilitAyetGorunumu: View {
             if let meal = kayit.meal {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(metin.etiket)
-                        .font(.caption2.weight(.semibold))
+                        .font(YaziTipi.stil(.caption2).weight(.semibold))
                         .widgetAccentable()
                     Text(WidgetMetin.rakam(meal))
-                        .font(.footnote)
+                        .font(YaziTipi.stil(.footnote))
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Text(WidgetMetin.rakam(meal))
-                    .font(.footnote)
+                    .font(YaziTipi.stil(.footnote))
                     .fixedSize(horizontal: false, vertical: true)
             }
             // Meal sigmiyor (ya da meal yok): kisa kunye; dokununca sayfa acilir.
             VStack(alignment: .leading, spacing: 1) {
                 Text(metin.etiket)
-                    .font(.caption2.weight(.semibold))
+                    .font(YaziTipi.stil(.caption2).weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                     .widgetAccentable()
                 Text(WidgetMetin.rakam(kayit.kisaKunye))
-                    .font(.headline)
+                    .font(YaziTipi.stil(.headline))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             }
@@ -1504,13 +1504,13 @@ private struct AyetYokGorunumu: View {
         VStack(alignment: .leading, spacing: aksesuar ? 1 : 6) {
             if aksesuar {
                 Text(m.etiket)
-                    .font(.caption2.weight(.semibold))
+                    .font(YaziTipi.stil(.caption2).weight(.semibold))
                     .widgetAccentable()
             } else {
                 AyetEtiketi(metin: m.etiket)
             }
             Text(m.uygulamayiAcin)
-                .font(aksesuar ? .footnote : .caption)
+                .font(YaziTipi.stil(aksesuar ? .footnote : .caption))
                 .foregroundStyle(.secondary)
                 .minimumScaleFactor(0.7)
         }

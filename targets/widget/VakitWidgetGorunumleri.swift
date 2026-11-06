@@ -2127,7 +2127,7 @@ private struct VeriYokGorunumu: View {
             Image(systemName: "location.slash")
                 .foregroundStyle(WidgetSabitleri.yesil)
             Text(eski ? WidgetMetin.m.veriEski : WidgetMetin.m.konumYok)
-                .font(.caption)
+                .font(YaziTipi.stil(.caption))
                 .foregroundStyle(.secondary)
                 .minimumScaleFactor(0.7)
         }
@@ -2176,7 +2176,7 @@ private struct DaireselGorunum: View {
                     VStack(spacing: 0) {
                         Image(systemName: WidgetMetin.ikon(aktif.vakit)).font(.system(size: 10))
                         Text(timerInterval: girdi.date...VakitSaglayici.tarih(bitis), countsDown: true, showsHours: false)
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(YaziTipi.boy(11, agirlik: .semibold))
                             .monospacedDigit()
                             .multilineTextAlignment(.center)
                             .minimumScaleFactor(0.5)
@@ -2191,7 +2191,7 @@ private struct DaireselGorunum: View {
                 VStack(spacing: 1) {
                     Image(systemName: WidgetMetin.ikon(s.vakit)).font(.system(size: 12))
                     Text(WidgetMetin.saat(s.ms))
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(YaziTipi.boy(12, agirlik: .semibold))
                         .monospacedDigit()
                         .minimumScaleFactor(0.6)
                 }
@@ -2214,28 +2214,28 @@ private struct DikdortgenGorunum: View {
         VStack(alignment: .leading, spacing: 1) {
             if let g = girdi.gorunum, let aktif = g.aktif, let bitis = g.bitisMs, !g.kilindi {
                 Label(WidgetMetin.ad(aktif.vakit), systemImage: WidgetMetin.ikon(aktif.vakit))
-                    .font(.headline)
+                    .font(YaziTipi.stil(.headline))
                     .widgetAccentable()
                 Text(timerInterval: girdi.date...VakitSaglayici.tarih(bitis), countsDown: true)
-                    .font(.system(.title3, design: .rounded).weight(.semibold))
+                    .font(YaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                     .monospacedDigit()
                 Text(WidgetMetin.m.bicim(WidgetMetin.m.cikisSaat, ["saat": WidgetMetin.saat(bitis)]))
-                    .font(.caption)
+                    .font(YaziTipi.stil(.caption))
                     .foregroundStyle(.secondary)
             } else if let g = girdi.gorunum, let s = g.sonraki {
                 if let aktif = g.aktif, g.kilindi {
                     Label(WidgetMetin.m.bicim(WidgetMetin.m.kilindiBaslik, ["ad": WidgetMetin.ad(aktif.vakit)]), systemImage: "checkmark.circle.fill")
-                        .font(.headline)
+                        .font(YaziTipi.stil(.headline))
                         .widgetAccentable()
                 } else {
                     Label(WidgetMetin.m.siradaki, systemImage: "clock")
-                        .font(.headline)
+                        .font(YaziTipi.stil(.headline))
                         .widgetAccentable()
                 }
                 Text("\(WidgetMetin.ad(s.vakit)) \(WidgetMetin.saat(s.ms))")
-                    .font(.system(.title3, design: .rounded).weight(.semibold))
+                    .font(YaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                 Text(timerInterval: girdi.date...VakitSaglayici.tarih(s.ms), countsDown: true)
-                    .font(.caption)
+                    .font(YaziTipi.stil(.caption))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
             } else {
@@ -2277,7 +2277,7 @@ private struct AktifVakitPaneli: View {
                 Image(systemName: WidgetMetin.ikon(aktif.vakit))
                     .foregroundStyle(WidgetSabitleri.yesil)
                 Text(WidgetMetin.ad(aktif.vakit))
-                    .font(.headline)
+                    .font(YaziTipi.stil(.headline))
                     .foregroundStyle(.primary)
                 Spacer(minLength: 0)
                 if kilindi {
@@ -2288,14 +2288,14 @@ private struct AktifVakitPaneli: View {
             }
             if kilindi, let s = sonraki {
                 Text(WidgetMetin.m.bicim(WidgetMetin.m.siradakiAd, ["ad": WidgetMetin.ad(s.vakit)]))
-                    .font(.caption)
+                    .font(YaziTipi.stil(.caption))
                     .foregroundStyle(.secondary)
                 Text(WidgetMetin.saat(s.ms))
-                    .font(.system(.title2, design: .rounded).weight(.semibold))
+                    .font(YaziTipi.stil(.title2, tasarim: .rounded).weight(.semibold))
                     .monospacedDigit()
             } else {
                 Text(timerInterval: girdi.date...VakitSaglayici.tarih(bitisMs), countsDown: true)
-                    .font(.system(.title2, design: .rounded).weight(.semibold))
+                    .font(YaziTipi.stil(.title2, tasarim: .rounded).weight(.semibold))
                     .monospacedDigit()
                     .minimumScaleFactor(0.6)
                 ProgressView(
@@ -2306,7 +2306,7 @@ private struct AktifVakitPaneli: View {
                 )
                 .tint(WidgetSabitleri.yesil)
                 Text(WidgetMetin.m.bicim(WidgetMetin.m.cikisSaat, ["saat": WidgetMetin.saat(bitisMs)]))
-                    .font(.caption)
+                    .font(YaziTipi.stil(.caption))
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
@@ -2326,12 +2326,12 @@ private struct SiradakiPaneli: View {
                 Image(systemName: WidgetMetin.ikon(sonraki.vakit))
                     .foregroundStyle(WidgetSabitleri.yesil)
                 Text(WidgetMetin.m.siradaki)
-                    .font(.headline)
+                    .font(YaziTipi.stil(.headline))
             }
             Text("\(WidgetMetin.ad(sonraki.vakit)) \(WidgetMetin.saat(sonraki.ms))")
-                .font(.system(.title3, design: .rounded).weight(.semibold))
+                .font(YaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
             Text(timerInterval: girdi.date...VakitSaglayici.tarih(sonraki.ms), countsDown: true)
-                .font(.caption)
+                .font(YaziTipi.stil(.caption))
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
         }
@@ -2364,7 +2364,7 @@ private struct KildimDugmesi17: View {
         if konteynerGorunur {
             Button(intent: KildimDugmesiIntent(tarih: tarih, vakit: kayitVakti)) {
                 Label(WidgetMetin.vm.kildim, systemImage: "checkmark")
-                    .font(.caption.weight(.semibold))
+                    .font(YaziTipi.stil(.caption).weight(.semibold))
                     .frame(maxWidth: .infinity)
             }
             .tint(WidgetSabitleri.yesil)
@@ -2388,10 +2388,10 @@ private struct OrtaGorunum: View {
                             .font(.caption)
                             .foregroundStyle(satir.kilindi ? WidgetSabitleri.yesil : Color.secondary)
                         Text(WidgetMetin.ad(satir.vakit.vakit))
-                            .font(.subheadline.weight(aktifMi ? .bold : .regular))
+                            .font(YaziTipi.stil(.subheadline).weight(aktifMi ? .bold : .regular))
                         Spacer(minLength: 4)
                         Text(WidgetMetin.saat(satir.vakit.ms))
-                            .font(.subheadline.weight(aktifMi ? .bold : .regular))
+                            .font(YaziTipi.stil(.subheadline).weight(aktifMi ? .bold : .regular))
                             .monospacedDigit()
                     }
                     .foregroundStyle(.primary)

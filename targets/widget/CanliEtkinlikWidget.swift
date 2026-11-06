@@ -27,13 +27,13 @@ struct NamazCanliEtkinlikWidget: Widget {
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     Label(WidgetMetin.rakam(durum.ad), systemImage: CanliMetin.ikon(durum))
-                        .font(.headline)
+                        .font(YaziTipi.stil(.headline))
                         .foregroundStyle(WidgetSabitleri.yesil)
                         .lineLimit(1)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     CanliSayac(durum: durum, eskidi: eskidi)
-                        .font(.system(.title3, design: .rounded).weight(.semibold))
+                        .font(YaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                         .frame(maxWidth: 90, alignment: .trailing)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
@@ -41,7 +41,7 @@ struct NamazCanliEtkinlikWidget: Widget {
                         if !CanliMetin.kabulMu(durum) { CanliIlerleme(durum: durum) }
                         HStack {
                             Text(CanliMetin.altSatir(durum))
-                                .font(.caption)
+                                .font(YaziTipi.stil(.caption))
                                 .foregroundStyle(.secondary)
                             Spacer()
                             CanliKildimDugmesi(durum: durum, eskidi: eskidi)
@@ -53,7 +53,7 @@ struct NamazCanliEtkinlikWidget: Widget {
                     .foregroundStyle(WidgetSabitleri.yesil)
             } compactTrailing: {
                 CanliSayac(durum: durum, eskidi: eskidi)
-                    .font(.caption2.weight(.semibold))
+                    .font(YaziTipi.stil(.caption2).weight(.semibold))
                     .frame(maxWidth: 48)
             } minimal: {
                 Image(systemName: CanliMetin.ikon(durum))
@@ -144,7 +144,7 @@ private struct CanliKildimDugmesi: View {
             if !eskidi, let tarih = durum.kildimTarih, let vakit = durum.kildimVakit {
                 Button(intent: KildimDugmesiIntent(tarih: tarih, vakit: vakit)) {
                     Label(WidgetMetin.vm.kildim, systemImage: "checkmark")
-                        .font(.caption.weight(.semibold))
+                        .font(YaziTipi.stil(.caption).weight(.semibold))
                 }
                 .tint(WidgetSabitleri.yesil)
                 .accessibilityLabel(WidgetMetin.m.bicim(WidgetMetin.m.kildimErisim, ["ad": durum.ad]))
@@ -164,16 +164,16 @@ private struct CanliKilitEkraniGorunumu: View {
                     .foregroundStyle(WidgetSabitleri.yesil)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(CanliMetin.baslik(durum))
-                        .font(.headline)
+                        .font(YaziTipi.stil(.headline))
                         .foregroundStyle(.primary)
                         .lineLimit(1)
                     Text(eskidi ? WidgetMetin.m.vakitCikti : CanliMetin.altSatir(durum))
-                        .font(.caption)
+                        .font(YaziTipi.stil(.caption))
                         .foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 8)
                 CanliSayac(durum: durum, eskidi: eskidi)
-                    .font(.system(.title2, design: .rounded).weight(.semibold))
+                    .font(YaziTipi.stil(.title2, tasarim: .rounded).weight(.semibold))
                     .foregroundStyle(.primary)
                     .frame(maxWidth: 110, alignment: .trailing)
             }

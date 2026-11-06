@@ -1291,10 +1291,10 @@ struct TvIlSecimGorunumu: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             Text(m.sehrinizSecin)
-                .font(.system(size: 52, weight: .semibold))
+                .font(TvYaziTipi.boy(52, agirlik: .semibold))
                 .foregroundColor(TvRenk.metin)
             Text(m.ilMerkezi)
-                .font(.system(size: 28))
+                .font(TvYaziTipi.boy(28))
                 .foregroundColor(TvRenk.metinIkincil)
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 24), count: 4), spacing: 24) {
@@ -1303,7 +1303,7 @@ struct TvIlSecimGorunumu: View {
                             secildi(il)
                         } label: {
                             Text(il.ad)
-                                .font(.system(size: 30))
+                                .font(TvYaziTipi.boy(30))
                                 .frame(maxWidth: .infinity, minHeight: 72)
                         }
                         .accessibilityLabel(m.ilSecErisim(il.ad))
@@ -1353,29 +1353,29 @@ struct TvPanoGorunumu: View {
     private func solSutun(durum: TvPanoDurumu, simdi: Int64) -> some View {
         VStack(alignment: .leading, spacing: 28) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(il.ad).font(.system(size: 46, weight: .semibold)).foregroundColor(TvRenk.metin)
-                Text(TvBicim.tarih(durum.tarih, dil: dil)).font(.system(size: 30)).foregroundColor(TvRenk.metinIkincil)
+                Text(il.ad).font(TvYaziTipi.boy(46, agirlik: .semibold)).foregroundColor(TvRenk.metin)
+                Text(TvBicim.tarih(durum.tarih, dil: dil)).font(TvYaziTipi.boy(30)).foregroundColor(TvRenk.metinIkincil)
             }
             HStack(alignment: .lastTextBaseline, spacing: 10) {
                 Text(TvBicim.saat(simdi, bolge))
-                    .font(.system(size: 190, weight: .light).monospacedDigit())
+                    .font(TvYaziTipi.boy(190, agirlik: .light).monospacedDigit())
                     .foregroundColor(TvRenk.metin)
                 Text(TvBicim.saniye(simdi, bolge))
-                    .font(.system(size: 60).monospacedDigit())
+                    .font(TvYaziTipi.boy(60).monospacedDigit())
                     .foregroundColor(TvRenk.metinIkincil)
             }
             VStack(alignment: .leading, spacing: 4) {
                 Text(m.kalan(durum.gorunenAd(durum.siradaki, dil: dil)))
-                    .font(.system(size: 32)).foregroundColor(TvRenk.metinIkincil)
+                    .font(TvYaziTipi.boy(32)).foregroundColor(TvRenk.metinIkincil)
                 Text(TvBicim.geriSayim(durum.kalanMs))
-                    .font(.system(size: 96, weight: .semibold).monospacedDigit())
+                    .font(TvYaziTipi.boy(96, agirlik: .semibold).monospacedDigit())
                     .foregroundColor(TvRenk.metin)
                     .accessibilityLabel(m.kalanErisim(durum.gorunenAd(durum.siradaki, dil: dil), TvBicim.geriSayim(durum.kalanMs)))
             }
             bilgiSeridi(durum: durum)
             Spacer(minLength: 0)
             Button(action: konumuDegistir) {
-                Label(m.konumuDegistirin, systemImage: "mappin.and.ellipse").font(.system(size: 26))
+                Label(m.konumuDegistirin, systemImage: "mappin.and.ellipse").font(TvYaziTipi.boy(26))
             }
         }
     }
@@ -1398,7 +1398,7 @@ struct TvPanoGorunumu: View {
     private func bilgiSatiri(_ renk: Color, _ metin: String) -> some View {
         HStack(spacing: 16) {
             Circle().fill(renk).frame(width: 16, height: 16)
-            Text(metin).font(.system(size: 26)).foregroundColor(TvRenk.metin).lineLimit(2)
+            Text(metin).font(TvYaziTipi.boy(26)).foregroundColor(TvRenk.metin).lineLimit(2)
         }
     }
 
@@ -1410,10 +1410,10 @@ struct TvPanoGorunumu: View {
                 let siradaki = vakit == durum.siradaki && durum.siradakiMs == durum.vakitler.saat(vakit)
                 HStack {
                     Text(durum.gorunenAd(vakit, dil: dil))
-                        .font(.system(size: 44, weight: aktif ? .bold : .regular))
+                        .font(TvYaziTipi.boy(44, agirlik: aktif ? .bold : .regular))
                     Spacer()
                     Text(TvBicim.saat(durum.vakitler.saat(vakit), bolge))
-                        .font(.system(size: 50, weight: aktif ? .bold : .medium).monospacedDigit())
+                        .font(TvYaziTipi.boy(50, agirlik: aktif ? .bold : .medium).monospacedDigit())
                 }
                 .foregroundColor(TvRenk.metin)
                 .padding(.horizontal, 36)

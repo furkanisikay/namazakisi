@@ -89,12 +89,12 @@ struct TesbihatEkrani: View {
                 } else {
                     VStack(spacing: 0) {
                         Text("\(durum.fazSayisi)")
-                            .font(.system(size: 32, weight: .semibold, design: .rounded))
+                            .font(SaatYaziTipi.boy(32, agirlik: .semibold, tasarim: .rounded))
                             .monospacedDigit()
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
                         Text("/ \(durum.faz.hedef)")
-                            .font(.caption2)
+                            .font(SaatYaziTipi.stil(.caption2))
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
@@ -102,12 +102,12 @@ struct TesbihatEkrani: View {
             }
             .frame(width: durum.tamamMi ? 52 : 92, height: durum.tamamMi ? 52 : 92)
             Text(durum.tamamMi ? Samimiyet.kabulDuasi(SaatDili.kod) : durum.faz.ad(dil: SaatDili.kod))
-                .font(.headline)
+                .font(SaatYaziTipi.stil(.headline))
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             if durum.tamamMi {
                 Text(Tesbihat.tehlilMetni(dil: SaatDili.kod))
-                    .font(.caption2)
+                    .font(SaatYaziTipi.stil(.caption2))
                     .multilineTextAlignment(.center)
                     .lineLimit(3)
                     .minimumScaleFactor(0.5)
@@ -123,7 +123,7 @@ struct TesbihatEkrani: View {
                 }
                 .accessibilityHidden(true)
                 Text("\(durum.toplam)/\(Tesbihat.toplamHedef)")
-                    .font(.caption2)
+                    .font(SaatYaziTipi.stil(.caption2))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
