@@ -5,6 +5,272 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.71.0] - 2026-11-06
+
+### Eklendi
+- [dil] telefon ayarlarındaki uygulama diliyle eşleme
+- [dil] İbranice, Gürcüce, Litvanca, Malgaşça, Luganda, Kinyarwanda, Kirundi, Lingala, Dagbani, Mooré, Afar, Maguindanao, Akan, Cebuano ve N'Ko açıldı (beta)
+- [dil] sesi olmayan dilde "ses indirin" yerine "bu dilde ses yok"
+- [dil] N'Ko çevirisi
+- [dil] Akan çevirisi
+- [dil] Cebuano çevirisi
+- [dil] Maguindanao çevirisi
+- [dil] Dagbani çevirisi
+- [dil] Mooré çevirisi
+- [dil] Litvanca çevirisi (beta)
+- [dil] Kirundi çevirisi (beta)
+- [dil] Afar çevirisi
+- [dil] Kinyarwanda çevirisi (beta)
+- [dil] İbranice çevirisi (beta)
+- [dil] Gürcüce çevirisi (beta)
+- [dil] Lingala çevirisi
+- [dil] Luganda çevirisi
+- [dil] Malgaşça çevirisi
+- [dil] N'Ko yazı tipi iOS'ta pakette
+- [dil] İbranice, Gürcüce, Litvanca, Malgaşça, Luganda, Kinyarwanda, Kirundi, Lingala, Dagbani, Mooré, Afar, Maguindanao, Akan, Cebuano, N'Ko iskeleti (kapalı)
+- [dil] Filipince, Telugu, Kannada, Marathi, Pencapça, Assamca, Nepalce, Sinhala ve Khmerce seçilebilir (beta)
+- [dil] Kannada çevirisi (beta)
+- [dil] Assamca çevirisi (beta)
+- [dil] Khmerce çevirisi (beta)
+- [dil] Sinhala çevirisi (beta)
+- [dil] Nepalce çevirisi (beta)
+- [dil] Telugu çevirisi (beta)
+- [dil] Filipince çevirisi (beta)
+- [dil] Marathi çevirisi (beta)
+- [dil] Pencapça çevirisi (beta)
+- [dil] Filipince, Telugu, Kannada, Marathi, Pencapça, Assamca, Nepalce, Sinhala, Khmer iskeleti (kapalı)
+- [dil] Kurmancî, Türkmence, Tatarca, Sindhçe, Lehçe, Japonca, Gucaratça, Bulgarca ve Makedonca seçilebilir (beta)
+- [dil] Kurmancî çevirisi (beta)
+- [dil] Kurmancî native kaynakları (beta, ara)
+- [dil] Kurmancî sözlüğü (beta)
+- [dil] Türkmence çevirisi (beta)
+- [dil] Bulgarca çevirisi (beta)
+- [dil] Makedonca çevirisi (beta)
+- [dil] Sindhçe çevirisi (beta)
+- [dil] Tatarca çevirisi (beta)
+- [dil] Gucaratça çevirisi (beta)
+- [dil] Japonca çevirisi (beta)
+- [dil] Lehçe çevirisi (beta)
+- [dil] Kurmancî, Türkmence, Tatarca, Sindhçe, Lehçe, Japonca, Gucaratça, Bulgarca, Makedonca iskeleti (kapalı)
+- [dil] Portekizce, İtalyanca, İsveççe, Ukraynaca, Rumence, Hırvatça, Sırpça ve Yunanca seçilebilir (beta)
+- [dil] Hırvatça native metinleri (beta)
+- [dil] Hırvatça sözlüğü (beta)
+- [dil] Rumence çevirisi (beta)
+- [dil] Portekizce çevirisi (beta)
+- [dil] Sırpça çevirisi (beta)
+- [dil] Yunanca çevirisi (beta)
+- [dil] İtalyanca native metinleri (beta)
+- [dil] İtalyanca sözlüğü (beta)
+- [dil] İsveççe çevirisi (beta)
+- [dil] Ukraynaca çevirisi (beta)
+- [dil] Portekizce, İtalyanca, İsveççe, Ukraynaca, Rumence, Hırvatça, Sırpça, Yunanca iskeleti (kapalı)
+- [dil] aramada Kiril ve Yunan büyük/küçük harf duyarsız
+- [dil] Çince, Tamilce, Malayalamca, Tayca, Korece ve Vietnamca seçilebilir (beta)
+- [dil] Korece native metinleri (beta)
+- [dil] Korece sözlüğü (beta)
+- [dil] Vietnamca native metinleri (beta)
+- [dil] Vietnamca sözlüğü (beta)
+- [dil] Tamilce native metinleri (beta)
+- [dil] Tamilce sözlüğü (beta)
+- [dil] Malayalamca çevirisi (beta)
+- [dil] Malayalamca sözlüğü (beta)
+- [dil] Tayca çevirisi (beta) — native metinler
+- [dil] Tayca çevirisi (beta) — JS sözlüğü
+- [dil] Çince (Basitleştirilmiş) native metinleri (beta)
+- [dil] Çince (Basitleştirilmiş) sözlüğü (beta)
+- [dil] aramada Malayalamca eski chillu ve tipografik kesme işareti eşlenir
+- [dil] Vietnamca cümle başı büyütme ve aksansız ayar araması
+- [dil] sayı–birim ve süre parçası boşluğu sözlükten (Çince boşluksuz)
+- [dil] Çince, Tamilce, Malayalamca, Tayca, Korece, Vietnamca iskeleti (kapalı)
+- [dil] Svahili, Hausa, Amharca, Oromo, Somalice, Pular ve Yoruba seçilebilir (beta)
+- [dil] dalga 8 bütünleştirme: Neler Yeni çevirileri, hitap tablosu, Yoruba NFC meal
+- [dil] Fula (Pular) çevirisi (beta)
+- [dil] Yoruba çevirisi (beta)
+- [dil] Oromo çevirisi (beta)
+- [dil] Somalice çevirisi (beta)
+- [dil] Amharca çevirisi (beta)
+- [dil] Hausa çevirisi (beta)
+- [dil] Svahili çevirisi (beta)
+- [dil] Svahili, Hausa, Amharca, Oromo, Somalice, Fula, Yoruba iskeleti (kapalı)
+- [dil] Azerice, Özbekçe, Kazakça, Kırgızca ve Tacikçe seçilebilir (beta)
+- [dil] dalga 7 bütünleştirme: Neler Yeni çevirileri ve hitap tablosu
+- [dil] Tacikçe çevirisi (beta)
+- [dil] Özbekçe çevirisi (beta)
+- [dil] Azerice çevirisi (beta)
+- [dil] Kırgızca çevirisi (beta)
+- [dil] Kazakça çevirisi (beta)
+- [dil] Azerice, Özbekçe, Kazakça, Kırgızca, Tacikçe iskeleti ve alfabe seçimi (kapalı)
+- [hesap] Azerbaycan'da takvimi kullanıcı seçer, MWL ve QMİ eşit seçenek
+- [tv] pano rakamı telefonun ülkeye göre kararını izler
+- [dil] Farsça, Peştuca, Soranice ve Uygurca seçilebilir (beta)
+- [dil] dalga 6 bütünleştirme: Neler Yeni çevirileri
+- [dil] Soranî Kürtçesi çevirisi (beta)
+- [dil] Uygurca çevirisi (beta)
+- [dil] Peştuca çevirisi (beta)
+- [dil] Farsça çevirisi (beta)
+- [dil] Farsça, Peştuca, Soranî Kürtçesi, Uygurca iskeleti (kapalı)
+- [dil] İspanyolca, Felemenkçe, Arnavutça, Hintçe ve Bengalce seçilebilir (beta)
+- [dil] dalga 5 bütünleştirme: Neler Yeni çevirileri ve dil adları
+- [dil] Arnavutça çevirisi (beta)
+- [dil] Hintçe çevirisi (beta)
+- [dil] Bengalce çevirisi (beta)
+- [dil] İspanyolca çevirisi (beta)
+- [dil] Felemenkçe çevirisi (beta)
+- [dil] Bengalcede Bengalce rakam (ülkeye göre, değiştirilebilir)
+- [dil] İspanyolcada Isa Garcia meali, Android uygulama başına dil listesi
+- [dil] İspanyolca, Felemenkçe, Arnavutça, Hintçe, Bengalce iskeleti (kapalı)
+- [dil] Arapça ve Urduca (beta, sağdan sola) dil seçicide
+- [dil] Arapça native metinleri (beta)
+- [dil] Urduca native metinleri (beta)
+- [dil] Arapça ve Urduca yön, rakam ve Neler Yeni metinleri
+- [gunun-ayeti] Urduca meal (Junagarhi), not numarası silinerek
+- [dil] Urduca sözlüğü (beta)
+- [dil] Arapça sözlüğü (beta)
+- [dil] sağdan sola yazı yönü ve yeniden başlatma
+- [dil] rakam sistemi ve Urduca Nestalik yazı tipi
+- [dil] Arapça ve Urduca iskeleti (kapalı)
+- [dil] Endonezce, Almanca, Fransızca, Boşnakça, Rusça ve Malayca seçilebilir (beta)
+- [dil] Fransızca native metinleri (beta)
+- [dil] Almanca native metinleri (beta)
+- [dil] Rusça native metinleri (beta)
+- [dil] Boşnakça native metinleri (beta)
+- [dil] Endonezce native metinleri (beta)
+- [dil] Malayca native metinleri (beta)
+- [dil] native dil tabloları sekiz dile (W4 altyapı) ve vakit adı takımı köprüsü
+- [dil] vakit adı seçimi, ay başlığının yalın hâli ve sesli okumada dakika uyumu
+- [dil] Neler Yeni öğelerinin altı yeni dilde çevirisi
+- [dil] Boşnakça sözlüğü (beta)
+- [dil] Almanca sözlüğü (beta)
+- [dil] Fransızca sözlüğü (beta)
+- [dil] Rusça sözlüğü (beta)
+- [dil] Endonezce sözlüğü (beta)
+- [dil] Malayca sözlüğü (beta)
+- [dil] vakit adı takımları ve sekiz dilde ayet mealleri
+- [dil] altı yeni dilin iskeleti (id, de, fr, bs, ru, ms; seçilemez)
+- [gunun-ayeti] widget ayar sayfasından tek dokunuşla eklenir; emülatörde widget ve kilit ekranı kareleri
+- [gunun-ayeti] Günün ayeti sayfası ve widget/duvar kâğıdı ayarı
+- [gunun-ayeti] Android widget'ı ve duvar kâğıdı
+- [icerik] günün ayeti yükü ve servisi (widget + duvar kâğıdı tek kaynak)
+- [gunun-ayeti] native saf çekirdek, fikstür ve fontlar
+- [gunun-ayeti] iOS "Günün ayeti görseli" Kısayollar eylemi
+- [gunun-ayeti] iOS günün ayeti widget'ı (küçük, orta, büyük, kilit ekranı)
+- [gunun-ayeti] iOS köprüsü gununAyetiKaydet ve yük v1 çözümü
+- [icerik] günün ayeti havuzu ve seçimi (QuranEnc + Tanzil, namaz günü sınırı)
+- [dil] İngilizce seçilebilir (beta)
+- [saat] Wear OS sesli okuması telefonun dilindeki metni o dilin sesiyle okur
+- [vakit] Azerbaycan'da QMİ takvimi bölge kartında ikinci seçenek
+- [samimiyet] kandil selamı gece ve ülke başına; dil öncelik araştırması
+- [dil] Wear OS saat ve Android TV panosu cihaz dilinde (Türkçe/İngilizce)
+- [dil] iOS widget, Apple Watch, Apple TV, AlarmKit ve Siri metinleri iki dilli
+- [dil] Android uygulamasının native metinleri arayüz dilinde
+- [dil] yerel modüllerin Android metinleri arayüz dilinde
+- [dil] native arayüz dili ayrı anahtarla (Android tercih dosyası, iOS App Group)
+- [dil] Ayarlar'da dil satırı; "Neler Yeni" dil başına; son Türkçe sabit metinler sözlükte
+- [dil] ayarlar, hatırlatmalar, kaza/seri, cami, yedekleme, cihazlar ve kıble ekranları sözlükte
+- [dil] dil seçici, cihaz dili seçeneği ve elle yazılmış sesli okuma metinleri için tek soru
+- [dil] sayaç bildirimlerinin uzun metinleri etkin dilde; Türkçe nass havuzları cırcır dışında
+- [dil] sesli okuma metinleri etkin dilde; kayıtlı hazır şablonlar dile çevrilir
+- [dil] kandil ve hicrî yılbaşı selamı ülkeye göre
+- [dil] sesli okuma dili etkin dile bağlı; "Neler Yeni" dil başına
+- [dil] bildirim düğmeleri, kanal adları, nafile ve geri sayım metinleri etkin dilde
+- [dil] muhafız ve hatırlatma bildirimleri etkin dilde; dil değişince planlar yenilenir
+- [dil] ana ekran, sade görünüm ve ortak sözlük İngilizceye hazır
+- [dil] kurulum sihirbazı ve hatırlatma düzeyi metinleri sözlükte (Türkçe + İngilizce)
+- [dil] yarım dil nöbetçisi, çevrilmeyen veri hariç, İngilizce çizim denetimi yardımcısı
+- [dil] dil altyapısı — tipli sözlük, elle CLDR çoğul, etkin dil ve giriş kapısı
+- [konum] kurulum sihirbazında başka bir ülkeden şehir; ülkenin hesap yöntemi kurulur
+- [tv] telefonun hesap yöntemi Android TV'ye gider; giriş noktaları hesap ayarını bekler
+- [konum] Türkiye dışında şehir seçimi, hesap yöntemi sayfası ve bölge takvimi önerisi
+- [konum] dünya şehirleri verisi (GeoNames), çevrimdışı arama ve ülke tespiti
+- [vakit] ülkeye göre hesap profilleri ve etkin hesap ayarı
+
+### Düzeltildi
+- [dil] inceleme bulguları — cihaz dili düşüşü, ses bandı, tek uçuş eşitleme
+- [ios] N'Ko'da yazı tipi verilmeyen metinler de N'Ko yazı tipiyle
+- [ios] N'Ko yazı tipi widget, Apple Watch ve Apple TV'de de
+- [dil] sesi olmayan dilde sesli okuma uyarısı iPhone'da da görünsün
+- [android] dil kaynakları AAB'de bölünmesin
+- [dil] sertlik çipinde tek uzun sözcük bölünmesin
+- [dil] dalga 13 karelerindeki taşma ve yön bulguları
+- [dil] Maguindanao kısa birim satırı ayıraç denetiminin okuyacağı biçimde
+- [dil] N'Ko metinlerinde İngilizce sistem adları özgün yazımla
+- [icerik] Akan, Dagbani ve Mooré meallerinde harfler gerçek Latin harfi
+- [dil] Dagbani saat ve TV sesli süresi JS ile aynı sırada
+- [kible] sağdan sola dilde yer adıyla başlayan satır ters dizilmez
+- [seri] gök panelinde ay adı Arap harfli dillerde bitişik çizilir
+- [dil] sürüm numaraları yerel rakamlı dillerde Batı rakamıyla kalır
+- [wear] son dakikalar başlığı uzun dillerde küçülerek sığar
+- [play] otomatik incelemeye gönderilemeyen düzenleme yine kaydedilir
+- [arayuz] sağdan sola arayüzde eşleme kodu soldan sağa, harita atfı düğmeye binmez
+- [arayuz] Kaza Defteri başlığı uzun dilde sağdaki düğmeleri ekran dışına itmez
+- [dil] Yunanca büyük harfte vurgu düşer, uzun dilde alarm düğmesi ve kaza kartı taşmaz
+- [dil] kaza günü metninde ay adı tarih içi biçimde
+- [dil] Portekizce ve Ukraynaca mealde dipnot numarası silinir
+- [dil] Hausa mealde dipnot numarası silinir
+- [arayuz] öneri düğmesindeki fark çipi uzun dilde alt satıra iner
+- [tv,saat] kare saatte zikir adı ve uyandırma başlığı, TV'de Sil tuşu ve üye satırı kesilmez
+- [tv,saat] uzun dilde düğme, başlık ve dua kesilmez
+- [dil] dil satırı "· Language", tarih kartında gün–yıl sırası sözlükten
+- [arayuz] uzun dilde kesilen ve taşan telefon yerleşimleri
+- [dil] Tamilce ve Malayalamca kesilen kısa etiketleri kaynaklı karşılıklarla kısalt
+- [dil] seri takviminde ay–yıl sırası sözlükten gelir
+- [dil] Çince seri seviyesinde Hafız anlamı korunur
+- [saat,tv,dil] tesbihat bitiş çökmesi ve dalga 8 ikinci kare denetimi
+- [dil] dalga 8 kare denetimindeki metin ve etiket kusurları
+- [tv,saat] uzun dilde satır çakışması ve taşmalar giderildi
+- [dil] Kırgızca mealde dipnot numarası silinir
+- [dil] dalga 7 kare düzeltmeleri
+- [dil] Özbekçe Latinde sentabr ve oktabr resmî yazımla
+- [tv] yerel rakamı olmayan dilin rakam seçimi yok sayılır
+- [gunun-ayeti] paylaşım düğmeleri uzun metni sarar; fa/ps görsel paylaşım metni kısaldı
+- [ana-ekran] aktif gün sonradan değişince pager hedef sayfada yeniden doğar
+- [ana-ekran] konum geç gelince ana ekran dünde kalmasın
+- [dil] Soranî süre birimleri tek harf değil tam sözcük
+- [tv,saat] uzun dilde TV eşleme düğmeleri ekranda kalır; Soranî tesbihat düğmesi kısa
+- [otomasyon] Uygurca native etiketleri rehber tablosunda
+- [otomasyon] rehber Android etiketlerini her telefon dilinde doğru yazar
+- [hatirlatma] ses seçicide uzun ipucu satıra sığsın
+- [dil] Kıldım uygulamaları sayfa başlığı her dilde başlık çubuğuna sığsın
+- [dil] Hintçe Kıldım uygulamaları başlığı başlık çubuğuna sığsın
+- [dil] Bengalce Kıldım uygulamaları başlığı başlık çubuğuna sığsın
+- [dil] Hintçe ve Bengalcede üst işaretler kesilmesin
+- [tv,saat] TV uyarı bandı tek satır; saat kare betiği Bengalce rakamı tanır
+- [dil] telefon widget, bildirim ve canlı etkinlikte seçilen rakam sistemi
+- [seri] Arapça ve Urducada takvim sağdan sola (haftanın ilk günü sağda)
+- [wear] saatte rakamlar cihaz yerel ayarının rakamıyla, tutarlı
+- [dil] Arapça ve Urducada ülke adları kendi dilinde, Urduca sade görünüm halkası
+- [dil] Arapça geri sayım ve seri takviminde Doğu Arap rakamı, Urduca kıble taşması
+- [dil] kare hattında kapalı dil tohum işaretiyle açılır
+- [dil] sağdan sola düzende yönlü ikonlar, hizalar ve coğrafi görünümler
+- [dil] Urduca widget zemin ayarı opaklık anlamında
+- [kareler,tv] saat ve iOS turu dilden bağımsız çapalarla bekler; TV vakit adı saate yapışmaz
+- [saat] tesbihat okunuşları dile göre
+- [tv] uzun dilde tuş, başlık ve vakit adı taşmaz
+- [saat,kareler] tesbihat duası kesilmez; TV kareleri uygulamaya özel dille çekilir
+- [kible] yön cümlesi tek satırda kalır, uzun dilde küçülür
+- [dil] Boşnakçada sabah namazının adı Sabah, çizelge satırı Zora
+- [dil] Almancada sabahın girişi Fajr adını alır
+- [dil] Fransızcada sabahın girişi Fajr adını alır
+- [dil] Rusçada sabahın girişi Фаджр adını alır
+- [dil] Endonezce ve Malaycada sabahın girişi Subuh adını alır
+- [gunun-ayeti] kilit bandı %64'ten başlar, yıldız süsü saate değmez
+- [gunun-ayeti] kilit ekranı duvar kâğıdında metin büyük saatin altına iner
+- [dil] eşitleme zamanı ay adıyla, etkin dilde; Neler Yeni karesi sayfa açılınca çekilir
+- [gunun-ayeti] duvar kâğıdı açılınca iki kez yazılmaz; onayda "Vazgeçin"; özellik turu akışı
+- [gunun-ayeti] ölçümde yedek font satır yüksekliği; önizleme notu
+- [dil] koda gömülü kalan metinler sözlüğe; Maestro akışları iki dilli
+- [dil] iOS İngilizce izin metinleri derlenir; emülatör kare hatları dil değişiminden sonra bekler
+- [dil] mevcut kurulumlar güncellemeden sonra Türkçe kalır; ses uyarısı etkin dilin sesini sorar
+- [dil] yedekten gelen kayıt yarım dili açmaz; geri dönüşte sesli okuma sorusu sorulmaz
+- [vakit] hesap yöntemi değişince ekrandaki vakit önbellekleri tazelenir
+- [tv] yüksek enlem sınırı adhan JS aritmetiğiyle (milisaniye kırpması)
+- [tv] MUIS'in yukarı yuvarlaması TV'ye gider; genel yolda yuvarlama adhan JS kuralıyla
+- [konum] ülke kodu tazeliği ve dünya şehri/il tutarlılığı; İran varsayılanı genel yöntem
+
+### Değiştirildi
+- [ayet] günün ayeti havuzu paketten, yalnız etkin dilin meali açılır
+- [dil] sözlükler sıkıştırılmış paketten, yalnız etkin dil açılır
+
 ## [0.70.1] - 2026-10-23
 
 ### Düzeltildi

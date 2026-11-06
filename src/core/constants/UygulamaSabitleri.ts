@@ -46,7 +46,7 @@ export const NAMAZ_ISIMLERI = [
 // Uygulama meta verileri
 export const UYGULAMA = {
   ADI: 'Namaz Akışı', // dil-haric: marka adı (her dilde aynı)
-  VERSIYON: '0.70.1',
+  VERSIYON: '0.71.0',
   /** Etkin dilde (getter). */
   get ACIKLAMA(): string {
     return metin().genel.hakkinda.uygulamaAciklamasi;
