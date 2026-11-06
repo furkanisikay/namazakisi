@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- gu — Gucaratça (beta). -->
+<!-- Gerçek alarm (Gucaratça). "નમાઝ પઢી લીધી" bildirimdeki düğmeyle aynı ad (JS bildirim.eylem.kildim kısa biçimi "પઢી લીધી"). -->
+<resources>
+  <string name="alarm_baslik">નમાઝ અલાર્મ</string>
+  <string name="alarm_kildim">પઢી લીધી</string>
+  <string name="alarm_kapat">બંધ કરો</string>
+  <string name="alarm_kanal_aciklamasi">તમે પસંદ કરેલાં રિમાઇન્ડરનાં પગલાં પર વાગતું સાચું અલાર્મ</string>
+</resources>

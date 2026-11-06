@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Telugu. Terimler: src/core/dil/sozluk/te (మీరు + ‑ండి, namaz నమాజ్, cuma జుమా). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">te</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">నమాజ్ సమయాల బోర్డు</string>
+    <string name="ayarlar">సెట్టింగ్‌లు</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s వరకు %2$s మిగిలి ఉంది</string>
+    <string name="pano_vaktine">%1$s వరకు</string>
+    <string name="pano_vaktine_kalan">%1$s వరకు %2$s</string>
+    <string name="pano_kerahat_vakti">మక్రూహ్ సమయం</string>
+    <string name="pano_bitis">ముగింపు %1$s</string>
+    <string name="pano_kerahat_erisim">మక్రూహ్ సమయం, %1$s, %2$sకి ముగుస్తుంది. %3$s</string>
+    <string name="pano_cumaya">జుమాకు %1$s</string>
+    <string name="pano_cikis_geldi">బయలుదేరే సమయం</string>
+    <string name="pano_cikis">%1$sకి బయలుదేరండి</string>
+    <string name="pano_cuma_cikis_geldi_erisim">జుమాకు బయలుదేరే సమయం అయింది</string>
+    <string name="pano_cuma_cikis_erisim">జుమాకు %1$sకి బయలుదేరండి</string>
+    <string name="pano_bugun_cuma">ఈ రోజు జుమా</string>
+    <string name="pano_ogle">జుహ్ర్ %1$s</string>
+    <string name="pano_bugun_cuma_erisim">ఈ రోజు జుమా. జుమా నమాజ్ జుహ్ర్ సమయంలో, %1$s</string>
+    <string name="pano_ayarlar_erisim">సెట్టింగ్‌లు: ఫోన్ జోడించండి, లొకేషన్, కనెక్ట్ అయిన ఫోన్‌లు</string>
+    <string name="pano_simdiki_vakit">ప్రస్తుత నమాజ్ సమయం</string>
+    <string name="pano_siradaki_vakit">తదుపరి నమాజ్ సమయం</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "మీ ఫోన్‌ను జోడించండి", "కోడ్ నమోదు చేయండి", "నగరాన్ని నేనే ఎంచుకుంటాను", "జోడించండి". -->
+    <string name="kodla_girin">కోడ్ నమోదు చేయండి</string>
+    <string name="ili_kendim_secin">నగరాన్ని నేనే ఎంచుకుంటాను</string>
+    <string name="yeniden_deneyin">మళ్లీ ప్రయత్నించండి</string>
+    <string name="telefon_varsayilan">ఫోన్</string>
+    <string name="esleme_ekleniyor">%1$s జోడిస్తోంది</string>
+    <string name="esleme_gonderiyor">మీ ఫోన్ దాని లొకేషన్, స్థితిని పంపుతోంది…</string>
+    <string name="esleme_tamamlanamadi">జత చేయడం పూర్తి కాలేదు</string>
+    <string name="esleme_saklanamadi">ఈ టీవీ కనెక్షన్ కీని సురక్షితంగా నిల్వ చేయలేదు. కోడ్‌తో మీ లొకేషన్‌ను నమోదు చేయవచ్చు లేదా మీ నగరాన్ని ఎంచుకోవచ్చు.</string>
+    <string name="telefonunuzu_ekleyin">మీ ఫోన్‌ను జోడించండి</string>
+    <string name="esleme_alt">మీ లొకేషన్ నమాజ్ సమయాలు; మీరు ఆచరించిన నమాజ్‌లు కూడా కనిపిస్తాయి.</string>
+    <string name="esleme_adim1">మీ ఫోన్‌లో Namaz Akışı తెరవండి</string>
+    <string name="esleme_adim2">సెట్టింగ్‌లు › నా పరికరాలు › టీవీని జోడించండి</string>
+    <string name="esleme_adim3">మీ ఫోన్ కెమెరాను కోడ్ వైపు చూపండి</string>
+    <string name="esleme_ayni_wifi">మీ ఫోన్, టీవీ అదే Wi-Fi నెట్‌వర్క్‌లో ఉండాలి.</string>
+    <string name="esleme_onay_soru">ఈ ఫోన్‌ను జోడించాలా?</string>
+    <string name="esleme_onay_aciklama">జోడించిన ఫోన్ దాని లొకేషన్‌ను, అది గుర్తించిన నమాజ్‌లను ఈ టీవీకి పంపగలదు.</string>
+    <string name="ekleyin">జోడించండి</string>
+    <string name="hayir">కాదు</string>
+    <string name="esleme_eklendi">%1$s జోడించబడింది</string>
+    <string name="konumunuz_geldi">మీ లొకేషన్ వచ్చింది</string>
+    <string name="konuma_gore_hesaplanacak">నమాజ్ సమయాలు ఈ లొకేషన్ కోసం లెక్కించబడతాయి.</string>
+    <string name="qr_konum_alindi">లొకేషన్ అందింది</string>
+    <string name="qr_kodu">మీ ఫోన్‌తో స్కాన్ చేయాల్సిన జత కోడ్</string>
+    <string name="ag_yok">టీవీ నెట్‌వర్క్‌కు కనెక్ట్ కాలేదు</string>
+    <string name="ag_yok_aciklama">మీ ఫోన్ నుండి 7 అంకెల కోడ్‌ను నమోదు చేసి లేదా మీ నగరాన్ని ఎంచుకుని కొనసాగవచ్చు.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">మీ ఫోన్ నుండి కోడ్‌ను నమోదు చేయండి</string>
+    <string name="kod_yol">మీ ఫోన్‌లో: సెట్టింగ్‌లు › నా పరికరాలు › టీవీని జోడించండి</string>
+    <string name="kod_hatali">కోడ్ సరిపోలలేదు. మీ ఫోన్‌లోని 7 అంకెలను తనిఖీ చేయండి; తప్పు అంకెను “%1$s”తో సరిచేయండి.</string>
+    <string name="kod_rakamli_kumanda">మీ రిమోట్‌లో సంఖ్యల బటన్‌లు ఉంటే, వాటితో కూడా టైప్ చేయవచ్చు.</string>
+    <string name="kod_bos_hane">ఖాళీ అంకె</string>
+    <string name="kod_sil">తొలగించండి</string>
+    <string name="kod_sil_aciklama">చివరి అంకెను తొలగించండి</string>
+    <string name="kod_geri">వెనుకకు</string>
+    <string name="vazgecin">రద్దు చేయండి</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">మీ నగరాన్ని ఎంచుకోండి</string>
+    <string name="il_merkezine_gore">నమాజ్ సమయాలు నగర కేంద్రం కోసం లెక్కించబడతాయి.</string>
+    <string name="il_secili">%1$s, ఎంచుకోబడింది</string>
+    <string name="dream_il_yok">నమాజ్ సమయాల బోర్డును చూడటానికి, Namaz Akışı యాప్‌ను తెరిచి మీ నగరాన్ని ఎంచుకోండి.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">లొకేషన్: %1$s</string>
+    <string name="ayar_konum_yok">లొకేషన్ ఎంచుకోలేదు</string>
+    <string name="ayar_telefon_ekleyin">ఫోన్‌ను జోడించండి</string>
+    <string name="ayar_konumu_kodla">కోడ్‌తో లొకేషన్ నమోదు చేయండి</string>
+    <string name="ayar_bagli_telefonlar">ఈ టీవీకి కనెక్ట్ అయిన ఫోన్‌లు</string>
+    <string name="ayar_telefon_yok">ఇంకా ఫోన్ జోడించలేదు. ఎడమవైపున ఉన్న “%1$s” ఉపయోగించి, కనిపించే కోడ్‌ను స్కాన్ చేయండి.</string>
+    <string name="kaldirin">తీసివేయండి</string>
+    <string name="ayar_ne_gonderir">ఫోన్‌లు ఏమి పంపుతాయి?</string>
+    <string name="ayar_madde_konum">లొకేషన్: నమాజ్ సమయాలు దాన్ని అనుసరిస్తాయి</string>
+    <string name="ayar_madde_namazlar">గుర్తించిన నమాజ్‌లు, ఎంచుకున్నవారికి</string>
+    <string name="ayar_madde_sifreli">ఎన్‌క్రిప్ట్ చేయబడి, మీ ఇంటి నెట్‌వర్క్‌లో మాత్రమే</string>
+    <string name="son_haber_yok">ఇంకా సమాచారం లేదు</string>
+    <string name="son_haber_az_once">ఇప్పుడే</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d నిమి క్రితం</item>
+        <item quantity="other">%1$d నిమి క్రితం</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d గం క్రితం</item>
+        <item quantity="other">%1$d గం క్రితం</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d రోజు క్రితం</item>
+        <item quantity="other">%1$d రోజుల క్రితం</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s తీసివేయాలా?</string>
+    <string name="kaldir_aciklama">ఈ ఫోన్ ఇకపై టీవీకి సమాచారం పంపలేదు. మళ్లీ జోడించడానికి, QR కోడ్‌ను మళ్లీ స్కాన్ చేయాలి.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">మీ ఫోన్ లొకేషన్</string>
+</resources>

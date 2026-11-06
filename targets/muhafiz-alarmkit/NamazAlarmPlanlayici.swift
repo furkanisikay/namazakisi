@@ -91,6 +91,165 @@ enum NamazAlarmCekirdegi {
         return Int64((Date().timeIntervalSince1970 * 1000).rounded())
     }
 
+    /// Sistem "Durdur" dugmesinin etiketi (namazi KILINDI SAYMAZ; iOS 26.1+ sistem kendi
+    /// etiketini cizer). Ingilizce JS `hatirlatma.iosDurdur` ("you can stop it") ile ayni fiil.
+    static func durdurEtiketi(_ dil: String) -> String {
+        return durdurEtiketleri[ArayuzDili.coz(dil)] ?? "Durdur"
+    }
+
+    /// Dil tablosu (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; cevrilmemis dil Ingilizce kopya).
+    static let durdurEtiketleri: [String: String] = [
+        "tr": "Durdur",
+        "en": "Stop",
+        // id
+        "id": "Hentikan",
+        "de": "Beenden",
+        // fr
+        "fr": "Arrêter",
+        // bs
+        "bs": "Zaustavite",
+        // ru
+        "ru": "Остановить",
+        // ms
+        "ms": "Hentikan",
+        // ar
+        "ar": "إيقاف",
+        // ur
+        "ur": "روکیں",
+        // es
+        "es": "Detener",
+        // nl
+        "nl": "Stoppen",
+        // sq
+        "sq": "Ndalo",
+        // hi
+        "hi": "रोकें",
+        // bn
+        "bn": "থামান",
+        // fa
+        "fa": "توقف",
+        // ps
+        "ps": "ودروئ",
+        // ckb
+        "ckb": "وەستاندن",
+        // ug
+        "ug": "توختىتىش",
+        // az
+        "az": "Dayandır",
+        // uz (Latin)
+        "uz": "Toʻxtatish",
+        // kk
+        "kk": "Тоқтату",
+        // ky
+        "ky": "Токтотуу",
+        // tg
+        "tg": "Қатъ кардан",
+        // sw
+        "sw": "Simamisha",
+        // ha
+        "ha": "Tsayar",
+        // am
+        "am": "አቁም",
+        // om
+        "om": "Dhaabi",
+        // so
+        "so": "Jooji",
+        // ff
+        "ff": "Dartinee",
+        // yo
+        "yo": "Dá a dúró",
+        // zh
+        "zh": "停止",
+        // ta
+        "ta": "நிறுத்து",
+        // ml
+        "ml": "നിർത്തുക",
+        // th
+        "th": "หยุด",
+        // ko
+        "ko": "끄기",
+        // vi
+        "vi": "Tắt",
+        // pt
+        "pt": "Parar",
+        // it
+        "it": "Fermare",
+        // sv
+        "sv": "Stoppa",
+        // uk
+        "uk": "Зупинити",
+        // ro
+        "ro": "Opriți",
+        // hr
+        "hr": "Zaustavi",
+        // sr
+        "sr": "Зауставите",
+        // el
+        "el": "Διακοπή",
+        // ku
+        "ku": "Rawestînin",
+        // tk
+        "tk": "Sakla",
+        // tt
+        "tt": "Туктату",
+        // sd
+        "sd": "روڪيو",
+        // pl
+        "pl": "Zatrzymaj",
+        // ja
+        "ja": "停止",
+        // gu
+        "gu": "બંધ કરો",
+        // bg
+        "bg": "Спрете",
+        // mk
+        "mk": "Запрете",
+        // fil
+        "fil": "Ihinto",
+        // te
+        "te": "ఆపండి",
+        // kn
+        "kn": "ನಿಲ್ಲಿಸಿ",
+        // mr
+        "mr": "थांबवा",
+        // pa
+        "pa": "روکو",
+        // as
+        "as": "বন্ধ কৰক",
+        // ne
+        "ne": "रोक्नुहोस्",
+        // si
+        "si": "නවත්වන්න",
+        // km
+        "km": "បញ្ឈប់",
+        // he
+        "he": "עצירה",
+        // ka
+        "ka": "შეჩერება",
+        // lt
+        "lt": "Sustabdyti",
+        // mg
+        "mg": "Ajanony",
+        "lg": "Yimiriza",
+        // rw
+        "rw": "Guhagarika",
+        // rn
+        "rn": "Muhagarike",
+        // ln
+        "ln": "Botelemisa",
+        // dag
+        "dag": "Ŋmaami ya",
+        // mos
+        "mos": "Pag-y",
+        // aa
+        "aa": "Xiqisa",
+        // mdh
+        "mdh": "Ipendeg",
+        "ak": "Gyae",
+        "ceb": "Hunonga",
+        "nqo": "ߊ߬ ߖߐ߫",
+    ]
+
     static func durum() -> String {
         switch AlarmManager.shared.authorizationState {
         case .authorized: return "izinli"
@@ -125,17 +284,29 @@ enum NamazAlarmCekirdegi {
         // BILGI alarmi (cuma, camiye gitme, takvim — `AlarmKurallari.alarmTuru`) vakit GIRMEDEN
         // calar: ikinci dugme YOK (yalniz sistemin "Durdur"u); "Kildim" FARZ'i yazardi.
         let bilgiMi = AlarmKurallari.alarmTuru(kayit.kimlik) == "bilgi"
+        // Dugme etiketleri UYGULAMANIN arayuz dilinde (W5; baslik gibi JS'in plan dilinde) —
+        // interpolasyon hilesiyle (asagida) yerellestirme tablosunda aranmaz. Dil degisince JS
+        // planlari yeniden kurar, alarmlar yeni etiketle yenilenir.
+        let metin = VakitMetinleri.dil(SiriDeposu.varsayilan.arayuzDili())
+        let kildimDegeri: String.LocalizationValue = "\(metin.kildim)"
+        let durdurDegeri: String.LocalizationValue = "\(Self.durdurEtiketi(metin.dil))"
         let ikinciDugme: AlarmButton? = bilgiMi
             ? nil
-            : AlarmButton(text: "Kıldım", textColor: .white, systemImageName: "checkmark")
+            : AlarmButton(text: LocalizedStringResource(kildimDegeri), textColor: .white, systemImageName: "checkmark")
         // Baslik DINAMIK metindir: `LocalizedStringResource(stringLiteral:)` onu bir
         // YERELLESTIRME ANAHTARI sayardi. Interpolasyonla anahtar "%@" olur, deger aynen
         // gosterilir (yerellestirme tablosunda karsiligi aranmaz).
-        let baslikDegeri: String.LocalizationValue = "\(kayit.baslik)"
+        // Basligin rakamlari secilen sistemle (Arapcada "arab" → Dogu Arap, Bengalcede "beng" →
+        // Bengalce); kayit Bati kalir.
+        let baslik = RakamSistemi.cevir(
+            kayit.baslik,
+            sistem: RakamSistemi.etkin(dil: metin.dil, kayitli: SiriDeposu.varsayilan.rakamSistemi())
+        )
+        let baslikDegeri: String.LocalizationValue = "\(baslik)"
         let ikinciDavranis: AlarmPresentation.Alert.SecondaryButtonBehavior? = bilgiMi ? nil : .custom
         let alert = AlarmPresentation.Alert(
             title: LocalizedStringResource(baslikDegeri),
-            stopButton: AlarmButton(text: "Durdur", textColor: .white, systemImageName: "stop.fill"),
+            stopButton: AlarmButton(text: LocalizedStringResource(durdurDegeri), textColor: .white, systemImageName: "stop.fill"),
             secondaryButton: ikinciDugme,
             secondaryButtonBehavior: ikinciDavranis
         )

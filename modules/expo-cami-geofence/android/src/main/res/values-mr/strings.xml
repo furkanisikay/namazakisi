@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">मशिदीत</string>
+    <string name="camigeofence_kanal_durum_aciklama">तुम्ही मशिदीत असल्याचे ओळखल्यावर येणारी शांत सूचना</string>
+    <string name="camigeofence_kanal_soru_ad">मशिदीतून बाहेर पडल्यानंतर</string>
+    <string name="camigeofence_kanal_soru_aciklama">मशिदीतून बाहेर पडल्यानंतर तुम्ही नमाजची नोंद करू शकता यासाठी एक प्रश्न</string>
+
+    <string name="camigeofence_govde_mod_sessiz">नमाज मोड सुरू आहे. आठवणी शांतपणे येतील.</string>
+    <string name="camigeofence_govde_mod">नमाज मोड सुरू आहे.</string>
+    <string name="camigeofence_govde_sessiz">आठवणी शांतपणे येतील.</string>
+    <string name="camigeofence_govde_normal">आठवणी नेहमीप्रमाणे येतील.</string>
+    <string name="camigeofence_eylem_modu_kapat">मोड बंद करा</string>
+    <string name="camigeofence_eylem_cami_degil">मशीद नाही</string>
+
+    <string name="camigeofence_soru_baslik">तुम्ही मशिदीत आहात का?</string>
+    <string name="camigeofence_soru_govde">तुम्ही %1$s जवळ आहात. आम्हाला खात्री नाही, म्हणून विचारत आहोत.</string>
+    <string name="camigeofence_varsayilan_ad">मशीद</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">नमाज मोड सुरू करा</string>
+    <string name="camigeofence_eylem_evet_camideyim">होय, मी मशिदीत आहे</string>
+    <string name="camigeofence_eylem_hayir">नाही</string>
+
+    <string name="camigeofence_kildiniz_mi">तुम्ही %1$s ची नमाज अदा केली का?</string>
+    <string name="camigeofence_kildiniz_mi_govde">तुम्ही एका टॅपने नोंद करू शकता.</string>
+    <string name="camigeofence_eylem_kildim">नमाज पढली</string>
+    <string name="camigeofence_namaz_imsak">फज्र</string>
+    <string name="camigeofence_namaz_ogle">जोहर</string>
+    <string name="camigeofence_namaz_ikindi">असर</string>
+    <string name="camigeofence_namaz_aksam">मगरिब</string>
+    <string name="camigeofence_namaz_yatsi">इशा</string>
+    <string name="camigeofence_namaz_cuma">जुमा</string>
+
+    <string name="camigeofence_mod_kural_adi">नमाज</string>
+    <string name="camigeofence_mod_tetik_aciklama">जुमाच्या खुत्ब्यात, मशिदीत किंवा नमाजची वेळ सुरू झाल्यावर Namaz Akışı ते सुरू करते</string>
+</resources>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rumence. Terimler: src/core/dil/sozluk/ro. Yalnız virgüllü ș ț. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ro</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Panoul orelor de rugăciune</string>
+    <string name="ayarlar">Setări</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Mai sunt %2$s până la %1$s</string>
+    <string name="pano_vaktine">Până la %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s în %2$s</string>
+    <string name="pano_kerahat_vakti">Timp makruh</string>
+    <string name="pano_bitis">se încheie %1$s</string>
+    <string name="pano_kerahat_erisim">Timp makruh, %1$s, se încheie %2$s. %3$s</string>
+    <string name="pano_cumaya">Jumu’ah în %1$s</string>
+    <string name="pano_cikis_geldi">e timpul să plecați</string>
+    <string name="pano_cikis">plecare la %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Este timpul să plecați la Jumu’ah</string>
+    <string name="pano_cuma_cikis_erisim">Plecați la Jumu’ah la %1$s</string>
+    <string name="pano_bugun_cuma">Azi este Jumu’ah</string>
+    <string name="pano_ogle">Dhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Azi este Jumu’ah. Rugăciunea de vineri este la timpul de Dhuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Setări: adăugați un telefon, locație, telefoane conectate</string>
+    <string name="pano_simdiki_vakit">timpul rugăciunii curente</string>
+    <string name="pano_siradaki_vakit">timpul rugăciunii următoare</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Adăugați telefonul", "Introduceți codul", "Aleg orașul", "Adăugați". -->
+    <string name="kodla_girin">Introduceți codul</string>
+    <string name="ili_kendim_secin">Aleg orașul</string>
+    <string name="yeniden_deneyin">Încercați din nou</string>
+    <string name="telefon_varsayilan">Telefon</string>
+    <string name="esleme_ekleniyor">Se adaugă %1$s</string>
+    <string name="esleme_gonderiyor">Telefonul trimite locația și starea…</string>
+    <string name="esleme_tamamlanamadi">Asocierea nu a putut fi finalizată</string>
+    <string name="esleme_saklanamadi">Acest televizor nu poate stoca în siguranță cheia de conectare. Puteți introduce locația cu un cod sau puteți alege orașul.</string>
+    <string name="telefonunuzu_ekleyin">Adăugați telefonul</string>
+    <string name="esleme_alt">Orele de rugăciune pentru locația telefonului; apar și rugăciunile efectuate.</string>
+    <string name="esleme_adim1">Deschideți Namaz Akışı pe telefon</string>
+    <string name="esleme_adim2">Setări › Dispozitivele mele › Adăugați un televizor</string>
+    <string name="esleme_adim3">Îndreptați camera telefonului spre cod</string>
+    <string name="esleme_ayni_wifi">Telefonul și televizorul trebuie să fie în aceeași rețea Wi-Fi.</string>
+    <string name="esleme_onay_soru">Adăugați acest telefon?</string>
+    <string name="esleme_onay_aciklama">Telefonul adăugat poate trimite acestui televizor locația și rugăciunile marcate.</string>
+    <string name="ekleyin">Adăugați</string>
+    <string name="hayir">Nu</string>
+    <string name="esleme_eklendi">%1$s a fost adăugat</string>
+    <string name="konumunuz_geldi">Locația a sosit</string>
+    <string name="konuma_gore_hesaplanacak">Orele de rugăciune vor fi calculate pentru această locație.</string>
+    <string name="qr_konum_alindi">Locație primită</string>
+    <string name="qr_kodu">Cod de asociere de scanat cu telefonul</string>
+    <string name="ag_yok">Televizorul nu este conectat la o rețea</string>
+    <string name="ag_yok_aciklama">Puteți continua introducând codul de 7 cifre de pe telefon sau alegând orașul.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Introduceți codul de pe telefon</string>
+    <string name="kod_yol">Pe telefon: Setări › Dispozitivele mele › Adăugați un televizor</string>
+    <string name="kod_hatali">Codul nu se potrivește. Verificați cele 7 cifre de pe telefon; corectați o cifră greșită cu „%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Dacă telecomanda are taste numerice, puteți tasta și cu ele.</string>
+    <string name="kod_bos_hane">cifră goală</string>
+    <string name="kod_sil">Ștergeți</string>
+    <string name="kod_sil_aciklama">Ștergeți ultima cifră</string>
+    <string name="kod_geri">Înapoi</string>
+    <string name="vazgecin">Anulați</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Alegeți orașul</string>
+    <string name="il_merkezine_gore">Orele de rugăciune se calculează pentru centrul orașului.</string>
+    <string name="il_secili">%1$s, selectat</string>
+    <string name="dream_il_yok">Ca să vedeți panoul orelor de rugăciune, deschideți aplicația Namaz Akışı și alegeți orașul.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Locație: %1$s</string>
+    <string name="ayar_konum_yok">Nicio locație aleasă</string>
+    <string name="ayar_telefon_ekleyin">Adăugați un telefon</string>
+    <string name="ayar_konumu_kodla">Introduceți locația cu un cod</string>
+    <string name="ayar_bagli_telefonlar">Telefoane conectate la acest televizor</string>
+    <string name="ayar_telefon_yok">Încă nu a fost adăugat niciun telefon. Folosiți „%1$s” din stânga și scanați codul care apare.</string>
+    <string name="kaldirin">Eliminați</string>
+    <string name="ayar_ne_gonderir">Ce trimit telefoanele?</string>
+    <string name="ayar_madde_konum">Locația: orele de rugăciune o urmează</string>
+    <string name="ayar_madde_namazlar">Rugăciunile marcate, pentru cine alege asta</string>
+    <string name="ayar_madde_sifreli">Criptat, doar în rețeaua de acasă</string>
+    <string name="son_haber_yok">Încă nicio informație</string>
+    <string name="son_haber_az_once">Chiar acum</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">acum %1$d min</item>
+        <item quantity="few">acum %1$d min</item>
+        <item quantity="other">acum %1$d min</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">acum %1$d h</item>
+        <item quantity="few">acum %1$d h</item>
+        <item quantity="other">acum %1$d h</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">acum %1$d zi</item>
+        <item quantity="few">acum %1$d zile</item>
+        <item quantity="other">acum %1$d de zile</item>
+    </plurals>
+    <string name="kaldir_soru">Eliminați %1$s?</string>
+    <string name="kaldir_aciklama">Acest telefon nu va mai putea trimite informații televizorului. Pentru a-l adăuga din nou, trebuie să scanați din nou codul QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Locația telefonului</string>
+</resources>

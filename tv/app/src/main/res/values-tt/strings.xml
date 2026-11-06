@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tt -->
+<!-- Tatarca. Terimler: src/core/dil/sozluk/tt. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">tt</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Намаз вакытлары тактасы</string>
+    <string name="ayarlar">Көйләүләр</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s вакытына %2$s калды</string>
+    <string name="pano_vaktine">%1$s вакытына</string>
+    <string name="pano_vaktine_kalan">%1$s вакытына %2$s</string>
+    <string name="pano_kerahat_vakti">Мәкруһ вакыт</string>
+    <string name="pano_bitis">%1$s бетә</string>
+    <string name="pano_kerahat_erisim">Мәкруһ вакыт, %1$s, %2$s бетә. %3$s</string>
+    <string name="pano_cumaya">Җомгага %1$s</string>
+    <string name="pano_cikis_geldi">юлга чыгу вакыты</string>
+    <string name="pano_cikis">юлга чыгу %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Җомгага юлга чыгу вакыты җитте</string>
+    <string name="pano_cuma_cikis_erisim">Җомгага %1$s юлга чыгыгыз</string>
+    <string name="pano_bugun_cuma">Бүген җомга</string>
+    <string name="pano_ogle">Өйлә %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Бүген җомга. Җомга намазы өйлә вакытында, %1$s</string>
+    <string name="pano_ayarlar_erisim">Көйләүләр: телефон өстәү, урын, тоташкан телефоннар</string>
+    <string name="pano_simdiki_vakit">хәзерге намаз вакыты</string>
+    <string name="pano_siradaki_vakit">чираттагы намаз вакыты</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: «Телефоныгызны өстәгез», «Код белән кертү», «Шәһәремне үзем сайлыйм», «Өстәү». -->
+    <string name="kodla_girin">Код белән кертү</string>
+    <string name="ili_kendim_secin">Шәһәремне үзем сайлыйм</string>
+    <string name="yeniden_deneyin">Кабатлап карау</string>
+    <string name="telefon_varsayilan">Телефон</string>
+    <string name="esleme_ekleniyor">%1$s өстәлә</string>
+    <string name="esleme_gonderiyor">Телефоныгыз урынын һәм халәтен җибәрә…</string>
+    <string name="esleme_tamamlanamadi">Парлау тәмамланмады</string>
+    <string name="esleme_saklanamadi">Бу телевизор тоташу ачкычын куркынычсыз саклый алмый. Урыныгызны код белән кертә яки шәһәрегезне сайлый аласыз.</string>
+    <string name="telefonunuzu_ekleyin">Телефоныгызны өстәгез</string>
+    <string name="esleme_alt">Урыныгыз өчен намаз вакытлары; укыган намазларыгыз да күренә.</string>
+    <string name="esleme_adim1">Телефоныгызда Namaz Akışı кушымтасын ачыгыз</string>
+    <string name="esleme_adim2">Көйләүләр › Минем җайланмаларым › Телевизор өстәү</string>
+    <string name="esleme_adim3">Телефоныгызның камерасын кодка юнәлтегез</string>
+    <string name="esleme_ayni_wifi">Телефоныгыз һәм телевизор бер Wi-Fi челтәрендә булырга тиеш.</string>
+    <string name="esleme_onay_soru">Бу телефонны өстәргәме?</string>
+    <string name="esleme_onay_aciklama">Өстәлгән телефон шушы телевизорга урынын һәм билгеләгән намазларын җибәрә ала.</string>
+    <string name="ekleyin">Өстәү</string>
+    <string name="hayir">Юк</string>
+    <string name="esleme_eklendi">%1$s өстәлде</string>
+    <string name="konumunuz_geldi">Урыныгыз килде</string>
+    <string name="konuma_gore_hesaplanacak">Намаз вакытлары шушы урынга карап исәпләнәчәк.</string>
+    <string name="qr_konum_alindi">Урын алынды</string>
+    <string name="qr_kodu">Телефоныгыз белән сканерлау өчен парлау коды</string>
+    <string name="ag_yok">Телевизор челтәргә тоташмаган</string>
+    <string name="ag_yok_aciklama">Телефоныгыздагы 7 билгеле кодны кертеп яки шәһәрегезне сайлап дәвам итә аласыз.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Телефоныгыздагы кодны кертегез</string>
+    <string name="kod_yol">Телефоныгызда: Көйләүләр › Минем җайланмаларым › Телевизор өстәү</string>
+    <string name="kod_hatali">Код туры килмәде. Телефоныгыздагы 7 билгене тикшерегез; ялгыш билгене “%1$s” белән төзәтегез.</string>
+    <string name="kod_rakamli_kumanda">Пультыгызда сан төймәләре булса, алар белән дә яза аласыз.</string>
+    <string name="kod_bos_hane">буш урын</string>
+    <string name="kod_sil">Бетерү</string>
+    <string name="kod_sil_aciklama">Соңгы билгене бетерү</string>
+    <string name="kod_geri">Артка</string>
+    <string name="vazgecin">Баш тарту</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Шәһәрегезне сайлагыз</string>
+    <string name="il_merkezine_gore">Намаз вакытлары шәһәр үзәгенә карап исәпләнә.</string>
+    <string name="il_secili">%1$s, сайланган</string>
+    <string name="dream_il_yok">Намаз вакытлары тактасын күрү өчен Namaz Akışı кушымтасын ачып, шәһәрегезне сайлагыз.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Урын: %1$s</string>
+    <string name="ayar_konum_yok">Урын сайланмаган</string>
+    <string name="ayar_telefon_ekleyin">Телефон өстәү</string>
+    <string name="ayar_konumu_kodla">Урынны код белән кертү</string>
+    <string name="ayar_bagli_telefonlar">Бу телевизорга тоташкан телефоннар</string>
+    <string name="ayar_telefon_yok">Әлегә телефон өстәлмәгән. Сулдагы “%1$s” белән чыккан кодны сканерлагыз.</string>
+    <string name="kaldirin">Бетерү</string>
+    <string name="ayar_ne_gonderir">Телефоннар нәрсә җибәрә?</string>
+    <string name="ayar_madde_konum">Урын: намаз вакытлары шуңа ияреп бара</string>
+    <string name="ayar_madde_namazlar">Билгеләнгән намазлар, теләүчеләр өчен</string>
+    <string name="ayar_madde_sifreli">Шифрланган, бары өй челтәрегездә</string>
+    <string name="son_haber_yok">Әлегә мәгълүмат юк</string>
+    <string name="son_haber_az_once">Әле генә</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">%1$d мин элек</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">%1$d сәг элек</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">%1$d көн элек</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s бетерелсенме?</string>
+    <string name="kaldir_aciklama">Бу телефон моннан соң телевизорга мәгълүмат җибәрә алмаячак. Яңадан өстәү өчен QR кодны кабат сканерларга кирәк.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Телефоныгыздагы урын</string>
+</resources>

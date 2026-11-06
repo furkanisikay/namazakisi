@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ar — Arapça (beta). -->
+<!-- العربية. المصطلحات: src/core/dil/sozluk/ar (الفجر، الشروق، الظهر، العصر، المغرب، العشاء؛ «صلّيتُ» / «تمّت»). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ar</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">الصلاة التالية</string>
+    <string name="tile_aciklama">الصلاة التالية ووقتها</string>
+    <string name="komplikasyon_adi">الوقت المتبقي</string>
+    <string name="cikis_saati_komplikasyon_adi">وقت خروج الصلاة</string>
+    <string name="siradaki_namaz_komplikasyon_adi">الصلاة التالية</string>
+    <string name="bugun_tile_adi">اليوم</string>
+    <string name="bugun_tile_aciklama">صلوات اليوم الخمس؛ ووضع علامة على المؤدّاة بنقرتين</string>
+    <string name="ilerleme_komplikasyon_adi">تقدّم اليوم</string>
+    <string name="dagilim_komplikasyon_adi">ملخّص اليوم</string>
+    <string name="kerahat_komplikasyon_adi">وقت الكراهة</string>
+    <string name="son_dakikalar_kanal_adi">الدقائق الأخيرة</string>
+    <string name="son_dakikalar_kanal_aciklama">عدّاد على واجهة الساعة في الدقائق الأخيرة من صلاة لم تُؤدَّ</string>
+    <string name="tesbihat_adi">التسبيح</string>
+    <string name="tesbihat_kanal_adi">التسبيح</string>
+    <string name="tesbihat_kanal_aciklama">رمز هادئ على واجهة الساعة للعودة إلى تسبيح لم يكتمل</string>
+    <string name="kible_adi">القبلة</string>
+    <string name="kible_komplikasyon_adi">القبلة</string>
+    <string name="camideyim_kanal_adi">في المسجد</string>
+    <string name="camideyim_kanal_aciklama">رمز هادئ على واجهة الساعة حين يُبلغ هاتفك بوجودك في المسجد</string>
+    <string name="uyandirma_kanal_adi">إيقاظ صامت</string>
+    <string name="uyandirma_kanal_aciklama">يوقظ بالاهتزاز فقط، للفجر والتهجد</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">صلّيتُ</string>
+    <string name="kilindi_isareti">✓ تمّت</string>
+    <string name="kapat">إغلاق</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">لعرض المواقيت: فتح Namaz Akışı على هاتفك.</string>
+    <string name="yuk_eskidi">بيانات المواقيت قديمة. لتحديثها: فتح Namaz Akışı على هاتفك.</string>
+    <string name="guncelleme_gerekli">يلزم تحديث Namaz Akışı على ساعتك.</string>
+    <string name="bildirim_izni">لتلقّي التذكيرات حتى حين لا يكون هاتفك معك: السماح بإشعارات Namaz Akışı من إعدادات الساعة.</string>
+    <string name="cami_soru">هل أنت في المسجد؟</string>
+    <string name="cami_evet">نعم</string>
+    <string name="cami_evet_aciklama">نعم، في المسجد. يفعّل وضع الصلاة</string>
+    <string name="cami_hayir">لا</string>
+    <string name="cami_hayir_aciklama">لا، لستُ في المسجد</string>
+    <string name="camidesiniz">أنت في المسجد</string>
+    <string name="cami_degil">ليس مسجدًا</string>
+    <string name="cami_degil_aciklama">ليس مسجدًا. لن يُعدّ هذا المكان مسجدًا بعد الآن</string>
+    <string name="tesbihat_ac">فتح عدّاد التسبيح</string>
+    <string name="kible_ac">فتح بوصلة القبلة</string>
+    <string name="ses_dene">تجربة الصوت</string>
+    <string name="ses_dene_aciklama">تجربة القراءة الصوتية على الساعة</string>
+    <string name="telefonda_acin">الفتح على الهاتف</string>
+    <string name="telefonda_ekran_ac">فتح %1$s على هاتفك</string>
+    <string name="ekran_kaza">سجل القضاء</string>
+    <string name="ekran_camideyim">في المسجد</string>
+    <string name="ekran_ayarlar">الإعدادات</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">تمّت، جارٍ المزامنة</string>
+    <string name="durum_kilindi">تمّت</string>
+    <string name="durum_girmedi">لم يدخل الوقت بعد</string>
+    <string name="durum_simdiki">الوقت الحالي، النقر لوضع العلامة</string>
+    <string name="durum_simdiki_kalan">الوقت الحالي، %1$s، النقر لوضع العلامة</string>
+    <string name="durum_kilinmadi">لم تُؤدَّ، النقر لوضع العلامة</string>
+    <string name="isaretleyin">وضع العلامة</string>
+    <string name="esitleniyor">جارٍ المزامنة</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">تأكيد «صلّيتُ»</string>
+    <string name="vazgecin">إلغاء</string>
+    <string name="vazgec">إلغاء</string>
+    <string name="kerahat_vaktindesiniz">الآن وقت كراهة.</string>
+    <string name="kilindi_dua">تمّت. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">وضع الصلاة مفعّل، ينتهي %1$s. النقر لإيقافه</string>
+    <string name="namaz_modu_ac_aciklama">تفعيل وضع الصلاة على هاتفك</string>
+    <string name="namaz_modu_kapatin">إيقاف وضع الصلاة</string>
+    <string name="namaz_modu_acin">تفعيل وضع الصلاة</string>
+    <string name="namaz_modu_acik_bitis">مفعّل، ينتهي %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">جارٍ تحديد الاتجاه…</string>
+    <string name="kible_yuk_yok">لتحديد القبلة: فتح Namaz Akışı على هاتفك.</string>
+    <string name="kible_konum_yok">لتحديد القبلة: تشغيل الموقع على هاتفك. وإن لم يكن Namaz Akışı محدّثًا، يلزم تحديثه.</string>
+    <string name="kible_sensor_yok">لا يوجد مستشعر بوصلة في هذه الساعة. يمكن رؤية اتجاه القبلة على هاتفك.</string>
+    <string name="kible_kuzeyden">القبلة %1$d° (من الشمال)</string>
+    <string name="kible_derece">القبلة %1$d°</string>
+    <string name="kible_telefonda_ac">فتح القبلة على هاتفك</string>
+    <string name="kible_erisim">%1$s. القبلة %2$d درجة من الشمال، %3$s</string>
+    <string name="kible_hizali">أنت باتجاه القبلة</string>
+    <string name="kible_kalibrasyon">للمعايرة: تحريك المعصم في الهواء على شكل الرقم 8</string>
+    <string name="kible_egim">إمساك الساعة موازية للأرض</string>
+    <string name="kible_titresim_acik">التوجيه بالاهتزاز مفعّل. النقر لإيقافه</string>
+    <string name="kible_titresim_kapali">التوجيه بالاهتزاز معطّل. النقر لتفعيله</string>
+    <string name="kible_harf_kuzey">ش</string>
+    <string name="kible_harf_dogu">ق</string>
+    <string name="kible_harf_guney">ج</string>
+    <string name="kible_harf_bati">غ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">اكتمل التسبيح. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s، %2$d / %3$d. المجموع %4$d / %5$d</string>
+    <string name="tesbihat_sayin">العدّ</string>
+    <string name="tesbihat_bastan_baslayin">البدء من الأول</string>
+    <string name="tesbihat_bastan_soru">هل يبدأ العدّ من الأول؟</string>
+    <string name="tesbihat_sifirlanir">يُصفَّر العدّ.</string>
+    <string name="tesbihat_geri_al">تراجع</string>
+    <string name="tesbihat_geri_al_aciklama">التراجع عن العدّة الأخيرة</string>
+    <string name="tesbihat_yeniden">البدء من جديد</string>
+    <string name="tesbihat_yeniden_aciklama">بدء التسبيح من جديد</string>
+    <string name="tesbihat_suruyor">التسبيح جارٍ: %1$s، %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">صلّيتُ. يوقف الإيقاظ</string>
+    <string name="uyandirma_kapat_aciklama">إيقاف الإيقاظ</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">فتح Namaz Akışı</string>
+    <string name="tile_vakitler_icin">النقر لعرض المواقيت</string>
+    <string name="tile_telefonda_acin">فتح التطبيق على هاتفك</string>
+    <string name="tile_sonra">بعد %1$s</string>
+    <string name="tile_siradaki_aciklama">الصلاة التالية %1$s، تدخل الساعة %2$s. فتح التطبيق</string>
+    <string name="tile_giris">تدخل %1$s</string>
+    <string name="tile_cikis">تنتهي %1$s</string>
+    <string name="bugun_bos_satir1">فتح التطبيق</string>
+    <string name="bugun_bos_satir2">على هاتفك</string>
+    <string name="bugun_acma_aciklamasi">اليوم تمّت %1$d/%2$d. فتح التطبيق</string>
+    <string name="bugun_sayi">اليوم %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">وقت كراهة · النقر مجددًا للتأكيد</string>
+    <string name="bugun_onay_tekrar">النقر مجددًا للتأكيد</string>
+    <string name="bugun_tamam">اكتملت صلوات اليوم</string>
+    <string name="bugun_kilinmadi">%1$s لم تُؤدَّ</string>
+    <string name="bugun_siradaki">التالية: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">النقر مجددًا</string>
+    <string name="bugun_kilindi">%1$s تمّت</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s تمّت، جارٍ المزامنة</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">في انتظار المواقيت؛ فتح Namaz Akışı على الهاتف</string>
+    <string name="komplikasyon_bekleniyor">في انتظار المواقيت</string>
+    <string name="komplikasyon_vakit">الوقت</string>
+    <string name="komplikasyon_cikis">النهاية</string>
+    <string name="komplikasyon_sirada">التالية</string>
+    <string name="gun_durumu_aciklama">اليوم تمّت %2$d من %1$d</string>
+    <string name="gun_durumu_kilinmamis">%1$s؛ لم تُؤدَّ: %2$s</string>
+    <string name="komplikasyon_namaz">الصلوات</string>
+    <string name="komplikasyon_kerahat">كراهة</string>
+    <string name="kerahat_icinde_aciklama">الآن وقت كراهة، ينتهي %1$s</string>
+    <string name="kerahat_siradaki_aciklama">وقت الكراهة التالي %1$s</string>
+    <string name="kible_komplikasyon">القبلة %1$d درجة من الشمال. فتح البوصلة</string>
+    <string name="kible_komplikasyon_konumlu">القبلة %1$d درجة من الشمال، %2$s. فتح البوصلة</string>
+    <string name="kible_komplikasyon_konum_yok">لتحديد القبلة: تشغيل الموقع على هاتفك</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">تذكير عاجل · مع الاهتزاز</string>
+    <string name="muhafiz_kanal_acil">تذكير عاجل</string>
+    <string name="muhafiz_kanal_titresimli">تذكير بالصلاة · مع الاهتزاز</string>
+    <string name="muhafiz_kanal">تذكير بالصلاة</string>
+    <string name="muhafiz_kanal_aciklama">تذكيرات بالصلاة تظهر على ساعتك حتى حين لا يكون هاتفك معك</string>
+    <string name="son_dakikalar_cikis">النهاية: %1$s</string>
+    <string name="son_dakikalar_bitis">النهاية: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">الوقت المتبقي على خروج وقت %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">الوقت المتبقي لـ%1$s</string>
+    <string name="cami_namaz_modu_bitis">وضع الصلاة · ينتهي %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">فُتح على هاتفك</string>
+    <string name="telefona_ulasilamadi">يتعذّر الوصول إلى هاتفك</string>
+</resources>

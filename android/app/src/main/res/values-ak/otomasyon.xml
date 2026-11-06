@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Akan). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Mayɛ Nyamefrɛ</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Nyamefrɛ berɛ tebea</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Nyamefrɛ berɛ dwumadie</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — Akan yalın emir. -->
+  <string name="otomasyon_bilgi_baslik">Wɔde nhyehyɛe yi ka ho firi otomeehyɛn app mu</string>
+  <string name="otomasyon_bilgi_tarayici">Browsa ntumi nnya kwan daa. Fa ka ho firi app te sɛ Tasker, MacroDroid anaa Automate plugin nsensanee mu.</string>
+  <string name="otomasyon_bilgi_eklenti">Paw \"Namaz Akışı\" firi app te sɛ Tasker, MacroDroid anaa Automate plugin nsensanee mu na fa ka ho.</string>
+  <string name="otomasyon_engelli_baslik">Wɔasiw %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Wosiw app yi kane sɛ ɛnkyerɛ wo Nyamefrɛ. Wobɛtumi ama kwan wɔ Namaz Akışı mu wɔ Nhyehyɛe &gt; \"App a ɛkyerɛ Mayɛ Nyamefrɛ\" ase.</string>
+  <string name="otomasyon_izin_baslik">Wobɛfa adi dwuma ne %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s betumi ahunu berɛ a Nyamefrɛ berɛ du, berɛ a ɛreba awieɛ ne berɛ a wowɔ masjid, na ayɛ wo otomeehyɛn. Wobɛtumi asesa wo gyinaeɛ wɔ Namaz Akışı mu wɔ Nhyehyɛe &gt; \"App a ɛkyerɛ Mayɛ Nyamefrɛ\" ase.</string>
+  <string name="otomasyon_izin_kildim">%1$s betumi de otomeehyɛn a woahyehyɛ akyerɛ Nyamefrɛ a ɛkɔ so no sɛ wɔayɛ. Wobɛtumi asesa wo gyinaeɛ wɔ Namaz Akışı mu wɔ Nhyehyɛe &gt; \"App a ɛkyerɛ Mayɛ Nyamefrɛ\" ase.</string>
+  <string name="otomasyon_izin_ver">Ma kwan</string>
+  <string name="otomasyon_engelle">Siw</string>
+  <string name="otomasyon_vazgec">Gyae</string>
+  <string name="otomasyon_tamam">Ɛyɛ</string>
+  <string name="otomasyon_tur_baslik">Ɛberɛ bɛn na ɛnyɛ adwuma?</string>
+  <string name="otomasyon_ileri">Toa so</string>
+  <string name="otomasyon_vakit_baslik">Nyamefrɛ bɛn?</string>
+  <string name="otomasyon_herhangi_vakit">Nyamefrɛ berɛ biara</string>
+  <string name="otomasyon_kaydet">Sie</string>
+  <string name="otomasyon_kosul_icinde">Berɛ a ɛyɛ Nyamefrɛ berɛ</string>
+  <string name="otomasyon_kosul_cikiyor">Berɛ a Nyamefrɛ berɛ reba awieɛ (%1$d min aka, Nyamefrɛ Wɛmfoɔ abue)</string>
+  <string name="otomasyon_kosul_camide">Berɛ a wowɔ masjid</string>
+  <string name="otomasyon_olay_girdi">Sɛ Nyamefrɛ berɛ du a</string>
+  <string name="otomasyon_olay_cikiyor">Sɛ Nyamefrɛ berɛ reba awieɛ a (%1$d min aka, Nyamefrɛ Wɛmfoɔ abue)</string>
+  <string name="otomasyon_olay_camide">Sɛ wɔhunu sɛ wowɔ masjid a</string>
+</resources>

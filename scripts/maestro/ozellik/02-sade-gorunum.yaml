@@ -11,7 +11,9 @@ appId: com.furkanisikay.namazakisi
     timeout: 90000
 - repeat:
     while:
-      visible: "Devam Et"
+      visible:
+        id: "kutlama-devam"
     commands:
-      - tapOn: "Devam Et"
+      - tapOn:
+          id: "kutlama-devam"
 - takeScreenshot: ozk/03-sade-gorunum

@@ -1,5 +1,5 @@
 import { Coordinates, CalculationMethod, PrayerTimes, SunnahTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { aktifHesapSurumu, aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import * as Location from 'expo-location';
 import { Logger } from '../../core/utils/Logger';
 import { TURKIYE_ILLERI_OFFLINE } from './TurkiyeKonumServisi';
@@ -27,9 +27,8 @@ export interface NamazVaktiHesaplayiciKonfig {
     latitude: number;
     longitude: number;
     method?: keyof typeof CalculationMethod; // default: Turkey
-    // `madhab` alanı KALDIRILDI: hesap yolu onu hiç okumuyordu ve 'Hanafi' değeri
-    // yanıltıcıydı. İkindi = asr-ı evvel (Diyanet takvimi) — tek kaynak
-    // `core/vakit/hesapParametreleri.ts > turkiyeHesapParametreleri`.
+    // `madhab` alanı KALDIRILDI: hesap yolu onu hiç okumuyordu. Yöntem ve ikindi
+    // kullanıcının hesap ayarından gelir — tek kaynak `core/vakit/aktifHesap.ts`.
 }
 
 export class NamazVaktiHesaplayiciServisi {
@@ -60,13 +59,12 @@ export class NamazVaktiHesaplayiciServisi {
     /** Belirli bir gun icin PrayerTimes'i onbellekten getirir (yoksa hesaplayip onbellekler). */
     private prayerTimesAl(tarih: Date): PrayerTimes {
         const { latitude, longitude } = this.config!;
-        const anahtar = `${latitude.toFixed(4)},${longitude.toFixed(4)},${tarih.getFullYear()}-${tarih.getMonth()}-${tarih.getDate()}`;
+        const anahtar = `${aktifHesapSurumu()}:${latitude.toFixed(4)},${longitude.toFixed(4)},${tarih.getFullYear()}-${tarih.getMonth()}-${tarih.getDate()}`;
         let pt = this.ptCache.get(anahtar);
         if (!pt) {
             if (this.ptCache.size > 4) this.ptCache.clear(); // sinirsiz buyumeyi onle
             const coordinates = new Coordinates(latitude, longitude);
-            const params = turkiyeHesapParametreleri();
-            pt = new PrayerTimes(coordinates, tarih, params);
+            pt = aktifPrayerTimes(coordinates, tarih);
             this.ptCache.set(anahtar, pt);
         }
         return pt;

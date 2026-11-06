@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Bɛ zaŋdi yi luɣili n-kali jiŋli saha ka di tabili luɣ’ shɛli yi ni be. Yi luɣili kpalimdi yi tilifoŋ zuɣu.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Bɛ zaŋdi yi luɣili n-kali jiŋli saha ka di tabili luɣ’ shɛli yi ni be, ka “N be jiŋli ni” yi yooya, n-yooi Jiŋli soli yi yi kpe jiŋli ni. Yi luɣili kpalimdi yi tilifoŋ zuɣu.",
+  "NSLocationAlwaysUsageDescription": "Bɛ zaŋdi yi luɣili n-taɣi jiŋli saha di maŋ yi yi taɣi tiŋa, ka “N be jiŋli ni” yi yooya, n-yooi Jiŋli soli yi yi kpe jiŋli ni. Yi luɣili kpalimdi yi tilifoŋ zuɣu.",
+  "NSCameraUsageDescription": "Bɛ zaŋdi yi kamera n-wuhi Alichibla soli kamera lihibu zuɣu ka karim laɣimbu kood din be yi TV zuɣu. Bɛ bi zaliri foto nima, di mi bi yiri yi tilifoŋ ni abada.",
+  "NSCalendarsUsageDescription": "Bɛ zaŋdi kalɛnda soli n-pahi jiŋli saha yi kalɛnda ni, ka yi yi yooi li, n-lihi yɛla din be yi kalɛnda ni yi laɣim ni jiŋli saha. Yi kalɛnda lahabali kpalimdi yi tilifoŋ zuɣu.",
+  "NSCalendarsFullAccessUsageDescription": "Bɛ zaŋdi kalɛnda soli n-pahi jiŋli saha yi kalɛnda ni, ka yi yi yooi li, n-lihi yɛla din be yi kalɛnda ni yi laɣim ni jiŋli saha. Yi kalɛnda lahabali kpalimdi yi tilifoŋ zuɣu.",
+  "NSLocalNetworkUsageDescription": "App maa laɣindi ni TV din be yi yiŋa intanɛt ni n-tum yi jiŋli saha mini jiŋa shɛŋa yi ni dalim ti li. Lahabali maa sɔɣi ka chaŋdi kpatuɣa ayi maa sunsuuni koŋko.",
+  "NSAlarmKitUsageDescription": "Teebu kpalinsi shɛŋa yi ni piri “Alaam” zuɣu, bɛ zaliri li kamani alaam, ka yi wum li hali yi tilifoŋ kukoli yi kpariya bee Focus yi yooya.",
+  "\"Vakti kıldım\"": "N puhi jiŋli",
+  "\"Kıble\"": "Alichibla"
+}

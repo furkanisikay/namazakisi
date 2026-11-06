@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (N'Ko). "n bda sali kɛ" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">ߛߊߟߌ ߟߊߥߎߟߌ</string>
+  <string name="alarm_kildim">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+  <string name="alarm_kapat">ߊ߬ ߘߊߕߎߜߎ</string>
+  <string name="alarm_kanal_aciklamasi">ߟߊߥߎߟߌ ߦߍߙߍ߫ ߡߌ߲߬ ߓߍ߫ ߡߊ߲߬ߞߊ߲ ߓߐ߫ ߤߊߞߌߟߌߖߌߜߌ߲ ߕߊߓߟߏ ߡߌ߲ߠߎ ߊߟߎ߫ ߦߋ߫ ߛߎߥߊ߲ߘߌ߫</string>
+</resources>

@@ -1,0 +1,61 @@
+import { cogul } from '../../tipler';
+import type { Sozluk } from '../tr';
+
+export const bildirim: Sozluk['bildirim'] = {
+  eylem: { kildim: '✅ 我礼了', kazayaEkle: '加入还补', inceleyin: '查看' },
+  kanal: {
+    genel: '一般通知',
+    muhafiz: '礼拜守护',
+    muhafizAciklama: '礼拜时间提醒',
+    acil: '紧急礼拜提醒',
+    acilAciklama: '礼拜时间即将结束 - 紧急提醒',
+    vakit: '礼拜时间',
+    vakitAciklama: '礼拜时间开始时发送的提醒',
+    muhafizSes: '礼拜守护 · {ses}',
+    acilSes: '紧急提醒 · {ses}',
+    acilSesAciklama: '礼拜时间即将结束——紧急提醒',
+    titresimli: '{kanal} · 振动',
+    alarm: '礼拜闹钟',
+    alarmSes: '礼拜闹钟 · {ses}',
+    uygulamaSesi: '应用声音',
+    seciliSes: '您选择的声音',
+  },
+  cuma: {
+    baslik: '主麻 · 剩{sure} · 礼拜临近',
+    govdeIlk: '距晌礼还有{sure}。做好准备，前往清真寺。',
+    govde: '距晌礼还有{sure}。前往清真寺。',
+  },
+  camiye: {
+    hazirlanBaslik: '{ad} · 距宣礼{dk}分钟 · 准备去清真寺',
+    hazirlanGovde: '准备好到清真寺赶上{ad}；{sonra}分钟后出发——{dk}分钟后宣礼。',
+    yolaCikBaslik: '{ad} · 距宣礼{dk}分钟 · 前往清真寺',
+    yolaCikGovde: '前往清真寺赶上{ad}——{dk}分钟后宣礼。',
+  },
+  takvim: {
+    etkinlikTek: '“{ad}”',
+    etkinlikCoklu: cogul({ other: '日历中{n}项连续的活动' }),
+    etkinlikBir: '日历中的一项活动',
+    sonAnIkindi: '晡礼最后的合适时间是{saat}（之后为禁止礼拜的时间）',
+    sonAnVakit: '{kucuk}时间于{saat}结束',
+    onceBaslik: '{ad} · {saat}有活动 · 先礼拜',
+    onceGovde: '{etkinlik}时间为{aralik}；{sonAn}。活动开始前礼{kucuk}。',
+    kaplarBaslik: '{ad} · 一项活动覆盖了礼拜时间',
+    kaplarGovde: '{etkinlik}时间为{aralik}，覆盖{kucuk}时间（{giris}–{son}）。现在就计划抽空礼{kucuk}。',
+  },
+  yatis: {
+    yatsiBaslik: '{ad} · 睡前去礼拜 🌙',
+    yatsiGovde: '{ad}时间仍在；入睡前起身礼拜。',
+    ozet: '今天 {kilinan}/5 · {liste}未标记',
+    tekOto: '如已礼拜，进行标记。{oto}',
+    tekKaza: '如已礼拜，进行标记；如未能礼拜，加入您的还补记录。',
+    tekSuruyor: '如已礼拜，进行标记。礼拜时间仍在。',
+    cokluOto: '打开应用，查看并标记您已礼的拜。{oto}',
+    coklu: '打开应用，查看并标记您已礼的拜。',
+    otoSor: '如不标记，还补记录中会就这一天询问您。',
+    otoEkle: '如不标记，礼拜日结束时将加入还补。',
+  },
+  gunSonu: {
+    baslik: '今天尚未完成 · 连续记录',
+    govde: '在这一天结束前标记您已礼的拜，连续记录就会延续。',
+  },
+};

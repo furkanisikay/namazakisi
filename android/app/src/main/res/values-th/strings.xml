@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tayca (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/th (vakit.ts başı). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">เวลาละหมาดปัจจุบัน เวลาที่หมด และปุ่ม \"ละหมาดแล้ว\" ในการแตะครั้งเดียว</string>
+  <string name="widget_genis_aciklama">เวลาละหมาดห้าเวลาของวันนี้ การนับถอยหลัง และปุ่ม \"ละหมาดแล้ว\" ในการแตะครั้งเดียว</string>
+  <string name="widget_kapak_adi">เวลาละหมาดบนหน้าจอด้านนอก</string>
+  <string name="widget_kapak_aciklama">เวลาละหมาดของวันนี้และการนับถอยหลังสำหรับหน้าจอด้านนอกของ Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — คลาสสิก</string>
+  <string name="widget_klasik_aciklama">รูปลักษณ์สีเขียวแบบคลาสสิก: เวลาที่เหลือก่อนเวลาละหมาดถัดไป</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — คลาสสิกแบบกว้าง</string>
+  <string name="widget_klasik_genis_aciklama">รูปลักษณ์สีเขียวแบบคลาสสิก: การนับถอยหลังและเวลาละหมาดของวันนี้</string>
+  <string name="widget_ayet_adi">อายะฮ์ประจำวัน</string>
+  <string name="widget_ayet_aciklama">อายะฮ์และคำแปลที่เปลี่ยนใหม่ทุกวันตอนซุบฮ์</string>
+  <string name="widget_ayar_zemin_palet">สีของแอป (โทนสว่าง)</string>
+  <string name="widget_ayar_ayet_icerik">ที่ขนาดสี่เหลี่ยมจัตุรัส ให้แสดง</string>
+  <string name="widget_ayar_ayet_icerik_meal">คำแปล</string>
+  <string name="widget_ayar_ayet_icerik_hat">ตัวบทภาษาอาหรับ (อักษรวิจิตร)</string>
+  <string name="kutu_kildim_etiket">ละหมาดแล้ว</string>
+  <string name="kisayol_kildim_kisa">ละหมาดแล้ว</string>
+  <string name="kisayol_kildim_uzun">ฉันละหมาดเวลาปัจจุบันแล้ว</string>
+  <string name="kisayol_kible_kisa">กิบลัต</string>
+  <string name="kisayol_kible_uzun">แสดงทิศกิบลัต</string>
+  <string name="kisayol_kaza_kisa">สมุดละหมาดชดใช้</string>
+  <string name="kisayol_kaza_uzun">เปิดสมุดละหมาดชดใช้</string>
+  <string name="kildim_onay_baslik">ทำเครื่องหมายว่าละหมาด%1$sแล้วหรือไม่</string>
+  <string name="kildim_onay_mesaj">ไม่ทราบแน่ชัดว่าแอปใดส่งคำขอนี้ โปรดยืนยันหากคุณละหมาดแล้ว</string>
+  <string name="kildim_onay_evet">ละหมาดแล้ว</string>
+  <string name="kildim_onay_vazgec">ยกเลิก</string>
+  <string name="kildim_guven_baslik">อนุญาตให้ %1$s ทำเครื่องหมายว่าคุณละหมาดแล้วหรือไม่</string>
+  <string name="kildim_guven_mesaj">เวลาละหมาดที่จะทำเครื่องหมายตอนนี้: %1$s คุณเปลี่ยนการตัดสินใจได้ภายหลังในการตั้งค่า &gt; แอปที่ทำเครื่องหมาย \"ละหมาดแล้ว\"</string>
+  <string name="kildim_guven_tarayici_mesaj">เวลาละหมาดที่จะทำเครื่องหมายตอนนี้: %1$s คำขอนี้มาจากเบราว์เซอร์ เนื่องจากหน้าเว็บใดก็เปิดลิงก์นี้ได้ จึงให้สิทธิ์ถาวรไม่ได้</string>
+  <string name="kildim_guven_her_zaman">อนุญาตเสมอ</string>
+  <string name="kildim_guven_bu_sefer">เฉพาะครั้งนี้</string>
+  <string name="kildim_guven_engelle">บล็อก</string>
+  <string name="kildim_guven_engellendi">%1$s ทำเครื่องหมายละหมาดของคุณไม่ได้อีกต่อไป คุณเปลี่ยนได้ในการตั้งค่า</string>
+  <string name="widget_ayar_baslik">ปรับแต่งวิดเจ็ต</string>
+  <string name="widget_ayar_zemin">พื้นหลัง</string>
+  <string name="widget_ayar_zemin_material">สีวอลเปเปอร์</string>
+  <string name="widget_ayar_zemin_sistem">ธีมของระบบ</string>
+  <string name="widget_ayar_zemin_acik">สว่าง</string>
+  <string name="widget_ayar_zemin_koyu">มืด</string>
+  <string name="widget_ayar_zemin_seffaf">โปร่งใส</string>
+  <string name="widget_ayar_opaklik">ความทึบของพื้นหลัง</string>
+  <string name="widget_ayar_gosterim">แสดงด้วยตัวอักษรใหญ่</string>
+  <string name="widget_ayar_gosterim_kalan">เวลาที่เหลือ</string>
+  <string name="widget_ayar_gosterim_bitis">เวลาที่หมด</string>
+  <string name="widget_ayar_gosterim_not">เวลาที่หมดจะแสดงในทุกขนาด</string>
+  <string name="widget_ayar_sonraki">แสดงเวลาละหมาดถัดไป</string>
+  <string name="widget_ayar_vazgec">ยกเลิก</string>
+  <string name="widget_ayar_kaydet">บันทึก</string>
+  <string name="kildim_onay_kanal_adi">การยืนยัน \"ละหมาดแล้ว\"</string>
+  <string name="kildim_onay_kanal_aciklama">การยืนยันแบบเงียบที่แสดงสองสามวินาทีเมื่อคุณแตะ \"ละหมาดแล้ว\" ในการแจ้งเตือน</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">หมดเวลา %1$s</string>
+  <string name="widget_giris">เข้าเวลา %1$s</string>
+  <string name="widget_namaz_vakti">เวลาละหมาด</string>
+  <string name="widget_uygulamayi_acin">เปิดแอป</string>
+  <string name="widget_siradaki">ถัดไป: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">ขณะนี้ไม่มีเวลาละหมาดที่จะทำเครื่องหมาย</string>
+  <string name="widget_dugme_kildim">ละหมาดแล้ว</string>
+  <string name="widget_dugme_isaretleniyor">กำลังทำเครื่องหมาย</string>
+  <string name="widget_dugme_kilindi">ละหมาดแล้ว</string>
+  <string name="widget_dugme_vakit_girmedi">ยังไม่ถึงเวลา</string>
+  <string name="widget_klasik_uygulamayi_acin">เปิดแอป</string>
+  <string name="widget_klasik_erisim_veri_yok">เปิดแอปเพื่อดูเวลาละหมาด</string>
+  <string name="widget_klasik_erisim_siradaki">เวลาละหมาดถัดไป: %1$s เริ่มเวลา %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ดุฮ์ริในอีก</string>
+  <string name="widget_onizleme_klasik_genis">มักริบในอีก</string>
+  <string name="widget_onizleme_imsak">ซุบฮ์</string>
+  <string name="widget_onizleme_gunes">ซูรูก</string>
+  <string name="widget_onizleme_ogle">ดุฮ์ริ</string>
+  <string name="widget_onizleme_ikindi">อัสร์</string>
+  <string name="widget_onizleme_aksam">มักริบ</string>
+  <string name="widget_onizleme_yatsi">อีซา</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">ทำเครื่องหมายว่าละหมาด%1$sแล้ว ขออัลลอฮ์ทรงตอบรับ</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$sถูกทำเครื่องหมายว่าละหมาดแล้ว</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">ขณะนี้ไม่มีเวลาละหมาดที่จะทำเครื่องหมาย ถัดไปคือ%1$s เริ่มเวลา %2$s</string>
+  <string name="kildim_sonuc_vakit_yok">ขณะนี้ไม่มีเวลาละหมาดที่จะทำเครื่องหมาย</string>
+  <string name="kildim_sonuc_veri_yok">ไม่มีข้อมูลเวลาละหมาด โปรดเปิดแอปหนึ่งครั้ง</string>
+  <string name="kildim_sonuc_vakit_degisti">เวลาละหมาดเปลี่ยนไปแล้ว จึงไม่ได้ทำเครื่องหมาย โปรดลองอีกครั้ง</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">เปิดแอปนำทางไม่ได้</string>
+  <string name="arac_adsiz_cami">มัสยิด</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">อ่านข้อมูลเวลาละหมาดไม่ได้</string>
+  <string name="asistan_isaretleme_yapilamadi">ทำเครื่องหมายละหมาดไม่สำเร็จ</string>
+  <string name="asistan_aciklama">คุณถามเวลาละหมาด ทำเครื่องหมายว่าละหมาดเวลาปัจจุบันแล้ว และเปิดหน้าจอกิบลัตได้</string>
+</resources>

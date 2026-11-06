@@ -11,6 +11,7 @@
  */
 import type { VakitBildirimVakti } from './vakitBildirimPlani';
 import { ozelSesMi, sesHashi } from '../muhafiz/sesKimligi';
+import { metin } from '../dil/aktifDil';
 
 export interface VakitSesSecimi {
     /** `content://…` (sistem sesi ya da kullanıcının içe aktardığı dosya) */
@@ -25,7 +26,7 @@ export const VAKIT_BILDIRIM_TABAN_KANAL = 'vakit_bildirim';
 export const VAKIT_BILDIRIM_KANAL_ONEKI = 'vakit_bildirim_';
 
 /** Ses seçilmemiş vaktin görünen adı (taban kanal sistemin bildirim sesini çalar). */
-export const VAKIT_VARSAYILAN_SES_ADI = 'Telefonun bildirim sesi';
+export const vakitVarsayilanSesAdi = (): string => metin().hatirlatma.vakitSesi.varsayilan;
 
 const VAKITLER: readonly VakitBildirimVakti[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
 
@@ -55,13 +56,13 @@ export function vakitBildirimKanalId(ses: string | undefined | null): string {
 
 /** Görünen ad: ham URI asla gösterilmez. */
 export function vakitSesGorunenAdi(secim: VakitSesSecimi | undefined): string {
-    if (!secim || !ozelSesMi(secim.bildirimSesi)) return VAKIT_VARSAYILAN_SES_ADI;
-    return secim.sesAdi?.trim() || 'Seçtiğiniz ses';
+    if (!secim || !ozelSesMi(secim.bildirimSesi)) return vakitVarsayilanSesAdi();
+    return secim.sesAdi?.trim() || metin().bildirim.kanal.seciliSes;
 }
 
 /** Android bildirim ayarlarında görünen kanal adı (taban: "Vakit Bildirimleri"). */
 export function vakitKanalAdi(secim: VakitSesSecimi): string {
-    return `Vakit Bildirimleri · ${vakitSesGorunenAdi(secim)}`;
+    return `${metin().bildirim.kanal.vakit} · ${vakitSesGorunenAdi(secim)}`;
 }
 
 /** Kaydı tek vakit için günceller; `null` = varsayılana dön (kayıttan silinir). */

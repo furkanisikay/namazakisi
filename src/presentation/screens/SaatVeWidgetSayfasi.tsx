@@ -26,6 +26,7 @@ import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { VakitSayaciBolumu } from '../components/hatirlatmalar/VakitSayaciBolumu';
 import { BileklikRehberKarti } from '../components/bildirim/BileklikRehberKarti';
 import { saatUygulamasiDestekli } from '../../../modules/expo-siri-kisayollari/src';
+import { useMetin } from '../hooks/useMetin';
 
 type Navigasyon = { navigate: (ekran: string) => void };
 
@@ -42,6 +43,7 @@ const SaatVeWidgetIcerik: React.FC = () => {
     const nowBar = useNowBarOzeti();
     const kildimGuvenVar = KildimGuvenServisi.kullanilabilirMi();
     const [gelismis, setGelismis] = useState(false);
+    const m = useMetin().saat.sayfa;
     const ikon = renkler.birincil;
     const ayrac = { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: renkler.sinir };
 
@@ -55,8 +57,8 @@ const SaatVeWidgetIcerik: React.FC = () => {
                 key="saat"
                 varyant="navigasyon"
                 ikon={<FontAwesome5 name="clock" size={20} color={ikon} />}
-                baslik={appleWatch ? 'Apple Watch' : 'Akıllı saat'}
-                ozet={appleWatch ? 'Uyandırma nerede çalsın' : 'Uyandırma ve sesli okuma nerede'}
+                baslik={appleWatch ? 'Apple Watch' : m.akilliSaat}
+                ozet={appleWatch ? m.appleWatchOzet : m.saatOzet}
                 onPress={() => navigation.navigate('SaatAyarlari')}
             />
         );
@@ -67,7 +69,7 @@ const SaatVeWidgetIcerik: React.FC = () => {
                 key="canli"
                 varyant="navigasyon"
                 ikon={<FontAwesome5 name="stopwatch" size={20} color={ikon} solid />}
-                baslik={Platform.OS === 'ios' ? 'Canlı etkinlikler' : 'Canlı sayaçlar'}
+                baslik={Platform.OS === 'ios' ? m.canliEtkinlikler : m.canliSayaclar}
                 ozet={nowBar.ozet ?? ''}
                 onPress={() => navigation.navigate('NowBarAyarlari')}
             />
@@ -92,7 +94,7 @@ const SaatVeWidgetIcerik: React.FC = () => {
             ) : null}
 
             <AyarCapasi id="vakitSayaci">
-                <BolumBasligi metin="Geri sayım" />
+                <BolumBasligi metin={m.geriSayim} />
                 <View style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, paddingHorizontal: 16, paddingVertical: 4 }}>
                     <VakitSayaciBolumu />
                 </View>
@@ -110,11 +112,11 @@ const SaatVeWidgetIcerik: React.FC = () => {
                         activeOpacity={0.7}
                         accessibilityRole="button"
                         accessibilityState={{ expanded: gelismis }}
-                        accessibilityLabel="Gelişmiş. Otomasyonlar ve Kıldım işaretleyen uygulamalar"
+                        accessibilityLabel={m.gelismisErisim}
                         style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48 }}
                     >
-                        <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: renkler.metin }}>Gelişmiş</Text>
-                        <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginRight: 8 }}>Otomasyonlar</Text>
+                        <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: renkler.metin }}>{m.gelismis}</Text>
+                        <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginRight: 8 }}>{m.otomasyonlar}</Text>
                         <FontAwesome5 name={gelismis ? 'chevron-up' : 'chevron-down'} size={13} color={renkler.metinIkincil} />
                     </TouchableOpacity>
                     {gelismis ? (
@@ -122,16 +124,16 @@ const SaatVeWidgetIcerik: React.FC = () => {
                             <AyarSatiri
                                 varyant="navigasyon"
                                 ikon={<FontAwesome5 name="magic" size={20} color={ikon} solid />}
-                                baslik="Otomasyonlarla kullanın"
-                                ozet="Samsung Rutinler, Tasker, MacroDroid"
+                                baslik={m.otomasyonBaslik}
+                                ozet={m.otomasyonOzet}
                                 onPress={() => navigation.navigate('OtomasyonRehberi')}
                             />
                             <View style={ayrac}>
                                 <AyarSatiri
                                     varyant="navigasyon"
                                     ikon={<FontAwesome5 name="check-double" size={20} color={ikon} solid />}
-                                    baslik="Kıldım işaretleyen uygulamalar"
-                                    ozet="İzin verdiğiniz uygulamalar"
+                                    baslik={m.kildimBaslik}
+                                    ozet={m.kildimOzet}
                                     onPress={() => navigation.navigate('KildimUygulamalari')}
                                 />
                             </View>

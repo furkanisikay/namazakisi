@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Kannada). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür; src/core/otomasyon/nativeEtiketler.ts kn bloğuyla birebir. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: ನಮಾಝ್ ಮಾಡಿದೆ</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: ನಮಾಝ್ ಸಮಯದ ಸ್ಥಿತಿ</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: ನಮಾಝ್ ಸಮಯದ ಘಟನೆ</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">ಈ ಸೆಟ್ಟಿಂಗ್ ಅನ್ನು ಆಟೋಮೇಷನ್ ಆ್ಯಪ್‌ನಿಂದ ಸೇರಿಸಲಾಗುತ್ತದೆ</string>
+  <string name="otomasyon_bilgi_tarayici">ಬ್ರೌಸರ್‌ಗಳಿಗೆ ಶಾಶ್ವತ ಅನುಮತಿ ನೀಡಲಾಗುವುದಿಲ್ಲ. Tasker, MacroDroid ಅಥವಾ Automate ನಂತಹ ಆ್ಯಪ್‌ನ ಪ್ಲಗಿನ್ ಪಟ್ಟಿಯಿಂದ ಸೇರಿಸಿ.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid ಅಥವಾ Automate ನಂತಹ ಆ್ಯಪ್‌ನ ಪ್ಲಗಿನ್ ಪಟ್ಟಿಯಿಂದ \"Namaz Akışı\" ಆಯ್ಕೆಮಾಡಿ ಸೇರಿಸಿ.</string>
+  <string name="otomasyon_engelli_baslik">%1$s ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ</string>
+  <string name="otomasyon_engelli_mesaj">ಈ ಆ್ಯಪ್ ನಿಮ್ಮ ನಮಾಝ್‌ಗಳನ್ನು ಗುರುತಿಸದಂತೆ ನೀವು ಹಿಂದೆ ನಿರ್ಬಂಧಿಸಿದ್ದೀರಿ. Namaz Akışı ನಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು &gt; \"ನಮಾಝ್ ಗುರುತಿಸಬಲ್ಲ ಆ್ಯಪ್‌ಗಳು\" ಇಲ್ಲಿ ಅನುಮತಿಸಬಹುದು.</string>
+  <string name="otomasyon_izin_baslik">%1$s ಜೊತೆ ಬಳಸಬೇಕೆ?</string>
+  <string name="otomasyon_izin_kosul">%1$s ನಮಾಝ್ ಸಮಯ ಯಾವಾಗ ಆರಂಭವಾಗುತ್ತದೆ, ಯಾವಾಗ ಮುಗಿಯುತ್ತಿದೆ ಮತ್ತು ನೀವು ಯಾವಾಗ ಮಸೀದಿಯಲ್ಲಿದ್ದೀರಿ ಎಂದು ತಿಳಿದು ನಿಮ್ಮ ಆಟೋಮೇಷನ್‌ಗಳನ್ನು ಚಲಾಯಿಸಬಹುದು. ನಿಮ್ಮ ನಿರ್ಧಾರವನ್ನು Namaz Akışı ನಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು &gt; \"ನಮಾಝ್ ಗುರುತಿಸಬಲ್ಲ ಆ್ಯಪ್‌ಗಳು\" ಇಲ್ಲಿ ಬದಲಾಯಿಸಬಹುದು.</string>
+  <string name="otomasyon_izin_kildim">%1$s ನೀವು ಹೊಂದಿಸಿದ ಆಟೋಮೇಷನ್ ಮೂಲಕ ಪ್ರಸ್ತುತ ನಮಾಝನ್ನು ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಬಹುದು. ನಿಮ್ಮ ನಿರ್ಧಾರವನ್ನು Namaz Akışı ನಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು &gt; \"ನಮಾಝ್ ಗುರುತಿಸಬಲ್ಲ ಆ್ಯಪ್‌ಗಳು\" ಇಲ್ಲಿ ಬದಲಾಯಿಸಬಹುದು.</string>
+  <string name="otomasyon_izin_ver">ಅನುಮತಿಸಿ</string>
+  <string name="otomasyon_engelle">ನಿರ್ಬಂಧಿಸಿ</string>
+  <string name="otomasyon_vazgec">ರದ್ದುಮಾಡಿ</string>
+  <string name="otomasyon_tamam">ಸರಿ</string>
+  <string name="otomasyon_tur_baslik">ಯಾವಾಗ ಚಲಿಸಬೇಕು?</string>
+  <string name="otomasyon_ileri">ಮುಂದೆ</string>
+  <string name="otomasyon_vakit_baslik">ಯಾವ ನಮಾಝ್?</string>
+  <string name="otomasyon_herhangi_vakit">ಯಾವುದೇ ನಮಾಝ್ ಸಮಯ</string>
+  <string name="otomasyon_kaydet">ಉಳಿಸಿ</string>
+  <string name="otomasyon_kosul_icinde">ನಮಾಝ್ ಸಮಯ ನಡೆಯುತ್ತಿರುವಾಗ</string>
+  <string name="otomasyon_kosul_cikiyor">ನಮಾಝ್ ಸಮಯ ಮುಗಿಯುತ್ತಿರುವಾಗ (%1$d ನಿಮಿ ಬಾಕಿ, ನಮಾಝ್ ರಕ್ಷಕ ಆನ್)</string>
+  <string name="otomasyon_kosul_camide">ಮಸೀದಿಯಲ್ಲಿರುವಾಗ</string>
+  <string name="otomasyon_olay_girdi">ನಮಾಝ್ ಸಮಯ ಆರಂಭವಾದಾಗ</string>
+  <string name="otomasyon_olay_cikiyor">ನಮಾಝ್ ಸಮಯ ಮುಗಿಯುತ್ತಿರುವಾಗ (%1$d ನಿಮಿ ಬಾಕಿ, ನಮಾಝ್ ರಕ್ಷಕ ಆನ್)</string>
+  <string name="otomasyon_olay_camide">ನೀವು ಮಸೀದಿಯಲ್ಲಿರುವುದು ಪತ್ತೆಯಾದಾಗ</string>
+</resources>

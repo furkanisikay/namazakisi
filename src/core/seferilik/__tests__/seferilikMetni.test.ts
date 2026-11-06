@@ -1,5 +1,5 @@
 import {
-  SEFERILIK_BILGI_NOTU,
+  seferilikBilgiNotu,
   SEFERILIK_KAYNAKLARI,
   SEFERILIK_KAYNAK_LISTESI,
   seferilikKartMetniOlustur,
@@ -64,8 +64,8 @@ describe('seferilikKartMetniOlustur — HÜKÜM DEĞİL BİLGİ (NÖBETÇİ)', (
   });
 
   it('kart notu bilgilendirme olduğunu söyler', () => {
-    expect(seferilikKartMetniOlustur('safii', 100).not).toBe(SEFERILIK_BILGI_NOTU);
-    expect(SEFERILIK_BILGI_NOTU).toContain('hüküm değil, bilgilendirmedir');
+    expect(seferilikKartMetniOlustur('safii', 100).not).toBe(seferilikBilgiNotu());
+    expect(seferilikBilgiNotu()).toContain('hüküm değil, bilgilendirmedir');
   });
 
   it('dönen madde dizisi kopyadır (çağıranın değişikliği sabit tabloyu bozmaz)', () => {

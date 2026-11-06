@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (N'Ko). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: ߛߊߟߌ ߥߊ߯ߕߌ߫ ߗߏߜߏߦߊ</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: ߛߊߟߌ ߥߊ߯ߕߌ߫ ߞߏ߫</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">ߣߌ߲߬ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ ߓߍ߫ ߟߊ߫ Automation ߔߏߙߏߜߊߙߊߡߎ ߘߐ߫ ߟߊ߫</string>
+  <string name="otomasyon_bilgi_tarayici">Internet ߢߍ߫ ߟߎ߬ ߕߍ߫ ߛߋ߫ ߞߊ߬ ߘߊߢߍ ߛߊߓߊߕߌߟߋ߲ ߛߐ߬ߘߐ߲߬. ߊߟߎ߫ ߦߋ߫ ߊ߬ ߟߊ߫ ߔߏߙߏߜߊߙߊߡߎ ߘߐ߫ ߟߊ߫ Plugin ߛߙߍߘߍ ߟߊ߫ ߌ ߣߴߊ߬ ߝߐ߫ Tasker߸ MacroDroid ߥߟߊ߫ Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">ߊߟߎ߫ ߦߋ߫ ߊ߬ ߟߊ߫ ߞߊ߬ \"Namaz Akışı\" ߛߎߥߊ߲ߘߌ߫ ߔߏߙߏߜߊߙߊߡߎ ߘߐ߫ ߟߊ߫ Plugin ߛߙߍߘߍ ߟߊ߫ ߌ ߣߴߊ߬ ߝߐ߫ Tasker߸ MacroDroid ߥߟߊ߫ Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s ߓߊߟߌߟߋ߲ ߘߏ߲߬</string>
+  <string name="otomasyon_engelli_mesaj">ߊߟߎ߫ ߕߎ߲߬ ߦߋ߫ ߣߌ߲߬ ߔߏߙߏߜߊߙߊߡߎ ߓߊߟߌ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߛߊߟߌ ߟߎ߬ ߛߓߍ߫. ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊ߬ ߘߊߢߍ Namaz Akışı ߞߐ߬ߣߐ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ &gt; \"ߔߏߙߏߜߊߙߊߡߎ ߡߌ߲ߠߎ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫ ߛߓߍ߫\" ߟߊ߫.</string>
+  <string name="otomasyon_izin_baslik">ߊ߬ ߞߍ߫ ߣߌ߫ %1$s ߦߋ߫ ߥߊ߫؟</string>
+  <string name="otomasyon_izin_kosul">%1$s ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊ߬ ߟߐ߲߫ ߣߌ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߛߋߙߊ߸ ߣߌ߫ ߊ߬ ߓߍ߫ ߓߊ߲߫ ߣߊ߬ ߊߣߌ ߣߌ߫ ߊߟߎ߫ ߓߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫߸ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ Automation ߟߎ߬ ߞߍ߫. ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߟߊߕߌߜߍ ߦߍߟߍߡߊ Namaz Akışı ߞߐ߬ߣߐ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ &gt; \"ߔߏߙߏߜߊߙߊߡߎ ߡߌ߲ߠߎ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫ ߛߓߍ߫\" ߟߊ߫.</string>
+  <string name="otomasyon_izin_kildim">%1$s ߓߍ߫ ߛߋ߫ ߞߊ߬ ߛߊߟߌ ߛߌߛߍ߲߬ ߕߊ ߛߓߍ߫ ߞߏ߫ ߊ߬ ߞߍߣߍ߲ ߣߌ߫ Automation ߦߋ߫ ߊߟߎ߫ ߦߋ߫ ߡߌ߲߬ ߟߊߓߍ߲߬. ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߟߊߕߌߜߍ ߦߍߟߍߡߊ Namaz Akışı ߞߐ߬ߣߐ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ &gt; \"ߔߏߙߏߜߊߙߊߡߎ ߡߌ߲ߠߎ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫ ߛߓߍ߫\" ߟߊ߫.</string>
+  <string name="otomasyon_izin_ver">ߊ߬ ߘߊߢߍ</string>
+  <string name="otomasyon_engelle">ߊ߬ ߓߊߟߌ߫</string>
+  <string name="otomasyon_vazgec">ߊ߬ ߘߐߛߊ߬</string>
+  <string name="otomasyon_tamam">ߐ߲߬ߤߐ߲߫</string>
+  <string name="otomasyon_tur_baslik">ߊ߬ ߞߊ߬ ߞߊ߲ ߞߊ߬ ߞߍ߫ ߕߎ߬ߡߊ ߖߎߡߍ߲؟</string>
+  <string name="otomasyon_ileri">ߢߍߝߍ</string>
+  <string name="otomasyon_vakit_baslik">ߛߊߟߌ ߖߎߡߍ߲؟</string>
+  <string name="otomasyon_herhangi_vakit">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߏ߬ ߥߊ߯ߕߌ߫</string>
+  <string name="otomasyon_kaydet">ߊ߬ ߡߙߊ߬</string>
+  <string name="otomasyon_kosul_icinde">ߣߌ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߏ</string>
+  <string name="otomasyon_kosul_cikiyor">ߣߌ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬ (ߡߌ߬ߛߍ߲ %1$d ߕߏߙߊ߸ ߛߊߟߌ ߞߐߟߐߛߌߟߌ ߘߊߦߍߟߍߣߍ߲)</string>
+  <string name="otomasyon_kosul_camide">ߣߌ߫ ߊߟߎ߫ ߓߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+  <string name="otomasyon_olay_girdi">ߣߌ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߛߋߙߊ</string>
+  <string name="otomasyon_olay_cikiyor">ߣߌ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬ (ߡߌ߬ߛߍ߲ %1$d ߕߏߙߊ߸ ߛߊߟߌ ߞߐߟߐߛߌߟߌ ߘߊߦߍߟߍߣߍ߲)</string>
+  <string name="otomasyon_olay_camide">ߣߌ߫ ߊߟߎ߫ ߦߋߙߊ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+</resources>

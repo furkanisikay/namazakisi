@@ -35,8 +35,8 @@ class KerahatKomplikasyonServisi : GuvenliKomplikasyonServisi() {
 
     override fun varsayilan(tur: ComplicationType): ComplicationData? {
         if (tur != ComplicationType.SHORT_TEXT) return null
-        return ShortTextComplicationData.Builder(duz("—"), duz("Vakit bilgisi bekleniyor; telefonda Namaz Akışı'nı açın"))
-            .setTitle(duz("Kerahat"))
+        return ShortTextComplicationData.Builder(duz("—"), duz(getString(R.string.komplikasyon_bekleniyor_aciklama)))
+            .setTitle(duz(getString(R.string.komplikasyon_kerahat)))
             .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, R.drawable.ic_vakit_gunes))
             .setTapAction(KomplikasyonOrtak.uygulamayiAc(this))
             .build()
@@ -50,12 +50,12 @@ class KerahatKomplikasyonServisi : GuvenliKomplikasyonServisi() {
             TimeDifferenceComplicationText.Builder(
                 TimeDifferenceStyle.STOPWATCH,
                 CountDownTimeReference(Instant.ofEpochMilli(a.hedefMs)),
-            ).build() to "Kerahat vaktindesiniz, bitiş $saat"
+            ).build() to getString(R.string.kerahat_icinde_aciklama, saat)
         } else {
-            duz(saat) to "Sıradaki kerahat vakti $saat"
+            duz(saat) to getString(R.string.kerahat_siradaki_aciklama, saat)
         }
         return ShortTextComplicationData.Builder(metin, duz(aciklama))
-            .setTitle(duz("Kerahat"))
+            .setTitle(duz(getString(R.string.komplikasyon_kerahat)))
             .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, R.drawable.ic_vakit_gunes))
             .setTapAction(KomplikasyonOrtak.uygulamayiAc(this))
             .build()

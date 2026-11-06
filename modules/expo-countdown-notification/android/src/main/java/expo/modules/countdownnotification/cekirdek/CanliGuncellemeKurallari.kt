@@ -37,15 +37,184 @@ object CanliGuncellemeKurallari {
         if (kalanMs <= 0L) 0L else (kalanMs + DAKIKA_MS - 1) / DAKIKA_MS
 
     /**
-     * Durum çubuğu çipi metni (`setShortCriticalText`): "12 dk", "1 sa", "1 sa 5 dk".
-     * Çip dardır; saniye YOK (canlı saniye sayımını chronometer zaten çizer).
+     * Bir dilin kısa süre birimleri ve boşlukları. [birimAyirici] sayı ile birim arası
+     * (JS `sure.birimli` kalıbının `{n}` ile `{birim}` arası), [parcaAyirici] "1 sa" ile "5 dk"
+     * arası (JS `sure.parcali`); boşluksuz yazan dil (Çince "1小时5分钟") ikisine de "" verir.
      */
-    fun kisaMetin(kalanMs: Long): String {
+    data class KisaBirimler(val sa: String, val dk: String, val birimAyirici: String = " ", val parcaAyirici: String = " ")
+
+    /**
+     * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
+     * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü. Sıra tr, en,
+     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk, fil, te, kn, mr, pa, as, ne, si, km, he, ka, lt, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
+     */
+    internal val KISA_BIRIMLER: Map<String, KisaBirimler> = mapOf(
+        "tr" to KisaBirimler("sa", "dk"),
+        "en" to KisaBirimler("h", "min"),
+        // id
+        "id" to KisaBirimler("j", "mnt"),
+        "de" to KisaBirimler("Std.", "Min."),
+        // fr
+        "fr" to KisaBirimler("h", "min"),
+        // bs
+        "bs" to KisaBirimler("h", "min"),
+        // ru
+        "ru" to KisaBirimler("ч", "мин"),
+        // ms
+        "ms" to KisaBirimler("j", "min"),
+        // ar
+        "ar" to KisaBirimler("س", "د"),
+        // ur
+        "ur" to KisaBirimler("گھنٹے", "منٹ"),
+        // es
+        "es" to KisaBirimler("h", "min"),
+        // nl
+        "nl" to KisaBirimler("u", "min"),
+        // sq
+        "sq" to KisaBirimler("orë", "min"),
+        // hi
+        "hi" to KisaBirimler("घंटे", "मिनट"),
+        // bn
+        "bn" to KisaBirimler("ঘ", "মি"),
+        // fa
+        "fa" to KisaBirimler("ساعت", "دقیقه"),
+        // ps
+        "ps" to KisaBirimler("ساعت", "دقیقې"),
+        // ckb
+        "ckb" to KisaBirimler("کاتژمێر", "خولەک"),
+        // ug
+        "ug" to KisaBirimler("سائەت", "مىنۇت"),
+        // az
+        "az" to KisaBirimler("saat", "dəq"),
+        // uz (Latin)
+        "uz" to KisaBirimler("soat", "daq"),
+        // kk
+        "kk" to KisaBirimler("сағ", "мин"),
+        // ky
+        "ky" to KisaBirimler("ст", "мүн"),
+        // tg
+        "tg" to KisaBirimler("соат", "дақ"),
+        // sw
+        "sw" to KisaBirimler("saa", "dk"),
+        // ha
+        "ha" to KisaBirimler("awa", "min"),
+        // am
+        "am" to KisaBirimler("ሰዓ", "ደቂ"),
+        // om
+        "om" to KisaBirimler("sa'a", "daq"),
+        // so
+        "so" to KisaBirimler("s", "daq"),
+        // ff
+        "ff" to KisaBirimler("sa", "hj"),
+        // yo
+        "yo" to KisaBirimler("wkt", "ìṣj"),
+        // zh (boşluksuz yazılır: "5分钟", "1小时5分钟")
+        "zh" to KisaBirimler("小时", "分钟", birimAyirici = "", parcaAyirici = ""),
+        // ta
+        "ta" to KisaBirimler("மணி", "நிமி", birimAyirici = " ", parcaAyirici = " "),
+        // ml
+        "ml" to KisaBirimler("മ", "മി", birimAyirici = " ", parcaAyirici = " "),
+        // th
+        "th" to KisaBirimler("ชม.", "นาที", birimAyirici = " ", parcaAyirici = " "),
+        // ko (sayı–birim bitişik: "5분"; parçalar boşluklu: "1시간 5분")
+        "ko" to KisaBirimler("시간", "분", birimAyirici = "", parcaAyirici = " "),
+        // vi
+        "vi" to KisaBirimler("giờ", "phút", birimAyirici = " ", parcaAyirici = " "),
+        // pt (CLDR pt-PT kısa birimler "h", "min")
+        "pt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // it
+        "it" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // sv
+        "sv" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // uk
+        "uk" to KisaBirimler("год", "хв", birimAyirici = " ", parcaAyirici = " "),
+        // ro (CLDR ro: "h", "min" — JS sure.kisa ile aynı)
+        "ro" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // hr (CLDR hr kısa birimler aynı: "h", "min")
+        "hr" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // sr
+        "sr" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
+        // el
+        "el" to KisaBirimler("ώ.", "λ.", birimAyirici = " ", parcaAyirici = " "),
+        // ku
+        "ku" to KisaBirimler("st", "d", birimAyirici = " ", parcaAyirici = " "),
+        // tk
+        "tk" to KisaBirimler("sag", "min", birimAyirici = " ", parcaAyirici = " "),
+        // tt
+        "tt" to KisaBirimler("сәг", "мин", birimAyirici = " ", parcaAyirici = " "),
+        // sd
+        "sd" to KisaBirimler("ڪلاڪ", "منٽ", birimAyirici = " ", parcaAyirici = " "),
+        // pl
+        "pl" to KisaBirimler("godz.", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ja
+        "ja" to KisaBirimler("時間", "分", birimAyirici = "", parcaAyirici = ""),
+        // gu
+        "gu" to KisaBirimler("ક", "મિ", birimAyirici = " ", parcaAyirici = " "),
+        // bg (CLDR bg: "ч", "мин" — JS sure.kisa ile aynı)
+        "bg" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
+        // mk
+        "mk" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
+        // fil
+        "fil" to KisaBirimler("oras", "min", birimAyirici = " ", parcaAyirici = " "),
+        // te (JS sure.kisa ile aynı)
+        "te" to KisaBirimler("గం", "నిమి", birimAyirici = " ", parcaAyirici = " "),
+        // kn (CLDR kn short, noktasız — JS sure.kisa ile aynı)
+        "kn" to KisaBirimler("ಗಂ", "ನಿಮಿ", birimAyirici = " ", parcaAyirici = " "),
+        // mr
+        "mr" to KisaBirimler("ता", "मिनि", birimAyirici = " ", parcaAyirici = " "),
+        // pa (Şahmuki; Urduca gibi kısaltma yok — JS sure.kisa ile aynı)
+        "pa" to KisaBirimler("گھنٹے", "منٹ", birimAyirici = " ", parcaAyirici = " "),
+        // as
+        "as" to KisaBirimler("ঘ", "মি", birimAyirici = " ", parcaAyirici = " "),
+        // ne
+        "ne" to KisaBirimler("घण्टा", "मिनेट", birimAyirici = " ", parcaAyirici = " "),
+        // si (CLDR si short: "පැය", "මිනි" — JS sure.kisa ile aynı; kalıp sözleşmesi gereği sayı önce)
+        "si" to KisaBirimler("පැය", "මිනි", birimAyirici = " ", parcaAyirici = " "),
+        // km
+        "km" to KisaBirimler("ម៉ោង", "នាទី", birimAyirici = " ", parcaAyirici = " "),
+        // he (CLDR he narrow: "שע׳", "דק׳" — JS sure.kisa ile aynı)
+        "he" to KisaBirimler("שע׳", "דק׳", birimAyirici = " ", parcaAyirici = " "),
+        // ka (CLDR ka short: "სთ", "წთ" — JS sure.kisa ile aynı)
+        "ka" to KisaBirimler("სთ", "წთ", birimAyirici = " ", parcaAyirici = " "),
+        // lt (CLDR lt short, noktalı — JS sure.kisa ile aynı)
+        "lt" to KisaBirimler("val.", "min.", birimAyirici = " ", parcaAyirici = " "),
+        // mg
+        "mg" to KisaBirimler("ora", "min", birimAyirici = " ", parcaAyirici = " "),
+        "lg" to KisaBirimler("ssa", "dk", birimAyirici = " ", parcaAyirici = " "),
+        // rw
+        "rw" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // rn
+        "rn" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ln
+        "ln" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // dag
+        "dag" to KisaBirimler("hw", "min", birimAyirici = " ", parcaAyirici = " "),
+        // mos
+        "mos" to KisaBirimler("lɛɛr", "min", birimAyirici = " ", parcaAyirici = " "),
+        // aa
+        "aa" to KisaBirimler("saq", "daq", birimAyirici = " ", parcaAyirici = " "),
+        // mdh
+        "mdh" to KisaBirimler("or", "min", birimAyirici = " ", parcaAyirici = " "),
+        "ak" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        "ceb" to KisaBirimler("oras", "min", birimAyirici = " ", parcaAyirici = " "),
+        "nqo" to KisaBirimler("ߕ", "ߡߌ߬ߛ", birimAyirici = " ", parcaAyirici = " "),
+    )
+
+    /**
+     * Durum çubuğu çipi metni (`setShortCriticalText`): "12 dk", "1 sa", "1 sa 5 dk"
+     * (İngilizce: "12 min", "1 h", "1 h 5 min"). Çip dardır; saniye YOK (canlı saniye
+     * sayımını chronometer zaten çizer). [dil] arayüz dilidir (`ArayuzDili`), varsayılan
+     * Türkçe — ortak fikstür Türkçe biçimi sınar.
+     */
+    fun kisaMetin(kalanMs: Long, dil: String = "tr"): String {
+        val b = KISA_BIRIMLER[dil] ?: KISA_BIRIMLER.getValue("tr")
         val dk = kalanDakika(kalanMs)
-        if (dk < 60) return "$dk dk"
+        // `${}` zorunlu: Han/Hangıl harfi şablonda tanımlayıcıya yapışır.
+        if (dk < 60) return "${dk}${b.birimAyirici}${b.dk}"
         val sa = dk / 60
         val artan = dk % 60
-        return if (artan == 0L) "$sa sa" else "$sa sa $artan dk"
+        val saatli = "${sa}${b.birimAyirici}${b.sa}"
+        return if (artan == 0L) saatli else "${saatli}${b.parcaAyirici}${artan}${b.birimAyirici}${b.dk}"
     }
 
     /**

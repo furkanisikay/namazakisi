@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Lingala). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nasambeli</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Ezalela ya ntango ya losambo</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Likambo ya ntango ya losambo</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Mobongiseli oyo ebakisamaka na aplikasiɔ ya automation</string>
+  <string name="otomasyon_bilgi_tarayici">Ba navigatɛrɛ ekoki kozwa ndingisa ya ntango nyɔnsɔ te. Bobakisa yango na liste ya ba plugin ya aplikasiɔ lokola Tasker, MacroDroid to Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Bobakisa yango na kopona \"Namaz Akışı\" na liste ya ba plugin ya aplikasiɔ lokola Tasker, MacroDroid to Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s epekisami</string>
+  <string name="otomasyon_engelli_mesaj">Bopekisaki aplikasiɔ oyo kotia elembo na losambo na bino liboso. Bokoki kopesa yango ndingisa na Namaz Akışı na Mibongiseli &gt; \"Ba aplikasiɔ oyo etiaka elembo Nasambeli\".</string>
+  <string name="otomasyon_izin_baslik">Kosalela na %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s ekoki koyeba ntango ntango ya losambo ebandi, ntango ezali kosila mpe ntango bozali na moskeye, mpe kosala automation na bino. Bokoki kobongola ekateli na bino na Namaz Akışı na Mibongiseli &gt; \"Ba aplikasiɔ oyo etiaka elembo Nasambeli\".</string>
+  <string name="otomasyon_izin_kildim">%1$s ekoki kotia elembo ete losambo ya sikoyo esambelami na automation oyo bobongisi. Bokoki kobongola ekateli na bino na Namaz Akışı na Mibongiseli &gt; \"Ba aplikasiɔ oyo etiaka elembo Nasambeli\".</string>
+  <string name="otomasyon_izin_ver">Bopesa ndingisa</string>
+  <string name="otomasyon_engelle">Bopekisa</string>
+  <string name="otomasyon_vazgec">Botika</string>
+  <string name="otomasyon_tamam">Malamu</string>
+  <string name="otomasyon_tur_baslik">Esala ntango nini?</string>
+  <string name="otomasyon_ileri">Liboso</string>
+  <string name="otomasyon_vakit_baslik">Losambo nini?</string>
+  <string name="otomasyon_herhangi_vakit">Ntango nyɔnsɔ ya losambo</string>
+  <string name="otomasyon_kaydet">Bobomba</string>
+  <string name="otomasyon_kosul_icinde">Ntango ezali ntango ya losambo</string>
+  <string name="otomasyon_kosul_cikiyor">Ntango ntango ya losambo ezali kosila (miniti %1$d etikali, Mokɛngɛli ya losambo efungwami)</string>
+  <string name="otomasyon_kosul_camide">Ntango bozali na moskeye</string>
+  <string name="otomasyon_olay_girdi">Ntango ntango ya losambo ebandi</string>
+  <string name="otomasyon_olay_cikiyor">Ntango ntango ya losambo ezali kosila (miniti %1$d etikali, Mokɛngɛli ya losambo efungwami)</string>
+  <string name="otomasyon_olay_camide">Ntango bomonani na moskeye</string>
+</resources>

@@ -1,0 +1,49 @@
+# tohum: ozellik
+# Günün ayeti (#380, #381): Ayarlar satırından sayfa (Arapça + meal + künye, önceki günler),
+# ardından "Widget ve duvar kâğıdı" ayarı. Duvar kâğıdı anahtarı yalnız onay penceresine kadar
+# götürülür ("Vazgeçin"): emülatörün duvar kâğıdı değiştirilmez.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- runFlow:
+    file: _liste-kaydir.yaml
+    env:
+      HEDEF: "(Günün ayeti|Verse of the day)\\..*"
+- tapOn:
+    text: "(Günün ayeti|Verse of the day)\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- extendedWaitUntil:
+    visible:
+      id: "gunun-ayeti-kart"
+    timeout: 10000
+- takeScreenshot: ozk/59-gunun-ayeti
+- scrollUntilVisible:
+    element:
+      id: "gunun-ayeti-tanzil"
+    direction: DOWN
+    timeout: 30000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/60-gunun-ayeti-onceki
+- scrollUntilVisible:
+    element:
+      text: "(Widget ve duvar kâğıdı|Widget and wallpaper)\\..*"
+    direction: UP
+    timeout: 30000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "(Widget ve duvar kâğıdı|Widget and wallpaper)\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/61-gunun-ayeti-ayar
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          id: "gunun-ayeti-duvar-anahtar"
+      - waitForAnimationToEnd:
+          timeout: 3000
+      - takeScreenshot: ozk/62-gunun-ayeti-duvar-onay
+      - tapOn:
+          text: "(Vazgeçin|Cancel)"

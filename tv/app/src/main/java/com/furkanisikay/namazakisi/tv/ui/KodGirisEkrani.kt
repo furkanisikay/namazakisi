@@ -1,5 +1,7 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import com.furkanisikay.namazakisi.tv.R
+import androidx.compose.ui.res.stringResource
 import android.view.KeyEvent as AndroidKeyEvent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -13,6 +15,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +34,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,19 +52,29 @@ import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.LayoutDirection
+import com.furkanisikay.namazakisi.tv.cekirdek.Sigdirma
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Border
+import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.furkanisikay.namazakisi.tv.cekirdek.EslemeKodu
 import com.furkanisikay.namazakisi.tv.cekirdek.Il
+import com.furkanisikay.namazakisi.tv.cekirdek.TvRakam
 import com.furkanisikay.namazakisi.tv.veri.KonumDeposu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -130,8 +145,10 @@ fun KodGirisEkrani(
             return@LaunchedEffect
         }
         val ad = EslemeKodu.konumAdi(depo.iller, konum.first, konum.second)
-        depo.telefondanKaydet(ad, konum.first, konum.second)
-        val il = Il(KonumDeposu.PLAKA_TELEFON, ad, konum.first, konum.second)
+        // 7 haneli kod Türkiye ızgarasıdır: rakam sistemi Türkiye'ye göre çözülür.
+        val rakam = TvRakam("TR")
+        depo.telefondanKaydet(ad, konum.first, konum.second, rakam = rakam)
+        val il = Il(KonumDeposu.PLAKA_TELEFON, ad, konum.first, konum.second, rakam = rakam)
         gelen = il
         if (!animasyon) {
             katlanma.snapTo(1f); igne.snapTo(1f); halka.snapTo(1f)
@@ -172,7 +189,10 @@ fun KodGirisEkrani(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+            // Başlık bloğu esner (yazı küçülür); kutular ve alttaki yardım/hata metni önce ölçülür
+            // ve TAM çizilir: uzun dilde hata metninin 3. satırı ekranın altında yarım kalıyordu.
             AnimatedContent(
+                modifier = Modifier.weight(1f, fill = false),
                 targetState = gelen,
                 transitionSpec = {
                     (fadeIn(tween(320, delayMillis = 140)) + slideInVertically(tween(320, delayMillis = 140)) { it / 6 })
@@ -180,24 +200,28 @@ fun KodGirisEkrani(
                 },
                 label = "kodBaslik",
             ) { il ->
-                Column {
-                    if (il == null) {
-                        Text("Telefonunuzdaki kodu girin", color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            "Telefonda: Ayarlar › Cihazlarım › TV ekleyin",
-                            color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
-                        )
-                    } else {
-                        Text("Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 30.sp)
-                        Spacer(Modifier.height(8.dp))
-                        Text(il.ad, color = Renkler.metin, fontSize = 60.sp, fontWeight = FontWeight.SemiBold)
+                YaziyiSigdir {
+                    Column {
+                        if (il == null) {
+                            Text(stringResource(R.string.kod_baslik), color = Renkler.metin, fontSize = 36.sp, lineHeight = 44.sp, fontWeight = FontWeight.SemiBold)
+                            Spacer(Modifier.height(10.dp))
+                            Text(
+                                stringResource(R.string.kod_yol),
+                                color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
+                            )
+                        } else {
+                            Text(stringResource(R.string.konumunuz_geldi), color = Renkler.metinIkincil, fontSize = 30.sp)
+                            Spacer(Modifier.height(8.dp))
+                            Text(il.ad, color = Renkler.metin, fontSize = 60.sp, fontWeight = FontWeight.SemiBold)
+                        }
                     }
                 }
             }
-            Spacer(Modifier.height(40.dp))
+            Spacer(Modifier.height(32.dp))
 
-            // Kutular → katlanınca iğne.
+            // Kutular → katlanınca iğne. Kod her dilde soldan sağa dolar (sağdan sola arayüzde de;
+            // telefondaki kodla aynı sıra), katlanma kaydırması da soldan sağa sıraya göre hesaplanır.
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             Box(Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
                 Row(
                     Modifier.graphicsLayer {
@@ -228,13 +252,14 @@ fun KodGirisEkrani(
                     Canvas(Modifier.size(150.dp)) { igneCiz(igne.value, halka.value, Renkler.birincil, Renkler.birincil) }
                 }
             }
+            }
 
             Spacer(Modifier.height(18.dp))
             Text(
                 when {
-                    gelen != null -> "Vakitler bu konuma göre hesaplanacak."
-                    hatali -> "Kod tutmadı. Telefonunuzdaki 7 haneyi kontrol edin; yanlış haneyi “Sil” ile düzeltin."
-                    else -> "Rakamlı kumandanız varsa tuşlarla da yazabilirsiniz."
+                    gelen != null -> stringResource(R.string.konuma_gore_hesaplanacak)
+                    hatali -> stringResource(R.string.kod_hatali, stringResource(R.string.kod_sil))
+                    else -> stringResource(R.string.kod_rakamli_kumanda)
                 },
                 color = if (hatali) Renkler.metin else Renkler.metinIkincil,
                 fontSize = 24.sp,
@@ -257,6 +282,7 @@ fun KodGirisEkrani(
 
 @Composable
 private fun HaneKutusu(rakam: Char?, aktif: Boolean, hatali: Boolean, modifier: Modifier) {
+    val bosHane = stringResource(R.string.kod_bos_hane)
     val kenar = when {
         hatali -> Renkler.hata
         aktif -> Renkler.birincil
@@ -267,7 +293,7 @@ private fun HaneKutusu(rakam: Char?, aktif: Boolean, hatali: Boolean, modifier: 
             .size(width = KUTU_EN.dp, height = 76.dp)
             .background(Renkler.kart, RoundedCornerShape(14.dp))
             .border(BorderStroke(if (aktif || hatali) 3.dp else 1.dp, kenar), RoundedCornerShape(14.dp))
-            .semantics { contentDescription = rakam?.toString() ?: "boş hane" },
+            .semantics { contentDescription = rakam?.toString() ?: bosHane },
         contentAlignment = Alignment.Center,
     ) {
         Text(rakam?.toString() ?: "", color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold)
@@ -283,6 +309,36 @@ private fun TusTakimi(
     onVazgec: () -> Unit,
 ) {
     val satirlar = listOf("123", "456", "789")
+    val silEtiketi = stringResource(R.string.kod_sil)
+    val geriEtiketi = stringResource(R.string.kod_geri)
+    // "Sil" ve "Geri" ORTAK boyda: her tuş kendi başına küçülünce uzun dilde ("பின்செல்")
+    // biri ötekinden belirgin küçük kalıyordu. İkisinin de sığdığı en büyük boy, ikisine birden.
+    // Tabanda da tek satıra sığmayan etiket (çok sözcüklüyse) iki satıra sarılır; tek sözcüklük
+    // uzun etiket en son üç noktayla kesilir, hiçbir zaman sessizce kırpılmaz (Malayalamca Sil
+    // "ഇല്ലാതാ" diye yarım görünüyordu).
+    val olcer = rememberTextMeasurer()
+    val yogunluk = LocalDensity.current
+    val etiketGenisligi = with(yogunluk) { (TUS_EN - 2 * TUS_ETIKET_PAYI).dp.roundToPx() }
+    val etiketYuksekligi = with(yogunluk) { (TUS_BOY - 2 * TUS_ETIKET_PAYI).dp.roundToPx() }
+    val kucuk = remember(silEtiketi, geriEtiketi, etiketGenisligi, etiketYuksekligi) {
+        Sigdirma.enBuyukSiganKarar(KUCUK_TUS_BOYU, KUCUK_TUS_EN_AZ, enCokSatir = 2) { b, satir ->
+            val stil = TextStyle(fontSize = b.sp, fontWeight = FontWeight.SemiBold)
+            listOf(silEtiketi, geriEtiketi).all { etiket ->
+                if (satir == 1) {
+                    olcer.measure(etiket, stil, maxLines = 1, softWrap = false).size.width <= etiketGenisligi
+                } else {
+                    val sonuc = olcer.measure(etiket, stil, maxLines = satir, constraints = Constraints(maxWidth = etiketGenisligi))
+                    !sonuc.hasVisualOverflow && sonuc.size.height <= etiketYuksekligi &&
+                        etiket.split(' ').filter { it.isNotEmpty() }.all {
+                            olcer.measure(it, stil, maxLines = 1, softWrap = false).size.width <= etiketGenisligi
+                        }
+                }
+            }
+        }
+    }
+    val kucukBoy = kucuk.boy
+    // Tuş takımı telefon tuş takımı gibi her dilde soldan sağa (1 sol üstte); kutularla aynı yön.
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         for ((si, satir) in satirlar.withIndex()) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -292,26 +348,41 @@ private fun TusTakimi(
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Tus("Sil", "Son haneyi silin", onSil, Modifier, kucuk = true, etkin = silinebilir)
+            Tus(silEtiketi, stringResource(R.string.kod_sil_aciklama), onSil, Modifier, boy = kucukBoy, satir = kucuk.satir, etkin = silinebilir)
             Tus("0", "0", { onRakam('0') }, Modifier)
-            Tus("Geri", "Vazgeçin", onVazgec, Modifier, kucuk = true)
+            Tus(geriEtiketi, stringResource(R.string.vazgecin), onVazgec, Modifier, boy = kucukBoy, satir = kucuk.satir)
         }
+    }
     }
 }
 
+private const val TUS_EN = 88
+private const val TUS_BOY = 72
+private const val TUS_ETIKET_PAYI = 6
+private const val RAKAM_TUS_BOYU = 34f
+private const val KUCUK_TUS_BOYU = 24f
+
+/** Yalnız tabanda da sığmayan uzun etikete iner (tr/en "Sil"/"Delete" bu boyun çok üstünde). */
+private const val KUCUK_TUS_EN_AZ = 13f
+
+/**
+ * [boy]: etiketin sp boyu; rakam tuşları [RAKAM_TUS_BOYU], Sil/Geri ortak hesaplanmış boy.
+ * [satir]: en çok satır (ortak karar; kısa etiket yine tek satırda kalır).
+ */
 @Composable
 private fun Tus(
     etiket: String,
     erisim: String,
     onClick: () -> Unit,
     modifier: Modifier,
-    kucuk: Boolean = false,
+    boy: Float = RAKAM_TUS_BOYU,
+    satir: Int = 1,
     etkin: Boolean = true,
 ) {
     Surface(
         onClick = onClick,
         enabled = etkin,
-        modifier = modifier.size(88.dp, 72.dp).semantics { contentDescription = erisim },
+        modifier = modifier.size(TUS_EN.dp, TUS_BOY.dp).semantics { contentDescription = erisim },
         shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(16.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Renkler.kart,
@@ -325,7 +396,22 @@ private fun Tus(
         scale = ClickableSurfaceDefaults.scale(focusedScale = 1.08f),
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(etiket, fontSize = if (kucuk) 24.sp else 34.sp, fontWeight = FontWeight.SemiBold)
+            // Uzun dilde ("Löschen", "Удалить") etiket tek satırda kalır, yazı küçülür. Sil/Geri
+            // boyu zaten ikisine sığan ortak boydur; autoSize yalnız en küçük boyda da
+            // sığmayan (aşırı uzun) etiketin son güvencesi.
+            val renk = LocalContentColor.current
+            BasicText(
+                etiket,
+                style = TextStyle(fontSize = boy.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center),
+                color = { renk },
+                // Tek satırda softWrap KAPALI: açıkken sığmayan sözcük kırılıp yalnız ilk satırı
+                // üç noktasız görünüyordu ("ഇല്ലാതാ"). Son çare üç nokta, sessiz kırpma değil.
+                maxLines = satir,
+                softWrap = satir > 1,
+                overflow = TextOverflow.Ellipsis,
+                autoSize = TextAutoSize.StepBased(minFontSize = minOf(KUCUK_TUS_EN_AZ, boy).sp, maxFontSize = boy.sp),
+                modifier = Modifier.padding(horizontal = TUS_ETIKET_PAYI.dp),
+            )
         }
     }
 }

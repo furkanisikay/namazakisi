@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lietuvių. Terminai: docs/ajan/coklu-dil.md + src/core/dil/sozluk/lt (vakit adları çekimsiz, çekim "malda"da; "Kıldım" = "Atlikau maldą"). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">lt</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Kita malda</string>
+    <string name="tile_aciklama">Kita malda ir jos laikas</string>
+    <string name="komplikasyon_adi">Likęs laikas</string>
+    <string name="cikis_saati_komplikasyon_adi">Maldos laiko pabaiga</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Kita malda</string>
+    <string name="bugun_tile_adi">Šiandien</string>
+    <string name="bugun_tile_aciklama">Šiandienos penkios maldos; atliktas pažymėkite dviem palietimais</string>
+    <string name="ilerleme_komplikasyon_adi">Dienos pažanga</string>
+    <string name="dagilim_komplikasyon_adi">Dienos apžvalga</string>
+    <string name="kerahat_komplikasyon_adi">Nepageidautinas laikas</string>
+    <string name="son_dakikalar_kanal_adi">Paskutinės minutės</string>
+    <string name="son_dakikalar_kanal_aciklama">Atgalinė atskaita laikrodžio ekrane paskutinėmis neatliktos maldos laiko minutėmis</string>
+    <string name="tesbihat_adi">Tasbihas</string>
+    <string name="tesbihat_kanal_adi">Tasbihas</string>
+    <string name="tesbihat_kanal_aciklama">Tyli piktograma laikrodžio ekrane, kad grįžtumėte prie nebaigto tasbiho</string>
+    <string name="kible_adi">Kibla</string>
+    <string name="kible_komplikasyon_adi">Kibla</string>
+    <string name="camideyim_kanal_adi">Esu mečetėje</string>
+    <string name="camideyim_kanal_aciklama">Tyli piktograma laikrodžio ekrane, kai telefonas praneša, kad esate mečetėje</string>
+    <string name="uyandirma_kanal_adi">Tylus žadinimas</string>
+    <string name="uyandirma_kanal_aciklama">Žadina tik vibracija – Fajr ir Tahadžud metu</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Atlikau maldą</string>
+    <string name="kilindi_isareti">✓ Atlikta</string>
+    <string name="kapat">Išjungti</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Kad pamatytumėte maldų laikus, telefone atidarykite „Namaz Akışı“.</string>
+    <string name="yuk_eskidi">Maldų laikų duomenys pasenę. Kad juos atnaujintumėte, telefone atidarykite „Namaz Akışı“.</string>
+    <string name="guncelleme_gerekli">Atnaujinkite „Namaz Akışı“ laikrodyje.</string>
+    <string name="bildirim_izni">Kad priminimus gautumėte ir tada, kai telefono nėra šalia, laikrodžio nustatymuose leiskite „Namaz Akışı“ pranešimus.</string>
+    <string name="cami_soru">Ar esate mečetėje?</string>
+    <string name="cami_evet">Taip</string>
+    <string name="cami_evet_aciklama">Taip, esu mečetėje. Įjungia Maldos režimą</string>
+    <string name="cami_hayir">Ne</string>
+    <string name="cami_hayir_aciklama">Ne, nesu mečetėje</string>
+    <string name="camidesiniz">Esate mečetėje</string>
+    <string name="cami_degil">Čia ne mečetė</string>
+    <string name="cami_degil_aciklama">Čia ne mečetė. Ši vieta daugiau nebus laikoma mečete</string>
+    <string name="tesbihat_ac">Atidaryti tasbiho skaitiklį</string>
+    <string name="kible_ac">Atidaryti kiblos kompasą</string>
+    <string name="ses_dene">Išbandyti garsą</string>
+    <string name="ses_dene_aciklama">Išbandyti laikrodžio skaitymą garsiai</string>
+    <string name="telefonda_acin">Atidaryti telefone</string>
+    <string name="telefonda_ekran_ac">Atidaryti %1$s telefone</string>
+    <string name="ekran_kaza">Praleistų maldų žurnalas</string>
+    <string name="ekran_camideyim">Esu mečetėje</string>
+    <string name="ekran_ayarlar">Nustatymai</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">atlikta, sinchronizuojama</string>
+    <string name="durum_kilindi">atlikta</string>
+    <string name="durum_girmedi">dar ne laikas</string>
+    <string name="durum_simdiki">dabartinis maldos laikas, palieskite, kad pažymėtumėte</string>
+    <string name="durum_simdiki_kalan">dabartinis maldos laikas, %1$s, palieskite, kad pažymėtumėte</string>
+    <string name="durum_kilinmadi">neatlikta, palieskite, kad pažymėtumėte</string>
+    <string name="isaretleyin">Pažymėti kaip atliktą</string>
+    <string name="esitleniyor">sinchronizuojama</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Patvirtinti, kad atlikau maldą</string>
+    <string name="vazgecin">Atšaukti</string>
+    <string name="vazgec">Atšaukti</string>
+    <string name="kerahat_vaktindesiniz">Dabar nepageidautinas laikas.</string>
+    <string name="kilindi_dua">Atlikta. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Maldos režimas įjungtas, baigiasi %1$s. Palieskite, kad išjungtumėte</string>
+    <string name="namaz_modu_ac_aciklama">Įjungti Maldos režimą telefone</string>
+    <string name="namaz_modu_kapatin">Išjungti Maldos režimą</string>
+    <string name="namaz_modu_acin">Įjungti Maldos režimą</string>
+    <string name="namaz_modu_acik_bitis">Įjungtas, baigiasi %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Nustatoma kryptis…</string>
+    <string name="kible_yuk_yok">Kad rastumėte kiblą, telefone atidarykite „Namaz Akışı“.</string>
+    <string name="kible_konum_yok">Kad rastumėte kiblą, telefone įjunkite vietovę. Jei „Namaz Akışı“ pasenusi, atnaujinkite ją.</string>
+    <string name="kible_sensor_yok">Šiame laikrodyje nėra kompaso jutiklio. Kiblos kryptį galite pamatyti telefone.</string>
+    <string name="kible_kuzeyden">Kibla %1$d° (nuo šiaurės)</string>
+    <string name="kible_derece">Kibla %1$d°</string>
+    <string name="kible_telefonda_ac">Atidaryti kiblą telefone</string>
+    <string name="kible_erisim">%1$s. Kibla %2$d° nuo šiaurės, %3$s</string>
+    <string name="kible_hizali">Esate atsisukę į kiblą</string>
+    <string name="kible_kalibrasyon">Kad kalibruotumėte, pajudinkite riešą ore lyg piešdami aštuoniukę</string>
+    <string name="kible_egim">Laikykite laikrodį lygiagrečiai žemei</string>
+    <string name="kible_titresim_acik">Vibracijos nuorodos įjungtos. Palieskite, kad išjungtumėte</string>
+    <string name="kible_titresim_kapali">Vibracijos nuorodos išjungtos. Palieskite, kad įjungtumėte</string>
+    <string name="kible_harf_kuzey">Š</string>
+    <string name="kible_harf_dogu">R</string>
+    <string name="kible_harf_guney">P</string>
+    <string name="kible_harf_bati">V</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbihas baigtas. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Iš viso %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Skaičiuoti</string>
+    <string name="tesbihat_bastan_baslayin">Pradėti iš pradžių</string>
+    <string name="tesbihat_bastan_soru">Pradėti iš pradžių?</string>
+    <string name="tesbihat_sifirlanir">Skaičiavimas bus nustatytas iš naujo.</string>
+    <string name="tesbihat_geri_al">Atšaukti</string>
+    <string name="tesbihat_geri_al_aciklama">Atšaukti paskutinį skaičiavimą</string>
+    <string name="tesbihat_yeniden">Pradėti iš naujo</string>
+    <string name="tesbihat_yeniden_aciklama">Pradėti tasbihą iš naujo</string>
+    <string name="tesbihat_suruyor">Tasbihas vyksta: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Atlikau maldą. Išjungia žadinimą</string>
+    <string name="uyandirma_kapat_aciklama">Išjungti žadinimą</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Atidaryti „Namaz Akışı“</string>
+    <string name="tile_vakitler_icin">Palieskite, kad pamatytumėte maldų laikus</string>
+    <string name="tile_telefonda_acin">Atidarykite programą telefone</string>
+    <string name="tile_sonra">po %1$s</string>
+    <string name="tile_siradaki_aciklama">Kita malda – %1$s, prasideda %2$s. Atidaryti programą</string>
+    <string name="tile_giris">prasideda %1$s</string>
+    <string name="tile_cikis">baigiasi %1$s</string>
+    <string name="bugun_bos_satir1">Atidarykite programą</string>
+    <string name="bugun_bos_satir2">telefone</string>
+    <string name="bugun_acma_aciklamasi">Šiandien atlikta maldų: %1$d/%2$d. Atidaryti programą</string>
+    <string name="bugun_sayi">Šiandien %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Nepageidautinas laikas · palieskite dar kartą, kad patvirtintumėte</string>
+    <string name="bugun_onay_tekrar">Palieskite dar kartą, kad patvirtintumėte</string>
+    <string name="bugun_tamam">Šiandienos maldos atliktos</string>
+    <string name="bugun_kilinmadi">%1$s neatlikta</string>
+    <string name="bugun_siradaki">Kita: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Palieskite dar kartą</string>
+    <string name="bugun_kilindi">%1$s atlikta</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s atlikta, sinchronizuojama</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Laukiama maldų laikų; telefone atidarykite „Namaz Akışı“</string>
+    <string name="komplikasyon_bekleniyor">Laukiama laikų</string>
+    <string name="komplikasyon_vakit">Malda</string>
+    <string name="komplikasyon_cikis">Pabaiga</string>
+    <string name="komplikasyon_sirada">Kita</string>
+    <string name="gun_durumu_aciklama">Šiandien atlikta maldų: %2$d iš %1$d</string>
+    <string name="gun_durumu_kilinmamis">%1$s; neatliktos: %2$s</string>
+    <string name="komplikasyon_namaz">Maldos</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">Dabar nepageidautinas laikas, baigiasi %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Kitas nepageidautinas laikas %1$s</string>
+    <string name="kible_komplikasyon">Kibla %1$d° nuo šiaurės. Atidaryti kompasą</string>
+    <string name="kible_komplikasyon_konumlu">Kibla %1$d° nuo šiaurės, %2$s. Atidaryti kompasą</string>
+    <string name="kible_komplikasyon_konum_yok">Kad rastumėte kiblą, telefone įjunkite vietovę</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Skubus priminimas · Su vibracija</string>
+    <string name="muhafiz_kanal_acil">Skubus priminimas</string>
+    <string name="muhafiz_kanal_titresimli">Maldos priminimas · Su vibracija</string>
+    <string name="muhafiz_kanal">Maldos priminimas</string>
+    <string name="muhafiz_kanal_aciklama">Maldų priminimai, rodomi laikrodyje net tada, kai telefono nėra šalia</string>
+    <string name="son_dakikalar_cikis">Baigiasi: %1$s</string>
+    <string name="son_dakikalar_bitis">Baigiasi: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Kiek liko, kol baigsis %1$s maldos laikas</string>
+    <string name="son_dakikalar_kalan_erisim">Kiek liko %1$s maldai</string>
+    <string name="cami_namaz_modu_bitis">Maldos režimas · baigiasi %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Atidaryta telefone</string>
+    <string name="telefona_ulasilamadi">Nepavyksta pasiekti telefono</string>
+</resources>

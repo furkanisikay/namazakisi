@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Tayca). "ละหมาดแล้ว" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">นาฬิกาปลุกละหมาด</string>
+  <string name="alarm_kildim">ละหมาดแล้ว</string>
+  <string name="alarm_kapat">ปิด</string>
+  <string name="alarm_kanal_aciklamasi">นาฬิกาปลุกจริงที่ดังในขั้นการเตือนที่คุณเลือก</string>
+</resources>

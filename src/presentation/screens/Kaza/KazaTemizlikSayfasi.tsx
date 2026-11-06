@@ -18,20 +18,17 @@ import {
   temizlikAdaylari,
   type TemizlikKaynagi,
 } from '../../../core/kaza/kazaDefteriHesabi';
-import { KAZA_VAKITLERI, KAZA_VAKTI_ADI, type KazaVakti } from '../../../core/kaza/kazaHareketi';
+import { KAZA_VAKITLERI, kazaVaktiGoster, type KazaVakti } from '../../../core/kaza/kazaHareketi';
 import { gunEkle } from '../../../core/utils/TarihYardimcisi';
 import { TEMIZLIK_KAYNAK_ETIKETI, TEMIZLIK_KAYNAK_KUCUK, gunMetni } from '../../components/kaza/kazaMetinleri';
 import { BolumBasligi, KazaBant, KazaDugme, KazaKart, SecimCipi } from '../../components/kaza/KazaOrtak';
 import { BildirimModali } from '../../components/common/BildirimModali';
 import { kisaBildirimGoster } from '../../components/common/KisaBildirim';
+import { bicim, sayili, sayiYaz } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 type Aralik = 'tumu' | 7 | 30 | 90;
-const ARALIKLAR: ReadonlyArray<{ id: Aralik; etiket: string }> = [
-  { id: 'tumu', etiket: 'Tüm zamanlar' },
-  { id: 7, etiket: 'Son 7 gün' },
-  { id: 30, etiket: 'Son 30 gün' },
-  { id: 90, etiket: 'Son 90 gün' },
-];
+const ARALIKLAR: readonly Aralik[] = ['tumu', 7, 30, 90];
 const ONIZLEME_SATIRI = 5;
 
 export const KazaTemizlikSayfasi: React.FC = () => {
@@ -45,6 +42,13 @@ export const KazaTemizlikSayfasi: React.FC = () => {
   const [onay, setOnay] = useState(false);
   const [sonTemizlik, setSonTemizlik] = useState<{ id: string; adet: number } | null>(null);
   const [mesgul, setMesgul] = useState(false);
+  const metinler = useMetin();
+  const sozluk = metinler.kaza;
+  const m = sozluk.temizlik;
+  const araliklar = useMemo(
+    () => ARALIKLAR.map((id) => ({ id, etiket: id === 'tumu' ? m.tumZamanlar : sayili(sozluk.sonGun, id) })),
+    [m, sozluk]
+  );
 
   useEffect(() => {
     if (!kazaDurumu) dispatch(kazaVerileriniYukle());
@@ -86,99 +90,99 @@ export const KazaTemizlikSayfasi: React.FC = () => {
       const sonuc = await dispatch(temizlikUygula({ hedefIdler: adaylar.map((a) => a.id) })).unwrap();
       setSonTemizlik({ id: sonuc.temizlikId, adet: adaylar.length });
     } catch {
-      kisaBildirimGoster('Temizlik uygulanamadı. Lütfen tekrar deneyin.');
+      kisaBildirimGoster(m.uygulanamadi);
     } finally {
       setMesgul(false);
     }
-  }, [adaylar, dispatch]);
+  }, [adaylar, dispatch, m]);
 
   const geriAl = useCallback(async () => {
     if (!sonTemizlik) return;
     setMesgul(true);
     try {
       await dispatch(temizlikGeriAl({ temizlikId: sonTemizlik.id })).unwrap();
-      kisaBildirimGoster('Temizlik geri alındı');
+      kisaBildirimGoster(sozluk.temizlikGeriAlindi);
       setSonTemizlik(null);
     } catch {
-      kisaBildirimGoster('Geri alınamadı. Hareket geçmişinden tekrar deneyebilirsiniz.');
+      kisaBildirimGoster(m.geriAlinamadi);
     } finally {
       setMesgul(false);
     }
-  }, [dispatch, sonTemizlik]);
+  }, [dispatch, sonTemizlik, m, sozluk]);
 
   if (!kazaDurumu) {
     return (
       <SafeAreaView style={[stiller.kap, { backgroundColor: renkler.arkaplan }]} edges={['bottom', 'left', 'right']}>
-        <Text style={[stiller.alt, stiller.orta, { color: renkler.metinIkincil }]}>Yükleniyor...</Text>
+        <Text style={[stiller.alt, stiller.orta, { color: renkler.metinIkincil }]}>{sozluk.yukleniyor}</Text>
       </SafeAreaView>
     );
   }
 
-  const fmt = (n: number) => n.toLocaleString('tr-TR');
+  const fmt = sayiYaz;
 
   return (
     <SafeAreaView style={[stiller.kap, { backgroundColor: renkler.arkaplan }]} edges={['bottom', 'left', 'right']}>
       <ScrollView contentContainerStyle={stiller.icerik}>
         <Text style={[stiller.ozet, { color: renkler.metinIkincil }]}>
-          Kayıtlar silinmez, gizlenir. Her temizlik hareket geçmişinde görünür ve geri alınabilir.
+          {m.ozet}
         </Text>
 
         {sonTemizlik && (
           <View>
-            <KazaBant ikon="check-circle" renk={renkler.basarili} metin={`${sonTemizlik.adet} kayıt gizlendi.`} />
-            <KazaDugme etiket="Geri alın" ikon="undo" tur="ikincil" onPress={geriAl} devreDisi={mesgul} style={stiller.altBosluk} />
+            <KazaBant ikon="check-circle" renk={renkler.basarili} metin={sayili(m.gizlendi, sonTemizlik.adet)} />
+            <KazaDugme etiket={m.geriAlin} ikon="undo" tur="ikincil" onPress={geriAl} devreDisi={mesgul} style={stiller.altBosluk} />
           </View>
         )}
 
-        <BolumBasligi>Kaynak</BolumBasligi>
+        <BolumBasligi>{m.kaynak}</BolumBasligi>
         <View style={stiller.ciplar}>
           {TEMIZLIK_KAYNAKLARI.map((k) => (
             <SecimCipi key={k} coklu etiket={TEMIZLIK_KAYNAK_ETIKETI[k]} secili={kaynaklar.includes(k)} onPress={() => kaynakDegistir(k)} />
           ))}
         </View>
 
-        <BolumBasligi>Tarih aralığı</BolumBasligi>
+        <BolumBasligi>{m.tarihAraligi}</BolumBasligi>
         <View style={stiller.ciplar}>
-          {ARALIKLAR.map((a) => (
+          {araliklar.map((a) => (
             <SecimCipi key={String(a.id)} etiket={a.etiket} secili={aralik === a.id} onPress={() => setAralik(a.id)} />
           ))}
         </View>
 
-        <BolumBasligi>Vakit</BolumBasligi>
+        <BolumBasligi>{m.vakit}</BolumBasligi>
         <View style={stiller.ciplar}>
-          <SecimCipi etiket="Tümü" secili={vakit === null} onPress={() => setVakit(null)} />
+          <SecimCipi etiket={sozluk.kaynak.tumu} secili={vakit === null} onPress={() => setVakit(null)} />
           {KAZA_VAKITLERI.map((v) => (
-            <SecimCipi key={v} etiket={KAZA_VAKTI_ADI[v]} secili={vakit === v} onPress={() => setVakit(v)} />
+            <SecimCipi key={v} etiket={kazaVaktiGoster(v)} secili={vakit === v} onPress={() => setVakit(v)} />
           ))}
         </View>
 
         <KazaKart style={stiller.ustBosluk}>
           <Text style={[stiller.baslik, { color: renkler.metin }]} accessibilityLiveRegion="polite">
-            {adaylar.length > 0 ? `${fmt(adaylar.length)} kayıt gizlenecek` : 'Süzgece uyan kayıt yok'}
+            {adaylar.length > 0 ? sayili(m.gizlenecek, adaylar.length, { n: fmt(adaylar.length) }) : m.uyanYok}
           </Text>
           {adaylar.length > 0 && (
             <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
-              Kalan kaza {fmt(kazaDurumu.toplamKalan)} → {yeniKalan === null ? '…' : fmt(yeniKalan)}
+              {bicim(sozluk.kalanKazaOk, { eski: fmt(kazaDurumu.toplamKalan), yeni: yeniKalan === null ? '…' : fmt(yeniKalan) })}
             </Text>
           )}
           {adaylar.slice(0, ONIZLEME_SATIRI).map((a) => (
             <View key={a.id} style={[stiller.adaySatiri, { borderColor: renkler.sinir }]}>
               <Text style={[stiller.adayMetin, { color: renkler.metin }]}>
-                {KAZA_VAKTI_ADI[a.vakit]} · {TEMIZLIK_KAYNAK_KUCUK[a.kaynak]}
+                {kazaVaktiGoster(a.vakit)} · {TEMIZLIK_KAYNAK_KUCUK[a.kaynak]}
               </Text>
               <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
-                {a.kaynak === 'otomatik' || a.kaynak === 'bildirim' ? `${gunMetni(a.gun)} namazı` : gunMetni(a.gun)} ·{' '}
+                {a.kaynak === 'otomatik' || a.kaynak === 'bildirim' ? bicim(sozluk.satir.namazi, { gun: gunMetni(a.gun) }) : gunMetni(a.gun)} ·{' '}
                 {a.etki > 0 ? `+${a.etki}` : a.etki < 0 ? `−${Math.abs(a.etki)}` : '0'}
               </Text>
             </View>
           ))}
           {adaylar.length > ONIZLEME_SATIRI && (
-            <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>ve {fmt(adaylar.length - ONIZLEME_SATIRI)} kayıt daha</Text>
+            <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>{sayili(m.veDaha, adaylar.length - ONIZLEME_SATIRI, { n: fmt(adaylar.length - ONIZLEME_SATIRI) })}</Text>
           )}
         </KazaKart>
 
         <KazaDugme
-          etiket={adaylar.length > 0 ? `${fmt(adaylar.length)} kaydı gizleyin` : 'Gizlenecek kayıt yok'}
+          etiket={adaylar.length > 0 ? sayili(m.gizleyin, adaylar.length, { n: fmt(adaylar.length) }) : m.gizlenecekYok}
           ikon="eye-slash"
           onPress={() => setOnay(true)}
           devreDisi={adaylar.length === 0 || mesgul}
@@ -188,12 +192,12 @@ export const KazaTemizlikSayfasi: React.FC = () => {
       <BildirimModali
         gorunur={onay}
         tip="bilgi"
-        baslik="Kayıtlar gizlensin mi?"
-        mesaj={`${fmt(adaylar.length)} kayıt defterden gizlenecek. Hiçbiri silinmez; hareket geçmişinden geri alabilirsiniz.`}
-        birincilEtiket="Gizleyin"
+        baslik={m.onayBaslik}
+        mesaj={sayili(m.onayMesaj, adaylar.length, { n: fmt(adaylar.length) })}
+        birincilEtiket={m.onayDugme}
         birincilIkon="eye-slash"
         onBirincil={uygula}
-        kapatEtiketi="Vazgeçin"
+        kapatEtiketi={metinler.ortak.vazgecin}
         onKapat={() => setOnay(false)}
       />
     </SafeAreaView>

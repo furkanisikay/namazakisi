@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 日本語. Terimler: src/core/dil/sozluk/ja. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ja</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">次の礼拝</string>
+    <string name="tile_aciklama">次の礼拝とその時刻</string>
+    <string name="komplikasyon_adi">残り時間</string>
+    <string name="cikis_saati_komplikasyon_adi">礼拝の終了時刻</string>
+    <string name="siradaki_namaz_komplikasyon_adi">次の礼拝</string>
+    <string name="bugun_tile_adi">今日</string>
+    <string name="bugun_tile_aciklama">今日の5回の礼拝。礼拝したものを2回のタップで記録</string>
+    <string name="ilerleme_komplikasyon_adi">今日の進捗</string>
+    <string name="dagilim_komplikasyon_adi">今日の概要</string>
+    <string name="kerahat_komplikasyon_adi">礼拝が禁じられた時間</string>
+    <string name="son_dakikalar_kanal_adi">最後の数分</string>
+    <string name="son_dakikalar_kanal_aciklama">まだ礼拝していない礼拝の最後の数分に、文字盤に表示するカウントダウン</string>
+    <string name="tesbihat_adi">タスビーフ</string>
+    <string name="tesbihat_kanal_adi">タスビーフ</string>
+    <string name="tesbihat_kanal_aciklama">途中のタスビーフに戻るための、文字盤の控えめなアイコン</string>
+    <string name="kible_adi">キブラ</string>
+    <string name="kible_komplikasyon_adi">キブラ</string>
+    <string name="camideyim_kanal_adi">モスクにいます</string>
+    <string name="camideyim_kanal_aciklama">モスクにいるとスマートフォンが知らせたときの、文字盤の控えめなアイコン</string>
+    <string name="uyandirma_kanal_adi">静かな目覚まし</string>
+    <string name="uyandirma_kanal_aciklama">ファジュルとタハッジュドのために振動だけで起こします</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">礼拝しました</string>
+    <string name="kilindi_isareti">✓ 礼拝済み</string>
+    <string name="kapat">閉じる</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">礼拝時間を見るには、スマートフォンでNamaz Akışıを開いてください。</string>
+    <string name="yuk_eskidi">礼拝時間のデータが古くなっています。更新するには、スマートフォンでNamaz Akışıを開いてください。</string>
+    <string name="guncelleme_gerekli">ウォッチのNamaz Akışıを更新してください。</string>
+    <string name="bildirim_izni">スマートフォンが手元にないときもリマインダーを受け取るには、ウォッチの設定でNamaz Akışıの通知を許可してください。</string>
+    <string name="cami_soru">モスクにいますか？</string>
+    <string name="cami_evet">はい</string>
+    <string name="cami_evet_aciklama">はい、モスクにいます。礼拝モードをオンにします</string>
+    <string name="cami_hayir">いいえ</string>
+    <string name="cami_hayir_aciklama">いいえ、モスクにはいません</string>
+    <string name="camidesiniz">モスクにいます</string>
+    <string name="cami_degil">ここはモスクではありません</string>
+    <string name="cami_degil_aciklama">ここはモスクではありません。この場所はモスクと見なされなくなります</string>
+    <string name="tesbihat_ac">タスビーフのカウンターを開く</string>
+    <string name="kible_ac">キブラのコンパスを開く</string>
+    <string name="ses_dene">音をテスト</string>
+    <string name="ses_dene_aciklama">ウォッチの読み上げをテスト</string>
+    <string name="telefonda_acin">スマートフォンで開く</string>
+    <string name="telefonda_ekran_ac">スマートフォンで%1$sを開く</string>
+    <string name="ekran_kaza">やり直し記録</string>
+    <string name="ekran_camideyim">モスクにいます</string>
+    <string name="ekran_ayarlar">設定</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">礼拝済み、同期中</string>
+    <string name="durum_kilindi">礼拝済み</string>
+    <string name="durum_girmedi">まだ時間前</string>
+    <string name="durum_simdiki">現在の礼拝時間、タップで記録</string>
+    <string name="durum_simdiki_kalan">現在の礼拝時間、%1$s、タップで記録</string>
+    <string name="durum_kilinmadi">未礼拝、タップで記録</string>
+    <string name="isaretleyin">礼拝済みにする</string>
+    <string name="esitleniyor">同期中</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">「礼拝しました」を確認</string>
+    <string name="vazgecin">キャンセル</string>
+    <string name="vazgec">キャンセル</string>
+    <string name="kerahat_vaktindesiniz">今は礼拝が禁じられた時間です。</string>
+    <string name="kilindi_dua">礼拝済み。%1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">礼拝モードオン、%1$sに終了。タップでオフ</string>
+    <string name="namaz_modu_ac_aciklama">スマートフォンの礼拝モードをオンにする</string>
+    <string name="namaz_modu_kapatin">礼拝モードをオフ</string>
+    <string name="namaz_modu_acin">礼拝モードをオン</string>
+    <string name="namaz_modu_acik_bitis">オン、%1$sに終了</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">方向を調べています…</string>
+    <string name="kible_yuk_yok">キブラを調べるには、スマートフォンでNamaz Akışıを開いてください。</string>
+    <string name="kible_konum_yok">キブラを調べるには、スマートフォンの位置情報をオンにしてください。Namaz Akışıが最新でない場合は更新してください。</string>
+    <string name="kible_sensor_yok">このウォッチにはコンパスのセンサーがありません。キブラの方向はスマートフォンで確認できます。</string>
+    <string name="kible_kuzeyden">キブラ %1$d°（北から）</string>
+    <string name="kible_derece">キブラ %1$d°</string>
+    <string name="kible_telefonda_ac">スマートフォンでキブラを開く</string>
+    <string name="kible_erisim">%1$s。キブラは北から%2$d°、%3$s</string>
+    <string name="kible_hizali">キブラの方向を向いています</string>
+    <string name="kible_kalibrasyon">調整するには、手首を空中で8の字に動かしてください</string>
+    <string name="kible_egim">ウォッチを地面と平行に持ってください</string>
+    <string name="kible_titresim_acik">振動での案内はオンです。タップでオフ</string>
+    <string name="kible_titresim_kapali">振動での案内はオフです。タップでオン</string>
+    <string name="kible_harf_kuzey">北</string>
+    <string name="kible_harf_dogu">東</string>
+    <string name="kible_harf_guney">南</string>
+    <string name="kible_harf_bati">西</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">タスビーフを終えました。%1$s。%2$d/%3$d。%4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s、%2$d/%3$d。合計%4$d/%5$d</string>
+    <string name="tesbihat_sayin">数える</string>
+    <string name="tesbihat_bastan_baslayin">最初から</string>
+    <string name="tesbihat_bastan_soru">最初からやり直しますか？</string>
+    <string name="tesbihat_sifirlanir">カウントがリセットされます。</string>
+    <string name="tesbihat_geri_al">元に戻す</string>
+    <string name="tesbihat_geri_al_aciklama">最後のカウントを取り消す</string>
+    <string name="tesbihat_yeniden">もう一度</string>
+    <string name="tesbihat_yeniden_aciklama">タスビーフを最初から始める</string>
+    <string name="tesbihat_suruyor">タスビーフの途中：%1$s、%2$d/%3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">礼拝しました。目覚ましを止めます</string>
+    <string name="uyandirma_kapat_aciklama">目覚ましを止める</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışıを開く</string>
+    <string name="tile_vakitler_icin">タップで礼拝時間を表示</string>
+    <string name="tile_telefonda_acin">スマートフォンでアプリを開いてください</string>
+    <string name="tile_sonra">%1$s後</string>
+    <string name="tile_siradaki_aciklama">次の礼拝は%1$s、%2$sに始まります。アプリを開く</string>
+    <string name="tile_giris">%1$sに開始</string>
+    <string name="tile_cikis">%1$sに終了</string>
+    <string name="bugun_bos_satir1">スマートフォンで</string>
+    <string name="bugun_bos_satir2">アプリを開いてください</string>
+    <string name="bugun_acma_aciklamasi">今日は%2$d回中%1$d回礼拝済み。アプリを開く</string>
+    <string name="bugun_sayi">今日 %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">禁じられた時間・もう一度タップで確認</string>
+    <string name="bugun_onay_tekrar">もう一度タップで確認</string>
+    <string name="bugun_tamam">今日の礼拝はすべて終わりました</string>
+    <string name="bugun_kilinmadi">%1$sは未礼拝</string>
+    <string name="bugun_siradaki">次：%1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">もう一度タップ</string>
+    <string name="bugun_kilindi">%1$sは礼拝済み</string>
+    <string name="bugun_kilindi_esitleniyor">%1$sは礼拝済み、同期中</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">礼拝時間を待っています。スマートフォンでNamaz Akışıを開いてください</string>
+    <string name="komplikasyon_bekleniyor">時刻を待機中</string>
+    <string name="komplikasyon_vakit">礼拝</string>
+    <string name="komplikasyon_cikis">終了</string>
+    <string name="komplikasyon_sirada">次</string>
+    <string name="gun_durumu_aciklama">今日は%1$d回中%2$d回礼拝済み</string>
+    <string name="gun_durumu_kilinmamis">%1$s。未礼拝：%2$s</string>
+    <string name="komplikasyon_namaz">礼拝</string>
+    <string name="komplikasyon_kerahat">禁じられた時間</string>
+    <string name="kerahat_icinde_aciklama">礼拝が禁じられた時間です。%1$sに終了</string>
+    <string name="kerahat_siradaki_aciklama">次の礼拝が禁じられた時間：%1$s</string>
+    <string name="kible_komplikasyon">キブラは北から%1$d°です。コンパスを開く</string>
+    <string name="kible_komplikasyon_konumlu">キブラは北から%1$d°、%2$s。コンパスを開く</string>
+    <string name="kible_komplikasyon_konum_yok">キブラを調べるには、スマートフォンの位置情報をオンにしてください</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">緊急のリマインダー・バイブレーション</string>
+    <string name="muhafiz_kanal_acil">緊急のリマインダー</string>
+    <string name="muhafiz_kanal_titresimli">礼拝のリマインダー・バイブレーション</string>
+    <string name="muhafiz_kanal">礼拝のリマインダー</string>
+    <string name="muhafiz_kanal_aciklama">スマートフォンが手元にないときもウォッチに表示される礼拝のリマインダー</string>
+    <string name="son_dakikalar_cikis">終了：%1$s</string>
+    <string name="son_dakikalar_bitis">終了：%1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$sが終わるまでの残り時間</string>
+    <string name="son_dakikalar_kalan_erisim">%1$sの残り時間</string>
+    <string name="cami_namaz_modu_bitis">礼拝モード・%1$sに終了</string>
+    <string name="cami_erisim">%1$s：%2$s。%3$s</string>
+    <string name="telefonda_acildi">スマートフォンで開きました</string>
+    <string name="telefona_ulasilamadi">スマートフォンに接続できません</string>
+</resources>

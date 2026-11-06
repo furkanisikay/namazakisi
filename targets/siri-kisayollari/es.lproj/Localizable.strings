@@ -1,0 +1,58 @@
+// es — İspanyolca (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Ispanyolca terimler: src/core/dil/sozluk/es (Kildim "Ya recé", alquibla, hitap "usted").
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Siguiente rezo";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Le dice el siguiente rezo y la hora a la que comienza.";
+"Şu anki vakti kıldım" = "Ya recé el rezo actual";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Marca el rezo actual como rezado. El registro se añade cuando abre la aplicación.";
+"Onay iste" = "Pedir confirmación";
+"Kıbleyi aç" = "Abrir la alquibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Abre la aplicación con la brújula de la alquibla.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Ya recé";
+"Kıble" = "Alquibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Nombre del siguiente rezo";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Da el nombre del siguiente rezo. Puede usarlo como condición en Atajos.";
+"Sıradaki vakte kalan dakika" = "Minutos hasta el siguiente rezo";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Da los minutos que faltan para que comience el siguiente rezo. Si no hay información, devuelve -1.";
+"Şu anki vakit kılındı mı?" = "¿Está marcado como rezado el rezo actual?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Da sí si el rezo actual está marcado como rezado. Da no si no hay ningún rezo para marcar.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Silencio del rezo";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Devuelve verdadero durante los primeros minutos después de comenzar una hora de rezo. Se usa en Atajos para activar una concentración.";
+"Süre (dakika)" = "Duración (minutos)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Los ${dakika} minutos después de comenzar la hora";
+"Namaz sessizliğinin bitişi" = "Fin del silencio del rezo";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Da la hora a la que termina el silencio. Si ahora no hay silencio, da la hora actual.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Fin de los ${dakika} minutos después de comenzar la hora";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Recordatorios de rezo";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Con esta concentración activada, los recordatorios de rezo llegan sin sonido y sin encender la pantalla.";
+"Hatırlatmaları sessiz ver" = "Silenciar los recordatorios";
+"Hatırlatmalar sessiz gelir" = "Los recordatorios llegan en silencio";
+"Hatırlatmalar her zamanki gibi" = "Recordatorios como siempre";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Marca como rezado el rezo que muestra el widget.";
+"Tarih" = "Fecha";
+"Vakit" = "Rezo";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Detener la alarma de rezo";
+"Namazı kıldım" = "Ya recé";
+"Alarm" = "Alarma";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Imagen de la aleya del día";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Da la aleya de hoy como una imagen del tamaño de su pantalla. Puede usarla en Atajos con el paso Establecer fondo de pantalla.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Abra la aplicación una vez para preparar la aleya del día.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "No se pudo preparar la imagen. Vuelva a intentarlo en un momento.";

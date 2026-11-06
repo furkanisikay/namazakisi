@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">د TV په سکرین کې QR کوډ چوکاټ ته برابر کړئ</string>
+    <string name="tvesleme_qr_vazgec">لغوه</string>
+    <string name="tvesleme_qr_vazgec_erisim">سکن کول لغوه کړئ</string>
+    <string name="tvesleme_qr_yabanci">دا QR کوډ د Namaz Akışı TV نه دی. په TV کې کوډ سکن کړئ.</string>
+    <string name="tvesleme_qr_okundu">کوډ سکن شو</string>
+</resources>

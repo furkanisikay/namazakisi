@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- gu — Gucaratça (beta). Terimler: JS src/core/dil/sozluk/gu (sayac, bildirim.eylem). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">લાઇવ કાઉન્ટડાઉન</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar અને સ્ટેટસ બારમાં કાઉન્ટડાઉન</string>
+    <string name="countdown_kanal_genel_ad">કાઉન્ટડાઉન નોટિફિકેશન</string>
+    <string name="countdown_kanal_genel_aciklama">કાઉન્ટડાઉન નોટિફિકેશન માટેની ચૅનલ</string>
+
+    <string name="countdown_eylem_kildim">પઢી લીધી</string>
+    <string name="countdown_eylem_durdur">બંધ કરો</string>
+
+    <string name="countdown_yedek_vakit">ઉતાવળ કરો, નમાઝનો સમય પૂરો થવાનો છે.</string>
+    <string name="countdown_yedek_iftar">સમય પૂરો થવા આવ્યો છે.</string>
+    <string name="countdown_yedek_sahur">તમે હજુ ખાઈ-પી શકો છો; રોઝો જલદી શરૂ થશે.</string>
+    <string name="countdown_yedek_seri">આજની નમાઝો પૂરી નથી; તમારો સિલસિલો ગુમાવશો નહીં.</string>
+
+    <string name="countdown_onek_vakit">સમય પૂરો થવામાં</string>
+    <string name="countdown_onek_vakit_dar">સમય પૂરો થાય છે</string>
+    <string name="countdown_onek_iftar">ઇફતારી સુધી</string>
+    <string name="countdown_onek_iftar_dar">ઇફતારી સુધી</string>
+    <string name="countdown_onek_sahur">સહરી પૂરી થવામાં</string>
+    <string name="countdown_onek_sahur_dar">સહરી પૂરી થાય છે</string>
+    <string name="countdown_onek_seri">તમારો સિલસિલો બચાવવા</string>
+    <string name="countdown_onek_seri_dar">સિલસિલો પૂરો થાય છે</string>
+</resources>

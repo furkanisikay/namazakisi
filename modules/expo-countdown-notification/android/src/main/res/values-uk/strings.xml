@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Живі відліки</string>
+    <string name="countdown_kanal_canli_aciklama">Відліки в Now Bar і рядку стану</string>
+    <string name="countdown_kanal_genel_ad">Сповіщення з відліком</string>
+    <string name="countdown_kanal_genel_aciklama">Канал для сповіщень з відліком</string>
+
+    <string name="countdown_eylem_kildim">Молитву здійснено</string>
+    <string name="countdown_eylem_durdur">Зупинити</string>
+
+    <string name="countdown_yedek_vakit">Поспішайте, час молитви скоро закінчиться.</string>
+    <string name="countdown_yedek_iftar">Час спливає.</string>
+    <string name="countdown_yedek_sahur">Ще можна їсти й пити, піст скоро почнеться.</string>
+    <string name="countdown_yedek_seri">Сьогоднішні молитви не завершено — не втратьте серію.</string>
+
+    <string name="countdown_onek_vakit">До кінця часу</string>
+    <string name="countdown_onek_vakit_dar">Час спливає</string>
+    <string name="countdown_onek_iftar">До іфтару</string>
+    <string name="countdown_onek_iftar_dar">До іфтару</string>
+    <string name="countdown_onek_sahur">До кінця сухуру</string>
+    <string name="countdown_onek_sahur_dar">Сухур минає</string>
+    <string name="countdown_onek_seri">Щоб зберегти серію</string>
+    <string name="countdown_onek_seri_dar">Серія минає</string>
+</resources>

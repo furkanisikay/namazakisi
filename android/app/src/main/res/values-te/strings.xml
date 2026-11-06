@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Telugu kaynakları. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/te (మీరు + ‑ండి, namaz నమాజ్, Kıldım "ఆచరించాను"). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">ప్రస్తుత నమాజ్, అది ఎప్పుడు ముగుస్తుంది, ఒక్క నొక్కుతో ఆచరించాను</string>
+  <string name="widget_genis_aciklama">ఈ రోజు ఐదు నమాజ్‌లు, కౌంట్‌డౌన్, ఒక్క నొక్కుతో ఆచరించాను</string>
+  <string name="widget_kapak_adi">కవర్ స్క్రీన్ నమాజ్ సమయాలు</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip కవర్ స్క్రీన్ కోసం ఈ రోజు నమాజ్ సమయాలు, కౌంట్‌డౌన్</string>
+  <string name="widget_klasik_adi">Namaz Akışı — క్లాసిక్</string>
+  <string name="widget_klasik_aciklama">క్లాసిక్ ఆకుపచ్చ రూపం: తదుపరి నమాజ్‌కు మిగిలిన సమయం</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — క్లాసిక్ వెడల్పు</string>
+  <string name="widget_klasik_genis_aciklama">క్లాసిక్ ఆకుపచ్చ రూపం: కౌంట్‌డౌన్, ఈ రోజు నమాజ్ సమయాలు</string>
+  <string name="widget_ayet_adi">ఈ రోజు ఆయత్</string>
+  <string name="widget_ayet_aciklama">ప్రతిరోజూ ఫజ్ర్‌లో కొత్తగా వచ్చే ఒక ఆయత్, దాని అనువాదం</string>
+  <string name="widget_ayar_zemin_palet">యాప్ రంగు (లేత ఛాయ)</string>
+  <string name="widget_ayar_ayet_icerik">చతురస్ర పరిమాణంలో, చూపండి</string>
+  <string name="widget_ayar_ayet_icerik_meal">అనువాదం</string>
+  <string name="widget_ayar_ayet_icerik_hat">అరబిక్ పాఠం (కాలిగ్రఫీ)</string>
+  <string name="kutu_kildim_etiket">ఆచరించాను</string>
+  <string name="kisayol_kildim_kisa">ఆచరించాను</string>
+  <string name="kisayol_kildim_uzun">ప్రస్తుత నమాజ్ ఆచరించాను</string>
+  <string name="kisayol_kible_kisa">ఖిబ్లా</string>
+  <string name="kisayol_kible_uzun">ఖిబ్లా దిశను చూపండి</string>
+  <string name="kisayol_kaza_kisa">ఖజా పుస్తకం</string>
+  <string name="kisayol_kaza_uzun">ఖజా పుస్తకాన్ని తెరవండి</string>
+  <string name="kildim_onay_baslik">%1$s ఆచరించినట్లు గుర్తించాలా?</string>
+  <string name="kildim_onay_mesaj">ఈ అభ్యర్థనను ఏ యాప్ పంపిందో స్పష్టంగా లేదు. మీరు నమాజ్ ఆచరించి ఉంటే నిర్ధారించండి.</string>
+  <string name="kildim_onay_evet">ఆచరించాను</string>
+  <string name="kildim_onay_vazgec">రద్దు చేయండి</string>
+  <string name="kildim_guven_baslik">మీ నమాజ్‌లను ఆచరించినట్లు గుర్తించడానికి %1$sను అనుమతించాలా?</string>
+  <string name="kildim_guven_mesaj">ఇప్పుడు గుర్తించబోయే నమాజ్: %1$s. మీ నిర్ణయాన్ని తర్వాత సెట్టింగ్‌లు &gt; ఆచరించాను అని గుర్తించే యాప్‌లులో మార్చవచ్చు.</string>
+  <string name="kildim_guven_tarayici_mesaj">ఇప్పుడు గుర్తించబోయే నమాజ్: %1$s. ఈ అభ్యర్థన బ్రౌజర్ నుండి వచ్చింది; ఏ వెబ్ పేజీ అయినా ఈ లింక్‌ను తెరవగలదు కాబట్టి, శాశ్వత అనుమతి ఇవ్వడం సాధ్యం కాదు.</string>
+  <string name="kildim_guven_her_zaman">ఎల్లప్పుడూ అనుమతించండి</string>
+  <string name="kildim_guven_bu_sefer">ఈసారి మాత్రమే</string>
+  <string name="kildim_guven_engelle">బ్లాక్ చేయండి</string>
+  <string name="kildim_guven_engellendi">%1$s ఇకపై మీ నమాజ్‌లను గుర్తించలేదు. దీన్ని సెట్టింగ్‌లలో మార్చవచ్చు.</string>
+  <string name="widget_ayar_baslik">విడ్జెట్‌ను అనుకూలీకరించండి</string>
+  <string name="widget_ayar_zemin">నేపథ్యం</string>
+  <string name="widget_ayar_zemin_material">వాల్‌పేపర్ రంగులు</string>
+  <string name="widget_ayar_zemin_sistem">సిస్టమ్ థీమ్</string>
+  <string name="widget_ayar_zemin_acik">లైట్</string>
+  <string name="widget_ayar_zemin_koyu">డార్క్</string>
+  <string name="widget_ayar_zemin_seffaf">పారదర్శకం</string>
+  <string name="widget_ayar_opaklik">నేపథ్య అస్పష్టత</string>
+  <string name="widget_ayar_gosterim">పెద్ద అక్షరాలతో చూపండి</string>
+  <string name="widget_ayar_gosterim_kalan">మిగిలిన సమయం</string>
+  <string name="widget_ayar_gosterim_bitis">ముగింపు సమయం</string>
+  <string name="widget_ayar_gosterim_not">ముగింపు సమయం ప్రతి పరిమాణంలో చూపబడుతుంది.</string>
+  <string name="widget_ayar_sonraki">తదుపరి నమాజ్‌ను చూపండి</string>
+  <string name="widget_ayar_vazgec">రద్దు చేయండి</string>
+  <string name="widget_ayar_kaydet">సేవ్ చేయండి</string>
+  <string name="kildim_onay_kanal_adi">ఆచరించాను నిర్ధారణ</string>
+  <string name="kildim_onay_kanal_aciklama">నోటిఫికేషన్‌లో \"ఆచరించాను\" నొక్కినప్పుడు కొన్ని సెకన్లు చూపబడే నిశ్శబ్ద నిర్ధారణ</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">ముగింపు %1$s</string>
+  <string name="widget_giris">ప్రారంభం %1$s</string>
+  <string name="widget_namaz_vakti">నమాజ్ సమయం</string>
+  <string name="widget_uygulamayi_acin">యాప్‌ను తెరవండి</string>
+  <string name="widget_siradaki">తదుపరి: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">ప్రస్తుతం గుర్తించడానికి నమాజ్ లేదు</string>
+  <string name="widget_dugme_kildim">ఆచరించాను</string>
+  <string name="widget_dugme_isaretleniyor">గుర్తిస్తోంది</string>
+  <string name="widget_dugme_kilindi">ఆచరించబడింది</string>
+  <string name="widget_dugme_vakit_girmedi">ఇంకా సమయం కాలేదు</string>
+  <string name="widget_klasik_uygulamayi_acin">యాప్‌ను తెరవండి</string>
+  <string name="widget_klasik_erisim_veri_yok">నమాజ్ సమయాలను చూడటానికి యాప్‌ను తెరవండి</string>
+  <string name="widget_klasik_erisim_siradaki">తదుపరి నమాజ్: %1$s, %2$sకి ప్రారంభమవుతుంది</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">జుహ్ర్ వరకు</string>
+  <string name="widget_onizleme_klasik_genis">మగ్రిబ్ వరకు</string>
+  <string name="widget_onizleme_imsak">ఫజ్ర్</string>
+  <string name="widget_onizleme_gunes">సూర్యోదయం</string>
+  <string name="widget_onizleme_ogle">జుహ్ర్</string>
+  <string name="widget_onizleme_ikindi">అస్ర్</string>
+  <string name="widget_onizleme_aksam">మగ్రిబ్</string>
+  <string name="widget_onizleme_yatsi">ఇషా</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s ఆచరించినట్లు గుర్తించబడింది. అల్లాహ్ స్వీకరించుగాక.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s ఇప్పటికే ఆచరించినట్లు గుర్తించబడింది.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">ప్రస్తుతం గుర్తించడానికి నమాజ్ లేదు. తదుపరి %1$s, %2$sకి ప్రారంభమవుతుంది.</string>
+  <string name="kildim_sonuc_vakit_yok">ప్రస్తుతం గుర్తించడానికి నమాజ్ లేదు.</string>
+  <string name="kildim_sonuc_veri_yok">నమాజ్ సమయాల డేటా లేదు. యాప్‌ను ఒకసారి తెరవండి.</string>
+  <string name="kildim_sonuc_vakit_degisti">నమాజ్ సమయం మారింది, కాబట్టి ఏదీ గుర్తించబడలేదు. మళ్లీ ప్రయత్నించండి.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">నావిగేషన్ యాప్‌ను తెరవడం సాధ్యం కాలేదు.</string>
+  <string name="arac_adsiz_cami">మస్జిద్</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">నమాజ్ సమయాల డేటాను చదవడం సాధ్యం కాలేదు.</string>
+  <string name="asistan_isaretleme_yapilamadi">నమాజ్‌ను గుర్తించడం సాధ్యం కాలేదు.</string>
+  <string name="asistan_aciklama">మీరు నమాజ్ సమయాలను అడగవచ్చు, ప్రస్తుత నమాజ్‌ను ఆచరించినట్లు గుర్తించవచ్చు, ఖిబ్లా స్క్రీన్‌ను తెరవవచ్చు.</string>
+</resources>

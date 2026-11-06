@@ -3,8 +3,8 @@
  * Sihirbaz hesabı, motivasyon önerileri, tempo analizi ve mekruh vakit kontrolü
  */
 
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import {
   HesaplamaSihirbazGirdisi,
   MotivasyonOnerisi,
@@ -14,6 +14,7 @@ import {
 import { KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import { gurubKerahatiBaslangiciMs } from '../../core/vakit/kerahat';
+import { bicim, metin, sayili } from '../../core/dil/aktifDil';
 import { KAZA_ADINDAN_VAKTE, type KazaVakti } from '../../core/kaza/kazaHareketi';
 
 // ==================== SİHİRBAZ HESABI ====================
@@ -97,14 +98,15 @@ export const motivasyonOnerileriHesapla = (toplamKalan: number): MotivasyonOneri
     const tamamlanmaGunSayisi = Math.ceil(toplamKalan / toplamGunlukKaza);
     const tamamlanmaAySayisi = parseFloat((tamamlanmaGunSayisi / 30).toFixed(1));
 
+    const m = metin().kaza.motivasyon;
     let aciklama: string;
     if (tamamlanmaGunSayisi <= 30) {
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ${tamamlanmaGunSayisi} günde biter`;
+      aciklama = sayili(m.gun, tamamlanmaGunSayisi, { adet: kazaAdediPerVakit });
     } else if (tamamlanmaAySayisi <= 12) {
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ~${Math.ceil(tamamlanmaAySayisi)} ayda biter`;
+      aciklama = sayili(m.ay, Math.ceil(tamamlanmaAySayisi), { adet: kazaAdediPerVakit });
     } else {
       const yil = parseFloat((tamamlanmaAySayisi / 12).toFixed(1));
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ~${yil} yılda biter`;
+      aciklama = sayili(m.yil, yil, { adet: kazaAdediPerVakit });
     }
 
     return {
@@ -190,11 +192,8 @@ export const kazaIstatistikHesapla = (
  */
 export const tahminiTarihiFormatla = (tarihStr: string): string => {
   const tarih = new Date(tarihStr);
-  const aylar = [
-    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-  ];
-  return `${tarih.getDate()} ${aylar[tarih.getMonth()]} ${tarih.getFullYear()}`;
+  const t = metin().tarih;
+  return bicim(t.uzun, { gun: tarih.getDate(), ay: t.aylar[tarih.getMonth()], yil: tarih.getFullYear() });
 };
 
 // ==================== MEKRUH VAKİT KONTROLÜ ====================
@@ -224,9 +223,8 @@ export const mekruhVakitKontrolEt = (
 ): MekruhVakitBilgisi => {
   try {
     const coordinates = new Coordinates(latitude, longitude);
-    const params = turkiyeHesapParametreleri();
     const now = new Date();
-    const prayerTimes = new PrayerTimes(coordinates, now, params);
+    const prayerTimes = aktifPrayerTimes(coordinates, now);
 
     const sunrise = prayerTimes.sunrise;
     const dhuhr = prayerTimes.dhuhr;
@@ -235,15 +233,15 @@ export const mekruhVakitKontrolEt = (
     const toleransMs = KAZA_SABITLERI.MEKRUH_TOLERANS_DK * 60 * 1000;
     const istiwaToleransMs = KAZA_SABITLERI.ISTIVA_TOLERANS_DK * 60 * 1000;
 
-    const namazTuru = namazTipi === 'farz' ? 'namaz' : 'kaza namazı';
+    const k = metin().anaEkran.kerahat;
+    const namazTuru = namazTipi === 'farz' ? k.turNamaz : k.turKaza;
 
     // 1. Şuruk: Güneş doğumundan 20 dakika sonrasına kadar
     const surukBitis = new Date(sunrise.getTime() + toleransMs);
     if (now >= sunrise && now <= surukBitis) {
       return {
         mekruhMu: true,
-        aciklama:
-          `Güneş doğuş vaktidir (şuruk). Bu vakitte ${namazTuru} kılınması mekruhtur. Güneş iyice yükselene kadar bekleyiniz.`,
+        aciklama: bicim(k.suruk, { tur: namazTuru }),
         bitis: surukBitis,
         tur: 'suruk',
       };
@@ -254,8 +252,7 @@ export const mekruhVakitKontrolEt = (
     if (now >= istawaBasi && now <= dhuhr) {
       return {
         mekruhMu: true,
-        aciklama:
-          `Güneş tam tepede (istiwa vakti). Bu vakitte ${namazTuru} kılınması mekruhtur. Öğle ezanını bekleyiniz.`,
+        aciklama: bicim(k.istiva, { tur: namazTuru }),
         bitis: dhuhr,
         tur: 'istiva',
       };
@@ -271,8 +268,7 @@ export const mekruhVakitKontrolEt = (
     if (now >= gurubBasi && now <= sunset) {
       return {
         mekruhMu: true,
-        aciklama:
-          `Güneş batış vaktidir (gurub). Bu vakitte ${namazTuru} kılınması mekruhtur. Akşam ezanını bekleyiniz.`,
+        aciklama: bicim(k.gurub, { tur: namazTuru }),
         bitis: sunset,
         tur: 'gurub',
       };

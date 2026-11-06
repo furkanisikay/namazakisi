@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Сыналгынын экранындагы QR кодду алкактын ичине батырыңыз</string>
+    <string name="tvesleme_qr_vazgec">Жокко чыгаруу</string>
+    <string name="tvesleme_qr_vazgec_erisim">Скандоону жокко чыгаруу</string>
+    <string name="tvesleme_qr_yabanci">Бул QR код Namaz Akışı TV колдонмосуна таандык эмес. Сыналгыдагы кодду скандаңыз.</string>
+    <string name="tvesleme_qr_okundu">Код скандалды</string>
+</resources>

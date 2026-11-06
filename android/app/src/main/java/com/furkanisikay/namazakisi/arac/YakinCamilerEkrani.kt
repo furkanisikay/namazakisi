@@ -30,8 +30,13 @@ import androidx.car.app.model.Template
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.arayuzDili
 import com.furkanisikay.namazakisi.cekirdek.AracKarari
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.saatMetni
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
 import expo.modules.camigeofence.CamiDepo
 import expo.modules.camigeofence.CamiVeriKaynagi
@@ -103,9 +108,13 @@ class YakinCamilerEkrani(carContext: CarContext) : Screen(carContext) {
 
     override fun onGetTemplate(): Template {
         val simdi = System.currentTimeMillis()
+        // Araç ekranı metinleri UYGULAMANIN arayüz dilinde (her çizimde okunur: dil değişimi
+        // bir sonraki dakika tazelemesinde yansır).
+        val dil = carContext.arayuzDili()
         val baslik = try {
             val a = WidgetVeriDeposu.anlik(carContext, simdi)
-            AracKarari.baslik(a.durum, a.kildim, simdi) { saatMetni(it) }
+            // Başlıktaki saat seçilen rakamla (mesafeyi `DistanceSpan` ile araç sistemi çizer).
+            AracKarari.baslik(a.durum, a.kildim, simdi, { saatMetni(it) }, dil).rakamla(carContext.rakamSifiri())
         } catch (e: Exception) {
             Log.w(TAG, "vakit okunamadi", e)
             AracKarari.VARSAYILAN_BASLIK
@@ -125,10 +134,10 @@ class YakinCamilerEkrani(carContext: CarContext) : Screen(carContext) {
         return when (s) {
             is Sonuc.Yukleniyor -> sablon.setLoading(true).build()
             is Sonuc.KonumYok -> sablon
-                .setItemList(ItemList.Builder().setNoItemsMessage(AracKarari.KONUM_YOK_METNI).build())
+                .setItemList(ItemList.Builder().setNoItemsMessage(AracKarari.konumYokMetni(dil)).build())
                 .build()
             is Sonuc.Hazir -> {
-                val liste = ItemList.Builder().setNoItemsMessage(AracKarari.CAMI_YOK_METNI)
+                val liste = ItemList.Builder().setNoItemsMessage(AracKarari.camiYokMetni(dil))
                 s.camiler.forEach { liste.addItem(satir(it)) }
                 sablon
                     .setAnchor(
@@ -174,7 +183,11 @@ class YakinCamilerEkrani(carContext: CarContext) : Screen(carContext) {
             carContext.startCarApp(Intent(CarContext.ACTION_NAVIGATE, Uri.parse(adres)))
         } catch (e: Exception) {
             Log.w(TAG, "navigasyon acilamadi", e)
-            CarToast.makeText(carContext, "Navigasyon uygulaması açılamadı.", CarToast.LENGTH_LONG).show()
+            CarToast.makeText(
+                carContext,
+                carContext.dildeBaglam().getString(R.string.arac_navigasyon_acilamadi),
+                CarToast.LENGTH_LONG,
+            ).show()
         }
     }
 
@@ -222,9 +235,10 @@ class YakinCamilerEkrani(carContext: CarContext) : Screen(carContext) {
 
     private fun ara(ctx: Context, sinir: Int): Sonuc {
         val konum = AracKarari.konumSec(konumAdaylari(ctx)) ?: return Sonuc.KonumYok
+        val adsiz = ctx.dildeBaglam().getString(R.string.arac_adsiz_cami)
         val camiler = CamiVeriKaynagi.al(ctx)
             ?.enYakinlar(konum.lat, konum.lng, sinir)
-            ?.map { CamiSatiri(it.kayit.ad.ifBlank { "Cami" }, it.kayit.lat, it.kayit.lng, it.mesafeM) }
+            ?.map { CamiSatiri(it.kayit.ad.ifBlank { adsiz }, it.kayit.lat, it.kayit.lng, it.mesafeM) }
             ?: emptyList()
         return Sonuc.Hazir(konum, camiler)
     }

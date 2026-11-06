@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Afar (Qafar af). Terimler: src/core/dil/sozluk/aa. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">aa</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Salat waktih loox</string>
+    <string name="ayarlar">Massossiyya</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s fanah %2$s raqte</string>
+    <string name="pano_vaktine">%1$s fanah</string>
+    <string name="pano_vaktine_kalan">%1$s %2$s lakal</string>
+    <string name="pano_kerahat_vakti">Karaaha le wakti</string>
+    <string name="pano_bitis">gexa %1$s</string>
+    <string name="pano_kerahat_erisim">Karaaha le wakti, %1$s, %2$s gexa. %3$s</string>
+    <string name="pano_cumaya">Jumqatta %1$s lakal</string>
+    <string name="pano_cikis_geldi">yawqa wakti</string>
+    <string name="pano_cikis">%1$s yawqa</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Jumqattah yawqa wakti</string>
+    <string name="pano_cuma_cikis_erisim">Jumqattah %1$s yawqa</string>
+    <string name="pano_bugun_cuma">Asaaku Jumqatta</string>
+    <string name="pano_ogle">Dohori %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Asaaku Jumqatta. Jumqatta salat Dohori waktil, %1$s</string>
+    <string name="pano_ayarlar_erisim">Massossiyya: telefoon ossa, arac, xagime telefoon</string>
+    <string name="pano_simdiki_vakit">asaakuh salat wakti</string>
+    <string name="pano_siradaki_vakit">lakal tan salat wakti</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Sinni telefoon ossa", "Kood uktuba", "Magaala inni doorta", "Ossa". -->
+    <string name="kodla_girin">Kood uktuba</string>
+    <string name="ili_kendim_secin">Magaala inni doorta</string>
+    <string name="yeniden_deneyin">Kaadu mokkora</string>
+    <string name="telefon_varsayilan">Telefoon</string>
+    <string name="esleme_ekleniyor">%1$s osimta</string>
+    <string name="esleme_gonderiyor">Sinni telefoon isi arac kee caala rubta…</string>
+    <string name="esleme_tamamlanamadi">Xagissa duudume wee</string>
+    <string name="esleme_saklanamadi">Ama TV xagissa furtaa amaanal dacrisam ma duddu. Sinni arac koodat uktubaanam hinnay sinni magaala dooraanam duddan.</string>
+    <string name="telefonunuzu_ekleyin">Sinni telefoon ossa</string>
+    <string name="esleme_alt">Sinni araci salat wakti; abteen salat kaadu ubbulta.</string>
+    <string name="esleme_adim1">Sinni telefoonal Namaz Akışı faka</string>
+    <string name="esleme_adim2">Massossiyya › Yi aalat › TV ossa</string>
+    <string name="esleme_adim3">Sinni telefoonih kaamera kood fan haysa</string>
+    <string name="esleme_ayni_wifi">Sinni telefoon kee TV inki Wi-Fi networkal tekkem faxxa.</string>
+    <string name="esleme_onay_soru">Ama telefoon ossaa?</string>
+    <string name="esleme_onay_aciklama">Osime telefoon isi arac kee calaamise salat ama TV fan rubam duddu.</string>
+    <string name="ekleyin">Ossa</string>
+    <string name="hayir">Maleey</string>
+    <string name="esleme_eklendi">%1$s osime</string>
+    <string name="konumunuz_geldi">Sinni arac yemeete</string>
+    <string name="konuma_gore_hesaplanacak">Salat wakti ama aracah cisaabimta.</string>
+    <string name="qr_konum_alindi">Arac beyime</string>
+    <string name="qr_kodu">Sinni telefoonat ikriyimta xagissa kood</string>
+    <string name="ag_yok">TV networkal xagime wee</string>
+    <string name="ag_yok_aciklama">Sinni telefoonak 7 loowo le kood uktubak hinnay sinni magaala dooritak gexxaanam duddan.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Sinni telefoonak kood uktuba</string>
+    <string name="kod_yol">Sinni telefoonal: Massossiyya › Yi aalat › TV ossa</string>
+    <string name="kod_hatali">Kood ittal ma gexin. Sinni telefoonal tan 7 loowo ubla; hoxa le loowo “%1$s” luk massosa.</string>
+    <string name="kod_rakamli_kumanda">Sinni remote loowo butun litek, tet luk kaadu uktubaanam duddan.</string>
+    <string name="kod_bos_hane">maaqo loowo</string>
+    <string name="kod_sil">Bayisa</string>
+    <string name="kod_sil_aciklama">Ellecabo loowo bayisa</string>
+    <string name="kod_geri">Gaca</string>
+    <string name="vazgecin">Caba</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Sinni magaala doorita</string>
+    <string name="il_merkezine_gore">Salat wakti magaalah gamadah cisaabimta.</string>
+    <string name="il_secili">%1$s, doorime</string>
+    <string name="dream_il_yok">Salat waktih loox ublaanamkeh, Namaz Akışı app fakaay sinni magaala doorita.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Arac: %1$s</string>
+    <string name="ayar_konum_yok">Arac doorime wee</string>
+    <string name="ayar_telefon_ekleyin">Telefoon ossa</string>
+    <string name="ayar_konumu_kodla">Arac koodat uktuba</string>
+    <string name="ayar_bagli_telefonlar">Ama TV luk xagime telefoon</string>
+    <string name="ayar_telefon_yok">Hanna telefoon osime wee. Gura le gambil tan “%1$s” taamitaay ubbulta kood ikriya.</string>
+    <string name="kaldirin">Kala</string>
+    <string name="ayar_ne_gonderir">Telefoon ma rubaa?</string>
+    <string name="ayar_madde_konum">Arac: salat wakti tet raacta</string>
+    <string name="ayar_madde_namazlar">Calaamisime salat, doorite marah</string>
+    <string name="ayar_madde_sifreli">Qellisime, sinni buxah networkal sa</string>
+    <string name="son_haber_yok">Hanna maxco mali</string>
+    <string name="son_haber_az_once">Asaaku</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">%1$d daq dumak</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">%1$d saq dumak</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">%1$d ayrok dumak</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s kalnaa?</string>
+    <string name="kaldir_aciklama">Ama telefoon TV fan maxco rubam kaadu ma duddu. Kaadu ossaanamkeh, QR kood kaadu ikriyaanam faxxa.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Sinni telefoonih arac</string>
+</resources>

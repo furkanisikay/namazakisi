@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mooré. Terimler: src/core/dil/sozluk/mos. Çoğul: CLDR'de yok → yalnız other. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">mos</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Pʋʋsg wakat pano</string>
+    <string name="ayarlar">Seglgo</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s n kell n tãag %1$s</string>
+    <string name="pano_vaktine">N tãag %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s %2$s poorẽ</string>
+    <string name="pano_kerahat_vakti">Gɩdg wakato</string>
+    <string name="pano_bitis">saada %1$s</string>
+    <string name="pano_kerahat_erisim">Gɩdg wakato, %1$s, a saada %2$s. %3$s</string>
+    <string name="pano_cumaya">Arzũma %1$s poorẽ</string>
+    <string name="pano_cikis_geldi">wakatã ta n yi</string>
+    <string name="pano_cikis">yi-y %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Wakatã ta n yi Arzũma yĩnga</string>
+    <string name="pano_cuma_cikis_erisim">Yi-y %1$s Arzũma yĩnga</string>
+    <string name="pano_bugun_cuma">Rũndã yaa Arzũma</string>
+    <string name="pano_ogle">Zafar %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Rũndã yaa Arzũma. Arzũma pʋʋsgã bee Zafar wakatẽ, %1$s</string>
+    <string name="pano_ayarlar_erisim">Seglgo: paas-y telefõne, zĩiga, telefõn sẽn lagme</string>
+    <string name="pano_simdiki_vakit">pʋʋsg wakat sẽn be masã</string>
+    <string name="pano_siradaki_vakit">pʋʋsg wakat sẽn pʋgdẽ</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Paas-y y telefõnã", "Gʋls-y kood", "M na n tũus tẽngã m meng", "Paas-y". -->
+    <string name="kodla_girin">Gʋls-y kood</string>
+    <string name="ili_kendim_secin">M na n tũus tẽngã m meng</string>
+    <string name="yeniden_deneyin">Leb-y n maan</string>
+    <string name="telefon_varsayilan">Telefõne</string>
+    <string name="esleme_ekleniyor">D paasda %1$s</string>
+    <string name="esleme_gonderiyor">Y telefõnã tʋmda a zĩigã la a yɛlã…</string>
+    <string name="esleme_tamamlanamadi">Lagmã pa tõog n pid ye</string>
+    <string name="esleme_saklanamadi">TV-kãngã pa tõe n bĩng lagmã kood ne laafɩ ye. Y tõe n gʋls y zĩigã ne kood maa y tũus y tẽngã.</string>
+    <string name="telefonunuzu_ekleyin">Paas-y y telefõnã</string>
+    <string name="esleme_alt">Pʋʋsg wakat y zĩigã yĩnga; pʋʋs-rãmb nins y sẽn pʋʋsa me pukda.</string>
+    <string name="esleme_adim1">Pak-y Namaz Akışı y telefõnã zugu</string>
+    <string name="esleme_adim2">Seglgo › M masĩni › Paas-y TV</string>
+    <string name="esleme_adim3">Tʋk-y y telefõnã kameerã koodã wɛɛngẽ</string>
+    <string name="esleme_ayni_wifi">Y telefõnã la TV wã segd n be Wi-Fi a ye pʋgẽ.</string>
+    <string name="esleme_onay_soru">Paas telefõn-kãngã?</string>
+    <string name="esleme_onay_aciklama">Telefõn ning b sẽn paasã tõe n tʋm a zĩigã la pʋʋs-rãmb nins a sẽn gʋlsdã TV-kãngã zugu.</string>
+    <string name="ekleyin">Paas-y</string>
+    <string name="hayir">Ayo</string>
+    <string name="esleme_eklendi">B paasa %1$s</string>
+    <string name="konumunuz_geldi">Y zĩigã ta</string>
+    <string name="konuma_gore_hesaplanacak">B na n sõd pʋʋsg wakatã zĩig-kãngã yĩnga.</string>
+    <string name="qr_konum_alindi">B paama zĩigã</string>
+    <string name="qr_kodu">Lagm kood y sẽn na n karem ne y telefõnã</string>
+    <string name="ag_yok">TV wã pa lagem lagm ye</string>
+    <string name="ag_yok_aciklama">Y tõe n kell taoore n gʋls kood ning sẽn tar sõor 7 y telefõnã zugu maa y tũus y tẽngã.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Gʋls-y kood ning sẽn be y telefõnã zugu</string>
+    <string name="kod_yol">Y telefõnã zugu: Seglgo › M masĩni › Paas-y TV</string>
+    <string name="kod_hatali">Koodã pa zems ye. Ges-y sõor a 7 wã y telefõnã zugu; segl-y sõor sẽn tudg ne “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Y telekomandã sã n tara sõor bʋtõ, y tõe n gʋls ne-b me.</string>
+    <string name="kod_bos_hane">sõor sẽn yaa vaalga</string>
+    <string name="kod_sil">Yik-y</string>
+    <string name="kod_sil_aciklama">Yik-y sõor sẽn kõnsã</string>
+    <string name="kod_geri">Poorẽ</string>
+    <string name="vazgecin">Bas-y</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Tũus-y y tẽngã</string>
+    <string name="il_merkezine_gore">B sõdda pʋʋsg wakatã tẽngã sʋkã yĩnga.</string>
+    <string name="il_secili">%1$s, b tũusa-a</string>
+    <string name="dream_il_yok">Y sẽn na n ges pʋʋsg wakat panã, pak-y Namaz Akışı aplikaasõ wã la y tũus y tẽngã.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Zĩiga: %1$s</string>
+    <string name="ayar_konum_yok">B pa tũus zĩig ye</string>
+    <string name="ayar_telefon_ekleyin">Paas-y telefõne</string>
+    <string name="ayar_konumu_kodla">Gʋls-y zĩigã ne kood</string>
+    <string name="ayar_bagli_telefonlar">Telefõn sẽn lagem ne TV-kãnga</string>
+    <string name="ayar_telefon_yok">B nan ka paas telefõn ye. Tũ-y “%1$s” goabgã la y karem kood ning sẽn pukã.</string>
+    <string name="kaldirin">Yik-y</string>
+    <string name="ayar_ne_gonderir">Telefõnã tʋmda bõe?</string>
+    <string name="ayar_madde_konum">Zĩiga: pʋʋsg wakatã tũuda-a</string>
+    <string name="ayar_madde_namazlar">Pʋʋs-rãmb sẽn gʋlse, neb nins sẽn tũus yĩnga</string>
+    <string name="ayar_madde_sifreli">Sẽn solge, y zak-lagmã pʋgẽ bala</string>
+    <string name="son_haber_yok">Kibar nan ka be ye</string>
+    <string name="son_haber_az_once">Masã</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">%1$d min sẽn looge</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">%1$d lɛɛr sẽn looge</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">%1$d rasem sẽn looge</item>
+    </plurals>
+    <string name="kaldir_soru">Yik %1$s?</string>
+    <string name="kaldir_aciklama">Telefõn-kãngã pa le na n tõog n tʋm kibar TV wã zug ye. Y sã n dat n leb n paas-a, y segd n leb n karem QR koodã.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Y telefõnã zĩiga</string>
+</resources>

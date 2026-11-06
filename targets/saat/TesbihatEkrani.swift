@@ -17,6 +17,9 @@ struct TesbihatEkrani: View {
     @State private var durum = Tesbihat.Durum()
     @State private var tac: Double = 0
     @State private var biriktirici = TacBiriktirici(esik: 1.0)
+    /// Cizim anindaki dil (W5). Zikir adlari ve tehlil o dilin Musluman toplulugunun yaygin
+    /// okunusuyla (ceviri degil; `Tesbihat.Faz.ad(dil:)`, bilinmeyen dil Turkce).
+    private var m: SaatMetinleri { SaatDili.metin }
 
     var body: some View {
         VStack(spacing: 4) {
@@ -24,12 +27,12 @@ struct TesbihatEkrani: View {
                 .contentShape(Rectangle())
                 .onTapGesture { say() }
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel(Tesbihat.kisaMetin(durum))
-                .accessibilityHint("Saymak için dokunun ya da Digital Crown'u çevirin; ters yöne çevirmek geri alır")
+                .accessibilityLabel(Tesbihat.kisaMetin(durum, dil: SaatDili.kod))
+                .accessibilityHint(m.saymaIpucu)
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { say() }
             if durum.tamamMi {
-                Button("Yeniden başlayın") { kaydet(Tesbihat.Durum()) }
+                Button(m.yenidenBaslayin) { kaydet(Tesbihat.Durum()) }
                     .tint(SaatGorunum.yesil)
             }
         }
@@ -58,11 +61,11 @@ struct TesbihatEkrani: View {
                 } label: {
                     Image(systemName: "arrow.uturn.backward")
                 }
-                .accessibilityLabel("Son sayımı geri alın")
+                .accessibilityLabel(m.sonSayimiGeriAlin)
                 .disabled(durum.toplam == 0)
             }
         }
-        .navigationTitle("Tesbihat")
+        .navigationTitle(m.tesbihat)
         .containerBackground(TesbihatRenk.ton.opacity(0.22).gradient, for: .tabView)
         .onAppear {
             durum = SaatDeposu.varsayilan.tesbihatOku(simdiMs: SaatDeposu.simdiMs())
@@ -86,25 +89,25 @@ struct TesbihatEkrani: View {
                 } else {
                     VStack(spacing: 0) {
                         Text("\(durum.fazSayisi)")
-                            .font(.system(size: 32, weight: .semibold, design: .rounded))
+                            .font(SaatYaziTipi.boy(32, agirlik: .semibold, tasarim: .rounded))
                             .monospacedDigit()
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
                         Text("/ \(durum.faz.hedef)")
-                            .font(.caption2)
+                            .font(SaatYaziTipi.stil(.caption2))
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
                 }
             }
             .frame(width: durum.tamamMi ? 52 : 92, height: durum.tamamMi ? 52 : 92)
-            Text(durum.tamamMi ? Samimiyet.kabulDuasi : durum.faz.ad)
-                .font(.headline)
+            Text(durum.tamamMi ? Samimiyet.kabulDuasi(SaatDili.kod) : durum.faz.ad(dil: SaatDili.kod))
+                .font(SaatYaziTipi.stil(.headline))
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             if durum.tamamMi {
-                Text(Tesbihat.tehlilMetni)
-                    .font(.caption2)
+                Text(Tesbihat.tehlilMetni(dil: SaatDili.kod))
+                    .font(SaatYaziTipi.stil(.caption2))
                     .multilineTextAlignment(.center)
                     .lineLimit(3)
                     .minimumScaleFactor(0.5)
@@ -120,7 +123,7 @@ struct TesbihatEkrani: View {
                 }
                 .accessibilityHidden(true)
                 Text("\(durum.toplam)/\(Tesbihat.toplamHedef)")
-                    .font(.caption2)
+                    .font(SaatYaziTipi.stil(.caption2))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }

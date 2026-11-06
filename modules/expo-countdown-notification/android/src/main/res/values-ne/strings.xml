@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">लाइभ काउन्टडाउन</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar र स्टाटस बारमा काउन्टडाउन</string>
+    <string name="countdown_kanal_genel_ad">काउन्टडाउन सूचना</string>
+    <string name="countdown_kanal_genel_aciklama">काउन्टडाउन सूचनाका लागि च्यानल</string>
+
+    <string name="countdown_eylem_kildim">नमाज पढें</string>
+    <string name="countdown_eylem_durdur">रोक्नुहोस्</string>
+
+    <string name="countdown_yedek_vakit">हतार गर्नुहोस्, नमाजको समय सकिन लागेको छ।</string>
+    <string name="countdown_yedek_iftar">समय कम हुँदै छ।</string>
+    <string name="countdown_yedek_sahur">अझै खानपिन गर्न सकिन्छ; रोजा चाँडै सुरु हुन्छ।</string>
+    <string name="countdown_yedek_seri">आजका नमाज पूरा भएका छैनन्; आफ्नो निरन्तरता नटुटाउनुहोस्।</string>
+
+    <string name="countdown_onek_vakit">समय सकिन बाँकी</string>
+    <string name="countdown_onek_vakit_dar">समय सकिँदै</string>
+    <string name="countdown_onek_iftar">इफ्तारसम्म</string>
+    <string name="countdown_onek_iftar_dar">इफ्तारसम्म</string>
+    <string name="countdown_onek_sahur">सेहरी सकिन बाँकी</string>
+    <string name="countdown_onek_sahur_dar">सेहरी सकिँदै</string>
+    <string name="countdown_onek_seri">निरन्तरता जोगाउन</string>
+    <string name="countdown_onek_seri_dar">निरन्तरता सकिँदै</string>
+</resources>

@@ -68,6 +68,25 @@ export interface KonumAyarlari {
      * (konumDegisimBildirimiGerekliMi yalniz acik false degerini kapali sayar).
      */
     konumDegisimBildirimi?: boolean;
+    /**
+     * Konumun ülkesi (ISO 3166-1 alfa-2). Opsiyonel: eski kayıtlarda yoktur; yokluğunda
+     * manuel il seçimi Türkiye sayılır, GPS'te koordinattan bulunur (`core/konum/ulkeTespiti`).
+     * Hesap yöntemi önerisi ("bölgenizin takvimi") buna bakar.
+     */
+    ulkeKodu?: string;
+    /**
+     * Türkiye DIŞINDA elle seçilen şehir (GeoNames). Varken `seciliIlId` null'dır ve
+     * `seciliIlAdi` şehir adını taşır (eski ekranlar konumu adıyla göstersin diye).
+     */
+    dunyaSehri?: DunyaSehriKaydi | null;
+}
+
+/** Elle seçilen dünya şehrinin kalıcı özeti. */
+export interface DunyaSehriKaydi {
+    ad: string;
+    ulke: string;
+    bolge: string;
+    saatDilimi: string;
 }
 
 // ==================== SABITLER ====================

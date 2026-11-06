@@ -9,7 +9,8 @@ import WidgetKit
 // Android Now Bar'in iOS ikizi: hangi ogenin gosterilecegini uygulama secer
 // (`src/core/sayac/iosCanliEtkinlik.ts`) ve `Activity.request` ile baslatir
 // (`CanliEtkinlikKoprusu`). Bu dosya yalniz CIZER. Geri sayimi ve ilerlemeyi sistem
-// cizer; hedefe varinca `staleDate` dolar → kart "Vakit çıktı" der.
+// cizer; hedefe varinca `staleDate` dolar → kart "Vakit çıktı" der. Sabit metinler CIZIM
+// aninda arayuz dilinde (`WidgetMetin`, W5).
 //
 // "Kildim" yalniz vakit ogesinde ve iOS 17+'da (`KildimDugmesiIntent`,
 // `LiveActivityIntent`: uygulama surecinde, Siri kuyruguna yazar).
@@ -18,6 +19,7 @@ struct NamazCanliEtkinlikWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: NamazCanliNitelikleri.self) { context in
             CanliKilitEkraniGorunumu(durum: context.state, eskidi: context.isStale)
+                .nkoVarsayilanYaziTipi()
                 .activityBackgroundTint(Color(.systemBackground).opacity(0.9))
                 .widgetURL(WidgetSabitleri.acilis)
         } dynamicIsland: { context in
@@ -25,35 +27,39 @@ struct NamazCanliEtkinlikWidget: Widget {
             let eskidi = context.isStale
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Label(durum.ad, systemImage: CanliMetin.ikon(durum))
-                        .font(.headline)
+                    Label(WidgetMetin.rakam(durum.ad), systemImage: CanliMetin.ikon(durum))
+                        .font(YaziTipi.stil(.headline))
                         .foregroundStyle(WidgetSabitleri.yesil)
                         .lineLimit(1)
+                        .nkoVarsayilanYaziTipi()
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     CanliSayac(durum: durum, eskidi: eskidi)
-                        .font(.system(.title3, design: .rounded).weight(.semibold))
+                        .font(YaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                         .frame(maxWidth: 90, alignment: .trailing)
+                        .nkoVarsayilanYaziTipi()
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(alignment: .leading, spacing: 6) {
                         if !CanliMetin.kabulMu(durum) { CanliIlerleme(durum: durum) }
                         HStack {
                             Text(CanliMetin.altSatir(durum))
-                                .font(.caption)
+                                .font(YaziTipi.stil(.caption))
                                 .foregroundStyle(.secondary)
                             Spacer()
                             CanliKildimDugmesi(durum: durum, eskidi: eskidi)
                         }
                     }
+                    .nkoVarsayilanYaziTipi()
                 }
             } compactLeading: {
                 Image(systemName: CanliMetin.ikon(durum))
                     .foregroundStyle(WidgetSabitleri.yesil)
             } compactTrailing: {
                 CanliSayac(durum: durum, eskidi: eskidi)
-                    .font(.caption2.weight(.semibold))
+                    .font(YaziTipi.stil(.caption2).weight(.semibold))
                     .frame(maxWidth: 48)
+                    .nkoVarsayilanYaziTipi()
             } minimal: {
                 Image(systemName: CanliMetin.ikon(durum))
                     .foregroundStyle(WidgetSabitleri.yesil)
@@ -83,9 +89,18 @@ enum CanliMetin {
         VakitSaglayici.tarih(d.hedefMs)
     }
 
+    /// Alt satir CIZIM aninda arayuz dilinde (W5). `d.ad`/`d.baslik` JS'in yazdigi metindir
+    /// (yazim anindaki dil); dil degisince JS etkinligi yeniden esitler. Rakamlar CIZIM aninda
+    /// secilen sistemle (`WidgetMetin.rakam`; saat zaten `WidgetMetin.saat`'ten gelir).
     static func altSatir(_ d: NamazCanliNitelikleri.ContentState) -> String {
-        if kabulMu(d) { return "\(d.ad) namazı kılındı" }
-        return d.tema == "vakit" ? "Çıkış \(WidgetMetin.saat(d.hedefMs))" : "Bitiş \(WidgetMetin.saat(d.hedefMs))"
+        let m = WidgetMetin.m
+        if kabulMu(d) { return m.bicim(m.kabulAlt, ["ad": WidgetMetin.rakam(d.ad)]) }
+        return m.bicim(d.tema == "vakit" ? m.cikisSaat : m.bitisSaat, ["saat": WidgetMetin.saat(d.hedefMs)])
+    }
+
+    /// Kart basligi: son karede (`kabul` temasi) yazilmis dua yerine cizim anindaki dilde dua.
+    static func baslik(_ d: NamazCanliNitelikleri.ContentState) -> String {
+        kabulMu(d) ? WidgetMetin.vm.kabulDuasi : WidgetMetin.rakam(d.baslik)
     }
 }
 
@@ -99,13 +114,15 @@ private struct CanliSayac: View {
         if CanliMetin.kabulMu(durum) {
             Image(systemName: "checkmark")
                 .foregroundStyle(WidgetSabitleri.yesil)
-                .accessibilityLabel("Kılındı")
+                .accessibilityLabel(WidgetMetin.vm.kilindi)
         } else if eskidi || hedef <= Date() {
-            Text("Bitti")
+            Text(WidgetMetin.m.bitti)
         } else {
             Text(timerInterval: Date()...hedef, countsDown: true)
                 .monospacedDigit()
                 .multilineTextAlignment(.trailing)
+                // Sistem cizer: Arapcada secilen rakamla (yerel ayar), diger dillerde dokunulmaz.
+                .rakamYerelAyari()
         }
     }
 }
@@ -131,11 +148,11 @@ private struct CanliKildimDugmesi: View {
         if #available(iOS 17.0, *) {
             if !eskidi, let tarih = durum.kildimTarih, let vakit = durum.kildimVakit {
                 Button(intent: KildimDugmesiIntent(tarih: tarih, vakit: vakit)) {
-                    Label("Kıldım", systemImage: "checkmark")
-                        .font(.caption.weight(.semibold))
+                    Label(WidgetMetin.vm.kildim, systemImage: "checkmark")
+                        .font(YaziTipi.stil(.caption).weight(.semibold))
                 }
                 .tint(WidgetSabitleri.yesil)
-                .accessibilityLabel("\(durum.ad) namazını kıldım")
+                .accessibilityLabel(WidgetMetin.m.bicim(WidgetMetin.m.kildimErisim, ["ad": durum.ad]))
             }
         }
     }
@@ -151,17 +168,17 @@ private struct CanliKilitEkraniGorunumu: View {
                     .font(.title3)
                     .foregroundStyle(WidgetSabitleri.yesil)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(durum.baslik)
-                        .font(.headline)
+                    Text(CanliMetin.baslik(durum))
+                        .font(YaziTipi.stil(.headline))
                         .foregroundStyle(.primary)
                         .lineLimit(1)
-                    Text(eskidi ? "Vakit çıktı" : CanliMetin.altSatir(durum))
-                        .font(.caption)
+                    Text(eskidi ? WidgetMetin.m.vakitCikti : CanliMetin.altSatir(durum))
+                        .font(YaziTipi.stil(.caption))
                         .foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 8)
                 CanliSayac(durum: durum, eskidi: eskidi)
-                    .font(.system(.title2, design: .rounded).weight(.semibold))
+                    .font(YaziTipi.stil(.title2, tasarim: .rounded).weight(.semibold))
                     .foregroundStyle(.primary)
                     .frame(maxWidth: 110, alignment: .trailing)
             }

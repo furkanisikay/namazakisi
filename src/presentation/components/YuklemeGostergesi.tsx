@@ -6,6 +6,7 @@
 import React from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { useRenkler } from '../../core/theme';
+import { useMetin } from '../hooks/useMetin';
 
 interface YuklemeGostergesiProps {
   mesaj?: string;
@@ -13,10 +14,12 @@ interface YuklemeGostergesiProps {
 }
 
 export const YuklemeGostergesi: React.FC<YuklemeGostergesiProps> = ({
-  mesaj = 'Yükleniyor...',
+  mesaj: mesajProp,
   boyut = 'large',
 }) => {
   const renkler = useRenkler();
+  const varsayilanMesaj = useMetin().genel.ortak.yukleniyorUc;
+  const mesaj = mesajProp ?? varsayilanMesaj;
 
   return (
     <View

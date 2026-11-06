@@ -1,0 +1,58 @@
+// ur — Urduca (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Urduca terimler: src/core/dil/sozluk/ur ("نماز پڑھ لی" / "ادا شدہ", قبلہ).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "اگلی نماز";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "اگلی نماز اور اس کے شروع ہونے کا وقت بتاتا ہے۔";
+"Şu anki vakti kıldım" = "موجودہ نماز پڑھ لی";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "موجودہ نماز پر ادا شدہ کا نشان لگاتا ہے۔ ریکارڈ ایپ کھولنے پر شامل ہو جاتا ہے۔";
+"Onay iste" = "تصدیق مانگیں";
+"Kıbleyi aç" = "قبلہ کھولیں";
+"Uygulamayı Kıble pusulasıyla açar." = "ایپ کو قبلہ نما کے ساتھ کھولتا ہے۔";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "نماز پڑھ لی";
+"Kıble" = "قبلہ";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "اگلی نماز کا نام";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "اگلی نماز کا نام دیتا ہے۔ اسے Shortcuts میں شرط کے طور پر استعمال کیا جا سکتا ہے۔";
+"Sıradaki vakte kalan dakika" = "اگلی نماز تک باقی منٹ";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "اگلی نماز کا وقت شروع ہونے میں باقی منٹ دیتا ہے۔ معلومات نہ ہوں تو -1 دیتا ہے۔";
+"Şu anki vakit kılındı mı?" = "کیا موجودہ نماز پر ادا شدہ کا نشان ہے؟";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "موجودہ نماز پر ادا شدہ کا نشان ہو تو ہاں دیتا ہے۔ نشان لگانے کو کوئی نماز نہ ہو تو نہیں دیتا ہے۔";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "نماز کی خاموشی";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "نماز کا وقت شروع ہونے کے بعد کے ابتدائی منٹوں میں درست (true) دیتا ہے۔ Shortcuts میں فوکس آن کرنے کے لیے استعمال ہوتا ہے۔";
+"Süre (dakika)" = "دورانیہ (منٹ)";
+"Vakit girdikten sonraki ${dakika} dakika" = "نماز کا وقت شروع ہونے کے بعد کے ${dakika} منٹ";
+"Namaz sessizliğinin bitişi" = "نماز کی خاموشی کا اختتام";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "خاموشی ختم ہونے کا وقت دیتا ہے۔ اس وقت خاموشی نہ ہو تو موجودہ وقت دیتا ہے۔";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "نماز کا وقت شروع ہونے کے بعد کے ${dakika} منٹ کا اختتام";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "نماز کی یاد دہانیاں";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "یہ فوکس آن ہونے پر نماز کی یاد دہانیاں آواز اور اسکرین روشن کیے بغیر آتی ہیں۔";
+"Hatırlatmaları sessiz ver" = "یاد دہانیاں خاموشی سے دیں";
+"Hatırlatmalar sessiz gelir" = "یاد دہانیاں خاموشی سے آتی ہیں";
+"Hatırlatmalar her zamanki gibi" = "یاد دہانیاں معمول کے مطابق";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "ویجیٹ میں دکھائی گئی نماز پر ادا شدہ کا نشان لگاتا ہے۔";
+"Tarih" = "تاریخ";
+"Vakit" = "نماز";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "نماز الارم روکیں";
+"Namazı kıldım" = "نماز پڑھ لی";
+"Alarm" = "الارم";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "آج کی آیت کی تصویر";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "آج کی آیت آپ کی اسکرین کے سائز کی تصویر کے طور پر دیتا ہے۔ اسے Shortcuts میں Set Wallpaper مرحلے کے ساتھ استعمال کیا جا سکتا ہے۔";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "آج کی آیت تیار کرنے کے لیے ایپ ایک بار کھولیں۔";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "تصویر تیار نہیں ہو سکی۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔";

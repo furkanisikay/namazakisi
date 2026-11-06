@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mk — Makedonca, Kiril (beta). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Одбројувања во живо</string>
+    <string name="countdown_kanal_canli_aciklama">Одбројувања во лентата Now Bar и во лентата за статус</string>
+    <string name="countdown_kanal_genel_ad">Известувања со одбројување</string>
+    <string name="countdown_kanal_genel_aciklama">Канал за известувања со одбројување</string>
+
+    <string name="countdown_eylem_kildim">Клањав</string>
+    <string name="countdown_eylem_durdur">Запрете</string>
+
+    <string name="countdown_yedek_vakit">Побрзајте, времето за намаз само што не истекло.</string>
+    <string name="countdown_yedek_iftar">Времето истекува.</string>
+    <string name="countdown_yedek_sahur">Сѐ уште можете да јадете и пиете; постот наскоро почнува.</string>
+    <string name="countdown_yedek_seri">Денешните намази не се целосни; не ја губете вашата низа.</string>
+
+    <string name="countdown_onek_vakit">До истекот на времето</string>
+    <string name="countdown_onek_vakit_dar">Времето истекува</string>
+    <string name="countdown_onek_iftar">До ифтар</string>
+    <string name="countdown_onek_iftar_dar">До ифтар</string>
+    <string name="countdown_onek_sahur">До крајот на сехурот</string>
+    <string name="countdown_onek_sahur_dar">Сехурот завршува</string>
+    <string name="countdown_onek_seri">За да ја зачувате низата</string>
+    <string name="countdown_onek_seri_dar">Низата завршува</string>
+</resources>

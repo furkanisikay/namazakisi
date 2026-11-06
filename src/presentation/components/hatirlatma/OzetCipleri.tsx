@@ -17,6 +17,8 @@ import { Text, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import type { OzetKanali } from '../../../core/muhafiz/seviyeOzeti';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 /** Kanal → ikon (FontAwesome5). Tek kaynak: kart, önizleme ve detay aynı ikonu kullanır. */
 export const KANAL_IKONLARI: Record<OzetKanali, string> = {
@@ -42,6 +44,7 @@ export interface OzetCipleriProps {
 
 export const OzetCipleri: React.FC<OzetCipleriProps> = ({ kanallar, renk, tekrarDk, ton, sesAdi, boyut = 'normal', testID }) => {
     const renkler = useRenkler();
+    const dkSablonu = useMetin().hatirlatma.onizleme.dk;
     const cap = boyut === 'kucuk' ? 20 : 24;
     const ikonBoyu = boyut === 'kucuk' ? 9 : 11;
     return (
@@ -77,7 +80,7 @@ export const OzetCipleri: React.FC<OzetCipleriProps> = ({ kanallar, renk, tekrar
                 >
                     <FontAwesome5 name="redo" size={ikonBoyu - 1} color={renkler.metinIkincil} style={{ marginRight: 4 }} />
                     <Text className="text-[11px] font-semibold" style={{ color: renkler.metin }}>
-                        {tekrarDk} dk
+                        {bicim(dkSablonu, { dk: tekrarDk })}
                     </Text>
                 </View>
             )}

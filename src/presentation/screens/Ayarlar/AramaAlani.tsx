@@ -11,6 +11,7 @@ import * as React from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface AramaAlaniProps {
   deger: string;
@@ -19,6 +20,7 @@ export interface AramaAlaniProps {
 
 export const AramaAlani: React.FC<AramaAlaniProps> = ({ deger, onDegistir }) => {
   const renkler = useRenkler();
+  const m = useMetin().ayarlar.ana;
 
   return (
     <View
@@ -34,11 +36,11 @@ export const AramaAlani: React.FC<AramaAlaniProps> = ({ deger, onDegistir }) => 
       <TextInput
         value={deger}
         onChangeText={onDegistir}
-        placeholder="Ayarlarda arayın"
+        placeholder={m.aramaYer}
         placeholderTextColor={renkler.metinIkincil}
         className="flex-1 ml-3 text-sm"
         style={{ color: renkler.metin, paddingVertical: 10 }}
-        accessibilityLabel="Ayarlarda arayın"
+        accessibilityLabel={m.aramaYer}
         returnKeyType="search"
         autoCorrect={false}
         autoCapitalize="none"
@@ -49,7 +51,7 @@ export const AramaAlani: React.FC<AramaAlaniProps> = ({ deger, onDegistir }) => 
           className="w-11 h-11 items-center justify-center -mr-2"
           activeOpacity={0.7}
           accessibilityRole="button"
-          accessibilityLabel="Aramayı temizle"
+          accessibilityLabel={m.aramayiTemizle}
         >
           <FontAwesome5 name="times-circle" size={16} color={renkler.metinIkincil} solid />
         </TouchableOpacity>

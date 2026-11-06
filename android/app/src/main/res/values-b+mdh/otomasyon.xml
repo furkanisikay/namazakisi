@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mdh -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Maguindanao). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Midsambayang ako</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Kalagayan nu waktu nu sambayang</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Event nu waktu nu sambayang</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Ped-isama su setting ini ebpun sa app nu automation</string>
+  <string name="otomasyon_bilgi_tarayici">Di makakwa su manga browser sa permanenti a permiso. Isama sya ebpun sa listahan nu plugin nu app lagid nu Tasker, MacroDroid atawka Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Isama sya sa kapamili sa \"Namaz Akışı\" ebpun sa listahan nu plugin nu app lagid nu Tasker, MacroDroid atawka Automate.</string>
+  <string name="otomasyon_engelli_baslik">Naka-block su %1$s</string>
+  <string name="otomasyon_engelli_mesaj">In-block nu sa nawna su app ini a di makatanda sa manga sambayang nu. Mainggay nu sya sa Namaz Akışı kanu Manga setting &gt; \"Manga app a aden permiso\".</string>
+  <string name="otomasyon_izin_baslik">Gamiten sa %1$s?</string>
+  <string name="otomasyon_izin_kosul">Katawan nu %1$s amayka makawma su waktu nu sambayang, amayka malipus den endu amayka lu kanu sa masjid, endu mapagalebek nin su manga automation nu. Mailisan nu su napili nu sa Namaz Akışı kanu Manga setting &gt; \"Manga app a aden permiso\".</string>
+  <string name="otomasyon_izin_kildim">Matandaan nu %1$s a midsambayang su sambayang saguna sa automation a inibetad nu. Mailisan nu su napili nu sa Namaz Akışı kanu Manga setting &gt; \"Manga app a aden permiso\".</string>
+  <string name="otomasyon_izin_ver">Inggay</string>
+  <string name="otomasyon_engelle">I-block</string>
+  <string name="otomasyon_vazgec">Ibatal</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Kanu sya pedgalebek?</string>
+  <string name="otomasyon_ileri">Kasunud</string>
+  <string name="otomasyon_vakit_baslik">Antawa a sambayang?</string>
+  <string name="otomasyon_herhangi_vakit">Apiya ngin a waktu nu sambayang</string>
+  <string name="otomasyon_kaydet">Itagu</string>
+  <string name="otomasyon_kosul_icinde">Samantala waktu nu sambayang</string>
+  <string name="otomasyon_kosul_cikiyor">Samantala malipus su waktu nu sambayang (%1$d min pan, naka-on su Bantay nu Sambayang)</string>
+  <string name="otomasyon_kosul_camide">Samantala lu sa masjid</string>
+  <string name="otomasyon_olay_girdi">Amayka makawma su waktu nu sambayang</string>
+  <string name="otomasyon_olay_cikiyor">Amayka malipus su waktu nu sambayang (%1$d min pan, naka-on su Bantay nu Sambayang)</string>
+  <string name="otomasyon_olay_camide">Amayka katawan a lu kanu sa masjid</string>
+</resources>

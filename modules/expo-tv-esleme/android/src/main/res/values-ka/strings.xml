@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">მოათავსეთ ტელევიზორის ეკრანზე გამოსახული QR კოდი ჩარჩოში</string>
+    <string name="tvesleme_qr_vazgec">გაუქმება</string>
+    <string name="tvesleme_qr_vazgec_erisim">სკანირების გაუქმება</string>
+    <string name="tvesleme_qr_yabanci">ეს QR კოდი Namaz Akışı TV-ს არ ეკუთვნის. დაასკანერეთ კოდი ტელევიზორის ეკრანიდან.</string>
+    <string name="tvesleme_qr_okundu">კოდი დასკანირდა</string>
+</resources>

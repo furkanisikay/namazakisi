@@ -28,6 +28,8 @@ import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { useSadeGorunum } from '../hooks/useSadeGorunum';
 import { evEkraniAyarla, useEvEkraniAyari } from '../hooks/useEvEkraniAyari';
 import { evEkraniSunulurMu } from '../../core/evEkrani/evEkrani';
+import { useMetin } from '../hooks/useMetin';
+import { bicim, metin } from '../../core/dil/aktifDil';
 
 // Tema modu ikon eslesmesi
 const TEMA_MODU_IKONLARI: Record<TemaModu, string> = {
@@ -43,11 +45,12 @@ const TemaModuSecici: React.FC = () => {
   const renkler = useRenkler();
   const { mod, moduDegistir } = useTema();
   const { butonTiklandiFeedback } = useFeedback();
+  const m = useMetin().ayarlar.gorunum;
 
   const modlar: { id: TemaModu; etiket: string; aciklama: string }[] = [
-    { id: 'sistem', etiket: 'Sistem', aciklama: 'Sistem ayarlarına göre' },
-    { id: 'acik', etiket: 'Açık', aciklama: 'Her zaman açık tema' },
-    { id: 'koyu', etiket: 'Koyu', aciklama: 'Her zaman koyu tema' },
+    { id: 'sistem', etiket: m.sistem, aciklama: m.sistemAciklama },
+    { id: 'acik', etiket: m.acik, aciklama: m.acikAciklama },
+    { id: 'koyu', etiket: m.koyu, aciklama: m.koyuAciklama },
   ];
 
   const handleModSecimi = async (yeniMod: TemaModu) => {
@@ -109,6 +112,7 @@ const RenkPaletiSecici: React.FC = () => {
   const renkler = useRenkler();
   const { palet, tumPaletler, paletiDegistir } = useTema();
   const { butonTiklandiFeedback } = useFeedback();
+  const m = useMetin().ayarlar.gorunum;
 
   const handlePaletSecimi = async (paletId: string) => {
     await butonTiklandiFeedback();
@@ -124,7 +128,7 @@ const RenkPaletiSecici: React.FC = () => {
             key={paletItem.id}
             accessibilityRole="button"
             accessibilityState={{ selected: seciliMi }}
-            accessibilityLabel={`${paletItem.ad} paleti`}
+            accessibilityLabel={bicim(m.paletErisim, { ad: paletItem.ad })}
             className="items-center p-3 rounded-xl"
             style={{
               width: '30%',
@@ -163,10 +167,12 @@ const RenkPaletiSecici: React.FC = () => {
 const SadeGorunumSecici: React.FC = () => {
   const renkler = useRenkler();
   const sade = useSadeGorunum();
+  const s = useMetin();
+  const m = s.ayarlar.gorunum;
 
   const degistir = (acik: boolean) => {
     sade.ayarla(acik);
-    if (acik) kisaBildirimGoster('Ana sayfa artık sade görünümde');
+    if (acik) kisaBildirimGoster(metin().ayarlar.gorunum.sadeAcildi);
   };
 
   return (
@@ -182,7 +188,7 @@ const SadeGorunumSecici: React.FC = () => {
           <FontAwesome5 name="eye" size={18} color={renkler.birincil} solid />
         </View>
         <Text className="text-base font-semibold flex-1" style={{ color: renkler.metin }}>
-          Sade görünüm
+          {m.sade}
         </Text>
         <Anahtar
           value={sade.ayarAcik}
@@ -190,13 +196,11 @@ const SadeGorunumSecici: React.FC = () => {
           onValueChange={degistir}
           trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
           thumbColor={sade.ayarAcik ? renkler.birincil : '#f4f3f4'}
-          accessibilityLabel="Sade görünüm"
+          accessibilityLabel={m.sade}
         />
       </View>
       <Text className="text-sm leading-5 mt-3" style={{ color: renkler.metinIkincil }}>
-        Ana ekranda yalnız şu anki vakit, kalan süre ve büyük bir “Kıldım” düğmesi görünür.
-        Yazılar büyüktür; vakte dokunduğunuzda sesli okunur. Ekranın altındaki “Tüm
-        uygulamayı açın” bağlantısıyla diğer bölümlere geçebilirsiniz.
+        {bicim(m.sadeAciklama, { kildim: s.vakit.eylem.kildim, tumUygulama: s.sade.tumUygulama })}
       </Text>
     </View>
   );
@@ -209,6 +213,7 @@ const SadeGorunumSecici: React.FC = () => {
 const EvEkraniSecici: React.FC = () => {
   const renkler = useRenkler();
   const evEkrani = useEvEkraniAyari();
+  const m = useMetin().ayarlar.gorunum;
   return (
     <View
       className="p-4 rounded-2xl border"
@@ -222,7 +227,7 @@ const EvEkraniSecici: React.FC = () => {
           <FontAwesome5 name="tablet-alt" size={18} color={renkler.birincil} solid />
         </View>
         <Text className="text-base font-semibold flex-1" style={{ color: renkler.metin }}>
-          Ev ekranı
+          {m.evEkrani}
         </Text>
         <Anahtar
           value={evEkrani.acik}
@@ -232,12 +237,11 @@ const EvEkraniSecici: React.FC = () => {
           }}
           trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
           thumbColor={evEkrani.acik ? renkler.birincil : '#f4f3f4'}
-          accessibilityLabel="Ev ekranı"
+          accessibilityLabel={m.evEkrani}
         />
       </View>
       <Text className="text-sm leading-5 mt-3" style={{ color: renkler.metinIkincil }}>
-        Tableti yatay ve tam ekran kullandığınızda bugünün vakitleri, sıradaki vakit ve kalan
-        süre büyük yazıyla görünür; ekran kapanmaz. Tablet şarjdayken açık bırakmanız önerilir.
+        {m.evEkraniAciklama}
       </Text>
     </View>
   );
@@ -261,6 +265,7 @@ export const GorunumAyarlariSayfasi: React.FC = () => {
 const GorünumAyarlariIcerik: React.FC = () => {
   const renkler = useRenkler();
   const scrollRef = useVurguKurulumu();
+  const m = useMetin().ayarlar.gorunum;
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -285,7 +290,7 @@ const GorünumAyarlariIcerik: React.FC = () => {
       <Animated.View style={{ opacity: fadeAnim }}>
         {/* Sade Görünüm Bölümü (issue #295) */}
         <View className="mb-8">
-          <BolumBasligi metin="Sade görünüm" ikon="eye" />
+          <BolumBasligi metin={m.sade} ikon="eye" />
           <AyarCapasi id="sadeGorunum">
             <SadeGorunumSecici />
           </AyarCapasi>
@@ -294,14 +299,14 @@ const GorünumAyarlariIcerik: React.FC = () => {
         {/* Tablet ev ekranı (yalnız tablette) */}
         {evEkraniSunulurMu(Dimensions.get('screen')) ? (
           <View className="mb-8">
-            <BolumBasligi metin="Ev ekranı" ikon="tablet-alt" />
+            <BolumBasligi metin={m.evEkrani} ikon="tablet-alt" />
             <EvEkraniSecici />
           </View>
         ) : null}
 
         {/* Tema Modu Bolumu */}
         <View className="mb-8">
-          <BolumBasligi metin="Tema" ikon="adjust" />
+          <BolumBasligi metin={m.tema} ikon="adjust" />
           <AyarCapasi id="tema">
             <TemaModuSecici />
           </AyarCapasi>
@@ -309,7 +314,7 @@ const GorünumAyarlariIcerik: React.FC = () => {
 
         {/* Renk Paleti Bolumu */}
         <View className="mb-8">
-          <BolumBasligi metin="Renk" ikon="palette" />
+          <BolumBasligi metin={m.renk} ikon="palette" />
           <AyarCapasi id="palet">
             <RenkPaletiSecici />
           </AyarCapasi>

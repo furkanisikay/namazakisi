@@ -1,0 +1,58 @@
+// sv — İsveççe (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Ingilizce terimler: src/core/dil/sozluk/en + docs/ajan/coklu-dil.md terim sozlugu.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Nästa bön";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Berättar vilken bön som är nästa och när den börjar.";
+"Şu anki vakti kıldım" = "Jag har bett den aktuella bönen";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Markerar den aktuella bönen som förrättad. Registreringen läggs till när du öppnar appen.";
+"Onay iste" = "Be om bekräftelse";
+"Kıbleyi aç" = "Öppna Qibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Öppnar appen med Qibla-kompassen.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Jag har bett";
+"Kıble" = "Qibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Nästa böns namn";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Ger namnet på nästa bön. Du kan använda det som villkor i Genvägar.";
+"Sıradaki vakte kalan dakika" = "Minuter till nästa bön";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Ger hur många minuter som är kvar tills nästa bön börjar. Returnerar -1 om information saknas.";
+"Şu anki vakit kılındı mı?" = "Är den aktuella bönen markerad som förrättad?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Ger ja om den aktuella bönen är markerad som förrättad. Ger nej om det inte finns någon bön att markera.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Bönetystnad";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Returnerar sant under de första minuterna efter att en bönetid har börjat. Används i Genvägar för att slå på ett fokus.";
+"Süre (dakika)" = "Längd (minuter)";
+"Vakit girdikten sonraki ${dakika} dakika" = "De ${dakika} minuterna efter att en bönetid börjar";
+"Namaz sessizliğinin bitişi" = "Slut på bönetystnad";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Ger tiden då tystnaden slutar. Ger aktuell tid om det inte är tyst just nu.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Slutet av de ${dakika} minuterna efter att en bönetid börjar";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Bönepåminnelser";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Medan det här fokuset är på kommer bönepåminnelser utan ljud och utan att skärmen tänds.";
+"Hatırlatmaları sessiz ver" = "Leverera påminnelser tyst";
+"Hatırlatmalar sessiz gelir" = "Påminnelser kommer tyst";
+"Hatırlatmalar her zamanki gibi" = "Påminnelser som vanligt";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Markerar bönen som visas i widgeten som förrättad.";
+"Tarih" = "Datum";
+"Vakit" = "Bön";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Stoppa bönealarm";
+"Namazı kıldım" = "Jag har bett";
+"Alarm" = "Alarm";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Bild för dagens vers";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Ger dagens vers som en bild i skärmens storlek. Du kan använda den med steget Ställ in bakgrundsbild i Genvägar.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Öppna appen en gång för att förbereda dagens vers.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Bilden kunde inte förberedas. Försök igen om en stund.";

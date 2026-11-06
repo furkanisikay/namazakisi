@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Akan (Asante Twi). Terimler: src/core/dil/sozluk/ak. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ak</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Nyamefrɛ a ɛdi hɔ</string>
+    <string name="tile_aciklama">Nyamefrɛ a ɛdi hɔ ne ne berɛ</string>
+    <string name="komplikasyon_adi">Berɛ a aka</string>
+    <string name="cikis_saati_komplikasyon_adi">Nyamefrɛ awieɛ berɛ</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Nyamefrɛ a ɛdi hɔ</string>
+    <string name="bugun_tile_adi">Ɛnnɛ</string>
+    <string name="bugun_tile_aciklama">Ɛnnɛ Nyamefrɛ anum; fa mia mmienu kyerɛ deɛ woayɛ</string>
+    <string name="ilerleme_komplikasyon_adi">Da no nkɔsoɔ</string>
+    <string name="dagilim_komplikasyon_adi">Da no nhwɛmu</string>
+    <string name="kerahat_komplikasyon_adi">Makruh berɛ</string>
+    <string name="son_dakikalar_kanal_adi">Sima a ɛtwa toɔ</string>
+    <string name="son_dakikalar_kanal_aciklama">Berɛ a aka wɔ wɔɔkye anim wɔ Nyamefrɛ a wonnya nyɛɛ sima a ɛtwa toɔ mu</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Agyiraeɛ komm wɔ wɔɔkye anim a ɛde wo san kɔ tasbih a wonnwiee so</string>
+    <string name="kible_adi">Qibla</string>
+    <string name="kible_komplikasyon_adi">Qibla</string>
+    <string name="camideyim_kanal_adi">Mewɔ masjid</string>
+    <string name="camideyim_kanal_aciklama">Agyiraeɛ komm wɔ wɔɔkye anim sɛ wo fon ka sɛ wowɔ masjid a</string>
+    <string name="uyandirma_kanal_adi">Nyanee komm</string>
+    <string name="uyandirma_kanal_aciklama">Ɛde wosow nko ara nyane wo ma Fajr ne Tahajud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Mayɛ Nyamefrɛ</string>
+    <string name="kilindi_isareti">✓ Wɔayɛ</string>
+    <string name="kapat">Dum</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Bue Namaz Akışı wɔ wo fon so na hwɛ Nyamefrɛ mmerɛ.</string>
+    <string name="yuk_eskidi">Nyamefrɛ berɛ nsɛm no nyɛ foforo. Bue Namaz Akışı wɔ wo fon so na yɛ no foforo.</string>
+    <string name="guncelleme_gerekli">Yɛ Namaz Akışı foforo wɔ wo wɔɔkye so.</string>
+    <string name="bildirim_izni">Sɛ wopɛ sɛ wonya nkaeɛ ɛmpo sɛ wo fon nni wo nkyɛn a, ma Namaz Akışı amaneɛbɔ kwan wɔ wɔɔkye nhyehyɛe mu.</string>
+    <string name="cami_soru">Wowɔ masjid?</string>
+    <string name="cami_evet">Aane</string>
+    <string name="cami_evet_aciklama">Aane, mewɔ masjid. Ɛbue Nyamefrɛ tebea</string>
+    <string name="cami_hayir">Daabi</string>
+    <string name="cami_hayir_aciklama">Daabi, menni masjid</string>
+    <string name="camidesiniz">Wowɔ masjid</string>
+    <string name="cami_degil">Ɛha nyɛ masjid</string>
+    <string name="cami_degil_aciklama">Ɛha nyɛ masjid. Wɔremmu beaeɛ yi sɛ masjid bio</string>
+    <string name="tesbihat_ac">Bue tasbih kanfoɔ</string>
+    <string name="kible_ac">Bue Qibla kompas</string>
+    <string name="ses_dene">Sɔ nnyegyeeɛ no hwɛ</string>
+    <string name="ses_dene_aciklama">Sɔ wɔɔkye no nne kenkan hwɛ</string>
+    <string name="telefonda_acin">Bue wɔ fon so</string>
+    <string name="telefonda_ekran_ac">Bue %1$s wɔ wo fon so</string>
+    <string name="ekran_kaza">Qada Nwoma</string>
+    <string name="ekran_camideyim">Mewɔ masjid</string>
+    <string name="ekran_ayarlar">Nhyehyɛe</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">wɔayɛ, ɛrehyia</string>
+    <string name="durum_kilindi">wɔayɛ</string>
+    <string name="durum_girmedi">berɛ nnuruiɛ</string>
+    <string name="durum_simdiki">Nyamefrɛ berɛ a ɛkɔ so, mia so na kyerɛ</string>
+    <string name="durum_simdiki_kalan">Nyamefrɛ berɛ a ɛkɔ so, %1$s, mia so na kyerɛ</string>
+    <string name="durum_kilinmadi">wɔanyɛ, mia so na kyerɛ</string>
+    <string name="isaretleyin">Kyerɛ sɛ woayɛ</string>
+    <string name="esitleniyor">ɛrehyia</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Pene Mayɛ Nyamefrɛ so</string>
+    <string name="vazgecin">Gyae</string>
+    <string name="vazgec">Gyae</string>
+    <string name="kerahat_vaktindesiniz">Seesei yɛ Makruh berɛ.</string>
+    <string name="kilindi_dua">Wɔayɛ. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Nyamefrɛ tebea abue, ɛba awieɛ %1$s. Mia so na dum</string>
+    <string name="namaz_modu_ac_aciklama">Bue Nyamefrɛ tebea wɔ wo fon so</string>
+    <string name="namaz_modu_kapatin">Dum Nyamefrɛ tebea</string>
+    <string name="namaz_modu_acin">Bue Nyamefrɛ tebea</string>
+    <string name="namaz_modu_acik_bitis">Abue, ɛba awieɛ %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Ɛrehwehwɛ fam no…</string>
+    <string name="kible_yuk_yok">Bue Namaz Akışı wɔ wo fon so na hwehwɛ Qibla.</string>
+    <string name="kible_konum_yok">Bue beaeɛ wɔ wo fon so na hwehwɛ Qibla. Sɛ Namaz Akışı nyɛ foforo a, yɛ no foforo.</string>
+    <string name="kible_sensor_yok">Kompas sensa nni wɔɔkye yi mu. Wobɛtumi ahunu Qibla fam wɔ wo fon so.</string>
+    <string name="kible_kuzeyden">Qibla %1$d° (firi atifi)</string>
+    <string name="kible_derece">Qibla %1$d°</string>
+    <string name="kible_telefonda_ac">Bue Qibla wɔ wo fon so</string>
+    <string name="kible_erisim">%1$s. Qibla wɔ %2$d° firi atifi, %3$s</string>
+    <string name="kible_hizali">Wo ani kyerɛ Qibla</string>
+    <string name="kible_kalibrasyon">Sɛ wopɛ sɛ wosiesie a, twe wo nsa sɛ nɔma 8 wɔ wim</string>
+    <string name="kible_egim">Kura wo wɔɔkye tamaa ne fam pɛ</string>
+    <string name="kible_titresim_acik">Wosow akwankyerɛ abue. Mia so na dum</string>
+    <string name="kible_titresim_kapali">Wosow akwankyerɛ ato mu. Mia so na bue</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">W</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbih awie. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Ne nyinaa %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Kan</string>
+    <string name="tesbihat_bastan_baslayin">San fi ase</string>
+    <string name="tesbihat_bastan_soru">Wobɛsan afi ase?</string>
+    <string name="tesbihat_sifirlanir">Akontaa no san fi ase.</string>
+    <string name="tesbihat_geri_al">San dane</string>
+    <string name="tesbihat_geri_al_aciklama">San dane akontaa a etwa toɔ no</string>
+    <string name="tesbihat_yeniden">Fi ase bio</string>
+    <string name="tesbihat_yeniden_aciklama">Fi tasbih no ase bio</string>
+    <string name="tesbihat_suruyor">Tasbih kɔ so: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Mayɛ Nyamefrɛ. Ɛdum nyanee no</string>
+    <string name="uyandirma_kapat_aciklama">Dum nyanee no</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Bue Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Mia so na hwɛ Nyamefrɛ mmerɛ</string>
+    <string name="tile_telefonda_acin">Bue app no wɔ wo fon so</string>
+    <string name="tile_sonra">%1$s mu</string>
+    <string name="tile_siradaki_aciklama">Nyamefrɛ a ɛdi hɔ %1$s, ɛhyɛ ase %2$s. Bue app no</string>
+    <string name="tile_giris">ɛhyɛ ase %1$s</string>
+    <string name="tile_cikis">ɛba awieɛ %1$s</string>
+    <string name="bugun_bos_satir1">Bue app no</string>
+    <string name="bugun_bos_satir2">wɔ wo fon so</string>
+    <string name="bugun_acma_aciklamasi">Ɛnnɛ wɔayɛ Nyamefrɛ %1$d/%2$d. Bue app no</string>
+    <string name="bugun_sayi">Ɛnnɛ %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Makruh berɛ · mia so bio na pene so</string>
+    <string name="bugun_onay_tekrar">Mia so bio na pene so</string>
+    <string name="bugun_tamam">Ɛnnɛ Nyamefrɛ awie</string>
+    <string name="bugun_kilinmadi">Wɔanyɛ %1$s</string>
+    <string name="bugun_siradaki">Deɛ ɛdi hɔ: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Mia so bio</string>
+    <string name="bugun_kilindi">Wɔayɛ %1$s</string>
+    <string name="bugun_kilindi_esitleniyor">Wɔayɛ %1$s, ɛrehyia</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Ɛretwɛn Nyamefrɛ mmerɛ; bue Namaz Akışı wɔ wo fon so</string>
+    <string name="komplikasyon_bekleniyor">Ɛretwɛn mmerɛ</string>
+    <string name="komplikasyon_vakit">Nyamefrɛ</string>
+    <string name="komplikasyon_cikis">Awieɛ</string>
+    <string name="komplikasyon_sirada">Ɛdi hɔ</string>
+    <string name="gun_durumu_aciklama">Ɛnnɛ wɔayɛ Nyamefrɛ %2$d wɔ %1$d mu</string>
+    <string name="gun_durumu_kilinmamis">%1$s; wɔanyɛ: %2$s</string>
+    <string name="komplikasyon_namaz">Nyamefrɛ</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">Ɛyɛ Makruh berɛ, ɛba awieɛ %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Makruh berɛ a ɛdi hɔ %1$s</string>
+    <string name="kible_komplikasyon">Qibla wɔ %1$d° firi atifi. Bue kompas no</string>
+    <string name="kible_komplikasyon_konumlu">Qibla wɔ %1$d° firi atifi, %2$s. Bue kompas no</string>
+    <string name="kible_komplikasyon_konum_yok">Bue beaeɛ wɔ wo fon so na hwehwɛ Qibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Nkaeɛ a ɛhia ntɛm · Ɛwosow</string>
+    <string name="muhafiz_kanal_acil">Nkaeɛ a ɛhia ntɛm</string>
+    <string name="muhafiz_kanal_titresimli">Nyamefrɛ nkaeɛ · Ɛwosow</string>
+    <string name="muhafiz_kanal">Nyamefrɛ nkaeɛ</string>
+    <string name="muhafiz_kanal_aciklama">Nyamefrɛ nkaeɛ a ɛda adi wɔ wo wɔɔkye so ɛmpo sɛ wo fon nni wo nkyɛn a</string>
+    <string name="son_dakikalar_cikis">Awieɛ: %1$s</string>
+    <string name="son_dakikalar_bitis">Awieɛ: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Berɛ a aka ansa na %1$s aba awieɛ</string>
+    <string name="son_dakikalar_kalan_erisim">Berɛ a aka ma %1$s</string>
+    <string name="cami_namaz_modu_bitis">Nyamefrɛ tebea · ɛba awieɛ %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Ebue wɔ wo fon so</string>
+    <string name="telefona_ulasilamadi">Wɔntumi nnu wo fon ho</string>
+</resources>

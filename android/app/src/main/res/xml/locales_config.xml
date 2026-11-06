@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 13+ uygulama başına dil listesi (Ayarlar › Uygulamalar › Namaz Akışı › Dil).
+  YALNIZ seçilebilir diller (src/core/dil/diller.ts > secilebilir); kapalı dil burada olursa
+  sistemden seçilir ama uygulama Türkçeye düşer. Nöbetçi: src/__tests__/androidDilListesi.test.ts
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+  <locale android:name="tr"/>
+  <locale android:name="en"/>
+  <locale android:name="id"/>
+  <locale android:name="de"/>
+  <locale android:name="fr"/>
+  <locale android:name="bs"/>
+  <locale android:name="ru"/>
+  <locale android:name="ms"/>
+  <locale android:name="ar"/>
+  <locale android:name="ur"/>
+  <locale android:name="es"/>
+  <locale android:name="nl"/>
+  <locale android:name="sq"/>
+  <locale android:name="hi"/>
+  <locale android:name="bn"/>
+  <locale android:name="fa"/>
+  <locale android:name="ps"/>
+  <locale android:name="ckb"/>
+  <locale android:name="ug"/>
+  <locale android:name="az"/>
+  <locale android:name="uz"/>
+  <locale android:name="kk"/>
+  <locale android:name="ky"/>
+  <locale android:name="tg"/>
+  <locale android:name="sw"/>
+  <locale android:name="ha"/>
+  <locale android:name="am"/>
+  <locale android:name="om"/>
+  <locale android:name="so"/>
+  <locale android:name="ff"/>
+  <locale android:name="yo"/>
+  <locale android:name="zh-Hans"/>
+  <locale android:name="ta"/>
+  <locale android:name="ml"/>
+  <locale android:name="th"/>
+  <locale android:name="ko"/>
+  <locale android:name="vi"/>
+  <locale android:name="pt"/>
+  <locale android:name="it"/>
+  <locale android:name="sv"/>
+  <locale android:name="uk"/>
+  <locale android:name="ro"/>
+  <locale android:name="hr"/>
+  <locale android:name="sr"/>
+  <locale android:name="el"/>
+  <locale android:name="ku"/>
+  <locale android:name="tk"/>
+  <locale android:name="tt"/>
+  <locale android:name="sd"/>
+  <locale android:name="pl"/>
+  <locale android:name="ja"/>
+  <locale android:name="gu"/>
+  <locale android:name="bg"/>
+  <locale android:name="mk"/>
+  <locale android:name="fil"/>
+  <locale android:name="te"/>
+  <locale android:name="kn"/>
+  <locale android:name="mr"/>
+  <locale android:name="pa-Arab"/>
+  <locale android:name="as"/>
+  <locale android:name="ne"/>
+  <locale android:name="si"/>
+  <locale android:name="km"/>
+  <locale android:name="he"/>
+  <locale android:name="ka"/>
+  <locale android:name="lt"/>
+  <locale android:name="mg"/>
+  <locale android:name="lg"/>
+  <locale android:name="rw"/>
+  <locale android:name="rn"/>
+  <locale android:name="ln"/>
+  <locale android:name="dag"/>
+  <locale android:name="mos"/>
+  <locale android:name="aa"/>
+  <locale android:name="mdh"/>
+  <locale android:name="ak"/>
+  <locale android:name="ceb"/>
+  <locale android:name="nqo"/>
+</locale-config>

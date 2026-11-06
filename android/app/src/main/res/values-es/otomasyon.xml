@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- es — İspanyolca (beta). Tasker / MacroDroid / Automate eklentisi. Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Ya recé</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Estado de la hora del rezo</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Evento de la hora del rezo</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "usted". -->
+  <string name="otomasyon_bilgi_baslik">Este ajuste se añade desde una aplicación de automatización</string>
+  <string name="otomasyon_bilgi_tarayici">Los navegadores no pueden recibir permiso permanente. Añádalo desde la lista de plugins de una aplicación como Tasker, MacroDroid o Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Añádalo eligiendo «Namaz Akışı» en la lista de plugins de una aplicación como Tasker, MacroDroid o Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s está bloqueada</string>
+  <string name="otomasyon_engelli_mesaj">Antes bloqueó a esta aplicación para que no marcara sus rezos. Puede permitirlo en Namaz Akışı, en Ajustes &gt; «Aplicaciones que marcan Ya recé».</string>
+  <string name="otomasyon_izin_baslik">¿Usar con %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s puede saber cuándo comienza una hora de rezo, cuándo está terminando y cuándo está usted en una mezquita, y ejecutar sus automatizaciones. Puede cambiar su decisión en Namaz Akışı, en Ajustes &gt; «Aplicaciones que marcan Ya recé».</string>
+  <string name="otomasyon_izin_kildim">%1$s puede marcar el rezo actual como rezado con la automatización que configuró. Puede cambiar su decisión en Namaz Akışı, en Ajustes &gt; «Aplicaciones que marcan Ya recé».</string>
+  <string name="otomasyon_izin_ver">Permitir</string>
+  <string name="otomasyon_engelle">Bloquear</string>
+  <string name="otomasyon_vazgec">Cancelar</string>
+  <string name="otomasyon_tamam">Aceptar</string>
+  <string name="otomasyon_tur_baslik">¿Cuándo debe ejecutarse?</string>
+  <string name="otomasyon_ileri">Siguiente</string>
+  <string name="otomasyon_vakit_baslik">¿Qué rezo?</string>
+  <string name="otomasyon_herhangi_vakit">Cualquier hora de rezo</string>
+  <string name="otomasyon_kaydet">Guardar</string>
+  <string name="otomasyon_kosul_icinde">Mientras sea una hora de rezo</string>
+  <string name="otomasyon_kosul_cikiyor">Mientras una hora de rezo esté terminando (%1$d min restantes, Guardián del rezo activado)</string>
+  <string name="otomasyon_kosul_camide">Mientras esté en una mezquita</string>
+  <string name="otomasyon_olay_girdi">Cuando comience una hora de rezo</string>
+  <string name="otomasyon_olay_cikiyor">Cuando una hora de rezo esté terminando (%1$d min restantes, Guardián del rezo activado)</string>
+  <string name="otomasyon_olay_camide">Cuando se detecte que está en una mezquita</string>
+</resources>

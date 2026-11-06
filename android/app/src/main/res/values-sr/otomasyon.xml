@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- sr — Sırpça, Kiril (beta). -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Sırpça). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Клањано</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Стање времена намаза</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Догађај времена намаза</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "ви". -->
+  <string name="otomasyon_bilgi_baslik">Ово подешавање се додаје из апликације за аутоматизацију</string>
+  <string name="otomasyon_bilgi_tarayici">Прегледачи не могу да добију трајну дозволу. Додајте га са листе додатака апликације као што су Tasker, MacroDroid или Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Додајте га тако што ћете изабрати „Namaz Akışı” са листе додатака апликације као што су Tasker, MacroDroid или Automate.</string>
+  <string name="otomasyon_engelli_baslik">Блокирано: %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Раније сте овој апликацији забранили да означава ваше намазе. Можете је дозволити у апликацији Namaz Akışı, у Подешавања &gt; „Апликације које могу да означе намаз”.</string>
+  <string name="otomasyon_izin_baslik">Користити са апликацијом %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s може да сазна када време намаза наступи, када истиче и када сте у џамији и да покреће ваше аутоматизације. Одлуку можете променити у апликацији Namaz Akışı, у Подешавања &gt; „Апликације које могу да означе намаз”.</string>
+  <string name="otomasyon_izin_kildim">%1$s може аутоматизацијом коју сте подесили да означи тренутни намаз као клањан. Одлуку можете променити у апликацији Namaz Akışı, у Подешавања &gt; „Апликације које могу да означе намаз”.</string>
+  <string name="otomasyon_izin_ver">Дозволите</string>
+  <string name="otomasyon_engelle">Блокирајте</string>
+  <string name="otomasyon_vazgec">Одустаните</string>
+  <string name="otomasyon_tamam">У реду</string>
+  <string name="otomasyon_tur_baslik">Када да се покрене?</string>
+  <string name="otomasyon_ileri">Даље</string>
+  <string name="otomasyon_vakit_baslik">Који намаз?</string>
+  <string name="otomasyon_herhangi_vakit">Било које време намаза</string>
+  <string name="otomasyon_kaydet">Сачувајте</string>
+  <string name="otomasyon_kosul_icinde">Док траје време намаза</string>
+  <string name="otomasyon_kosul_cikiyor">Док време намаза истиче (још %1$d мин, Чувар намаза укључен)</string>
+  <string name="otomasyon_kosul_camide">Док сте у џамији</string>
+  <string name="otomasyon_olay_girdi">Када наступи време намаза</string>
+  <string name="otomasyon_olay_cikiyor">Када време намаза истиче (још %1$d мин, Чувар намаза укључен)</string>
+  <string name="otomasyon_olay_camide">Када се открије да сте у џамији</string>
+</resources>

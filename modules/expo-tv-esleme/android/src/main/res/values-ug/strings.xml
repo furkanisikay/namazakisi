@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ug — Uygurca (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">تېلېۋىزور ئېكرانىدىكى QR كودنى رامكا ئىچىگە كىرگۈزۈڭ</string>
+    <string name="tvesleme_qr_vazgec">ۋاز كېچىڭ</string>
+    <string name="tvesleme_qr_vazgec_erisim">سىكانىرلاشتىن ۋاز كېچىڭ</string>
+    <string name="tvesleme_qr_yabanci">بۇ QR كود Namaz Akışı تېلېۋىزورىغا تەۋە ئەمەس. تېلېۋىزوردىكى كودنى سىكانىرلاڭ.</string>
+    <string name="tvesleme_qr_okundu">كود سىكانىرلاندى</string>
+</resources>

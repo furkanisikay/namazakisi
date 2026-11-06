@@ -21,7 +21,9 @@ import { PaylasilabilirRozet } from '../../components/Sharing/PaylasilabilirRoze
 import { BolumBasligi } from '../../components/ortak/BolumBasligi';
 import { useRenkler } from '../../../core/theme';
 import { ROZET_RENKLERI } from '../../../core/constants/UygulamaSabitleri';
-import { ROZET_TANIMLARI, SEVIYE_TANIMLARI, type RozetDetay } from '../../../core/types/SeriTipleri';
+import { ROZET_TANIMLARI, SEVIYE_TANIMLARI, seviyeAdi, type RozetDetay } from '../../../core/types/SeriTipleri';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 // Seviye ikon eşlemesi (emoji yerine FontAwesome5)
 const SEVIYE_IKONLARI: Record<string, string> = {
@@ -38,6 +40,7 @@ const seviyeIkonuAl = (emojiIkon: string | undefined): string => (emojiIkon ? SE
 
 export const RozetlerBolumu: React.FC = () => {
   const renkler = useRenkler();
+  const m = useMetin().ilerleme.rozetler;
   const { rozetDetaylari, seviyeDurumu, toplamKilinanNamaz } = useAppSelector((state) => state.seri);
   const [secilenRozet, setSecilenRozet] = useState<RozetDetay | null>(null);
 
@@ -53,10 +56,13 @@ export const RozetlerBolumu: React.FC = () => {
     ? (seviyeDurumu.mevcutSeviyePuani / Math.max(1, seviyeDurumu.mevcutSeviyePuani + seviyeDurumu.sonrakiSeviyeKalanPuan)) * 100
     : 0;
   const sonrakiSeviye = seviyeDurumu ? SEVIYE_TANIMLARI.find((s) => s.seviye === seviyeDurumu.mevcutSeviye + 1) : null;
+  // Rank adı seviye numarasından, etkin dilde (`seviyeDurumu.rank` diske yazılır, dil değişince bayatlar).
+  const mevcutSeviye = seviyeDurumu?.mevcutSeviye || 1;
+  const kalanPuan = seviyeDurumu?.sonrakiSeviyeKalanPuan || 0;
 
   return (
     <View testID="rozetler-bolumu">
-      <BolumBasligi metin="Seviye ve rozetler" ikon="trophy" />
+      <BolumBasligi metin={m.baslik} ikon="trophy" />
 
       {/* Seviye kartı */}
       <View style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, padding: 16, marginBottom: 12 }}>
@@ -76,12 +82,12 @@ export const RozetlerBolumu: React.FC = () => {
               <FontAwesome5 name={seviyeIkonuAl(seviyeDurumu?.rankIkonu)} size={22} color={renkler.birincil} solid />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 18, fontWeight: '700', color: renkler.metin }}>{seviyeDurumu?.rank || 'Mübtedi'}</Text>
-              <Text style={{ fontSize: 14, color: renkler.metinIkincil }}>Seviye {seviyeDurumu?.mevcutSeviye || 1}</Text>
+              <Text style={{ fontSize: 18, fontWeight: '700', color: renkler.metin }}>{seviyeAdi(mevcutSeviye)}</Text>
+              <Text style={{ fontSize: 14, color: renkler.metinIkincil }}>{bicim(m.seviye, { n: mevcutSeviye })}</Text>
             </View>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>Puan</Text>
+            <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>{m.puan}</Text>
             <Text style={{ fontSize: 22, fontWeight: '700', color: renkler.metin }}>{seviyeDurumu?.toplamPuan || 0}</Text>
           </View>
         </View>
@@ -91,8 +97,8 @@ export const RozetlerBolumu: React.FC = () => {
           accessibilityRole="progressbar"
           accessibilityLabel={
             sonrakiSeviye
-              ? `${sonrakiSeviye.rank} seviyesine ${seviyeDurumu?.sonrakiSeviyeKalanPuan || 0} puan kaldı`
-              : 'En yüksek seviyedesiniz'
+              ? sayili(m.kalanErisim, kalanPuan, { rank: sonrakiSeviye.rank })
+              : m.enYuksek
           }
           accessibilityValue={{ min: 0, max: 100, now: Math.round(seviyeIlerleme) }}
         >
@@ -101,7 +107,7 @@ export const RozetlerBolumu: React.FC = () => {
           </View>
           {sonrakiSeviye ? (
             <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginTop: 6 }}>
-              {sonrakiSeviye.rank} için {seviyeDurumu?.sonrakiSeviyeKalanPuan || 0} puan kaldı
+              {sayili(m.kalan, kalanPuan, { rank: sonrakiSeviye.rank })}
             </Text>
           ) : null}
         </View>
@@ -109,23 +115,23 @@ export const RozetlerBolumu: React.FC = () => {
         <View style={{ flexDirection: 'row', marginTop: 12, marginHorizontal: -4 }}>
           <View
             accessible
-            accessibilityLabel={`${toplamKilinanNamaz} namaz kılındı`}
+            accessibilityLabel={sayili(m.kilinanErisim, toplamKilinanNamaz)}
             style={{ flex: 1, flexDirection: 'row', alignItems: 'center', padding: 10, borderRadius: 16, marginHorizontal: 4, backgroundColor: renkler.birincil + '10' }}
           >
             <FontAwesome5 name="mosque" size={16} color={renkler.birincil} solid />
             <Text style={{ fontSize: 16, fontWeight: '700', color: renkler.metin, marginLeft: 8 }}>{toplamKilinanNamaz}</Text>
-            <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginLeft: 4 }}>namaz</Text>
+            <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginLeft: 4 }}>{sayili(m.namaz, toplamKilinanNamaz)}</Text>
           </View>
           <View
             accessible
-            accessibilityLabel={`${toplamRozet} rozetten ${kazanilanSayisi} tanesi kazanıldı`}
+            accessibilityLabel={bicim(m.rozetErisim, { toplam: toplamRozet, n: kazanilanSayisi })}
             style={{ flex: 1, flexDirection: 'row', alignItems: 'center', padding: 10, borderRadius: 16, marginHorizontal: 4, backgroundColor: ROZET_RENKLERI.ALTIN + '18' }}
           >
             <FontAwesome5 name="medal" size={16} color={ROZET_RENKLERI.ALTIN} solid />
             <Text style={{ fontSize: 16, fontWeight: '700', color: renkler.metin, marginLeft: 8 }}>
               {kazanilanSayisi}/{toplamRozet}
             </Text>
-            <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginLeft: 4 }}>rozet</Text>
+            <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginLeft: 4 }}>{sayili(m.rozet, toplamRozet)}</Text>
           </View>
         </View>
       </View>

@@ -1,0 +1,16 @@
+import type { Sozluk } from '../tr';
+
+/**
+ * Gün ve ay adları CLDR `pa-Arab-PK`'den (Mayıs Urduca yazımıyla "مئی"; CLDR "مئ"). Ay adı
+ * çekimsizdir (`aylar` = `aylarYalin`); yerleşik kısaltma yoktur, kısa biçimler tam addır.
+ */
+export const tarih: Sozluk['tarih'] = {
+  gunler: ['اتوار', 'پیر', 'منگل', 'بُدھ', 'جمعرات', 'جمعہ', 'ہفتہ'],
+  gunlerKisa: ['اتوار', 'پیر', 'منگل', 'بُدھ', 'جمعرات', 'جمعہ', 'ہفتہ'],
+  aylar: ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'],
+  aylarYalin: ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'],
+  aylarKisa: ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'],
+  haftaHarfleri: ['پیر', 'منگل', 'بُدھ', 'جمعرات', 'جمعہ', 'ہفتہ', 'اتوار'],
+  uzun: '{gun} {ay} {yil}',
+  gunAdiYil: '{gunAdi}، {yil}',
+};

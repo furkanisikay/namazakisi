@@ -1,0 +1,68 @@
+import type { Sozluk } from '../tr';
+
+/** Kıble: başlıkta "礼拜朝向" (türetildi, tek başına 朝向 = "yön"), cümle içinde bağlamla 朝向. Kâbe 天房. */
+export const kible: Sozluk['kible'] = {
+  baslik: '礼拜朝向',
+  yon: {
+    hizali: '您已面向朝向',
+    arkada: '朝向在您身后，转过身来',
+    sagda: '朝向在您右侧{derece}°',
+    solda: '朝向在您左侧{derece}°',
+  },
+  harf: { kuzey: '北', dogu: '东', guney: '南', bati: '西' },
+  sekme: {
+    pusula: '指南针',
+    pusulaErisim: '指南针模式',
+    pusulaAciklama: '当天房标记到达顶部的刻痕时，您就面向朝向了。',
+    kamera: '相机',
+    kameraErisim: '相机模式',
+    kameraAciklama: '竖直握持手机；天房标记会出现在朝向方向。',
+  },
+  sayfa: {
+    baslatiliyor: '正在启动指南针…',
+    izinKapali: '位置权限已关闭；需要您的位置才能找到方向。',
+  },
+  hata: {
+    izinGerekli: '需要位置权限才能找到礼拜朝向。',
+    konumServisi: '无法访问定位服务。检查设备的位置设置。',
+    baslatilamadi: '无法启动朝向服务。',
+  },
+  pusula: {
+    ufuk: '地平线',
+    konumAliniyor: '正在获取您的位置…',
+    hazirlaniyor: '正在准备指南针…',
+    kuzeydenAci: '朝向距正北{derece}°',
+    kabeUzakta: '天房距此{mesafe}',
+    kuzeydenSaatYonu: '自正北顺时针',
+    kuzeyden: '距正北{derece}°',
+    kabeUzaktaKuzeyden: '天房距此{mesafe}，距正北{derece}°',
+    pusulaErisim: '礼拜朝向指南针。{cumle}',
+    pusulaYok: '此设备没有指南针；正在显示相对于正北的方向。',
+    kayiyorsa: '如果方向漂移，在空中将手机按“8”字形移动。',
+    kamerayla: '用相机查看',
+  },
+  kamera: {
+    pusulayiKullanin: '使用指南针',
+    kullanilamiyorBaslik: '此手机无法使用相机视图',
+    kullanilamiyorMetin: '竖直握持时，您手机的传感器无法给出可靠的方向。指南针仍能正确显示方向。',
+    izinBaslik: '用相机查看朝向',
+    izinMetin: '竖直握持手机并环顾四周；天房标记会出现在朝向方向。此功能需要相机权限；画面不会被录制，也不会离开您的手机。',
+    kamerayiAcin: '打开相机',
+    izinKapaliBaslik: '相机权限已关闭',
+    izinKapaliMetin: '可在设置中允许相机访问以使用相机视图。指南针无需此权限即可使用。',
+    ayarlariAcin: '打开设置',
+    acilamadiBaslik: '无法打开相机',
+    acilamadiMetin: '相机目前不可用。可以用指南针找到朝向。',
+    hesaplaniyor: '正在寻找方向…',
+    dikTutun: '竖直握持手机',
+  },
+  kalibrasyon: {
+    tesekkurErisim: '谢谢，方向现在更准确了',
+    tesekkur: '谢谢，方向现在更准确了 ✓',
+    baslik: '校准指南针',
+    sallayin: '在空中将手机按“8”字形移动。',
+    metal: '远离金属物品和磁性保护壳。',
+    dogruluk: '精度',
+    simdiDegil: '以后再说',
+  },
+};

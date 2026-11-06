@@ -18,6 +18,10 @@ data class DurumGoruntusu(
     val cumaAktif: Boolean,
     val cumaCikisDk: Int?,
     val ramazan: Boolean,
+    /** Telefonun hesap yöntemi; null = Türkiye (Diyanet) yolu. */
+    val hesap: TvHesap? = null,
+    /** Konumun ülkesi ve telefondaki rakam seçimleri; null = eski telefon. */
+    val rakam: TvRakam? = null,
 )
 
 data class CihazOlayi(val id: String, val tur: String, val tarih: String, val vakit: String)
@@ -77,6 +81,8 @@ object CihazYukuCozucu {
             cumaAktif = cuma?.optBoolean("aktif", false) ?: false,
             cumaCikisDk = cuma?.takeIf { !it.isNull("cikisDk") }?.optInt("cikisDk", -1)?.takeIf { it in 0..240 },
             ramazan = d.optBoolean("ramazan", false),
+            hesap = TvHesapCozucu.coz(d.optJSONObject("hesap")),
+            rakam = RakamKarari.coz(d.optJSONObject("rakam")),
         )
     }
 }

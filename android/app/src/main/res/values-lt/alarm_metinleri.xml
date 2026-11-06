@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tikras žadintuvas (Litvanca). "Atlikau maldą" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Maldos žadintuvas</string>
+  <string name="alarm_kildim">Atlikau maldą</string>
+  <string name="alarm_kapat">Išjungti</string>
+  <string name="alarm_kanal_aciklamasi">Tikras žadintuvas, skambantis jūsų pasirinktuose priminimo žingsniuose</string>
+</resources>

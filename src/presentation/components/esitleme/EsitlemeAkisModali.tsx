@@ -26,6 +26,8 @@ import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { PAROLA_EN_AZ_UZUNLUK, parolaSorunu } from '../../../core/esitleme/anahtarTuretme';
 import type { SaglayiciKimligi } from '../../../core/esitleme/esitlemeTipleri';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export type EsitlemeAkisAdimi =
   | { tur: 'riza' }
@@ -167,6 +169,7 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
   onVazgec,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().yedekleme.akis;
   const gorunur = adim !== null;
   const [parola, setParola] = React.useState('');
   const [tekrar, setTekrar] = React.useState('');
@@ -188,9 +191,9 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
     if (adim.kip !== 'katil') {
       const sorun = parolaSorunu(parola);
       if (sorun) return setYerelHata(sorun);
-      if (parola !== tekrar) return setYerelHata('Parolalar aynı değil. Lütfen iki alana da aynı parolayı yazın.');
+      if (parola !== tekrar) return setYerelHata(m.parolalarFarkli);
     } else if (!parola) {
-      return setYerelHata('Lütfen parolanızı girin.');
+      return setYerelHata(m.parolaGirin);
     }
     setYerelHata(null);
     onParola(parola);
@@ -199,17 +202,17 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
   const baslikVeIkon = (): { baslik: string; ikon: string } => {
     switch (adim?.tur) {
       case 'riza':
-        return { baslik: 'Cihazlar arası eşitleme', ikon: 'sync-alt' };
+        return { baslik: m.rizaBaslik, ikon: 'sync-alt' };
       case 'saglayici':
-        return { baslik: 'Hizmet seçin', ikon: 'cloud' };
+        return { baslik: m.saglayiciBaslik, ikon: 'cloud' };
       case 'parola':
         return adim.kip === 'katil'
-          ? { baslik: 'Eşitleme parolanızı girin', ikon: 'key' }
-          : { baslik: 'Eşitleme parolası oluşturun', ikon: 'key' };
+          ? { baslik: m.parolaKatilBaslik, ikon: 'key' }
+          : { baslik: m.parolaYeniBaslik, ikon: 'key' };
       case 'unuttum':
-        return { baslik: 'Parolanızı mı unuttunuz?', ikon: 'exclamation-triangle' };
+        return { baslik: m.unuttumBaslik, ikon: 'exclamation-triangle' };
       case 'kapat':
-        return { baslik: 'Eşitlemeyi kapatın', ikon: 'power-off' };
+        return { baslik: m.kapatBaslik, ikon: 'power-off' };
       default:
         return { baslik: '', ikon: 'sync-alt' };
     }
@@ -250,24 +253,24 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
 
           {adim?.tur === 'riza' && (
             <View>
-              <Madde ikon="user-shield" metin="Verileriniz bizim değil, yalnızca sizin bulut hesabınızda saklanır. Bir sunucumuz yoktur." />
-              <Madde ikon="lock" metin="Gönderilmeden önce yalnız sizin bildiğiniz bir parolayla şifrelenir. Biz de, bulut hizmeti de içeriği göremez." />
-              <Madde ikon="exchange-alt" metin="Namaz kayıtlarınız, kaza defteriniz, rozet ve bonus puanınız eşitlenir. Ayarlarınız ve konumunuz her cihazda ayrı kalır." />
-              <Madde ikon="code-branch" metin="Bir cihazda işaretlenen namaz diğerlerinde de işaretlenir; eşitleme hiçbir kaydı geri almaz." />
-              <Madde ikon="key" metin="Parolanızı unutursanız buluttaki veri kurtarılamaz. Cihazlarınızdaki kayıtlar yerinde kalır." />
-              <Dugme etiket="Anladım, devam edin" ikon="check" birincil onPress={onRizaVer} />
-              <Dugme etiket="Vazgeçin" onPress={onVazgec} />
+              <Madde ikon="user-shield" metin={m.riza1} />
+              <Madde ikon="lock" metin={m.riza2} />
+              <Madde ikon="exchange-alt" metin={m.riza3} />
+              <Madde ikon="code-branch" metin={m.riza4} />
+              <Madde ikon="key" metin={m.riza5} />
+              <Dugme etiket={m.anladim} ikon="check" birincil onPress={onRizaVer} />
+              <Dugme etiket={m.vazgecin} onPress={onVazgec} />
             </View>
           )}
 
           {adim?.tur === 'saglayici' && (
             <View>
               <Text className="text-sm leading-5 mb-1" style={{ color: renkler.metinIkincil }}>
-                Verilerinizin saklanacağı kendi hesabınızı seçin. Hesabınıza bağlanmanız istenecek.
+                {m.saglayiciAciklama}
               </Text>
               {cevrimdisi === true ? (
                 <Text className="text-sm leading-5 mt-3" style={{ color: renkler.metin }} accessibilityLiveRegion="polite">
-                  Çevrimdışısınız; internete bağlanınca devam edebilirsiniz.
+                  {m.cevrimdisi}
                 </Text>
               ) : null}
               {saglayicilar.map((s) => {
@@ -302,7 +305,7 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
                   {gosterilenHata}
                 </Text>
               ) : null}
-              <Dugme etiket="Vazgeçin" pasif={mesgul} onPress={onVazgec} />
+              <Dugme etiket={m.vazgecin} pasif={mesgul} onPress={onVazgec} />
             </View>
           )}
 
@@ -310,12 +313,12 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
             <View>
               <Text className="text-sm leading-5 mb-4" style={{ color: renkler.metinIkincil }}>
                 {adim.kip === 'katil'
-                  ? 'Hesabınızda eşitleme verisi bulundu. Diğer cihazınızda belirlediğiniz parolayı girin.'
-                  : `En az ${PAROLA_EN_AZ_UZUNLUK} karakterlik, kolay unutmayacağınız bir parola seçin. Diğer cihazlarınızda da aynı parolayı gireceksiniz. Unutursanız buluttaki veri kurtarılamaz.`}
+                  ? m.katilAciklama
+                  : bicim(m.yeniAciklama, { n: PAROLA_EN_AZ_UZUNLUK })}
               </Text>
-              <ParolaAlani etiket="Parola" deger={parola} onChange={setParola} yeni={adim.kip !== 'katil'} />
+              <ParolaAlani etiket={m.parola} deger={parola} onChange={setParola} yeni={adim.kip !== 'katil'} />
               {adim.kip !== 'katil' && (
-                <ParolaAlani etiket="Parola (tekrar)" deger={tekrar} onChange={setTekrar} yeni />
+                <ParolaAlani etiket={m.parolaTekrar} deger={tekrar} onChange={setTekrar} yeni />
               )}
               {gosterilenHata ? (
                 <Text className="text-sm leading-5 mb-1" style={{ color: renkler.hata }} accessibilityLiveRegion="polite">
@@ -326,50 +329,47 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
                 <View className="flex-row items-center justify-center py-3.5 mt-3">
                   <ActivityIndicator color={renkler.birincil} />
                   <Text className="text-sm ml-3" style={{ color: renkler.metinIkincil }}>
-                    Şifreleme anahtarı hazırlanıyor…
+                    {m.anahtarHazirlaniyor}
                   </Text>
                 </View>
               ) : (
                 <Dugme
-                  etiket={adim.kip === 'katil' ? 'Eşitlemeyi başlatın' : 'Parolayı kaydedin'}
+                  etiket={adim.kip === 'katil' ? m.baslatin : m.kaydedin}
                   ikon="lock"
                   birincil
                   onPress={parolaGonder}
                 />
               )}
               {adim.kip === 'katil' && !mesgul ? (
-                <Dugme etiket="Parolamı unuttum" onPress={onUnuttum} />
+                <Dugme etiket={m.unuttum} onPress={onUnuttum} />
               ) : null}
-              <Dugme etiket="Vazgeçin" pasif={mesgul} onPress={onVazgec} />
+              <Dugme etiket={m.vazgecin} pasif={mesgul} onPress={onVazgec} />
             </View>
           )}
 
           {adim?.tur === 'unuttum' && (
             <View>
               <Text className="text-sm leading-5" style={{ color: renkler.metin }}>
-                Parola olmadan buluttaki veri açılamaz; biz de açamayız. Buluttaki eşitleme kaydını silip
-                yeni bir parolayla baştan başlayabilirsiniz. Bu cihazdaki kayıtlarınız silinmez ve yeniden
-                yüklenir; diğer cihazlarınızda yeni parolayı girmeniz gerekir.
+                {m.unuttumAciklama}
               </Text>
-              <Dugme etiket="Buluttakini silin ve yeniden başlayın" ikon="trash-alt" tehlikeli pasif={mesgul} onPress={onSifirlaOnay} />
-              <Dugme etiket="Vazgeçin" pasif={mesgul} onPress={onVazgec} />
+              <Dugme etiket={m.silVeBasla} ikon="trash-alt" tehlikeli pasif={mesgul} onPress={onSifirlaOnay} />
+              <Dugme etiket={m.vazgecin} pasif={mesgul} onPress={onVazgec} />
             </View>
           )}
 
           {adim?.tur === 'kapat' && (
             <View>
               <Text className="text-sm leading-5" style={{ color: renkler.metin }}>
-                Bu cihazdaki kayıtlarınız silinmez. Buluttaki eşitleme verisini de silebilirsiniz; diğer
-                cihazlarınızda eşitleme açıksa veriler oradan yeniden yüklenir.
+                {m.kapatAciklama}
               </Text>
               {gosterilenHata ? (
                 <Text className="text-sm leading-5 mt-2" style={{ color: renkler.hata }} accessibilityLiveRegion="polite">
                   {gosterilenHata}
                 </Text>
               ) : null}
-              <Dugme etiket="Yalnız bu cihazda kapatın" ikon="power-off" birincil pasif={mesgul} onPress={() => onKapatSec(false)} />
-              <Dugme etiket="Buluttaki veriyi de silin" ikon="trash-alt" tehlikeli pasif={mesgul} onPress={() => onKapatSec(true)} />
-              <Dugme etiket="Vazgeçin" pasif={mesgul} onPress={onVazgec} />
+              <Dugme etiket={m.yalnizBuCihaz} ikon="power-off" birincil pasif={mesgul} onPress={() => onKapatSec(false)} />
+              <Dugme etiket={m.buluttakiniSil} ikon="trash-alt" tehlikeli pasif={mesgul} onPress={() => onKapatSec(true)} />
+              <Dugme etiket={m.vazgecin} pasif={mesgul} onPress={onVazgec} />
             </View>
           )}
         </View>

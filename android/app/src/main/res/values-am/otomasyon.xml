@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Amharca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı፦ ሰገድኩ</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı፦ የሶላት ሰዓት ሁኔታ</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı፦ የሶላት ሰዓት ክስተት</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar እርስዎ. -->
+  <string name="otomasyon_bilgi_baslik">ይህ ቅንብር የሚጨመረው ከራስ-ሰር መተግበሪያ ነው</string>
+  <string name="otomasyon_bilgi_tarayici">አሳሾች ቋሚ ፈቃድ ማግኘት አይችሉም። እንደ Tasker፣ MacroDroid ወይም Automate ካለ መተግበሪያ የተሰኪ ዝርዝር ያክሉት።</string>
+  <string name="otomasyon_bilgi_eklenti">እንደ Tasker፣ MacroDroid ወይም Automate ካለ መተግበሪያ የተሰኪ ዝርዝር “Namaz Akışı”ን በመምረጥ ያክሉት።</string>
+  <string name="otomasyon_engelli_baslik">%1$s ታግዷል</string>
+  <string name="otomasyon_engelli_mesaj">ይህ መተግበሪያ ሶላቶችዎን ምልክት እንዳያደርግ ቀደም ብለው አግደውታል። በNamaz Akışı ውስጥ በቅንብሮች &gt; “ሰገድኩ”ን ምልክት ማድረግ የሚችሉ መተግበሪያዎች ስር መፍቀድ ይችላሉ።</string>
+  <string name="otomasyon_izin_baslik">ከ%1$s ጋር ይጠቀሙ?</string>
+  <string name="otomasyon_izin_kosul">%1$s የሶላት ሰዓት መቼ እንደሚገባ፣ መቼ እንደሚያልቅ እና መቼ መስጂድ ውስጥ እንዳሉ አውቆ ራስ-ሰሮችዎን ማሄድ ይችላል። ውሳኔዎን በNamaz Akışı ውስጥ በቅንብሮች &gt; “ሰገድኩ”ን ምልክት ማድረግ የሚችሉ መተግበሪያዎች ስር መቀየር ይችላሉ።</string>
+  <string name="otomasyon_izin_kildim">%1$s ባዘጋጁት ራስ-ሰር የአሁኑን ሶላት እንደተሰገደ ምልክት ማድረግ ይችላል። ውሳኔዎን በNamaz Akışı ውስጥ በቅንብሮች &gt; “ሰገድኩ”ን ምልክት ማድረግ የሚችሉ መተግበሪያዎች ስር መቀየር ይችላሉ።</string>
+  <string name="otomasyon_izin_ver">ፍቀድ</string>
+  <string name="otomasyon_engelle">አግድ</string>
+  <string name="otomasyon_vazgec">ሰርዝ</string>
+  <string name="otomasyon_tamam">እሺ</string>
+  <string name="otomasyon_tur_baslik">መቼ ይሥራ?</string>
+  <string name="otomasyon_ileri">ቀጣይ</string>
+  <string name="otomasyon_vakit_baslik">የትኛው ሶላት?</string>
+  <string name="otomasyon_herhangi_vakit">ማንኛውም የሶላት ሰዓት</string>
+  <string name="otomasyon_kaydet">አስቀምጥ</string>
+  <string name="otomasyon_kosul_icinde">የሶላት ሰዓት ሲሆን</string>
+  <string name="otomasyon_kosul_cikiyor">የሶላት ሰዓት እያለቀ ሲሆን (%1$d ደቂቃ ቀርቷል፣ የሶላት ጠባቂ በርቷል)</string>
+  <string name="otomasyon_kosul_camide">መስጂድ ውስጥ ሲሆኑ</string>
+  <string name="otomasyon_olay_girdi">የሶላት ሰዓት ሲገባ</string>
+  <string name="otomasyon_olay_cikiyor">የሶላት ሰዓት እያለቀ ሲሆን (%1$d ደቂቃ ቀርቷል፣ የሶላት ጠባቂ በርቷል)</string>
+  <string name="otomasyon_olay_camide">መስጂድ ውስጥ እንዳሉ ሲታወቅ</string>
+</resources>

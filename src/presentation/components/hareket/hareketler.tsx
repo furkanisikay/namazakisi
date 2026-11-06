@@ -19,6 +19,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { EGRI, SURE, YAY } from './sureler';
+import { yatayIsaret } from '../common/yon';
 
 export function useSecimGecisi(secili: boolean): Animated.Value {
     const azalt = useHareketAzalt();
@@ -94,7 +95,8 @@ export const SilinebilirSatir: React.FC<SilinebilirSatirProps> = ({ siliniyor, o
                 style,
                 {
                     opacity: ilerleme.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-                    transform: [{ translateX: ilerleme.interpolate({ inputRange: [0, 1], outputRange: [0, -24] }) }],
+                    // Başa doğru kayar (sağdan solada sağa).
+                    transform: [{ translateX: ilerleme.interpolate({ inputRange: [0, 1], outputRange: [0, -24 * yatayIsaret()] }) }],
                 },
             ]}
         >

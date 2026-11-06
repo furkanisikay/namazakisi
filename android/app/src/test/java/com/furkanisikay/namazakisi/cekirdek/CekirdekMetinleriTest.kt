@@ -1,0 +1,134 @@
+package com.furkanisikay.namazakisi.cekirdek
+
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+/**
+ * Native dil tablosu nöbetçisi (`docs/ajan/coklu-dil.md > Native dil tabloları`): her dilin
+ * bloğu Türkçeyle AYNI alanları ve her alan AYNI yer tutucu kümesini taşır; kod → blok
+ * eşlemesi ve Endonezce "in" takma adı. Türkçe çıktı fikstür testlerinde kilitlidir.
+ */
+class CekirdekMetinleriTest {
+    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo")
+    private val yerTutucu = Regex("""\{\w+\}""")
+
+    private fun alanlar(m: CekirdekMetinleri): Map<String, String> =
+        CekirdekMetinleri::class.java.declaredFields
+            .filter { it.type == String::class.java && !java.lang.reflect.Modifier.isStatic(it.modifiers) }
+            .associate { f -> f.isAccessible = true; f.name to (f.get(m) as String) }
+
+    @Test
+    fun desteklenenDillerTabloSirasiyla() {
+        assertEquals(diller, MetinDili.DESTEKLENENLER)
+    }
+
+    @Test
+    fun herDilinBlokuKendiKodunuTasir() {
+        for (d in diller) {
+            assertEquals(d, MetinDili.metinler(d).dil)
+            // Pencapça yalnız Şahmuki bölge/betikle eşlenir (bölgesi belirsiz "pa-XX" Gurmuki sayılabilir).
+            assertEquals(d, MetinDili.coz(if (d == "pa") "pa-PK" else "$d-XX"))
+        }
+        assertSame(CEKIRDEK_TR, MetinDili.metinler("xx"))
+        assertSame(CEKIRDEK_TR, MetinDili.metinler(null))
+    }
+
+    @Test
+    fun endonezceEskiKoduId() {
+        // java.util.Locale "id"yi "in"e çevirir; Android cihaz dili "in" gelebilir.
+        assertEquals("id", MetinDili.coz("in"))
+        assertEquals("id", MetinDili.coz("in_ID"))
+        assertSame(CEKIRDEK_ID, MetinDili.metinler("in-ID"))
+    }
+
+    @Test
+    fun cinceYerelAyarlariBasitlestirilmisBloga() {
+        // Uygulama yalnız Basitleştirilmiş Çince taşır: zh_CN, zh-Hans-CN, zh_TW_#Hant → "zh".
+        for (yerel in listOf("zh", "zh_CN", "zh-CN", "zh-Hans-CN", "zh_TW_#Hant", "zh-HK")) {
+            assertEquals(yerel, "zh", MetinDili.coz(yerel))
+        }
+        assertSame(CEKIRDEK_ZH, MetinDili.metinler("zh-Hans-CN"))
+    }
+
+    @Test
+    fun portekizceVeSirpcaYerelAyarlari() {
+        // Portekizce Avrupa normu: Brezilya dahil bütün pt-* → "pt"; Latin Sırpça cihaz → Kiril "sr".
+        for (yerel in listOf("pt", "pt_BR", "pt-BR", "pt_PT", "pt-MZ", "pt_AO")) {
+            assertEquals(yerel, "pt", MetinDili.coz(yerel))
+        }
+        for (yerel in listOf("sr", "sr_RS", "sr_RS_#Latn", "sr-Latn-RS", "sr-Cyrl-RS")) {
+            assertEquals(yerel, "sr", MetinDili.coz(yerel))
+        }
+        assertSame(CEKIRDEK_PT, MetinDili.metinler("pt_BR"))
+    }
+
+    @Test
+    fun kurmanciYerelAyarlari() {
+        // Kurmancî: uygulama kodu "ku"; ISO 639-3 "kmr" ve Arap harfli cihaz (ku-Arab, ku_IQ) da "ku" (yalnız Latin).
+        for (yerel in listOf("ku", "ku_TR", "ku-TR", "kmr", "kmr-Latn", "kmr_TR", "ku-Arab", "ku_IQ")) {
+            assertEquals(yerel, "ku", MetinDili.coz(yerel))
+        }
+        // Soranî ayrı dildir.
+        assertEquals("ckb", MetinDili.coz("ckb_IQ"))
+        assertSame(CEKIRDEK_KU, MetinDili.metinler("kmr"))
+    }
+
+    @Test
+    fun filipinceVePencapcaYerelAyarlari() {
+        // Filipince: AOSP'nin Tagalog kodu "tl" (kaynak dizini values-tl) "fil"dir.
+        for (yerel in listOf("fil", "fil_PH", "fil-PH", "tl", "tl_PH")) assertEquals(yerel, "fil", MetinDili.coz(yerel))
+        assertSame(CEKIRDEK_FIL, MetinDili.metinler("tl_PH"))
+        // Pencapça yalnız Şahmuki: uygulama kodu "pa", Arap betikli / Pakistan bölgeli yerel ayar ve "pnb" "pa";
+        // Gurmuki cihaz (pa_IN, pa-Guru) Türkçeye düşer (Şahmukiyi okuyamaz).
+        for (yerel in listOf("pa", "pa_PK", "pa-Arab", "pa-Arab-PK", "pa_PK_#Arab", "pnb", "pnb_PK")) {
+            assertEquals(yerel, "pa", MetinDili.coz(yerel))
+        }
+        for (yerel in listOf("pa_IN", "pa-IN", "pa-Guru", "pa-Guru-IN", "pa_IN_#Guru")) assertEquals(yerel, "tr", MetinDili.coz(yerel))
+        assertSame(CEKIRDEK_PA, MetinDili.metinler("pnb"))
+    }
+
+    @Test
+    fun ibraniceEskiKodu() {
+        // Android `Locale("he").language` "iw" verir (JDK 17+ "he"): iki dize de açıkça beslenir. Kaynak dizini values-iw.
+        for (yerel in listOf("he", "he_IL", "he-IL", "iw", "iw_IL", "iw-IL")) assertEquals(yerel, "he", MetinDili.coz(yerel))
+        assertSame(CEKIRDEK_HE, MetinDili.metinler("iw_IL"))
+        for (yerel in listOf("dag", "mos_BF", "mdh-PH", "ceb_PH", "nqo-GN")) assertEquals(yerel, yerel.substringBefore('_').substringBefore('-'), MetinDili.coz(yerel))
+    }
+
+    @Test
+    fun herBlokTurkceyleAyniAlanVeYerTutucular() {
+        val tr = alanlar(CEKIRDEK_TR)
+        assertTrue(tr.size > 50)
+        for (d in diller) {
+            val m = alanlar(MetinDili.metinler(d))
+            assertEquals(d, tr.keys, m.keys)
+            for ((ad, metin) in tr) {
+                val beklenen = yerTutucu.findAll(metin).map { it.value }.toSortedSet()
+                val gercek = yerTutucu.findAll(m.getValue(ad)).map { it.value }.toSortedSet()
+                assertEquals("$d.$ad", beklenen, gercek)
+                assertTrue("$d.$ad boş", m.getValue(ad).isNotBlank())
+            }
+        }
+    }
+
+    @Test
+    fun turkceBlokEskiSabitlerleAyni() {
+        assertEquals(KilitEkraniKarari.KAPAK_IPUCU, CEKIRDEK_TR.kapakIpucu)
+        assertEquals(KildimOnayMetni.KABUL_DUASI, CEKIRDEK_TR.kabulDuasi)
+        assertEquals(AsistanKarari.KONUM_YOK_METNI, CEKIRDEK_TR.konumYok)
+        assertEquals(AsistanKarari.VERI_ESKI_METNI, CEKIRDEK_TR.veriEski)
+        assertEquals(AsistanKarari.VAKIT_DEGISTI_METNI, CEKIRDEK_TR.vakitDegisti)
+        assertEquals(AracKarari.KONUM_YOK_METNI, CEKIRDEK_TR.aracKonumYok)
+        assertEquals(AracKarari.CAMI_YOK_METNI, CEKIRDEK_TR.aracCamiYok)
+    }
+
+    @Test
+    fun bicimTekGecisteDoldurur() {
+        assertEquals("Öğle · 12:00", MetinDili.bicim("{ad} · {saat}", "ad" to "Öğle", "saat" to "12:00"))
+        // Değer başka bir yer tutucu taşısa da yeniden işlenmez; bilinmeyen yer tutucu kalır.
+        assertEquals("{saat} · 12:00 {x}", MetinDili.bicim("{ad} · {saat} {x}", "ad" to "{saat}", "saat" to "12:00"))
+        assertEquals("$1 \\", MetinDili.bicim("{ad}", "ad" to "$1 \\"))
+    }
+}

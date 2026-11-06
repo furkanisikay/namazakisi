@@ -1,0 +1,31 @@
+# tohum: baku
+# hazirlik: dunya-baku
+# Azerbaycan (Baki): hesap ayari olmayan kullaniciya ana ekranda BIR KEZ acilan kart iki
+# takvimi (MWL, QMİ) ESIT secenek olarak sorar, onerilen yok; QMİ secilince ana ekran QMİ ile.
+appId: com.furkanisikay.namazakisi
+---
+- launchApp:
+    stopApp: true
+- repeat:
+    while:
+      visible:
+        id: "kutlama-devam"
+    commands:
+      - tapOn:
+          id: "kutlama-devam"
+- extendedWaitUntil:
+    visible:
+      id: "bolge-takvimi-modali"
+    timeout: 90000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/69-bolge-takvimi-baku
+- tapOn:
+    id: "bolge-alternatif"
+- extendedWaitUntil:
+    visible:
+      id: "yontem-cipi"
+    timeout: 20000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/70-ana-ekran-qmi

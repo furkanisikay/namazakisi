@@ -20,13 +20,17 @@ import {
   kmMetni,
 } from '../../core/seferilik/seferilikKarari';
 import {
-  SEFERILIK_BILGI_NOTU,
+  seferilikBilgiNotu,
   SEFERILIK_KAYNAK_LISTESI,
   type KaynakBaglantisi,
 } from '../../core/seferilik/seferilikMetni';
+import { useMetin } from '../hooks/useMetin';
+import { aktifDil, bicim } from '../../core/dil/aktifDil';
 
 export const SeferilikAyarlariSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const s = useMetin();
+  const m = s.seferilik.sayfa;
   const { durum, kartAcikAyarla, konumuIsle, buradaIkametEt } = useSeferilik();
 
   // Sayfa açılınca diskteki konumu işle: "Burası evim" güncel konumu kaydetsin.
@@ -40,49 +44,47 @@ export const SeferilikAyarlariSayfasi: React.FC = () => {
   const uzaklik = ikamet && sonKonum ? ikametUzakligiKm(ikamet, sonKonum) : null;
 
   const ikametMetni = ikamet
-    ? ikamet.ad ?? 'Kayıtlı konum'
-    : 'Henüz kaydedilmedi — ilk konumunuz ikamet yeri sayılır';
+    ? ikamet.ad ?? m.kayitliKonum
+    : m.henuzKaydedilmedi;
   const uzaklikMetni = uzaklik === null
     ? ''
     : uzaklik < 1
-      ? 'Şu an buradasınız'
-      : `Şu an kuş uçuşu yaklaşık ${kmMetni(uzaklik)} km uzaktasınız`;
+      ? m.buradasiniz
+      : bicim(m.uzaktasiniz, { km: kmMetni(uzaklik) });
 
   const kaynagiAc = (kaynak: KaynakBaglantisi) => {
     Linking.openURL(kaynak.url).catch(() => {
-      kisaBildirimGoster('Bağlantı açılamadı. İnternet bağlantınızı kontrol edin.');
+      kisaBildirimGoster(s.seferilik.baglantiAcilamadi);
     });
   };
   const evimYap = async () => {
     const tamam = await buradaIkametEt();
-    kisaBildirimGoster(tamam ? 'İkamet yeriniz güncellendi' : 'Konumunuz henüz bilinmiyor; önce konum seçin');
+    kisaBildirimGoster(tamam ? s.seferilik.ikametGuncellendi : m.konumBilinmiyor);
   };
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['bottom', 'left', 'right']}>
       <ScrollView contentContainerStyle={{ paddingTop: 16, paddingBottom: 32 }}>
         <Text className="text-sm leading-5 mx-4 mb-4" style={{ color: renkler.metinIkincil }}>
-          İkamet yerinizden yaklaşık {SEFER_MESAFESI_KM[ayarlar.mezhep]} km uzaklaştığınızda ana ekranda,
-          Diyanet'in fetvalarını özetleyen kısa bir bilgi kartı görürsünüz. Kart yolculuk başına bir kez
-          çıkar, bildirim göndermez.
+          {bicim(m.giris, { km: SEFER_MESAFESI_KM[ayarlar.mezhep] })}
         </Text>
 
-        <AyarGrubu baslik="Bilgi kartı">
+        <AyarGrubu baslik={m.bilgiKarti}>
           <AyarSatiri
             varyant="toggle"
             ikon={<FontAwesome5 name="route" size={18} color={renkler.birincil} />}
-            baslik="Yolculuk bilgi kartı"
-            ozet={ayarlar.kartAcik ? 'Ana ekranda gösterilir' : 'Gösterilmez'}
+            baslik={m.kartBaslik}
+            ozet={ayarlar.kartAcik ? m.gosterilir : m.gosterilmez}
             deger={ayarlar.kartAcik}
             onDegistir={kartAcikAyarla}
           />
         </AyarGrubu>
 
         <Text className="text-xs leading-5 mx-4 -mt-4 mb-6" style={{ color: renkler.metinIkincil }}>
-          Kartın içeriği mezhebinize göredir; mezhebi Ayarlar › Namaz vakitleri'nden seçebilirsiniz.
+          {m.mezhepNotu}
         </Text>
 
-        <AyarGrubu baslik="İkamet yeri">
+        <AyarGrubu baslik={m.ikametYeri}>
           <View className="px-4 py-3">
             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
               {ikametMetni}
@@ -95,25 +97,25 @@ export const SeferilikAyarlariSayfasi: React.FC = () => {
             <TouchableOpacity
               onPress={evimYap}
               accessibilityRole="button"
-              accessibilityLabel="Şu anki konumunuzu ikamet yeri olarak kaydedin"
+              accessibilityLabel={m.ikametYapErisim}
               className="flex-row items-center justify-center rounded-xl border mt-3"
               style={{ minHeight: 44, backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
             >
               <FontAwesome5 name="home" size={13} color={renkler.metin} style={{ marginRight: 6 }} />
               <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                Şu anki konumu ikamet yeri yapın
+                {m.ikametYap}
               </Text>
             </TouchableOpacity>
           </View>
         </AyarGrubu>
 
-        <AyarGrubu baslik="Kaynaklar (Diyanet Din İşleri Yüksek Kurulu)">
+        <AyarGrubu baslik={m.kaynaklar}>
           {SEFERILIK_KAYNAK_LISTESI.map((kaynak) => (
             <TouchableOpacity
               key={kaynak.url}
               onPress={() => kaynagiAc(kaynak)}
               accessibilityRole="link"
-              accessibilityLabel={`${kaynak.etiket}. Tarayıcıda açılır`}
+              accessibilityLabel={bicim(m.kaynakErisim, { etiket: kaynak.etiket })}
               className="flex-row items-center px-4 py-3"
               style={{ minHeight: 48 }}
             >
@@ -126,7 +128,8 @@ export const SeferilikAyarlariSayfasi: React.FC = () => {
         </AyarGrubu>
 
         <Text className="text-xs leading-5 mx-4" style={{ color: renkler.metinIkincil }}>
-          {SEFERILIK_BILGI_NOTU} Sorularınız için 190 Diyanet Fetva Hattı'nı arayabilirsiniz.
+          {/* 190 Diyanet Fetva Hattı Türkiye'ye özgüdür: yalnız Türkçede gösterilir. */}
+          {aktifDil() === 'tr' ? `${seferilikBilgiNotu()} ${m.fetvaHatti}` : seferilikBilgiNotu()}
         </Text>
       </ScrollView>
     </SafeAreaView>

@@ -135,6 +135,11 @@ data class Yuk(
     val uyandirma: List<UyandirmaKaydi> = emptyList(),
     /** Muhafız anonsunun yeri (opsiyonel, saat W3). Yoksa (eski telefon) saat konuşmaz. */
     val anonsYeri: String? = null,
+    /**
+     * Anons metninin dili (BCP-47, opsiyonel): telefon Türkçe dışında bir dildeyse yazar, saat
+     * sesi buna göre seçer. Yoksa (Türkçe ya da eski telefon) `tr-TR`.
+     */
+    val ttsDili: String? = null,
 )
 
 sealed class CozumSonucu {
@@ -146,6 +151,7 @@ sealed class CozumSonucu {
 
 object YukCozucu {
     private val TARIH = Regex("""^\d{4}-\d{2}-\d{2}$""")
+    private val TTS_DILI = Regex("""^[a-z]{2,3}(-[A-Z]{2})?$""")
 
     fun coz(json: String?): CozumSonucu {
         if (json.isNullOrBlank()) return CozumSonucu.Gecersiz
@@ -172,8 +178,10 @@ object YukCozucu {
             val canli = if (o.has("canli")) canliCoz(o.getJSONObject("canli")) else null
             val uyandirma = if (o.has("uyandirma")) uyandirmaCoz(o.getJSONArray("uyandirma")) else emptyList()
             val anonsYeri = if (o.has("anonsYeri")) o.getString("anonsYeri").also { require(it in AnonsYerleri.HEPSI) } else null
+            // Bozuk dil etiketi yükü geçersiz kılmaz; yalnız bu alan düşer (varsayılan Türkçe ses).
+            val ttsDili = o.optString("ttsDili", "").takeIf { TTS_DILI.matches(it) }
             CozumSonucu.Basarili(
-                Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan, canli, konumCoz(o.opt("konum")), uyandirma, anonsYeri),
+                Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan, canli, konumCoz(o.opt("konum")), uyandirma, anonsYeri, ttsDili),
             )
         } catch (_: Exception) {
             CozumSonucu.Gecersiz

@@ -142,6 +142,55 @@ esitMi(TvBicim.geriSayim(-5), "00:00", "bicim: eksi sifira")
 esitMi(TvKaydirma.ofset(0).0, 0, "kaydirma: ilk adim")
 esitMi(TvKaydirma.ofset(60_000).0, 6, "kaydirma: ikinci dakika")
 
+// MARK: - 4b) Ingilizce (W5, Android TV `TvDili` ile ayni) — varsayilan dil "tr" degismez
+
+esitMi(TvBicim.tarih(gun, dil: "en"), "Tuesday, 13 October 2026", "en bicim: tarih")
+esitMi(d4.gorunenAd(.ogle, dil: "en"), "Jumu'ah", "en pano: cuma ogle etiketi")
+esitMi(d1.gorunenAd(.ogle, dil: "en"), "Dhuhr", "en pano: ogle")
+esitMi(d1.gorunenAd(.imsak, dil: "en-US"), "Fajr", "en-US pano: imsak")
+esitMi(d1.gorunenAd(.imsak), "İmsak", "tr pano: imsak (varsayilan)")
+esitMi(TvKerahat.Tur.istiva.ad("en"), "Zenith", "en kerahat adi")
+esitMi(TvKerahat.Tur.gurub.aciklama("en"), "Praying is makruh while the sun is setting.", "en kerahat aciklamasi")
+esitMi(TvKerahat.Tur.suruk.ad("tr"), TvKerahat.Tur.suruk.ad, "tr kerahat adi")
+esitMi(TvDili.coz("xx-XX"), "tr", "desteklenmeyen dil Turkce")
+esitMi(TvDili.coz(nil), "tr", "dil yok Turkce")
+// Kurmanci: uygulama kodu "ku"; ISO 639-3 "kmr" de "ku". Sorani ayri dil.
+esitMi(TvDili.coz("kmr-Latn"), "ku", "Kurmanci kmr → ku")
+esitMi(TvDili.coz("ku-TR"), "ku", "Kurmanci ku-TR → ku")
+esitMi(TvDili.coz("ckb-IQ"), "ckb", "Sorani ckb ayri")
+// Filipince: Tagalog "tl" → "fil"; Pencapca yalniz Sahmuki: pnb ve Gurmuki pa-IN → "pa".
+esitMi(TvDili.coz("tl-PH"), "fil", "Tagalog tl → fil")
+esitMi(TvDili.coz("pnb-PK"), "pa", "Bati Pencapcasi pnb → pa")
+esitMi(TvDili.coz("pa-Arab-PK"), "pa", "Sahmuki cihaz pa")
+esitMi(TvDili.coz("pa-Guru-IN"), "tr", "Gurmuki cihaz Pencapcaya eslenmez")
+// Ibranice: eski kod "iw" → "he"; N'Ko uc harfli kod aynen.
+esitMi(TvDili.coz("iw-IL"), "he", "Ibranice eski kod iw → he")
+esitMi(TvDili.coz("nqo-GN"), "nqo", "N'Ko nqo")
+
+// MARK: - 4c) Native dil tablolari (W4) — on dokuz dil, Turkce tablo eski sabitlerle ayni
+
+esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk", "fil", "te", "kn", "mr", "pa", "as", "ne", "si", "km", "he", "ka", "lt", "mg", "lg", "rw", "rn", "ln", "dag", "mos", "aa", "mdh", "ak", "ceb", "nqo"], "dil: tablo sirasi")
+esitMi(TvDili.coz("ar-SA"), "ar", "dil: ar-SA → ar")
+esitMi(TvDili.coz("de-DE"), "de", "dil: de-DE → de")
+esitMi(TvDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
+esitMi(Set(TvPanoMetinleri.tablo.keys), Set(TvDili.desteklenenler), "pano metinleri: her dilin tablosu var")
+esitMi(TvVakit.allCases.map { TvPanoMetinleri.tr.vakitAdlari[$0.rawValue] ?? "" }, TvVakit.allCases.map { $0.ad }, "tr tablo: vakit adlari eski sabitler")
+esitMi([TvKerahat.Tur.suruk, .istiva, .gurub].map { $0.ad("tr") }, [TvKerahat.Tur.suruk.ad, TvKerahat.Tur.istiva.ad, TvKerahat.Tur.gurub.ad], "tr tablo: kerahat adlari")
+esitMi([TvKerahat.Tur.suruk, .istiva, .gurub].map { $0.aciklama("tr") }, [TvKerahat.Tur.suruk.aciklama, TvKerahat.Tur.istiva.aciklama, TvKerahat.Tur.gurub.aciklama], "tr tablo: kerahat aciklamalari")
+for d in TvDili.desteklenenler {
+    let m = TvPanoMetinleri.dil(d)
+    esitMi(m.aylar.count, 12, "pano metinleri: \(d) on iki ay")
+    esitMi(m.gunler.count, 7, "pano metinleri: \(d) yedi gun")
+    esitMi(Set(m.vakitAdlari.keys), Set(TvVakit.allCases.map { $0.rawValue }), "pano metinleri: \(d) alti vakit")
+    esitMi(Set(m.kerahatAdlari.keys), ["suruk", "istiva", "gurub"], "pano metinleri: \(d) kerahat adlari")
+    esitMi(Set(m.kerahatAciklamalari.keys), ["suruk", "istiva", "gurub"], "pano metinleri: \(d) kerahat aciklamalari")
+    let yerler = ["{gun}", "{ay}", "{yil}", "{gunAdi}"]
+    esitMi(yerler.filter { m.tarih.contains($0) }, yerler, "pano metinleri: \(d) tarih yer tutuculari")
+    let bos = ([m.cuma, m.tarih] + m.aylar + m.gunler + Array(m.vakitAdlari.values) + Array(m.kerahatAdlari.values)
+        + Array(m.kerahatAciklamalari.values)).filter { $0.isEmpty }
+    esitMi(bos, [], "pano metinleri: \(d) bos metin yok")
+}
+
 // MARK: - 5) Il listesi (istege bagli ikinci arguman)
 
 if arg.count >= 3 {

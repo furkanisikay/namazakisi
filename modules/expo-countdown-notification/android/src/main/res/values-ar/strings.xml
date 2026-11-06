@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ar — Arapça (beta). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">العدّادات المباشرة</string>
+    <string name="countdown_kanal_canli_aciklama">العدّ التنازلي في Now Bar وشريط الحالة</string>
+    <string name="countdown_kanal_genel_ad">إشعارات العدّ التنازلي</string>
+    <string name="countdown_kanal_genel_aciklama">قناة إشعارات العدّ التنازلي</string>
+
+    <string name="countdown_eylem_kildim">صلّيتُ</string>
+    <string name="countdown_eylem_durdur">إيقاف</string>
+
+    <string name="countdown_yedek_vakit">وقت الصلاة يوشك أن يخرج؛ حيّ على الصلاة.</string>
+    <string name="countdown_yedek_iftar">اقترب وقت الإفطار.</string>
+    <string name="countdown_yedek_sahur">الأكل والشرب ما زالا ممكنين؛ الإمساك يقترب.</string>
+    <string name="countdown_yedek_seri">صلوات اليوم لم تكتمل؛ والسلسلة على وشك الانقطاع.</string>
+
+    <string name="countdown_onek_vakit">حتى خروج الوقت</string>
+    <string name="countdown_onek_vakit_dar">الوقت يخرج</string>
+    <string name="countdown_onek_iftar">حتى الإفطار</string>
+    <string name="countdown_onek_iftar_dar">حتى الإفطار</string>
+    <string name="countdown_onek_sahur">حتى نهاية السحور</string>
+    <string name="countdown_onek_sahur_dar">السحور ينتهي</string>
+    <string name="countdown_onek_seri">لإنقاذ السلسلة</string>
+    <string name="countdown_onek_seri_dar">السلسلة تنتهي</string>
+</resources>

@@ -7,6 +7,7 @@ import {
     type YatisAyarlari,
 } from '../../core/yatis/yatisAyarlari';
 import type { RootState } from './store';
+import { metin } from '../../core/dil/aktifDil';
 
 /**
  * Yatış saatine göre yatsı hatırlatması + gün sonu muhasebesi (issue #290).
@@ -68,13 +69,13 @@ const yatisHatirlatmaSlice = createSlice({
             })
             .addCase(yatisHatirlatmaAyarlariniYukle.rejected, (state, action) => {
                 state.yukleniyor = false;
-                state.hata = action.error.message || 'Ayarlar yüklenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.yuklenemedi;
             })
             .addCase(yatisHatirlatmaAyariniGuncelle.fulfilled, (state, action) => {
                 state.ayarlar = action.payload;
             })
             .addCase(yatisHatirlatmaAyariniGuncelle.rejected, (state, action) => {
-                state.hata = action.error.message || 'Ayar güncellenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.guncellenemedi;
             });
     },
 });

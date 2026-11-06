@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ar — Arapça (beta). -->
+<!-- Arapça kaynaklar (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ar (الفجر، الشروق، الظهر، العصر، المغرب، العشاء؛ «صلّيتُ» / «تمّت»). Rakam Batı (0-9), yön işareti yok. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">الصلاة الحالية ووقت نهايتها، و«صلّيتُ» بنقرة واحدة</string>
+  <string name="widget_genis_aciklama">صلوات اليوم الخمس، وعدّ تنازلي، و«صلّيتُ» بنقرة واحدة</string>
+  <string name="widget_kapak_adi">مواقيت الشاشة الخارجية</string>
+  <string name="widget_kapak_aciklama">مواقيت اليوم وعدّ تنازلي للشاشة الخارجية في Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — كلاسيكي</string>
+  <string name="widget_klasik_aciklama">مظهر أخضر كلاسيكي: المتبقي على الصلاة التالية</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — كلاسيكي عريض</string>
+  <string name="widget_klasik_genis_aciklama">مظهر أخضر كلاسيكي: عدّ تنازلي ومواقيت اليوم</string>
+  <string name="widget_ayet_adi">آية اليوم</string>
+  <string name="widget_ayet_aciklama">آية من القرآن الكريم تتجدّد كل يوم عند الفجر</string>
+  <string name="widget_ayar_zemin_palet">لون التطبيق (درجة فاتحة)</string>
+  <string name="widget_ayar_ayet_icerik">العرض في الحجم المربع</string>
+  <string name="widget_ayar_ayet_icerik_meal">نص الآية</string>
+  <string name="widget_ayar_ayet_icerik_hat">النص القرآني (بالخط)</string>
+  <string name="kutu_kildim_etiket">صلّيتُ</string>
+  <string name="kisayol_kildim_kisa">صلّيتُ</string>
+  <string name="kisayol_kildim_uzun">صلّيتُ الصلاة الحالية</string>
+  <string name="kisayol_kible_kisa">القبلة</string>
+  <string name="kisayol_kible_uzun">عرض اتجاه القبلة</string>
+  <string name="kisayol_kaza_kisa">سجل القضاء</string>
+  <string name="kisayol_kaza_uzun">فتح سجل القضاء</string>
+  <string name="kildim_onay_baslik">هل تُوضع علامة «تمّت» على صلاة %1$s؟</string>
+  <string name="kildim_onay_mesaj">تعذّرت معرفة التطبيق الذي أرسل هذا الطلب. التأكيد إن كانت الصلاة قد أُدّيت.</string>
+  <string name="kildim_onay_evet">صلّيتُ</string>
+  <string name="kildim_onay_vazgec">إلغاء</string>
+  <string name="kildim_guven_baslik">هل يُسمح لـ%1$s بوضع علامة «تمّت» على صلواتك؟</string>
+  <string name="kildim_guven_mesaj">الصلاة التي ستُعلَّم الآن: %1$s. يمكن تغيير قرارك لاحقًا من الإعدادات &gt; الاستخدام مع الأتمتة &gt; التطبيقات التي تضع علامة «صلّيتُ».</string>
+  <string name="kildim_guven_tarayici_mesaj">الصلاة التي ستُعلَّم الآن: %1$s. جاء هذا الطلب من متصفح؛ ولأن أي صفحة ويب يمكنها فتح هذا الرابط، فلا يمكن منح إذن دائم.</string>
+  <string name="kildim_guven_her_zaman">السماح دائمًا</string>
+  <string name="kildim_guven_bu_sefer">هذه المرة فقط</string>
+  <string name="kildim_guven_engelle">الحظر</string>
+  <string name="kildim_guven_engellendi">لم يعد %1$s قادرًا على وضع علامة على صلواتك. ويمكن تغيير ذلك من الإعدادات.</string>
+  <string name="widget_ayar_baslik">تخصيص الأداة</string>
+  <string name="widget_ayar_zemin">الخلفية اللونية</string>
+  <string name="widget_ayar_zemin_material">ألوان خلفية الشاشة</string>
+  <string name="widget_ayar_zemin_sistem">مظهر النظام</string>
+  <string name="widget_ayar_zemin_acik">فاتح</string>
+  <string name="widget_ayar_zemin_koyu">داكن</string>
+  <string name="widget_ayar_zemin_seffaf">شفاف</string>
+  <string name="widget_ayar_opaklik">عتامة الخلفية</string>
+  <string name="widget_ayar_gosterim">العرض بخط كبير</string>
+  <string name="widget_ayar_gosterim_kalan">الوقت المتبقي</string>
+  <string name="widget_ayar_gosterim_bitis">وقت النهاية</string>
+  <string name="widget_ayar_gosterim_not">يبقى وقت النهاية ظاهرًا في كل الأحجام.</string>
+  <string name="widget_ayar_sonraki">عرض الصلاة التالية</string>
+  <string name="widget_ayar_vazgec">إلغاء</string>
+  <string name="widget_ayar_kaydet">حفظ</string>
+  <string name="kildim_onay_kanal_adi">تأكيد «صلّيتُ»</string>
+  <string name="kildim_onay_kanal_aciklama">تأكيد هادئ يظهر بضع ثوانٍ عند اختيار «صلّيتُ» من الإشعار</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">النهاية %1$s</string>
+  <string name="widget_giris">الدخول %1$s</string>
+  <string name="widget_namaz_vakti">وقت الصلاة</string>
+  <string name="widget_uygulamayi_acin">فتح التطبيق</string>
+  <string name="widget_siradaki">التالية: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">لا صلاة لتعليمها الآن</string>
+  <string name="widget_dugme_kildim">صلّيتُ</string>
+  <string name="widget_dugme_isaretleniyor">جارٍ التعليم</string>
+  <string name="widget_dugme_kilindi">تمّت</string>
+  <string name="widget_dugme_vakit_girmedi">لم يدخل بعد</string>
+  <string name="widget_klasik_uygulamayi_acin">فتح التطبيق</string>
+  <string name="widget_klasik_erisim_veri_yok">لعرض المواقيت: فتح التطبيق</string>
+  <string name="widget_klasik_erisim_siradaki">الصلاة التالية %1$s، تدخل الساعة %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">الظهر بعد</string>
+  <string name="widget_onizleme_klasik_genis">المغرب بعد</string>
+  <string name="widget_onizleme_imsak">الفجر</string>
+  <string name="widget_onizleme_gunes">الشروق</string>
+  <string name="widget_onizleme_ogle">الظهر</string>
+  <string name="widget_onizleme_ikindi">العصر</string>
+  <string name="widget_onizleme_aksam">المغرب</string>
+  <string name="widget_onizleme_yatsi">العشاء</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">وُضعت علامة «تمّت» على صلاة %1$s. تقبّل الله.</string>
+  <string name="kildim_sonuc_zaten_kilindi">صلاة %1$s معلَّمة «تمّت» بالفعل.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">لا صلاة لتعليمها الآن. التالية %1$s، تدخل الساعة %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">لا صلاة لتعليمها الآن.</string>
+  <string name="kildim_sonuc_veri_yok">لا توجد بيانات المواقيت. يكفي فتح التطبيق مرة واحدة.</string>
+  <string name="kildim_sonuc_vakit_degisti">تغيّر الوقت فلم تُوضع العلامة. يُرجى إعادة المحاولة.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">تعذّر فتح تطبيق الملاحة.</string>
+  <string name="arac_adsiz_cami">مسجد</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">تعذّرت قراءة بيانات المواقيت.</string>
+  <string name="asistan_isaretleme_yapilamadi">تعذّر وضع العلامة.</string>
+  <string name="asistan_aciklama">يمكن السؤال عن مواقيت الصلاة، ووضع علامة «تمّت» على الصلاة الحالية، وفتح شاشة القبلة.</string>
+</resources>

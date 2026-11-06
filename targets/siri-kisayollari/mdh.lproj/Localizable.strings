@@ -1,0 +1,58 @@
+/* mdh */
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Maguindanao terimleri: src/core/dil/sozluk/mdh.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Kasunud a sambayang";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Pedtalun nin su kasunud a sambayang endu su oras a kakawma nin.";
+"Şu anki vakti kıldım" = "Midsambayang ako sa sambayang saguna";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Pedtandaan nin a midsambayang su sambayang saguna. Pedisama su rekord amayka bukatan nu su app.";
+"Onay iste" = "Pangeni sa kapangimbenal";
+"Kıbleyi aç" = "Bukatan su Qiblat";
+"Uygulamayı Kıble pusulasıyla açar." = "Pedbukatan nin su app sa kompas nu Qiblat.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Midsambayang ako";
+"Kıble" = "Qiblat";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Ingalan nu kasunud a sambayang";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Pedenggay sa ingalan nu kasunud a sambayang. Magamit nu sya lagid nu kondisyun sa Shortcuts.";
+"Sıradaki vakte kalan dakika" = "Minutu taman sa kasunud a sambayang";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Pedenggay sa kadakel nu minutu taman sa kakawma nu kasunud a sambayang. Amayka da impormasyun, -1 i pedenggay.";
+"Şu anki vakit kılındı mı?" = "Natandaan ba a midsambayang su sambayang saguna?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Uway amayka natandaan a midsambayang su sambayang saguna. Di amayka da sambayang a tandaan.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Kapasang sa sambayang";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Benal amayka lu sa paganay a manga minutu sa ulyan nu kakawma nu waktu nu sambayang. Pedgamiten sa Shortcuts para ma-on su Focus.";
+"Süre (dakika)" = "Kalendu (minutu)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Su ${dakika} minutu sa ulyan nu kakawma nu waktu nu sambayang";
+"Namaz sessizliğinin bitişi" = "Kalipus nu kapasang sa sambayang";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Pedenggay sa oras nu kalipus nu kapasang. Amayka da kapasang saguna, su oras saguna i pedenggay.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Kalipus nu ${dakika} minutu sa ulyan nu kakawma nu waktu nu sambayang";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Manga patadem sa sambayang";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Amayka naka-on su Focus ini, pedkawma su manga patadem sa sambayang sa da suara endu da kapakalayag nu screen.";
+"Hatırlatmaları sessiz ver" = "Ipedsugu sa da suara su manga patadem";
+"Hatırlatmalar sessiz gelir" = "Pedkawma sa da suara su manga patadem";
+"Hatırlatmalar her zamanki gibi" = "Manga patadem lagid nu dati";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Pedtandaan nin a midsambayang su sambayang sa widget.";
+"Tarih" = "Petsa";
+"Vakit" = "Sambayang";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Ipendeg su alarm nu sambayang";
+"Namazı kıldım" = "Midsambayang ako";
+"Alarm" = "Alarm";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Ladawan nu ayat nu gay";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Pedenggay sa ayat saguna a gay lagid nu ladawan sa kadakel nu screen nu. Magamit nu sya sa hakbang a Set Wallpaper sa Shortcuts.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Bukatan su app sa isa a timpu para mahanda su ayat nu gay.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Di nahanda su ladawan. Ulit manem sa paydu a timpu.";

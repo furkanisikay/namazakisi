@@ -21,6 +21,7 @@ import { TvSenkronServisi } from './TvSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
 import { KildimKuyruguServisi } from './KildimKuyruguServisi';
 import { WidgetServisi } from './WidgetServisi';
+import { GununAyetiServisi } from './GununAyetiServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
@@ -42,6 +43,8 @@ import {
 } from './KonumTakipServisi';
 import { konumTazeMi } from '../../core/utils/geofenceKararYardimcisi';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
+import { baglamHazir } from './baglamHazir';
 
 // Görev adı sabiti
 export const BILDIRIM_YENILEME_GOREVI = 'BILDIRIM_YENILEME_GOREVI';
@@ -319,6 +322,8 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
     // için doğrudur (bkz. `planliBildirimOkuyucu`). Muhafız kendi taze listesini okur
     // (atla kapısı kurulumun sağlamlığını ölçer).
     const bekleyenOkuyucu = turIciPlanliBildirimOkuyucu();
+    // Vakitler kullanıcının hesap ayarıyla hesaplansın (bu bağlamda App.tsx çalışmaz).
+    await baglamHazir();
 
     try {
         // =====================================================
@@ -436,6 +441,8 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Widget tazelenemedi', e);
         }
+        // Günün ayeti planı (14 gün) uygulama açılmasa da ileride kalsın (ASLA reddetmez).
+        await GununAyetiServisi.getInstance().yaz(await arkaplandaKoordinatOku().catch(() => null));
 
         // =====================================================
         // ADIM 1.59: CAMİDEYİM + NAMAZ MODU (#297/#277)
@@ -704,15 +711,16 @@ export class ArkaplanGorevServisi {
      * Background fetch durumunu insan okunabilir stringe çevir
      */
     public static durumAciklamasi(status: BackgroundFetch.BackgroundFetchStatus): string {
+        const m = metin().genel.arkaPlanDurumu;
         switch (status) {
             case BackgroundFetch.BackgroundFetchStatus.Restricted:
-                return 'Kısıtlı - Sistem tarafından engelleniyor';
+                return m.kisitli;
             case BackgroundFetch.BackgroundFetchStatus.Denied:
-                return 'Reddedildi - Kullanıcı izin vermedi';
+                return m.reddedildi;
             case BackgroundFetch.BackgroundFetchStatus.Available:
-                return 'Kullanılabilir';
+                return m.kullanilabilir;
             default:
-                return 'Bilinmiyor';
+                return m.bilinmiyor;
         }
     }
 }

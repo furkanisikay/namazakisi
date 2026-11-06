@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Luganda). "Nsaaze" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alaamu y’esswala</string>
+  <string name="alarm_kildim">Nsaaze</string>
+  <string name="alarm_kapat">Ggyako</string>
+  <string name="alarm_kanal_aciklamasi">Alaamu entuufu evuga ku mitendera gy’ebijjukizo gy’olonze</string>
+</resources>

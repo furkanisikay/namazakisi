@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gürcüce. Terimler: src/core/dil/sozluk/ka. Saat yüzeyi dar: başlık ve düğmeler kısa. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ka</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">შემდეგი ლოცვა</string>
+    <string name="tile_aciklama">შემდეგი ლოცვა და მისი დრო</string>
+    <string name="komplikasyon_adi">დარჩენილი დრო</string>
+    <string name="cikis_saati_komplikasyon_adi">ლოცვის დასრულების დრო</string>
+    <string name="siradaki_namaz_komplikasyon_adi">შემდეგი ლოცვა</string>
+    <string name="bugun_tile_adi">დღეს</string>
+    <string name="bugun_tile_aciklama">დღევანდელი ხუთი ლოცვა; შესრულებულები ორი შეხებით მონიშნეთ</string>
+    <string name="ilerleme_komplikasyon_adi">დღის პროგრესი</string>
+    <string name="dagilim_komplikasyon_adi">დღის მიმოხილვა</string>
+    <string name="kerahat_komplikasyon_adi">აკრძალული დრო</string>
+    <string name="son_dakikalar_kanal_adi">ბოლო წუთები</string>
+    <string name="son_dakikalar_kanal_aciklama">უკუთვლა ციფერბლატზე შეუსრულებელი ლოცვის ბოლო წუთებში</string>
+    <string name="tesbihat_adi">თასბიჰი</string>
+    <string name="tesbihat_kanal_adi">თასბიჰი</string>
+    <string name="tesbihat_kanal_aciklama">მშვიდი ხატულა ციფერბლატზე დაუსრულებელ თასბიჰთან დასაბრუნებლად</string>
+    <string name="kible_adi">ყიბლა</string>
+    <string name="kible_komplikasyon_adi">ყიბლა</string>
+    <string name="camideyim_kanal_adi">მეჩეთში</string>
+    <string name="camideyim_kanal_aciklama">მშვიდი ხატულა ციფერბლატზე, როცა ტელეფონი იტყობინება, რომ მეჩეთში ხართ</string>
+    <string name="uyandirma_kanal_adi">უხმო გაღვიძება</string>
+    <string name="uyandirma_kanal_aciklama">გაღვიძებთ მხოლოდ ვიბრაციით ფაჯრისა და თაჰაჯუდისთვის</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">ვილოცე</string>
+    <string name="kilindi_isareti">✓ შესრულებულია</string>
+    <string name="kapat">დახურვა</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">ლოცვის დროების სანახავად გახსენით Namaz Akışı ტელეფონზე.</string>
+    <string name="yuk_eskidi">ლოცვის დროის მონაცემები მოძველებულია. განსაახლებლად გახსენით Namaz Akışı ტელეფონზე.</string>
+    <string name="guncelleme_gerekli">განაახლეთ Namaz Akışı საათზე.</string>
+    <string name="bildirim_izni">რომ შეხსენებები ტელეფონის გარეშეც მიიღოთ, საათის პარამეტრებში დაუშვით Namaz Akışı შეტყობინებები.</string>
+    <string name="cami_soru">მეჩეთში ხართ?</string>
+    <string name="cami_evet">დიახ</string>
+    <string name="cami_evet_aciklama">დიახ, მეჩეთში ვარ. ირთვება ლოცვის რეჟიმი</string>
+    <string name="cami_hayir">არა</string>
+    <string name="cami_hayir_aciklama">არა, მეჩეთში არ ვარ</string>
+    <string name="camidesiniz">მეჩეთში ხართ</string>
+    <string name="cami_degil">ეს მეჩეთი არ არის</string>
+    <string name="cami_degil_aciklama">ეს მეჩეთი არ არის. ეს ადგილი მეჩეთად აღარ ჩაითვლება</string>
+    <string name="tesbihat_ac">თასბიჰის მთვლელის გახსნა</string>
+    <string name="kible_ac">ყიბლის კომპასის გახსნა</string>
+    <string name="ses_dene">ხმის შემოწმება</string>
+    <string name="ses_dene_aciklama">საათის ხმოვანი წაკითხვის შემოწმება</string>
+    <string name="telefonda_acin">ტელეფონზე გახსნა</string>
+    <string name="telefonda_ekran_ac">%1$s: გახსნა ტელეფონზე</string>
+    <string name="ekran_kaza">ყადა ლოცვები</string>
+    <string name="ekran_camideyim">მეჩეთში ვარ</string>
+    <string name="ekran_ayarlar">პარამეტრები</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">შესრულებულია, სინქრონიზდება</string>
+    <string name="durum_kilindi">შესრულებულია</string>
+    <string name="durum_girmedi">დრო ჯერ არ დამდგარა</string>
+    <string name="durum_simdiki">მიმდინარე ლოცვის დრო, შეეხეთ მოსანიშნად</string>
+    <string name="durum_simdiki_kalan">მიმდინარე ლოცვის დრო, %1$s, შეეხეთ მოსანიშნად</string>
+    <string name="durum_kilinmadi">არ შესრულებულა, შეეხეთ მოსანიშნად</string>
+    <string name="isaretleyin">შესრულებულად მონიშვნა</string>
+    <string name="esitleniyor">სინქრონიზდება</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">დაადასტურეთ, რომ ილოცეთ</string>
+    <string name="vazgecin">გაუქმება</string>
+    <string name="vazgec">გაუქმება</string>
+    <string name="kerahat_vaktindesiniz">ახლა ლოცვისთვის აკრძალული დროა.</string>
+    <string name="kilindi_dua">შესრულებულია. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">ლოცვის რეჟიმი ჩართულია, სრულდება %1$s-ზე. შეეხეთ გამოსართავად</string>
+    <string name="namaz_modu_ac_aciklama">ჩართეთ ლოცვის რეჟიმი ტელეფონზე</string>
+    <string name="namaz_modu_kapatin">ლოცვის რეჟიმის გამორთვა</string>
+    <string name="namaz_modu_acin">ლოცვის რეჟიმის ჩართვა</string>
+    <string name="namaz_modu_acik_bitis">ჩართულია, სრულდება %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">მიმართულება განისაზღვრება…</string>
+    <string name="kible_yuk_yok">ყიბლის საპოვნელად გახსენით Namaz Akışı ტელეფონზე.</string>
+    <string name="kible_konum_yok">ყიბლის საპოვნელად ჩართეთ მდებარეობა ტელეფონზე. თუ Namaz Akışı განახლებული არ არის, განაახლეთ.</string>
+    <string name="kible_sensor_yok">ამ საათს კომპასის სენსორი არ აქვს. ყიბლის მიმართულებას ტელეფონზე ნახავთ.</string>
+    <string name="kible_kuzeyden">ყიბლა %1$d° (ჩრდილოეთიდან)</string>
+    <string name="kible_derece">ყიბლა %1$d°</string>
+    <string name="kible_telefonda_ac">ყიბლის გახსნა ტელეფონზე</string>
+    <string name="kible_erisim">%1$s. ყიბლა ჩრდილოეთიდან %2$d°-ზეა, %3$s</string>
+    <string name="kible_hizali">ყიბლისკენ ხართ მიმართული</string>
+    <string name="kible_kalibrasyon">კალიბრაციისთვის მაჯა ჰაერში რვიანის ფორმით ამოძრავეთ</string>
+    <string name="kible_egim">დაიჭირეთ საათი მიწის პარალელურად</string>
+    <string name="kible_titresim_acik">ვიბრაციით მითითება ჩართულია. შეეხეთ გამოსართავად</string>
+    <string name="kible_titresim_kapali">ვიბრაციით მითითება გამორთულია. შეეხეთ ჩასართავად</string>
+    <string name="kible_harf_kuzey">ჩ</string>
+    <string name="kible_harf_dogu">ა</string>
+    <string name="kible_harf_guney">ს</string>
+    <string name="kible_harf_bati">დ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">თასბიჰი დასრულდა. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. სულ %4$d / %5$d</string>
+    <string name="tesbihat_sayin">თვლა</string>
+    <string name="tesbihat_bastan_baslayin">თავიდან დაწყება</string>
+    <string name="tesbihat_bastan_soru">დავიწყოთ თავიდან?</string>
+    <string name="tesbihat_sifirlanir">თვლა განულდება.</string>
+    <string name="tesbihat_geri_al">დაბრუნება</string>
+    <string name="tesbihat_geri_al_aciklama">ბოლო თვლის გაუქმება</string>
+    <string name="tesbihat_yeniden">ხელახლა დაწყება</string>
+    <string name="tesbihat_yeniden_aciklama">თასბიჰის ხელახლა დაწყება</string>
+    <string name="tesbihat_suruyor">თასბიჰი მიმდინარეობს: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">ვილოცე. გაღვიძება დაიხურება</string>
+    <string name="uyandirma_kapat_aciklama">გაღვიძების დახურვა</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">გახსენით Namaz Akışı</string>
+    <string name="tile_vakitler_icin">შეეხეთ ლოცვის დროებისთვის</string>
+    <string name="tile_telefonda_acin">გახსენით აპი ტელეფონზე</string>
+    <string name="tile_sonra">%1$s-ში</string>
+    <string name="tile_siradaki_aciklama">შემდეგი ლოცვა %1$s, იწყება %2$s-ზე. გახსენით აპი</string>
+    <string name="tile_giris">იწყება %1$s</string>
+    <string name="tile_cikis">სრულდება %1$s</string>
+    <string name="bugun_bos_satir1">გახსენით აპი</string>
+    <string name="bugun_bos_satir2">ტელეფონზე</string>
+    <string name="bugun_acma_aciklamasi">დღეს შესრულებულია %1$d/%2$d ლოცვა. გახსენით აპი</string>
+    <string name="bugun_sayi">დღეს %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">აკრძალული დრო · დასადასტურებლად კვლავ შეეხეთ</string>
+    <string name="bugun_onay_tekrar">დასადასტურებლად კვლავ შეეხეთ</string>
+    <string name="bugun_tamam">დღევანდელი ლოცვები შესრულებულია</string>
+    <string name="bugun_kilinmadi">%1$s არ შესრულებულა</string>
+    <string name="bugun_siradaki">შემდეგი: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">კვლავ შეეხეთ</string>
+    <string name="bugun_kilindi">%1$s შესრულებულია</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s შესრულებულია, სინქრონიზდება</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">ლოცვის დროებს ველოდებით; გახსენით Namaz Akışı ტელეფონზე</string>
+    <string name="komplikasyon_bekleniyor">დროებს ველით</string>
+    <string name="komplikasyon_vakit">ლოცვა</string>
+    <string name="komplikasyon_cikis">სრულდ.</string>
+    <string name="komplikasyon_sirada">შემდეგი</string>
+    <string name="gun_durumu_aciklama">დღეს შესრულებულია %2$d ლოცვა %1$d-დან</string>
+    <string name="gun_durumu_kilinmamis">%1$s; არ შესრულებულა: %2$s</string>
+    <string name="komplikasyon_namaz">ლოცვები</string>
+    <string name="komplikasyon_kerahat">აკრძალ.</string>
+    <string name="kerahat_icinde_aciklama">ახლა აკრძალული დროა, სრულდება %1$s-ზე</string>
+    <string name="kerahat_siradaki_aciklama">შემდეგი აკრძალული დრო %1$s</string>
+    <string name="kible_komplikasyon">ყიბლა ჩრდილოეთიდან %1$d°-ზეა. გახსენით კომპასი</string>
+    <string name="kible_komplikasyon_konumlu">ყიბლა ჩრდილოეთიდან %1$d°-ზეა, %2$s. გახსენით კომპასი</string>
+    <string name="kible_komplikasyon_konum_yok">ყიბლის საპოვნელად ჩართეთ მდებარეობა ტელეფონზე</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">სასწრაფო შეხსენება · ვიბრაციით</string>
+    <string name="muhafiz_kanal_acil">სასწრაფო შეხსენება</string>
+    <string name="muhafiz_kanal_titresimli">ლოცვის შეხსენება · ვიბრაციით</string>
+    <string name="muhafiz_kanal">ლოცვის შეხსენება</string>
+    <string name="muhafiz_kanal_aciklama">ლოცვის შეხსენებები საათზე, მაშინაც კი, როცა ტელეფონი თან არ გაქვთ</string>
+    <string name="son_dakikalar_cikis">სრულდება: %1$s</string>
+    <string name="son_dakikalar_bitis">სრულდება: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s: დასრულებამდე დარჩენილი დრო</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s: დარჩენილი დრო</string>
+    <string name="cami_namaz_modu_bitis">ლოცვის რეჟიმი · სრულდება %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">გაიხსნა ტელეფონზე</string>
+    <string name="telefona_ulasilamadi">ტელეფონი მიუწვდომელია</string>
+</resources>

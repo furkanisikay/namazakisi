@@ -74,7 +74,7 @@
  * yok eder (spec §1).
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, LayoutChangeEvent } from 'react-native';
+import { View, Text, LayoutChangeEvent } from 'react-native';
 import Svg, { Defs, RadialGradient, LinearGradient, Stop, Rect, G, Text as SvgText } from 'react-native-svg';
 import { useRenkler } from '../../../core/theme';
 import { GOK_TONLARI, GOK_ZAMANLAMA } from './sabitler';
@@ -87,6 +87,9 @@ import { AnimasyonluBag } from './AnimasyonluBag';
 import { AnimasyonluYildiz } from './AnimasyonluYildiz';
 import { Parilti } from './Parilti';
 import { BugununNabzi } from './BugununNabzi';
+import { useMetin } from '../../hooks/useMetin';
+import { useRakamCevir } from '../../components/metin/useRakamCevir';
+import { sagdanSolaCiziliyor } from '../../components/common/yon';
 
 export interface GokPaneliProps {
   /** `aylikIzgaraOlustur` çıktısı — 28/35/42 hücre. */
@@ -143,8 +146,6 @@ const PARILTI_CAP_ORANI = 1.3;
 const GUN_NUMARASI_FONT_ORANI = 0.18;
 const GUN_NUMARASI_ALT_PAY_ORANI = 0.08;
 
-/** Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor). */
-const GUN_HARFLERI = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
 
 export const GokPaneli: React.FC<GokPaneliProps> = ({
   izgara,
@@ -155,6 +156,11 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   mevcutSeri,
 }) => {
   const renkler = useRenkler();
+  // Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor); etkin dilde.
+  const sozluk = useMetin();
+  // SVG metni metin kapısından geçmez: Arapçada rakamlar burada çevrilir.
+  const rakam = useRakamCevir();
+  const gunHarfleri = sozluk.seri.gok.gunHarfleri;
   const [panelGenislik, setPanelGenislik] = useState(0);
 
   // Açılış animasyonu bir kez oynatma sentinel'i (spec 2c). `AnimasyonluBag`/
@@ -186,6 +192,8 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   }, []);
 
   const satirSayisi = Math.max(1, Math.ceil(izgara.length / SUTUN_SAYISI));
+  // Panel soldan sağa çizilir (koordinatlar fiziksel); takvim sırası burada aynalanır.
+  const sagdanSola = sagdanSolaCiziliyor();
 
   const olculer: GokOlculeri = useMemo(
     () => ({
@@ -194,15 +202,18 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
       yatayPay: PANEL_YATAY_PAY,
       ustPay: PANEL_UST_PAY,
       satirAraligi: SATIR_ARALIGI,
+      sagdanSola,
     }),
-    [panelGenislik, satirSayisi]
+    [panelGenislik, satirSayisi, sagdanSola]
   );
 
   const yerlesim = useMemo(() => gokYerlesimi(olculer), [olculer]);
 
   const erisimEtiketi = useMemo(
     () => gokErisimEtiketi(izgara, ayAdi, mevcutSeri, tamGunEsigi),
-    [izgara, ayAdi, mevcutSeri, tamGunEsigi]
+    // `sozluk`: etiket etkin dilde yeniden kurulsun.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [izgara, ayAdi, mevcutSeri, tamGunEsigi, sozluk]
   );
 
   // Açılış zaman çizelgesi — SAF (core/seri/acilisCizelgesi), zamanlama
@@ -234,10 +245,12 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
       accessible
       accessibilityRole="image"
       accessibilityLabel={erisimEtiketi}
+      // SVG gök (ızgara + yıldızlar) aynalanmaz; üstündeki `left:` katmanları (Parilti,
+      // BugununNabzi) SVG koordinatıyla örtüşsün diye sahne soldan sağa sabit.
       style={
         panelGenislik > 0
-          ? { height: govdeYukseklik, borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
-          : { borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
+          ? { direction: 'ltr', height: govdeYukseklik, borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
+          : { direction: 'ltr', borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
       }
     >
       {panelGenislik > 0 && (
@@ -396,37 +409,60 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
                   opacity={opaklik}
                   textAnchor="middle"
                 >
-                  {gun.gunNo}
+                  {rakam(gun.gunNo)}
                 </SvgText>
               );
             })}
           </G>
 
-          {/* 5) Ay adı + gün harfleri — koyu zeminin İÇİNDE (aynı tuval, üstteki
-              header payında). Gün harfleri ızgaranın sütun merkezleriyle (satır 0)
-              birebir hizalanır (`yerlesim.merkez(i).x`, i=0..6). */}
-          <SvgText
-            x={PANEL_YATAY_PAY}
-            y={20}
-            fontSize={13}
-            fontWeight="600"
-            fill={GOK_TONLARI.AY_ADI}
-          >
-            {ayAdi}
-          </SvgText>
-          {GUN_HARFLERI.map((harf, i) => (
-            <SvgText
-              key={`gun-adi-${i}`}
-              x={yerlesim.merkez(i).x}
-              y={40}
-              fontSize={9.5}
-              fill={GOK_TONLARI.GUN_ADI}
-              textAnchor="middle"
-            >
-              {harf}
-            </SvgText>
-          ))}
         </Svg>
+
+        {/* 5) Ay adı + gün harfleri — koyu zeminin İÇİNDE (header payında), ama SVG'nin
+            DIŞINDA RN `Text` ile: react-native-svg `Text` Arap harflerini birbirine bağlamaz
+            (Pencapça/Sindhçe "نومبر" harf harf çiziliyordu). Gün harfleri ızgaranın sütun
+            merkezleriyle (satır 0) birebir hizalanır (`yerlesim.merkez(i).x`, i=0..6).
+            `rakamKoru`: rakam `rakam()` ile çevrildi; SVG'deki gibi sistem yazı tipi kalır
+            (Nestalik yüksekliği başlık payına sığmaz), yazı ölçeği de SVG gibi uygulanmaz. */}
+        <Text
+          testID="gok-ay-adi"
+          rakamKoru
+          allowFontScaling={false}
+          numberOfLines={1}
+          style={{
+            position: 'absolute',
+            top: 4,
+            left: PANEL_YATAY_PAY,
+            right: PANEL_YATAY_PAY,
+            textAlign: sagdanSola ? 'right' : 'left',
+            fontSize: 13,
+            lineHeight: 20,
+            fontWeight: '600',
+            color: GOK_TONLARI.AY_ADI,
+          }}
+        >
+          {rakam(ayAdi)}
+        </Text>
+        {gunHarfleri.map((harf, i) => (
+          <Text
+            key={`gun-adi-${i}`}
+            testID={`gok-gun-adi-${i}`}
+            rakamKoru
+            allowFontScaling={false}
+            numberOfLines={1}
+            style={{
+              position: 'absolute',
+              top: 28,
+              left: yerlesim.merkez(i).x - yerlesim.hucreGenislik / 2,
+              width: yerlesim.hucreGenislik,
+              textAlign: 'center',
+              fontSize: 9.5,
+              lineHeight: 15,
+              color: GOK_TONLARI.GUN_ADI,
+            }}
+          >
+            {harf}
+          </Text>
+        ))}
 
         {/* 5/5 parıltısı — Svg'nin DIŞINDA, ayrı bir overlay katmanı (bkz.
             `Parilti.tsx` doc-block, mimari gerekçe). `ust` hesabına

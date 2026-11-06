@@ -3,6 +3,8 @@
   Android AppFunctions uygulama açıklaması (issue #94). Sistem asistanı (Gemini vb.)
   araçları seçerken bunu okur; LLM'e giden sözleşme olduğu için İngilizce yazıldı.
   Manifestte `android.app.appfunctions.app_metadata` özelliğiyle bağlanır.
+  Kullanıcıya görünen `displayDescription` kaynaktan (`@string/asistan_aciklama`) gelir:
+  sistem ayarlarında CİHAZ dilinde çözülür (uygulama dilini bilemez). Cihazda DOĞRULANMADI.
 -->
 <AppFunctionAppMetadata xmlns:appfn="http://schemas.android.com/apk/res-auto"
     appfn:description="Offline Islamic prayer companion for Turkey (Diyanet calculation method). Everything runs on the device; no account and no network are needed.
@@ -11,6 +13,6 @@ Operational patterns:
   - 'simdikiVaktiKildim' marks the current prayer as performed in two steps: call it once without 'onayKimligi', ask the user the returned 'onaySorusu', and call it again with the returned 'onayKimligi' only after an explicit yes.
   - 'kibleyiAc' opens the Qibla compass screen.
 Constraints:
-  - Answers are in Turkish and are based on the location saved in the app.
+  - Answers are in the app's interface language (Turkish or English) and are based on the location saved in the app.
   - A prayer can only be marked while its time window is running; nothing can be marked between sunrise and noon."
-    appfn:displayDescription="Namaz vakitlerini sorabilir, şu anki vakti kılındı olarak işaretleyebilir ve Kıble ekranını açabilirsiniz." />
+    appfn:displayDescription="@string/asistan_aciklama" />

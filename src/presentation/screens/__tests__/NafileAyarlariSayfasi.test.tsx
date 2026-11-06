@@ -3,7 +3,7 @@
  * gönderir; kapalı kartın ayrıntısı gizlidir; teheccüd seçicileri benzersiz etiketlidir.
  */
 import React from 'react';
-import { render, fireEvent, waitFor, within } from '@testing-library/react-native';
+import { act, render, fireEvent, waitFor, within } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
@@ -60,6 +60,7 @@ jest.mock('../../../domain/services/OnizlemeSesServisi', () => ({
 }));
 
 import { NafileAyarlariSayfasi } from '../NafileAyarlariSayfasi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const RENKLER = {
     birincil: '#4CAF50',
@@ -323,5 +324,24 @@ describe('NafileAyarlariSayfasi — bildirim sınırı rehberi (issue #298)', ()
         fireEvent.press(ekran.getByLabelText('Kuşluk vaktine hatırlatma ekleyin'));
         expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
         expect(ekran.getByText('Bu hatırlatma sığmıyor')).toBeTruthy();
+    });
+});
+
+describe('NafileAyarlariSayfasi — İngilizce', () => {
+    const YASAKLI = ['Nafile', 'PENCERE', 'Pencere', 'Ana ekran', 'dk\\b', 'Kapat', 'Tamam', 'Sabah', 'Vakit', 'vakit'];
+    let geriAl: () => void;
+    beforeEach(() => {
+        jest.clearAllMocks();
+        geriAl = ingilizceyeGec();
+    });
+    afterEach(() => act(() => geriAl()));
+
+    it('hepsi kapalı ve hepsi açık (pencere, uyandırma) Türkçe metin bırakmaz', () => {
+        expect(turkceKalanlar(kur(VARSAYILAN_NAFILE_AYARLARI).toJSON(), YASAKLI)).toEqual([]);
+        const acik = eski({
+            hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: true, ofsetDk: 15 } },
+            teheccud: { aktif: true, hedef: 'imsaktanOnce', imsaktanOnceDk: 60, uyandirma: true },
+        });
+        expect(turkceKalanlar(kur(acik).toJSON(), YASAKLI)).toEqual([]);
     });
 });

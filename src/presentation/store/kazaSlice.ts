@@ -18,6 +18,7 @@ import * as LocalKaza from '../../data/local/LocalKazaServisi';
 import { LocalKazaOneriServisi } from '../../data/local/LocalKazaOneriServisi';
 import { Logger } from '../../core/utils/Logger';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { metin } from '../../core/dil/aktifDil';
 import {
   VARSAYILAN_KAZA_ONERI_AYARLARI,
   type KazaOneriAyarlari,
@@ -353,7 +354,7 @@ const kazaSlice = createSlice({
       .addCase(kazaVerileriniYukle.rejected, (state, action) => {
         // Thunk reddetmez; yine de kapı kilitlenmesin.
         state.yukleniyor = false;
-        state.hata = action.error.message || 'Kaza verileri yüklenemedi';
+        state.hata = action.error.message || metin().kaza.hata.yuklenemedi;
       })
       .addCase(kazaOneriAyarlariniYukle.fulfilled, (state, action) => {
         state.oneriAyarlari = action.payload;
@@ -375,7 +376,7 @@ const kazaSlice = createSlice({
         defteriYaz(state, action.payload as DefterYuku);
       });
       builder.addCase(thunk.rejected, (state, action) => {
-        state.hata = action.error.message || 'Kaza defterine yazılamadı';
+        state.hata = action.error.message || metin().kaza.hata.yazilamadi;
       });
     }
   },

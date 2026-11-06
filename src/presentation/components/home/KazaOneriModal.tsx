@@ -3,7 +3,10 @@ import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleShe
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
-import { KAZA_ADLARI_KUCUK } from '../../../core/kaza/farzSonrasiKazaOnerisi';
+import { KAZA_ADLARI, KAZA_ADLARI_KUCUK } from '../../../core/kaza/farzSonrasiKazaOnerisi';
+import { namazAdiGoster } from '../../../core/constants/UygulamaSabitleri';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import type { KazaNamazAdi } from '../../../core/types/KazaTipleri';
 
 interface KazaOneriModalProps {
@@ -40,11 +43,12 @@ export const KazaOneriModal: React.FC<KazaOneriModalProps> = ({
     onBirDahaSorma,
 }) => {
     const renkler = useRenkler();
+    const m = useMetin().kaza.oneri;
 
     // Fade ile kapanırken üst bileşen öneriyi boşaltır; son geçerli değeri
     // animasyon boyunca göstererek metin kaymasını önle (KerahatOnayModal deseni).
     const [son, setSon] = React.useState<{ farz: string; kaza: KazaNamazAdi }>({
-        farz: kilinanFarz ?? 'Namaz',
+        farz: kilinanFarz ?? '',
         kaza: kazaNamazi ?? 'Sabah',
     });
     React.useEffect(() => {
@@ -58,6 +62,8 @@ export const KazaOneriModal: React.FC<KazaOneriModalProps> = ({
     useDonanimGeriTusu(gorunur, vazgec);
 
     const kazaKucuk = KAZA_ADLARI_KUCUK[son.kaza];
+    const farzAdi = namazAdiGoster(son.farz);
+    const kazaAdi = KAZA_ADLARI[son.kaza];
 
     return (
         <Modal visible={gorunur} animationType="fade" transparent statusBarTranslucent onRequestClose={vazgec}>
@@ -89,10 +95,10 @@ export const KazaOneriModal: React.FC<KazaOneriModalProps> = ({
                         </View>
                         <View className="flex-1">
                             <Text className="text-base font-bold" style={{ color: renkler.metin }} accessibilityRole="header">
-                                Bir kaza da kılar mısınız?
+                                {m.baslik}
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {son.farz} namazınızı işaretlediniz
+                                {bicim(m.isaretlediniz, { farz: farzAdi })}
                             </Text>
                         </View>
                     </View>
@@ -102,12 +108,12 @@ export const KazaOneriModal: React.FC<KazaOneriModalProps> = ({
                         className="flex-row items-center justify-center rounded-xl py-3 px-3 mb-4"
                         style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                         accessible
-                        accessibilityLabel={`${son.farz} namazının ardından bir ${kazaKucuk} kazası`}
+                        accessibilityLabel={bicim(m.zincirErisim, { farz: farzAdi, kaza: kazaKucuk })}
                     >
                         <View className="flex-row items-center px-3 py-1.5 rounded-full" style={{ backgroundColor: renkler.durum.basarili + '20' }}>
                             <FontAwesome5 name="check-circle" size={12} color={renkler.durum.basarili} />
                             <Text className="text-xs font-semibold ml-1.5" style={{ color: renkler.metin }}>
-                                {son.farz}
+                                {farzAdi}
                             </Text>
                         </View>
                         <FontAwesome5 name="link" size={12} color={renkler.metinIkincil} style={{ marginHorizontal: 10 }} />
@@ -117,14 +123,13 @@ export const KazaOneriModal: React.FC<KazaOneriModalProps> = ({
                         >
                             <FontAwesome5 name="plus" size={10} color={renkler.birincil} />
                             <Text className="text-xs font-semibold ml-1.5" style={{ color: renkler.metin }}>
-                                {son.kaza} kazası
+                                {bicim(m.kazasi, { kaza: kazaAdi })}
                             </Text>
                         </View>
                     </View>
 
                     <Text className="text-sm leading-5 mb-5" style={{ color: renkler.metin }}>
-                        Kıldığınız her farzın ardından bir kaza, borcunuzu adım adım azaltır. Bir {kazaKucuk} kazası
-                        kıldığınızda işaretleyin; defterinizden düşelim.
+                        {bicim(m.aciklama, { kaza: kazaKucuk })}
                     </Text>
 
                     {/* Butonlar */}
@@ -136,11 +141,11 @@ export const KazaOneriModal: React.FC<KazaOneriModalProps> = ({
                             disabled={isleniyor}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel="Şimdi değil"
+                            accessibilityLabel={m.simdiDegil}
                             accessibilityState={{ disabled: isleniyor }}
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                                Şimdi değil
+                                {m.simdiDegil}
                             </Text>
                         </TouchableOpacity>
 
@@ -151,12 +156,12 @@ export const KazaOneriModal: React.FC<KazaOneriModalProps> = ({
                             disabled={isleniyor}
                             activeOpacity={0.85}
                             accessibilityRole="button"
-                            accessibilityLabel="Kıldım, kazadan düşün"
+                            accessibilityLabel={m.kildimDusun}
                             accessibilityState={{ disabled: isleniyor, busy: isleniyor }}
                         >
                             <FontAwesome5 name="check" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                                Kıldım, kazadan düşün
+                                {m.kildimDusun}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -167,11 +172,11 @@ export const KazaOneriModal: React.FC<KazaOneriModalProps> = ({
                         onPress={onBirDahaSorma}
                         disabled={isleniyor}
                         accessibilityRole="button"
-                        accessibilityLabel="Bir daha sormayın"
-                        accessibilityHint="Bu öneriyi kapatır; Kaza Defteri'nden yeniden açabilirsiniz"
+                        accessibilityLabel={m.birDahaSormayin}
+                        accessibilityHint={m.birDahaIpucu}
                     >
                         <Text className="text-xs font-semibold underline" style={{ color: renkler.metinIkincil }}>
-                            Bir daha sormayın
+                            {m.birDahaSormayin}
                         </Text>
                     </TouchableOpacity>
                 </View>

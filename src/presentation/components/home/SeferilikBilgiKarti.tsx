@@ -6,6 +6,7 @@ import { useAppSelector } from '../../store/hooks';
 import { useSeferilik } from '../../hooks/useSeferilik';
 import { seferilikDurumunuHesapla } from '../../../core/seferilik/seferilikKarari';
 import { seferilikKartMetniOlustur } from '../../../core/seferilik/seferilikMetni';
+import { useMetin } from '../../hooks/useMetin';
 import { kisaBildirimGoster } from '../common/KisaBildirim';
 
 /**
@@ -61,6 +62,7 @@ export function useSeferilikKartiGorunur(): boolean {
 
 function SeferilikBilgiKartiIc() {
   const renkler = useRenkler();
+  const m = useMetin().seferilik;
   const { durum, kartiKapat, buradaIkametEt } = useSeferilik();
   const ayarlar = durum?.ayarlar;
   const sonuc = useSeferilikSonucu(durum);
@@ -70,12 +72,12 @@ function SeferilikBilgiKartiIc() {
 
   const kaynagiAc = () => {
     Linking.openURL(metin.kaynak.url).catch(() => {
-      kisaBildirimGoster('Bağlantı açılamadı. İnternet bağlantınızı kontrol edin.');
+      kisaBildirimGoster(m.baglantiAcilamadi);
     });
   };
   const evimYap = async () => {
     const tamam = await buradaIkametEt();
-    kisaBildirimGoster(tamam ? 'İkamet yeriniz güncellendi' : 'İkamet yeriniz kaydedilemedi');
+    kisaBildirimGoster(tamam ? m.ikametGuncellendi : m.ikametKaydedilemedi);
   };
 
   return (
@@ -103,7 +105,7 @@ function SeferilikBilgiKartiIc() {
         <TouchableOpacity
           onPress={kartiKapat}
           accessibilityRole="button"
-          accessibilityLabel="Yolculuk bilgi kartını kapatın"
+          accessibilityLabel={m.kartiKapatin}
           className="w-11 h-11 items-center justify-center"
           style={{ marginRight: -10, marginTop: -10 }}
         >
@@ -130,22 +132,22 @@ function SeferilikBilgiKartiIc() {
         <TouchableOpacity
           onPress={evimYap}
           accessibilityRole="button"
-          accessibilityLabel="Burası evim, ikamet yerim olarak kaydedin"
+          accessibilityLabel={m.burasiEvimErisim}
           className="flex-1 flex-row items-center justify-center rounded-xl border"
           style={{ minHeight: 44, backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
         >
           <FontAwesome5 name="home" size={13} color={renkler.metin} style={{ marginRight: 6 }} />
-          <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Burası evim</Text>
+          <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>{m.burasiEvim}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={kaynagiAc}
           accessibilityRole="link"
-          accessibilityLabel="Diyanet fetvasını tarayıcıda okuyun"
+          accessibilityLabel={m.diyanetteOkuyunErisim}
           className="flex-row items-center justify-center rounded-xl px-4"
           style={{ minHeight: 44, flexGrow: 1.3, flexBasis: 0, backgroundColor: renkler.birincil }}
         >
           <FontAwesome5 name="external-link-alt" size={12} color={renkler.birincilMetin} style={{ marginRight: 6 }} />
-          <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>Diyanet'te okuyun</Text>
+          <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>{m.diyanetteOkuyun}</Text>
         </TouchableOpacity>
       </View>
     </View>

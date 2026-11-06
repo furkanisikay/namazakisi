@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sırpça (Kiril, ekavyen). Terimler: src/core/dil/sozluk/sr. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">sr</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Табла времена намаза</string>
+    <string name="ayarlar">Подешавања</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s: преостало %2$s</string>
+    <string name="pano_vaktine">До: %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s за %2$s</string>
+    <string name="pano_kerahat_vakti">Мекрух време</string>
+    <string name="pano_bitis">истиче %1$s</string>
+    <string name="pano_kerahat_erisim">Мекрух време, %1$s, истиче %2$s. %3$s</string>
+    <string name="pano_cumaya">Џума за %1$s</string>
+    <string name="pano_cikis_geldi">време је за полазак</string>
+    <string name="pano_cikis">полазак у %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Време је за полазак на џуму</string>
+    <string name="pano_cuma_cikis_erisim">Полазак на џуму у %1$s</string>
+    <string name="pano_bugun_cuma">Данас је џума</string>
+    <string name="pano_ogle">Подне %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Данас је џума. Џума-намаз је у време подне-намаза, %1$s</string>
+    <string name="pano_ayarlar_erisim">Подешавања: додавање телефона, локација, повезани телефони</string>
+    <string name="pano_simdiki_vakit">тренутни намаз</string>
+    <string name="pano_siradaki_vakit">следећи намаз</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Додајте телефон", "Унесите код", "Град ћу изабрати сам", "Додајте". -->
+    <string name="kodla_girin">Унесите код</string>
+    <string name="ili_kendim_secin">Град ћу изабрати сам</string>
+    <string name="yeniden_deneyin">Покушајте поново</string>
+    <string name="telefon_varsayilan">Телефон</string>
+    <string name="esleme_ekleniyor">Додаје се %1$s</string>
+    <string name="esleme_gonderiyor">Ваш телефон шаље локацију и стање…</string>
+    <string name="esleme_tamamlanamadi">Упаривање није могло да се доврши</string>
+    <string name="esleme_saklanamadi">Овај ТВ не може безбедно да сачува кључ везе. Локацију можете унети кодом или изабрати свој град.</string>
+    <string name="telefonunuzu_ekleyin">Додајте телефон</string>
+    <string name="esleme_alt">Времена намаза за вашу локацију; приказују се и намази које сте клањали.</string>
+    <string name="esleme_adim1">Отворите Namaz Akışı на телефону</string>
+    <string name="esleme_adim2">Подешавања › Моји уређаји › Додајте ТВ</string>
+    <string name="esleme_adim3">Усмерите камеру телефона на код</string>
+    <string name="esleme_ayni_wifi">Телефон и ТВ морају бити на истој Wi-Fi мрежи.</string>
+    <string name="esleme_onay_soru">Додати овај телефон?</string>
+    <string name="esleme_onay_aciklama">Додати телефон може да шаље своју локацију и намазе које означи на овај ТВ.</string>
+    <string name="ekleyin">Додајте</string>
+    <string name="hayir">Не</string>
+    <string name="esleme_eklendi">%1$s је додат</string>
+    <string name="konumunuz_geldi">Ваша локација је стигла</string>
+    <string name="konuma_gore_hesaplanacak">Времена намаза рачунаће се за ову локацију.</string>
+    <string name="qr_konum_alindi">Локација је примљена</string>
+    <string name="qr_kodu">Код за упаривање који скенирате телефоном</string>
+    <string name="ag_yok">ТВ није повезан на мрежу</string>
+    <string name="ag_yok_aciklama">Можете наставити уносом седмоцифреног кода са телефона или избором свог града.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Унесите код са телефона</string>
+    <string name="kod_yol">На телефону: Подешавања › Моји уређаји › Додајте ТВ</string>
+    <string name="kod_hatali">Код се не поклапа. Проверите 7 цифара на телефону; погрешну цифру исправите помоћу „%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Ако даљински управљач има тастере са бројевима, можете куцати и њима.</string>
+    <string name="kod_bos_hane">празна цифра</string>
+    <string name="kod_sil">Обриши</string>
+    <string name="kod_sil_aciklama">Обришите последњу цифру</string>
+    <string name="kod_geri">Назад</string>
+    <string name="vazgecin">Одустаните</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Изаберите свој град</string>
+    <string name="il_merkezine_gore">Времена намаза рачунају се за центар града.</string>
+    <string name="il_secili">%1$s, изабрано</string>
+    <string name="dream_il_yok">Да бисте видели таблу времена намаза, отворите апликацију Namaz Akışı и изаберите свој град.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Локација: %1$s</string>
+    <string name="ayar_konum_yok">Локација није изабрана</string>
+    <string name="ayar_telefon_ekleyin">Додајте телефон</string>
+    <string name="ayar_konumu_kodla">Унесите локацију кодом</string>
+    <string name="ayar_bagli_telefonlar">Телефони повезани са овим ТВ-ом</string>
+    <string name="ayar_telefon_yok">Још није додат ниједан телефон. Изаберите „%1$s” лево и скенирајте код који се појави.</string>
+    <string name="kaldirin">Уклоните</string>
+    <string name="ayar_ne_gonderir">Шта телефони шаљу?</string>
+    <string name="ayar_madde_konum">Локацију: времена намаза је прате</string>
+    <string name="ayar_madde_namazlar">Означене намазе, за оне који то изаберу</string>
+    <string name="ayar_madde_sifreli">Шифровано, само у мрежи вашег дома</string>
+    <string name="son_haber_yok">Још нема информација</string>
+    <string name="son_haber_az_once">Малопре</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">пре %1$d мин</item>
+        <item quantity="few">пре %1$d мин</item>
+        <item quantity="other">пре %1$d мин</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">пре %1$d ч</item>
+        <item quantity="few">пре %1$d ч</item>
+        <item quantity="other">пре %1$d ч</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">пре %1$d дан</item>
+        <item quantity="few">пре %1$d дана</item>
+        <item quantity="other">пре %1$d дана</item>
+    </plurals>
+    <string name="kaldir_soru">Уклонити %1$s?</string>
+    <string name="kaldir_aciklama">Овај телефон више неће моћи да шаље информације на ТВ. Да бисте га поново додали, потребно је да поново скенирате QR код.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Локација вашег телефона</string>
+</resources>

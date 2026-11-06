@@ -25,6 +25,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { EGRI, SURE } from '../hareket/sureler';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export const GERI_AL_SURESI_MS = 6000;
 
@@ -57,6 +59,7 @@ export interface GeriAlBandiKatmaniProps {
 
 export const GeriAlBandiKatmani: React.FC<GeriAlBandiKatmaniProps> = ({ altBosluk = 104 }) => {
     const renkler = useRenkler();
+    const m = useMetin().genel.ortak;
     const azalt = useHareketAzalt();
     const [istek, setIstek] = React.useState<GeriAlIstegi | null>(null);
     const gorunum = React.useRef(new Animated.Value(0)).current;
@@ -75,7 +78,7 @@ export const GeriAlBandiKatmani: React.FC<GeriAlBandiKatmaniProps> = ({ altBoslu
                 return;
             }
             setIstek(yeni);
-            AccessibilityInfo.announceForAccessibility?.(`${yeni.mesaj}. Geri almak için bandı kullanın.`);
+            AccessibilityInfo.announceForAccessibility?.(bicim(metin().genel.ortak.geriAlDuyuru, { mesaj: yeni.mesaj }));
             if (azaltRef.current) gorunum.setValue(1);
             else {
                 gorunum.setValue(0);
@@ -99,7 +102,7 @@ export const GeriAlBandiKatmani: React.FC<GeriAlBandiKatmaniProps> = ({ altBoslu
         setIstek(null);
         void Promise.resolve()
             .then(yapilacak)
-            .then(() => AccessibilityInfo.announceForAccessibility?.('Geri alındı'))
+            .then(() => AccessibilityInfo.announceForAccessibility?.(metin().genel.ortak.geriAlindi))
             .catch(() => undefined);
     };
 
@@ -121,10 +124,10 @@ export const GeriAlBandiKatmani: React.FC<GeriAlBandiKatmaniProps> = ({ altBoslu
                 <TouchableOpacity
                     onPress={geriAl}
                     accessibilityRole="button"
-                    accessibilityLabel="Geri al"
+                    accessibilityLabel={m.geriAl}
                     style={{ minHeight: 44, minWidth: 44, paddingHorizontal: 12, justifyContent: 'center' }}
                 >
-                    <Text style={{ fontSize: 14, fontWeight: '800', color: renkler.arkaplan, textDecorationLine: 'underline' }}>Geri al</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '800', color: renkler.arkaplan, textDecorationLine: 'underline' }}>{m.geriAl}</Text>
                 </TouchableOpacity>
             </View>
         </Animated.View>

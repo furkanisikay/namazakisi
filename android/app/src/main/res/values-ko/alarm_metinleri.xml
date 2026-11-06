@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Korece). "예배 드렸어요" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">예배 알람</string>
+  <string name="alarm_kildim">예배 드렸어요</string>
+  <string name="alarm_kapat">끄기</string>
+  <string name="alarm_kanal_aciklamasi">선택한 알림 단계에서 울리는 실제 알람</string>
+</resources>

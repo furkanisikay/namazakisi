@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- si — Sinhala (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">TV තිරයේ QR කේතය රාමුව තුළට ගන්න</string>
+    <string name="tvesleme_qr_vazgec">අවලංගු කරන්න</string>
+    <string name="tvesleme_qr_vazgec_erisim">පරිලෝකනය අවලංගු කරන්න</string>
+    <string name="tvesleme_qr_yabanci">මෙම QR කේතය Namaz Akışı TV වෙත අයත් නොවේ. TV එකේ කේතය පරිලෝකනය කරන්න.</string>
+    <string name="tvesleme_qr_okundu">කේතය පරිලෝකනය කළා</string>
+</resources>

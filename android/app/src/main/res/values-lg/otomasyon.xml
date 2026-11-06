@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Luganda). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nsaaze</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Embeera y’ekiseera ky’esswala</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ekibaddewo mu kiseera ky’esswala</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Entegeka eno egattibwako okuva mu app ya automation</string>
+  <string name="otomasyon_bilgi_tarayici">Browser tezisobola kufuna lukusa lwa lubeerera. Gigatteko okuva ku lukalala lwa plugin mu app nga Tasker, MacroDroid oba Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Gigatteko ng’olonda “Namaz Akışı” ku lukalala lwa plugin mu app nga Tasker, MacroDroid oba Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s egaaniddwa</string>
+  <string name="otomasyon_engelli_mesaj">Wagaana dda app eno okuteeka akabonero ku sswala zo. Osobola okugikkiriza mu Namaz Akışı wansi w’Entegeka &gt; “App ezisobola okuteeka akabonero ku sswala”.</string>
+  <string name="otomasyon_izin_baslik">Kozesa ne %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s esobola okumanya ekiseera ky’esswala lwe kituuka, lwe kinaatera okuggwaako, ne bw’oba oli ku muzikiti, n’ekola automation zo. Osobola okukyusa ky’osazeewo mu Namaz Akışı wansi w’Entegeka &gt; “App ezisobola okuteeka akabonero ku sswala”.</string>
+  <string name="otomasyon_izin_kildim">%1$s esobola okuteeka akabonero ku sswala eriwo nti esaaliddwa ng’ekozesa automation gy’oteeseteese. Osobola okukyusa ky’osazeewo mu Namaz Akışı wansi w’Entegeka &gt; “App ezisobola okuteeka akabonero ku sswala”.</string>
+  <string name="otomasyon_izin_ver">Kkiriza</string>
+  <string name="otomasyon_engelle">Gaana</string>
+  <string name="otomasyon_vazgec">Sazaamu</string>
+  <string name="otomasyon_tamam">Kale</string>
+  <string name="otomasyon_tur_baslik">Ekole ddi?</string>
+  <string name="otomasyon_ileri">Eddako</string>
+  <string name="otomasyon_vakit_baslik">Esswala ki?</string>
+  <string name="otomasyon_herhangi_vakit">Ekiseera ky’esswala kyonna</string>
+  <string name="otomasyon_kaydet">Tereka</string>
+  <string name="otomasyon_kosul_icinde">Nga kiseera ky’esswala</string>
+  <string name="otomasyon_kosul_cikiyor">Ng’ekiseera ky’esswala kinaatera okuggwaako (dk %1$d zisigadde, Omukuumi w’Esswala ali ku)</string>
+  <string name="otomasyon_kosul_camide">Ng’oli ku muzikiti</string>
+  <string name="otomasyon_olay_girdi">Ekiseera ky’esswala bwe kituuka</string>
+  <string name="otomasyon_olay_cikiyor">Ekiseera ky’esswala bwe kinaatera okuggwaako (dk %1$d zisigadde, Omukuumi w’Esswala ali ku)</string>
+  <string name="otomasyon_olay_camide">Bw’olabibwa ng’oli ku muzikiti</string>
+</resources>

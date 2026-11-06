@@ -8,9 +8,9 @@ appId: com.furkanisikay.namazakisi
 - runFlow:
     file: _liste-kaydir.yaml
     env:
-      HEDEF: "Hatırlatmalar\\..*"
+      HEDEF: "(Hatırlatmalar|Reminders)\\..*"
 - tapOn:
-    text: "Hatırlatmalar\\..*"
+    text: "(Hatırlatmalar|Reminders)\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - scrollUntilVisible:

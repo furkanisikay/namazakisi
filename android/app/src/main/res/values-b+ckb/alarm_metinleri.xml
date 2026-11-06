@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ckb -->
+<!-- Gerçek alarm (Soranî). "نوێژم کرد" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">ئاگادارکەرەوەی نوێژ</string>
+  <string name="alarm_kildim">نوێژم کرد</string>
+  <string name="alarm_kapat">کوژاندنەوە</string>
+  <string name="alarm_kanal_aciklamasi">ئاگادارکەرەوەیەکی ڕاستەقینە کە لەو ھەنگاوانەی بیرخستنەوەدا زەنگ لێدەدات کە ھەڵیاندەبژێرن</string>
+</resources>

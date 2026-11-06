@@ -14,9 +14,12 @@ import { nowBarAyarlariniYukle } from '../store/nowBarSlice';
 import { acikOgeSayisi, NOW_BAR_OGELERI } from '../../core/sayac/nowBar';
 import { iosCanliOgesiMi } from '../../core/sayac/iosCanliEtkinlik';
 import { canliEtkinlikDestekli } from '../../../modules/expo-siri-kisayollari/src';
+import { sayili } from '../../core/dil/aktifDil';
+import { useMetin } from './useMetin';
 
 export function useNowBarOzeti(): { kullanilabilir: boolean; ozet: string | undefined } {
   const dispatch = useAppDispatch();
+  const mk = useMetin().muhafizAyar.kanca;
   // Savunmalı: dar mock'lanmış store'da dilim olmayabilir.
   const dilim = useAppSelector((s) => (s as { nowBar?: typeof s.nowBar }).nowBar);
   const kullanilabilir = Platform.OS === 'android' || (Platform.OS === 'ios' && canliEtkinlikDestekli());
@@ -32,5 +35,5 @@ export function useNowBarOzeti(): { kullanilabilir: boolean; ozet: string | unde
     Platform.OS === 'ios'
       ? NOW_BAR_OGELERI.filter((o) => iosCanliOgesiMi(o) && dilim.ayarlar.ogeler[o].acik).length
       : acikOgeSayisi(dilim.ayarlar);
-  return { kullanilabilir, ozet: sayi === 0 ? 'Kapalı' : `${sayi} öğe açık` };
+  return { kullanilabilir, ozet: sayi === 0 ? mk.nowBarKapali : sayili(mk.nowBarAcik, sayi) };
 }

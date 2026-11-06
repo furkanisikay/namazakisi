@@ -16,6 +16,8 @@ import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, Vi
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
+import { namazAdiGoster } from '../../../core/constants/UygulamaSabitleri';
 import {
     KILDIM_GUVEN_ETIKETLERI,
     kildimIzinAciklamasi,
@@ -48,20 +50,23 @@ export const KildimIzinModali: React.FC<KildimIzinModaliProps> = ({
     onVazgec,
 }) => {
     const renkler = useRenkler();
+    const s = useMetin();
     const gorunur = vakitAdi != null;
+    // `vakitAdi` kimliktir (Türkçe `NamazAdi`); ekranda etkin dilin adı.
+    const gorunenVakit = vakitAdi ? namazAdiGoster(vakitAdi) : null;
     useDonanimGeriTusu(gorunur, onVazgec);
 
     /** Paket adı biliniyorsa başlatan TANINIYOR (kalıcı karar sunulabilir). */
     const tanidik = baslatan?.paket ? baslatan : null;
     const taniniyor = tanidik != null;
     const baslik = tanidik ? kildimIzinSorusu(tanidik.ad) : kimliksizBaslik;
-    const mesaj = !vakitAdi
+    const mesaj = !gorunenVakit
         ? ''
         : !tanidik
           ? kimliksizMesaj
           : tanidik.herZaman
-            ? kildimIzinAciklamasi(vakitAdi)
-            : kildimTarayiciAciklamasi(vakitAdi);
+            ? kildimIzinAciklamasi(gorunenVakit)
+            : kildimTarayiciAciklamasi(gorunenVakit);
 
     // Kapanış animasyonunda metin boşalıp titremesin (BildirimModali deseni).
     const [son, setSon] = React.useState({ baslik, mesaj });
@@ -105,7 +110,10 @@ export const KildimIzinModali: React.FC<KildimIzinModaliProps> = ({
 
     let dugmeler: React.ReactNode[];
     if (!tanidik) {
-        dugmeler = [birincilDugme('Kıldım', 'check', onBuSefer), ikincilDugme('Vazgeç', 'times', onVazgec, renkler.metinIkincil)];
+        dugmeler = [
+            birincilDugme(s.vakit.eylem.kildim, 'check', onBuSefer),
+            ikincilDugme(s.genel.ortak.vazgec, 'times', onVazgec, renkler.metinIkincil),
+        ];
     } else {
         dugmeler = [];
         if (tanidik.herZaman) {

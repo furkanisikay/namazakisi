@@ -11,7 +11,7 @@
  * deseni); gerçek Redux store kurulmaz.
  */
 import * as React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { act, render, fireEvent, waitFor } from '@testing-library/react-native';
 import { IceAktarmaSihirbaziSayfasi } from '../IceAktarmaSihirbaziSayfasi';
 
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +23,8 @@ import { iceAktarmayiUygula } from '../../../../store/yedeklemeSlice';
 import { zarfiCoz, mevcutVeriyiTopla } from '../../../../../domain/services/YedeklemeServisi';
 import { farkCikar } from '../../../../../domain/services/YedekBirlestirmeServisi';
 import type { YedekPayload, FarkOzeti } from '../../../../../core/types';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../../__tests__/yardimci/ingilizceDenetimi';
+import { CozmeHatasiAdimi, CozumleniyorAdimi, OzetAdimi, UygulamaHatasiAdimi, UygulaniyorAdimi } from '../adimlar';
 
 // ─── Mocklar ──────────────────────────────────────────────────────────────────
 
@@ -218,5 +220,45 @@ describe('IceAktarmaSihirbaziSayfasi', () => {
     });
     expect(getByText('Yedek Dosyanızı Seçin')).toBeTruthy();
     expect(queryByText('Yedeğiniz Hazır')).toBeNull();
+  });
+  describe('İngilizce', () => {
+    const YASAKLI = ['Yedek', 'Dosya', 'Tamam', 'Geri', 'Akilli', 'Eksikler', 'Vazge', 'Namaz\\b', 'Puan', 'Kaza\\b'];
+    // Marka adı ("Namaz Akışı") her dilde aynı kalır.
+    const kalan = (agac: unknown) =>
+      turkceKalanlar(agac as never, YASAKLI).filter((m) => turkceKalanlar(m.replace(/Namaz Akışı/g, ''), YASAKLI).length > 0);
+    let geriAl: () => void;
+    beforeEach(() => {
+      geriAl = ingilizceyeGec();
+    });
+    afterEach(() => act(() => geriAl()));
+
+    it('dosya seçimi, karşılaştırma ve gelişmiş birleştirme İngilizce', async () => {
+      (DocumentPicker.getDocumentAsync as jest.Mock).mockResolvedValue({ canceled: false, assets: [{ uri: 'file:///yedek.json' }] });
+      mockDosyaIcerik.mockResolvedValue('{"x":1}');
+      (zarfiCoz as jest.Mock).mockResolvedValue(sahtePayload);
+      const e = render(<IceAktarmaSihirbaziSayfasi />);
+      expect(kalan(e.toJSON())).toEqual([]);
+      fireEvent.press(e.getByText('Choose file'));
+      await waitFor(() => expect(e.getByText('Your backup is ready')).toBeTruthy());
+      expect(e.getByText('Your device currently has prayer records for 1 day.')).toBeTruthy();
+      expect(kalan(e.toJSON())).toEqual([]);
+      fireEvent.press(e.getByLabelText('Advanced'));
+      await waitFor(() => expect(e.getByText('Advanced merge')).toBeTruthy());
+      expect(kalan(e.toJSON())).toEqual([]);
+    });
+
+    it('ara ve son adımlar İngilizce', () => {
+      for (const el of [
+        <CozumleniyorAdimi renkler={mockRenkler as never} />,
+        <CozmeHatasiAdimi renkler={mockRenkler as never} />,
+        <UygulaniyorAdimi renkler={mockRenkler as never} />,
+        <UygulamaHatasiAdimi renkler={mockRenkler as never} hata={null} />,
+        <OzetAdimi renkler={mockRenkler as never} yazilanAnahtarSayisi={3} />,
+      ]) {
+        const e = render(el);
+        expect(kalan(e.toJSON())).toEqual([]);
+        e.unmount();
+      }
+    });
   });
 });

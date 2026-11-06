@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rumence. Terimler: src/core/dil/sozluk/ro (Fajr · Răsărit · Dhuhr · Asr · Maghrib · Ișa; "M-am rugat" / "Efectuată"). Yalnız virgüllü ș ț. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ro</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Rugăciunea următoare</string>
+    <string name="tile_aciklama">Rugăciunea următoare și ora ei</string>
+    <string name="komplikasyon_adi">Timp rămas</string>
+    <string name="cikis_saati_komplikasyon_adi">Sfârșitul timpului rugăciunii</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Rugăciunea următoare</string>
+    <string name="bugun_tile_adi">Azi</string>
+    <string name="bugun_tile_aciklama">Cele cinci rugăciuni de azi; marcați-le pe cele efectuate cu două atingeri</string>
+    <string name="ilerleme_komplikasyon_adi">Progres zilnic</string>
+    <string name="dagilim_komplikasyon_adi">Rezumatul zilei</string>
+    <string name="kerahat_komplikasyon_adi">Timp makruh</string>
+    <string name="son_dakikalar_kanal_adi">Ultimele minute</string>
+    <string name="son_dakikalar_kanal_aciklama">Numărătoare pe cadranul ceasului în ultimele minute ale unei rugăciuni neefectuate</string>
+    <string name="tesbihat_adi">Tesbih</string>
+    <string name="tesbihat_kanal_adi">Tesbih</string>
+    <string name="tesbihat_kanal_aciklama">Pictogramă discretă pe cadran pentru a reveni la un tesbih neterminat</string>
+    <string name="kible_adi">Qibla</string>
+    <string name="kible_komplikasyon_adi">Qibla</string>
+    <string name="camideyim_kanal_adi">La moschee</string>
+    <string name="camideyim_kanal_aciklama">Pictogramă discretă pe cadran când telefonul raportează că sunteți la moschee</string>
+    <string name="uyandirma_kanal_adi">Trezire silențioasă</string>
+    <string name="uyandirma_kanal_aciklama">Vă trezește doar prin vibrații, pentru Fajr și Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">M-am rugat</string>
+    <string name="kilindi_isareti">✓ Efectuată</string>
+    <string name="kapat">Închideți</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Deschideți Namaz Akışı pe telefon ca să vedeți orele de rugăciune.</string>
+    <string name="yuk_eskidi">Datele despre orele de rugăciune nu sunt actuale. Deschideți Namaz Akışı pe telefon ca să le reîmprospătați.</string>
+    <string name="guncelleme_gerekli">Actualizați Namaz Akışı pe ceas.</string>
+    <string name="bildirim_izni">Ca să primiți mementouri și când telefonul nu este aproape, permiteți notificările Namaz Akışı din setările ceasului.</string>
+    <string name="cami_soru">Sunteți la moschee?</string>
+    <string name="cami_evet">Da</string>
+    <string name="cami_evet_aciklama">Da, sunt la moschee. Activează Modul rugăciune</string>
+    <string name="cami_hayir">Nu</string>
+    <string name="cami_hayir_aciklama">Nu, nu sunt la moschee</string>
+    <string name="camidesiniz">Sunteți la moschee</string>
+    <string name="cami_degil">Aici nu e moschee</string>
+    <string name="cami_degil_aciklama">Aici nu e moschee. Acest loc nu va mai fi considerat moschee</string>
+    <string name="tesbihat_ac">Deschideți numărătorul de tesbih</string>
+    <string name="kible_ac">Deschideți busola Qiblei</string>
+    <string name="ses_dene">Testați sunetul</string>
+    <string name="ses_dene_aciklama">Testați citirea cu voce tare a ceasului</string>
+    <string name="telefonda_acin">Deschideți pe telefon</string>
+    <string name="telefonda_ekran_ac">Deschideți %1$s pe telefon</string>
+    <string name="ekran_kaza">Registrul de recuperare</string>
+    <string name="ekran_camideyim">La moschee</string>
+    <string name="ekran_ayarlar">Setări</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">efectuată, se sincronizează</string>
+    <string name="durum_kilindi">efectuată</string>
+    <string name="durum_girmedi">încă nu e timpul</string>
+    <string name="durum_simdiki">timpul rugăciunii curente, atingeți pentru a marca</string>
+    <string name="durum_simdiki_kalan">timpul rugăciunii curente, %1$s, atingeți pentru a marca</string>
+    <string name="durum_kilinmadi">neefectuată, atingeți pentru a marca</string>
+    <string name="isaretleyin">Marcați ca efectuată</string>
+    <string name="esitleniyor">se sincronizează</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Confirmați M-am rugat</string>
+    <string name="vazgecin">Anulați</string>
+    <string name="vazgec">Anulați</string>
+    <string name="kerahat_vaktindesiniz">Acum este timp makruh.</string>
+    <string name="kilindi_dua">Efectuată. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Modul rugăciune activat, se încheie la %1$s. Atingeți pentru a-l dezactiva</string>
+    <string name="namaz_modu_ac_aciklama">Activați Modul rugăciune pe telefon</string>
+    <string name="namaz_modu_kapatin">Dezactivați Modul rugăciune</string>
+    <string name="namaz_modu_acin">Activați Modul rugăciune</string>
+    <string name="namaz_modu_acik_bitis">Activat, până la %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Se caută direcția…</string>
+    <string name="kible_yuk_yok">Deschideți Namaz Akışı pe telefon ca să găsiți Qibla.</string>
+    <string name="kible_konum_yok">Activați locația pe telefon ca să găsiți Qibla. Dacă Namaz Akışı nu este actualizată, actualizați-o.</string>
+    <string name="kible_sensor_yok">Acest ceas nu are senzor de busolă. Puteți vedea direcția Qiblei pe telefon.</string>
+    <string name="kible_kuzeyden">Qibla %1$d° (față de nord)</string>
+    <string name="kible_derece">Qibla %1$d°</string>
+    <string name="kible_telefonda_ac">Deschideți Qibla pe telefon</string>
+    <string name="kible_erisim">%1$s. Qibla este la %2$d° față de nord, %3$s</string>
+    <string name="kible_hizali">Sunteți cu fața spre Qibla</string>
+    <string name="kible_kalibrasyon">Pentru calibrare, mișcați încheietura în aer descriind cifra 8</string>
+    <string name="kible_egim">Țineți ceasul paralel cu solul</string>
+    <string name="kible_titresim_acik">Ghidare prin vibrații activată. Atingeți pentru a o dezactiva</string>
+    <string name="kible_titresim_kapali">Ghidare prin vibrații dezactivată. Atingeți pentru a o activa</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">V</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tesbih încheiat. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Total %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Numărați</string>
+    <string name="tesbihat_bastan_baslayin">Începeți de la capăt</string>
+    <string name="tesbihat_bastan_soru">Începeți de la capăt?</string>
+    <string name="tesbihat_sifirlanir">Numărătoarea se resetează.</string>
+    <string name="tesbihat_geri_al">Anulați</string>
+    <string name="tesbihat_geri_al_aciklama">Anulați ultima numărare</string>
+    <string name="tesbihat_yeniden">Din nou</string>
+    <string name="tesbihat_yeniden_aciklama">Începeți din nou tesbihul</string>
+    <string name="tesbihat_suruyor">Tesbih în desfășurare: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">M-am rugat. Închide trezirea</string>
+    <string name="uyandirma_kapat_aciklama">Închideți trezirea</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Deschideți Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Atingeți pentru orele de rugăciune</string>
+    <string name="tile_telefonda_acin">Deschideți aplicația pe telefon</string>
+    <string name="tile_sonra">în %1$s</string>
+    <string name="tile_siradaki_aciklama">Rugăciunea următoare %1$s, începe la %2$s. Deschideți aplicația</string>
+    <string name="tile_giris">începe %1$s</string>
+    <string name="tile_cikis">se încheie %1$s</string>
+    <string name="bugun_bos_satir1">Deschideți aplicația</string>
+    <string name="bugun_bos_satir2">pe telefon</string>
+    <string name="bugun_acma_aciklamasi">Azi %1$d/%2$d rugăciuni efectuate. Deschideți aplicația</string>
+    <string name="bugun_sayi">Azi %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Timp makruh · atingeți din nou pentru a confirma</string>
+    <string name="bugun_onay_tekrar">Atingeți din nou pentru a confirma</string>
+    <string name="bugun_tamam">Rugăciunile de azi sunt complete</string>
+    <string name="bugun_kilinmadi">%1$s neefectuată</string>
+    <string name="bugun_siradaki">Urmează: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Atingeți din nou</string>
+    <string name="bugun_kilindi">%1$s efectuată</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s efectuată, se sincronizează</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Se așteaptă orele de rugăciune; deschideți Namaz Akışı pe telefon</string>
+    <string name="komplikasyon_bekleniyor">Se așteaptă</string>
+    <string name="komplikasyon_vakit">Timp</string>
+    <string name="komplikasyon_cikis">Final</string>
+    <string name="komplikasyon_sirada">Urmează</string>
+    <string name="gun_durumu_aciklama">Azi %2$d din %1$d rugăciuni efectuate</string>
+    <string name="gun_durumu_kilinmamis">%1$s; neefectuate: %2$s</string>
+    <string name="komplikasyon_namaz">Rugăc.</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">Este timp makruh, se încheie la %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Următorul timp makruh %1$s</string>
+    <string name="kible_komplikasyon">Qibla este la %1$d° față de nord. Deschideți busola</string>
+    <string name="kible_komplikasyon_konumlu">Qibla este la %1$d° față de nord, %2$s. Deschideți busola</string>
+    <string name="kible_komplikasyon_konum_yok">Activați locația pe telefon ca să găsiți Qibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Memento urgent · Cu vibrații</string>
+    <string name="muhafiz_kanal_acil">Memento urgent</string>
+    <string name="muhafiz_kanal_titresimli">Memento de rugăciune · Cu vibrații</string>
+    <string name="muhafiz_kanal">Memento de rugăciune</string>
+    <string name="muhafiz_kanal_aciklama">Mementouri de rugăciune afișate pe ceas chiar și când telefonul nu este aproape</string>
+    <string name="son_dakikalar_cikis">Final: %1$s</string>
+    <string name="son_dakikalar_bitis">Final: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Timp rămas până se încheie %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Timp rămas pentru %1$s</string>
+    <string name="cami_namaz_modu_bitis">Modul rugăciune · până la %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Deschis pe telefon</string>
+    <string name="telefona_ulasilamadi">Telefonul nu poate fi accesat</string>
+</resources>

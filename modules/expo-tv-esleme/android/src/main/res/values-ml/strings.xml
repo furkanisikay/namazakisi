@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">ടിവി സ്ക്രീനിലെ QR കോഡ് ഫ്രെയിമിനുള്ളിൽ വരുത്തുക</string>
+    <string name="tvesleme_qr_vazgec">റദ്ദാക്കുക</string>
+    <string name="tvesleme_qr_vazgec_erisim">സ്കാനിംഗ് റദ്ദാക്കുക</string>
+    <string name="tvesleme_qr_yabanci">ഈ QR കോഡ് Namaz Akışı TV-യുടേതല്ല. ടിവിയിലെ കോഡ് സ്കാൻ ചെയ്യുക.</string>
+    <string name="tvesleme_qr_okundu">കോഡ് സ്കാൻ ചെയ്തു</string>
+</resources>

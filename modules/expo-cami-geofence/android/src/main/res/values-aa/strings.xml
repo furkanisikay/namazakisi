@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Masgidil an</string>
+    <string name="camigeofence_kanal_durum_aciklama">Masgidil tanim ubbullek xongolo mali warsa</string>
+    <string name="camigeofence_kanal_soru_ad">Masgidak yawqeenik</string>
+    <string name="camigeofence_kanal_soru_aciklama">Masgidak yawqeenik sinni salat calaamisaanamkeh essero</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Salat caala faka. Kassisiyya xongolo malik yamaate.</string>
+    <string name="camigeofence_govde_mod">Salat caala faka.</string>
+    <string name="camigeofence_govde_sessiz">Kassisiyya xongolo malik yamaate.</string>
+    <string name="camigeofence_govde_normal">Kassisiyya caadat innal yamaate.</string>
+    <string name="camigeofence_eylem_modu_kapat">Caala alifa</string>
+    <string name="camigeofence_eylem_cami_degil">Masgid hinna</string>
+
+    <string name="camigeofence_soru_baslik">Masgidil tanaa?</string>
+    <string name="camigeofence_soru_govde">%1$s xayyo tanin. Diggah hinna, toh sabbatah sin esserra.</string>
+    <string name="camigeofence_varsayilan_ad">Masgid</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Salat caala faka</string>
+    <string name="camigeofence_eylem_evet_camideyim">Yeey, masgidil an</string>
+    <string name="camigeofence_eylem_hayir">Maleey</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s salat abteenaa?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Inki xagissot calaamisaanam duddan.</string>
+    <string name="camigeofence_eylem_kildim">Salat abe</string>
+    <string name="camigeofence_namaz_imsak">Subci</string>
+    <string name="camigeofence_namaz_ogle">Dohori</string>
+    <string name="camigeofence_namaz_ikindi">Qasri</string>
+    <string name="camigeofence_namaz_aksam">Magrib</string>
+    <string name="camigeofence_namaz_yatsi">Qisha</string>
+    <string name="camigeofence_namaz_cuma">Jumqatta</string>
+
+    <string name="camigeofence_mod_kural_adi">Salat</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı tet Jumqatta xutbal, masgidil hinnay salat wakti culek fakta</string>
+</resources>

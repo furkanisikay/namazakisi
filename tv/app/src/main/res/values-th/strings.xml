@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tayca. Terimler: src/core/dil/sozluk/th (vakit.ts başı). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">th</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">กระดานเวลาละหมาด</string>
+    <string name="ayarlar">การตั้งค่า</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">เหลืออีก %2$s ก่อน%1$s</string>
+    <string name="pano_vaktine">จนถึง%1$s</string>
+    <string name="pano_vaktine_kalan">%1$sในอีก %2$s</string>
+    <string name="pano_kerahat_vakti">เวลาที่ห้ามละหมาด</string>
+    <string name="pano_bitis">สิ้นสุด %1$s</string>
+    <string name="pano_kerahat_erisim">เวลาที่ห้ามละหมาด %1$s สิ้นสุด %2$s %3$s</string>
+    <string name="pano_cumaya">ญุมอัตในอีก %1$s</string>
+    <string name="pano_cikis_geldi">ถึงเวลาออกเดินทาง</string>
+    <string name="pano_cikis">ออกเดินทาง %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">ถึงเวลาออกเดินทางไปละหมาดญุมอัตแล้ว</string>
+    <string name="pano_cuma_cikis_erisim">ออกเดินทางไปละหมาดญุมอัตเวลา %1$s</string>
+    <string name="pano_bugun_cuma">วันนี้เป็นวันศุกร์</string>
+    <string name="pano_ogle">ดุฮ์ริ %1$s</string>
+    <string name="pano_bugun_cuma_erisim">วันนี้เป็นวันศุกร์ ละหมาดญุมอัตอยู่ในเวลาดุฮ์ริ %1$s</string>
+    <string name="pano_ayarlar_erisim">การตั้งค่า: เพิ่มโทรศัพท์ ตำแหน่ง โทรศัพท์ที่เชื่อมต่อ</string>
+    <string name="pano_simdiki_vakit">เวลาละหมาดปัจจุบัน</string>
+    <string name="pano_siradaki_vakit">เวลาละหมาดถัดไป</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "เพิ่มโทรศัพท์ของคุณ", "ป้อนรหัส", "ฉันจะเลือกเมืองเอง", "เพิ่ม". -->
+    <string name="kodla_girin">ป้อนรหัส</string>
+    <string name="ili_kendim_secin">ฉันจะเลือกเมืองเอง</string>
+    <string name="yeniden_deneyin">ลองอีกครั้ง</string>
+    <string name="telefon_varsayilan">โทรศัพท์</string>
+    <string name="esleme_ekleniyor">กำลังเพิ่ม %1$s</string>
+    <string name="esleme_gonderiyor">โทรศัพท์ของคุณกำลังส่งตำแหน่งและสถานะ…</string>
+    <string name="esleme_tamamlanamadi">จับคู่ไม่สำเร็จ</string>
+    <string name="esleme_saklanamadi">ทีวีเครื่องนี้เก็บคีย์การเชื่อมต่ออย่างปลอดภัยไม่ได้ คุณป้อนตำแหน่งด้วยรหัสหรือเลือกเมืองได้</string>
+    <string name="telefonunuzu_ekleyin">เพิ่มโทรศัพท์ของคุณ</string>
+    <string name="esleme_alt">เวลาละหมาดสำหรับตำแหน่งของคุณ และละหมาดที่คุณทำแล้วก็จะแสดงด้วย</string>
+    <string name="esleme_adim1">เปิด Namaz Akışı บนโทรศัพท์</string>
+    <string name="esleme_adim2">การตั้งค่า › อุปกรณ์ของฉัน › เพิ่มทีวี</string>
+    <string name="esleme_adim3">หันกล้องโทรศัพท์ไปที่รหัส</string>
+    <string name="esleme_ayni_wifi">โทรศัพท์และทีวีต้องอยู่บนเครือข่าย Wi-Fi เดียวกัน</string>
+    <string name="esleme_onay_soru">เพิ่มโทรศัพท์นี้หรือไม่</string>
+    <string name="esleme_onay_aciklama">โทรศัพท์ที่เพิ่มจะส่งตำแหน่งและละหมาดที่ทำเครื่องหมายไว้มายังทีวีนี้ได้</string>
+    <string name="ekleyin">เพิ่ม</string>
+    <string name="hayir">ไม่</string>
+    <string name="esleme_eklendi">เพิ่ม %1$s แล้ว</string>
+    <string name="konumunuz_geldi">ได้รับตำแหน่งของคุณแล้ว</string>
+    <string name="konuma_gore_hesaplanacak">เวลาละหมาดจะคำนวณสำหรับตำแหน่งนี้</string>
+    <string name="qr_konum_alindi">ได้รับตำแหน่งแล้ว</string>
+    <string name="qr_kodu">รหัสจับคู่สำหรับสแกนด้วยโทรศัพท์</string>
+    <string name="ag_yok">ทีวีไม่ได้เชื่อมต่อกับเครือข่าย</string>
+    <string name="ag_yok_aciklama">คุณดำเนินการต่อได้โดยป้อนรหัส 7 หลักจากโทรศัพท์หรือเลือกเมือง</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">ป้อนรหัสจากโทรศัพท์</string>
+    <string name="kod_yol">บนโทรศัพท์: การตั้งค่า › อุปกรณ์ของฉัน › เพิ่มทีวี</string>
+    <string name="kod_hatali">รหัสไม่ตรงกัน โปรดตรวจสอบตัวเลข 7 หลักบนโทรศัพท์ แก้ตัวเลขที่ผิดด้วย “%1$s”</string>
+    <string name="kod_rakamli_kumanda">หากรีโมตมีปุ่มตัวเลข คุณพิมพ์ด้วยปุ่มเหล่านั้นได้</string>
+    <string name="kod_bos_hane">หลักที่ว่าง</string>
+    <string name="kod_sil">ลบ</string>
+    <string name="kod_sil_aciklama">ลบตัวเลขหลักสุดท้าย</string>
+    <string name="kod_geri">กลับ</string>
+    <string name="vazgecin">ยกเลิก</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">เลือกเมืองของคุณ</string>
+    <string name="il_merkezine_gore">เวลาละหมาดคำนวณสำหรับใจกลางเมือง</string>
+    <string name="il_secili">%1$s เลือกแล้ว</string>
+    <string name="dream_il_yok">หากต้องการดูกระดานเวลาละหมาด โปรดเปิดแอป Namaz Akışı แล้วเลือกเมืองของคุณ</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">ตำแหน่ง: %1$s</string>
+    <string name="ayar_konum_yok">ยังไม่ได้เลือกตำแหน่ง</string>
+    <string name="ayar_telefon_ekleyin">เพิ่มโทรศัพท์</string>
+    <string name="ayar_konumu_kodla">ป้อนตำแหน่งด้วยรหัส</string>
+    <string name="ayar_bagli_telefonlar">โทรศัพท์ที่เชื่อมต่อกับทีวีนี้</string>
+    <string name="ayar_telefon_yok">ยังไม่ได้เพิ่มโทรศัพท์ ใช้ “%1$s” ทางซ้ายแล้วสแกนรหัสที่ปรากฏ</string>
+    <string name="kaldirin">ลบ</string>
+    <string name="ayar_ne_gonderir">โทรศัพท์ส่งอะไรบ้าง</string>
+    <string name="ayar_madde_konum">ตำแหน่ง: เวลาละหมาดจะเป็นไปตามตำแหน่งนี้</string>
+    <string name="ayar_madde_namazlar">ละหมาดที่ทำเครื่องหมายไว้ สำหรับผู้ที่เลือก</string>
+    <string name="ayar_madde_sifreli">เข้ารหัส อยู่ในเครือข่ายในบ้านเท่านั้น</string>
+    <string name="son_haber_yok">ยังไม่มีข้อมูล</string>
+    <string name="son_haber_az_once">เมื่อสักครู่</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">%1$d นาทีที่แล้ว</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">%1$d ชม. ที่แล้ว</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">%1$d วันที่แล้ว</item>
+    </plurals>
+    <string name="kaldir_soru">ลบ %1$s หรือไม่</string>
+    <string name="kaldir_aciklama">โทรศัพท์นี้จะส่งข้อมูลมายังทีวีไม่ได้อีก หากต้องการเพิ่มอีกครั้ง คุณต้องสแกนคิวอาร์โค้ดอีกครั้ง</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">ตำแหน่งของโทรศัพท์คุณ</string>
+</resources>

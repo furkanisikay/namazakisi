@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bs — Boşnakça (beta). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">U džamiji</string>
+    <string name="camigeofence_kanal_durum_aciklama">Tiho obavještenje kada se otkrije da ste u džamiji</string>
+    <string name="camigeofence_kanal_soru_ad">Nakon izlaska iz džamije</string>
+    <string name="camigeofence_kanal_soru_aciklama">Pitanje da označite namaz nakon izlaska iz džamije</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Režim namaza je uključen. Podsjetnici će stizati nečujno.</string>
+    <string name="camigeofence_govde_mod">Režim namaza je uključen.</string>
+    <string name="camigeofence_govde_sessiz">Podsjetnici će stizati nečujno.</string>
+    <string name="camigeofence_govde_normal">Podsjetnici će stizati kao i obično.</string>
+    <string name="camigeofence_eylem_modu_kapat">Isključite režim</string>
+    <string name="camigeofence_eylem_cami_degil">Ovo nije džamija</string>
+
+    <string name="camigeofence_soru_baslik">Jeste li u džamiji?</string>
+    <string name="camigeofence_soru_govde">U blizini ste: %1$s. Nismo sigurni, pa Vas pitamo.</string>
+    <string name="camigeofence_varsayilan_ad">Džamija</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Uključite Režim namaza</string>
+    <string name="camigeofence_eylem_evet_camideyim">Da, u džamiji sam</string>
+    <string name="camigeofence_eylem_hayir">Ne</string>
+
+    <!-- %1$s aşağıdaki "-namaz" bileşik adlarıdır (eril, akuzatifte değişmez). -->
+    <string name="camigeofence_kildiniz_mi">Jeste li klanjali %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Možete označiti jednim dodirom.</string>
+    <string name="camigeofence_eylem_kildim">Klanjano</string>
+    <string name="camigeofence_namaz_imsak">sabah-namaz</string>
+    <string name="camigeofence_namaz_ogle">podne-namaz</string>
+    <string name="camigeofence_namaz_ikindi">ikindija-namaz</string>
+    <string name="camigeofence_namaz_aksam">akšam-namaz</string>
+    <string name="camigeofence_namaz_yatsi">jacija-namaz</string>
+    <string name="camigeofence_namaz_cuma">džuma-namaz</string>
+
+    <string name="camigeofence_mod_kural_adi">Namaz</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı ga uključuje tokom džuma-hutbe, u džamiji ili kada nastupi vakat</string>
+</resources>

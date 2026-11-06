@@ -81,6 +81,14 @@ android {
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
+        // CI'da rapor dosyasi artifact degil: basarisiz testin mesaji (parite sapma listesi) loga dussun.
+        unitTests.all {
+            it.testLogging {
+                events("failed")
+                exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+                showStandardStreams = false
+            }
+        }
     }
     sourceSets {
         // Il listesi ve vakit fiksturu JVM testinde de okunur (tek kaynak: assets).

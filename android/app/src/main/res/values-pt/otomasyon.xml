@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Plugin do Tasker / MacroDroid / Automate (português europeu). As etiquetas do plugin são resolvidas na aplicação anfitriã no idioma do DISPOSITIVO. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Rezei</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Estado da hora da oração</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Evento da hora da oração</string>
+
+  <!-- Janelas de edição do plugin (otomasyon/OtomasyonDuzenleActivity) — registo cortês. -->
+  <string name="otomasyon_bilgi_baslik">Esta definição é adicionada a partir de uma aplicação de automatização</string>
+  <string name="otomasyon_bilgi_tarayici">Os navegadores não podem ter autorização permanente. Adicione-a a partir da lista de plugins de uma aplicação como o Tasker, o MacroDroid ou o Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Adicione-a escolhendo «Namaz Akışı» na lista de plugins de uma aplicação como o Tasker, o MacroDroid ou o Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s está bloqueada</string>
+  <string name="otomasyon_engelli_mesaj">Já bloqueou esta aplicação de marcar as suas orações. Pode permiti-la no Namaz Akışı, em Definições &gt; «Aplicações que podem marcar Rezei».</string>
+  <string name="otomasyon_izin_baslik">Usar com %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s pode saber quando começa a hora de uma oração, quando está a terminar e quando está numa mesquita, e executar as suas automatizações. Pode alterar a sua decisão no Namaz Akışı, em Definições &gt; «Aplicações que podem marcar Rezei».</string>
+  <string name="otomasyon_izin_kildim">%1$s pode marcar a oração atual como rezada com a automatização que configurou. Pode alterar a sua decisão no Namaz Akışı, em Definições &gt; «Aplicações que podem marcar Rezei».</string>
+  <string name="otomasyon_izin_ver">Permitir</string>
+  <string name="otomasyon_engelle">Bloquear</string>
+  <string name="otomasyon_vazgec">Cancelar</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Quando deve ser executado?</string>
+  <string name="otomasyon_ileri">Seguinte</string>
+  <string name="otomasyon_vakit_baslik">Que oração?</string>
+  <string name="otomasyon_herhangi_vakit">Qualquer hora de oração</string>
+  <string name="otomasyon_kaydet">Guardar</string>
+  <string name="otomasyon_kosul_icinde">Durante a hora de uma oração</string>
+  <string name="otomasyon_kosul_cikiyor">Enquanto a hora de uma oração está a terminar (faltam %1$d min, Guardião da Oração ativado)</string>
+  <string name="otomasyon_kosul_camide">Na mesquita</string>
+  <string name="otomasyon_olay_girdi">Quando começa a hora de uma oração</string>
+  <string name="otomasyon_olay_cikiyor">Quando a hora de uma oração está a terminar (faltam %1$d min, Guardião da Oração ativado)</string>
+  <string name="otomasyon_olay_camide">Quando é detetada a sua presença numa mesquita</string>
+</resources>

@@ -1,0 +1,58 @@
+// id — Endonezce (beta). Anahtar = koddaki Türkçe metin, DEĞİŞMEZ; yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Endonezce terimler: src/core/dil/sozluk/id (Sudah salat, Ditunaikan, Kiblat, Pintasan, Fokus).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Salat berikutnya";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Memberi tahu salat berikutnya dan waktu masuknya.";
+"Şu anki vakti kıldım" = "Sudah salat untuk waktu saat ini";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Menandai waktu salat saat ini sudah ditunaikan. Catatan ditambahkan saat Anda membuka aplikasi.";
+"Onay iste" = "Minta konfirmasi";
+"Kıbleyi aç" = "Buka Kiblat";
+"Uygulamayı Kıble pusulasıyla açar." = "Membuka aplikasi dengan kompas kiblat.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Sudah salat";
+"Kıble" = "Kiblat";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Nama salat berikutnya";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Memberikan nama waktu salat berikutnya. Anda dapat menggunakannya sebagai syarat di Pintasan.";
+"Sıradaki vakte kalan dakika" = "Menit menuju salat berikutnya";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Memberikan sisa menit hingga waktu salat berikutnya masuk. Mengembalikan -1 jika tidak ada informasi.";
+"Şu anki vakit kılındı mı?" = "Apakah waktu salat saat ini sudah ditunaikan?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Memberikan ya jika waktu salat saat ini sudah ditandai ditunaikan. Memberikan tidak jika tidak ada waktu salat yang berjalan.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Hening salat";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Mengembalikan benar selama menit-menit pertama setelah waktu salat masuk. Digunakan di Pintasan untuk mengaktifkan Fokus.";
+"Süre (dakika)" = "Durasi (menit)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} menit setelah waktu salat masuk";
+"Namaz sessizliğinin bitişi" = "Akhir hening salat";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Memberikan waktu hening berakhir. Memberikan waktu sekarang jika saat ini tidak sedang hening.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Akhir ${dakika} menit setelah waktu salat masuk";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Pengingat salat";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Saat Fokus ini aktif, pengingat salat datang tanpa suara dan tanpa menyalakan layar.";
+"Hatırlatmaları sessiz ver" = "Kirim pengingat tanpa suara";
+"Hatırlatmalar sessiz gelir" = "Pengingat datang tanpa suara";
+"Hatırlatmalar her zamanki gibi" = "Pengingat seperti biasa";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Menandai waktu salat di widget sudah ditunaikan.";
+"Tarih" = "Tanggal";
+"Vakit" = "Waktu salat";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Hentikan alarm salat";
+"Namazı kıldım" = "Sudah salat";
+"Alarm" = "Alarm";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Gambar ayat hari ini";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Memberikan ayat hari ini sebagai gambar seukuran layar Anda. Anda dapat menggunakannya dengan tindakan yang mengatur wallpaper di Pintasan.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Buka aplikasi sekali untuk menyiapkan ayat hari ini.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Gambar tidak dapat disiapkan. Coba lagi sebentar lagi.";

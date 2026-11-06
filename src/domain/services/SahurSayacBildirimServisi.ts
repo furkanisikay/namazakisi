@@ -17,12 +17,13 @@ import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi'
 import { AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { metin } from '../../core/dil/aktifDil';
 import { sahurCanliYukuOlustur } from '../../core/sayac/canliGuncelleme';
 
 interface SahurSayacAyarlari {
@@ -48,10 +49,10 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
       idOneki: BILDIRIM_SABITLERI.ONEKLEME.SAHUR_SAYAC,
       kanalId: BILDIRIM_SABITLERI.KANALLAR.SAHUR_SAYAC,
       eskiKanalId: 'sahur_sayac',
-      kanalAdi: 'Sahur Sayacı',
-      kanalAciklamasi: 'İmsak (Sahur bitiş) vaktine geri sayım bildirimi',
-      countdownBaslik: '🌙 Sahur Sayacı',
-      countdownBodyTemplate: 'Yemeye içmeye devam, imsak yaklaşıyor!\n⏱️ {time}',
+      kanalAdi: metin().sayac.sahur.kanal,
+      kanalAciklamasi: metin().sayac.sahur.kanalAciklama,
+      countdownBaslik: metin().sayac.sahur.baslik,
+      countdownBodyTemplate: `${metin().sayac.sahur.govde}\n⏱️ {time}`,
       themeType: 'sahur',
     };
   }
@@ -73,16 +74,15 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
 
     const { lat, lng } = ayarlar.koordinatlar;
     const coordinates = new Coordinates(lat, lng);
-    const params = turkiyeHesapParametreleri();
     const simdi = new Date();
 
-    const prayerTimesBugun = new PrayerTimes(coordinates, simdi, params);
+    const prayerTimesBugun = aktifPrayerTimes(coordinates, simdi);
     const imsakBugun = prayerTimesBugun.fajr;
     const yatsiBugun = prayerTimesBugun.isha;
 
     const yarin = new Date(simdi);
     yarin.setDate(yarin.getDate() + 1);
-    const prayerTimesYarin = new PrayerTimes(coordinates, yarin, params);
+    const prayerTimesYarin = aktifPrayerTimes(coordinates, yarin);
     const imsakYarin = prayerTimesYarin.fajr;
 
     // Özel gün (issue #272): sayaç, hedeflediği imsakla BAŞLAYAN oruç günü
@@ -105,7 +105,7 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
     // kendi bildirimini kurmaz.
     const dunTarihi = new Date(simdi);
     dunTarihi.setDate(dunTarihi.getDate() - 1);
-    const yatsiDun = new PrayerTimes(coordinates, dunTarihi, params).isha;
+    const yatsiDun = aktifPrayerTimes(coordinates, dunTarihi).isha;
     const pencere =
       simdi.getTime() < imsakBugun.getTime()
         ? { yatsi: yatsiDun, imsak: imsakBugun }
@@ -176,8 +176,8 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
   protected vakitGirdiBildirimIcerigi(bildirimId: string, _imsakVaktiMs: number): any {
     return {
       id: bildirimId,
-      title: '🌙 Sahur Vakti Bitti!',
-      body: 'Niyet etme vakti geldi.',
+      title: metin().sayac.sahur.girdiBaslik,
+      body: metin().sayac.sahur.girdiGovde,
       android: {
         channelId: this.konfig.kanalId,
         ongoing: true,
@@ -185,7 +185,7 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
         pressAction: { id: 'default' },
         style: {
           type: AndroidStyle.BIGTEXT,
-          text: 'İmsak vakti girdi, niyet etmeyi unutmayınız!\n\n⚠️ Sabah namazınızı eda edebilirsiniz. Duanızda bize de yer vermeyi unutmayın :)',
+          text: metin().sayac.sahur.girdiUzun,
         },
       },
     };

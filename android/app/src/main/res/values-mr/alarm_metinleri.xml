@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Marathi). "नमाज पढली" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">नमाजचा अलार्म</string>
+  <string name="alarm_kildim">नमाज पढली</string>
+  <string name="alarm_kapat">बंद करा</string>
+  <string name="alarm_kanal_aciklamasi">तुम्ही निवडलेल्या आठवणीच्या पायऱ्यांवर वाजणारा खरा अलार्म</string>
+</resources>

@@ -26,7 +26,7 @@
  * (`muhafizBildirimIdOlustur`, kalanDk etkin çıkışa göre) dört yerde aynıdır.
  */
 
-import { GECE_CAPASI_ANONS_SABLONU } from '../utils/muhafizMetinYardimcisi';
+import { geceCapasiAnonsSablonu } from '../utils/muhafizMetinYardimcisi';
 
 export interface GeceSessizligi {
     aktif: boolean;
@@ -136,7 +136,7 @@ export function geceCapasiUyarisi<
         ...(typeof uyari.kalanDk === 'number' ? { olcuDk: uyari.kalanDk } : {}),
         seviye: Math.min(uyari.seviye, GECE_CAPASI_EN_SERT_TON),
         acilKanal: false,
-        anonsMetni: GECE_CAPASI_ANONS_SABLONU,
+        anonsMetni: geceCapasiAnonsSablonu(),
     };
 }
 

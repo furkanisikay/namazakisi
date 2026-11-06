@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Ampidiro ao anatin\'ny sisiny ny kaody QR eo amin\'ny efijery TV</string>
+    <string name="tvesleme_qr_vazgec">Foano</string>
+    <string name="tvesleme_qr_vazgec_erisim">Foano ny famakiana</string>
+    <string name="tvesleme_qr_yabanci">Tsy an\'ny Namaz Akışı TV ity kaody QR ity. Vakio ny kaody eo amin\'ny TV.</string>
+    <string name="tvesleme_qr_okundu">Voavaky ny kaody</string>
+</resources>

@@ -174,7 +174,82 @@ class ExpoCountdownNotificationModule : Module() {
         // SESLI ANONS (muhafiz TTS) — Foreground Service KULLANILMAZ
         // ============================================================
 
-        /** Verilen zamanda [metin]'i Turkce TTS ile seslendirecek exact alarm kurar. */
+        /**
+         * Anons dilini (BCP-47) kaydeder; planli anonslar konusma aninda bunu kullanir.
+         * Yazilmadiysa Turkce (eski surumle ayni).
+         */
+        /** Arayüz dili ("tr", "en", "id"…); widget ve bildirim metinleri bunu okur ([ArayuzDili]). */
+        Function("arayuzDiliniAyarla") { kod: String ->
+            val context = appContext.reactContext
+            if (context != null) ArayuzDili.kaydet(context.applicationContext, kod)
+            Unit
+        }
+
+        /**
+         * Cihazın GENEL dili (BCP-47): `Resources.getSystem()` uygulamaya özel dilden etkilenmez.
+         * `I18nManager.localeIdentifier` uygulamanın bağlamından okur; uygulama dili sisteme
+         * yazılınca o da uygulama dilini döndürür ve "cihaz dili" seçeneği yanılırdı.
+         */
+        AsyncFunction("cihazDiliniOku") {
+            val yerel = android.content.res.Resources.getSystem().configuration.locales
+            if (yerel.isEmpty) null else yerel[0].toLanguageTag()
+        }
+
+        /**
+         * Telefon ayarlarındaki UYGULAMAYA ÖZEL dil (Android 13+, Ayarlar > Uygulamalar > Dil):
+         * BCP-47 etiketi ya da `null` (sistem varsayılanı ya da Android 12 ve öncesi). Cihaz genel
+         * dili DEĞİL. JS bu değerin değişip değişmediğini izler (`DilServisi.sistemDiliDegisimi`).
+         */
+        AsyncFunction("uygulamaDiliniOku") {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@AsyncFunction null
+            val context = appContext.reactContext ?: return@AsyncFunction null
+            val yerel = context.getSystemService(android.app.LocaleManager::class.java)?.applicationLocales
+            if (yerel == null || yerel.isEmpty) null else yerel[0].toLanguageTag()
+        }
+
+        /**
+         * Uygulama içinde seçilen dili telefon ayarlarına da yazar (`null` = sistem varsayılanı);
+         * Ayarlar'daki uygulama dili hep uygulamayla aynı görünür. Android 12 ve öncesinde `false`.
+         * Etkinlik yeniden kurulmaz: manifestte `configChanges` `locale|layoutDirection` içerir.
+         */
+        AsyncFunction("uygulamaDiliniYaz") { etiket: String? ->
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@AsyncFunction false
+            val context = appContext.reactContext ?: return@AsyncFunction false
+            val yonetici = context.getSystemService(android.app.LocaleManager::class.java) ?: return@AsyncFunction false
+            yonetici.applicationLocales =
+                if (etiket.isNullOrBlank()) android.os.LocaleList.getEmptyLocaleList() else android.os.LocaleList.forLanguageTags(etiket)
+            true
+        }
+
+        /**
+         * Kullanıcının seçtiği vakit adı takımı (JSON) ya da `null` (anahtar silinir, dil
+         * tablosu). Widget'lar `arayuzDiliniAyarla`'daki gibi tercih dinleyicisiyle
+         * (`ArayuzDiliIzleyici`) yeniden çizilir.
+         */
+        Function("vakitAdlariniAyarla") { json: String? ->
+            val context = appContext.reactContext
+            if (context != null) ArayuzDili.vakitAdlariniKaydet(context.applicationContext, json)
+            Unit
+        }
+
+        /**
+         * Arayüzün rakam sistemi ("arab" Doğu Arap, "beng" Bengalce) ya da `null` (anahtar silinir, Batı
+         * rakamı). Yalnız yazar; okuyanlar `ArayuzDili.rakamSifiri` (bu modül) ve uygulama
+         * modülündeki `rakamSifiri()` — widget'ı `ArayuzDiliIzleyici` anahtar değişince yeniden çizer.
+         */
+        Function("rakamSisteminiAyarla") { kod: String? ->
+            val context = appContext.reactContext
+            if (context != null) ArayuzDili.rakamSisteminiKaydet(context.applicationContext, kod)
+            Unit
+        }
+
+        Function("anonsDiliniAyarla") { dil: String ->
+            val context = appContext.reactContext
+            if (context != null) AnonsKonusucu.diliKaydet(context.applicationContext, dil)
+            Unit
+        }
+
+        /** Verilen zamanda [metin]'i kayitli anons diliyle seslendirecek exact alarm kurar. */
         Function("planlaAnons") { id: String, tetikZamanMs: Double, metin: String ->
             val context = appContext.reactContext
             if (context != null) {
@@ -492,7 +567,8 @@ class ExpoCountdownNotificationModule : Module() {
         }
 
         /**
-         * Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.)
+         * Cihazda anons dilinin TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) Ad
+         * geriye uyumluluk icin "tr" kalir; soru kayitli anons dilini sorar.
          * Uc durum: true / false (gercekten yok) / null (bilinmiyor: baglam yok, zaman
          * asimi, hata). JS yalniz `false`ta uyari gosterir.
          */
@@ -502,7 +578,7 @@ class ExpoCountdownNotificationModule : Module() {
                 promise.resolve(null)
             } else {
                 try {
-                    AnonsKonusucu.turkceDestekleniyorMu(context.applicationContext) { destekleniyor ->
+                    AnonsKonusucu.dilDestekleniyorMu(context.applicationContext) { destekleniyor ->
                         promise.resolve(destekleniyor)
                     }
                 } catch (e: Exception) {

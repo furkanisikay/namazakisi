@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vera sveglia (italiano). "Ho pregato" è lo stesso nome del pulsante nella notifica. -->
+<resources>
+  <string name="alarm_baslik">Sveglia di preghiera</string>
+  <string name="alarm_kildim">Ho pregato</string>
+  <string name="alarm_kapat">Spegnere</string>
+  <string name="alarm_kanal_aciklamasi">Una vera sveglia che suona nei passaggi di promemoria scelti</string>
+</resources>

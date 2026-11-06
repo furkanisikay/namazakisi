@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Khmerce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı៖ បានសឡាតហើយ</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı៖ ស្ថានភាពពេលសឡាត</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı៖ ព្រឹត្តិការណ៍ពេលសឡាត</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — zamirsiz kibar yönetim dili. -->
+  <string name="otomasyon_bilgi_baslik">ការកំណត់នេះត្រូវបានបន្ថែមពីកម្មវិធីស្វ័យប្រវត្តិកម្ម</string>
+  <string name="otomasyon_bilgi_tarayici">កម្មវិធីរុករកមិនអាចទទួលការអនុញ្ញាតអចិន្ត្រៃយ៍បានទេ។ សូមបន្ថែមវាពីបញ្ជីកម្មវិធីជំនួយនៃកម្មវិធីដូចជា Tasker, MacroDroid ឬ Automate។</string>
+  <string name="otomasyon_bilgi_eklenti">បន្ថែមវាដោយជ្រើស «Namaz Akışı» ពីបញ្ជីកម្មវិធីជំនួយនៃកម្មវិធីដូចជា Tasker, MacroDroid ឬ Automate។</string>
+  <string name="otomasyon_engelli_baslik">%1$s ត្រូវបានរារាំង</string>
+  <string name="otomasyon_engelli_mesaj">អ្នកបានរារាំងកម្មវិធីនេះពីការសម្គាល់សឡាតរបស់អ្នកពីមុន។ អ្នកអាចអនុញ្ញាតវាក្នុង Namaz Akışı នៅ ការកំណត់ &gt; «កម្មវិធីដែលសម្គាល់ បានសឡាតហើយ»។</string>
+  <string name="otomasyon_izin_baslik">ប្រើជាមួយ %1$s ឬ?</string>
+  <string name="otomasyon_izin_kosul">%1$s អាចដឹងពេលចូលពេលសឡាត ពេលវាជិតផុត និងពេលអ្នកនៅម៉ាស្ជិត ហើយដំណើរការស្វ័យប្រវត្តិកម្មរបស់អ្នក។ អ្នកអាចប្ដូរការសម្រេចចិត្តរបស់អ្នកក្នុង Namaz Akışı នៅ ការកំណត់ &gt; «កម្មវិធីដែលសម្គាល់ បានសឡាតហើយ»។</string>
+  <string name="otomasyon_izin_kildim">%1$s អាចសម្គាល់សឡាតបច្ចុប្បន្នថាបានសឡាត ដោយស្វ័យប្រវត្តិកម្មដែលអ្នកបានរៀបចំ។ អ្នកអាចប្ដូរការសម្រេចចិត្តរបស់អ្នកក្នុង Namaz Akışı នៅ ការកំណត់ &gt; «កម្មវិធីដែលសម្គាល់ បានសឡាតហើយ»។</string>
+  <string name="otomasyon_izin_ver">អនុញ្ញាត</string>
+  <string name="otomasyon_engelle">រារាំង</string>
+  <string name="otomasyon_vazgec">បោះបង់</string>
+  <string name="otomasyon_tamam">យល់ព្រម</string>
+  <string name="otomasyon_tur_baslik">តើវាគួរដំណើរការពេលណា?</string>
+  <string name="otomasyon_ileri">បន្ទាប់</string>
+  <string name="otomasyon_vakit_baslik">សឡាតមួយណា?</string>
+  <string name="otomasyon_herhangi_vakit">ពេលសឡាតណាមួយ</string>
+  <string name="otomasyon_kaydet">រក្សាទុក</string>
+  <string name="otomasyon_kosul_icinde">ខណៈពេលជាពេលសឡាត</string>
+  <string name="otomasyon_kosul_cikiyor">ខណៈពេលសឡាតជិតផុត (នៅសល់ %1$d នាទី អ្នកការពារសឡាតបើក)</string>
+  <string name="otomasyon_kosul_camide">ខណៈពេលនៅម៉ាស្ជិត</string>
+  <string name="otomasyon_olay_girdi">នៅពេលចូលពេលសឡាត</string>
+  <string name="otomasyon_olay_cikiyor">នៅពេលពេលសឡាតជិតផុត (នៅសល់ %1$d នាទី អ្នកការពារសឡាតបើក)</string>
+  <string name="otomasyon_olay_camide">នៅពេលរកឃើញថាអ្នកនៅម៉ាស្ជិត</string>
+</resources>

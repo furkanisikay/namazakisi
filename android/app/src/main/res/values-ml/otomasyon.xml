@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Malayalamca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: ഞാൻ നമസ്കരിച്ചു</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: നമസ്കാര സമയ നില</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: നമസ്കാര സമയ സംഭവം</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">ഈ ക്രമീകരണം ഒരു ഓട്ടോമേഷൻ ആപ്പിൽ നിന്നാണ് ചേർക്കുന്നത്</string>
+  <string name="otomasyon_bilgi_tarayici">ബ്രൗസറുകൾക്ക് സ്ഥിരമായ അനുമതി ലഭിക്കില്ല. Tasker, MacroDroid, Automate പോലുള്ള ഒരു ആപ്പിന്റെ പ്ലഗിൻ പട്ടികയിൽ നിന്ന് ചേർക്കുക.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid, Automate പോലുള്ള ഒരു ആപ്പിന്റെ പ്ലഗിൻ പട്ടികയിൽ നിന്ന് \"Namaz Akışı\" തിരഞ്ഞെടുത്ത് ചേർക്കുക.</string>
+  <string name="otomasyon_engelli_baslik">%1$s തടഞ്ഞിരിക്കുന്നു</string>
+  <string name="otomasyon_engelli_mesaj">നിങ്ങളുടെ നമസ്കാരങ്ങൾ അടയാളപ്പെടുത്തുന്നതിൽ നിന്ന് ഈ ആപ്പിനെ നിങ്ങൾ മുമ്പ് തടഞ്ഞിരുന്നു. Namaz Akışı-യിലെ ക്രമീകരണം &gt; \"ഞാൻ നമസ്കരിച്ചു\" അടയാളപ്പെടുത്തുന്ന ആപ്പുകൾ എന്നതിൽ അനുവദിക്കാം.</string>
+  <string name="otomasyon_izin_baslik">%1$s-നൊപ്പം ഉപയോഗിക്കണോ?</string>
+  <string name="otomasyon_izin_kosul">നമസ്കാര സമയം എപ്പോൾ തുടങ്ങുന്നു, എപ്പോൾ തീരാറാകുന്നു, നിങ്ങൾ എപ്പോൾ പള്ളിയിലാണ് എന്നിവ %1$s-ന് അറിയാനും നിങ്ങളുടെ ഓട്ടോമേഷനുകൾ പ്രവർത്തിപ്പിക്കാനും കഴിയും. Namaz Akışı-യിലെ ക്രമീകരണം &gt; \"ഞാൻ നമസ്കരിച്ചു\" അടയാളപ്പെടുത്തുന്ന ആപ്പുകൾ എന്നതിൽ തീരുമാനം മാറ്റാം.</string>
+  <string name="otomasyon_izin_kildim">നിങ്ങൾ സജ്ജമാക്കിയ ഓട്ടോമേഷൻ ഉപയോഗിച്ച് ഇപ്പോഴത്തെ നമസ്കാരം നമസ്കരിച്ചതായി %1$s-ന് അടയാളപ്പെടുത്താം. Namaz Akışı-യിലെ ക്രമീകരണം &gt; \"ഞാൻ നമസ്കരിച്ചു\" അടയാളപ്പെടുത്തുന്ന ആപ്പുകൾ എന്നതിൽ തീരുമാനം മാറ്റാം.</string>
+  <string name="otomasyon_izin_ver">അനുവദിക്കുക</string>
+  <string name="otomasyon_engelle">തടയുക</string>
+  <string name="otomasyon_vazgec">റദ്ദാക്കുക</string>
+  <string name="otomasyon_tamam">ശരി</string>
+  <string name="otomasyon_tur_baslik">എപ്പോൾ പ്രവർത്തിക്കണം?</string>
+  <string name="otomasyon_ileri">അടുത്തത്</string>
+  <string name="otomasyon_vakit_baslik">ഏത് നമസ്കാരം?</string>
+  <string name="otomasyon_herhangi_vakit">ഏത് നമസ്കാര സമയവും</string>
+  <string name="otomasyon_kaydet">സംരക്ഷിക്കുക</string>
+  <string name="otomasyon_kosul_icinde">നമസ്കാര സമയത്തായിരിക്കുമ്പോൾ</string>
+  <string name="otomasyon_kosul_cikiyor">നമസ്കാര സമയം തീരാറാകുമ്പോൾ (%1$d മിനിറ്റ് ബാക്കി, നമസ്കാര കാവൽ ഓൺ)</string>
+  <string name="otomasyon_kosul_camide">പള്ളിയിലായിരിക്കുമ്പോൾ</string>
+  <string name="otomasyon_olay_girdi">നമസ്കാര സമയം ആകുമ്പോൾ</string>
+  <string name="otomasyon_olay_cikiyor">നമസ്കാര സമയം തീരാറാകുമ്പോൾ (%1$d മിനിറ്റ് ബാക്കി, നമസ്കാര കാവൽ ഓൺ)</string>
+  <string name="otomasyon_olay_camide">നിങ്ങൾ പള്ളിയിലാണെന്ന് കണ്ടെത്തുമ്പോൾ</string>
+</resources>

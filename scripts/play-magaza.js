@@ -169,9 +169,9 @@ function paketYukle(editId, dosya) {
  * blogunu okur. Notlarin tek dogru kaynagi o dosya: magazaya elle yazilan not
  * repoda iz birakmaz ve bir sonraki surumde uslup kayar.
  */
-function surumNotunuOku(surum) {
+function surumNotunuOku(surum, ek = '') {
     const md = fs.readFileSync(path.resolve(__dirname, '..', 'docs/app-store/surum-notlari.md'), 'utf8');
-    const baslik = '#### ' + surum;
+    const baslik = '#### ' + surum + (ek ? ' ' + ek : '') + '\n';
     const i = md.indexOf(baslik);
     if (i < 0) throw new Error('surum-notlari.md icinde "' + baslik + '" yok');
     const bas = md.indexOf('```', i) + 3;
@@ -297,6 +297,23 @@ function playMetinleri() {
             console.log('URETIM: ' + surum + ' | kod ' + kaynak.versionCodes.join(',') + ' | ' + surumKaydi.status + (oran ? ' ' + oran : ''));
             console.log('NOT (' + notlar.length + '/500):');
             notlar.split(/\r?\n/).forEach((satir) => console.log('  ' + satir));
+            // Saat (Wear OS) ayri form faktoru kanalindadir: `wear:internal`'da ayni surum
+            // varsa ayni edit'te `wear:production`'a alinir. Not `#### X.Y.Z (saat)` blogundan.
+            const saatIc = await api('GET', '/edits/' + editId + '/tracks/' + encodeURIComponent('wear:internal'));
+            const saatKaynak = ((saatIc.j && saatIc.j.releases) || []).find((r) => (r.name || '').includes(surum));
+            if (saatKaynak) {
+                const saatNot = surumNotunuOku(surum, '(saat)');
+                if (saatNot.length > 500) throw new Error('saat surum notu ' + saatNot.length + ' karakter; Play siniri 500');
+                const saatKaydi = { ...surumKaydi, name: surum + ' (saat)', versionCodes: saatKaynak.versionCodes, releaseNotes: [{ language: DIL, text: saatNot }] };
+                const su = await api('PUT', '/edits/' + editId + '/tracks/' + encodeURIComponent('wear:production'), {
+                    track: 'wear:production',
+                    releases: [saatKaydi],
+                });
+                if (su.kod >= 300) throw new Error('saat uretim kanali yazilamadi: ' + su.kod + ' ' + JSON.stringify(su.j).slice(0, 300));
+                console.log('SAAT URETIM: ' + saatKaydi.name + ' | kod ' + saatKaynak.versionCodes.join(',') + ' | not ' + saatNot.length + '/500');
+            } else {
+                console.log('SAAT: wear:internal kanalinda ' + surum + ' yok; saat uretimine dokunulmadi.');
+            }
             const c = await api('POST', '/edits/' + editId + ':commit');
             if (c.kod >= 300) throw new Error('commit basarisiz: ' + c.kod + ' ' + JSON.stringify(c.j).slice(0, 300));
             console.log('YAYINLANDI (uretim kanali commit edildi).');

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Geri sayım metinleri — Hintçe (beta). Terimler: JS src/core/dil/sozluk/hi (sayac, nowBar). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">लाइव उल्टी गिनतियां</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar और स्टेटस बार में उल्टी गिनतियां</string>
+    <string name="countdown_kanal_genel_ad">उल्टी गिनती की सूचनाएं</string>
+    <string name="countdown_kanal_genel_aciklama">उल्टी गिनती की सूचनाओं के लिए</string>
+
+    <string name="countdown_eylem_kildim">नमाज़ पढ़ ली</string>
+    <string name="countdown_eylem_durdur">रोकें</string>
+
+    <string name="countdown_yedek_vakit">जल्दी करें, नमाज़ का वक़्त ख़त्म होने वाला है।</string>
+    <string name="countdown_yedek_iftar">वक़्त कम हो रहा है।</string>
+    <string name="countdown_yedek_sahur">अभी खाया-पिया जा सकता है; रोज़ा जल्द शुरू होगा।</string>
+    <string name="countdown_yedek_seri">आज की नमाज़ें अधूरी हैं, अपना सिलसिला न टूटने दें।</string>
+
+    <string name="countdown_onek_vakit">वक़्त ख़त्म होने में</string>
+    <string name="countdown_onek_vakit_dar">वक़्त ख़त्म हो रहा है</string>
+    <string name="countdown_onek_iftar">इफ़्तार तक</string>
+    <string name="countdown_onek_iftar_dar">इफ़्तार तक</string>
+    <string name="countdown_onek_sahur">सहरी ख़त्म होने में</string>
+    <string name="countdown_onek_sahur_dar">सहरी ख़त्म हो रही है</string>
+    <string name="countdown_onek_seri">सिलसिला बचाने के लिए</string>
+    <string name="countdown_onek_seri_dar">सिलसिला ख़त्म हो रहा है</string>
+</resources>

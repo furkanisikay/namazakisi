@@ -15,7 +15,7 @@
 import * as React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Anahtar } from '../../components/common/Anahtar';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { YeniRozet } from '../../components/YeniRozet';
@@ -25,6 +25,8 @@ interface AyarSatiriOrtakProps {
   ikon: React.ReactNode;
   baslik: string;
   ozet: string;
+  /** Özet yerel rakama çevrilmez (sürüm satırı; metin kapısı `rakamKoru`). */
+  ozetRakamKoru?: boolean;
 }
 
 export interface AyarSatiriNavigasyonProps extends AyarSatiriOrtakProps {
@@ -78,7 +80,7 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
           </View>
         )}
       </View>
-      <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+      <Text rakamKoru={props.ozetRakamKoru} className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
         {ozet}
       </Text>
     </View>
@@ -103,7 +105,7 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
       >
         {ikonCipi}
         {metinBlogu}
-        <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} style={{ marginLeft: 8 }} />
+        <YonluIkon name="chevron-right" size={14} color={renkler.metinIkincil} style={{ marginLeft: 8 }} />
       </TouchableOpacity>
     );
 

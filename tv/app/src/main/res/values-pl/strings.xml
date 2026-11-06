@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polski. Terminy: src/core/dil/sozluk/pl. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">pl</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Tablica czasów modlitw</string>
+    <string name="ayarlar">Ustawienia</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Do %1$s zostało %2$s</string>
+    <string name="pano_vaktine">Do %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s za %2$s</string>
+    <string name="pano_kerahat_vakti">Czas niezalecany</string>
+    <string name="pano_bitis">koniec %1$s</string>
+    <string name="pano_kerahat_erisim">Czas niezalecany, %1$s, koniec %2$s. %3$s</string>
+    <string name="pano_cumaya">Modlitwa piątkowa za %1$s</string>
+    <string name="pano_cikis_geldi">pora wyjść</string>
+    <string name="pano_cikis">wyjście o %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Pora wyjść na modlitwę piątkową</string>
+    <string name="pano_cuma_cikis_erisim">Wyjście na modlitwę piątkową o %1$s</string>
+    <string name="pano_bugun_cuma">Dziś modlitwa piątkowa</string>
+    <string name="pano_ogle">Zuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Dziś modlitwa piątkowa. Modlitwa piątkowa jest w czasie Zuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Ustawienia: dodaj telefon, lokalizacja, połączone telefony</string>
+    <string name="pano_simdiki_vakit">bieżący czas modlitwy</string>
+    <string name="pano_siradaki_vakit">następny czas modlitwy</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Dodaj telefon", "Wpisz kod", "Wybiorę miasto ręcznie", "Dodaj". -->
+    <string name="kodla_girin">Wpisz kod</string>
+    <string name="ili_kendim_secin">Wybiorę miasto ręcznie</string>
+    <string name="yeniden_deneyin">Spróbuj ponownie</string>
+    <string name="telefon_varsayilan">Telefon</string>
+    <string name="esleme_ekleniyor">Dodawanie: %1$s</string>
+    <string name="esleme_gonderiyor">Telefon wysyła lokalizację i stan…</string>
+    <string name="esleme_tamamlanamadi">Nie udało się dokończyć parowania</string>
+    <string name="esleme_saklanamadi">Ten telewizor nie może bezpiecznie przechować klucza połączenia. Możesz wpisać lokalizację kodem lub wybrać miasto.</string>
+    <string name="telefonunuzu_ekleyin">Dodaj telefon</string>
+    <string name="esleme_alt">Czasy modlitw dla Twojej lokalizacji; widać też odprawione modlitwy.</string>
+    <string name="esleme_adim1">Otwórz Namaz Akışı na telefonie</string>
+    <string name="esleme_adim2">Ustawienia › Moje urządzenia › Dodaj telewizor</string>
+    <string name="esleme_adim3">Skieruj aparat telefonu na kod</string>
+    <string name="esleme_ayni_wifi">Telefon i telewizor muszą być w tej samej sieci Wi-Fi.</string>
+    <string name="esleme_onay_soru">Dodać ten telefon?</string>
+    <string name="esleme_onay_aciklama">Dodany telefon może wysyłać na ten telewizor swoją lokalizację i oznaczane modlitwy.</string>
+    <string name="ekleyin">Dodaj</string>
+    <string name="hayir">Nie</string>
+    <string name="esleme_eklendi">Dodano: %1$s</string>
+    <string name="konumunuz_geldi">Lokalizacja dotarła</string>
+    <string name="konuma_gore_hesaplanacak">Czasy modlitw zostaną obliczone dla tej lokalizacji.</string>
+    <string name="qr_konum_alindi">Otrzymano lokalizację</string>
+    <string name="qr_kodu">Kod parowania do zeskanowania telefonem</string>
+    <string name="ag_yok">Telewizor nie jest połączony z siecią</string>
+    <string name="ag_yok_aciklama">Możesz kontynuować, wpisując 7-cyfrowy kod z telefonu lub wybierając miasto.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Wpisz kod z telefonu</string>
+    <string name="kod_yol">Na telefonie: Ustawienia › Moje urządzenia › Dodaj telewizor</string>
+    <string name="kod_hatali">Kod się nie zgadza. Sprawdź 7 cyfr na telefonie; błędną cyfrę popraw przyciskiem „%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Jeśli pilot ma klawisze z cyframi, możesz też nimi wpisywać.</string>
+    <string name="kod_bos_hane">pusta cyfra</string>
+    <string name="kod_sil">Usuń</string>
+    <string name="kod_sil_aciklama">Usuń ostatnią cyfrę</string>
+    <string name="kod_geri">Wstecz</string>
+    <string name="vazgecin">Anuluj</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Wybierz miasto</string>
+    <string name="il_merkezine_gore">Czasy modlitw są obliczane dla centrum miasta.</string>
+    <string name="il_secili">%1$s, wybrano</string>
+    <string name="dream_il_yok">Aby zobaczyć tablicę czasów modlitw, otwórz aplikację Namaz Akışı i wybierz miasto.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Lokalizacja: %1$s</string>
+    <string name="ayar_konum_yok">Nie wybrano lokalizacji</string>
+    <string name="ayar_telefon_ekleyin">Dodaj telefon</string>
+    <string name="ayar_konumu_kodla">Wpisz lokalizację kodem</string>
+    <string name="ayar_bagli_telefonlar">Telefony połączone z tym telewizorem</string>
+    <string name="ayar_telefon_yok">Nie dodano jeszcze telefonu. Użyj „%1$s” po lewej i zeskanuj wyświetlony kod.</string>
+    <string name="kaldirin">Usuń</string>
+    <string name="ayar_ne_gonderir">Co wysyłają telefony?</string>
+    <string name="ayar_madde_konum">Lokalizację: czasy modlitw się do niej dostosowują</string>
+    <string name="ayar_madde_namazlar">Oznaczone modlitwy, jeśli ktoś tak wybierze</string>
+    <string name="ayar_madde_sifreli">Zaszyfrowane, tylko w sieci domowej</string>
+    <string name="son_haber_yok">Brak informacji</string>
+    <string name="son_haber_az_once">Przed chwilą</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d min temu</item>
+        <item quantity="few">%1$d min temu</item>
+        <item quantity="many">%1$d min temu</item>
+        <item quantity="other">%1$d min temu</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d godz. temu</item>
+        <item quantity="few">%1$d godz. temu</item>
+        <item quantity="many">%1$d godz. temu</item>
+        <item quantity="other">%1$d godz. temu</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d dzień temu</item>
+        <item quantity="few">%1$d dni temu</item>
+        <item quantity="many">%1$d dni temu</item>
+        <item quantity="other">%1$d dnia temu</item>
+    </plurals>
+    <string name="kaldir_soru">Usunąć %1$s?</string>
+    <string name="kaldir_aciklama">Ten telefon nie będzie już mógł wysyłać informacji na telewizor. Aby dodać go ponownie, trzeba znów zeskanować kod QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Lokalizacja telefonu</string>
+</resources>

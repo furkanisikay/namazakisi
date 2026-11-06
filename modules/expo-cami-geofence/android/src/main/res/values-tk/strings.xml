@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Metjitdemen</string>
+    <string name="camigeofence_kanal_durum_aciklama">Metjitdedigiňiz anyklananda sessiz habar</string>
+    <string name="camigeofence_kanal_soru_ad">Metjitden çykandan soň</string>
+    <string name="camigeofence_kanal_soru_aciklama">Metjitden çykanyňyzdan soň namazyňyzy bellemek üçin sorag</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Namaz tertibi açyk. Ýatlatmalar sessiz geler.</string>
+    <string name="camigeofence_govde_mod">Namaz tertibi açyk.</string>
+    <string name="camigeofence_govde_sessiz">Ýatlatmalar sessiz geler.</string>
+    <string name="camigeofence_govde_normal">Ýatlatmalar adatdakysy ýaly geler.</string>
+    <string name="camigeofence_eylem_modu_kapat">Tertibi öçür</string>
+    <string name="camigeofence_eylem_cami_degil">Metjit däl</string>
+
+    <string name="camigeofence_soru_baslik">Metjitdemisiňiz?</string>
+    <string name="camigeofence_soru_govde">%1$s golaýyndasyňyz. Anyk däl, şonuň üçin sizden soraýarys.</string>
+    <string name="camigeofence_varsayilan_ad">Metjit</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Namaz tertibini aç</string>
+    <string name="camigeofence_eylem_evet_camideyim">Hawa, metjitdemen</string>
+    <string name="camigeofence_eylem_hayir">Ýok</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s namazyny okadyňyzmy?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Ony bir basyş bilen belläp bilersiňiz.</string>
+    <string name="camigeofence_eylem_kildim">Okadym</string>
+    <string name="camigeofence_namaz_imsak">Ertir</string>
+    <string name="camigeofence_namaz_ogle">Öýle</string>
+    <string name="camigeofence_namaz_ikindi">Ikindi</string>
+    <string name="camigeofence_namaz_aksam">Agşam</string>
+    <string name="camigeofence_namaz_yatsi">Ýassy</string>
+    <string name="camigeofence_namaz_cuma">Juma</string>
+
+    <string name="camigeofence_mod_kural_adi">Namaz</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı ony juma hutbasynda, metjitde ýa-da namaz wagty girende açýar</string>
+</resources>

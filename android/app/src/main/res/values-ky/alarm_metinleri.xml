@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Кыргызча). "Окудум" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Намаз ойготкучу</string>
+  <string name="alarm_kildim">Окудум</string>
+  <string name="alarm_kapat">Өчүрүү</string>
+  <string name="alarm_kanal_aciklamasi">Сиз тандаган эскертүү кадамдарында шыңгыраган чыныгы ойготкуч</string>
+</resources>

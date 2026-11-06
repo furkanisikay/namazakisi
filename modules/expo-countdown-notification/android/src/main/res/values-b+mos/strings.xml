@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Sõdg sẽn vɩɩme</string>
+    <string name="countdown_kanal_canli_aciklama">Sõdg Now Bar la kibar zĩigẽ wã pʋgẽ</string>
+    <string name="countdown_kanal_genel_ad">Sõdg kibare</string>
+    <string name="countdown_kanal_genel_aciklama">Sõdg kibarã sore</string>
+
+    <string name="countdown_eylem_kildim">M pʋʋsa</string>
+    <string name="countdown_eylem_durdur">Bas-y</string>
+
+    <string name="countdown_yedek_vakit">Yãg-y, pʋʋsg wakatã na n sa masã.</string>
+    <string name="countdown_yedek_iftar">Wakatã saada.</string>
+    <string name="countdown_yedek_sahur">Y nan tõe n rɩ la y yũ; no-loeerã na n sɩng masã.</string>
+    <string name="countdown_yedek_seri">Rũndã pʋʋs-rãmbã nan ka pid ye; ra bas-y tɩ y kellgã sãam ye.</string>
+
+    <string name="countdown_onek_vakit">N tãag wakatã baasgo</string>
+    <string name="countdown_onek_vakit_dar">Wakatã saada</string>
+    <string name="countdown_onek_iftar">N tãag noor-lokre</string>
+    <string name="countdown_onek_iftar_dar">N tãag noor-lokre</string>
+    <string name="countdown_onek_sahur">N tãag Sahuurã baasgo</string>
+    <string name="countdown_onek_sahur_dar">Sahuurã saada</string>
+    <string name="countdown_onek_seri">N gũ y kellgã</string>
+    <string name="countdown_onek_seri_dar">Kellgã saada</string>
+</resources>

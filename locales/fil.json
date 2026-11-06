@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Ginagamit ang inyong lokasyon para tumpak na makalkula ang mga oras ng dasal sa inyong kinaroroonan. Nananatili sa inyong device ang inyong lokasyon.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ginagamit ang inyong lokasyon para tumpak na makalkula ang mga oras ng dasal sa inyong kinaroroonan at, kung naka-on ang Nasa masjid, para i-on ang Mode ng dasal pagpasok ninyo sa masjid. Nananatili sa inyong device ang inyong lokasyon.",
+  "NSLocationAlwaysUsageDescription": "Ginagamit ang inyong lokasyon para kusang i-update ang mga oras ng dasal kapag lumipat kayo ng lungsod at, kung naka-on ang Nasa masjid, para i-on ang Mode ng dasal pagpasok ninyo sa masjid. Nananatili sa inyong device ang inyong lokasyon.",
+  "NSCameraUsageDescription": "Ginagamit ang inyong camera para ipakita ang direksyon ng Qiblah sa camera view at para i-scan ang code ng pagpapares sa inyong TV. Hindi sine-save ang mga larawan at hindi umaalis ang mga ito sa inyong device.",
+  "NSCalendarsUsageDescription": "Ginagamit ang access sa kalendaryo para idagdag ang mga oras ng dasal sa inyong kalendaryo at, kung io-on ninyo, para suriin kung may event sa inyong kalendaryo na kasabay ng oras ng dasal. Nananatili sa inyong device ang datos ng inyong kalendaryo.",
+  "NSCalendarsFullAccessUsageDescription": "Ginagamit ang access sa kalendaryo para idagdag ang mga oras ng dasal sa inyong kalendaryo at, kung io-on ninyo, para suriin kung may event sa inyong kalendaryo na kasabay ng oras ng dasal. Nananatili sa inyong device ang datos ng inyong kalendaryo.",
+  "NSLocalNetworkUsageDescription": "Kumokonekta ang app sa TV sa inyong lokal na network para ipadala rito ang inyong mga oras ng dasal at ang mga dasal na minarkahan ninyo. Naka-encrypt ang datos at sa pagitan lang ng dalawang device ito dumadaan.",
+  "NSAlarmKitUsageDescription": "Itinatakda bilang alarm ang mga hakbang ng paalala kung saan pinili ninyo ang “Tunay na alarm”, kaya maririnig ninyo ang mga ito kahit naka-silent ang telepono o naka-on ang Focus.",
+  "\"Vakti kıldım\"": "Nagdasal ako",
+  "\"Kıble\"": "Qiblah"
+}

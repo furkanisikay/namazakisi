@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Japonca). 「礼拝しました」 bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">礼拝アラーム</string>
+  <string name="alarm_kildim">礼拝しました</string>
+  <string name="alarm_kapat">止める</string>
+  <string name="alarm_kanal_aciklamasi">選んだリマインダーの手順で鳴る本物のアラーム</string>
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ru -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Rusça). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Намаз совершён</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Состояние времени намаза</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Событие времени намаза</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Эта настройка добавляется из приложения автоматизации</string>
+  <string name="otomasyon_bilgi_tarayici">Браузеры не могут получить постоянное разрешение. Добавьте её из списка плагинов приложения вроде Tasker, MacroDroid или Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Добавьте её, выбрав «Namaz Akışı» в списке плагинов приложения вроде Tasker, MacroDroid или Automate.</string>
+  <string name="otomasyon_engelli_baslik">Приложение «%1$s» запрещено</string>
+  <string name="otomasyon_engelli_mesaj">Ранее вы запретили этому приложению отмечать ваши намазы. Разрешить можно в Namaz Akışı: Настройки &gt; Использование с автоматизациями &gt; Приложения, отмечающие намазы.</string>
+  <string name="otomasyon_izin_baslik">Использовать с «%1$s»?</string>
+  <string name="otomasyon_izin_kosul">Приложение «%1$s» сможет узнавать, когда наступает и заканчивается время намаза и когда вы в мечети, и запускать ваши автоматизации. Решение можно изменить в Namaz Akışı: Настройки &gt; Использование с автоматизациями &gt; Приложения, отмечающие намазы.</string>
+  <string name="otomasyon_izin_kildim">Приложение «%1$s» сможет отмечать текущий намаз как совершённый с помощью настроенной вами автоматизации. Решение можно изменить в Namaz Akışı: Настройки &gt; Использование с автоматизациями &gt; Приложения, отмечающие намазы.</string>
+  <string name="otomasyon_izin_ver">Разрешить</string>
+  <string name="otomasyon_engelle">Запретить</string>
+  <string name="otomasyon_vazgec">Отмена</string>
+  <string name="otomasyon_tamam">ОК</string>
+  <string name="otomasyon_tur_baslik">Когда запускать?</string>
+  <string name="otomasyon_ileri">Далее</string>
+  <string name="otomasyon_vakit_baslik">Какой намаз?</string>
+  <string name="otomasyon_herhangi_vakit">Любое время намаза</string>
+  <string name="otomasyon_kaydet">Сохранить</string>
+  <string name="otomasyon_kosul_icinde">Пока идёт время намаза</string>
+  <string name="otomasyon_kosul_cikiyor">Пока время намаза заканчивается (осталось %1$d мин, Страж намаза включён)</string>
+  <string name="otomasyon_kosul_camide">Пока вы в мечети</string>
+  <string name="otomasyon_olay_girdi">Когда наступает время намаза</string>
+  <string name="otomasyon_olay_cikiyor">Когда время намаза заканчивается (осталось %1$d мин, Страж намаза включён)</string>
+  <string name="otomasyon_olay_camide">Когда определено, что вы в мечети</string>
+</resources>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Кыргызча. Terimler: src/core/dil/sozluk/ky. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ky</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Намаз убактыларынын тактасы</string>
+    <string name="ayarlar">Жөндөөлөр</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s убактысына %2$s калды</string>
+    <string name="pano_vaktine">%1$s убактысына чейин</string>
+    <string name="pano_vaktine_kalan">%1$s убактысына %2$s</string>
+    <string name="pano_kerahat_vakti">Макрух убакыт</string>
+    <string name="pano_bitis">%1$s бүтөт</string>
+    <string name="pano_kerahat_erisim">Макрух убакыт, %1$s, %2$s бүтөт. %3$s</string>
+    <string name="pano_cumaya">Жумага %1$s</string>
+    <string name="pano_cikis_geldi">жолго чыгуу убактысы</string>
+    <string name="pano_cikis">жолго чыгуу %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Жумага жолго чыгуу убактысы келди</string>
+    <string name="pano_cuma_cikis_erisim">Жумага саат %1$s жолго чыгыңыз</string>
+    <string name="pano_bugun_cuma">Бүгүн жума</string>
+    <string name="pano_ogle">Бешим %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Бүгүн жума. Жума намазы бешим убактысында, %1$s</string>
+    <string name="pano_ayarlar_erisim">Жөндөөлөр: телефон кошуу, жайгашкан жер, туташкан телефондор</string>
+    <string name="pano_simdiki_vakit">азыркы намаз убактысы</string>
+    <string name="pano_siradaki_vakit">кийинки намаз убактысы</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: «Телефонуңузду кошуу», «Кодду киргизүү», «Шаарды өзүм тандайм», «Кошуу». -->
+    <string name="kodla_girin">Кодду киргизүү</string>
+    <string name="ili_kendim_secin">Шаарды өзүм тандайм</string>
+    <string name="yeniden_deneyin">Кайра аракет кылуу</string>
+    <string name="telefon_varsayilan">Телефон</string>
+    <string name="esleme_ekleniyor">%1$s кошулууда</string>
+    <string name="esleme_gonderiyor">Телефонуңуз жайгашкан жерин жана абалын жөнөтүүдө…</string>
+    <string name="esleme_tamamlanamadi">Жупташтыруу аягына чыккан жок</string>
+    <string name="esleme_saklanamadi">Бул сыналгы туташуу ачкычын коопсуз сактай албайт. Жайгашкан жериңизди код менен киргизсеңиз же шаарыңызды тандасаңыз болот.</string>
+    <string name="telefonunuzu_ekleyin">Телефонуңузду кошуу</string>
+    <string name="esleme_alt">Жайгашкан жериңиздин намаз убактылары; окуган намаздарыңыз да көрүнөт.</string>
+    <string name="esleme_adim1">Телефонуңузда Namaz Akışı колдонмосун ачыңыз</string>
+    <string name="esleme_adim2">Жөндөөлөр › Түзмөктөрүм › Сыналгы кошуу</string>
+    <string name="esleme_adim3">Телефонуңуздун камерасын кодго багыттаңыз</string>
+    <string name="esleme_ayni_wifi">Телефонуңуз менен сыналгыңыз бир Wi-Fi тармагында болушу керек.</string>
+    <string name="esleme_onay_soru">Бул телефонду кошосузбу?</string>
+    <string name="esleme_onay_aciklama">Кошулган телефон бул сыналгыга жайгашкан жерин жана белгилеген намаздарын жөнөтө алат.</string>
+    <string name="ekleyin">Кошуу</string>
+    <string name="hayir">Жок</string>
+    <string name="esleme_eklendi">%1$s кошулду</string>
+    <string name="konumunuz_geldi">Жайгашкан жериңиз келди</string>
+    <string name="konuma_gore_hesaplanacak">Намаз убактылары ушул жайгашкан жер үчүн эсептелет.</string>
+    <string name="qr_konum_alindi">Жайгашкан жер алынды</string>
+    <string name="qr_kodu">Телефонуңуз менен скандала турган жупташтыруу коду</string>
+    <string name="ag_yok">Сыналгы тармакка туташкан эмес</string>
+    <string name="ag_yok_aciklama">Телефонуңуздагы 7 сандуу кодду киргизип же шаарыңызды тандап уланта аласыз.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Телефонуңуздагы кодду киргизиңиз</string>
+    <string name="kod_yol">Телефонуңузда: Жөндөөлөр › Түзмөктөрүм › Сыналгы кошуу</string>
+    <string name="kod_hatali">Код дал келген жок. Телефонуңуздагы 7 санды текшериңиз; туура эмес санды «%1$s» менен оңдоңуз.</string>
+    <string name="kod_rakamli_kumanda">Пультуңузда сандык баскычтар болсо, алар менен да жаза аласыз.</string>
+    <string name="kod_bos_hane">бош орун</string>
+    <string name="kod_sil">Өчүрүү</string>
+    <string name="kod_sil_aciklama">Акыркы санды өчүрүү</string>
+    <string name="kod_geri">Артка</string>
+    <string name="vazgecin">Жокко чыгаруу</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Шаарыңызды тандаңыз</string>
+    <string name="il_merkezine_gore">Намаз убактылары шаардын борбору үчүн эсептелет.</string>
+    <string name="il_secili">%1$s, тандалды</string>
+    <string name="dream_il_yok">Намаз убактыларынын тактасын көрүү үчүн Namaz Akışı колдонмосун ачып, шаарыңызды тандаңыз.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Жайгашкан жер: %1$s</string>
+    <string name="ayar_konum_yok">Жайгашкан жер тандалган жок</string>
+    <string name="ayar_telefon_ekleyin">Телефон кошуу</string>
+    <string name="ayar_konumu_kodla">Жайгашкан жерди код менен киргизүү</string>
+    <string name="ayar_bagli_telefonlar">Бул сыналгыга туташкан телефондор</string>
+    <string name="ayar_telefon_yok">Азырынча телефон кошулган жок. Сол жактагы «%1$s» дегенди колдонуп, пайда болгон кодду скандаңыз.</string>
+    <string name="kaldirin">Алып салуу</string>
+    <string name="ayar_ne_gonderir">Телефондор эмне жөнөтөт?</string>
+    <string name="ayar_madde_konum">Жайгашкан жер: намаз убактылары ага жараша болот</string>
+    <string name="ayar_madde_namazlar">Белгиленген намаздар, муну тандагандар үчүн</string>
+    <string name="ayar_madde_sifreli">Шифрленген, үй тармагыңызда гана</string>
+    <string name="son_haber_yok">Азырынча маалымат жок</string>
+    <string name="son_haber_az_once">Жаңы эле</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d мүн мурун</item>
+        <item quantity="other">%1$d мүн мурун</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d ст мурун</item>
+        <item quantity="other">%1$d ст мурун</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d күн мурун</item>
+        <item quantity="other">%1$d күн мурун</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s алынып салынсынбы?</string>
+    <string name="kaldir_aciklama">Бул телефон мындан ары сыналгыга маалымат жөнөтө албайт. Аны кайра кошуу үчүн QR кодду кайра скандашыңыз керек.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Телефонуңуздун жайгашкан жери</string>
+</resources>

@@ -2,13 +2,17 @@ package com.furkanisikay.namazakisi.kildim
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.KildimGuvenKurallari.Eylem
 import com.furkanisikay.namazakisi.cekirdek.KildimGuvenKurallari.Karar
 import com.furkanisikay.namazakisi.cekirdek.KildimGuvenKurallari.KaynakSinifi
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 
 /**
  * "Şu anki vakti kıldım" kısayolu (issue #276) — arayüzü olmayan geçiş etkinliği.
@@ -29,6 +33,11 @@ import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
  */
 class KildimKisayolActivity : Activity() {
     private var onay: AlertDialog? = null
+
+    /** Soru ve mesajlar UYGULAMANIN arayüz dilinde (cihaz dili farklı olabilir). */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase.dildeBaglam())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +110,7 @@ class KildimKisayolActivity : Activity() {
     }
 
     private fun bitir(sonuc: KildimIslemleri.Sonuc) {
-        Toast.makeText(applicationContext, KildimIslemleri.sonucMetni(sonuc), Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, KildimIslemleri.sonucMetni(this, sonuc).rakamla(rakamSifiri()), Toast.LENGTH_SHORT).show()
         finish()
     }
 }

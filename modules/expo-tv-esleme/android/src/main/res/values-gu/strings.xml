@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- gu — Gucaratça (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">ટીવી સ્ક્રીન પરનો QR કોડ ચોકઠાની અંદર લાવો</string>
+    <string name="tvesleme_qr_vazgec">રદ કરો</string>
+    <string name="tvesleme_qr_vazgec_erisim">સ્કૅન કરવાનું રદ કરો</string>
+    <string name="tvesleme_qr_yabanci">આ QR કોડ Namaz Akışı TVનો નથી. ટીવી પરનો કોડ સ્કૅન કરો.</string>
+    <string name="tvesleme_qr_okundu">કોડ સ્કૅન થયો</string>
+</resources>

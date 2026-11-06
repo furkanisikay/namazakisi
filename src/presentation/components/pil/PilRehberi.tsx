@@ -24,6 +24,8 @@ import {
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
+import { canli } from '../../../core/dil/aktifDil';
 
 /**
  * Hedef her cihazda AYNI ayar: uygulama bilgisi → Pil → Kısıtlanmamış. Samsung'un
@@ -31,15 +33,12 @@ import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
  * pil muafiyetinden ayrı bir durumdur ve okunamaz → kart hiç kaybolmazdı.
  * Kısıtlanmamış uygulamalar One UI'da uyutma listelerine düşmez.
  */
-export const PIL_ADIM_METINLERI: readonly string[] = [
-    "Açılan uygulama bilgisi ekranında Pil'e dokunun.",
-    "Kısıtlanmamış'ı seçin.",
-    'Buraya geri dönün.',
-];
+export const PIL_ADIM_METINLERI: readonly string[] = canli((s) => s.ayarlar.pil.adimlar);
 
 /** Telefonun ayar ekranının küçük örneği — yalnız görsel yönlendirme (erişilebilirlik ağacına girmez). */
 export const PilMinyatur: React.FC = () => {
     const renkler = useRenkler();
+    const m = useMetin().ayarlar.pil;
     const nabiz = useRef(new Animated.Value(0)).current;
     const [hareketAzalt, setHareketAzalt] = useState(true);
 
@@ -123,20 +122,21 @@ export const PilMinyatur: React.FC = () => {
                     <FontAwesome5 name="mosque" size={10} color="#fff" solid />
                 </View>
                 <Text className="text-xs font-bold" style={{ color: renkler.metin }}>
-                    Namaz Akışı · Pil
+                    {m.minyaturBaslik}
                 </Text>
             </View>
-            {secenek('Kısıtlanmamış', 'Arka planda kısıtlama olmadan çalışır', true)}
-            {secenek('Optimize edilmiş', 'Kullanımınıza göre kısıtlanır', false)}
+            {secenek(m.kisitlanmamis, m.kisitlanmamisAciklama, true)}
+            {secenek(m.optimize, m.optimizeAciklama, false)}
         </View>
     );
 };
 
 export const PilAdimlari: React.FC = () => {
     const renkler = useRenkler();
+    const adimlar = useMetin().ayarlar.pil.adimlar;
     return (
         <View>
-            {PIL_ADIM_METINLERI.map((metin, i) => (
+            {adimlar.map((metin, i) => (
                 <View key={metin} className="flex-row items-start" style={{ marginTop: i === 0 ? 0 : 10 }}>
                     <View
                         className="w-7 h-7 rounded-full items-center justify-center mr-2.5"
@@ -165,12 +165,14 @@ export interface PilRehberModalProps {
 /** Bottom-sheet: backdrop içeriği SARMAZ, kardeştir (AGENTS.md). */
 export const PilRehberModal: React.FC<PilRehberModalProps> = ({ gorunur, samsung, onAc, onKapat }) => {
     const renkler = useRenkler();
+    const s = useMetin();
+    const m = s.ayarlar.pil;
     useDonanimGeriTusu(gorunur, onKapat);
 
     return (
         <Modal visible={gorunur} animationType="fade" transparent statusBarTranslucent onRequestClose={onKapat}>
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                <TouchableWithoutFeedback onPress={onKapat} accessibilityLabel="Kapat">
+                <TouchableWithoutFeedback onPress={onKapat} accessibilityLabel={m.kapat}>
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
                 </TouchableWithoutFeedback>
                 <View
@@ -193,7 +195,7 @@ export const PilRehberModal: React.FC<PilRehberModalProps> = ({ gorunur, samsung
                             <FontAwesome5 name={samsung ? 'moon' : 'battery-full'} size={17} color={renkler.birincil} solid />
                         </View>
                         <Text className="text-base font-bold flex-1" style={{ color: renkler.metin }}>
-                            {samsung ? 'Namaz Akışı uyutulmasın' : 'Pil kısıtını kaldırın'}
+                            {samsung ? m.baslikSamsung : m.baslik}
                         </Text>
                     </View>
 
@@ -205,8 +207,7 @@ export const PilRehberModal: React.FC<PilRehberModalProps> = ({ gorunur, samsung
                     <View className="flex-row items-start mt-4">
                         <FontAwesome5 name="lock" size={11} color={renkler.metinIkincil} style={{ marginTop: 3, marginRight: 6 }} />
                         <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-                            Uygulama sizden izin istemez; yalnızca telefonunuzun ayar ekranını açar. İstediğiniz zaman geri
-                            alabilirsiniz.
+                            {m.guvence}
                         </Text>
                     </View>
 
@@ -216,11 +217,11 @@ export const PilRehberModal: React.FC<PilRehberModalProps> = ({ gorunur, samsung
                         onPress={onAc}
                         activeOpacity={0.85}
                         accessibilityRole="button"
-                        accessibilityLabel="Ayarları açın"
+                        accessibilityLabel={s.ortak.ayarlariAcin}
                     >
                         <FontAwesome5 name="external-link-alt" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                         <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                            Ayarları açın
+                            {s.ortak.ayarlariAcin}
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -229,10 +230,10 @@ export const PilRehberModal: React.FC<PilRehberModalProps> = ({ gorunur, samsung
                         onPress={onKapat}
                         activeOpacity={0.7}
                         accessibilityRole="button"
-                        accessibilityLabel="Vazgeçin"
+                        accessibilityLabel={s.ortak.vazgecin}
                     >
                         <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                            Vazgeç
+                            {m.vazgec}
                         </Text>
                     </TouchableOpacity>
                 </View>

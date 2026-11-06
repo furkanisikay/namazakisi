@@ -22,6 +22,7 @@
  */
 import type { UyariPlani } from './motorAdaptoru';
 import type { PencereYonu } from './pencereTipleri';
+import { bicim, metin, sayili } from '../dil/aktifDil';
 
 /** Bir adimin pencerede ILK tetigi — seritte cubuk olarak cizilir. */
 export interface SeritCubugu {
@@ -204,32 +205,26 @@ export interface SeritCumlesiGirdisi {
  */
 export function seritCumlesiOlustur(g: SeritCumlesiGirdisi): string {
     const { duzen, yon, bitis } = g;
+    const m = metin().muhafizAyar.serit;
+    const gun = g.gunEtiketi ?? m.bugun;
 
     if (duzen.uyariSayisi === 0 || duzen.ilkKalanDk === null || duzen.sonKalanDk === null) {
-        return g.tumAdimlarKapali
-            ? 'Tüm adımlar kapalı — bu vakitte hatırlatma almazsınız.'
-            : `${g.gunEtiketi ?? 'Bugün'} bu vakitte hatırlatma planlanmıyor.`;
+        return g.tumAdimlarKapali ? m.tumKapali : bicim(m.planYok, { gun });
     }
 
     const ilk = saatMetni(kalanDkAni(bitis, duzen.ilkKalanDk));
-    const gun = g.gunEtiketi ?? 'Bugün';
     const son = saatMetni(kalanDkAni(bitis, duzen.sonKalanDk));
-    const sayi = `toplam ${duzen.uyariSayisi} uyarı`;
+    const sayi = sayili(m.toplam, duzen.uyariSayisi);
 
     let cumle: string;
     if (yon === 'girisindenItibaren') {
-        cumle = duzen.sonAdimTekrarli
-            ? `Vakit girince başlar: ilk hatırlatma ${ilk}, kılana kadar ${sayi}.`
-            : `Vakit girince başlar: ilk hatırlatma ${ilk}, sonuncusu ${son} — ${sayi}.`;
+        cumle = bicim(duzen.sonAdimTekrarli ? m.girisTekrarli : m.girisSon, { ilk, son, sayi });
     } else {
-        cumle =
-            duzen.uyariSayisi === 1
-                ? `${gun} tek hatırlatma: ${ilk}.`
-                : `${gun} ilk hatırlatma ${ilk}, sonuncusu ${son} — ${sayi}.`;
+        cumle = duzen.uyariSayisi === 1 ? bicim(m.tek, { gun, ilk }) : bicim(m.coklu, { gun, ilk, son, sayi });
     }
 
     const sirada = siradakiHatirlatma(g);
-    return sirada ? `${cumle} Sıradaki: ${sirada}.` : cumle;
+    return sirada ? bicim(m.sirada, { cumle, saat: sirada }) : cumle;
 }
 
 /** Vakit su an suruyorsa siradaki hatirlatmanin saati; degilse `null`. */
@@ -261,5 +256,5 @@ export function seritErisimEtiketi(
     bitis: Date,
     cumle: string
 ): string {
-    return `${pencereAdi} bugün ${saatMetni(baslangic)} ile ${saatMetni(bitis)} arasında. ${cumle}`;
+    return bicim(metin().muhafizAyar.serit.erisim, { ad: pencereAdi, bas: saatMetni(baslangic), bit: saatMetni(bitis), cumle });
 }

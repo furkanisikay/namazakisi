@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Somalice kaynaklar (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: src/core/dil/sozluk/so (vakit.ts başlık yorumu). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Salaadda hadda, goorta ay dhammaanayso, iyo Waan tukaday hal taabasho</string>
+  <string name="widget_genis_aciklama">Shanta salaadood ee maanta, tirin, iyo Waan tukaday hal taabasho</string>
+  <string name="widget_kapak_adi">Waqtiyada salaadda shaashadda daboolka</string>
+  <string name="widget_kapak_aciklama">Waqtiyada salaadda maanta iyo tirin loogu talagalay shaashadda daboolka Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Caadi</string>
+  <string name="widget_klasik_aciklama">Muuqaal cagaar caadi ah: waqtiga u haray salaadda xigta</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Caadi ballaaran</string>
+  <string name="widget_klasik_genis_aciklama">Muuqaal cagaar caadi ah: tirin iyo waqtiyada salaadda maanta</string>
+  <string name="widget_ayet_adi">Aayadda maanta</string>
+  <string name="widget_ayet_aciklama">Aayad iyo tarjumaaddeeda, oo la cusboonaysiiyo maalin kasta waqtiga Subax</string>
+  <string name="widget_ayar_zemin_palet">Midabka barnaamijka (midab khafiif ah)</string>
+  <string name="widget_ayar_ayet_icerik">Cabbirka afargeesoodka, muuji</string>
+  <string name="widget_ayar_ayet_icerik_meal">Tarjumaadda</string>
+  <string name="widget_ayar_ayet_icerik_hat">Qoraalka Carabiga (farshaxanka qoraalka)</string>
+  <string name="kutu_kildim_etiket">Waan tukaday</string>
+  <string name="kisayol_kildim_kisa">Waan tukaday</string>
+  <string name="kisayol_kildim_uzun">Waan tukaday salaadda hadda</string>
+  <string name="kisayol_kible_kisa">Qibla</string>
+  <string name="kisayol_kible_uzun">Muuji jihada Qiblada</string>
+  <string name="kisayol_kaza_kisa">Buugga qadaa</string>
+  <string name="kisayol_kaza_uzun">Fur Buugga qadaa</string>
+  <string name="kildim_onay_baslik">Ma u calaamadaynaysaa %1$s la tukaday?</string>
+  <string name="kildim_onay_mesaj">Ma cadda barnaamijka soo diray codsigan. Xaqiiji haddii aad tukatay.</string>
+  <string name="kildim_onay_evet">Waan tukaday</string>
+  <string name="kildim_onay_vazgec">Ka noqo</string>
+  <string name="kildim_guven_baslik">Ma u oggolaanaysaa %1$s inuu salaadahaaga ku calaamadeeyo la tukaday?</string>
+  <string name="kildim_guven_mesaj">Salaadda hadda la calaamadeynayo: %1$s. Go\'aankaaga mar dambe waxaad ka beddeli kartaa Dejinta &gt; Barnaamijyada calaamadeeya Waan tukaday.</string>
+  <string name="kildim_guven_tarayici_mesaj">Salaadda hadda la calaamadeynayo: %1$s. Codsigan wuxuu ka yimid daaqad internet; maadaama bog kasta oo internet ah furi karo xiriirkan, oggolaansho joogto ah lama bixin karo.</string>
+  <string name="kildim_guven_her_zaman">Had iyo jeer oggolow</string>
+  <string name="kildim_guven_bu_sefer">Kaliya markan</string>
+  <string name="kildim_guven_engelle">Xir</string>
+  <string name="kildim_guven_engellendi">%1$s mar dambe ma calaamadeyn karo salaadahaaga. Waxaad tan ka beddeli kartaa Dejinta.</string>
+  <string name="widget_ayar_baslik">Habee wijitka</string>
+  <string name="widget_ayar_zemin">Asalka</string>
+  <string name="widget_ayar_zemin_material">Midabbada sawirka asalka</string>
+  <string name="widget_ayar_zemin_sistem">Qaabka nidaamka</string>
+  <string name="widget_ayar_zemin_acik">Iftiin</string>
+  <string name="widget_ayar_zemin_koyu">Madow</string>
+  <string name="widget_ayar_zemin_seffaf">Daah-furan</string>
+  <string name="widget_ayar_opaklik">Mugdiga asalka</string>
+  <string name="widget_ayar_gosterim">Ku muuji qoraal weyn</string>
+  <string name="widget_ayar_gosterim_kalan">Waqtiga haray</string>
+  <string name="widget_ayar_gosterim_bitis">Waqtiga dhammaadka</string>
+  <string name="widget_ayar_gosterim_not">Waqtiga dhammaadka waxaa lagu muujiyaa cabbir kasta.</string>
+  <string name="widget_ayar_sonraki">Muuji salaadda xigta</string>
+  <string name="widget_ayar_vazgec">Ka noqo</string>
+  <string name="widget_ayar_kaydet">Kaydi</string>
+  <string name="kildim_onay_kanal_adi">Xaqiijinta Waan tukaday</string>
+  <string name="kildim_onay_kanal_aciklama">Xaqiijin aamusan oo la muujiyo dhowr ilbiriqsi marka aad taabato \"Waan tukaday\" ogeysiis</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Wuxuu dhammaanayaa %1$s</string>
+  <string name="widget_giris">Wuxuu bilaabmaa %1$s</string>
+  <string name="widget_namaz_vakti">Waqtiga salaadda</string>
+  <string name="widget_uygulamayi_acin">Fur barnaamijka</string>
+  <string name="widget_siradaki">Xiga: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Hadda ma jirto salaad la calaamadeeyo</string>
+  <string name="widget_dugme_kildim">Waan tukaday</string>
+  <string name="widget_dugme_isaretleniyor">Waa la calaamadaynayaa</string>
+  <string name="widget_dugme_kilindi">La tukaday</string>
+  <string name="widget_dugme_vakit_girmedi">Waqtigu weli ma gelin</string>
+  <string name="widget_klasik_uygulamayi_acin">fur barnaamijka</string>
+  <string name="widget_klasik_erisim_veri_yok">Fur barnaamijka si aad u aragto waqtiyada salaadda</string>
+  <string name="widget_klasik_erisim_siradaki">Salaadda xigta: %1$s, waxay bilaabmaysaa %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Duhur:</string>
+  <string name="widget_onizleme_klasik_genis">Maghrib:</string>
+  <string name="widget_onizleme_imsak">Subax</string>
+  <string name="widget_onizleme_gunes">Qorrax soo bax</string>
+  <string name="widget_onizleme_ogle">Duhur</string>
+  <string name="widget_onizleme_ikindi">Casar</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Cishe</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s waxaa lagu calaamadeeyay la tukaday. Alle ha aqbalo.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s horay ayaa loogu calaamadeeyay la tukaday.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Hadda ma jirto salaad la calaamadeeyo. Tan xigta waa %1$s, oo bilaabanaysa %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Hadda ma jirto salaad la calaamadeeyo.</string>
+  <string name="kildim_sonuc_veri_yok">Xog waqti salaadeed ma jirto. Hal mar fur barnaamijka.</string>
+  <string name="kildim_sonuc_vakit_degisti">Waqtiga salaaddu wuu isbeddelay, sidaas darteed waxba lama calaamadeyn. Isku day mar kale.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Barnaamijka hagidda lama furi karin.</string>
+  <string name="arac_adsiz_cami">Masjid</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Xogta waqtiga salaadda lama akhrin karin.</string>
+  <string name="asistan_isaretleme_yapilamadi">Salaadda lama calaamadeyn karin.</string>
+  <string name="asistan_aciklama">Waxaad weydiin kartaa waqtiyada salaadda, u calaamadeyn kartaa salaadda hadda la tukaday, oo furi kartaa shaashadda Qiblada.</string>
+</resources>

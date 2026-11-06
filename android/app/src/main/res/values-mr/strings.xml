@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Marathi kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/mr (vakit.ts başındaki yorum). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">सध्याची नमाज, ती केव्हा संपते आणि एका टॅपमध्ये \"नमाज पढली\"</string>
+  <string name="widget_genis_aciklama">आजच्या पाच नमाज, उलटगणती आणि एका टॅपमध्ये \"नमाज पढली\"</string>
+  <string name="widget_kapak_adi">कव्हर स्क्रीनवर नमाजच्या वेळा</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip च्या कव्हर स्क्रीनसाठी आजच्या नमाजच्या वेळा आणि उलटगणती</string>
+  <string name="widget_klasik_adi">Namaz Akışı — क्लासिक</string>
+  <string name="widget_klasik_aciklama">क्लासिक हिरवे स्वरूप: पुढील नमाजपर्यंत उरलेला वेळ</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — क्लासिक रुंद</string>
+  <string name="widget_klasik_genis_aciklama">क्लासिक हिरवे स्वरूप: उलटगणती आणि आजच्या नमाजच्या वेळा</string>
+  <string name="widget_ayet_adi">आजची आयत</string>
+  <string name="widget_ayet_aciklama">एक आयत आणि तिचे भाषांतर, दररोज फज्रला नवीन</string>
+  <string name="widget_ayar_zemin_palet">ॲपचा रंग (हलकी छटा)</string>
+  <string name="widget_ayar_ayet_icerik">चौकोनी आकारात दाखवा</string>
+  <string name="widget_ayar_ayet_icerik_meal">भाषांतर</string>
+  <string name="widget_ayar_ayet_icerik_hat">अरबी मजकूर (सुलेखन)</string>
+  <string name="kutu_kildim_etiket">नमाज पढली</string>
+  <string name="kisayol_kildim_kisa">नमाज पढली</string>
+  <string name="kisayol_kildim_uzun">सध्याची नमाज पढली</string>
+  <string name="kisayol_kible_kisa">किब्ला</string>
+  <string name="kisayol_kible_uzun">किब्लाची दिशा दाखवा</string>
+  <string name="kisayol_kaza_kisa">कजा नोंदवही</string>
+  <string name="kisayol_kaza_uzun">कजा नोंदवही उघडा</string>
+  <string name="kildim_onay_baslik">%1$s \"अदा झाली\" म्हणून नोंदवायची का?</string>
+  <string name="kildim_onay_mesaj">ही विनंती कोणत्या ॲपने पाठवली हे स्पष्ट नाही. तुम्ही नमाज अदा केली असल्यास पुष्टी करा.</string>
+  <string name="kildim_onay_evet">नमाज पढली</string>
+  <string name="kildim_onay_vazgec">रद्द करा</string>
+  <string name="kildim_guven_baslik">%1$s ला तुमच्या नमाज \"अदा झाली\" म्हणून नोंदवण्याची परवानगी द्यायची का?</string>
+  <string name="kildim_guven_mesaj">आता नोंदवली जाणारी नमाज: %1$s. तुम्ही तुमचा निर्णय नंतर सेटिंग्ज &gt; \"नमाज पढली\" नोंदवणारी ॲप्स येथे बदलू शकता.</string>
+  <string name="kildim_guven_tarayici_mesaj">आता नोंदवली जाणारी नमाज: %1$s. ही विनंती ब्राउझरमधून आली; कोणतेही वेबपेज ही लिंक उघडू शकत असल्याने कायमची परवानगी देता येत नाही.</string>
+  <string name="kildim_guven_her_zaman">नेहमी अनुमती द्या</string>
+  <string name="kildim_guven_bu_sefer">फक्त या वेळी</string>
+  <string name="kildim_guven_engelle">ब्लॉक करा</string>
+  <string name="kildim_guven_engellendi">%1$s आता तुमच्या नमाजची नोंद करू शकत नाही. तुम्ही हे सेटिंग्जमध्ये बदलू शकता.</string>
+  <string name="widget_ayar_baslik">विजेट सानुकूलित करा</string>
+  <string name="widget_ayar_zemin">पार्श्वभूमी</string>
+  <string name="widget_ayar_zemin_material">वॉलपेपरचे रंग</string>
+  <string name="widget_ayar_zemin_sistem">सिस्टम थीम</string>
+  <string name="widget_ayar_zemin_acik">लाइट</string>
+  <string name="widget_ayar_zemin_koyu">डार्क</string>
+  <string name="widget_ayar_zemin_seffaf">पारदर्शक</string>
+  <string name="widget_ayar_opaklik">पार्श्वभूमीची अपारदर्शकता</string>
+  <string name="widget_ayar_gosterim">मोठ्या अक्षरात दाखवा</string>
+  <string name="widget_ayar_gosterim_kalan">उरलेला वेळ</string>
+  <string name="widget_ayar_gosterim_bitis">संपण्याची वेळ</string>
+  <string name="widget_ayar_gosterim_not">संपण्याची वेळ प्रत्येक आकारात दाखवली जाते.</string>
+  <string name="widget_ayar_sonraki">पुढील नमाज दाखवा</string>
+  <string name="widget_ayar_vazgec">रद्द करा</string>
+  <string name="widget_ayar_kaydet">सेव्ह करा</string>
+  <string name="kildim_onay_kanal_adi">\"नमाज पढली\" ची पुष्टी</string>
+  <string name="kildim_onay_kanal_aciklama">सूचनेतील \"नमाज पढली\" वर टॅप केल्यावर काही सेकंद दिसणारी शांत पुष्टी</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">%1$s ला संपते</string>
+  <string name="widget_giris">%1$s ला सुरू होते</string>
+  <string name="widget_namaz_vakti">नमाजची वेळ</string>
+  <string name="widget_uygulamayi_acin">ॲप उघडा</string>
+  <string name="widget_siradaki">पुढील: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">आत्ता नोंदवण्यासाठी नमाज नाही</string>
+  <string name="widget_dugme_kildim">नमाज पढली</string>
+  <string name="widget_dugme_isaretleniyor">नोंद होत आहे</string>
+  <string name="widget_dugme_kilindi">अदा झाली</string>
+  <string name="widget_dugme_vakit_girmedi">अजून वेळ नाही</string>
+  <string name="widget_klasik_uygulamayi_acin">ॲप उघडा</string>
+  <string name="widget_klasik_erisim_veri_yok">नमाजच्या वेळा पाहण्यासाठी ॲप उघडा</string>
+  <string name="widget_klasik_erisim_siradaki">पुढील नमाज: %1$s, %2$s वाजता सुरू होते</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">जोहरला</string>
+  <string name="widget_onizleme_klasik_genis">मगरिबला</string>
+  <string name="widget_onizleme_imsak">फज्र</string>
+  <string name="widget_onizleme_gunes">सूर्योदय</string>
+  <string name="widget_onizleme_ogle">जोहर</string>
+  <string name="widget_onizleme_ikindi">असर</string>
+  <string name="widget_onizleme_aksam">मगरिब</string>
+  <string name="widget_onizleme_yatsi">इशा</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s \"अदा झाली\" म्हणून नोंदवली. अल्लाह कबूल करो.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s आधीच \"अदा झाली\" म्हणून नोंदवलेली आहे.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">आत्ता नोंदवण्यासाठी कोणतीही नमाज नाही. पुढील %1$s, %2$s वाजता सुरू होईल.</string>
+  <string name="kildim_sonuc_vakit_yok">आत्ता नोंदवण्यासाठी कोणतीही नमाज नाही.</string>
+  <string name="kildim_sonuc_veri_yok">नमाजच्या वेळांचा डेटा नाही. एकदा ॲप उघडा.</string>
+  <string name="kildim_sonuc_vakit_degisti">नमाजची वेळ बदलली, त्यामुळे काहीही नोंदवले गेले नाही. पुन्हा प्रयत्न करा.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">नेव्हिगेशन ॲप उघडता आले नाही.</string>
+  <string name="arac_adsiz_cami">मशीद</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">नमाजच्या वेळांचा डेटा वाचता आला नाही.</string>
+  <string name="asistan_isaretleme_yapilamadi">नमाजची नोंद करता आली नाही.</string>
+  <string name="asistan_aciklama">तुम्ही नमाजच्या वेळा विचारू शकता, सध्याची नमाज \"अदा झाली\" म्हणून नोंदवू शकता आणि किब्लाची स्क्रीन उघडू शकता.</string>
+</resources>

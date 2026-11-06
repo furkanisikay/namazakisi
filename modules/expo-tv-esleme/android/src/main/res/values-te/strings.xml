@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">టీవీ స్క్రీన్‌పై ఉన్న QR కోడ్‌ను ఫ్రేమ్ లోపల ఉంచండి</string>
+    <string name="tvesleme_qr_vazgec">రద్దు చేయండి</string>
+    <string name="tvesleme_qr_vazgec_erisim">స్కాన్ చేయడం రద్దు చేయండి</string>
+    <string name="tvesleme_qr_yabanci">ఈ QR కోడ్ Namaz Akışı TVకి చెందినది కాదు. టీవీలోని కోడ్‌ను స్కాన్ చేయండి.</string>
+    <string name="tvesleme_qr_okundu">కోడ్ స్కాన్ అయింది</string>
+</resources>

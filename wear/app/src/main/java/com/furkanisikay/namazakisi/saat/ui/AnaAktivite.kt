@@ -20,7 +20,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import com.furkanisikay.namazakisi.saat.BuildConfig
+import com.furkanisikay.namazakisi.saat.R
 import android.view.KeyEvent
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.BilekJesti
@@ -169,12 +171,14 @@ class AnaAktivite : ComponentActivity() {
             val bekleyen = remember(surum) { depo.bekleyenler() }
             val guncellemeGerekli = remember(surum) { depo.guncellemeGerekli }
             val bugun = LocalDate.now().toString()
+            // Çekirdek metinlerinin dili: kaynak sisteminin seçtiği values-xx (cihaz dili).
+            val dil = stringResource(R.string.dil_kodu)
             val ambientDurumu = ambient
             if (ambientDurumu != null) {
                 // Etkileşimli ağaç ambient'te tümden çıkar; dönüşte yeniden kurulur.
                 AnaAmbientEkrani(
-                    g = yuk?.let { AnaEkranKarari.kur(it, simdi, bugun, bekleyen) },
-                    bilgi = "Vakitleri görmek için telefonunuzda Namaz Akışı'nı açın.",
+                    g = yuk?.let { AnaEkranKarari.kur(it, simdi, bugun, bekleyen, dil) },
+                    bilgi = stringResource(R.string.yuk_yok),
                     ambient = ambientDurumu,
                 )
             } else {
@@ -194,10 +198,10 @@ class AnaAktivite : ComponentActivity() {
                     onKible = { startActivity(Intent(this@AnaAktivite, KibleAktivite::class.java)) },
                     onTelefondaAc = { TelefondaAc.ac(this@AnaAktivite, it) },
                     cami = cami,
-                    sesBilgisi = remember(surum, sesSurum) {
-                        AnonsKarari.bilgiMetni(yuk?.anonsYeri, hoparlor, SaatAnonsu.sonDurum(this@AnaAktivite))
+                    sesBilgisi = remember(surum, sesSurum, dil) {
+                        AnonsKarari.bilgiMetni(yuk?.anonsYeri, hoparlor, SaatAnonsu.sonDurum(this@AnaAktivite), dil)
                     },
-                    sesAciklamasi = AnonsKarari.yerAciklamasi(yuk?.anonsYeri),
+                    sesAciklamasi = AnonsKarari.yerAciklamasi(yuk?.anonsYeri, dil),
                     onSesDene = if (AnonsKarari.saatKonusabilir(yuk?.anonsYeri) && hoparlor) {
                         {
                             if (!sesDeneniyor) {
@@ -208,7 +212,7 @@ class AnaAktivite : ComponentActivity() {
                                     TelefondaAc.onay(
                                         this@AnaAktivite,
                                         sonuc == AnonsKarari.SesDurumu.KONUSTU,
-                                        AnonsKarari.denemeSonucu(sonuc, hoparlor = true),
+                                        AnonsKarari.denemeSonucu(sonuc, hoparlor = true, dil = dil),
                                     )
                                 }
                             }
@@ -228,7 +232,7 @@ class AnaAktivite : ComponentActivity() {
                                 TelefondaAc.onay(
                                     this@AnaAktivite,
                                     s.sonuc == "acildi" || s.sonuc == "kapandi",
-                                    TelefonKomutu.modMetni(s.sonuc, s.bitisMs?.let { VakitHesabi.saat(it) }),
+                                    TelefonKomutu.modMetni(s.sonuc, s.bitisMs?.let { VakitHesabi.saat(it) }, dil),
                                 )
                             }
                         }
@@ -243,7 +247,11 @@ class AnaAktivite : ComponentActivity() {
                                     TelefonKomutu.camiCevap(cevap, yerId),
                                 )
                                 istekSuruyor = false
-                                TelefondaAc.onay(this@AnaAktivite, s.sonuc == "tamam", TelefonKomutu.camiMetni(cevap, s.sonuc))
+                                TelefondaAc.onay(
+                                    this@AnaAktivite,
+                                    s.sonuc == "tamam",
+                                    TelefonKomutu.camiMetni(cevap, s.sonuc, dil),
+                                )
                             }
                         }
                     },

@@ -10,12 +10,11 @@ import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, Vi
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { canli } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
-export const ERISIM_ADIM_METINLERI: readonly string[] = [
-    'Açılan listede Namaz Akışı\'nı bulun.',
-    'Rahatsız Etmeyin erişimine izin verin.',
-    'Buraya geri dönün.',
-];
+/** Erişim adımları (sözlük `cami.rehber.adimlar`; okunduğu an etkin dilde). */
+export const ERISIM_ADIM_METINLERI: readonly string[] = canli((s) => s.cami.rehber.adimlar);
 
 export interface NamazModuRehberModalProps {
     gorunur: boolean;
@@ -25,12 +24,13 @@ export interface NamazModuRehberModalProps {
 
 export const NamazModuRehberModal: React.FC<NamazModuRehberModalProps> = ({ gorunur, onAc, onKapat }) => {
     const renkler = useRenkler();
+    const m = useMetin().cami.rehber;
     useDonanimGeriTusu(gorunur, onKapat);
 
     return (
         <Modal visible={gorunur} animationType="fade" transparent statusBarTranslucent onRequestClose={onKapat}>
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                <TouchableWithoutFeedback onPress={onKapat} accessibilityLabel="Kapat">
+                <TouchableWithoutFeedback onPress={onKapat} accessibilityLabel={m.kapat}>
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
                 </TouchableWithoutFeedback>
                 <View
@@ -53,15 +53,14 @@ export const NamazModuRehberModal: React.FC<NamazModuRehberModalProps> = ({ goru
                             <FontAwesome5 name="moon" size={17} color={renkler.birincil} solid />
                         </View>
                         <Text className="text-base font-bold flex-1" style={{ color: renkler.metin }}>
-                            Namaz modu için erişim
+                            {m.baslik}
                         </Text>
                     </View>
                     <Text className="text-sm mb-4" style={{ color: renkler.metinIkincil }}>
-                        Modu açıp kapatabilmemiz için telefonunuzun "Rahatsız Etmeyin erişimi" iznine ihtiyaç var. Aramaların ve
-                        bildirimlerin modda ne yapacağını yine siz seçersiniz.
+                        {m.aciklama}
                     </Text>
 
-                    {ERISIM_ADIM_METINLERI.map((metin, i) => (
+                    {m.adimlar.map((metin, i) => (
                         <View key={metin} className="flex-row items-start" style={{ marginTop: i === 0 ? 0 : 10 }}>
                             <View
                                 className="w-7 h-7 rounded-full items-center justify-center mr-2.5"
@@ -80,7 +79,7 @@ export const NamazModuRehberModal: React.FC<NamazModuRehberModalProps> = ({ goru
                     <View className="flex-row items-start mt-4">
                         <FontAwesome5 name="lock" size={11} color={renkler.metinIkincil} style={{ marginTop: 3, marginRight: 6 }} />
                         <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-                            Uygulama sizden izin istemez; yalnızca telefonunuzun ayar ekranını açar. SMS ya da arama izni gerekmez.
+                            {m.gizlilik}
                         </Text>
                     </View>
 
@@ -90,11 +89,11 @@ export const NamazModuRehberModal: React.FC<NamazModuRehberModalProps> = ({ goru
                         onPress={onAc}
                         activeOpacity={0.85}
                         accessibilityRole="button"
-                        accessibilityLabel="Erişim ayarını açın"
+                        accessibilityLabel={m.erisimAyari}
                     >
                         <FontAwesome5 name="external-link-alt" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                         <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                            Erişim ayarını açın
+                            {m.erisimAyari}
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -103,10 +102,10 @@ export const NamazModuRehberModal: React.FC<NamazModuRehberModalProps> = ({ goru
                         onPress={onKapat}
                         activeOpacity={0.7}
                         accessibilityRole="button"
-                        accessibilityLabel="Vazgeçin"
+                        accessibilityLabel={m.vazgecinErisim}
                     >
                         <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                            Vazgeç
+                            {m.vazgec}
                         </Text>
                     </TouchableOpacity>
                 </View>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Azərbaycan dili. Terminlər: docs/ajan/coklu-dil.md + src/core/dil/sozluk/az. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">az</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Namaz vaxtları lövhəsi</string>
+    <string name="ayarlar">Parametrlər</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s vaxtına %2$s qaldı</string>
+    <string name="pano_vaktine">%1$s vaxtına</string>
+    <string name="pano_vaktine_kalan">%1$s vaxtına %2$s</string>
+    <string name="pano_kerahat_vakti">Məkruh vaxt</string>
+    <string name="pano_bitis">bitmə %1$s</string>
+    <string name="pano_kerahat_erisim">Məkruh vaxt, %1$s, bitmə %2$s. %3$s</string>
+    <string name="pano_cumaya">Cüməyə %1$s</string>
+    <string name="pano_cikis_geldi">çıxmaq vaxtıdır</string>
+    <string name="pano_cikis">çıxış %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Cümə üçün çıxmaq vaxtıdır</string>
+    <string name="pano_cuma_cikis_erisim">Cümə üçün çıxış %1$s</string>
+    <string name="pano_bugun_cuma">Bu gün cümədir</string>
+    <string name="pano_ogle">zöhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Bu gün cümədir. Cümə namazı zöhr vaxtında, %1$s</string>
+    <string name="pano_ayarlar_erisim">Parametrlər: telefon əlavə etmə, məkan, qoşulmuş telefonlar</string>
+    <string name="pano_simdiki_vakit">hazırkı vaxt</string>
+    <string name="pano_siradaki_vakit">növbəti vaxt</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Telefonunuzu əlavə edin", "Kodla daxil edin", "Şəhəri özüm seçim", "Əlavə edin". -->
+    <string name="kodla_girin">Kodla daxil edin</string>
+    <string name="ili_kendim_secin">Şəhəri özüm seçim</string>
+    <string name="yeniden_deneyin">Yenidən cəhd edin</string>
+    <string name="telefon_varsayilan">Telefon</string>
+    <string name="esleme_ekleniyor">%1$s əlavə olunur</string>
+    <string name="esleme_gonderiyor">Telefonunuz məkanını və vəziyyətini göndərir…</string>
+    <string name="esleme_tamamlanamadi">Cütləşdirmə tamamlanmadı</string>
+    <string name="esleme_saklanamadi">Bu TV əlaqə açarını təhlükəsiz saxlaya bilmir. Məkanı kodla daxil edə və ya şəhərinizi seçə bilərsiniz.</string>
+    <string name="telefonunuzu_ekleyin">Telefonunuzu əlavə edin</string>
+    <string name="esleme_alt">Məkanınıza görə namaz vaxtları; qıldığınız namazlar da görünür.</string>
+    <string name="esleme_adim1">Telefonunuzda Namaz Akışı tətbiqini açın</string>
+    <string name="esleme_adim2">Parametrlər › Cihazlarım › TV əlavə edin</string>
+    <string name="esleme_adim3">Telefonun kamerasını koda tutun</string>
+    <string name="esleme_ayni_wifi">Telefon və TV eyni Wi-Fi şəbəkəsində olmalıdır.</string>
+    <string name="esleme_onay_soru">Bu telefonu əlavə edək?</string>
+    <string name="esleme_onay_aciklama">Əlavə olunan telefon bu TV-yə məkanını və qıldığı namazları göndərə bilər.</string>
+    <string name="ekleyin">Əlavə edin</string>
+    <string name="hayir">Xeyr</string>
+    <string name="esleme_eklendi">%1$s əlavə olundu</string>
+    <string name="konumunuz_geldi">Məkanınız gəldi</string>
+    <string name="konuma_gore_hesaplanacak">Namaz vaxtları bu məkana görə hesablanacaq.</string>
+    <string name="qr_konum_alindi">Məkan alındı</string>
+    <string name="qr_kodu">Telefonunuzla oxudacağınız cütləşdirmə kodu</string>
+    <string name="ag_yok">TV şəbəkəyə qoşulmayıb</string>
+    <string name="ag_yok_aciklama">Telefonunuzdakı 7 rəqəmli kodu daxil edərək və ya şəhərinizi seçərək davam edə bilərsiniz.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Telefonunuzdakı kodu daxil edin</string>
+    <string name="kod_yol">Telefonda: Parametrlər › Cihazlarım › TV əlavə edin</string>
+    <string name="kod_hatali">Kod uyğun gəlmədi. Telefonunuzdakı 7 rəqəmi yoxlayın; səhv rəqəmi “%1$s” ilə düzəldin.</string>
+    <string name="kod_rakamli_kumanda">Pultunuzda rəqəm düymələri varsa, onlarla da yaza bilərsiniz.</string>
+    <string name="kod_bos_hane">boş rəqəm</string>
+    <string name="kod_sil">Sil</string>
+    <string name="kod_sil_aciklama">Son rəqəmi silin</string>
+    <string name="kod_geri">Geri</string>
+    <string name="vazgecin">Ləğv edin</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Olduğunuz şəhəri seçin</string>
+    <string name="il_merkezine_gore">Vaxtlar şəhər mərkəzinə görə hesablanır.</string>
+    <string name="il_secili">%1$s, seçilib</string>
+    <string name="dream_il_yok">Vaxt lövhəsini görmək üçün Namaz Akışı tətbiqini açıb şəhərinizi seçin.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Məkan: %1$s</string>
+    <string name="ayar_konum_yok">Məkan seçilməyib</string>
+    <string name="ayar_telefon_ekleyin">Telefon əlavə edin</string>
+    <string name="ayar_konumu_kodla">Məkanı kodla daxil edin</string>
+    <string name="ayar_bagli_telefonlar">Bu TV-yə qoşulmuş telefonlar</string>
+    <string name="ayar_telefon_yok">Hələ telefon əlavə olunmayıb. Soldakı “%1$s” ilə ekranda çıxan kodu oxudun.</string>
+    <string name="kaldirin">Silin</string>
+    <string name="ayar_ne_gonderir">Telefonlar nə göndərir?</string>
+    <string name="ayar_madde_konum">Məkan: vaxtlar ona görə hesablanır</string>
+    <string name="ayar_madde_namazlar">Qeyd olunan namazlar, seçənlər üçün</string>
+    <string name="ayar_madde_sifreli">Şifrəli, yalnız evinizin şəbəkəsində</string>
+    <string name="son_haber_yok">Hələ məlumat yoxdur</string>
+    <string name="son_haber_az_once">İndicə</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d dəq əvvəl</item>
+        <item quantity="other">%1$d dəq əvvəl</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d saat əvvəl</item>
+        <item quantity="other">%1$d saat əvvəl</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d gün əvvəl</item>
+        <item quantity="other">%1$d gün əvvəl</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s silinsin?</string>
+    <string name="kaldir_aciklama">Bu telefon artıq TV-yə məlumat göndərə bilməyəcək. Yenidən əlavə etmək üçün QR kodu yenidən oxutmalısınız.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Telefonunuzdakı məkan</string>
+</resources>

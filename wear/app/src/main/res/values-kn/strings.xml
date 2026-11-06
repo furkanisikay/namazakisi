@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kannada. Terimler JS src/core/dil/sozluk/kn ile aynı; saat ekranı dar: düğme ve karo metinleri kısa. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">kn</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">ಮುಂದಿನ ನಮಾಝ್</string>
+    <string name="tile_aciklama">ಮುಂದಿನ ನಮಾಝ್ ಮತ್ತು ಅದರ ಸಮಯ</string>
+    <string name="komplikasyon_adi">ಉಳಿದ ಸಮಯ</string>
+    <string name="cikis_saati_komplikasyon_adi">ನಮಾಝ್ ಮುಕ್ತಾಯ ಸಮಯ</string>
+    <string name="siradaki_namaz_komplikasyon_adi">ಮುಂದಿನ ನಮಾಝ್</string>
+    <string name="bugun_tile_adi">ಇಂದು</string>
+    <string name="bugun_tile_aciklama">ಇಂದಿನ ಐದು ನಮಾಝ್‌ಗಳು; ನಿರ್ವಹಿಸಿದವನ್ನು ಎರಡು ಟ್ಯಾಪ್‌ನಲ್ಲಿ ಗುರುತಿಸಿ</string>
+    <string name="ilerleme_komplikasyon_adi">ದೈನಂದಿನ ಪ್ರಗತಿ</string>
+    <string name="dagilim_komplikasyon_adi">ದಿನದ ಸಾರಾಂಶ</string>
+    <string name="kerahat_komplikasyon_adi">ಮಕ್ರೂಹ್ ಸಮಯ</string>
+    <string name="son_dakikalar_kanal_adi">ಕೊನೆಯ ನಿಮಿಷಗಳು</string>
+    <string name="son_dakikalar_kanal_aciklama">ನೀವು ನಿರ್ವಹಿಸದ ನಮಾಝಿನ ಕೊನೆಯ ನಿಮಿಷಗಳಲ್ಲಿ ವಾಚ್ ಮುಖದಲ್ಲಿ ಕೌಂಟ್‌ಡೌನ್</string>
+    <string name="tesbihat_adi">ತಸ್ಬೀಹ್</string>
+    <string name="tesbihat_kanal_adi">ತಸ್ಬೀಹ್</string>
+    <string name="tesbihat_kanal_aciklama">ಅಪೂರ್ಣ ತಸ್ಬೀಹ್‌ಗೆ ಹಿಂತಿರುಗಲು ವಾಚ್ ಮುಖದಲ್ಲಿ ನಿಶ್ಶಬ್ದ ಐಕಾನ್</string>
+    <string name="kible_adi">ಕಿಬ್ಲಾ</string>
+    <string name="kible_komplikasyon_adi">ಕಿಬ್ಲಾ</string>
+    <string name="camideyim_kanal_adi">ಮಸೀದಿಯಲ್ಲಿ</string>
+    <string name="camideyim_kanal_aciklama">ನೀವು ಮಸೀದಿಯಲ್ಲಿದ್ದೀರಿ ಎಂದು ಫೋನ್ ತಿಳಿಸಿದಾಗ ವಾಚ್ ಮುಖದಲ್ಲಿ ನಿಶ್ಶಬ್ದ ಐಕಾನ್</string>
+    <string name="uyandirma_kanal_adi">ನಿಶ್ಶಬ್ದ ಎಚ್ಚರಿಕೆ</string>
+    <string name="uyandirma_kanal_aciklama">ಫಜ್ರ್ ಮತ್ತು ತಹಜ್ಜುದ್‌ಗಾಗಿ ಕಂಪನದಿಂದ ಮಾತ್ರ ಎಬ್ಬಿಸುತ್ತದೆ</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">ನಮಾಝ್ ಮಾಡಿದೆ</string>
+    <string name="kilindi_isareti">✓ ನಿರ್ವಹಿಸಲಾಗಿದೆ</string>
+    <string name="kapat">ಮುಚ್ಚಿ</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">ನಮಾಝ್ ಸಮಯಗಳನ್ನು ನೋಡಲು ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ Namaz Akışı ತೆರೆಯಿರಿ.</string>
+    <string name="yuk_eskidi">ನಮಾಝ್ ಸಮಯದ ಮಾಹಿತಿ ಹಳೆಯದಾಗಿದೆ. ರಿಫ್ರೆಶ್ ಮಾಡಲು ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ Namaz Akışı ತೆರೆಯಿರಿ.</string>
+    <string name="guncelleme_gerekli">ನಿಮ್ಮ ವಾಚ್‌ನಲ್ಲಿ Namaz Akışı ಅಪ್‌ಡೇಟ್ ಮಾಡಿ.</string>
+    <string name="bildirim_izni">ಫೋನ್ ನಿಮ್ಮ ಬಳಿ ಇಲ್ಲದಿದ್ದರೂ ಜ್ಞಾಪನೆಗಳನ್ನು ಪಡೆಯಲು ವಾಚ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ Namaz Akışı ಅಧಿಸೂಚನೆಗಳನ್ನು ಅನುಮತಿಸಿ.</string>
+    <string name="cami_soru">ನೀವು ಮಸೀದಿಯಲ್ಲಿದ್ದೀರಾ?</string>
+    <string name="cami_evet">ಹೌದು</string>
+    <string name="cami_evet_aciklama">ಹೌದು, ನಾನು ಮಸೀದಿಯಲ್ಲಿದ್ದೇನೆ. ನಮಾಝ್ ಮೋಡ್ ಆನ್ ಮಾಡುತ್ತದೆ</string>
+    <string name="cami_hayir">ಇಲ್ಲ</string>
+    <string name="cami_hayir_aciklama">ಇಲ್ಲ, ನಾನು ಮಸೀದಿಯಲ್ಲಿಲ್ಲ</string>
+    <string name="camidesiniz">ನೀವು ಮಸೀದಿಯಲ್ಲಿದ್ದೀರಿ</string>
+    <string name="cami_degil">ಇದು ಮಸೀದಿ ಅಲ್ಲ</string>
+    <string name="cami_degil_aciklama">ಇದು ಮಸೀದಿ ಅಲ್ಲ. ಈ ಸ್ಥಳವನ್ನು ಮತ್ತೆ ಮಸೀದಿ ಎಂದು ಪರಿಗಣಿಸಲಾಗುವುದಿಲ್ಲ</string>
+    <string name="tesbihat_ac">ತಸ್ಬೀಹ್ ಎಣಿಕೆ ತೆರೆಯಿರಿ</string>
+    <string name="kible_ac">ಕಿಬ್ಲಾ ದಿಕ್ಸೂಚಿ ತೆರೆಯಿರಿ</string>
+    <string name="ses_dene">ಧ್ವನಿ ಪರೀಕ್ಷಿಸಿ</string>
+    <string name="ses_dene_aciklama">ವಾಚ್‌ನ ಗಟ್ಟಿಯಾಗಿ ಓದುವಿಕೆ ಪರೀಕ್ಷಿಸಿ</string>
+    <string name="telefonda_acin">ಫೋನ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ</string>
+    <string name="telefonda_ekran_ac">%1$s ಅನ್ನು ಫೋನ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ</string>
+    <string name="ekran_kaza">ಖಝಾ ದಾಖಲೆ</string>
+    <string name="ekran_camideyim">ಮಸೀದಿಯಲ್ಲಿದ್ದೇನೆ</string>
+    <string name="ekran_ayarlar">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">ನಿರ್ವಹಿಸಲಾಗಿದೆ, ಸಿಂಕ್ ಆಗುತ್ತಿದೆ</string>
+    <string name="durum_kilindi">ನಿರ್ವಹಿಸಲಾಗಿದೆ</string>
+    <string name="durum_girmedi">ಇನ್ನೂ ಸಮಯವಾಗಿಲ್ಲ</string>
+    <string name="durum_simdiki">ಪ್ರಸ್ತುತ ನಮಾಝ್ ಸಮಯ, ಗುರುತಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="durum_simdiki_kalan">ಪ್ರಸ್ತುತ ನಮಾಝ್ ಸಮಯ, %1$s, ಗುರುತಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="durum_kilinmadi">ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ, ಗುರುತಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="isaretleyin">ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಿ</string>
+    <string name="esitleniyor">ಸಿಂಕ್ ಆಗುತ್ತಿದೆ</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">"ನಮಾಝ್ ಮಾಡಿದೆ" ದೃಢೀಕರಿಸಿ</string>
+    <string name="vazgecin">ರದ್ದುಮಾಡಿ</string>
+    <string name="vazgec">ರದ್ದುಮಾಡಿ</string>
+    <string name="kerahat_vaktindesiniz">ಈಗ ಮಕ್ರೂಹ್ ಸಮಯ.</string>
+    <string name="kilindi_dua">ನಿರ್ವಹಿಸಲಾಗಿದೆ. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">ನಮಾಝ್ ಮೋಡ್ ಆನ್, ಮುಕ್ತಾಯ %1$s. ಆಫ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="namaz_modu_ac_aciklama">ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ನಮಾಝ್ ಮೋಡ್ ಆನ್ ಮಾಡಿ</string>
+    <string name="namaz_modu_kapatin">ನಮಾಝ್ ಮೋಡ್ ಆಫ್ ಮಾಡಿ</string>
+    <string name="namaz_modu_acin">ನಮಾಝ್ ಮೋಡ್ ಆನ್ ಮಾಡಿ</string>
+    <string name="namaz_modu_acik_bitis">ಆನ್, ಮುಕ್ತಾಯ %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">ದಿಕ್ಕು ಕಂಡುಹಿಡಿಯಲಾಗುತ್ತಿದೆ…</string>
+    <string name="kible_yuk_yok">ಕಿಬ್ಲಾ ಕಂಡುಹಿಡಿಯಲು ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ Namaz Akışı ತೆರೆಯಿರಿ.</string>
+    <string name="kible_konum_yok">ಕಿಬ್ಲಾ ಕಂಡುಹಿಡಿಯಲು ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ಸ್ಥಳ ಆನ್ ಮಾಡಿ. Namaz Akışı ಅಪ್‌ಡೇಟ್ ಆಗಿಲ್ಲದಿದ್ದರೆ ಅಪ್‌ಡೇಟ್ ಮಾಡಿ.</string>
+    <string name="kible_sensor_yok">ಈ ವಾಚ್‌ನಲ್ಲಿ ದಿಕ್ಸೂಚಿ ಸೆನ್ಸರ್ ಇಲ್ಲ. ಕಿಬ್ಲಾ ದಿಕ್ಕನ್ನು ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ನೋಡಬಹುದು.</string>
+    <string name="kible_kuzeyden">ಕಿಬ್ಲಾ %1$d° (ಉತ್ತರದಿಂದ)</string>
+    <string name="kible_derece">ಕಿಬ್ಲಾ %1$d°</string>
+    <string name="kible_telefonda_ac">ಕಿಬ್ಲಾವನ್ನು ಫೋನ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ</string>
+    <string name="kible_erisim">%1$s. ಕಿಬ್ಲಾ ಉತ್ತರದಿಂದ %2$d°, %3$s</string>
+    <string name="kible_hizali">ನೀವು ಕಿಬ್ಲಾ ದಿಕ್ಕಿನಲ್ಲಿದ್ದೀರಿ</string>
+    <string name="kible_kalibrasyon">ಕ್ಯಾಲಿಬ್ರೇಟ್ ಮಾಡಲು ಮಣಿಕಟ್ಟನ್ನು ಗಾಳಿಯಲ್ಲಿ 8 ಆಕಾರದಲ್ಲಿ ಚಲಿಸಿರಿ</string>
+    <string name="kible_egim">ವಾಚ್ ಅನ್ನು ನೆಲಕ್ಕೆ ಸಮಾನಾಂತರವಾಗಿ ಹಿಡಿಯಿರಿ</string>
+    <string name="kible_titresim_acik">ಕಂಪನ ಮಾರ್ಗದರ್ಶನ ಆನ್. ಆಫ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="kible_titresim_kapali">ಕಂಪನ ಮಾರ್ಗದರ್ಶನ ಆಫ್. ಆನ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="kible_harf_kuzey">ಉ</string>
+    <string name="kible_harf_dogu">ಪೂ</string>
+    <string name="kible_harf_guney">ದ</string>
+    <string name="kible_harf_bati">ಪ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">ತಸ್ಬೀಹ್ ಪೂರ್ಣಗೊಂಡಿದೆ. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. ಒಟ್ಟು %4$d / %5$d</string>
+    <string name="tesbihat_sayin">ಎಣಿಸಿ</string>
+    <string name="tesbihat_bastan_baslayin">ಮೊದಲಿನಿಂದ ಆರಂಭಿಸಿ</string>
+    <string name="tesbihat_bastan_soru">ಮೊದಲಿನಿಂದ ಆರಂಭಿಸಬೇಕೆ?</string>
+    <string name="tesbihat_sifirlanir">ಎಣಿಕೆ ಸೊನ್ನೆಯಾಗುತ್ತದೆ.</string>
+    <string name="tesbihat_geri_al">ರದ್ದುಗೊಳಿಸಿ</string>
+    <string name="tesbihat_geri_al_aciklama">ಕೊನೆಯ ಎಣಿಕೆ ರದ್ದುಗೊಳಿಸಿ</string>
+    <string name="tesbihat_yeniden">ಮತ್ತೆ ಆರಂಭಿಸಿ</string>
+    <string name="tesbihat_yeniden_aciklama">ತಸ್ಬೀಹ್ ಮತ್ತೆ ಆರಂಭಿಸಿ</string>
+    <string name="tesbihat_suruyor">ತಸ್ಬೀಹ್ ನಡೆಯುತ್ತಿದೆ: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">ನಮಾಝ್ ಮಾಡಿದೆ. ಎಚ್ಚರಿಕೆಯನ್ನು ಮುಚ್ಚುತ್ತದೆ</string>
+    <string name="uyandirma_kapat_aciklama">ಎಚ್ಚರಿಕೆಯನ್ನು ಮುಚ್ಚಿ</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı ತೆರೆಯಿರಿ</string>
+    <string name="tile_vakitler_icin">ನಮಾಝ್ ಸಮಯಗಳಿಗೆ ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="tile_telefonda_acin">ಫೋನ್‌ನಲ್ಲಿ ಆ್ಯಪ್ ತೆರೆಯಿರಿ</string>
+    <string name="tile_sonra">%1$s ನಂತರ</string>
+    <string name="tile_siradaki_aciklama">ಮುಂದಿನ ನಮಾಝ್ %1$s, ಆರಂಭ %2$s. ಆ್ಯಪ್ ತೆರೆಯಿರಿ</string>
+    <string name="tile_giris">ಆರಂಭ %1$s</string>
+    <string name="tile_cikis">ಮುಕ್ತಾಯ %1$s</string>
+    <string name="bugun_bos_satir1">ಆ್ಯಪ್ ತೆರೆಯಿರಿ</string>
+    <string name="bugun_bos_satir2">ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ</string>
+    <string name="bugun_acma_aciklamasi">ಇಂದು %1$d/%2$d ನಮಾಝ್ ನಿರ್ವಹಿಸಲಾಗಿದೆ. ಆ್ಯಪ್ ತೆರೆಯಿರಿ</string>
+    <string name="bugun_sayi">ಇಂದು %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">ಮಕ್ರೂಹ್ ಸಮಯ · ದೃಢೀಕರಿಸಲು ಮತ್ತೆ ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="bugun_onay_tekrar">ದೃಢೀಕರಿಸಲು ಮತ್ತೆ ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="bugun_tamam">ಇಂದಿನ ನಮಾಝ್‌ಗಳು ಪೂರ್ಣಗೊಂಡಿವೆ</string>
+    <string name="bugun_kilinmadi">%1$s ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ</string>
+    <string name="bugun_siradaki">ಮುಂದಿನದು: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">ಮತ್ತೆ ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="bugun_kilindi">%1$s ನಿರ್ವಹಿಸಲಾಗಿದೆ</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s ನಿರ್ವಹಿಸಲಾಗಿದೆ, ಸಿಂಕ್ ಆಗುತ್ತಿದೆ</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">ನಮಾಝ್ ಸಮಯಗಳಿಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ; ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ Namaz Akışı ತೆರೆಯಿರಿ</string>
+    <string name="komplikasyon_bekleniyor">ಸಮಯಕ್ಕೆ ಕಾಯುತ್ತಿದೆ</string>
+    <string name="komplikasyon_vakit">ನಮಾಝ್</string>
+    <string name="komplikasyon_cikis">ಮುಕ್ತಾಯ</string>
+    <string name="komplikasyon_sirada">ಮುಂದೆ</string>
+    <string name="gun_durumu_aciklama">ಇಂದು %1$d ರಲ್ಲಿ %2$d ನಮಾಝ್ ನಿರ್ವಹಿಸಲಾಗಿದೆ</string>
+    <string name="gun_durumu_kilinmamis">%1$s; ನಿರ್ವಹಿಸದವು: %2$s</string>
+    <string name="komplikasyon_namaz">ನಮಾಝ್</string>
+    <string name="komplikasyon_kerahat">ಮಕ್ರೂಹ್</string>
+    <string name="kerahat_icinde_aciklama">ಮಕ್ರೂಹ್ ಸಮಯ, ಮುಕ್ತಾಯ %1$s</string>
+    <string name="kerahat_siradaki_aciklama">ಮುಂದಿನ ಮಕ್ರೂಹ್ ಸಮಯ %1$s</string>
+    <string name="kible_komplikasyon">ಕಿಬ್ಲಾ ಉತ್ತರದಿಂದ %1$d°. ದಿಕ್ಸೂಚಿ ತೆರೆಯಿರಿ</string>
+    <string name="kible_komplikasyon_konumlu">ಕಿಬ್ಲಾ ಉತ್ತರದಿಂದ %1$d°, %2$s. ದಿಕ್ಸೂಚಿ ತೆರೆಯಿರಿ</string>
+    <string name="kible_komplikasyon_konum_yok">ಕಿಬ್ಲಾ ಕಂಡುಹಿಡಿಯಲು ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ಸ್ಥಳ ಆನ್ ಮಾಡಿ</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">ತುರ್ತು ಜ್ಞಾಪನೆ · ಕಂಪನ</string>
+    <string name="muhafiz_kanal_acil">ತುರ್ತು ಜ್ಞಾಪನೆ</string>
+    <string name="muhafiz_kanal_titresimli">ನಮಾಝ್ ಜ್ಞಾಪನೆ · ಕಂಪನ</string>
+    <string name="muhafiz_kanal">ನಮಾಝ್ ಜ್ಞಾಪನೆ</string>
+    <string name="muhafiz_kanal_aciklama">ಫೋನ್ ನಿಮ್ಮ ಬಳಿ ಇಲ್ಲದಿದ್ದರೂ ವಾಚ್‌ನಲ್ಲಿ ಕಾಣಿಸುವ ನಮಾಝ್ ಜ್ಞಾಪನೆಗಳು</string>
+    <string name="son_dakikalar_cikis">ಮುಕ್ತಾಯ: %1$s</string>
+    <string name="son_dakikalar_bitis">ಮುಕ್ತಾಯ: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s ಮುಗಿಯಲು ಉಳಿದ ಸಮಯ</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s ಗೆ ಉಳಿದ ಸಮಯ</string>
+    <string name="cami_namaz_modu_bitis">ನಮಾಝ್ ಮೋಡ್ · ಮುಕ್ತಾಯ %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">ಫೋನ್‌ನಲ್ಲಿ ತೆರೆಯಲಾಗಿದೆ</string>
+    <string name="telefona_ulasilamadi">ನಿಮ್ಮ ಫೋನ್ ತಲುಪಲಾಗುತ್ತಿಲ್ಲ</string>
+</resources>

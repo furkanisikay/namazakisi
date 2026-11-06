@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Kirundi terimler: src/core/dil/sozluk/rn (Odak adi "Isengesho", filtre ve intent adlari cami.ios ile ayni).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Isengesho rikurikira";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Ibabwira isengesho rikurikira n’isaha ritanguriraho.";
+"Şu anki vakti kıldım" = "Nasenze isengesho ry’ubu";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Yemeza ko isengesho ry’ubu ryasenzwe. Ico canditswe congerwa igihe mwuguruye porogarama.";
+"Onay iste" = "Musabe icemezo";
+"Kıbleyi aç" = "Mwugurure ubutumbero";
+"Uygulamayı Kıble pusulasıyla açar." = "Yugurura porogarama kuri busole y’ubutumbero.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Nasenze";
+"Kıble" = "Ubutumbero";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Izina ry’isengesho rikurikira";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Itanga izina ry’isengesho rikurikira. Murashobora kurikoresha nk’ingingo muri Shortcuts.";
+"Sıradaki vakte kalan dakika" = "Iminota isigaye gushika isengesho rikurikira";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Itanga iminota isigaye ngo isengesho rikurikira ritangure. Iyo nta makuru ahari, isubiza -1.";
+"Şu anki vakit kılındı mı?" = "Isengesho ry’ubu ryemejwe ko ryasenzwe?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Isubiza ego iyo isengesho ry’ubu ryemejwe ko ryasenzwe. Isubiza oya iyo nta sengesho ryo kwemeza.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Ituze ry’isengesho";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Isubiza ukuri mu minota ya mbere inyuma y’uko igihe c’isengesho gitangura. Ikoreshwa muri Shortcuts mu gufungura Focus.";
+"Süre (dakika)" = "Igihe (iminota)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Iminota ${dakika} inyuma y’uko igihe c’isengesho gitangura";
+"Namaz sessizliğinin bitişi" = "Impera y’ituze ry’isengesho";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Itanga isaha ituze rirangira. Iyo nta tuze riri ubu, itanga isaha y’ubu.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Impera y’iminota ${dakika} inyuma y’uko igihe c’isengesho gitangura";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Inyibutsa z’isengesho";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Igihe iyi Focus ikora, inyibutsa z’isengesho zishika ata jwi kandi ata gucanira ecran.";
+"Hatırlatmaları sessiz ver" = "Inyibutsa zishike mu ituze";
+"Hatırlatmalar sessiz gelir" = "Inyibutsa zishika mu ituze";
+"Hatırlatmalar her zamanki gibi" = "Inyibutsa nk’ibisanzwe";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Yemeza ko isengesho riri kuri widget ryasenzwe.";
+"Tarih" = "Itariki";
+"Vakit" = "Isengesho";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Muhagarike inzogera y’isengesho";
+"Namazı kıldım" = "Nasenze";
+"Alarm" = "Inzogera";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Ishusho y’umurongo w’umusi";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Itanga umurongo w’uyu musi nk’ishusho y’urugero rwa ecran yanyu. Murashobora kuyikoresha n’intambwe Set Wallpaper muri Shortcuts.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Mwugurure porogarama rimwe kugira umurongo w’umusi utegurwe.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Ishusho ntiyashoboye gutegurwa. Mwongere mugerageze hanyuma gato.";

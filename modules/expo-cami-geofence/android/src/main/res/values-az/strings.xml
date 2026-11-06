@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Məsciddəyəm / Namaz rejimi mətnləri — Azərbaycan dili (JS src/core/dil/sozluk/az). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Məsciddəyəm</string>
+    <string name="camigeofence_kanal_durum_aciklama">Məsciddə olduğunuz aşkarlandıqda səssiz məlumat</string>
+    <string name="camigeofence_kanal_soru_ad">Məsciddən çıxanda</string>
+    <string name="camigeofence_kanal_soru_aciklama">Məsciddən çıxanda namazı qeyd etməyiniz üçün sual</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Namaz rejimi açıqdır. Xatırlatmalar səssiz gələcək.</string>
+    <string name="camigeofence_govde_mod">Namaz rejimi açıqdır.</string>
+    <string name="camigeofence_govde_sessiz">Xatırlatmalar səssiz gələcək.</string>
+    <string name="camigeofence_govde_normal">Xatırlatmalar həmişəki kimi gələcək.</string>
+    <string name="camigeofence_eylem_modu_kapat">Rejimi bağla</string>
+    <string name="camigeofence_eylem_cami_degil">Bura məscid deyil</string>
+
+    <string name="camigeofence_soru_baslik">Məsciddəsiniz?</string>
+    <string name="camigeofence_soru_govde">%1$s yaxınlığındasınız. Əmin olmadığımız üçün sizdən soruşuruq.</string>
+    <string name="camigeofence_varsayilan_ad">Məscid</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Namaz rejimini aç</string>
+    <string name="camigeofence_eylem_evet_camideyim">Bəli, məsciddəyəm</string>
+    <string name="camigeofence_eylem_hayir">Xeyr</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s qıldınızmı?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Bir toxunuşla qeyd edə bilərsiniz.</string>
+    <string name="camigeofence_eylem_kildim">Qıldım</string>
+    <string name="camigeofence_namaz_imsak">Sübh namazını</string>
+    <string name="camigeofence_namaz_ogle">Zöhr namazını</string>
+    <string name="camigeofence_namaz_ikindi">Əsr namazını</string>
+    <string name="camigeofence_namaz_aksam">Məğrib namazını</string>
+    <string name="camigeofence_namaz_yatsi">İşa namazını</string>
+    <string name="camigeofence_namaz_cuma">Cümə namazını</string>
+
+    <string name="camigeofence_mod_kural_adi">Namaz</string>
+    <string name="camigeofence_mod_tetik_aciklama">Cümə xütbəsində, məsciddə olanda və ya vaxt daxil olanda Namaz Akışı açır</string>
+</resources>

@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Jūsų vietovė naudojama tiksliai apskaičiuoti maldų laikus ten, kur esate. Jūsų vietovė lieka jūsų įrenginyje.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Jūsų vietovė naudojama tiksliai apskaičiuoti maldų laikus ten, kur esate, ir, jei įjungta „Esu mečetėje“, įjungti Maldos režimą įėjus į mečetę. Jūsų vietovė lieka jūsų įrenginyje.",
+  "NSLocationAlwaysUsageDescription": "Jūsų vietovė naudojama automatiškai atnaujinti maldų laikus, kai pakeičiate miestą, ir, jei įjungta „Esu mečetėje“, įjungti Maldos režimą įėjus į mečetę. Jūsų vietovė lieka jūsų įrenginyje.",
+  "NSCameraUsageDescription": "Kamera naudojama kiblos krypčiai rodyti ant kameros vaizdo ir televizoriaus susiejimo kodui nuskaityti. Vaizdai neišsaugomi ir niekada nepalieka jūsų įrenginio.",
+  "NSCalendarsUsageDescription": "Prieiga prie kalendoriaus naudojama maldų laikams įtraukti į kalendorių ir, jei tai įjungsite, patikrinti, ar kalendoriaus įvykiai nesutampa su maldos laiku. Jūsų kalendoriaus duomenys lieka jūsų įrenginyje.",
+  "NSCalendarsFullAccessUsageDescription": "Prieiga prie kalendoriaus naudojama maldų laikams įtraukti į kalendorių ir, jei tai įjungsite, patikrinti, ar kalendoriaus įvykiai nesutampa su maldos laiku. Jūsų kalendoriaus duomenys lieka jūsų įrenginyje.",
+  "NSLocalNetworkUsageDescription": "Programa jungiasi prie televizoriaus jūsų vietiniame tinkle, kad nusiųstų jam jūsų maldų laikus ir pažymėtas maldas. Duomenys šifruojami ir keliauja tik tarp šių dviejų įrenginių.",
+  "NSAlarmKitUsageDescription": "Priminimo žingsniai, kuriems pasirinkote „Tikras žadintuvas“, nustatomi kaip žadintuvai, todėl juos girdėsite net tada, kai telefonas begarsis arba įjungtas „Fokusavimas“.",
+  "\"Vakti kıldım\"": "Atlikau maldą",
+  "\"Kıble\"": "Kibla"
+}

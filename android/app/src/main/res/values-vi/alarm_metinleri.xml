@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Vietnamca). "Tôi đã hành lễ" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Báo thức Salah</string>
+  <string name="alarm_kildim">Tôi đã hành lễ</string>
+  <string name="alarm_kapat">Tắt</string>
+  <string name="alarm_kanal_aciklamasi">Báo thức thật đổ chuông ở các bước nhắc bạn chọn</string>
+</resources>

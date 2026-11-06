@@ -25,7 +25,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../../components/common/YonluIkon';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 
@@ -44,6 +44,7 @@ import {
 import { useRenkler } from '../../../../core/theme';
 import { useFeedback } from '../../../../core/feedback';
 import { useDonanimGeriTusu } from '../../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../../hooks/useMetin';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
   iceAktarmayiUygula,
@@ -96,6 +97,7 @@ const globalStratejiyiYay = (strateji: KategoriStratejisi): KategoriSecimleri =>
 
 export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const ms = useMetin().yedekleme.sihirbaz;
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { butonTiklandiFeedback, hataFeedback } = useFeedback();
@@ -360,9 +362,9 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
       accessibilityRole="button"
       accessibilityLabel={etiket}
     >
-      {!ikonSonda && ikon && <FontAwesome5 name={ikon} size={16} color="#fff" />}
+      {!ikonSonda && ikon && <YonluIkon name={ikon} size={16} color="#fff" />}
       <Text style={styles.butonMetin}>{etiket}</Text>
-      {ikonSonda && ikon && <FontAwesome5 name={ikon} size={16} color="#fff" />}
+      {ikonSonda && ikon && <YonluIkon name={ikon} size={16} color="#fff" />}
     </TouchableOpacity>
   );
 
@@ -374,7 +376,7 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
       accessibilityRole="button"
       accessibilityLabel={etiket}
     >
-      {ikon && <FontAwesome5 name={ikon} size={15} color={renkler.metinIkincil} />}
+      {ikon && <YonluIkon name={ikon} size={15} color={renkler.metinIkincil} />}
       <Text style={[styles.butonIkincilMetin, { color: renkler.metin }]}>{etiket}</Text>
     </TouchableOpacity>
   );
@@ -383,47 +385,47 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
     if (dosyaHatasi) {
       return (
         <>
-          {birincilButon('Tekrar Deneyin', () => adimaGec(ADIM.DOSYA_SEC), 'redo')}
-          {ikincilButon('Vazgeçin', sihirbazdanCik)}
+          {birincilButon(ms.tekrarDeneyin, () => adimaGec(ADIM.DOSYA_SEC), 'redo')}
+          {ikincilButon(ms.vazgecin, sihirbazdanCik)}
         </>
       );
     }
 
     switch (adim) {
       case ADIM.DOSYA_SEC:
-        return birincilButon('Dosya Seçin', dosyaSec, 'folder-open');
+        return birincilButon(ms.dosyaSecin, dosyaSec, 'folder-open');
 
       case ADIM.COZUMLE:
         return null;
 
       case ADIM.KARSILASTIR:
         if (gelismisAcik) {
-          return birincilButon('Uygulayın', iceAktar, 'arrow-right', true);
+          return birincilButon(ms.uygulayin, iceAktar, 'arrow-right', true);
         }
         // Gelişmiş seçiliyken karşılaştırma ekranında CTA gizli (alt-ekrana yönlendirir).
         if (seciliStrateji === 'gelismis') return null;
-        return birincilButon('Devam Edin', iceAktar, 'arrow-right', true);
+        return birincilButon(ms.devamEdin, iceAktar, 'arrow-right', true);
 
       case ADIM.UYGULA:
         if (durum === 'hata') {
           return (
             <>
               {birincilButon(
-                'Tekrar Deneyin',
+                ms.tekrarDeneyin,
                 () => {
                   dispatch(durumuSifirla());
                   adimaGec(ADIM.KARSILASTIR);
                 },
                 'redo'
               )}
-              {ikincilButon('Vazgeçin', sihirbazdanCik)}
+              {ikincilButon(ms.vazgecin, sihirbazdanCik)}
             </>
           );
         }
         return null;
 
       case ADIM.OZET:
-        return birincilButon('Tamam', sihirbazdanCik, 'check', false, renkler.basarili);
+        return birincilButon(ms.tamam, sihirbazdanCik, 'check', false, renkler.basarili);
 
       default:
         return null;
@@ -447,9 +449,9 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
             onPress={geriTusuIslevi}
             style={styles.geriButon}
             accessibilityRole="button"
-            accessibilityLabel="Geri"
+            accessibilityLabel={ms.geri}
           >
-            <FontAwesome5 name="arrow-left" size={16} color={renkler.metinIkincil} />
+            <YonluIkon name="arrow-left" size={16} color={renkler.metinIkincil} />
           </TouchableOpacity>
         ) : (
           <View style={styles.geriButon} />

@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Ýerleşişiňiz bolýan ýeriňiz üçin namaz wagtlaryny takyk hasaplamak üçin ulanylýar. Ýerleşişiňiz enjamyňyzda galýar.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ýerleşişiňiz bolýan ýeriňiz üçin namaz wagtlaryny takyk hasaplamak we Metjitdemen açyk bolsa, metjide girende Namaz tertibini açmak üçin ulanylýar. Ýerleşişiňiz enjamyňyzda galýar.",
+  "NSLocationAlwaysUsageDescription": "Ýerleşişiňiz şäher üýtgedeniňizde namaz wagtlaryny awtomatik täzelemek we Metjitdemen açyk bolsa, metjide girende Namaz tertibini açmak üçin ulanylýar. Ýerleşişiňiz enjamyňyzda galýar.",
+  "NSCameraUsageDescription": "Kameraňyz kybla ugruny kamera görnüşiniň üstünde görkezmek we telewizoryňyzdaky jübütleme kodyny skanirlemek üçin ulanylýar. Suratlar ýatda saklanmaýar we enjamyňyzdan çykmaýar.",
+  "NSCalendarsUsageDescription": "Senenama elýeterliligi namaz wagtlaryny senenamaňyza goşmak we, açsaňyz, senenamaňyzdaky çäreleriň namaz wagtyna gabat gelýändigini barlamak üçin ulanylýar. Senenama maglumatlaryňyz enjamyňyzda galýar.",
+  "NSCalendarsFullAccessUsageDescription": "Senenama elýeterliligi namaz wagtlaryny senenamaňyza goşmak we, açsaňyz, senenamaňyzdaky çäreleriň namaz wagtyna gabat gelýändigini barlamak üçin ulanylýar. Senenama maglumatlaryňyz enjamyňyzda galýar.",
+  "NSLocalNetworkUsageDescription": "Programma namaz wagtlaryňyzy we bellän namazlaryňyzy ibermek üçin ýerli toruňyzdaky telewizora birikýär. Maglumatlar şifrlenýär we diňe iki enjamyň arasynda gidýär.",
+  "NSAlarmKitUsageDescription": "“Hakyky budilnik” saýlan ýatlatma ädimleriňiz budilnik hökmünde goýulýar, şonuň üçin telefonyňyz sessizde ýa-da Fokus açyk bolanda-da olary eşidýärsiňiz.",
+  "\"Vakti kıldım\"": "Okadym",
+  "\"Kıble\"": "Kybla"
+}

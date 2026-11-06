@@ -1,10 +1,11 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { cleanup, render, fireEvent, waitFor } from '@testing-library/react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { seriStateSifirla } from '../../store/seriSlice';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 // Mocklar
 // `useRoute` + `useFocusEffect` ZORUNLU: sayfa artık arama vurgusu için
@@ -128,5 +129,30 @@ describe('SeriHedefAyarlariSayfasi', () => {
     const { queryByText } = SayfaYukle();
     expect(queryByText('Kurulum Sihirbazını Yeniden Çalıştır')).toBeNull();
     expect(queryByText(/Özel gün/)).toBeNull();
+  });
+
+  describe('İngilizce', () => {
+    const YASAKLI = ['Seri', 'Tam', 'vakit', 'HEDEF', 'Tamam', 'rozet', 'puan'];
+    let geriAl: () => void;
+    beforeEach(() => {
+      geriAl = ingilizceyeGec();
+    });
+    afterEach(() => {
+    // Önce ağaçları kaldır: dil geri dönerken takılı ekranlar act dışında yeniden çizilmesin.
+    cleanup();
+    geriAl();
+  });
+
+    it('sayfa ve sıfırlama onayı İngilizce çizilir', async () => {
+      const r = SayfaYukle();
+      expect(r.getByText('Full-day threshold')).toBeTruthy();
+      expect(r.getByText('4 prayers')).toBeTruthy();
+      expect(turkceKalanlar(r.toJSON() as never, YASAKLI)).toEqual([]);
+      fireEvent.press(r.getByText('Reset streak data'));
+      expect(r.getByText('Reset streak')).toBeTruthy();
+      expect(turkceKalanlar(r.toJSON() as never, YASAKLI)).toEqual([]);
+      fireEvent.press(r.getByLabelText('Reset'));
+      await waitFor(() => expect(r.getByText('Your streak data has been reset.')).toBeTruthy());
+    });
   });
 });

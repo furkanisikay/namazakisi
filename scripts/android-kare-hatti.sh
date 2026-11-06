@@ -14,6 +14,7 @@ PAKET=$(node -e "console.log(require('./app.json').expo.android.package)")
 echo "paket: $PAKET"
 
 adb wait-for-device
+bash scripts/emulator-hazir-bekle.sh
 # Debug APK JS paketini Metro'dan alir; emulatordeki 8081'i makinedekine bagla.
 adb reverse tcp:8081 tcp:8081
 

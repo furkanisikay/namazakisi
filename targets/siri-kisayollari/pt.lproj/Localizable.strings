@@ -1,0 +1,58 @@
+// pt — Portekizce (beta, pt-PT); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Portekizce terimler: src/core/dil/sozluk/pt + docs/ajan/coklu-dil.md.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Próxima oração";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Diz a próxima oração e a hora em que começa.";
+"Şu anki vakti kıldım" = "Rezei a oração atual";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Marca a oração atual como rezada. O registo é adicionado quando abrir a aplicação.";
+"Onay iste" = "Pedir confirmação";
+"Kıbleyi aç" = "Abrir a Quibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Abre a aplicação com a bússola da Quibla.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Rezei";
+"Kıble" = "Quibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Nome da próxima oração";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Dá o nome da próxima oração. Pode usá-lo como condição nos Atalhos.";
+"Sıradaki vakte kalan dakika" = "Minutos até à próxima oração";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Dá quantos minutos faltam para começar a próxima oração. Devolve -1 se não houver informação.";
+"Şu anki vakit kılındı mı?" = "A oração atual está marcada como rezada?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Dá sim se a oração atual estiver marcada como rezada. Dá não se não houver oração para marcar.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Silêncio da oração";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Devolve verdadeiro nos primeiros minutos depois do início da hora de uma oração. Usado nos Atalhos para ativar um Foco.";
+"Süre (dakika)" = "Duração (minutos)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Os ${dakika} minutos depois do início da hora";
+"Namaz sessizliğinin bitişi" = "Fim do silêncio da oração";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Dá a hora em que o silêncio termina. Se agora não houver silêncio, dá a hora atual.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Fim dos ${dakika} minutos depois do início da hora";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Lembretes das orações";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Com este Foco ativado, os lembretes das orações chegam sem som e sem acender o ecrã.";
+"Hatırlatmaları sessiz ver" = "Entregar lembretes em silêncio";
+"Hatırlatmalar sessiz gelir" = "Os lembretes chegam em silêncio";
+"Hatırlatmalar her zamanki gibi" = "Lembretes como habitualmente";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Marca como rezada a oração mostrada no widget.";
+"Tarih" = "Data";
+"Vakit" = "Oração";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Parar o alarme da oração";
+"Namazı kıldım" = "Rezei";
+"Alarm" = "Alarme";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Imagem do versículo do dia";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Dá o versículo de hoje como uma imagem do tamanho do seu ecrã. Pode usá-la nos Atalhos com o passo Definir papel de parede.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Abra a aplicação uma vez para preparar o versículo do dia.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Não foi possível preparar a imagem. Tente novamente daqui a pouco.";

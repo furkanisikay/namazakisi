@@ -77,6 +77,30 @@ describe('withNamazWidget — EAS uzantı bildirimi', () => {
     expect(plist).toContain('<string>1760000000</string>');
     expect(plist).toContain('com.apple.widgetkit-extension');
   });
+
+  it('Info.plist günün ayeti ve N\'Ko fontunu UIAppFonts ile kaydeder (yoksa sistem fontuna düşer / kutu çizilir)', () => {
+    const plist: string = eklenti.infoPlistIcerigi('1.0.0', '1');
+    expect(plist).toMatch(
+      /<key>UIAppFonts<\/key>\s*<array>\s*<string>AmiriQuran-Regular\.ttf<\/string>\s*<string>NotoSansNKo-Regular\.ttf<\/string>\s*<\/array>/
+    );
+  });
+
+  it('N\'Ko yazı tipi tek kaynaktan (ana uygulamanın dosyası) gelir; Swift kapısı aynı PostScript adını kullanır', () => {
+    const fs = require('fs');
+    expect(eklenti.UZANTI_FONTLARI).toEqual(['AmiriQuran-Regular.ttf', 'NotoSansNKo-Regular.ttf']);
+    expect(fs.existsSync(path.join(__dirname, '../../targets/widget/fontlar/NotoSansNKo-Regular.ttf'))).toBe(false);
+    const kapi: string = fs.readFileSync(path.join(__dirname, '../../targets/widget/YaziTipi.swift'), 'utf8');
+    expect(kapi).toContain('static let nkoAdi = "NotoSansNKo-Regular"');
+  });
+
+  it('font vermeyen N\'Ko metni için her kök ve gauge etiketi kapıdan geçer', () => {
+    const fs = require('fs');
+    const oku = (ad: string): string => fs.readFileSync(path.join(__dirname, '../../targets/widget', ad), 'utf8');
+    for (const ad of ['VakitWidgetGorunumleri.swift', 'GununAyetiWidget.swift', 'CanliEtkinlikWidget.swift', 'AlarmCanliEtkinlikWidget.swift']) {
+      expect(oku(ad)).toContain('.nkoVarsayilanYaziTipi()');
+    }
+    expect(oku('VakitWidgetGorunumleri.swift')).toContain('label: { Text(WidgetMetin.ad(aktif.vakit)).nkoYaziTipi(.caption2) }');
+  });
 });
 
 describe('withNamazWidget — uzantı kaynakları', () => {
@@ -89,6 +113,17 @@ describe('withNamazWidget — uzantı kaynakları', () => {
       expect(adlar).toContain('NamazAlarmVerisi.swift');
       expect(adlar).toContain('AlarmCanliEtkinlikWidget.swift');
       expect(fs.existsSync(path.join(dizin, 'NamazWidget', 'NamazAlarmVerisi.swift'))).toBe(true);
+      // Günün ayeti: widget kaynağı derlenir, font kopyalanır ama Sources listesine GİRMEZ.
+      expect(adlar).toContain('GununAyetiWidget.swift');
+      expect(adlar.filter((ad) => !ad.endsWith('.swift'))).toEqual([]);
+      for (const ad of eklenti.UZANTI_FONTLARI as string[]) {
+        expect(fs.existsSync(path.join(dizin, 'NamazWidget', ad))).toBe(true);
+      }
+      // N'Ko yazı tipi ana uygulamanın dosyasının birebir kopyası; kapı uzantıda derlenir.
+      expect(fs.readFileSync(path.join(dizin, 'NamazWidget', 'NotoSansNKo-Regular.ttf'))).toEqual(
+        fs.readFileSync(path.join(__dirname, '../../assets/fonts/NotoSansNKo-Regular.ttf'))
+      );
+      expect(adlar).toContain('YaziTipi.swift');
     } finally {
       fs.rmSync(dizin, { recursive: true, force: true });
     }
@@ -102,9 +137,21 @@ describe('withNamazWidget — Xcode hedefi (Expo şablonu üzerinde)', () => {
       anaHedefUuid: anaHedefUuid(proje),
       kimlik: 'com.ornek.widget',
       kaynaklar: ['NamazWidgetPaketi.swift', 'VakitKarari.swift'],
+      paketKaynaklari: eklenti.UZANTI_FONTLARI,
     });
     return proje;
   };
+
+  it('günün ayeti ve N\'Ko fontu uzantının Resources fazındadır (Sources\'ta değil)', () => {
+    const proje = kur();
+    const hedef = proje.pbxTargetByName('NamazWidget');
+    const nesneler = proje.hash.project.objects;
+    const kaynakFazi = hedef.buildPhases.find((f: { comment: string }) => f.comment === 'Resources');
+    expect(nesneler.PBXResourcesBuildPhase[kaynakFazi.value].files.map((f: { comment: string }) => f.comment)).toEqual([
+      'AmiriQuran-Regular.ttf in Resources',
+      'NotoSansNKo-Regular.ttf in Resources',
+    ]);
+  });
 
   it('uzantı hedefi, ayarları ve kaynakları kurulur', () => {
     const proje = kur();

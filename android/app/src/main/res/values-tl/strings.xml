@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Filipince kaynaklar (values-tl: AOSP tl ≡ fil). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/fil. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Ang kasalukuyang dasal, kung kailan ito matatapos, at Nagdasal ako sa isang tap</string>
+  <string name="widget_genis_aciklama">Ang limang dasal ngayon, countdown, at Nagdasal ako sa isang tap</string>
+  <string name="widget_kapak_adi">Mga oras ng dasal sa cover screen</string>
+  <string name="widget_kapak_aciklama">Mga oras ng dasal ngayon at countdown para sa cover screen ng Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klasiko</string>
+  <string name="widget_klasik_aciklama">Klasikong berdeng itsura: natitirang oras bago ang susunod na dasal</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klasikong malapad</string>
+  <string name="widget_klasik_genis_aciklama">Klasikong berdeng itsura: countdown at mga oras ng dasal ngayon</string>
+  <string name="widget_ayet_adi">Talata ng araw</string>
+  <string name="widget_ayet_aciklama">Isang talata at ang salin nito, binabago araw-araw sa Fajr</string>
+  <string name="widget_ayar_zemin_palet">Kulay ng app (maliwanag na tono)</string>
+  <string name="widget_ayar_ayet_icerik">Sa parisukat na laki, ipakita ang</string>
+  <string name="widget_ayar_ayet_icerik_meal">Salin</string>
+  <string name="widget_ayar_ayet_icerik_hat">Tekstong Arabe (kaligrapya)</string>
+  <string name="kutu_kildim_etiket">Nagdasal ako</string>
+  <string name="kisayol_kildim_kisa">Nagdasal ako</string>
+  <string name="kisayol_kildim_uzun">Naidasal ko ang kasalukuyang dasal</string>
+  <string name="kisayol_kible_kisa">Qiblah</string>
+  <string name="kisayol_kible_uzun">Ipakita ang direksyon ng Qiblah</string>
+  <string name="kisayol_kaza_kisa">Talaan ng qada</string>
+  <string name="kisayol_kaza_uzun">Buksan ang Talaan ng qada</string>
+  <string name="kildim_onay_baslik">Markahang naidasal na ang %1$s?</string>
+  <string name="kildim_onay_mesaj">Hindi malinaw kung aling app ang nagpadala ng kahilingang ito. Kumpirmahin kung nakapagdasal na kayo.</string>
+  <string name="kildim_onay_evet">Nagdasal ako</string>
+  <string name="kildim_onay_vazgec">Kanselahin</string>
+  <string name="kildim_guven_baslik">Payagan ang %1$s na markahang naidasal na ang inyong mga dasal?</string>
+  <string name="kildim_guven_mesaj">Dasal na mamarkahan ngayon: %1$s. Mababago ninyo ang desisyon mamaya sa Mga setting &gt; Mga app na nagmamarka ng Nagdasal ako.</string>
+  <string name="kildim_guven_tarayici_mesaj">Dasal na mamarkahan ngayon: %1$s. Galing sa browser ang kahilingang ito; dahil kayang buksan ng kahit anong web page ang link na ito, hindi maibibigay ang permanenteng pahintulot.</string>
+  <string name="kildim_guven_her_zaman">Laging payagan</string>
+  <string name="kildim_guven_bu_sefer">Ngayon lang</string>
+  <string name="kildim_guven_engelle">I-block</string>
+  <string name="kildim_guven_engellendi">Hindi na mamarkahan ng %1$s ang inyong mga dasal. Mababago ninyo ito sa Mga setting.</string>
+  <string name="widget_ayar_baslik">I-customize ang widget</string>
+  <string name="widget_ayar_zemin">Background</string>
+  <string name="widget_ayar_zemin_material">Mga kulay ng wallpaper</string>
+  <string name="widget_ayar_zemin_sistem">Tema ng system</string>
+  <string name="widget_ayar_zemin_acik">Maliwanag</string>
+  <string name="widget_ayar_zemin_koyu">Madilim</string>
+  <string name="widget_ayar_zemin_seffaf">Transparent</string>
+  <string name="widget_ayar_opaklik">Opacity ng background</string>
+  <string name="widget_ayar_gosterim">Ipakita sa malaking teksto</string>
+  <string name="widget_ayar_gosterim_kalan">Natitirang oras</string>
+  <string name="widget_ayar_gosterim_bitis">Oras ng pagtatapos</string>
+  <string name="widget_ayar_gosterim_not">Ipinapakita ang oras ng pagtatapos sa bawat laki.</string>
+  <string name="widget_ayar_sonraki">Ipakita ang susunod na dasal</string>
+  <string name="widget_ayar_vazgec">Kanselahin</string>
+  <string name="widget_ayar_kaydet">I-save</string>
+  <string name="kildim_onay_kanal_adi">Kumpirmasyon ng Nagdasal ako</string>
+  <string name="kildim_onay_kanal_aciklama">Tahimik na kumpirmasyong ipinapakita nang ilang segundo kapag in-tap ninyo ang \"Nagdasal ako\" sa isang notification</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Matatapos %1$s</string>
+  <string name="widget_giris">Magsisimula %1$s</string>
+  <string name="widget_namaz_vakti">Oras ng dasal</string>
+  <string name="widget_uygulamayi_acin">Buksan ang app</string>
+  <string name="widget_siradaki">Susunod: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Walang dasal na mamarkahan ngayon</string>
+  <string name="widget_dugme_kildim">Nagdasal ako</string>
+  <string name="widget_dugme_isaretleniyor">Minamarkahan</string>
+  <string name="widget_dugme_kilindi">Naidasal na</string>
+  <string name="widget_dugme_vakit_girmedi">Hindi pa oras</string>
+  <string name="widget_klasik_uygulamayi_acin">buksan ang app</string>
+  <string name="widget_klasik_erisim_veri_yok">Buksan ang app para makita ang mga oras ng dasal</string>
+  <string name="widget_klasik_erisim_siradaki">Susunod na dasal: %1$s, magsisimula sa %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Bago ang Dhuhr</string>
+  <string name="widget_onizleme_klasik_genis">Bago ang Maghrib</string>
+  <string name="widget_onizleme_imsak">Fajr</string>
+  <string name="widget_onizleme_gunes">Pagsikat ng araw</string>
+  <string name="widget_onizleme_ogle">Dhuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">Namarkahang naidasal na ang %1$s. Tanggapin nawa ni Allah.</string>
+  <string name="kildim_sonuc_zaten_kilindi">Namarkahan nang naidasal ang %1$s.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Walang dasal na mamarkahan ngayon. Susunod ang %1$s, magsisimula sa %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Walang dasal na mamarkahan ngayon.</string>
+  <string name="kildim_sonuc_veri_yok">Walang datos ng oras ng dasal. Buksan ang app nang isang beses.</string>
+  <string name="kildim_sonuc_vakit_degisti">Nagbago ang oras ng dasal, kaya walang namarkahan. Subukang muli.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Hindi mabuksan ang navigation app.</string>
+  <string name="arac_adsiz_cami">Masjid</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Hindi mabasa ang datos ng oras ng dasal.</string>
+  <string name="asistan_isaretleme_yapilamadi">Hindi mamarkahan ang dasal.</string>
+  <string name="asistan_aciklama">Maaari kayong magtanong ng mga oras ng dasal, markahang naidasal na ang kasalukuyang dasal at buksan ang screen ng Qiblah.</string>
+</resources>

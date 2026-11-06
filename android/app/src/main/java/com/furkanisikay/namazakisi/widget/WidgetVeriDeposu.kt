@@ -11,6 +11,7 @@ import com.furkanisikay.namazakisi.cekirdek.WidgetAyari
 import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
 import org.json.JSONObject
 import java.util.Calendar
+import java.util.Locale
 
 /**
  * Widget, hızlı ayarlar kutusu ve kısayolun ORTAK veri okuyucusu (issue #275/#276).
@@ -88,7 +89,8 @@ object WidgetVeriDeposu {
 
     private fun takvimGunu(ms: Long): String {
         val c = Calendar.getInstance().apply { timeInMillis = ms }
-        return "%04d-%02d-%02d".format(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH))
+        // Kimlik: Batı rakamı ŞART (örtük yerel ayar ar-SA cihazda Doğu rakamı yazardı).
+        return "%04d-%02d-%02d".format(Locale.ROOT, c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH))
     }
 
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

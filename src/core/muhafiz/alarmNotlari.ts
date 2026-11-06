@@ -10,6 +10,7 @@
  */
 import type { MuhafizPlatformu } from './ios/platformYetenekleri';
 import type { AlarmKitDurumu } from './ios/alarmKit';
+import { bicim, metin } from '../dil/aktifDil';
 
 export interface AlarmNotu {
     tip: 'uyari' | 'bilgi';
@@ -45,11 +46,11 @@ export const ALARMKIT_IOS_SURUMU = 26;
  * `iosSurum` kullanıcıya gösterilir ("Bu iPhone iOS 18").
  */
 export function iosAlarmsizNotu(iosSurum: number): string {
-    return `Gerçek alarm iOS ${ALARMKIT_IOS_SURUMU} ve üzerinde çalışır. Bu iPhone iOS ${iosSurum}; bu adım uzun sesli bir bildirimle gelir ve sessiz anahtarı açıkken duyulmaz.`;
+    return bicim(metin().muhafizAyar.alarmNot.iosAlarmsiz, { gerekli: ALARMKIT_IOS_SURUMU, surum: iosSurum });
 }
 
 /** AlarmKit `desteklenmiyor` ama sürüm eski DEĞİL ya da bilinmiyor: sürüm iddiasız satır. */
-export const IOS_ALARM_NOTR_NOTU = 'Bu adım şu an bildirimle gelir.';
+export const iosAlarmNotrNotu = (): string => metin().muhafizAyar.alarmNot.iosNotr;
 
 /**
  * AlarmKit `desteklenmiyor` iken sürüme göre karar: iOS < 26 → sürüm (not yazılır);
@@ -60,6 +61,7 @@ export function iosAlarmKitYokNedeni(iosSurum: number | null | undefined): numbe
 }
 
 function iosNotlari(durum: AlarmKitDurumu | null | undefined, iosSurum: number | null | undefined): AlarmNotu[] {
+    const n = metin().muhafizAyar.alarmNot;
     switch (durum) {
         case 'izinli':
             // Üç sessiz sapma da SÖYLENİR, ama tek paragrafa yığılmadan: (1) ses AlarmKit'in
@@ -67,27 +69,15 @@ function iosNotlari(durum: AlarmKitDurumu | null | undefined, iosSurum: number |
             // (Android M4 ikizi); (3) Odak filtresi PLANLAMA anında okunur — sonradan açılan
             // Odak kurulu alarmı hemen susturmaz.
             return [
-                {
-                    tip: 'bilgi',
-                    metin:
-                        "İlk hatırlatma iPhone'unuzun alarmı olarak, varsayılan alarm sesiyle çalar (bu adım için seçtiğiniz ses kullanılmaz); sessiz anahtarı ve Odak açıkken de duyulur.",
-                },
-                {
-                    tip: 'bilgi',
-                    metin:
-                        'Alarm ekranında durdurabilir ya da "Kıldım" diyebilirsiniz; "Kıldım" kilit açıkken işaretler.',
-                },
-                {
-                    tip: 'bilgi',
-                    metin:
-                        'Uygulamanın Odak filtresiyle hatırlatmaları sessize aldıysanız alarm kurulmaz; filtreyi alarm kurulduktan sonra açtıysanız o alarm bir süre daha çalabilir.',
-                },
+                { tip: 'bilgi', metin: n.izinliSes },
+                { tip: 'bilgi', metin: n.izinliKildim },
+                { tip: 'bilgi', metin: n.izinliOdak },
             ];
         case 'belirsiz':
             return [
                 {
                     tip: 'bilgi',
-                    metin: "Gerçek alarm için iPhone'unuzun bir kez izin vermesi gerekiyor. İzin verilene kadar bu adım uzun sesli bir bildirimle gelir.",
+                    metin: n.belirsiz,
                     eylem: 'alarmIzni',
                 },
             ];
@@ -95,8 +85,7 @@ function iosNotlari(durum: AlarmKitDurumu | null | undefined, iosSurum: number |
             return [
                 {
                     tip: 'uyari',
-                    metin:
-                        "Alarm izni kapalı; bu adım zamana duyarlı bir bildirim ve yaklaşık 30 saniyelik bir sesle gelir, sessiz anahtarı açıkken duyulmaz. Ayarlar'dan \"Alarmlar\" iznini açabilirsiniz.",
+                    metin: n.reddedildi,
                     eylem: 'ayarlar',
                 },
             ];
@@ -105,7 +94,7 @@ function iosNotlari(durum: AlarmKitDurumu | null | undefined, iosSurum: number |
             // build) ya da sürüm bilinmiyorken nötr satır: sürüm iddiası yok, ama adımın
             // bildirimle geldiği her durumda doğru (sessiz sapma da yok).
             const surum = iosAlarmKitYokNedeni(iosSurum);
-            return [{ tip: 'bilgi', metin: surum === null ? IOS_ALARM_NOTR_NOTU : iosAlarmsizNotu(surum) }];
+            return [{ tip: 'bilgi', metin: surum === null ? n.iosNotr : iosAlarmsizNotu(surum) }];
         }
         default:
             // Bilinmiyor (durum henüz okunmadı): yanlış bilgi vermektense satır yok.
@@ -116,19 +105,18 @@ function iosNotlari(durum: AlarmKitDurumu | null | undefined, iosSurum: number |
 export function alarmNotlariniOlustur(g: AlarmNotuGirdisi): AlarmNotu[] {
     if (g.platform === 'ios') return iosNotlari(g.alarmKit, g.iosSurum);
     const notlar: AlarmNotu[] = [];
+    const n = metin().muhafizAyar.alarmNot;
     if (g.tamAlarm === false) {
         notlar.push({
             tip: 'uyari',
-            metin:
-                'Tam saatinde alarm kurma izni ("Alarmlar ve hatırlatıcılar") kapalı; bu adım şimdilik normal bildirimle gelir.',
+            metin: n.tamAlarm,
             eylem: 'tamAlarm',
         });
     }
     if (g.tamEkran === false) {
         notlar.push({
             tip: 'uyari',
-            metin:
-                'Kilit ekranında tam ekran açılması için izin gerekiyor. İzin verilmezse alarm ekranın üstünde bildirim olarak çalar.',
+            metin: n.tamEkran,
             eylem: 'tamEkranIzni',
         });
     }

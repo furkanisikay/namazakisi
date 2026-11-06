@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+/**
+ * Ülke adları tablosunu üretir: src/core/konum/ulkeAdlariVerisi.ts — ÜRETİLMİŞ DOSYA.
+ *
+ * Hermes'te `Intl.DisplayNames` yok; adlar Node'un ICU'sundan (Unicode CLDR, Unicode
+ * License v3) derleme anında alınır. Ülke kümesi = assets/konum/dunya.bin'deki ülkeler + TR.
+ *
+ * Kullanım: node scripts/konum/ulke-adlari-uret.js tr en ar …   (uygulamanın dilleri)
+ *
+ * Özbekçe KİRİL üretilir (`uz-Cyrl`; düz `uz` CLDR'de Latin verir): uz/kk sözlük kaynağı Kirildir,
+ * Latin biçim çalışma anında `core/dil/yazi.ts > kirildenLatine` ile üretilir (`ulkeAdi`).
+ */
+'use strict';
+const fs = require('fs');
+const path = require('path');
+
+const diller = process.argv.slice(2);
+if (!diller.length) {
+  console.error('Kullanım: ulke-adlari-uret.js <dil> [<dil> …]');
+  process.exit(1);
+}
+const kok = path.join(__dirname, '..', '..');
+const veri = fs.readFileSync(path.join(kok, 'assets', 'konum', 'dunya.bin'), 'utf8');
+const ulkeler = new Set(['TR']);
+for (const satir of veri.split('\n')) {
+  if (!satir || satir.startsWith('#')) continue;
+  const kod = satir.split('\t')[4];
+  if (/^[A-Z]{2}$/.test(kod)) ulkeler.add(kod);
+}
+const sirali = [...ulkeler].sort();
+/**
+ * Kaynak yazısı ya da normu CLDR varsayılanından farklı diller. Portekizce Avrupa/Afrika normudur
+ * (`pt-PT`; düz `pt` CLDR'de Brezilya normudur: "Irã" / "Irão", "Quênia" / "Quénia"). Pencapça yalnız
+ * Şahmukidir (`pa-Arab-PK`; düz `pa` CLDR'de Gurmuki): CLDR `pa-Arab` yalnız Pakistan'ın adını taşır, öteki
+ * ülkeler `ulkeAdi`'nde İngilizceye düşer (Gurmuki ad YAZILMAZ). Dagbani, Mooré, Afar ve Maguindanao'nun ICU'da
+ * bölge adı verisi YOK (`ICU_VERISIZ`): tabloları boştur, `ulkeAdi` İngilizceye düşer (başka dilin adı yazılmaz).
+ */
+const ICU_YEREL = { uz: 'uz-Cyrl', pt: 'pt-PT', pa: 'pa-Arab-PK' };
+/** ICU'da bölge adı verisi olmayan diller (CLDR'de yerel ayarları yok): tablo boş kalır. */
+const ICU_VERISIZ = new Set(['dag', 'mos', 'aa', 'mdh']);
+const tablo = {};
+for (const dil of diller) {
+  const dn = new Intl.DisplayNames([ICU_YEREL[dil] ?? dil], { type: 'region', fallback: 'none' });
+  // ICU'da verisi olmayan dil sessizce başka yerele (en-US) düşer: İngilizce adlar o dilin adı sanılmasın.
+  const cozulen = dn.resolvedOptions().locale.split('-')[0];
+  tablo[dil] = {};
+  if (ICU_VERISIZ.has(dil)) {
+    if (cozulen === dil) throw new Error(`${dil}: ICU artık bölge adı taşıyor, ICU_VERISIZ'den çıkarın`);
+    continue;
+  }
+  if (cozulen !== dil) throw new Error(`${dil}: ICU bölge adı verisi yok (${cozulen} yereline düştü)`);
+  for (const kod of sirali) {
+    const ad = dn.of(kod);
+    if (ad && ad !== kod) tablo[dil][kod] = ad;
+  }
+}
+const satirlar = [
+  '/**',
+  ' * Ülke adları — ÜRETİLMİŞ DOSYA, ELLE DÜZENLEMEYİN.',
+  ' * Üretici: scripts/konum/ulke-adlari-uret.js (kaynak: Unicode CLDR, Node ICU',
+  ` * ${process.versions.icu}, Unicode License v3).`,
+  ' */',
+  'export const ULKE_ADLARI: Readonly<Record<string, Readonly<Record<string, string>>>> = {',
+];
+for (const dil of diller) {
+  satirlar.push(`  ${JSON.stringify(dil)}: {`);
+  const ic = Object.entries(tablo[dil]).map(([k, v]) => `${k}: ${JSON.stringify(v)}`);
+  for (let i = 0; i < ic.length; i += 6) satirlar.push('    ' + ic.slice(i, i + 6).join(', ') + ',');
+  satirlar.push('  },');
+}
+satirlar.push('};', '');
+const hedef = path.join(kok, 'src', 'core', 'konum', 'ulkeAdlariVerisi.ts');
+fs.writeFileSync(hedef, satirlar.join('\n'), 'utf8');
+console.log(`${sirali.length} ülke × ${diller.length} dil → ${hedef}`);

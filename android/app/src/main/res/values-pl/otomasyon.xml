@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Lehçe). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Odprawiono</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Stan czasu modlitwy</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Zdarzenie czasu modlitwy</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — zamirsiz 2. tekil emir. -->
+  <string name="otomasyon_bilgi_baslik">To ustawienie dodaje się z aplikacji do automatyzacji</string>
+  <string name="otomasyon_bilgi_tarayici">Przeglądarki nie mogą dostać stałej zgody. Dodaj je z listy wtyczek aplikacji takiej jak Tasker, MacroDroid lub Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Dodaj je, wybierając „Namaz Akışı” z listy wtyczek aplikacji takiej jak Tasker, MacroDroid lub Automate.</string>
+  <string name="otomasyon_engelli_baslik">Aplikacja %1$s jest zablokowana</string>
+  <string name="otomasyon_engelli_mesaj">Ta aplikacja została wcześniej zablokowana i nie może oznaczać modlitw. Możesz na to zezwolić w Namaz Akışı w Ustawienia &gt; „Aplikacje, które mogą oznaczać modlitwy”.</string>
+  <string name="otomasyon_izin_baslik">Używać z aplikacją %1$s?</string>
+  <string name="otomasyon_izin_kosul">Aplikacja %1$s może się dowiadywać, kiedy zaczyna się czas modlitwy, kiedy się kończy i kiedy jesteś w meczecie, oraz uruchamiać automatyzacje. Decyzję możesz zmienić w Namaz Akışı w Ustawienia &gt; „Aplikacje, które mogą oznaczać modlitwy”.</string>
+  <string name="otomasyon_izin_kildim">Aplikacja %1$s może oznaczać bieżącą modlitwę jako odprawioną za pomocą ustawionej automatyzacji. Decyzję możesz zmienić w Namaz Akışı w Ustawienia &gt; „Aplikacje, które mogą oznaczać modlitwy”.</string>
+  <string name="otomasyon_izin_ver">Zezwól</string>
+  <string name="otomasyon_engelle">Zablokuj</string>
+  <string name="otomasyon_vazgec">Anuluj</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Kiedy ma działać?</string>
+  <string name="otomasyon_ileri">Dalej</string>
+  <string name="otomasyon_vakit_baslik">Która modlitwa?</string>
+  <string name="otomasyon_herhangi_vakit">Dowolny czas modlitwy</string>
+  <string name="otomasyon_kaydet">Zapisz</string>
+  <string name="otomasyon_kosul_icinde">Gdy trwa czas modlitwy</string>
+  <string name="otomasyon_kosul_cikiyor">Gdy czas modlitwy się kończy (zostało %1$d min, Strażnik modlitwy wł.)</string>
+  <string name="otomasyon_kosul_camide">Podczas pobytu w meczecie</string>
+  <string name="otomasyon_olay_girdi">Gdy zaczyna się czas modlitwy</string>
+  <string name="otomasyon_olay_cikiyor">Gdy czas modlitwy się kończy (zostało %1$d min, Strażnik modlitwy wł.)</string>
+  <string name="otomasyon_olay_camide">Gdy wykryto obecność w meczecie</string>
+</resources>

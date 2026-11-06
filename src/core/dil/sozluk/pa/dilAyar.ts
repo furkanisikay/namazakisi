@@ -1,0 +1,51 @@
+import { cogul } from '../../tipler';
+import type { Sozluk } from '../tr';
+
+/**
+ * Dil adları CLDR `pa-Arab`'da yok: Urduca sözlükteki adlardan Şahmuki Pencapçaya uyarlandı
+ * (türetildi, DOĞRULANMADI; yerli okuyucu baksın).
+ */
+export const dilAyar: Sozluk['dilAyar'] = {
+  baslik: 'بولی · Language',
+  aciklama: 'ایپ دی بولی چُنو۔ اطلاعاں تے اُچی آواز وچ پڑھائی وی ایسے بولی وچ ہووے گی۔',
+  grup: 'ایپ دی بولی',
+  dilAdlari: { tr: 'ترکی', en: 'انگریزی', id: 'انڈونیشیائی', de: 'جرمن', fr: 'فرانسیسی', bs: 'بوسنیائی', ru: 'روسی', ms: 'مالے', ar: 'عربی', ur: 'اردو', es: 'ہسپانوی', nl: 'ڈچ', sq: 'البانوی', hi: 'ہندی', bn: 'بنگلہ', fa: 'فارسی', ps: 'پشتو', ckb: 'سورانی کُردی', ug: 'اویغور', az: 'آذربائیجانی', uz: 'ازبک', kk: 'قزاخ', ky: 'کرغیز', tg: 'تاجک', sw: 'سواحلی', ha: 'ہوسا', am: 'امہاری', om: 'اورومو', so: 'صومالی', ff: 'فولا', yo: 'یوروبا', zh: 'چینی (سادہ)', ta: 'تامل', ml: 'ملیالم', th: 'تھائی', ko: 'کوریائی', vi: 'ویتنامی', pt: 'پرتگالی', it: 'اطالوی', sv: 'سویڈش', uk: 'یوکرینی', ro: 'رومانوی', hr: 'کروشیائی', sr: 'سربیائی', el: 'یونانی', ku: 'کُردی (Kurmancî)', tk: 'ترکمانی', tt: 'تاتاری', sd: 'سندھی', pl: 'پولش', ja: 'جاپانی', gu: 'گجراتی', bg: 'بلغاری', mk: 'مقدونیائی', fil: 'فلپینو', te: 'تیلگو', kn: 'کنڑ', mr: 'مراٹھی', pa: 'پنجابی', as: 'آسامی', ne: 'نیپالی', si: 'سنہالی', km: 'خمیر', he: 'Hebrew', ka: 'Georgian', lt: 'Lithuanian', mg: 'Malagasy', lg: 'Ganda', rw: 'Kinyarwanda', rn: 'Rundi', ln: 'Lingala', dag: 'Dagbani', mos: 'Mossi', aa: 'Afar', mdh: 'Maguindanao', ak: 'Akan', ceb: 'Cebuano', nqo: 'N’Ko' },
+  cihazDili: 'ڈیوائس دی بولی',
+  cihazDiliKullaniliyor: 'ایس ویلے {ad}',
+  cihazDiliDesteklenmiyor: 'تہاڈی ڈیوائس دی بولی اجے دستیاب نہیں؛ ترکی ورتی جا رہی اے۔',
+  beta: 'بیٹا',
+  betaAciklama: '{ad} · بیٹا',
+  notlar: {
+    beta: 'بیٹا ترجمیاں دا جائزہ لیا جا رہیا اے؛ کجھ عبارتاں وچ گھاٹ ہو سکدی اے۔',
+    vakit: 'بولی نماز دے وقتاں دے حساب نوں نہیں بدلدی۔',
+    nass: 'ترکی توں علاوہ دوجیاں بولیاں وچ صرف آیتاں دے ترجمے وکھائے جاندے نیں؛ حدیثاں دے متن ترکی ماخذ توں آؤندے نیں، ایس لئی نہیں وکھائے جاندے۔',
+  },
+  ozelAnons: {
+    baslik: 'تہاڈیاں لکھیاں ہوئیاں اُچی آواز والیاں عبارتاں',
+    govde: cogul({
+      one: 'تہاڈی لکھی ہوئی {n} اُچی آواز والی عبارت پچھلی بولی وچ اے۔ کیہ اینوں نویں بولی دی تیار عبارت نال بدل دتا جاوے؟',
+      other: 'تہاڈیاں لکھیاں ہوئیاں {n} اُچی آواز والیاں عبارتاں پچھلی بولی وچ نیں۔ کیہ اوہناں نوں نویں بولی دیاں تیار عبارتاں نال بدل دتا جاوے؟',
+    }),
+    degistir: 'تیار عبارت نال بدلو',
+    koru: 'جیویں اے اونویں رہن دیو',
+    degisti: cogul({ one: '{n} عبارت بدل دتی گئی۔', other: '{n} عبارتاں بدل دتیاں گئیاں۔' }),
+  },
+  vakitAdlari: {
+    baslik: 'نمازاں دے ناں',
+    aciklama: 'چُنو کہ نمازاں دے ناں کیویں لکھے جان۔',
+    otomatik: 'ملک دے مطابق',
+    otomatikAciklama: 'تہاڈے مقام والے ملک وچ چلدے ناں ورتے جاندے نیں۔',
+    takimlar: { temel: 'عربی ناں', diyanetDe: 'Diyanet (جرمن)', turkce: 'ترکی ناں', magrip: 'شمالی افریقی املا', cezayir: 'الجزائری املا', afgan: 'افغان ناں' },
+  },
+  yazi: {
+    baslik: 'لکھائی',
+    aciklama: 'چُنو کہ متن کیہڑی لکھائی وچ لکھیا جاوے۔',
+    otomatik: 'ملک دے مطابق',
+    otomatikAciklama: 'تہاڈے مقام والے ملک وچ عام لکھائی ورتی جاندی اے۔',
+    latin: 'لاطینی لکھائی',
+    kiril: 'سیریلک لکھائی',
+  },
+  kaydedilemedi: 'بولی محفوظ نہیں ہو سکی۔ فیر کوشش کرو۔',
+  sihirbazBaglantisi: 'بولی · Language',
+  sihirbazBaglantisiAciklama: 'ایپ دی بولی بدلو',
+};

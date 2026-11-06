@@ -21,6 +21,8 @@ import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { TurkceTtsUyarisi, DinleButonu } from '../../components/hatirlatma/AnonsBilesenleri';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface SesliOnayModalProps {
     gorunur: boolean;
@@ -53,19 +55,20 @@ export interface SesliOnayModalProps {
  * söylemek iPhone kullanıcısına yanlış bilgi veriyordu.
  */
 export function sesliOnayMaddeleri(platform: string): { ikon: string; metin: string }[] {
+    const m = metin().muhafizAyar.sesliOnay;
     return [
         {
             ikon: 'volume-up',
             // Yon-bagimsiz: "son dakikalarinda" giris yonunde YANLISTI (orada vakit
             // girdikten sonra, gecen sureyi soyler).
-            metin: 'Yalnızca ayarladığınız adımlarda, kalan ya da geçen süreyi sesli olarak söyler.',
+            metin: m.soyler,
         },
         platform === 'ios'
-            ? { ikon: 'bell-slash', metin: "iPhone'da bildirim sesi olarak çalar; sessiz anahtarı açıkken duyulmaz." }
-            : { ikon: 'bell-slash', metin: 'Alarm gibi davranır: telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulur.' },
+            ? { ikon: 'bell-slash', metin: m.iosSessiz }
+            : { ikon: 'bell-slash', metin: m.alarmGibi },
         {
             ikon: 'mobile-alt',
-            metin: 'Bildirim de gönderilir; sesi duymazsanız ekranda izi kalır.',
+            metin: m.bildirimDe,
         },
     ];
 }
@@ -82,6 +85,7 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
     onIptal,
 }) => {
     const renkler = useRenkler();
+    const ms = useMetin().muhafizAyar.sesliOnay;
     useDonanimGeriTusu(gorunur, onIptal);
 
     // "Dinle" ile baslatilan ses modal kapaninca DEVAM ETMEMELI: native
@@ -127,10 +131,10 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                         </View>
                         <View className="flex-1">
                             <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                Sesli okuma açılsın mı?
+                                {ms.baslik}
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {altBaslik ?? `${yogunlukEtiketi ?? ''} düzey sesli okuma içerir`}
+                                {altBaslik ?? bicim(ms.altBaslik, { duzey: yogunlukEtiketi ?? '' })}
                             </Text>
                         </View>
                     </View>
@@ -159,7 +163,7 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                             className="text-[10px] font-semibold tracking-wider mb-1"
                             style={{ color: renkler.metinIkincil }}
                         >
-                            ÖRNEK OKUNUŞ
+                            {ms.ornekOkunus}
                         </Text>
                         <View className="flex-row items-center">
                             <Text className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
@@ -169,7 +173,7 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                                 kanallar={{ sesli: true }}
                                 bildirimSesi=""
                                 cozulmusMetin={ornekMetin}
-                                erisimEtiketi="Sesli okumayı dinleyin"
+                                erisimEtiketi={ms.dinle}
                             />
                         </View>
                     </View>
@@ -178,10 +182,10 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
 
                     {/* TEK RIZA (Dalga 3): bir kez sorulur, tüm hatırlatmalarda geçerli. */}
                     <Text className="text-sm leading-5 mt-3" style={{ color: renkler.metin }}>
-                        Bu izin bir kez sorulur, tüm hatırlatmalarda geçerlidir.
+                        {ms.birKez}
                     </Text>
                     <Text className="text-xs leading-4 mt-1" style={{ color: renkler.metinIkincil }}>
-                        {kapatmaNotu ?? 'Dilediğiniz zaman her hatırlatmanın ayarından kapatabilirsiniz.'}
+                        {kapatmaNotu ?? ms.kapatmaNotu}
                     </Text>
 
                     {/* Butonlar */}
@@ -197,10 +201,10 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                             onPress={onSessizUygula}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel="Sesli olmadan uygula"
+                            accessibilityLabel={ms.sessizEtiketi}
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                                Sesli olmadan
+                                {ms.sessiz}
                             </Text>
                         </TouchableOpacity>
 
@@ -210,11 +214,11 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                             onPress={onOnayla}
                             activeOpacity={0.85}
                             accessibilityRole="button"
-                            accessibilityLabel="Sesli okumayı açın"
+                            accessibilityLabel={ms.acin}
                         >
                             <FontAwesome5 name="check" size={13} color="#FFF" style={{ marginRight: 8 }} />
                             <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
-                                Sesli okumayı açın
+                                {ms.acin}
                             </Text>
                         </TouchableOpacity>
                     </View>

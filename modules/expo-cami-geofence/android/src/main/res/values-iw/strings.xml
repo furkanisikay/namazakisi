@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">אני במסגד</string>
+    <string name="camigeofence_kanal_durum_aciklama">הודעה שקטה כשמזוהה שאתם במסגד</string>
+    <string name="camigeofence_kanal_soru_ad">אחרי היציאה מהמסגד</string>
+    <string name="camigeofence_kanal_soru_aciklama">שאלה שמאפשרת לסמן את התפילה אחרי שיוצאים מהמסגד</string>
+
+    <string name="camigeofence_govde_mod_sessiz">מצב תפילה פעיל. התזכורות יגיעו בשקט.</string>
+    <string name="camigeofence_govde_mod">מצב תפילה פעיל.</string>
+    <string name="camigeofence_govde_sessiz">התזכורות יגיעו בשקט.</string>
+    <string name="camigeofence_govde_normal">התזכורות יגיעו כרגיל.</string>
+    <string name="camigeofence_eylem_modu_kapat">כיבוי המצב</string>
+    <string name="camigeofence_eylem_cami_degil">לא מסגד</string>
+
+    <string name="camigeofence_soru_baslik">אתם במסגד?</string>
+    <string name="camigeofence_soru_govde">אתם ליד %1$s. אנחנו לא בטוחים, ולכן שואלים.</string>
+    <string name="camigeofence_varsayilan_ad">מסגד</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">הפעלת מצב תפילה</string>
+    <string name="camigeofence_eylem_evet_camideyim">כן, אני במסגד</string>
+    <string name="camigeofence_eylem_hayir">לא</string>
+
+    <string name="camigeofence_kildiniz_mi">התפללתם את תפילת %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">אפשר לסמן בהקשה אחת.</string>
+    <string name="camigeofence_eylem_kildim">התפללתי</string>
+    <string name="camigeofence_namaz_imsak">פג\'ר</string>
+    <string name="camigeofence_namaz_ogle">זוהר</string>
+    <string name="camigeofence_namaz_ikindi">עצר</string>
+    <string name="camigeofence_namaz_aksam">מגרב</string>
+    <string name="camigeofence_namaz_yatsi">עשאא</string>
+    <string name="camigeofence_namaz_cuma">ג\'ומעה</string>
+
+    <string name="camigeofence_mod_kural_adi">תפילה</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı מפעילה אותו בזמן חוטבת ג\'ומעה, במסגד או כשזמן תפילה מגיע</string>
+</resources>

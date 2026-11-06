@@ -18,6 +18,7 @@ import {
   Easing,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -30,6 +31,8 @@ import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
 import { AYARLANABILIR_EYLEMLER, useSayisalAdim } from '../hooks/useSayisalAdim';
+import { sayili } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 
 /**
  * Bildirim/onay modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile
@@ -71,6 +74,7 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
   renk,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().seri.hedefAyar;
   const butonRenk = renk || renkler.birincil;
   const { gorunenDeger, azaltDugmesi, artirDugmesi, erisilebilirlikEylemi } = useSayisalAdim({
     deger,
@@ -91,7 +95,7 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         disabled={altta}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel="Azalt"
+        accessibilityLabel={m.azalt}
       >
         <FontAwesome5
           name="minus"
@@ -104,7 +108,7 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
         accessible
         accessibilityRole="adjustable"
-        accessibilityLabel="Değer"
+        accessibilityLabel={m.deger}
         accessibilityValue={{ min, max, now: gorunenDeger }}
         accessibilityActions={AYARLANABILIR_EYLEMLER}
         onAccessibilityAction={erisilebilirlikEylemi}
@@ -123,7 +127,7 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         disabled={ustte}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel="Artır"
+        accessibilityLabel={m.artir}
       >
         <FontAwesome5
           name="plus"
@@ -250,6 +254,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
   const renkler = useRenkler();
   const scrollRef = useVurguKurulumu();
   const dispatch = useAppDispatch();
+  const m = useMetin().seri.hedefAyar;
 
   const { ayarlar: seriAyarlari } = useAppSelector((state) => state.seri);
 
@@ -282,11 +287,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
   }, []);
 
   // Tam gun esigi secenekleri
-  const tamGunEsikleri = [
-    { deger: 3, etiket: '3 vakit' },
-    { deger: 4, etiket: '4 vakit' },
-    { deger: 5, etiket: '5 vakit' },
-  ];
+  const tamGunEsikleri = [3, 4, 5].map((deger) => ({ deger, etiket: sayili(m.esik, deger) }));
 
   // Handlers
   const handleEsikSecimi = (esik: number) => {
@@ -297,15 +298,15 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
     setBildirim({
       gorunur: true,
       tip: 'hata',
-      baslik: 'Seri Sıfırla',
-      mesaj: 'Tüm seri verileriniz (seri, rozetler, puanlar) sıfırlanacak. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?',
-      birincilEtiket: 'Sıfırla',
+      baslik: m.sifirlaBaslik,
+      mesaj: m.sifirlaMesaj,
+      birincilEtiket: m.sifirla,
       birincilIkon: 'trash-alt',
       tehlikeli: true,
-      kapatEtiketi: 'İptal',
+      kapatEtiketi: m.iptal,
       onBirincil: () => {
         dispatch(seriStateSifirla());
-        basariBildiriminiGoster('Başarılı', 'Seri verileriniz sıfırlandı.');
+        basariBildiriminiGoster(m.basarili, m.sifirlandi);
       },
     });
   };
@@ -325,13 +326,13 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: renkler.metinIkincil }}
           >
-            HEDEF AYARLARI
+            {m.hedefAyarlari}
           </Text>
 
           <AyarCapasi id="tamGunEsigi">
             <AyarKarti
-              baslik="Tam Gün Eşiği"
-              aciklama="O günün serisini tamamlandı saymak için günde kılmanız gereken minimum namaz sayısını belirler"
+              baslik={m.tamGunEsigi}
+              aciklama={m.tamGunAciklama}
               ikonAdi="chart-bar"
             >
               <SecimGrubu
@@ -349,7 +350,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: '#DC2626' }}
           >
-            SIFIRLAMA
+            {m.sifirlama}
           </Text>
 
           <TouchableOpacity
@@ -358,7 +359,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
             onPress={handleSeriSifirla}
             activeOpacity={0.7}
             accessibilityRole="button"
-            accessibilityLabel="Seri Verilerini Sıfırla"
+            accessibilityLabel={m.verileriSifirla}
           >
             <View className="w-10 h-10 rounded-full items-center justify-center mr-3"
               style={{ backgroundColor: '#DC262620' }}
@@ -367,13 +368,13 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
             </View>
             <View className="flex-1">
               <Text className="text-base font-semibold" style={{ color: '#DC2626' }}>
-                Seri Verilerini Sıfırla
+                {m.verileriSifirla}
               </Text>
               <Text className="text-xs mt-0.5" style={{ color: '#DC2626', opacity: 0.8 }}>
-                Tüm seri, rozet ve puan verilerini siler
+                {m.verileriSifirlaAlt}
               </Text>
             </View>
-            <FontAwesome5 name="chevron-right" size={14} color="#DC2626" />
+            <YonluIkon name="chevron-right" size={14} color="#DC2626" />
           </TouchableOpacity>
         </View>
 

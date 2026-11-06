@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Almanca (beta). Terimler: src/core/dil/sozluk/de/cihaz.ts. -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Bringen Sie den QR-Code auf dem Fernseher in den Rahmen</string>
+    <string name="tvesleme_qr_vazgec">Abbrechen</string>
+    <string name="tvesleme_qr_vazgec_erisim">Scannen abbrechen</string>
+    <string name="tvesleme_qr_yabanci">Dieser QR-Code gehört nicht zu Namaz Akışı TV. Scannen Sie den Code auf dem Fernseher.</string>
+    <string name="tvesleme_qr_okundu">Code gescannt</string>
+</resources>

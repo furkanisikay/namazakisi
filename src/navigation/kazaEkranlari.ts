@@ -6,6 +6,7 @@
  * durur (`KAZA_EKRAN_BASLIKLARI`), gövdede tekrar edilmez.
  */
 import type { HesaplamaSihirbazGirdisi } from '../core/types/KazaTipleri';
+import { canli } from '../core/dil/aktifDil';
 
 export type KazaStackParamList = {
   KazaDefteriAna: undefined;
@@ -16,9 +17,12 @@ export type KazaStackParamList = {
   KazaYenidenHesapla: { girdi: HesaplamaSihirbazGirdisi };
 };
 
-export const KAZA_EKRAN_BASLIKLARI: Record<Exclude<keyof KazaStackParamList, 'KazaDefteriAna'>, string> = {
-  KazaGecmisi: 'Hareket Geçmişi',
-  KazaOtomatikAyar: 'Kaza ayarları',
-  KazaTemizlik: 'Kayıtları Temizleyin',
-  KazaYenidenHesapla: 'Yeniden Hesapla',
-};
+/** Etkin dilde (okunduğu an sözlükten çözülür). */
+export const KAZA_EKRAN_BASLIKLARI: Readonly<Record<Exclude<keyof KazaStackParamList, 'KazaDefteriAna'>, string>> = canli(
+  (s) => ({
+    KazaGecmisi: s.kaza.ekranlar.gecmis,
+    KazaOtomatikAyar: s.kaza.ekranlar.ayarlar,
+    KazaTemizlik: s.kaza.ekranlar.temizlik,
+    KazaYenidenHesapla: s.kaza.ekranlar.yenidenHesapla,
+  })
+);

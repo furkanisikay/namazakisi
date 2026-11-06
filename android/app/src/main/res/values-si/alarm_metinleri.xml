@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- si — Sinhala (beta). -->
+<!-- Gerçek alarm (Sinhala). "ඉටු කළෙමි" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">සලාත් එලාමය</string>
+  <string name="alarm_kildim">ඉටු කළෙමි</string>
+  <string name="alarm_kapat">අක්‍රිය කරන්න</string>
+  <string name="alarm_kanal_aciklamasi">ඔබ තෝරන සිහිකැඳවීම් පියවරවලදී නාද වන සැබෑ එලාමයක්</string>
+</resources>

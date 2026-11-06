@@ -6,6 +6,7 @@
 import { Platform } from 'react-native';
 import { UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
+import { bicim, metin } from '../../core/dil/aktifDil';
 
 // Ondalıklı koordinat çiftlerini yakalar (en az 1 ondalık): "41.0082, 28.9784"
 const KOORDINAT = /(-?\d{1,3}\.\d{1,})\s*,\s*(-?\d{1,3}\.\d{1,})/g;
@@ -42,22 +43,23 @@ export function taniRaporuOlustur(opts: {
   neOldu?: string;
 }): { konu: string; govde: string; logMetni: string } {
   const c = (Platform.constants ?? {}) as { Model?: string; Release?: string };
-  const cihaz = c.Model ?? 'bilinmiyor';
+  const m = metin().genel.tani.rapor;
+  const cihaz = c.Model ?? m.bilinmiyor;
   const os = `${Platform.OS} ${c.Release ?? Platform.Version}`;
   const logMetni = loglariMaskele(Logger.exportLogs(), { konumDahil: opts.konumDahil });
 
   const govde = [
-    'Merhaba, uygulamada bir sorun yaşadım. Teknik tanı kaydı ektedir.',
+    m.giris,
     '',
-    `Sürüm: ${UYGULAMA.VERSIYON}`,
-    `Cihaz: ${cihaz}`,
+    bicim(m.surum, { surum: UYGULAMA.VERSIYON }),
+    bicim(m.cihaz, { cihaz }),
     `Android/OS: ${os}`,
-    opts.baglam ? `Bağlam: ${opts.baglam}` : '',
-    opts.neOldu ? `Ne oldu: ${opts.neOldu}` : '',
+    opts.baglam ? bicim(m.baglam, { baglam: opts.baglam }) : '',
+    opts.neOldu ? bicim(m.neOldu, { neOldu: opts.neOldu }) : '',
   ].filter(Boolean).join('\n');
 
   return {
-    konu: `${UYGULAMA.ADI} tanı — v${UYGULAMA.VERSIYON}`,
+    konu: bicim(m.konu, { ad: UYGULAMA.ADI, surum: UYGULAMA.VERSIYON }),
     govde,
     logMetni,
   };

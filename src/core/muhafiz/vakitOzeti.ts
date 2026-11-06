@@ -10,6 +10,7 @@ import type { VakitMuhafizAyari } from './matrisTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { acikOzetKanallari, esikIfadesi, kanalListesiMetni, OZET_KANAL_SIRASI, type OzetKanali } from './seviyeOzeti';
 import { adimKapaliMi } from './kanalKumesi';
+import { bicim, metin } from '../dil/aktifDil';
 
 export interface VakitOzeti {
   kapali: boolean;
@@ -50,8 +51,9 @@ export function vakitOzetiVerisi(vakitAyari: VakitMuhafizAyari): VakitOzeti {
  */
 export function vakitOzetiOlustur(vakitAyari: VakitMuhafizAyari): string {
   const ozet = vakitOzetiVerisi(vakitAyari);
-  if (ozet.kapali) return 'Kapalı';
-  return `${ozet.baslangic} başlar: ${kanalListesiMetni(ozet.kanallar)}`;
+  const m = metin().muhafizAyar;
+  if (ozet.kapali) return m.kapali;
+  return bicim(m.ozet.vakit, { bas: ozet.baslangic, liste: kanalListesiMetni(ozet.kanallar) });
 }
 
 /** Vakitte kac adim aktif (en az bir kanali acik)? Rozet icin. */

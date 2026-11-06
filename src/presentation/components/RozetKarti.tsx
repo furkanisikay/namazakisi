@@ -16,8 +16,17 @@ import {
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { ROZET_RENKLERI } from '../../core/constants/UygulamaSabitleri';
-import { RozetDetay, RozetSeviyesi } from '../../core/types/SeriTipleri';
+import { RozetDetay, RozetSeviyesi, rozetMetni } from '../../core/types/SeriTipleri';
 import { useDonguAcik, useDonguAnimasyonu } from './hareket/dongu';
+import { bicim, metin } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
+
+/** Kazanılma tarihi: "14 Ekim 2026" / "14 October 2026" (`Intl`/`toLocale*` YOK). */
+function kazanilmaTarihiMetni(iso: string): string {
+  const t = new Date(iso);
+  const s = metin().tarih;
+  return bicim(s.uzun, { gun: t.getDate(), ay: s.aylar[t.getMonth()], yil: t.getFullYear() });
+}
 
 interface RozetKartiProps {
   rozet: RozetDetay;
@@ -71,6 +80,14 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
   kompakt = false,
 }) => {
   const renkler = useRenkler();
+  const sozluk = useMetin();
+  const m = sozluk.seri.rozetKarti;
+  // Ad/açıklama kimlikten, etkin dilde (slice'taki kopya dil değişince bayatlar).
+  const metinler = rozetMetni(rozet.id);
+  const ad = metinler?.ad ?? rozet.ad;
+  const aciklama = metinler?.aciklama ?? rozet.aciklama;
+  const kosulAciklamasi = metinler?.kosul ?? rozet.kosulAciklamasi;
+  const erisimEtiketi = bicim(m.erisim, { ad, durum: rozet.kazanildiMi ? m.kazanildi : m.kilitli });
 
   // Parlama animasyonu (kazanilmis rozetler icin). Tek kapı `hareket/dongu` (denetim D-16):
   // yalnız sekme odaktayken ve uygulama öndeyken döner, "Animasyonları azalt"ta hiç dönmez;
@@ -116,7 +133,7 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
         onPress={onPress}
         activeOpacity={0.8}
         accessibilityRole="button"
-        accessibilityLabel={`${rozet.ad} rozeti, ${rozet.kazanildiMi ? 'kazanıldı' : 'kilitli'}`}
+        accessibilityLabel={erisimEtiketi}
       >
         <View className="mb-1">
           {rozet.kazanildiMi ? (
@@ -143,7 +160,7 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
           }}
           numberOfLines={1}
         >
-          {rozet.ad}
+          {ad}
         </Text>
       </TouchableOpacity>
     );
@@ -162,7 +179,7 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
       onPress={onPress}
       activeOpacity={0.8}
       accessibilityRole="button"
-      accessibilityLabel={`${rozet.ad} rozeti, ${rozet.kazanildiMi ? 'kazanıldı' : 'kilitli'}`}
+      accessibilityLabel={erisimEtiketi}
     >
       {/* Parlama efekti */}
       {rozet.kazanildiMi && (
@@ -215,7 +232,7 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
               color: rozet.kazanildiMi ? renkler.metin : renkler.metinIkincil,
             }}
           >
-            {rozet.ad}
+            {ad}
           </Text>
           <View
             className="px-2 py-0.5 rounded-lg ml-2"
@@ -225,7 +242,7 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
               className="font-bold"
               style={{ fontSize: 9, color: seviyeRengi }}
             >
-              {rozet.seviye.toUpperCase()}
+              {sozluk.seri.rozetSeviyeleri[rozet.seviye]}
             </Text>
           </View>
         </View>
@@ -237,7 +254,7 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
           }}
           numberOfLines={2}
         >
-          {rozet.kazanildiMi ? rozet.aciklama : rozet.kosulAciklamasi}
+          {rozet.kazanildiMi ? aciklama : kosulAciklamasi}
         </Text>
 
         {rozet.kazanildiMi && rozet.kazanilmaTarihi && (
@@ -245,11 +262,7 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
             className="text-xs font-semibold mt-1"
             style={{ color: seviyeRengi }}
           >
-            {new Date(rozet.kazanilmaTarihi).toLocaleDateString('tr-TR', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
+            {kazanilmaTarihiMetni(rozet.kazanilmaTarihi)}
           </Text>
         )}
       </View>

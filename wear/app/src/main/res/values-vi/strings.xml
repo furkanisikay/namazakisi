@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamca. Terimler: src/core/dil/sozluk/vi (Salah, hành lễ, Masjid, Qiblah, Salah bù). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">vi</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Giờ Salah tiếp theo</string>
+    <string name="tile_aciklama">Giờ Salah tiếp theo và thời gian</string>
+    <string name="komplikasyon_adi">Thời gian còn lại</string>
+    <string name="cikis_saati_komplikasyon_adi">Giờ kết thúc Salah</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Giờ Salah tiếp theo</string>
+    <string name="bugun_tile_adi">Hôm nay</string>
+    <string name="bugun_tile_aciklama">Năm giờ Salah hôm nay; đánh dấu các lần đã hành lễ bằng hai lần chạm</string>
+    <string name="ilerleme_komplikasyon_adi">Tiến độ trong ngày</string>
+    <string name="dagilim_komplikasyon_adi">Tổng quan trong ngày</string>
+    <string name="kerahat_komplikasyon_adi">Thời điểm cấm</string>
+    <string name="son_dakikalar_kanal_adi">Những phút cuối</string>
+    <string name="son_dakikalar_kanal_aciklama">Đếm ngược trên mặt đồng hồ trong những phút cuối của giờ Salah bạn chưa hành lễ</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Biểu tượng nhẹ trên mặt đồng hồ để quay lại Tasbih chưa xong</string>
+    <string name="kible_adi">Qiblah</string>
+    <string name="kible_komplikasyon_adi">Qiblah</string>
+    <string name="camideyim_kanal_adi">Tại Masjid</string>
+    <string name="camideyim_kanal_aciklama">Biểu tượng nhẹ trên mặt đồng hồ khi điện thoại báo bạn đang ở Masjid</string>
+    <string name="uyandirma_kanal_adi">Đánh thức im lặng</string>
+    <string name="uyandirma_kanal_aciklama">Chỉ đánh thức bạn bằng rung, cho Fajr và Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Tôi đã hành lễ</string>
+    <string name="kilindi_isareti">✓ Đã hành lễ</string>
+    <string name="kapat">Tắt</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Mở Namaz Akışı trên điện thoại để xem giờ Salah.</string>
+    <string name="yuk_eskidi">Dữ liệu giờ Salah đã cũ. Mở Namaz Akışı trên điện thoại để làm mới.</string>
+    <string name="guncelleme_gerekli">Hãy cập nhật Namaz Akışı trên đồng hồ.</string>
+    <string name="bildirim_izni">Để nhận lời nhắc cả khi điện thoại không ở bên, hãy cho phép thông báo của Namaz Akışı trong cài đặt đồng hồ.</string>
+    <string name="cami_soru">Bạn đang ở Masjid?</string>
+    <string name="cami_evet">Có</string>
+    <string name="cami_evet_aciklama">Có, tôi đang ở Masjid. Bật Chế độ Salah</string>
+    <string name="cami_hayir">Không</string>
+    <string name="cami_hayir_aciklama">Không, tôi không ở Masjid</string>
+    <string name="camidesiniz">Bạn đang ở Masjid</string>
+    <string name="cami_degil">Đây không phải Masjid</string>
+    <string name="cami_degil_aciklama">Đây không phải Masjid. Nơi này sẽ không được tính là Masjid nữa</string>
+    <string name="tesbihat_ac">Mở bộ đếm Tasbih</string>
+    <string name="kible_ac">Mở la bàn Qiblah</string>
+    <string name="ses_dene">Thử âm thanh</string>
+    <string name="ses_dene_aciklama">Thử phần đọc to của đồng hồ</string>
+    <string name="telefonda_acin">Mở trên điện thoại</string>
+    <string name="telefonda_ekran_ac">Mở %1$s trên điện thoại</string>
+    <string name="ekran_kaza">Sổ Salah bù</string>
+    <string name="ekran_camideyim">Tại Masjid</string>
+    <string name="ekran_ayarlar">Cài đặt</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">đã hành lễ, đang đồng bộ</string>
+    <string name="durum_kilindi">đã hành lễ</string>
+    <string name="durum_girmedi">chưa vào giờ</string>
+    <string name="durum_simdiki">giờ Salah hiện tại, chạm để đánh dấu</string>
+    <string name="durum_simdiki_kalan">giờ Salah hiện tại, %1$s, chạm để đánh dấu</string>
+    <string name="durum_kilinmadi">chưa hành lễ, chạm để đánh dấu</string>
+    <string name="isaretleyin">Đánh dấu đã hành lễ</string>
+    <string name="esitleniyor">đang đồng bộ</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Xác nhận Tôi đã hành lễ</string>
+    <string name="vazgecin">Hủy</string>
+    <string name="vazgec">Hủy</string>
+    <string name="kerahat_vaktindesiniz">Bây giờ là thời điểm cấm.</string>
+    <string name="kilindi_dua">Đã hành lễ. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Chế độ Salah đang bật, kết thúc %1$s. Chạm để tắt</string>
+    <string name="namaz_modu_ac_aciklama">Bật Chế độ Salah trên điện thoại</string>
+    <string name="namaz_modu_kapatin">Tắt Chế độ Salah</string>
+    <string name="namaz_modu_acin">Bật Chế độ Salah</string>
+    <string name="namaz_modu_acik_bitis">Bật, kết thúc %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Đang tìm hướng…</string>
+    <string name="kible_yuk_yok">Mở Namaz Akışı trên điện thoại để tìm Qiblah.</string>
+    <string name="kible_konum_yok">Bật vị trí trên điện thoại để tìm Qiblah. Nếu Namaz Akışı chưa được cập nhật, hãy cập nhật.</string>
+    <string name="kible_sensor_yok">Đồng hồ này không có cảm biến la bàn. Bạn có thể xem hướng Qiblah trên điện thoại.</string>
+    <string name="kible_kuzeyden">Qiblah %1$d° (từ hướng bắc)</string>
+    <string name="kible_derece">Qiblah %1$d°</string>
+    <string name="kible_telefonda_ac">Mở Qiblah trên điện thoại</string>
+    <string name="kible_erisim">%1$s. Qiblah cách hướng bắc %2$d°, %3$s</string>
+    <string name="kible_hizali">Bạn đang hướng về Qiblah</string>
+    <string name="kible_kalibrasyon">Để hiệu chỉnh, hãy di chuyển cổ tay theo hình số 8 trong không khí</string>
+    <string name="kible_egim">Giữ đồng hồ song song với mặt đất</string>
+    <string name="kible_titresim_acik">Hướng dẫn bằng rung đang bật. Chạm để tắt</string>
+    <string name="kible_titresim_kapali">Hướng dẫn bằng rung đang tắt. Chạm để bật</string>
+    <string name="kible_harf_kuzey">B</string>
+    <string name="kible_harf_dogu">Đ</string>
+    <string name="kible_harf_guney">N</string>
+    <string name="kible_harf_bati">T</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Đã hoàn thành Tasbih. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Tổng %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Đếm</string>
+    <string name="tesbihat_bastan_baslayin">Bắt đầu lại</string>
+    <string name="tesbihat_bastan_soru">Bắt đầu lại?</string>
+    <string name="tesbihat_sifirlanir">Số đếm sẽ được đặt lại.</string>
+    <string name="tesbihat_geri_al">Hoàn tác</string>
+    <string name="tesbihat_geri_al_aciklama">Hoàn tác lần đếm cuối</string>
+    <string name="tesbihat_yeniden">Đếm lại</string>
+    <string name="tesbihat_yeniden_aciklama">Bắt đầu lại Tasbih</string>
+    <string name="tesbihat_suruyor">Đang đếm Tasbih: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Tôi đã hành lễ. Tắt đánh thức</string>
+    <string name="uyandirma_kapat_aciklama">Tắt đánh thức</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Mở Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Chạm để xem giờ Salah</string>
+    <string name="tile_telefonda_acin">Mở ứng dụng trên điện thoại</string>
+    <string name="tile_sonra">sau %1$s</string>
+    <string name="tile_siradaki_aciklama">Giờ Salah tiếp theo %1$s, bắt đầu lúc %2$s. Mở ứng dụng</string>
+    <string name="tile_giris">bắt đầu %1$s</string>
+    <string name="tile_cikis">kết thúc %1$s</string>
+    <string name="bugun_bos_satir1">Mở ứng dụng</string>
+    <string name="bugun_bos_satir2">trên điện thoại</string>
+    <string name="bugun_acma_aciklamasi">Hôm nay đã hành lễ %1$d/%2$d lần Salah. Mở ứng dụng</string>
+    <string name="bugun_sayi">Hôm nay %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Thời điểm cấm · chạm lần nữa để xác nhận</string>
+    <string name="bugun_onay_tekrar">Chạm lần nữa để xác nhận</string>
+    <string name="bugun_tamam">Đã đủ Salah hôm nay</string>
+    <string name="bugun_kilinmadi">%1$s chưa hành lễ</string>
+    <string name="bugun_siradaki">Tiếp theo: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Chạm lần nữa</string>
+    <string name="bugun_kilindi">%1$s đã hành lễ</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s đã hành lễ, đang đồng bộ</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Đang chờ giờ Salah; hãy mở Namaz Akışı trên điện thoại</string>
+    <string name="komplikasyon_bekleniyor">Đang chờ giờ</string>
+    <string name="komplikasyon_vakit">Salah</string>
+    <string name="komplikasyon_cikis">Hết giờ</string>
+    <string name="komplikasyon_sirada">Tiếp</string>
+    <string name="gun_durumu_aciklama">Hôm nay đã hành lễ %2$d trên %1$d lần Salah</string>
+    <string name="gun_durumu_kilinmamis">%1$s; chưa hành lễ: %2$s</string>
+    <string name="komplikasyon_namaz">Salah</string>
+    <string name="komplikasyon_kerahat">Giờ cấm</string>
+    <string name="kerahat_icinde_aciklama">Đang là thời điểm cấm, kết thúc %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Thời điểm cấm tiếp theo %1$s</string>
+    <string name="kible_komplikasyon">Qiblah cách hướng bắc %1$d°. Mở la bàn</string>
+    <string name="kible_komplikasyon_konumlu">Qiblah cách hướng bắc %1$d°, %2$s. Mở la bàn</string>
+    <string name="kible_komplikasyon_konum_yok">Bật vị trí trên điện thoại để tìm Qiblah</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Lời nhắc khẩn · Rung</string>
+    <string name="muhafiz_kanal_acil">Lời nhắc khẩn</string>
+    <string name="muhafiz_kanal_titresimli">Lời nhắc Salah · Rung</string>
+    <string name="muhafiz_kanal">Lời nhắc Salah</string>
+    <string name="muhafiz_kanal_aciklama">Lời nhắc Salah hiển thị trên đồng hồ cả khi điện thoại không ở bên</string>
+    <string name="son_dakikalar_cikis">Kết thúc: %1$s</string>
+    <string name="son_dakikalar_bitis">Kết thúc: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Thời gian còn lại đến khi hết giờ %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Thời gian còn lại cho %1$s</string>
+    <string name="cami_namaz_modu_bitis">Chế độ Salah · kết thúc %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Đã mở trên điện thoại</string>
+    <string name="telefona_ulasilamadi">Không thể kết nối với điện thoại</string>
+</resources>

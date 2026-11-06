@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Na moskeye</string>
+    <string name="camigeofence_kanal_durum_aciklama">Liyebisi ya kimia ntango emonani ete bozali na moskeye</string>
+    <string name="camigeofence_kanal_soru_ad">Nsima ya kobima na moskeye</string>
+    <string name="camigeofence_kanal_soru_aciklama">Motuna mpɔ na kotia elembo na losambo na bino nsima ya kobima na moskeye</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Ndɛngɛ ya losambo efungwami. Bokundoli ekoya na kimia.</string>
+    <string name="camigeofence_govde_mod">Ndɛngɛ ya losambo efungwami.</string>
+    <string name="camigeofence_govde_sessiz">Bokundoli ekoya na kimia.</string>
+    <string name="camigeofence_govde_normal">Bokundoli ekoya lokola momesano.</string>
+    <string name="camigeofence_eylem_modu_kapat">Bokanga ndɛngɛ</string>
+    <string name="camigeofence_eylem_cami_degil">Ezali moskeye te</string>
+
+    <string name="camigeofence_soru_baslik">Bozali na moskeye?</string>
+    <string name="camigeofence_soru_govde">Bozali pene na %1$s. Toyebi malamu te, yango wana tozali kotuna bino.</string>
+    <string name="camigeofence_varsayilan_ad">Moskeye</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Bofungola Ndɛngɛ ya losambo</string>
+    <string name="camigeofence_eylem_evet_camideyim">Ɛɛ, nazali na moskeye</string>
+    <string name="camigeofence_eylem_hayir">Te</string>
+
+    <string name="camigeofence_kildiniz_mi">Bosambeli %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Bokoki kotia elembo na kofina mbala mɔkɔ.</string>
+    <string name="camigeofence_eylem_kildim">Nasambeli</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Jumu\'a</string>
+
+    <string name="camigeofence_mod_kural_adi">Losambo</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı efungolaka yango na khutba ya Jumu\'a, na moskeye to soki ntango ya losambo ebandi</string>
+</resources>

@@ -12,6 +12,8 @@
  * olamaz (AGENTS.md); yapısal uyum yeterlidir.
  */
 
+import { bicim, metin } from '../dil/aktifDil';
+
 export interface KonumAdiGirdisi {
     ilce: string;
     il: string;
@@ -58,8 +60,9 @@ export interface KonumBildirimMetni {
 
 /** Bildirim metni. Arayüz metnidir (ibadete çağrı değil) → kibar "siz" dili. */
 export function konumDegisimBildirimMetni(yeni: KonumAdiGirdisi): KonumBildirimMetni {
+    const m = metin().konum.bildirim;
     return {
-        baslik: `Konumunuz güncellendi: ${konumAdiMetni(yeni)}`,
-        govde: 'Namaz vakitleri yeni konumunuza göre ayarlandı.',
+        baslik: bicim(m.baslik, { yer: konumAdiMetni(yeni) }),
+        govde: m.govde,
     };
 }

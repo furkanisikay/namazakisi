@@ -1,5 +1,7 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import com.furkanisikay.namazakisi.tv.R
+import androidx.compose.ui.res.stringResource
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
@@ -16,6 +18,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -169,7 +173,10 @@ fun EslemeEkrani(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                // Metin bloğu esnek: uzun dilde (Soranî) satırlar çoğalınca kumandanın tek yolu
+                // olan düğmeler ekranın altına itilmesin; sığmayan kısım metinden kesilir.
                 AnimatedContent(
+                    modifier = Modifier.weight(1f, fill = false),
                     targetState = gelen,
                     transitionSpec = {
                         (fadeIn(tween(320, delayMillis = 140)) + slideInVertically(tween(320, delayMillis = 140)) { it / 6 })
@@ -177,35 +184,54 @@ fun EslemeEkrani(
                     },
                     label = "baslik",
                 ) { il ->
-                    if (il == null) SolMetin(asama, cihazAdi) else GeldiMetni(il, cihazAdi)
+                    // Uzun dilde blok yarıdan kesilmez, yazı küçülür (Tamilce alt başlığın 2.
+                    // satırı düğmelerin altında yarım kalıyor, adımlar hiç görünmüyordu).
+                    YaziyiSigdir {
+                        if (il == null) SolMetin(asama, cihazAdi) else GeldiMetni(il, cihazAdi)
+                    }
                 }
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(20.dp))
                 if (gelen == null && asama == Asama.QR) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    // FlowRow: sığmayan düğme ALT SATIRA iner. Row'da ikinci düğme yalnız artan
+                    // genişliği alıyor, uzun etiket ("Şehri kendim seçeyim", Tamilce/Malayalamca)
+                    // hece hece dikey kırılıp sütunu dolduruyordu.
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
                         EslemeDugmesi(
-                            "Kodla girin",
+                            stringResource(R.string.kodla_girin),
                             onKodla,
                             Modifier.focusRequester(ilkOdak),
                             birincil = durum is QrDurumu.AgYok,
                         )
-                        EslemeDugmesi("İli kendim seçeyim", onIlSec)
-                        if (durum is QrDurumu.AgYok) EslemeDugmesi("Yeniden deneyin", { deneme++ })
+                        EslemeDugmesi(stringResource(R.string.ili_kendim_secin), onIlSec)
+                        if (durum is QrDurumu.AgYok) EslemeDugmesi(stringResource(R.string.yeniden_deneyin), { deneme++ })
                     }
                 }
             }
 
-            Box(Modifier.width(320.dp), contentAlignment = Alignment.Center) {
+            Column(Modifier.width(320.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 when (val d = durum) {
                     is QrDurumu.Bekliyor -> QrKarti(d.metin, katlanma.value, igne.value, halka.value, gelen != null)
                     QrDurumu.AgYok -> AgYokKarti()
                     null -> Unit
+                }
+                // Okutma koşulu kodun yanında: sol sütun dolsa da kesilmez.
+                if (durum is QrDurumu.Bekliyor && gelen == null && asama == Asama.QR) {
+                    Spacer(Modifier.height(20.dp))
+                    Text(
+                        stringResource(R.string.esleme_ayni_wifi),
+                        color = Renkler.metinIkincil, fontSize = 22.sp, lineHeight = 30.sp,
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
         }
 
         if (asama == Asama.ONAY_SORULUYOR) {
             OnayDiyalogu(
-                cihazAdi = cihazAdi ?: "Telefon",
+                cihazAdi = cihazAdi ?: stringResource(R.string.telefon_varsayilan),
                 onEvet = {
                     asama = if (mantik.karar(true) != null) Asama.EKLENIYOR else Asama.SAKLANAMADI
                     olaySayaci++
@@ -225,36 +251,36 @@ private fun SolMetin(asama: Asama, cihazAdi: String?) {
     Column {
         when (asama) {
             Asama.EKLENIYOR, Asama.EKLENDI -> {
-                Text("${cihazAdi ?: "Telefon"} ekleniyor", color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold, lineHeight = 52.sp)
+                Text(stringResource(R.string.esleme_ekleniyor, cihazAdi ?: stringResource(R.string.telefon_varsayilan)), color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold, lineHeight = 52.sp)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "Telefonunuz konumunu ve durumunu gönderiyor…",
+                    stringResource(R.string.esleme_gonderiyor),
                     color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 )
             }
             Asama.SAKLANAMADI -> {
-                Text("Eşleşme tamamlanamadı", color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.esleme_tamamlanamadi), color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "Bu TV, bağlantı anahtarını güvenli saklayamıyor. Konumu kodla girebilir ya da ilinizi seçebilirsiniz.",
+                    stringResource(R.string.esleme_saklanamadi),
                     color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 )
             }
             else -> {
-                Text("Telefonunuzu ekleyin", color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold, lineHeight = 48.sp)
+                Text(stringResource(R.string.telefonunuzu_ekleyin), color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold, lineHeight = 48.sp)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "Vakitler konumunuza göre; kıldığınız namazlar da görünür.",
+                    stringResource(R.string.esleme_alt),
                     color = Renkler.metinIkincil, fontSize = 24.sp, lineHeight = 32.sp,
                 )
                 Spacer(Modifier.height(20.dp))
-                Adim(1, "Telefonda Namaz Akışı'nı açın")
-                Adim(2, "Ayarlar › Cihazlarım › TV ekleyin")
-                Adim(3, "Telefonun kamerasını koda tutun")
-                Spacer(Modifier.height(18.dp))
-                Text("Telefon ile TV aynı Wi-Fi ağında olmalı.", color = Renkler.metinIkincil, fontSize = 24.sp)
+                Adim(1, stringResource(R.string.esleme_adim1))
+                Adim(2, stringResource(R.string.esleme_adim2))
+                Adim(3, stringResource(R.string.esleme_adim3))
+                // Wi-Fi notu QR'ın ALTINDA (sağ sütun): esnek metin bloğunun sonunda uzun dilde
+                // (Oromo, Somalice, Svahili, Hausa, Yoruba) kesilip hiç görünmüyordu.
             }
         }
     }
@@ -271,35 +297,69 @@ private fun OnayDiyalogu(cihazAdi: String, onEvet: () -> Unit, onHayir: () -> Un
         } catch (_: IllegalStateException) {
         }
     }
-    Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.96f)), contentAlignment = Alignment.Center) {
-        Column(
-            Modifier.width(780.dp).background(Renkler.kart, RoundedCornerShape(36.dp)).padding(horizontal = 56.dp, vertical = 48.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Box(Modifier.size(104.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
-                TelefonSimgesi(Renkler.birincil, Modifier.size(56.dp))
+    PencereKarti {
+        // Metin bloğu esner, düğmeler ASLA: pencere ekrandan uzun olunca Column son çocuğu
+        // 0 yükseklikle ölçüyordu → Tamilce/Malayalamcada düğmeler metinsiz boş çubuktu.
+        YaziyiSigdir(Modifier.weight(1f, fill = false), enKucukOlcek = 0.6f) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(Modifier.size(88.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
+                    TelefonSimgesi(Renkler.birincil, Modifier.size(48.dp))
+                }
+                Spacer(Modifier.height(18.dp))
+                Text(
+                    stringResource(R.string.esleme_onay_soru),
+                    color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(14.dp))
+                Text(cihazAdi, color = Renkler.birincil, fontSize = 36.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    stringResource(R.string.esleme_onay_aciklama),
+                    color = Renkler.metinIkincil, fontSize = 26.sp, textAlign = TextAlign.Center, lineHeight = 36.sp,
+                )
             }
-            Spacer(Modifier.height(20.dp))
-            Text("Bu telefonu ekleyelim mi?", color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(16.dp))
-            Text(cihazAdi, color = Renkler.birincil, fontSize = 36.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Eklenen telefon bu TV'ye konumunu ve kıldığı namazları gönderebilir.",
-                color = Renkler.metinIkincil, fontSize = 26.sp, textAlign = TextAlign.Center, lineHeight = 36.sp,
-            )
-            Spacer(Modifier.height(40.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(28.dp)) {
-                EslemeDugmesi("Ekleyin", onEvet, Modifier.focusRequester(odak), birincil = true, buyuk = true)
-                EslemeDugmesi("Hayır", onHayir, buyuk = true)
-            }
+        }
+        Spacer(Modifier.height(32.dp))
+        PencereDugmeleri {
+            EslemeDugmesi(stringResource(R.string.ekleyin), onEvet, Modifier.focusRequester(odak), birincil = true, buyuk = true)
+            EslemeDugmesi(stringResource(R.string.hayir), onHayir, buyuk = true)
         }
     }
 }
 
+/**
+ * Kumanda onay penceresinin kartı: ekranın güvenli alanıyla sınırlı (dikey 24 dp pay), içerik
+ * ortada. İçine bir [YaziyiSigdir] metin bloğu (`weight(1f, fill = false)`) + [PencereDugmeleri]
+ * konur: uzun dilde metin küçülür, düğmeler tam boy kalır.
+ */
+@Composable
+fun PencereKarti(icerik: @Composable ColumnScope.() -> Unit) {
+    Box(
+        Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.96f)).padding(vertical = 24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            Modifier.width(860.dp).background(Renkler.kart, RoundedCornerShape(36.dp)).padding(horizontal = 56.dp, vertical = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            content = icerik,
+        )
+    }
+}
+
+/** Pencerenin düğme sırası: sığmayan düğme alt satıra iner (dar kalıp etiketi kırılmaz). */
+@Composable
+fun PencereDugmeleri(icerik: @Composable () -> Unit) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(28.dp, Alignment.CenterHorizontally),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) { icerik() }
+}
+
 @Composable
 private fun Adim(sira: Int, metin: String) {
-    Row(Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+    // Sıkı ölçü (dikey 4 dp, 24/32 sp): esnek metin bloğu uzun dilde (Somalice: 3 satır alt
+    // başlık + iki satırlık iki adım + iki satırlık düğme) 3. adımı yarıdan kesiyordu (2026-10-30).
+    Row(Modifier.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier.size(48.dp).background(Renkler.kart, CircleShape),
             contentAlignment = Alignment.Center,
@@ -307,32 +367,35 @@ private fun Adim(sira: Int, metin: String) {
             Text("$sira", color = Renkler.birincil, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.width(16.dp))
-        Text(metin, color = Renkler.metin, fontSize = 26.sp, lineHeight = 34.sp)
+        Text(metin, color = Renkler.metin, fontSize = 24.sp, lineHeight = 32.sp)
     }
 }
 
 @Composable
 private fun GeldiMetni(il: Il, cihazAdi: String?) {
     Column(Modifier.semantics { liveRegion = LiveRegionMode.Polite }) {
-        Text(if (cihazAdi != null) "$cihazAdi eklendi" else "Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 30.sp)
+        Text(
+            if (cihazAdi != null) stringResource(R.string.esleme_eklendi, cihazAdi) else stringResource(R.string.konumunuz_geldi),
+            color = Renkler.metinIkincil,
+            fontSize = 30.sp,
+        )
         Spacer(Modifier.height(8.dp))
         Text(il.ad, color = Renkler.metin, fontSize = 64.sp, fontWeight = FontWeight.SemiBold, lineHeight = 72.sp)
         Spacer(Modifier.height(12.dp))
-        Text("Vakitler bu konuma göre hesaplanacak.", color = Renkler.metinIkincil, fontSize = 28.sp, lineHeight = 38.sp)
+        Text(stringResource(R.string.konuma_gore_hesaplanacak), color = Renkler.metinIkincil, fontSize = 28.sp, lineHeight = 38.sp)
     }
 }
 
 @Composable
 private fun QrKarti(metin: String, katlanma: Float, igne: Float, halka: Float, geldi: Boolean) {
     val qr = rememberQr(metin) ?: return
+    val aciklama = stringResource(if (geldi) R.string.qr_konum_alindi else R.string.qr_kodu)
     Box(
         Modifier
             .size(300.dp)
             .background(androidx.compose.ui.graphics.Color.White, RoundedCornerShape(24.dp))
             .padding(26.dp)
-            .semantics {
-                contentDescription = if (geldi) "Konum alındı" else "Telefonunuzla okutacağınız eşleştirme kodu"
-            },
+            .semantics { contentDescription = aciklama },
         contentAlignment = Alignment.Center,
     ) {
         Canvas(Modifier.fillMaxSize()) {
@@ -354,10 +417,10 @@ private fun AgYokKarti() {
     ) {
         Canvas(Modifier.size(84.dp)) { kopukAgCiz(Renkler.metinIkincil) }
         Spacer(Modifier.height(20.dp))
-        Text("TV ağa bağlı değil", color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.ag_yok), color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(10.dp))
         Text(
-            "Telefonunuzdaki 7 haneli kodu girerek ya da ilinizi seçerek devam edebilirsiniz.",
+            stringResource(R.string.ag_yok_aciklama),
             color = Renkler.metinIkincil, fontSize = 24.sp, lineHeight = 32.sp, textAlign = TextAlign.Center,
         )
     }

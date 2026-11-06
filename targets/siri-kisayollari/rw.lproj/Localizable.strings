@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Kinyarwanda terimler: src/core/dil/sozluk/rw (cami.ios rehberindeki eylem adlariyla birebir).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Iswala ikurikira";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Ivuga iswala ikurikira n’isaha itangiriraho.";
+"Şu anki vakti kıldım" = "Nasali iswala y’iki gihe";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Byemeza ko iswala y’iki gihe yasaliwe. Byandikwa igihe mufunguye porogaramu.";
+"Onay iste" = "Gusaba kwemeza";
+"Kıbleyi aç" = "Gufungura Qibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Bifungura porogaramu kuri kompasi ya Qibla.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Nasali";
+"Kıble" = "Qibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Izina ry’iswala ikurikira";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Itanga izina ry’iswala ikurikira. Mushobora kuyikoresha nk’ingingo muri Shortcuts.";
+"Sıradaki vakte kalan dakika" = "Iminota isigaye kugeza iswala ikurikira";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Itanga iminota isigaye ngo iswala ikurikira itangire. Niba nta makuru ahari, itanga -1.";
+"Şu anki vakit kılındı mı?" = "Iswala y’iki gihe yemejwe ko yasaliwe?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Itanga yego niba byemejwe ko iswala y’iki gihe yasaliwe. Itanga oya niba nta swala yo kwemeza ihari.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Ituze ry’iswala";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Itanga true mu minota ya mbere nyuma y’uko igihe cy’iswala gitangiye. Ikoreshwa muri Shortcuts gufungura Focus.";
+"Süre (dakika)" = "Igihe (iminota)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Iminota ${dakika} nyuma y’uko igihe cy’iswala gitangiye";
+"Namaz sessizliğinin bitişi" = "Iherezo ry’ituze ry’iswala";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Itanga isaha ituze rirangiriraho. Niba ubu nta tuze rihari, itanga igihe cy’ubu.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Iherezo ry’iminota ${dakika} nyuma y’uko igihe cy’iswala gitangiye";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Ibyibutsa by’iswala";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Igihe iyi Focus ifunguye, ibyibutsa by’iswala biza nta jwi kandi bitamurikira ekarani.";
+"Hatırlatmaları sessiz ver" = "Kohereza ibyibutsa bituje";
+"Hatırlatmalar sessiz gelir" = "Ibyibutsa biza bituje";
+"Hatırlatmalar her zamanki gibi" = "Ibyibutsa nk’uko bisanzwe";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Byemeza ko iswala igaragara kuri widijeti yasaliwe.";
+"Tarih" = "Itariki";
+"Vakit" = "Iswala";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Guhagarika alarume y’iswala";
+"Namazı kıldım" = "Nasali";
+"Alarm" = "Alarume";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Ishusho y’umurongo w’umunsi";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Itanga umurongo w’uyu munsi nk’ishusho ingana na ekarani yanyu. Mushobora kuyikoresha n’intambwe ya Set Wallpaper muri Shortcuts.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Mufungure porogaramu rimwe kugira ngo umurongo w’umunsi utegurwe.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Ishusho ntiyashoboye gutegurwa. Mwongere mugerageze nyuma gato.";

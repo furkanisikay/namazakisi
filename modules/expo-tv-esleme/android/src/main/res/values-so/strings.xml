@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Koodhka QR ee shaashadda telefishanka geli gudaha qaabka</string>
+    <string name="tvesleme_qr_vazgec">Ka noqo</string>
+    <string name="tvesleme_qr_vazgec_erisim">Ka noqo akhrinta</string>
+    <string name="tvesleme_qr_yabanci">Koodhkan QR ma aha mid Namaz Akışı TV. Akhri koodhka telefishanka.</string>
+    <string name="tvesleme_qr_okundu">Koodhka waa la akhriyay</string>
+</resources>

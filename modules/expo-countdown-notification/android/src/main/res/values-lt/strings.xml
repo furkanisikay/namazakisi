@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Tiesioginiai skaitikliai</string>
+    <string name="countdown_kanal_canli_aciklama">Atgalinė atskaita „Now Bar“ ir būsenos juostoje</string>
+    <string name="countdown_kanal_genel_ad">Atgalinės atskaitos pranešimai</string>
+    <string name="countdown_kanal_genel_aciklama">Atgalinės atskaitos pranešimų kanalas</string>
+
+    <string name="countdown_eylem_kildim">Atlikau maldą</string>
+    <string name="countdown_eylem_durdur">Sustabdyti</string>
+
+    <string name="countdown_yedek_vakit">Paskubėkite, maldos laikas tuoj baigsis.</string>
+    <string name="countdown_yedek_iftar">Laikas senka.</string>
+    <string name="countdown_yedek_sahur">Dar galite valgyti ir gerti; pasninkas netrukus prasidės.</string>
+    <string name="countdown_yedek_seri">Šiandienos maldos neužbaigtos; nepraraskite serijos.</string>
+
+    <string name="countdown_onek_vakit">Iki laiko pabaigos</string>
+    <string name="countdown_onek_vakit_dar">Laikas baigiasi</string>
+    <string name="countdown_onek_iftar">Iki iftaro</string>
+    <string name="countdown_onek_iftar_dar">Iki iftaro</string>
+    <string name="countdown_onek_sahur">Iki sahuro pabaigos</string>
+    <string name="countdown_onek_sahur_dar">Sahuras baigiasi</string>
+    <string name="countdown_onek_seri">Seriją išsaugoti liko</string>
+    <string name="countdown_onek_seri_dar">Serija baigiasi</string>
+</resources>

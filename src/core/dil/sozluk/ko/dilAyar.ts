@@ -1,0 +1,46 @@
+import { cogul } from '../../tipler';
+import type { Sozluk } from '../tr';
+
+export const dilAyar: Sozluk['dilAyar'] = {
+  baslik: '언어 · Language',
+  aciklama: '앱 언어를 선택하세요. 알림과 소리 내어 읽기에도 사용됩니다.',
+  grup: '앱 언어',
+  dilAdlari: { tr: '튀르키예어', en: '영어', id: '인도네시아어', de: '독일어', fr: '프랑스어', bs: '보스니아어', ru: '러시아어', ms: '말레이어', ar: '아랍어', ur: '우르두어', es: '스페인어', nl: '네덜란드어', sq: '알바니아어', hi: '힌디어', bn: '벵골어', fa: '페르시아어', ps: '파슈토어', ckb: '소라니 쿠르드어', ug: '위구르어', az: '아제르바이잔어', uz: '우즈베크어', kk: '카자흐어', ky: '키르기스어', tg: '타지크어', sw: '스와힐리어', ha: '하우사어', am: '암하라어', om: '오로모어', so: '소말리아어', ff: '풀라어', yo: '요루바어', zh: '중국어(간체)', ta: '타밀어', ml: '말라얄람어', th: '태국어', ko: '한국어', vi: '베트남어', pt: '포르투갈어', it: '이탈리아어', sv: '스웨덴어', uk: '우크라이나어', ro: '루마니아어', hr: '크로아티아어', sr: '세르비아어', el: '그리스어', ku: '쿠르드어 (Kurmancî)', tk: '투르크멘어', tt: '타타르어', sd: '신디어', pl: '폴란드어', ja: '일본어', gu: '구자라트어', bg: '불가리아어', mk: '마케도니아어', fil: '필리핀어', te: '텔루구어', kn: '칸나다어', mr: '마라티어', pa: '펀잡어(아랍 문자, 파키스탄)', as: '아삼어', ne: '네팔어', si: '싱할라어', km: '크메르어', he: '히브리어', ka: '조지아어', lt: '리투아니아어', mg: '말라가시어', lg: '간다어', rw: '르완다어', rn: '룬디어', ln: '링갈라어', dag: 'Dagbani', mos: '모시어', aa: '아파르어', mdh: 'Maguindanao', ak: '아칸어', ceb: '세부아노어', nqo: '응코어' },
+  cihazDili: '기기 언어',
+  cihazDiliKullaniliyor: '현재 {ad}',
+  cihazDiliDesteklenmiyor: '기기 언어는 아직 지원되지 않아 튀르키예어를 사용합니다.',
+  beta: '베타',
+  betaAciklama: '{ad} · 베타',
+  notlar: {
+    beta: '베타 번역은 검토 중이며 일부 문구가 정확하지 않을 수 있습니다.',
+    vakit: '언어는 예배 시간 계산 방식을 바꾸지 않습니다.',
+    nass: '튀르키예어 외의 언어에서는 꾸란 번역만 표시합니다. 하디스 본문은 튀르키예어 자료에서 가져오므로 표시하지 않습니다.',
+  },
+  ozelAnons: {
+    baslik: '직접 작성한 소리 내어 읽기 문구',
+    govde: cogul({
+      other: '직접 작성한 소리 내어 읽기 문구 {n}개가 아직 이전 언어로 되어 있습니다. 새 언어의 기본 문구로 바꿀까요?',
+    }),
+    degistir: '기본 문구로 바꾸기',
+    koru: '그대로 두기',
+    degisti: cogul({ other: '문구 {n}개를 바꿨습니다.' }),
+  },
+  vakitAdlari: {
+    baslik: '예배 이름',
+    aciklama: '예배 시간을 부르는 이름을 선택하세요.',
+    otomatik: '국가에 따라',
+    otomatikAciklama: '현재 위치한 국가에서 흔히 쓰는 이름을 사용합니다.',
+    takimlar: { temel: '아랍어 이름', diyanetDe: 'Diyanet(독일어)', turkce: '튀르키예어 이름', magrip: '마그레브식 표기', cezayir: '알제리식 표기', afgan: '아프가니스탄 이름' },
+  },
+  yazi: {
+    baslik: '문자',
+    aciklama: '글을 쓸 문자를 선택하세요.',
+    otomatik: '국가에 따라',
+    otomatikAciklama: '현재 위치한 국가에서 흔히 쓰는 문자를 사용합니다.',
+    latin: '라틴 문자',
+    kiril: '키릴 문자',
+  },
+  kaydedilemedi: '언어를 저장할 수 없습니다. 다시 시도하세요.',
+  sihirbazBaglantisi: '언어 · Language',
+  sihirbazBaglantisiAciklama: '앱 언어 바꾸기',
+};

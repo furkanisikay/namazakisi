@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gürcüce kaynaklar (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ka. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">მიმდინარე ლოცვა, როდის სრულდება და „ვილოცე“ ერთი შეხებით</string>
+  <string name="widget_genis_aciklama">დღის ხუთი ლოცვა, უკუთვლა და „ვილოცე“ ერთი შეხებით</string>
+  <string name="widget_kapak_adi">ლოცვის დროები გარე ეკრანზე</string>
+  <string name="widget_kapak_aciklama">დღის ლოცვის დროები და უკუთვლა Galaxy Z Flip-ის გარე ეკრანისთვის</string>
+  <string name="widget_klasik_adi">Namaz Akışı — კლასიკური</string>
+  <string name="widget_klasik_aciklama">კლასიკური მწვანე იერი: შემდეგ ლოცვამდე დარჩენილი დრო</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — კლასიკური ფართო</string>
+  <string name="widget_klasik_genis_aciklama">კლასიკური მწვანე იერი: უკუთვლა და დღის ლოცვის დროები</string>
+  <string name="widget_ayet_adi">დღის აიათი</string>
+  <string name="widget_ayet_aciklama">აიათი და მისი თარგმანი, ახლდება ყოველდღე ფაჯრზე</string>
+  <string name="widget_ayar_zemin_palet">აპის ფერი (ღია ტონი)</string>
+  <string name="widget_ayar_ayet_icerik">კვადრატულ ზომაზე ჩვენება</string>
+  <string name="widget_ayar_ayet_icerik_meal">თარგმანი</string>
+  <string name="widget_ayar_ayet_icerik_hat">არაბული ტექსტი (კალიგრაფია)</string>
+  <string name="kutu_kildim_etiket">ვილოცე</string>
+  <string name="kisayol_kildim_kisa">ვილოცე</string>
+  <string name="kisayol_kildim_uzun">მიმდინარე ლოცვა შევასრულე</string>
+  <string name="kisayol_kible_kisa">ყიბლა</string>
+  <string name="kisayol_kible_uzun">ყიბლის მიმართულების ჩვენება</string>
+  <string name="kisayol_kaza_kisa">ყადა ლოცვები</string>
+  <string name="kisayol_kaza_uzun">ყადა ლოცვების ჟურნალის გახსნა</string>
+  <string name="kildim_onay_baslik">მოვნიშნოთ %1$s შესრულებულად?</string>
+  <string name="kildim_onay_mesaj">გაურკვეველია, რომელმა აპმა გამოაგზავნა ეს მოთხოვნა. დაადასტურეთ, თუ შეასრულეთ.</string>
+  <string name="kildim_onay_evet">ვილოცე</string>
+  <string name="kildim_onay_vazgec">გაუქმება</string>
+  <string name="kildim_guven_baslik">მივცეთ %1$s-ს ლოცვების შესრულებულად მონიშვნის უფლება?</string>
+  <string name="kildim_guven_mesaj">ახლა მოსანიშნი ლოცვა: %1$s. გადაწყვეტილების შეცვლა მოგვიანებით შეგიძლიათ: პარამეტრები &gt; აპები, რომლებიც „ვილოცე“-ს ნიშნავენ.</string>
+  <string name="kildim_guven_tarayici_mesaj">ახლა მოსანიშნი ლოცვა: %1$s. ეს მოთხოვნა ბრაუზერიდან მოვიდა; რადგან ამ ბმულის გახსნა ნებისმიერ ვებგვერდს შეუძლია, მუდმივი ნებართვის მიცემა შეუძლებელია.</string>
+  <string name="kildim_guven_her_zaman">ყოველთვის დაშვება</string>
+  <string name="kildim_guven_bu_sefer">მხოლოდ ამჯერად</string>
+  <string name="kildim_guven_engelle">დაბლოკვა</string>
+  <string name="kildim_guven_engellendi">%1$s ლოცვების მონიშვნას ვეღარ შეძლებს. ამის შეცვლა პარამეტრებში შეგიძლიათ.</string>
+  <string name="widget_ayar_baslik">ვიჯეტის მორგება</string>
+  <string name="widget_ayar_zemin">ფონი</string>
+  <string name="widget_ayar_zemin_material">ფონის სურათის ფერები</string>
+  <string name="widget_ayar_zemin_sistem">სისტემური თემა</string>
+  <string name="widget_ayar_zemin_acik">ღია</string>
+  <string name="widget_ayar_zemin_koyu">მუქი</string>
+  <string name="widget_ayar_zemin_seffaf">გამჭვირვალე</string>
+  <string name="widget_ayar_opaklik">ფონის გაუმჭვირვალობა</string>
+  <string name="widget_ayar_gosterim">დიდი ტექსტით ჩვენება</string>
+  <string name="widget_ayar_gosterim_kalan">დარჩენილი დრო</string>
+  <string name="widget_ayar_gosterim_bitis">დასრულების დრო</string>
+  <string name="widget_ayar_gosterim_not">დასრულების დრო ყველა ზომაზე ჩანს.</string>
+  <string name="widget_ayar_sonraki">შემდეგი ლოცვის ჩვენება</string>
+  <string name="widget_ayar_vazgec">გაუქმება</string>
+  <string name="widget_ayar_kaydet">შენახვა</string>
+  <string name="kildim_onay_kanal_adi">„ვილოცე“-ს დადასტურება</string>
+  <string name="kildim_onay_kanal_aciklama">მშვიდი დადასტურება, რომელიც რამდენიმე წამით ჩანს, როცა შეტყობინებაში „ვილოცე“-ს შეეხებით</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">სრულდება %1$s</string>
+  <string name="widget_giris">იწყება %1$s</string>
+  <string name="widget_namaz_vakti">ლოცვის დრო</string>
+  <string name="widget_uygulamayi_acin">აპის გახსნა</string>
+  <string name="widget_siradaki">შემდეგი: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">ახლა მოსანიშნი ლოცვა არ არის</string>
+  <string name="widget_dugme_kildim">ვილოცე</string>
+  <string name="widget_dugme_isaretleniyor">ინიშნება</string>
+  <string name="widget_dugme_kilindi">შესრულებულია</string>
+  <string name="widget_dugme_vakit_girmedi">ჯერ არ დამდგარა</string>
+  <string name="widget_klasik_uygulamayi_acin">გახსენით აპი</string>
+  <string name="widget_klasik_erisim_veri_yok">ლოცვის დროების სანახავად გახსენით აპი</string>
+  <string name="widget_klasik_erisim_siradaki">შემდეგი ლოცვა: %1$s, იწყება %2$s-ზე</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ზუჰრი:</string>
+  <string name="widget_onizleme_klasik_genis">მაღრიბი:</string>
+  <string name="widget_onizleme_imsak">ფაჯრი</string>
+  <string name="widget_onizleme_gunes">მზის ამოსვლა</string>
+  <string name="widget_onizleme_ogle">ზუჰრი</string>
+  <string name="widget_onizleme_ikindi">ასრი</string>
+  <string name="widget_onizleme_aksam">მაღრიბი</string>
+  <string name="widget_onizleme_yatsi">იშა</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s მოინიშნა შესრულებულად. ალლაჰმა მიიღოს.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s უკვე მონიშნულია შესრულებულად.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">ახლა მოსანიშნი ლოცვა არ არის. შემდეგია %1$s, იწყება %2$s-ზე.</string>
+  <string name="kildim_sonuc_vakit_yok">ახლა მოსანიშნი ლოცვა არ არის.</string>
+  <string name="kildim_sonuc_veri_yok">ლოცვის დროის მონაცემები არ არის. ერთხელ გახსენით აპი.</string>
+  <string name="kildim_sonuc_vakit_degisti">ლოცვის დრო შეიცვალა, ამიტომ არაფერი მოინიშნა. სცადეთ ხელახლა.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">ნავიგაციის აპი ვერ გაიხსნა.</string>
+  <string name="arac_adsiz_cami">მეჩეთი</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">ლოცვის დროის მონაცემები ვერ წავიკითხეთ.</string>
+  <string name="asistan_isaretleme_yapilamadi">ლოცვა ვერ მოინიშნა.</string>
+  <string name="asistan_aciklama">შეგიძლიათ იკითხოთ ლოცვის დროები, მიმდინარე ლოცვა შესრულებულად მონიშნოთ და ყიბლის ეკრანი გახსნათ.</string>
+</resources>

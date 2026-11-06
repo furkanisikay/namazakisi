@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">នៅម៉ាស្ជិត</string>
+    <string name="camigeofence_kanal_durum_aciklama">សេចក្ដីជូនដំណឹងស្ងាត់ នៅពេលរកឃើញថាអ្នកនៅម៉ាស្ជិត</string>
+    <string name="camigeofence_kanal_soru_ad">ក្រោយចេញពីម៉ាស្ជិត</string>
+    <string name="camigeofence_kanal_soru_aciklama">សំណួរមួយដើម្បីឲ្យអ្នកអាចសម្គាល់សឡាតរបស់អ្នក ក្រោយពេលអ្នកចេញពីម៉ាស្ជិត</string>
+
+    <string name="camigeofence_govde_mod_sessiz">មុខងារសឡាតបើក។ ការរំលឹកនឹងមកដល់ដោយស្ងាត់។</string>
+    <string name="camigeofence_govde_mod">មុខងារសឡាតបើក។</string>
+    <string name="camigeofence_govde_sessiz">ការរំលឹកនឹងមកដល់ដោយស្ងាត់។</string>
+    <string name="camigeofence_govde_normal">ការរំលឹកនឹងមកដល់ដូចធម្មតា។</string>
+    <string name="camigeofence_eylem_modu_kapat">បិទមុខងារ</string>
+    <string name="camigeofence_eylem_cami_degil">មិនមែនជាម៉ាស្ជិត</string>
+
+    <string name="camigeofence_soru_baslik">អ្នកនៅម៉ាស្ជិតឬ?</string>
+    <string name="camigeofence_soru_govde">អ្នកនៅក្បែរ%1$s។ យើងមិនប្រាកដទេ ដូច្នេះយើងសួរអ្នក។</string>
+    <string name="camigeofence_varsayilan_ad">ម៉ាស្ជិត</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">បើកមុខងារសឡាត</string>
+    <string name="camigeofence_eylem_evet_camideyim">មែន ខ្ញុំនៅម៉ាស្ជិត</string>
+    <string name="camigeofence_eylem_hayir">ទេ</string>
+
+    <string name="camigeofence_kildiniz_mi">អ្នកបានសឡាត%1$sហើយឬ?</string>
+    <string name="camigeofence_kildiniz_mi_govde">អ្នកអាចសម្គាល់វាដោយប៉ះតែម្ដង។</string>
+    <string name="camigeofence_eylem_kildim">បានសឡាតហើយ</string>
+    <string name="camigeofence_namaz_imsak">ស៊ូពុស</string>
+    <string name="camigeofence_namaz_ogle">ហ្ស៊ូហូរ</string>
+    <string name="camigeofence_namaz_ikindi">អាសើរ</string>
+    <string name="camigeofence_namaz_aksam">ម៉ាហ្គ្រិប</string>
+    <string name="camigeofence_namaz_yatsi">អ៊ីស្ហា</string>
+    <string name="camigeofence_namaz_cuma">ជុមអាត់</string>
+
+    <string name="camigeofence_mod_kural_adi">សឡាត</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı បើកវាក្នុងពេលខុតហ្ពះជុមអាត់ នៅម៉ាស្ជិត ឬនៅពេលចូលពេលសឡាត</string>
+</resources>

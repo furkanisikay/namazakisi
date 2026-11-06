@@ -27,7 +27,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler, useTema } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
-import { bugunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
 import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
 import { useEkranSinifi } from '../../hooks/useEkranSinifi';
 
@@ -45,6 +45,8 @@ interface PagerProplari {
 const mockPagerProplari: PagerProplari[] = [];
 const mockPagerSetPage = jest.fn();
 const mockPagerSetPageWithoutAnimation = jest.fn();
+/** Pager'ın her mount'unda (doğuşunda) aldığı açılış sayfası. */
+const mockPagerDogumlari: number[] = [];
 
 // ── DateTimePicker: aldığı prop'ları dışa verir (referans stabilitesi ölçümü) ─
 interface TarihSeciciProplari {
@@ -63,6 +65,9 @@ jest.mock('react-native-pager-view', () => {
   const { View } = require('react-native');
   const Pager = ReactMock.forwardRef((props: PagerProplari, ref: unknown) => {
     mockPagerProplari.push(props);
+    ReactMock.useEffect(() => {
+      mockPagerDogumlari.push(props.initialPage);
+    }, []);
     ReactMock.useImperativeHandle(ref, () => ({
       setPage: mockPagerSetPage,
       setPageWithoutAnimation: mockPagerSetPageWithoutAnimation,
@@ -428,6 +433,7 @@ describe('AnaSayfa', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockPagerProplari.length = 0;
+    mockPagerDogumlari.length = 0;
     mockTarihSeciciProplari.length = 0;
     mockPagerCocuklari.ciz = false;
     mockVakitAkisiProplari.length = 0;
@@ -566,6 +572,35 @@ describe('AnaSayfa', () => {
 
       expect(mockPagerSetPage).not.toHaveBeenCalled();
       expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
+    });
+
+    /**
+     * Konum diskten açılıştan SONRA gelir: ilk hesap varsayılan konumla aktif günü dün
+     * bulur, pager orada doğar; gerçek konumla aktif gün bugün olur. İmperatif sayfa
+     * komutu native'de layout'tan önce yutulabildiği (ve ardından hiçbir olay gelmediği)
+     * için pager komut almaz, hedef sayfada YENİDEN doğar; yoksa ana ekran dünde kalır.
+     */
+    it('aktif gün açılıştan sonra değişince pager hedef sayfada yeniden doğar', async () => {
+      geceYarisiSenaryosu();
+      const ekran = await kur(gunEkle(bugunuAl(), -1));
+      expect(mockPagerProplari[0].initialPage).toBe(BUGUN_INDEKSI - 1);
+
+      {
+        // Konum diskten geldi: koordinat değişir, aktif gün yeniden hesaplanır (bugün).
+        gunduzSenaryosu();
+        const ilk = stateOlustur(gunEkle(bugunuAl(), -1));
+        const yeni = { ...ilk, konum: { ...ilk.konum, koordinatlar: { lat: 3.139, lng: 101.6869 } } };
+        (useAppSelector as unknown as jest.Mock).mockImplementation(
+          (selector: (s: typeof yeni) => unknown) => selector(yeni)
+        );
+        await act(async () => {
+          yenidenCiz(ekran);
+          await Promise.resolve();
+        });
+        expect(mockPagerDogumlari).toEqual([BUGUN_INDEKSI - 1, BUGUN_INDEKSI]);
+        expect(mockPagerSetPage).not.toHaveBeenCalled();
+        expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
+      }
     });
   });
 

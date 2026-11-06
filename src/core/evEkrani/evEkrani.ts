@@ -8,6 +8,7 @@
  */
 import type { GunVakitleri } from '../nafile/nafileVakitleri';
 import { gunEkle } from '../utils/TarihYardimcisi';
+import { canli } from '../dil/aktifDil';
 
 export interface Boyut {
     width: number;
@@ -45,14 +46,15 @@ export function evEkraniSunulurMu(ekran: Boyut): boolean {
 
 export type PanoVakti = 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
 export const PANO_VAKITLERI: readonly PanoVakti[] = ['imsak', 'gunes', 'ogle', 'ikindi', 'aksam', 'yatsi'];
-export const PANO_ADLARI: Record<PanoVakti, string> = {
-    imsak: 'İmsak',
-    gunes: 'Güneş',
-    ogle: 'Öğle',
-    ikindi: 'İkindi',
-    aksam: 'Akşam',
-    yatsi: 'Yatsı',
-};
+/** Pano çizelgesi Diyanet gibi "İmsak" yazar (vakit adı "Sabah" değil); canlı görünüm. */
+export const PANO_ADLARI: Readonly<Record<PanoVakti, string>> = canli((s) => ({
+    imsak: s.vakit.imsakVakti,
+    gunes: s.vakit.adlar.gunes,
+    ogle: s.vakit.adlar.ogle,
+    ikindi: s.vakit.adlar.ikindi,
+    aksam: s.vakit.adlar.aksam,
+    yatsi: s.vakit.adlar.yatsi,
+}));
 
 export interface PanoDurumu {
     /** Gösterilen namaz günü (ISO). */

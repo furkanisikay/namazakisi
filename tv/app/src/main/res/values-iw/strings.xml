@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İbranice (he; Android niteleyicisi values-iw). Terimler: docs/ajan/coklu-dil.md terim sözlüğü + src/core/dil/sozluk/he. Geresh ASCII "'" → XML'de \'. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">he</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">לוח זמני התפילה</string>
+    <string name="ayarlar">הגדרות</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">נותרו %2$s עד %1$s</string>
+    <string name="pano_vaktine">עד %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s בעוד %2$s</string>
+    <string name="pano_kerahat_vakti">זמן מכרוה</string>
+    <string name="pano_bitis">מסתיים ב-%1$s</string>
+    <string name="pano_kerahat_erisim">זמן מכרוה, %1$s, מסתיים ב-%2$s. %3$s</string>
+    <string name="pano_cumaya">ג\'ומעה בעוד %1$s</string>
+    <string name="pano_cikis_geldi">הגיע הזמן לצאת</string>
+    <string name="pano_cikis">יציאה ב-%1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">הגיע הזמן לצאת לג\'ומעה</string>
+    <string name="pano_cuma_cikis_erisim">יציאה לג\'ומעה ב-%1$s</string>
+    <string name="pano_bugun_cuma">היום ג\'ומעה</string>
+    <string name="pano_ogle">זוהר %1$s</string>
+    <string name="pano_bugun_cuma_erisim">היום ג\'ומעה. תפילת ג\'ומעה בזמן זוהר, %1$s</string>
+    <string name="pano_ayarlar_erisim">הגדרות: הוספת טלפון, מיקום, טלפונים מחוברים</string>
+    <string name="pano_simdiki_vakit">זמן התפילה הנוכחי</string>
+    <string name="pano_siradaki_vakit">זמן התפילה הבא</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "הוספת הטלפון שלכם", "הזנה עם קוד", "אבחר מחוז בעצמי", "הוספה". -->
+    <string name="kodla_girin">הזנה עם קוד</string>
+    <string name="ili_kendim_secin">אבחר מחוז בעצמי</string>
+    <string name="yeniden_deneyin">נסו שוב</string>
+    <string name="telefon_varsayilan">טלפון</string>
+    <string name="esleme_ekleniyor">מוסיף את %1$s</string>
+    <string name="esleme_gonderiyor">הטלפון שולח את המיקום והמצב שלו…</string>
+    <string name="esleme_tamamlanamadi">לא ניתן היה להשלים את הצימוד</string>
+    <string name="esleme_saklanamadi">הטלוויזיה הזאת לא יכולה לשמור את מפתח החיבור באופן מאובטח. אפשר להזין את המיקום עם קוד או לבחור את המחוז.</string>
+    <string name="telefonunuzu_ekleyin">הוספת הטלפון שלכם</string>
+    <string name="esleme_alt">זמני התפילה לפי המיקום שלכם; גם התפילות שהתפללתם מופיעות.</string>
+    <string name="esleme_adim1">פתחו את Namaz Akışı בטלפון</string>
+    <string name="esleme_adim2">הגדרות › המכשירים שלי › הוספת טלוויזיה</string>
+    <string name="esleme_adim3">כוונו את מצלמת הטלפון אל הקוד</string>
+    <string name="esleme_ayni_wifi">הטלפון והטלוויזיה צריכים להיות באותה רשת Wi-Fi.</string>
+    <string name="esleme_onay_soru">להוסיף את הטלפון הזה?</string>
+    <string name="esleme_onay_aciklama">הטלפון שנוסף יכול לשלוח לטלוויזיה הזאת את המיקום שלו ואת התפילות שהוא מסמן.</string>
+    <string name="ekleyin">הוספה</string>
+    <string name="hayir">לא</string>
+    <string name="esleme_eklendi">%1$s נוסף</string>
+    <string name="konumunuz_geldi">המיקום שלכם התקבל</string>
+    <string name="konuma_gore_hesaplanacak">זמני התפילה יחושבו לפי המיקום הזה.</string>
+    <string name="qr_konum_alindi">המיקום התקבל</string>
+    <string name="qr_kodu">קוד צימוד לסריקה בטלפון</string>
+    <string name="ag_yok">הטלוויזיה לא מחוברת לרשת</string>
+    <string name="ag_yok_aciklama">אפשר להמשיך עם הקוד בן 7 הספרות מהטלפון או בבחירת המחוז.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">הזינו את הקוד מהטלפון</string>
+    <string name="kod_yol">בטלפון: הגדרות › המכשירים שלי › הוספת טלוויזיה</string>
+    <string name="kod_hatali">הקוד לא תאם. בדקו את 7 הספרות בטלפון; ספרה שגויה מתקנים עם ”%1$s”.</string>
+    <string name="kod_rakamli_kumanda">אם יש בשלט מקשי ספרות, אפשר להקליד גם בהם.</string>
+    <string name="kod_bos_hane">ספרה ריקה</string>
+    <string name="kod_sil">מחיקה</string>
+    <string name="kod_sil_aciklama">מחיקת הספרה האחרונה</string>
+    <string name="kod_geri">חזרה</string>
+    <string name="vazgecin">ביטול</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">בחרו את המחוז</string>
+    <string name="il_merkezine_gore">זמני התפילה מחושבים לפי מרכז המחוז.</string>
+    <string name="il_secili">%1$s, נבחר</string>
+    <string name="dream_il_yok">כדי לראות את לוח זמני התפילה, פתחו את אפליקציית Namaz Akışı ובחרו את המחוז.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">מיקום: %1$s</string>
+    <string name="ayar_konum_yok">לא נבחר מיקום</string>
+    <string name="ayar_telefon_ekleyin">הוספת טלפון</string>
+    <string name="ayar_konumu_kodla">הזנת מיקום עם קוד</string>
+    <string name="ayar_bagli_telefonlar">טלפונים שמחוברים לטלוויזיה הזאת</string>
+    <string name="ayar_telefon_yok">עוד לא נוסף טלפון. בחרו ”%1$s” וסרקו את הקוד שמופיע.</string>
+    <string name="kaldirin">הסרה</string>
+    <string name="ayar_ne_gonderir">מה הטלפונים שולחים?</string>
+    <string name="ayar_madde_konum">מיקום: זמני התפילה עוקבים אחריו</string>
+    <string name="ayar_madde_namazlar">התפילות שסומנו, למי שבוחר בכך</string>
+    <string name="ayar_madde_sifreli">מוצפן, רק ברשת הביתית שלכם</string>
+    <string name="son_haber_yok">עדיין אין מידע</string>
+    <string name="son_haber_az_once">ממש עכשיו</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">לפני %1$d דק׳</item>
+        <item quantity="two">לפני %1$d דק׳</item>
+        <item quantity="many">לפני %1$d דק׳</item>
+        <item quantity="other">לפני %1$d דק׳</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">לפני %1$d שע׳</item>
+        <item quantity="two">לפני %1$d שע׳</item>
+        <item quantity="many">לפני %1$d שע׳</item>
+        <item quantity="other">לפני %1$d שע׳</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">לפני %1$d יום</item>
+        <item quantity="two">לפני %1$d ימים</item>
+        <item quantity="many">לפני %1$d ימים</item>
+        <item quantity="other">לפני %1$d ימים</item>
+    </plurals>
+    <string name="kaldir_soru">להסיר את %1$s?</string>
+    <string name="kaldir_aciklama">הטלפון הזה לא יוכל עוד לשלוח מידע לטלוויזיה. כדי להוסיף אותו שוב, צריך לסרוק שוב את קוד ה-QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">המיקום של הטלפון שלכם</string>
+</resources>

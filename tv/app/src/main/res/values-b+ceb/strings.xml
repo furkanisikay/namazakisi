@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sebuano. Terimler: src/core/dil/sozluk/ceb. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ceb</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Pisara sa mga oras sa Salah</string>
+    <string name="ayarlar">Mga setting</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s ang nahabilin hangtod sa %1$s</string>
+    <string name="pano_vaktine">Hangtod sa %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s sulod sa %2$s</string>
+    <string name="pano_kerahat_vakti">Makruh nga oras</string>
+    <string name="pano_bitis">matapos %1$s</string>
+    <string name="pano_kerahat_erisim">Makruh nga oras, %1$s, matapos %2$s. %3$s</string>
+    <string name="pano_cumaya">Jum\'ah sulod sa %1$s</string>
+    <string name="pano_cikis_geldi">oras na sa paglakaw</string>
+    <string name="pano_cikis">lakaw sa %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Oras na sa paglakaw alang sa Jum\'ah</string>
+    <string name="pano_cuma_cikis_erisim">Lakaw alang sa Jum\'ah sa %1$s</string>
+    <string name="pano_bugun_cuma">Jum\'ah karon</string>
+    <string name="pano_ogle">Dhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Jum\'ah karon. Ang Salah sa Jum\'ah anaa sa oras sa Dhuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Mga setting: idugang ang telepono, lokasyon, konektadong mga telepono</string>
+    <string name="pano_simdiki_vakit">karon nga oras sa Salah</string>
+    <string name="pano_siradaki_vakit">sunod nga oras sa Salah</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Idugang ang inyong telepono", "Isulod ang code", "Ako ang mopili sa siyudad", "Idugang". -->
+    <string name="kodla_girin">Isulod ang code</string>
+    <string name="ili_kendim_secin">Ako ang mopili sa siyudad</string>
+    <string name="yeniden_deneyin">Sulayi pag-usab</string>
+    <string name="telefon_varsayilan">Telepono</string>
+    <string name="esleme_ekleniyor">Gidugang ang %1$s</string>
+    <string name="esleme_gonderiyor">Gipadala sa inyong telepono ang lokasyon ug kahimtang niini…</string>
+    <string name="esleme_tamamlanamadi">Dili mahuman ang pag-pair</string>
+    <string name="esleme_saklanamadi">Dili luwas nga matipigan niining TV ang yawe sa koneksyon. Maisulod ninyo ang inyong lokasyon gamit ang code o mopili sa inyong siyudad.</string>
+    <string name="telefonunuzu_ekleyin">Idugang ang inyong telepono</string>
+    <string name="esleme_alt">Mga oras sa Salah alang sa inyong lokasyon; makita usab ang mga Salah nga inyong nahimo.</string>
+    <string name="esleme_adim1">Ablihi ang Namaz Akışı sa inyong telepono</string>
+    <string name="esleme_adim2">Mga setting › Akong mga device › Idugang ang TV</string>
+    <string name="esleme_adim3">Itumong ang kamera sa telepono ngadto sa code</string>
+    <string name="esleme_ayni_wifi">Kinahanglan anaa sa samang Wi-Fi network ang inyong telepono ug TV.</string>
+    <string name="esleme_onay_soru">Idugang kining telepono?</string>
+    <string name="esleme_onay_aciklama">Ang gidugang nga telepono makapadala sa lokasyon niini ug sa mga Salah nga gimarkahan niini ngadto niining TV.</string>
+    <string name="ekleyin">Idugang</string>
+    <string name="hayir">Dili</string>
+    <string name="esleme_eklendi">Gidugang ang %1$s</string>
+    <string name="konumunuz_geldi">Miabot ang inyong lokasyon</string>
+    <string name="konuma_gore_hesaplanacak">Ang mga oras sa Salah kuwentahon alang niining lokasyon.</string>
+    <string name="qr_konum_alindi">Nadawat ang lokasyon</string>
+    <string name="qr_kodu">Pairing code nga i-scan gamit ang inyong telepono</string>
+    <string name="ag_yok">Wala makonektar ang TV sa network</string>
+    <string name="ag_yok_aciklama">Makapadayon kamo pinaagi sa pagsulod sa 7-digit nga code gikan sa inyong telepono o sa pagpili sa inyong siyudad.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Isulod ang code gikan sa inyong telepono</string>
+    <string name="kod_yol">Sa inyong telepono: Mga setting › Akong mga device › Idugang ang TV</string>
+    <string name="kod_hatali">Wala magtugma ang code. Susiha ang 7 ka numero sa inyong telepono; ayoha ang sayop nga numero gamit ang “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Kon adunay mga numero ang inyong remote, makatype usab kamo gamit kini.</string>
+    <string name="kod_bos_hane">bakanteng numero</string>
+    <string name="kod_sil">Papasa</string>
+    <string name="kod_sil_aciklama">Papasa ang katapusang numero</string>
+    <string name="kod_geri">Balik</string>
+    <string name="vazgecin">Kanselaha</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Pilia ang inyong siyudad</string>
+    <string name="il_merkezine_gore">Ang mga oras sa Salah gikuwenta alang sa sentro sa siyudad.</string>
+    <string name="il_secili">%1$s, napili</string>
+    <string name="dream_il_yok">Aron makita ang pisara sa mga oras sa Salah, ablihi ang Namaz Akışı nga app ug pilia ang inyong siyudad.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Lokasyon: %1$s</string>
+    <string name="ayar_konum_yok">Walay napiling lokasyon</string>
+    <string name="ayar_telefon_ekleyin">Idugang ang telepono</string>
+    <string name="ayar_konumu_kodla">Isulod ang lokasyon gamit ang code</string>
+    <string name="ayar_bagli_telefonlar">Mga telepono nga konektado niining TV</string>
+    <string name="ayar_telefon_yok">Wala pay telepono nga gidugang. Gamita ang “%1$s” sa wala ug i-scan ang code nga makita.</string>
+    <string name="kaldirin">Kuhaa</string>
+    <string name="ayar_ne_gonderir">Unsay ipadala sa mga telepono?</string>
+    <string name="ayar_madde_konum">Lokasyon: ang mga oras sa Salah nagsunod niini</string>
+    <string name="ayar_madde_namazlar">Mga Salah nga gimarkahan, alang sa mopili niini</string>
+    <string name="ayar_madde_sifreli">Naka-encrypt, sa network lang sa inyong balay</string>
+    <string name="son_haber_yok">Wala pay impormasyon</string>
+    <string name="son_haber_az_once">Karon lang</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d min ang milabay</item>
+        <item quantity="other">%1$d min ang milabay</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d ka oras ang milabay</item>
+        <item quantity="other">%1$d ka oras ang milabay</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d ka adlaw ang milabay</item>
+        <item quantity="other">%1$d ka adlaw ang milabay</item>
+    </plurals>
+    <string name="kaldir_soru">Kuhaon ang %1$s?</string>
+    <string name="kaldir_aciklama">Kining telepono dili na makapadala og impormasyon sa TV. Aron idugang pag-usab, kinahanglan ninyong i-scan pag-usab ang QR code.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Lokasyon sa inyong telepono</string>
+</resources>

@@ -107,6 +107,13 @@ final class SaatBaglantisi: NSObject, ObservableObject, WCSessionDelegate, @unch
     }
 
     private func yukuIsle(_ baglam: [String: Any]) {
+        // Arayuz dili (W5) yukun kardesidir: yuk ayni kalsa da dil degismis olabilir →
+        // gorunumler, komplikasyonlar ve bildirim eylemi yeni dille yeniden cizilir.
+        if let dil = SaatIletisi.dil(baglam), depo.diliYaz(dil) {
+            WidgetCenter.shared.reloadAllTimelines()
+            SaatHatirlatici.paylasilan.kategorileriKur()
+            degisti()
+        }
         guard let json = SaatIletisi.yukJson(baglam) else { return }
         if depo.yeniYukuIsle(json, simdiMs: SaatDeposu.simdiMs()) {
             WidgetCenter.shared.reloadAllTimelines()

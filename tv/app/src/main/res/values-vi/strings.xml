@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamca. Terimler: src/core/dil/sozluk/vi (Salah, Masjid, Jumu’ah, thời điểm cấm). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">vi</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Bảng giờ Salah</string>
+    <string name="ayarlar">Cài đặt</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Còn %2$s đến %1$s</string>
+    <string name="pano_vaktine">Đến %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s sau %2$s</string>
+    <string name="pano_kerahat_vakti">Thời điểm cấm</string>
+    <string name="pano_bitis">kết thúc %1$s</string>
+    <string name="pano_kerahat_erisim">Thời điểm cấm, %1$s, kết thúc %2$s. %3$s</string>
+    <string name="pano_cumaya">Jumu’ah sau %1$s</string>
+    <string name="pano_cikis_geldi">đến lúc lên đường</string>
+    <string name="pano_cikis">lên đường lúc %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Đã đến lúc lên đường đi Jumu’ah</string>
+    <string name="pano_cuma_cikis_erisim">Lên đường đi Jumu’ah lúc %1$s</string>
+    <string name="pano_bugun_cuma">Hôm nay là Jumu’ah</string>
+    <string name="pano_ogle">Zhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Hôm nay là Jumu’ah. Salah Jumu’ah vào giờ Zhuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Cài đặt: thêm điện thoại, vị trí, điện thoại đã kết nối</string>
+    <string name="pano_simdiki_vakit">giờ Salah hiện tại</string>
+    <string name="pano_siradaki_vakit">giờ Salah tiếp theo</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Thêm điện thoại", "Nhập mã", "Tôi sẽ tự chọn thành phố", "Thêm". -->
+    <string name="kodla_girin">Nhập mã</string>
+    <string name="ili_kendim_secin">Tôi sẽ tự chọn thành phố</string>
+    <string name="yeniden_deneyin">Thử lại</string>
+    <string name="telefon_varsayilan">Điện thoại</string>
+    <string name="esleme_ekleniyor">Đang thêm %1$s</string>
+    <string name="esleme_gonderiyor">Điện thoại đang gửi vị trí và trạng thái…</string>
+    <string name="esleme_tamamlanamadi">Không thể hoàn tất ghép nối</string>
+    <string name="esleme_saklanamadi">TV này không thể lưu khóa kết nối một cách an toàn. Bạn có thể nhập vị trí bằng mã hoặc chọn thành phố.</string>
+    <string name="telefonunuzu_ekleyin">Thêm điện thoại</string>
+    <string name="esleme_alt">Giờ Salah cho vị trí của bạn; các lần Salah bạn đã hành lễ cũng được hiển thị.</string>
+    <string name="esleme_adim1">Mở Namaz Akışı trên điện thoại</string>
+    <string name="esleme_adim2">Cài đặt › Thiết bị của tôi › Thêm TV</string>
+    <string name="esleme_adim3">Hướng máy ảnh điện thoại vào mã</string>
+    <string name="esleme_ayni_wifi">Điện thoại và TV phải dùng cùng mạng Wi-Fi.</string>
+    <string name="esleme_onay_soru">Thêm điện thoại này?</string>
+    <string name="esleme_onay_aciklama">Điện thoại được thêm có thể gửi vị trí và các lần Salah đã đánh dấu đến TV này.</string>
+    <string name="ekleyin">Thêm</string>
+    <string name="hayir">Không</string>
+    <string name="esleme_eklendi">Đã thêm %1$s</string>
+    <string name="konumunuz_geldi">Đã nhận vị trí của bạn</string>
+    <string name="konuma_gore_hesaplanacak">Giờ Salah sẽ được tính cho vị trí này.</string>
+    <string name="qr_konum_alindi">Đã nhận vị trí</string>
+    <string name="qr_kodu">Mã ghép nối để quét bằng điện thoại</string>
+    <string name="ag_yok">TV chưa kết nối mạng</string>
+    <string name="ag_yok_aciklama">Bạn có thể tiếp tục bằng cách nhập mã 7 chữ số từ điện thoại hoặc chọn thành phố.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Nhập mã từ điện thoại</string>
+    <string name="kod_yol">Trên điện thoại: Cài đặt › Thiết bị của tôi › Thêm TV</string>
+    <string name="kod_hatali">Mã không khớp. Hãy kiểm tra 7 chữ số trên điện thoại; sửa chữ số sai bằng “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Nếu điều khiển có phím số, bạn cũng có thể nhập bằng các phím đó.</string>
+    <string name="kod_bos_hane">chữ số trống</string>
+    <string name="kod_sil">Xóa</string>
+    <string name="kod_sil_aciklama">Xóa chữ số cuối</string>
+    <string name="kod_geri">Quay lại</string>
+    <string name="vazgecin">Hủy</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Chọn thành phố</string>
+    <string name="il_merkezine_gore">Giờ Salah được tính cho trung tâm thành phố.</string>
+    <string name="il_secili">%1$s, đã chọn</string>
+    <string name="dream_il_yok">Để xem bảng giờ Salah, hãy mở ứng dụng Namaz Akışı và chọn thành phố.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Vị trí: %1$s</string>
+    <string name="ayar_konum_yok">Chưa chọn vị trí</string>
+    <string name="ayar_telefon_ekleyin">Thêm điện thoại</string>
+    <string name="ayar_konumu_kodla">Nhập vị trí bằng mã</string>
+    <string name="ayar_bagli_telefonlar">Điện thoại đã kết nối với TV này</string>
+    <string name="ayar_telefon_yok">Chưa thêm điện thoại nào. Dùng “%1$s” ở bên trái và quét mã hiện ra.</string>
+    <string name="kaldirin">Gỡ</string>
+    <string name="ayar_ne_gonderir">Điện thoại gửi những gì?</string>
+    <string name="ayar_madde_konum">Vị trí: giờ Salah được tính theo vị trí này</string>
+    <string name="ayar_madde_namazlar">Các lần Salah đã đánh dấu, nếu người dùng chọn</string>
+    <string name="ayar_madde_sifreli">Được mã hóa, chỉ trong mạng gia đình</string>
+    <string name="son_haber_yok">Chưa có thông tin</string>
+    <string name="son_haber_az_once">Vừa xong</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">%1$d phút trước</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">%1$d giờ trước</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">%1$d ngày trước</item>
+    </plurals>
+    <string name="kaldir_soru">Gỡ %1$s?</string>
+    <string name="kaldir_aciklama">Điện thoại này sẽ không thể gửi thông tin đến TV nữa. Để thêm lại, bạn cần quét lại mã QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Vị trí trên điện thoại của bạn</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Ipasok sa frame ang QR code sa screen ng TV</string>
+    <string name="tvesleme_qr_vazgec">Kanselahin</string>
+    <string name="tvesleme_qr_vazgec_erisim">Kanselahin ang pag-scan</string>
+    <string name="tvesleme_qr_yabanci">Hindi para sa Namaz Akışı TV ang QR code na ito. I-scan ang code sa TV.</string>
+    <string name="tvesleme_qr_okundu">Na-scan ang code</string>
+</resources>

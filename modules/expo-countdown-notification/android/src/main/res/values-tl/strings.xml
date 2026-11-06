@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Mga live na countdown</string>
+    <string name="countdown_kanal_canli_aciklama">Mga countdown sa Now Bar at sa status bar</string>
+    <string name="countdown_kanal_genel_ad">Mga notification ng countdown</string>
+    <string name="countdown_kanal_genel_aciklama">Channel para sa mga notification ng countdown</string>
+
+    <string name="countdown_eylem_kildim">Nagdasal ako</string>
+    <string name="countdown_eylem_durdur">Ihinto</string>
+
+    <string name="countdown_yedek_vakit">Magmadali, malapit nang matapos ang oras ng dasal.</string>
+    <string name="countdown_yedek_iftar">Nauubos na ang oras.</string>
+    <string name="countdown_yedek_sahur">Makakakain at makakainom pa kayo; malapit nang magsimula ang ayuno.</string>
+    <string name="countdown_yedek_seri">Hindi pa kumpleto ang mga dasal ngayon; huwag mawala ang inyong sunod-sunod.</string>
+
+    <string name="countdown_onek_vakit">Bago matapos ang oras</string>
+    <string name="countdown_onek_vakit_dar">Matatapos na</string>
+    <string name="countdown_onek_iftar">Bago ang iftar</string>
+    <string name="countdown_onek_iftar_dar">Bago ang iftar</string>
+    <string name="countdown_onek_sahur">Bago matapos ang sahur</string>
+    <string name="countdown_onek_sahur_dar">Matatapos ang sahur</string>
+    <string name="countdown_onek_seri">Para iligtas ang sunod-sunod</string>
+    <string name="countdown_onek_seri_dar">Matatapos ang araw</string>
+</resources>

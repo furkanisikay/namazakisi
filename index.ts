@@ -14,6 +14,15 @@ configureReanimatedLogger({
 
 import App from './App';
 
+// Hesap ayarı (yöntem/ikindi/dakika) ve arayüz dili HER JS bağlamında vakit/metin üretiminden ÖNCE yüklenir:
+// headless/arka plan bağlamında App.tsx hiç çalışmaz; beklenmezse vakitler Diyanet'le
+// hesaplanır (yurt dışı kullanıcıda yanlış saat). ASLA reddetmez. Kılınmışlık dinleyicisi kuran
+// servisler de (widget, camideyim, yatış, TV…) bu kapıdan sonra yüklenir: dinleyici vakit hesaplar.
+const baglamHazirBekle = (): Promise<void> =>
+    import('./src/domain/services/baglamHazir')
+        .then(({ baglamHazir }) => baglamHazir())
+        .catch(() => undefined);
+
 // notifee arka plan olay işleyicisi (Android sayaç için)
 // Uygulama kapalıyken/arka plandayken "Kıldım" aksiyonunu yakalar.
 // Headless JS ortamında olduğumuz için her bloğu ayrı try-catch ile koruyoruz:
@@ -25,6 +34,7 @@ if (Platform.OS === 'android') {
         if (!bildirimId) {
             return;
         }
+        await baglamHazirBekle();
 
         // Sayac asama gecisi: onceki asama bildirimlerini iptal et
         if (type === EventType.DELIVERED) {
@@ -58,6 +68,7 @@ if (Platform.OS === 'android') {
     try {
         AppRegistry.registerHeadlessTask('KildimKuyrugu', () => async () => {
             try {
+                await baglamHazirBekle();
                 const { KildimKuyruguServisi } = await import('./src/domain/services/KildimKuyruguServisi');
                 await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
             } catch {
@@ -70,7 +81,8 @@ if (Platform.OS === 'android') {
     // Widget kılınmışlık tazelemesi HER JS bağlamında (headless dahil) kurulsun:
     // bildirimdeki "Kıldım" uygulama kapalıyken işlenince widget da ≤1 sn'de
     // güncellenmeli; App.tsx o bağlamda hiç yüklenmez (issue #275).
-    import('./src/domain/services/WidgetServisi')
+    baglamHazirBekle()
+        .then(() => import('./src/domain/services/WidgetServisi'))
         .then(({ WidgetServisi }) => WidgetServisi.getInstance().baslat())
         .catch(() => undefined);
 }
@@ -82,6 +94,7 @@ if (Platform.OS === 'android') {
     try {
         AppRegistry.registerHeadlessTask('CamiKildim', () => async () => {
             try {
+                await baglamHazirBekle();
                 const { CamideyimServisi } = await import('./src/domain/services/CamideyimServisi');
                 await CamideyimServisi.getInstance().bekleyenKildimleriIsle();
             } catch {
@@ -94,7 +107,8 @@ if (Platform.OS === 'android') {
     // Namaz modu "Kıldım deyince kapansın" dinleyicisi HER JS bağlamında (headless
     // dahil): uygulama kapalıyken bildirimden "Kıldım" işlenince mod da kapanmalı;
     // App.tsx o bağlamda hiç yüklenmez. `baslat` idempotenttir (App.tsx de çağırır).
-    import('./src/domain/services/CamideyimServisi')
+    baglamHazirBekle()
+        .then(() => import('./src/domain/services/CamideyimServisi'))
         .then(({ CamideyimServisi }) => CamideyimServisi.getInstance().baslat())
         .catch(() => undefined);
 }
@@ -103,30 +117,36 @@ if (Platform.OS === 'android') {
 // yeniden planlanır. HER JS bağlamında (headless dahil): bildirimden "Kıldım"
 // uygulama kapalıyken işlenince muhasebe içeriği bayat kalmasın. İdempotent.
 if (Platform.OS === 'android') {
-    import('./src/domain/services/YatisHatirlatmaServisi')
+    baglamHazirBekle()
+        .then(() => import('./src/domain/services/YatisHatirlatmaServisi'))
         .then(({ YatisHatirlatmaServisi }) => YatisHatirlatmaServisi.getInstance().baslat())
         .catch(() => undefined);
     // Gün sonu seri hatırlatması: gün headless "Kıldım" ile tamamlanınca o günün tetiği kalksın.
-    import('./src/domain/services/GunSonuHatirlaticiServisi')
+    baglamHazirBekle()
+        .then(() => import('./src/domain/services/GunSonuHatirlaticiServisi'))
         .then(({ gunSonuDinleyicisiniBaslat }) => gunSonuDinleyicisiniBaslat())
         .catch(() => undefined);
     // Takvim çakışması (issue #291): kılınan vaktin uyarısı headless'ta da iptal edilsin.
-    import('./src/domain/services/TakvimCakismaServisi')
+    baglamHazirBekle()
+        .then(() => import('./src/domain/services/TakvimCakismaServisi'))
         .then(({ TakvimCakismaServisi }) => TakvimCakismaServisi.getInstance().baslat())
         .catch(() => undefined);
     // Kaza Defteri 2.0: bildirimden "Kıldım" headless işlenince otomatik kaza
     // tarama günlüğü de tazelensin (sayılar zaten kayıttan türer). İdempotent.
-    import('./src/domain/services/KazaDefteriServisi')
+    baglamHazirBekle()
+        .then(() => import('./src/domain/services/KazaDefteriServisi'))
         .then((KazaDefteriServisi) => KazaDefteriServisi.baslat())
         .catch(() => undefined);
     // Cihaz ağı: bildirimden "Kıldım" headless işlenince eşleşik TV'ler de tazelensin
     // (adlı yuva 'tv'; idempotent, App.tsx de çağırır).
-    import('./src/domain/services/TvSenkronServisi')
+    baglamHazirBekle()
+        .then(() => import('./src/domain/services/TvSenkronServisi'))
         .then(({ TvSenkronServisi }) => TvSenkronServisi.getInstance().baslat())
         .catch(() => undefined);
     // Çift yönlü eşler (tablet ↔ telefon): headless "Kıldım" da eşe gönderilsin (yuva 'cihazEs').
     // Eş yalnız ön plandayken dinler; ulaşılamazsa bir sonraki açılışta tamamlanır.
-    import('./src/domain/services/CihazEsServisi')
+    baglamHazirBekle()
+        .then(() => import('./src/domain/services/CihazEsServisi'))
         .then(({ CihazEsServisi }) => CihazEsServisi.getInstance().baslat())
         .catch(() => undefined);
 }
@@ -144,6 +164,7 @@ if (Platform.OS === 'android') {
         TaskManager.defineTask(MUHAFIZ_YANIT_GOREVI, async ({ data, error }) => {
             if (error || !data) return;
             try {
+                await baglamHazirBekle();
                 const { BildirimServisi } = await import('./src/domain/services/BildirimServisi');
                 await BildirimServisi.getInstance().arkaplanYanitiniIsle(data);
             } catch {

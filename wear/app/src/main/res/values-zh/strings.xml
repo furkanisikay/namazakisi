@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Basitleştirilmiş Çince. Terimler: src/core/dil/sozluk/zh. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">zh</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">下一番礼拜</string>
+    <string name="tile_aciklama">下一番礼拜及其时间</string>
+    <string name="komplikasyon_adi">剩余时间</string>
+    <string name="cikis_saati_komplikasyon_adi">礼拜结束时间</string>
+    <string name="siradaki_namaz_komplikasyon_adi">下一番礼拜</string>
+    <string name="bugun_tile_adi">今天</string>
+    <string name="bugun_tile_aciklama">今天的五番礼拜；点按两下即可标记已礼的拜</string>
+    <string name="ilerleme_komplikasyon_adi">每日进度</string>
+    <string name="dagilim_komplikasyon_adi">当日概览</string>
+    <string name="kerahat_komplikasyon_adi">禁止礼拜的时间</string>
+    <string name="son_dakikalar_kanal_adi">最后几分钟</string>
+    <string name="son_dakikalar_kanal_aciklama">在尚未礼的拜的最后几分钟，在表盘上显示倒计时</string>
+    <string name="tesbihat_adi">赞念</string>
+    <string name="tesbihat_kanal_adi">赞念</string>
+    <string name="tesbihat_kanal_aciklama">表盘上的安静图标，用于返回未完成的赞念</string>
+    <string name="kible_adi">朝向</string>
+    <string name="kible_komplikasyon_adi">朝向</string>
+    <string name="camideyim_kanal_adi">在清真寺</string>
+    <string name="camideyim_kanal_aciklama">手机报告您在清真寺时，表盘上的安静图标</string>
+    <string name="uyandirma_kanal_adi">静音唤醒</string>
+    <string name="uyandirma_kanal_aciklama">仅以振动唤醒您，用于晨礼和夜间拜</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">我礼了</string>
+    <string name="kilindi_isareti">✓ 已礼拜</string>
+    <string name="kapat">关闭</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">在手机上打开 Namaz Akışı 以查看礼拜时间。</string>
+    <string name="yuk_eskidi">礼拜时间数据已过期。在手机上打开 Namaz Akışı 进行刷新。</string>
+    <string name="guncelleme_gerekli">更新手表上的 Namaz Akışı。</string>
+    <string name="bildirim_izni">要在手机不在身边时也收到提醒，在手表设置中允许 Namaz Akışı 的通知。</string>
+    <string name="cami_soru">您在清真寺吗？</string>
+    <string name="cami_evet">是</string>
+    <string name="cami_evet_aciklama">是，我在清真寺。开启礼拜模式</string>
+    <string name="cami_hayir">否</string>
+    <string name="cami_hayir_aciklama">否，我不在清真寺</string>
+    <string name="camidesiniz">您在清真寺</string>
+    <string name="cami_degil">这里不是清真寺</string>
+    <string name="cami_degil_aciklama">这里不是清真寺。此地点不会再被算作清真寺</string>
+    <string name="tesbihat_ac">打开赞念计数器</string>
+    <string name="kible_ac">打开朝向指南针</string>
+    <string name="ses_dene">测试声音</string>
+    <string name="ses_dene_aciklama">测试手表的朗读</string>
+    <string name="telefonda_acin">在手机上打开</string>
+    <string name="telefonda_ekran_ac">在手机上打开%1$s</string>
+    <string name="ekran_kaza">还补记录</string>
+    <string name="ekran_camideyim">在清真寺</string>
+    <string name="ekran_ayarlar">设置</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">已礼拜，正在同步</string>
+    <string name="durum_kilindi">已礼拜</string>
+    <string name="durum_girmedi">尚未入时</string>
+    <string name="durum_simdiki">当前礼拜时间，点按可标记</string>
+    <string name="durum_simdiki_kalan">当前礼拜时间，%1$s，点按可标记</string>
+    <string name="durum_kilinmadi">未礼拜，点按可标记</string>
+    <string name="isaretleyin">标记为已礼拜</string>
+    <string name="esitleniyor">正在同步</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">确认“我礼了”</string>
+    <string name="vazgecin">取消</string>
+    <string name="vazgec">取消</string>
+    <string name="kerahat_vaktindesiniz">现在是禁止礼拜的时间。</string>
+    <string name="kilindi_dua">已礼拜。%1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">礼拜模式已开启，%1$s结束。点按可关闭</string>
+    <string name="namaz_modu_ac_aciklama">在手机上开启礼拜模式</string>
+    <string name="namaz_modu_kapatin">关闭礼拜模式</string>
+    <string name="namaz_modu_acin">开启礼拜模式</string>
+    <string name="namaz_modu_acik_bitis">已开启，%1$s结束</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">正在寻找方向…</string>
+    <string name="kible_yuk_yok">在手机上打开 Namaz Akışı 以找到朝向。</string>
+    <string name="kible_konum_yok">在手机上开启定位以找到朝向。如果 Namaz Akışı 不是最新版本，进行更新。</string>
+    <string name="kible_sensor_yok">此手表没有指南针传感器。可以在手机上查看礼拜朝向。</string>
+    <string name="kible_kuzeyden">朝向 %1$d°（自正北）</string>
+    <string name="kible_derece">朝向 %1$d°</string>
+    <string name="kible_telefonda_ac">在手机上打开朝向</string>
+    <string name="kible_erisim">%1$s。朝向距正北%2$d°，%3$s</string>
+    <string name="kible_hizali">您已面向朝向</string>
+    <string name="kible_kalibrasyon">如需校准，在空中将手腕按“8”字形移动</string>
+    <string name="kible_egim">将手表保持与地面平行</string>
+    <string name="kible_titresim_acik">振动引导已开启。点按可关闭</string>
+    <string name="kible_titresim_kapali">振动引导已关闭。点按可开启</string>
+    <string name="kible_harf_kuzey">北</string>
+    <string name="kible_harf_dogu">东</string>
+    <string name="kible_harf_guney">南</string>
+    <string name="kible_harf_bati">西</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">赞念已完成。%1$s。%2$d / %3$d。%4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s，%2$d / %3$d。总计 %4$d / %5$d</string>
+    <string name="tesbihat_sayin">计数</string>
+    <string name="tesbihat_bastan_baslayin">重新开始</string>
+    <string name="tesbihat_bastan_soru">重新开始吗？</string>
+    <string name="tesbihat_sifirlanir">计数将被重置。</string>
+    <string name="tesbihat_geri_al">撤销</string>
+    <string name="tesbihat_geri_al_aciklama">撤销上一次计数</string>
+    <string name="tesbihat_yeniden">再来一次</string>
+    <string name="tesbihat_yeniden_aciklama">重新开始赞念</string>
+    <string name="tesbihat_suruyor">赞念进行中: %1$s，%2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">我礼了。关闭唤醒</string>
+    <string name="uyandirma_kapat_aciklama">关闭唤醒</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">打开 Namaz Akışı</string>
+    <string name="tile_vakitler_icin">点按查看礼拜时间</string>
+    <string name="tile_telefonda_acin">在手机上打开应用</string>
+    <string name="tile_sonra">%1$s后</string>
+    <string name="tile_siradaki_aciklama">下一番礼拜%1$s，于%2$s开始。打开应用</string>
+    <string name="tile_giris">%1$s开始</string>
+    <string name="tile_cikis">%1$s结束</string>
+    <string name="bugun_bos_satir1">在手机上</string>
+    <string name="bugun_bos_satir2">打开应用</string>
+    <string name="bugun_acma_aciklamasi">今天已礼 %1$d/%2$d 番。打开应用</string>
+    <string name="bugun_sayi">今天 %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">禁止礼拜的时间 · 再点按一次以确认</string>
+    <string name="bugun_onay_tekrar">再点按一次以确认</string>
+    <string name="bugun_tamam">今天的礼拜已全部完成</string>
+    <string name="bugun_kilinmadi">%1$s未礼拜</string>
+    <string name="bugun_siradaki">下一个: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">再点按一次</string>
+    <string name="bugun_kilindi">%1$s已礼拜</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s已礼拜，正在同步</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">正在等待礼拜时间；在手机上打开 Namaz Akışı</string>
+    <string name="komplikasyon_bekleniyor">等待时间</string>
+    <string name="komplikasyon_vakit">礼拜</string>
+    <string name="komplikasyon_cikis">结束</string>
+    <string name="komplikasyon_sirada">下一个</string>
+    <string name="gun_durumu_aciklama">今天已礼 %2$d 番，共 %1$d 番</string>
+    <string name="gun_durumu_kilinmamis">%1$s；未礼: %2$s</string>
+    <string name="komplikasyon_namaz">礼拜</string>
+    <string name="komplikasyon_kerahat">禁拜时间</string>
+    <string name="kerahat_icinde_aciklama">现在是禁止礼拜的时间，%1$s结束</string>
+    <string name="kerahat_siradaki_aciklama">下一个禁止礼拜的时间 %1$s</string>
+    <string name="kible_komplikasyon">朝向距正北%1$d°。打开指南针</string>
+    <string name="kible_komplikasyon_konumlu">朝向距正北%1$d°，%2$s。打开指南针</string>
+    <string name="kible_komplikasyon_konum_yok">在手机上开启定位以找到朝向</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">紧急提醒 · 振动</string>
+    <string name="muhafiz_kanal_acil">紧急提醒</string>
+    <string name="muhafiz_kanal_titresimli">礼拜提醒 · 振动</string>
+    <string name="muhafiz_kanal">礼拜提醒</string>
+    <string name="muhafiz_kanal_aciklama">即使手机不在身边，也会在手表上显示礼拜提醒</string>
+    <string name="son_dakikalar_cikis">结束: %1$s</string>
+    <string name="son_dakikalar_bitis">结束: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">距%1$s结束还有</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s的剩余时间</string>
+    <string name="cami_namaz_modu_bitis">礼拜模式 · %1$s结束</string>
+    <string name="cami_erisim">%1$s: %2$s。%3$s</string>
+    <string name="telefonda_acildi">已在手机上打开</string>
+    <string name="telefona_ulasilamadi">无法连接您的手机</string>
+</resources>

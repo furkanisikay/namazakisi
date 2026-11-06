@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Akan terimleri: src/core/dil/sozluk/ak.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Nyamefrɛ a ɛdi hɔ";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Ɛka Nyamefrɛ a ɛdi hɔ ne berɛ a ɛhyɛ ase kyerɛ wo.";
+"Şu anki vakti kıldım" = "Mayɛ Nyamefrɛ a ɛkɔ so no";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Ɛkyerɛ Nyamefrɛ a ɛkɔ so no sɛ wɔayɛ. Wɔkyerɛw sɛ wobue app no a.";
+"Onay iste" = "Bisa sɛ wopene so";
+"Kıbleyi aç" = "Bue Qibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Ɛbue app no ne Qibla kompas no.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Mayɛ Nyamefrɛ";
+"Kıble" = "Qibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Nyamefrɛ a ɛdi hɔ din";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Ɛma Nyamefrɛ a ɛdi hɔ din. Wobɛtumi de adi dwuma sɛ tebea wɔ Shortcuts mu.";
+"Sıradaki vakte kalan dakika" = "Sima a aka kosi Nyamefrɛ a ɛdi hɔ";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Ɛma sima dodoɔ a aka ansa na Nyamefrɛ a ɛdi hɔ ahyɛ ase. Sɛ nsɛm nni hɔ a, ɛma -1.";
+"Şu anki vakit kılındı mı?" = "Wɔakyerɛ Nyamefrɛ a ɛkɔ so no sɛ wɔayɛ?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Sɛ wɔakyerɛ Nyamefrɛ a ɛkɔ so no sɛ wɔayɛ a, ɛma aane. Sɛ Nyamefrɛ biara nni hɔ a wɔbɛkyerɛ a, ɛma daabi.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Nyamefrɛ komm";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Ɛma nokorɛ wɔ sima a edi kan a ɛdi Nyamefrɛ berɛ mfiaseɛ akyi mu. Wɔde bue Focus wɔ Shortcuts mu.";
+"Süre (dakika)" = "Berɛ tenten (sima)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Sima ${dakika} a ɛdi Nyamefrɛ berɛ mfiaseɛ akyi";
+"Namaz sessizliğinin bitişi" = "Nyamefrɛ komm awieɛ";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Ɛma berɛ a komm no bɛba awieɛ. Sɛ komm nni hɔ seesei a, ɛma berɛ a ɛyɛ seesei.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Sima ${dakika} a ɛdi Nyamefrɛ berɛ mfiaseɛ akyi no awieɛ";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Nyamefrɛ nkaeɛ";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Berɛ a Focus yi abue no, Nyamefrɛ nkaeɛ ba a nnyegyeeɛ nni mu na skrin no nhyerɛn.";
+"Hatırlatmaları sessiz ver" = "Ma nkaeɛ mmra komm";
+"Hatırlatmalar sessiz gelir" = "Nkaeɛ ba komm";
+"Hatırlatmalar her zamanki gibi" = "Nkaeɛ sɛdeɛ ɛtaa ba";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Ɛkyerɛ Nyamefrɛ a ɛda wijet no so sɛ wɔayɛ.";
+"Tarih" = "Da";
+"Vakit" = "Nyamefrɛ";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Gyae Nyamefrɛ alaam";
+"Namazı kıldım" = "Mayɛ Nyamefrɛ";
+"Alarm" = "Alaam";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Ɛnnɛ Aaya mfoni";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Ɛma ɛnnɛ Aaya sɛ mfoni a ne kɛseɛ ne wo skrin deɛ yɛ pɛ. Wobɛtumi de adi dwuma ne Set Wallpaper anammɔn no wɔ Shortcuts mu.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Bue app no prɛko na siesie Ɛnnɛ Aaya.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Wɔantumi ansiesie mfoni no. San bɔ mmɔden kakra akyi.";

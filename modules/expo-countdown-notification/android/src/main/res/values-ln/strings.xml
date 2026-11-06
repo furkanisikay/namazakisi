@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Kotanga ntango ya sikoyo</string>
+    <string name="countdown_kanal_canli_aciklama">Kotanga ntango na Now Bar mpe na barre ya likolo</string>
+    <string name="countdown_kanal_genel_ad">Mayebisi ya kotanga ntango</string>
+    <string name="countdown_kanal_genel_aciklama">Nzela ya mayebisi ya kotanga ntango</string>
+
+    <string name="countdown_eylem_kildim">Nasambeli</string>
+    <string name="countdown_eylem_durdur">Botelemisa</string>
+
+    <string name="countdown_yedek_vakit">Bosala noki, ntango ya losambo ekomi pene ya kosila.</string>
+    <string name="countdown_yedek_iftar">Ntango ezali kosila.</string>
+    <string name="countdown_yedek_sahur">Bokoki naino kolya mpe komela; kokanga ngizi ekobanda noki.</string>
+    <string name="countdown_yedek_seri">Losambo ya lɛlɔ esili te; bobungisa mokoba na bino te.</string>
+
+    <string name="countdown_onek_vakit">Tii ntango esila</string>
+    <string name="countdown_onek_vakit_dar">Ntango ezali kosila</string>
+    <string name="countdown_onek_iftar">Tii iftar</string>
+    <string name="countdown_onek_iftar_dar">Tii iftar</string>
+    <string name="countdown_onek_sahur">Tii suhur esila</string>
+    <string name="countdown_onek_sahur_dar">Suhur ezali kosila</string>
+    <string name="countdown_onek_seri">Mpɔ na kobatela mokoba</string>
+    <string name="countdown_onek_seri_dar">Mokoba ezali kosila</string>
+</resources>

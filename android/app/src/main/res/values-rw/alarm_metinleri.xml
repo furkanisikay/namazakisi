@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Kinyarwanda). "Nasali" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alarume y’iswala</string>
+  <string name="alarm_kildim">Nasali</string>
+  <string name="alarm_kapat">Kuzimya</string>
+  <string name="alarm_kanal_aciklamasi">Alarume nyayo isona ku ntambwe z’icyibutsa mwahisemo</string>
+</resources>

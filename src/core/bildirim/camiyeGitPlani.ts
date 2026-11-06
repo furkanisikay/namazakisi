@@ -28,11 +28,12 @@
  * Metin serviste DEĞİL burada üretilir (saf, testli): `camiyeGitMetniOlustur`.
  */
 import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { cumaMi, sureMetniOlustur } from '../utils/cumaYardimcisi';
 import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
+import { bicim, metin } from '../dil/aktifDil';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { alarmPayinaSigdir } from '../hatirlatma/ekPlan';
@@ -103,7 +104,6 @@ export function camiyeGitPlaniOlustur(
     if (!CAMIYE_GIT_VAKITLERI.some((v) => ayarlar.vakitler[v])) return [];
     const gunAtlanirMi = secenekler.gunAtlanirMi ?? (() => false);
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = turkiyeHesapParametreleri();
 
     // Tarama en uzak eşikten başlar (çıkış yönü: ölçü azalarak ezana yaklaşır). Motor
     // çıktısı kalanDk'ya göre AZALAN = kronolojik; ilk = vaktin ilk tetiği.
@@ -116,7 +116,7 @@ export function camiyeGitPlaniOlustur(
         const gun = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate() + i);
         const tarih = tarihiISOFormatinaCevir(gun);
         if (gunAtlanirMi(tarih)) continue;
-        const vakitler = gunVakitleri(new PrayerTimes(coordinates, gun, params));
+        const vakitler = gunVakitleri(aktifPrayerTimes(coordinates, gun));
         for (const vakit of CAMIYE_GIT_VAKITLERI) {
             if (!ayarlar.vakitler[vakit]) continue;
             if (vakit === 'ogle' && secenekler.cumaHatirlatmasiAcik && cumaMi(gun)) continue;
@@ -171,18 +171,19 @@ export function camiyeGitMetniOlustur(
     ayarlar: Pick<CamiyeGitAyarlari, 'yurumeDk' | 'hazirlikDk'>
 ): { baslik: string; govde: string } {
     const ad = VAKIT_ADLARI[vakit];
+    const m = metin().bildirim.camiye;
     const sonra = hazirlikKalanDk(kalanDk, ayarlar);
     if (sonra > 0) {
         // Önden okunur (issue #287): vakit + ezana kalan süre başta — bileklikler
         // başlığın yalnız ilk ~16 karakterini gösterir.
         return {
-            baslik: `${ad} · ezana ${kalanDk} dk · camiye hazırlan`,
-            govde: `${ad} namazına camide yetişmek için hazırlan, ${sonra} dk sonra yola çık — ezana ${kalanDk} dk.`,
+            baslik: bicim(m.hazirlanBaslik, { ad, dk: kalanDk }),
+            govde: bicim(m.hazirlanGovde, { ad, dk: kalanDk, sonra }),
         };
     }
     return {
-        baslik: `${ad} · ezana ${kalanDk} dk · camiye yola çık`,
-        govde: `${ad} namazına camide yetişmek için yola çık — ezana ${kalanDk} dk.`,
+        baslik: bicim(m.yolaCikBaslik, { ad, dk: kalanDk }),
+        govde: bicim(m.yolaCikGovde, { ad, dk: kalanDk }),
     };
 }
 
@@ -194,6 +195,7 @@ export function camiyeGitAnonsMetni(
     kalanDk: number,
     ayarlar: Pick<CamiyeGitAyarlari, 'yurumeDk' | 'hazirlikDk'>
 ): string {
-    const giris = `${VAKIT_ADLARI[vakit]} vaktine ${sureMetniOlustur(kalanDk)} kaldı.`;
-    return hazirlikKalanDk(kalanDk, ayarlar) > 0 ? `${giris} Hazırlan, camiye yola çık.` : `${giris} Camiye yola çık.`;
+    const o = metin().anons.otomatik;
+    const giris = bicim(o.camiyeGiris, { vakit: VAKIT_ADLARI[vakit], sure: sureMetniOlustur(kalanDk) });
+    return `${giris} ${hazirlikKalanDk(kalanDk, ayarlar) > 0 ? o.camiyeHazirlan : o.camiyeYola}`;
 }

@@ -1,0 +1,58 @@
+// fa — Farsça (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Farsça terimler: src/core/dil/sozluk/fa ("خواندم" / "خوانده شد", قبله, تمرکز).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "نماز بعدی";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "نماز بعدی و ساعت آغاز آن را می‌گوید.";
+"Şu anki vakti kıldım" = "نماز کنونی را خواندم";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "نماز کنونی را خوانده‌شده علامت می‌زند. ثبت، هنگام باز کردن برنامه افزوده می‌شود.";
+"Onay iste" = "درخواست تأیید";
+"Kıbleyi aç" = "باز کردن قبله";
+"Uygulamayı Kıble pusulasıyla açar." = "برنامه را با قطب‌نمای قبله باز می‌کند.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "خواندم";
+"Kıble" = "قبله";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "نام نماز بعدی";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "نام نماز بعدی را می‌دهد. می‌توانید آن را در «میانبرها» به‌عنوان شرط به کار ببرید.";
+"Sıradaki vakte kalan dakika" = "دقیقه‌های باقی‌مانده تا نماز بعدی";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "می‌دهد چند دقیقه تا رسیدن وقت نماز بعدی مانده است. اگر اطلاعاتی نباشد، -1 برمی‌گرداند.";
+"Şu anki vakit kılındı mı?" = "نماز کنونی خوانده‌شده علامت خورده است؟";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "اگر نماز کنونی خوانده‌شده علامت خورده باشد، بله می‌دهد. اگر نمازی برای علامت زدن نباشد، نه می‌دهد.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "سکوت نماز";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "اگر در نخستین دقیقه‌های پس از رسیدن وقت نماز باشید، درست (true) برمی‌گرداند. در «میانبرها» برای روشن کردن «تمرکز» به کار می‌رود.";
+"Süre (dakika)" = "مدت (دقیقه)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} دقیقهٔ پس از رسیدن وقت نماز";
+"Namaz sessizliğinin bitişi" = "پایان سکوت نماز";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "ساعت پایان سکوت را می‌دهد. اگر اکنون سکوتی نباشد، زمان کنونی را می‌دهد.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "پایان ${dakika} دقیقهٔ پس از رسیدن وقت نماز";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "یادآوری‌های نماز";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "تا وقتی این «تمرکز» روشن است، یادآوری‌های نماز بی‌صدا و بدون روشن کردن صفحه می‌رسند.";
+"Hatırlatmaları sessiz ver" = "تحویل بی‌صدای یادآوری‌ها";
+"Hatırlatmalar sessiz gelir" = "یادآوری‌ها بی‌صدا می‌رسند";
+"Hatırlatmalar her zamanki gibi" = "یادآوری‌ها مثل همیشه";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "نماز نمایش‌داده‌شده در ابزارک را خوانده‌شده علامت می‌زند.";
+"Tarih" = "تاریخ";
+"Vakit" = "نماز";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "توقف هشدار نماز";
+"Namazı kıldım" = "خواندم";
+"Alarm" = "هشدار";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "تصویر آیهٔ روز";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "آیهٔ امروز را به‌صورت تصویری هم‌اندازهٔ صفحهٔ شما می‌دهد. می‌توانید آن را در «میانبرها» با گام «تنظیم تصویر زمینه» به کار ببرید.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "برای آماده شدن آیهٔ روز، یک بار برنامه را باز کنید.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "تصویر آماده نشد. کمی بعد دوباره امتحان کنید.";

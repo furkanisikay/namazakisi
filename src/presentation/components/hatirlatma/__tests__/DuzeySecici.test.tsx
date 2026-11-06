@@ -14,8 +14,11 @@ jest.mock('../../../../core/theme', () => ({
 }));
 jest.mock('../../../hooks/useHareketAzalt', () => ({ useHareketAzalt: () => true }));
 
-import { AccessibilityInfo } from 'react-native';
+import { AccessibilityInfo, StyleSheet } from 'react-native';
 import { DuzeySecici, sesliBilgiGosterildiMi, duzeySesliMi } from '../DuzeySecici';
+import { HATIRLATMA_PRESETLERI } from '../../../store/muhafizSlice';
+
+const duzStil = (stil: unknown) => (StyleSheet.flatten(stil as never) ?? {}) as Record<string, unknown>;
 
 describe('DuzeySecici', () => {
     it('dört düzeyi radyo olarak çizer, seçim canlı cümleyi değiştirir', () => {
@@ -70,6 +73,22 @@ describe('DuzeySecici', () => {
         expect(sesliBilgiGosterildiMi('yogun')).toBe(true);
         expect(sesliBilgiGosterildiMi('hafif')).toBe(false);
         expect(sesliBilgiGosterildiMi('normal', false)).toBe(false);
+    });
+});
+
+describe('DuzeySecici — "Yeni öneriyi uygulayın" uzun dilde', () => {
+    it('NÖBETÇİ (ta11): fark çipi sığmazsa alt satıra iner, ikon metinle tek grupta sarılır', () => {
+        const { getByTestId, getByText } = render(
+            <DuzeySecici secili="normal" onSec={jest.fn()} eskiDuzey eskiSeviyeler={HATIRLATMA_PRESETLERI.hafif.seviyeler} />
+        );
+        const dugme = getByTestId('duzey-guncelle');
+        expect(duzStil(dugme.props.style)).toMatchObject({ flexDirection: 'row', flexWrap: 'wrap', alignSelf: 'flex-start' });
+        expect(getByTestId('duzey-guncelle-fark')).toBeTruthy();
+        expect(duzStil(getByTestId('duzey-guncelle-fark').props.style).flexShrink).toBe(1);
+        const eylem = getByText('Yeni öneriyi uygulayın');
+        expect(duzStil(eylem.props.style).flexShrink).toBe(1);
+        // İkon ile eylem metni aynı esneyen grupta (ikon satırda tek başına kalmaz).
+        expect(duzStil(eylem.parent?.parent?.props.style)).toMatchObject({ flexDirection: 'row', flexShrink: 1 });
     });
 });
 

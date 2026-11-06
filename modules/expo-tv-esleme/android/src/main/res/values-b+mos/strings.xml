@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Kẽes-y QR kood ning sẽn be TV ekraanẽ wã gilgrã pʋgẽ</string>
+    <string name="tvesleme_qr_vazgec">Bas-y</string>
+    <string name="tvesleme_qr_vazgec_erisim">Bas-y karengã</string>
+    <string name="tvesleme_qr_yabanci">QR kood-kãngã pa Namaz Akışı TV rẽnd ye. Karem-y kood ning sẽn be TV wã zugu.</string>
+    <string name="tvesleme_qr_okundu">B karma koodã</string>
+</resources>

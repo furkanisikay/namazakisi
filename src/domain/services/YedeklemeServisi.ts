@@ -17,6 +17,7 @@
  */
 
 import * as Sharing from 'expo-sharing';
+import { metin } from '../../core/dil/aktifDil';
 import * as FileSystem from 'expo-file-system/legacy';
 import {
   YedekZarfi,
@@ -118,6 +119,8 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     kazaAyarlari,
     mezhep,
     hatirlatmaRizalari,
+    hesap,
+    dil,
   ] = await Promise.all([
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI),
@@ -150,6 +153,11 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI),
     // Tek rıza (sade tasarım, Dalga 3) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.HATIRLATMA_RIZALARI),
+    // Namaz vakti hesap ayarı (yöntem/ikindi/dakika) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.HESAP_AYARI),
+    // Arayüz dili (yalnız açık seçim; cihaz dili izleniyorsa kayıt yoktur) — beyaz liste:
+    // YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.DIL_AYARI),
   ]);
   return {
     muhafiz,
@@ -173,6 +181,8 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     kazaAyarlari,
     mezhep,
     hatirlatmaRizalari,
+    hesap,
+    dil,
   };
 };
 
@@ -299,7 +309,7 @@ export const yedeginiPaylas = async (): Promise<void> => {
   if (paylasimVar) {
     await Sharing.shareAsync(dosyaUri, {
       mimeType: 'application/json',
-      dialogTitle: 'Yedeğinizi paylaşın',
+      dialogTitle: metin().yedekleme.paylasBaslik,
     });
 
     // Damga: "yedek dosyası oluşturuldu ve paylaşım açıldı" — kendi try/catch'inde,

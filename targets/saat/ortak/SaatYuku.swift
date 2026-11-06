@@ -291,8 +291,13 @@ public enum SaatKarari {
     }
 
     /// Ekranin tamami tek cagri: widget ile AYNI karar (`WidgetKarari.gorunum`,
-    /// `VakitKarari.kildimKarari`). Kilinmislik = yuk ∪ iyimser bekleyen.
-    public static func ekranDurumu(yuk: SaatYuku, bekleyenler liste: [SaatBekleyen], simdiMs: Int64) -> SaatEkranDurumu {
+    /// `VakitKarari.kildimKarari`). Kilinmislik = yuk ∪ iyimser bekleyen. Adlar `dil`de.
+    public static func ekranDurumu(
+        yuk: SaatYuku,
+        bekleyenler liste: [SaatBekleyen],
+        simdiMs: Int64,
+        dil: String = ArayuzDili.varsayilan
+    ) -> SaatEkranDurumu {
         let vakitler = yuk.vakitAnlari
         let kilinanlar = yuk.kilinanlar
         let bekleyen = bekleyenler(liste)
@@ -300,14 +305,14 @@ public enum SaatKarari {
         let satirlar = (g.gunTarihi.map { WidgetKarari.gunVakitleri(vakitler, tarih: $0) } ?? []).map { v in
             SaatVakitSatiri(
                 kod: v.vakit,
-                ad: VakitKarari.gorunenAd(v.vakit),
+                ad: VakitKarari.gorunenAd(v.vakit, dil: dil),
                 ms: v.ms,
                 kilindi: WidgetKarari.kilindiMi(v, kilinanlar: kilinanlar, bekleyenler: bekleyen),
                 aktif: g.aktif == v
             )
         }
         let kildim = VakitKarari.kildimKarari(
-            vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyen, simdiMs: simdiMs
+            vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyen, simdiMs: simdiMs, dil: dil
         )
         return SaatEkranDurumu(gorunum: g, satirlar: satirlar, kildim: kildim, veriEski: g.aktif == nil && g.sonraki == nil)
     }

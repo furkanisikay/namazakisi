@@ -18,6 +18,9 @@ import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useCihazDurumu } from '../../hooks/useCihazDurumu';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
+import { vakitGirdiEki } from '../../../core/otomasyon/anahtarKelimeler';
 
 /** Uygulama kimliği (shortcuts.xml `targetPackage` gibi sabittir). */
 const ANDROID_PAKET_ADI = 'com.furkanisikay.namazakisi';
@@ -38,30 +41,22 @@ export async function bildirimKategorileriniAc(): Promise<void> {
   }
 }
 
-const ADIMLAR = [
-  'Bilekliğinizin telefon uygulamasında (Galaxy Wearable, Mi Fitness, Huawei Health) bildirimler bölümünü açın ve Namaz Akışı’nı açık hâle getirin.',
-  'Bu uygulamalar bildirimleri uygulama bazında seçer; yalnız namaz hatırlatmalarını ayırma imkânı genellikle yoktur.',
-  'Bilekliğe yalnız namaz muhafızı hatırlatmaları gitsin istiyorsanız aşağıdaki düğmeyle bildirim kategorilerini açın; “Vakit Bildirimleri” ile adı “Sayacı” diye biten kategorileri “Sessiz” yapın; “Namaz Muhafızı” ve “Acil Namaz Hatırlatıcı” ile başlayan kategorileri olduğu gibi bırakın.',
-];
-
-const NOTLAR = [
-  'Sessiz bildirimler çoğu bilekliğe aktarılmaz; bu davranış marka ve modele göre değişebilir.',
-  'Başlıklar küçük ekranlara göre düzenlendi: vakit adı ve kalan süre en başta görünür (ör. “Yatsı · 25 dk kaldı”).',
-  '“Kıldım” düğmesinin bileklikte görünüp görünmediği modele göre değişir.',
-];
-
-/** Yalnız Samsung'da anlamlı (Rutinler başka telefonda yok). */
-const SAMSUNG_NOTU =
-  'Samsung Rutinler’de “vakti girdi” ile kurduğunuz bir rutin varsa vakit bildirimlerini sessize almayın; rutin tetiklenmeyebilir.';
 
 const CIHAZ_ALANLARI = ['samsung'] as const;
 
 export const BileklikRehberKarti: React.FC = () => {
   const renkler = useRenkler();
+  const sozluk = useMetin();
+  const mb = sozluk.hatirlatma.bileklik;
   const [acik, setAcik] = React.useState(false);
   // Samsung DEĞİL ise Rutinler maddesi çıkar; bilinmiyorsa (null) kalır.
   const { durum: cihaz } = useCihazDurumu(CIHAZ_ALANLARI, Platform.OS === 'android' && acik);
-  const notlar = cihaz.samsung === false ? NOTLAR : [...NOTLAR, SAMSUNG_NOTU];
+  // Kategori adları bildirim kanallarının GÖRÜNEN adlarıdır (etkin dilde).
+  const k = sozluk.bildirim.kanal;
+  const adimlar = mb.adimlar.map((a) => bicim(a, { vakit: k.vakit, muhafiz: k.muhafiz, acil: k.acil }));
+  // Samsung yalnız Rutinler'de anlamlı; anahtar kelime dile göre değişir.
+  const samsungNotu = bicim(mb.samsungNotu, { kelime: vakitGirdiEki() });
+  const notlar: string[] = cihaz.samsung === false ? [...mb.notlar] : [...mb.notlar, samsungNotu];
 
   if (Platform.OS !== 'android') return null;
 
@@ -75,8 +70,8 @@ export const BileklikRehberKarti: React.FC = () => {
         testID="bileklik-rehberi-baslik"
         accessibilityRole="button"
         accessibilityState={{ expanded: acik }}
-        accessibilityLabel="Bilekliğinize yalnız namaz hatırlatmalarını gönderin"
-        accessibilityHint={acik ? 'Rehberi kapatır' : 'Rehberi açar'}
+        accessibilityLabel={mb.baslik}
+        accessibilityHint={acik ? mb.kapatir : mb.acar}
         onPress={() => setAcik((a) => !a)}
         className="flex-row items-center p-4"
         style={{ minHeight: 44 }}
@@ -89,10 +84,10 @@ export const BileklikRehberKarti: React.FC = () => {
         </View>
         <View className="flex-1">
           <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-            Bilekliğinize yalnız namaz hatırlatmalarını gönderin
+            {mb.baslik}
           </Text>
           <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-            Galaxy Fit, Mi Band, Huawei Band gibi bileklikler için
+            {mb.altBaslik}
           </Text>
         </View>
         <FontAwesome5 name={acik ? 'chevron-up' : 'chevron-down'} size={13} color={renkler.metinIkincil} />
@@ -101,7 +96,7 @@ export const BileklikRehberKarti: React.FC = () => {
       {acik && (
         <View className="px-4 pb-4" style={{ gap: 12 }}>
           <View style={{ gap: 10 }}>
-            {ADIMLAR.map((a, i) => (
+            {adimlar.map((a, i) => (
               <View key={a} className="flex-row">
                 <View
                   className="w-6 h-6 rounded-full items-center justify-center mr-3 mt-0.5"
@@ -115,7 +110,7 @@ export const BileklikRehberKarti: React.FC = () => {
                 <Text
                   className="flex-1 text-sm"
                   style={{ color: renkler.metin }}
-                  accessibilityLabel={`${i + 1}. adım: ${a}`}
+                  accessibilityLabel={bicim(mb.adimEtiketi, { n: i + 1, metin: a })}
                 >
                   {a}
                 </Text>
@@ -126,7 +121,7 @@ export const BileklikRehberKarti: React.FC = () => {
           <TouchableOpacity
             testID="bileklik-rehberi-kategoriler"
             accessibilityRole="button"
-            accessibilityLabel="Bildirim kategorilerini açın"
+            accessibilityLabel={mb.kategoriler}
             onPress={() => {
               void bildirimKategorileriniAc();
             }}
@@ -135,7 +130,7 @@ export const BileklikRehberKarti: React.FC = () => {
           >
             <FontAwesome5 name="sliders-h" size={14} color={renkler.birincilMetin} />
             <Text className="ml-2 text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
-              Bildirim kategorilerini açın
+              {mb.kategoriler}
             </Text>
           </TouchableOpacity>
 

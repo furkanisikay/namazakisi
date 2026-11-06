@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Жандуу артка санактар</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar панелиндеги жана абал тилкесиндеги артка санактар</string>
+    <string name="countdown_kanal_genel_ad">Артка санак билдирмелери</string>
+    <string name="countdown_kanal_genel_aciklama">Артка санак билдирмелери үчүн канал</string>
+
+    <string name="countdown_eylem_kildim">Окудум</string>
+    <string name="countdown_eylem_durdur">Токтотуу</string>
+
+    <string name="countdown_yedek_vakit">Шашылыңыз, намаз убактысы бүтүп баратат.</string>
+    <string name="countdown_yedek_iftar">Убакыт азайып баратат.</string>
+    <string name="countdown_yedek_sahur">Дагы эле жеп-ичсеңиз болот; орозо жакында башталат!</string>
+    <string name="countdown_yedek_seri">Бүгүнкү намаздарыңыз толук эмес, катарыңызды жоготпоңуз.</string>
+
+    <string name="countdown_onek_vakit">Убакыт бүткөнгө чейин</string>
+    <string name="countdown_onek_vakit_dar">Убакыт бүтүүдө</string>
+    <string name="countdown_onek_iftar">Ооз ачарга чейин</string>
+    <string name="countdown_onek_iftar_dar">Ооз ачарга</string>
+    <string name="countdown_onek_sahur">Саарлык бүткөнгө чейин</string>
+    <string name="countdown_onek_sahur_dar">Саарлык бүтүүдө</string>
+    <string name="countdown_onek_seri">Катарды сактоо үчүн</string>
+    <string name="countdown_onek_seri_dar">Катар бүтүүдө</string>
+</resources>

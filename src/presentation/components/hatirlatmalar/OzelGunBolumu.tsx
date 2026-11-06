@@ -13,16 +13,24 @@ import { useFeedback } from '../../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { ozelGunBaslat, ozelGunModuDurumunuGuncelle } from '../../store/seriSlice';
 import { OzelGunTakvimi } from '../OzelGunTakvimi';
-import { tarihiISOFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
+import { ISOTarihiDateNesnesiNeCevir, tarihiISOFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { OZEL_GUN_RENGI } from '../../../core/constants/OzelGunRengi';
 import { AnahtarSatiri } from '../ortak/AnahtarSatiri';
 import { NotSatiri } from '../ortak/NotSatiri';
 import { kisaBildirimGoster } from '../common/KisaBildirim';
 
-const tarihYazisi = (iso: string) => new Date(iso).toLocaleDateString('tr-TR');
+const ikiHane = (n: number) => String(n).padStart(2, '0');
+/** Sayısal tarih ("24.10.2026"); `Intl`/`toLocale*`'e bağlı değil (Hermes ICU). */
+const tarihYazisi = (iso: string) => {
+    const t = ISOTarihiDateNesnesiNeCevir(iso);
+    return bicim(metin().hatirlatma.ozelGun.tarih, { gun: ikiHane(t.getDate()), ay: ikiHane(t.getMonth() + 1), yil: t.getFullYear() });
+};
 
 export const OzelGunBolumu: React.FC = () => {
     const renkler = useRenkler();
+    const m = useMetin().hatirlatma.ozelGun;
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const ozelGun = useAppSelector((s) => s.seri.ozelGunAyarlari);
@@ -39,9 +47,9 @@ export const OzelGunBolumu: React.FC = () => {
             })
         );
         if (ozelGunBaslat.fulfilled.match(sonuc)) {
-            kisaBildirimGoster('Özel gün başladı; hatırlatmalar bu günlerde durur.');
+            kisaBildirimGoster(metin().hatirlatma.ozelGun.basladi);
         } else {
-            kisaBildirimGoster('Özel gün başlatılamadı. Lütfen tekrar deneyin.', true);
+            kisaBildirimGoster(metin().hatirlatma.ozelGun.baslatilamadi, true);
         }
     };
 
@@ -51,8 +59,8 @@ export const OzelGunBolumu: React.FC = () => {
                 <AnahtarSatiri
                     ikon="magic"
                     renk={OZEL_GUN_RENGI}
-                    baslik="Özel gün"
-                    ozet="Seri donar, hatırlatmalar durur"
+                    baslik={m.baslik}
+                    ozet={m.ozet}
                     deger={ozelGun.ozelGunModuAktif}
                     onDegistir={async (v) => {
                         await butonTiklandiFeedback();
@@ -67,7 +75,7 @@ export const OzelGunBolumu: React.FC = () => {
                     onPress={() => setTakvim(true)}
                     activeOpacity={0.85}
                     accessibilityRole="button"
-                    accessibilityLabel="Özel günü başlatın"
+                    accessibilityLabel={m.baslatin}
                     style={{
                         marginTop: 12,
                         minHeight: 48,
@@ -79,7 +87,7 @@ export const OzelGunBolumu: React.FC = () => {
                     }}
                 >
                     <FontAwesome5 name="calendar-plus" size={15} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
-                    <Text style={{ fontSize: 15, fontWeight: '700', color: renkler.birincilMetin }}>Özel günü başlatın</Text>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: renkler.birincilMetin }}>{m.baslatin}</Text>
                 </TouchableOpacity>
             ) : null}
 
@@ -95,14 +103,14 @@ export const OzelGunBolumu: React.FC = () => {
                         backgroundColor: renkler.kartArkaplan,
                     }}
                 >
-                    <Text style={{ fontSize: 15, fontWeight: '700', color: renkler.metin }}>Özel gün sürüyor</Text>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: renkler.metin }}>{m.suruyor}</Text>
                     <Text style={{ fontSize: 14, marginTop: 2, color: renkler.metinIkincil }}>
                         {tarihYazisi(ozelGun.aktifOzelGun.baslangicTarihi)} – {tarihYazisi(ozelGun.aktifOzelGun.bitisTarihi)}
                     </Text>
                 </View>
             ) : null}
 
-            <NotSatiri metin="Bu günlerde seri bozulmaz, hiçbir hatırlatma gelmez." style={{ marginTop: 12 }} />
+            <NotSatiri metin={m.not} style={{ marginTop: 12 }} />
 
             <OzelGunTakvimi gorunur={takvim} onKapat={() => setTakvim(false)} onBaslat={(b, s) => void baslat(b, s)} />
         </View>

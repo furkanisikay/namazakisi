@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Ampiasaina ny toerana misy anao mba hikajiana tsara ny fotoanan'ny soalat amin'ny toerana misy anao. Mijanona ao amin'ny fitaovanao ny toeranao.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ampiasaina ny toerana misy anao mba hikajiana tsara ny fotoanan'ny soalat amin'ny toerana misy anao ary, raha mandeha ny « Ao amin'ny moske », mba handefasana ny Fomba soalat rehefa miditra amin'ny moske ianao. Mijanona ao amin'ny fitaovanao ny toeranao.",
+  "NSLocationAlwaysUsageDescription": "Ampiasaina ny toerana misy anao mba hanavaozana ho azy ny fotoanan'ny soalat rehefa miova tanàna ianao ary, raha mandeha ny « Ao amin'ny moske », mba handefasana ny Fomba soalat rehefa miditra amin'ny moske ianao. Mijanona ao amin'ny fitaovanao ny toeranao.",
+  "NSCameraUsageDescription": "Ampiasaina ny fakantsarinao mba hampisehoana ny lalan'ny Kibla eo ambonin'ny sarin'ny fakantsary sy hamakiana ny kaody fampifandraisana eo amin'ny fahitalavitrao. Tsy tehirizina ny sary ary tsy miala mihitsy amin'ny fitaovanao.",
+  "NSCalendarsUsageDescription": "Ampiasaina ny fidirana amin'ny tetiandro mba hanampiana ny fotoanan'ny soalat ao amin'ny tetiandronao ary, raha alefanao, mba hijerena raha mifanindry amin'ny fotoanan'ny soalat ny hetsika ao amin'ny tetiandronao. Mijanona ao amin'ny fitaovanao ny angon-drakitry ny tetiandronao.",
+  "NSCalendarsFullAccessUsageDescription": "Ampiasaina ny fidirana amin'ny tetiandro mba hanampiana ny fotoanan'ny soalat ao amin'ny tetiandronao ary, raha alefanao, mba hijerena raha mifanindry amin'ny fotoanan'ny soalat ny hetsika ao amin'ny tetiandronao. Mijanona ao amin'ny fitaovanao ny angon-drakitry ny tetiandronao.",
+  "NSLocalNetworkUsageDescription": "Mifandray amin'ny fahitalavitra ao amin'ny tambajotra eo an-toerana ny fampiharana mba handefasana any aminy ny fotoanan'ny soalat sy ny soalat voamarikanao. Voaaro amin'ny kaody miafina ny angon-drakitra ary eo anelanelan'ny fitaovana roa ihany no mandeha.",
+  "NSAlarmKitUsageDescription": "Apetraka ho fanairana ny dingana fampahatsiahivana nifidiananao ny « Fanairana tena izy », ka henonao na dia mangina aza ny findainao na mandeha ny Focus.",
+  "\"Vakti kıldım\"": "Nivavaka aho",
+  "\"Kıble\"": "Kibla"
+}

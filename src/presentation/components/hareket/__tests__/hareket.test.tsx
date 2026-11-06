@@ -27,6 +27,14 @@ describe('KildimDugmesi', () => {
         expect(onKildim).toHaveBeenCalled();
     });
 
+    it('uzun dilde metin düğmenin içinde kalır: esner, en çok iki satır, sığmazsa küçülür', () => {
+        const { getByTestId } = render(<KildimDugmesi kilindi={false} onKildim={jest.fn()} testID="kd" />);
+        const yazi = getByTestId('kd-metin');
+        expect(yazi.props.numberOfLines).toBe(2);
+        expect(yazi.props.adjustsFontSizeToFit).toBe(true);
+        expect(yazi.props.style).toEqual(expect.arrayContaining([expect.objectContaining({ flexShrink: 1, textAlign: 'center' })]));
+    });
+
     it('ilk çizimde zaten kılınmışsa animasyon OYNAMAZ (boşta sıfır hareket), son karede doğar', () => {
         const sira = jest.spyOn(Animated, 'sequence');
         const { getByLabelText } = render(<KildimDugmesi kilindi onKildim={jest.fn()} vakitAdi="Öğle" />);

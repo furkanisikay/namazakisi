@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiswahili. Terms: src/core/dil/sozluk/sw (vakit.ts header). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">sw</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Ubao wa nyakati za Swala</string>
+    <string name="ayarlar">Mipangilio</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s zimebaki hadi %1$s</string>
+    <string name="pano_vaktine">Hadi %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s baada ya %2$s</string>
+    <string name="pano_kerahat_vakti">Wakati wa makruhu</string>
+    <string name="pano_bitis">unaisha %1$s</string>
+    <string name="pano_kerahat_erisim">Wakati wa makruhu, %1$s, unaisha %2$s. %3$s</string>
+    <string name="pano_cumaya">Ijumaa baada ya %1$s</string>
+    <string name="pano_cikis_geldi">wakati wa kuondoka</string>
+    <string name="pano_cikis">ondoka saa %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Ni wakati wa kuondoka kwenda Ijumaa</string>
+    <string name="pano_cuma_cikis_erisim">Ondoka kwenda Ijumaa saa %1$s</string>
+    <string name="pano_bugun_cuma">Leo ni Ijumaa</string>
+    <string name="pano_ogle">Adhuhuri %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Leo ni Ijumaa. Swala ya Ijumaa ni wakati wa Adhuhuri, %1$s</string>
+    <string name="pano_ayarlar_erisim">Mipangilio: ongeza simu, mahali, simu zilizounganishwa</string>
+    <string name="pano_simdiki_vakit">wakati wa Swala wa sasa</string>
+    <string name="pano_siradaki_vakit">wakati wa Swala unaofuata</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Ongeza simu yako", "Weka msimbo", "Nitachagua mji mwenyewe", "Ongeza". -->
+    <string name="kodla_girin">Weka msimbo</string>
+    <string name="ili_kendim_secin">Nitachagua mji mwenyewe</string>
+    <string name="yeniden_deneyin">Jaribu tena</string>
+    <string name="telefon_varsayilan">Simu</string>
+    <string name="esleme_ekleniyor">Inaongeza %1$s</string>
+    <string name="esleme_gonderiyor">Simu yako inatuma mahali na hali yake…</string>
+    <string name="esleme_tamamlanamadi">Kuunganisha hakukuweza kukamilika</string>
+    <string name="esleme_saklanamadi">TV hii haiwezi kuhifadhi ufunguo wa muunganisho kwa usalama. Unaweza kuweka mahali pako kwa msimbo au kuchagua mji wako.</string>
+    <string name="telefonunuzu_ekleyin">Ongeza simu yako</string>
+    <string name="esleme_alt">Nyakati za Swala za mahali ulipo; Swala ulizoswali zinaonekana pia.</string>
+    <string name="esleme_adim1">Fungua Namaz Akışı kwenye simu yako</string>
+    <string name="esleme_adim2">Mipangilio › Vifaa vyangu › Ongeza TV</string>
+    <string name="esleme_adim3">Elekeza kamera ya simu yako kwenye msimbo</string>
+    <string name="esleme_ayni_wifi">Simu yako na TV lazima viwe kwenye mtandao ule ule wa Wi-Fi.</string>
+    <string name="esleme_onay_soru">Kuongeza simu hii?</string>
+    <string name="esleme_onay_aciklama">Simu iliyoongezwa inaweza kutuma mahali pake na Swala inazoziwekea alama kwenye TV hii.</string>
+    <string name="ekleyin">Ongeza</string>
+    <string name="hayir">Hapana</string>
+    <string name="esleme_eklendi">%1$s imeongezwa</string>
+    <string name="konumunuz_geldi">Mahali pako pamefika</string>
+    <string name="konuma_gore_hesaplanacak">Nyakati za Swala zitakokotolewa kwa mahali hapa.</string>
+    <string name="qr_konum_alindi">Mahali pamepokelewa</string>
+    <string name="qr_kodu">Msimbo wa kuunganisha wa kuchanganua kwa simu yako</string>
+    <string name="ag_yok">TV haijaunganishwa na mtandao</string>
+    <string name="ag_yok_aciklama">Unaweza kuendelea kwa kuweka msimbo wa tarakimu 7 kutoka kwenye simu yako au kuchagua mji wako.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Weka msimbo kutoka kwenye simu yako</string>
+    <string name="kod_yol">Kwenye simu yako: Mipangilio › Vifaa vyangu › Ongeza TV</string>
+    <string name="kod_hatali">Msimbo haukulingana. Angalia tarakimu 7 kwenye simu yako; rekebisha tarakimu isiyo sahihi kwa “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Ikiwa rimoti yako ina vitufe vya namba, unaweza pia kuandika kwavyo.</string>
+    <string name="kod_bos_hane">tarakimu tupu</string>
+    <string name="kod_sil">Futa</string>
+    <string name="kod_sil_aciklama">Futa tarakimu ya mwisho</string>
+    <string name="kod_geri">Rudi</string>
+    <string name="vazgecin">Ghairi</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Chagua mji wako</string>
+    <string name="il_merkezine_gore">Nyakati za Swala zinakokotolewa kwa katikati ya mji.</string>
+    <string name="il_secili">%1$s, imechaguliwa</string>
+    <string name="dream_il_yok">Ili kuona ubao wa nyakati za Swala, fungua programu ya Namaz Akışı na uchague mji wako.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Mahali: %1$s</string>
+    <string name="ayar_konum_yok">Hakuna mahali palipochaguliwa</string>
+    <string name="ayar_telefon_ekleyin">Ongeza simu</string>
+    <string name="ayar_konumu_kodla">Weka mahali kwa msimbo</string>
+    <string name="ayar_bagli_telefonlar">Simu zilizounganishwa na TV hii</string>
+    <string name="ayar_telefon_yok">Bado hakuna simu iliyoongezwa. Tumia “%1$s” upande wa kushoto na uchanganue msimbo unaoonekana.</string>
+    <string name="kaldirin">Ondoa</string>
+    <string name="ayar_ne_gonderir">Simu zinatuma nini?</string>
+    <string name="ayar_madde_konum">Mahali: nyakati za Swala zinafuata hapo</string>
+    <string name="ayar_madde_namazlar">Swala zilizowekwa alama, kwa wanaochagua</string>
+    <string name="ayar_madde_sifreli">Imesimbwa, kwenye mtandao wako wa nyumbani tu</string>
+    <string name="son_haber_yok">Bado hakuna taarifa</string>
+    <string name="son_haber_az_once">Sasa hivi</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">dk %1$d iliyopita</item>
+        <item quantity="other">dk %1$d zilizopita</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">saa %1$d iliyopita</item>
+        <item quantity="other">saa %1$d zilizopita</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">siku %1$d iliyopita</item>
+        <item quantity="other">siku %1$d zilizopita</item>
+    </plurals>
+    <string name="kaldir_soru">Kuondoa %1$s?</string>
+    <string name="kaldir_aciklama">Simu hii haitaweza tena kutuma taarifa kwenye TV. Ili kuiongeza tena, unahitaji kuchanganua msimbo wa QR tena.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Mahali pa simu yako</string>
+</resources>

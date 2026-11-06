@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tg — Tacikçe (beta). Terimler: JS src/core/dil/sozluk/tg (Бомдод, Тулӯъ, Пешин, Аср, Шом, Хуфтан; Ҷумъа; «Хондам»). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">tg</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Лавҳаи вақтҳои намоз</string>
+    <string name="ayarlar">Танзимот</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">То %1$s %2$s монд</string>
+    <string name="pano_vaktine">То %1$s</string>
+    <string name="pano_vaktine_kalan">То %1$s %2$s</string>
+    <string name="pano_kerahat_vakti">Вақти макрӯҳ</string>
+    <string name="pano_bitis">анҷом %1$s</string>
+    <string name="pano_kerahat_erisim">Вақти макрӯҳ, %1$s, анҷом %2$s. %3$s</string>
+    <string name="pano_cumaya">То ҷумъа %1$s</string>
+    <string name="pano_cikis_geldi">вақти баромадан</string>
+    <string name="pano_cikis">баромадан соати %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Вақти баромадан ба намози ҷумъа расид</string>
+    <string name="pano_cuma_cikis_erisim">Ба намози ҷумъа соати %1$s бароед</string>
+    <string name="pano_bugun_cuma">Имрӯз ҷумъа аст</string>
+    <string name="pano_ogle">Пешин %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Имрӯз ҷумъа аст. Намози ҷумъа дар вақти пешин, %1$s</string>
+    <string name="pano_ayarlar_erisim">Танзимот: илова кардани телефон, макон, телефонҳои пайваст</string>
+    <string name="pano_simdiki_vakit">вақти ҷорӣ</string>
+    <string name="pano_siradaki_vakit">вақти навбатӣ</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: «Телефонатонро илова кунед», «Бо рамз ворид кунед», «Шаҳрро худам интихоб мекунам», «Илова кунед». -->
+    <string name="kodla_girin">Бо рамз ворид кунед</string>
+    <string name="ili_kendim_secin">Шаҳрро худам интихоб мекунам</string>
+    <string name="yeniden_deneyin">Боз кӯшиш кунед</string>
+    <string name="telefon_varsayilan">Телефон</string>
+    <string name="esleme_ekleniyor">%1$s илова мешавад</string>
+    <string name="esleme_gonderiyor">Телефонатон макон ва ҳолати худро мефиристад…</string>
+    <string name="esleme_tamamlanamadi">Ҷуфтсозӣ анҷом наёфт</string>
+    <string name="esleme_saklanamadi">Ин телевизор калиди пайвастшавиро бехатар нигоҳ дошта наметавонад. Метавонед маконро бо рамз ворид кунед ё шаҳратонро интихоб кунед.</string>
+    <string name="telefonunuzu_ekleyin">Телефонатонро илова кунед</string>
+    <string name="esleme_alt">Вақтҳои намоз барои макони Шумо; намозҳои хондаатон низ нишон дода мешаванд.</string>
+    <string name="esleme_adim1">Дар телефонатон Namaz Akışı-ро кушоед</string>
+    <string name="esleme_adim2">Танзимот › Дастгоҳҳои ман › Телевизор илова кунед</string>
+    <string name="esleme_adim3">Камераи телефонатонро ба рамз равона кунед</string>
+    <string name="esleme_ayni_wifi">Телефон ва телевизор бояд дар як шабакаи Wi-Fi бошанд.</string>
+    <string name="esleme_onay_soru">Ин телефонро илова кунем?</string>
+    <string name="esleme_onay_aciklama">Телефони иловашуда метавонад макон ва намозҳои қайдкардаашро ба ин телевизор фиристад.</string>
+    <string name="ekleyin">Илова кунед</string>
+    <string name="hayir">Не</string>
+    <string name="esleme_eklendi">%1$s илова шуд</string>
+    <string name="konumunuz_geldi">Макони Шумо омад</string>
+    <string name="konuma_gore_hesaplanacak">Вақтҳои намоз барои ҳамин макон ҳисоб карда мешаванд.</string>
+    <string name="qr_konum_alindi">Макон гирифта шуд</string>
+    <string name="qr_kodu">Рамзи ҷуфтсозӣ барои скан бо телефон</string>
+    <string name="ag_yok">Телевизор ба шабака пайваст нест</string>
+    <string name="ag_yok_aciklama">Метавонед бо ворид кардани рамзи 7-рақамаи телефон ё интихоби шаҳратон идома диҳед.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Рамзи телефонатонро ворид кунед</string>
+    <string name="kod_yol">Дар телефон: Танзимот › Дастгоҳҳои ман › Телевизор илова кунед</string>
+    <string name="kod_hatali">Рамз мувофиқ наомад. 7 рақами телефонатонро санҷед; рақами нодурустро бо «%1$s» ислоҳ кунед.</string>
+    <string name="kod_rakamli_kumanda">Агар пулти идораатон тугмаҳои рақамӣ дошта бошад, бо онҳо ҳам навишта метавонед.</string>
+    <string name="kod_bos_hane">рақами холӣ</string>
+    <string name="kod_sil">Нест кардан</string>
+    <string name="kod_sil_aciklama">Рақами охиринро нест кунед</string>
+    <string name="kod_geri">Бозгашт</string>
+    <string name="vazgecin">Бекор кардан</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Шаҳратонро интихоб кунед</string>
+    <string name="il_merkezine_gore">Вақтҳо барои маркази шаҳр ҳисоб карда мешаванд.</string>
+    <string name="il_secili">%1$s, интихобшуда</string>
+    <string name="dream_il_yok">Барои дидани лавҳаи вақтҳои намоз барномаи Namaz Akışı-ро кушоед ва шаҳратонро интихоб кунед.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Макон: %1$s</string>
+    <string name="ayar_konum_yok">Макон интихоб нашудааст</string>
+    <string name="ayar_telefon_ekleyin">Телефон илова кунед</string>
+    <string name="ayar_konumu_kodla">Маконро бо рамз ворид кунед</string>
+    <string name="ayar_bagli_telefonlar">Телефонҳои ба ин телевизор пайваст</string>
+    <string name="ayar_telefon_yok">Ҳанӯз телефон илова нашудааст. Аз чап «%1$s»-ро интихоб кунед ва рамзи пайдошударо скан кунед.</string>
+    <string name="kaldirin">Хориҷ кунед</string>
+    <string name="ayar_ne_gonderir">Телефонҳо чӣ мефиристанд?</string>
+    <string name="ayar_madde_konum">Макон: вақтҳои намоз аз рӯи он</string>
+    <string name="ayar_madde_namazlar">Намозҳои қайдшуда, барои онҳое, ки интихоб мекунанд</string>
+    <string name="ayar_madde_sifreli">Рамзгузоришуда, танҳо дар шабакаи хонаи Шумо</string>
+    <string name="son_haber_yok">Ҳанӯз маълумот нест</string>
+    <string name="son_haber_az_once">Ҳозир</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d дақ пеш</item>
+        <item quantity="other">%1$d дақ пеш</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d соат пеш</item>
+        <item quantity="other">%1$d соат пеш</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d рӯз пеш</item>
+        <item quantity="other">%1$d рӯз пеш</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s хориҷ карда шавад?</string>
+    <string name="kaldir_aciklama">Ин телефон дигар ба телевизор маълумот фиристода наметавонад. Барои аз нав илова кардан бояд рамзи QR-ро боз скан кунед.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Макони телефони Шумо</string>
+</resources>

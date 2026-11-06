@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">ライブカウントダウン</string>
+    <string name="countdown_kanal_canli_aciklama">Now Barとステータスバーのカウントダウン</string>
+    <string name="countdown_kanal_genel_ad">カウントダウンの通知</string>
+    <string name="countdown_kanal_genel_aciklama">カウントダウンの通知用チャンネル</string>
+
+    <string name="countdown_eylem_kildim">礼拝しました</string>
+    <string name="countdown_eylem_durdur">停止</string>
+
+    <string name="countdown_yedek_vakit">急いでください。礼拝時間がまもなく終わります。</string>
+    <string name="countdown_yedek_iftar">時間が迫っています。</string>
+    <string name="countdown_yedek_sahur">まだ飲食できます。まもなく断食が始まります。</string>
+    <string name="countdown_yedek_seri">今日の礼拝がまだ終わっていません。連続記録を失わないようにしてください。</string>
+
+    <string name="countdown_onek_vakit">時間が終わるまで</string>
+    <string name="countdown_onek_vakit_dar">まもなく終了</string>
+    <string name="countdown_onek_iftar">イフタールまで</string>
+    <string name="countdown_onek_iftar_dar">イフタールまで</string>
+    <string name="countdown_onek_sahur">サフールの終わりまで</string>
+    <string name="countdown_onek_sahur_dar">サフール終了間近</string>
+    <string name="countdown_onek_seri">連続記録を守るまで</string>
+    <string name="countdown_onek_seri_dar">連続記録の終わり</string>
+</resources>

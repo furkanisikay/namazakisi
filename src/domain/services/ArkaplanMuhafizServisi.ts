@@ -9,8 +9,8 @@
 import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import * as Notifications from 'expo-notifications';
 import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI, UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
@@ -547,8 +547,7 @@ export class ArkaplanMuhafizServisi {
         if (vakit === 'yatsi') {
             const { lat, lng } = this.ayarlar.koordinatlar;
             const coordinates = new Coordinates(lat, lng);
-            const params = turkiyeHesapParametreleri();
-            const bugunPrayerTimes = new PrayerTimes(coordinates, simdi, params);
+            const bugunPrayerTimes = aktifPrayerTimes(coordinates, simdi);
 
             // Eger su an imsak vaktinden onceyse, bu yatsi dune aittir
             if (simdi < bugunPrayerTimes.fajr) {

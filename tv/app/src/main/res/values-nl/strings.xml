@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Felemenkçe (beta). Terimler: src/core/dil/sozluk/nl (vakit.ts başındaki terim kararları); hitap "u". -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">nl</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Bord met gebedstijden</string>
+    <string name="ayarlar">Instellingen</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Nog %2$s tot %1$s</string>
+    <string name="pano_vaktine">Tot %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s over %2$s</string>
+    <string name="pano_kerahat_vakti">Makruh-tijd</string>
+    <string name="pano_bitis">eindigt %1$s</string>
+    <string name="pano_kerahat_erisim">Makruh-tijd, %1$s, eindigt %2$s. %3$s</string>
+    <string name="pano_cumaya">Djoemoe\'a over %1$s</string>
+    <string name="pano_cikis_geldi">tijd om te vertrekken</string>
+    <string name="pano_cikis">vertrek om %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Het is tijd om naar Djoemoe\'a te vertrekken</string>
+    <string name="pano_cuma_cikis_erisim">Vertrek om %1$s naar Djoemoe\'a</string>
+    <string name="pano_bugun_cuma">Vandaag is het Djoemoe\'a</string>
+    <string name="pano_ogle">Dhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Vandaag is het Djoemoe\'a. Het Djoemoe\'a-gebed is op de tijd van Dhuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Instellingen: een telefoon toevoegen, locatie, verbonden telefoons</string>
+    <string name="pano_simdiki_vakit">huidige gebedstijd</string>
+    <string name="pano_siradaki_vakit">volgende gebedstijd</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Uw telefoon toevoegen", "Code invoeren", "Ik kies de stad zelf", "Toevoegen". -->
+    <string name="kodla_girin">Code invoeren</string>
+    <string name="ili_kendim_secin">Ik kies de stad zelf</string>
+    <string name="yeniden_deneyin">Opnieuw proberen</string>
+    <string name="telefon_varsayilan">Telefoon</string>
+    <string name="esleme_ekleniyor">%1$s wordt toegevoegd</string>
+    <string name="esleme_gonderiyor">Uw telefoon stuurt zijn locatie en status…</string>
+    <string name="esleme_tamamlanamadi">Koppelen kon niet worden voltooid</string>
+    <string name="esleme_saklanamadi">Deze tv kan de verbindingssleutel niet veilig opslaan. U kunt uw locatie met een code invoeren of uw stad kiezen.</string>
+    <string name="telefonunuzu_ekleyin">Uw telefoon toevoegen</string>
+    <string name="esleme_alt">Gebedstijden voor uw locatie; de gebeden die u hebt verricht, verschijnen ook.</string>
+    <string name="esleme_adim1">Open Namaz Akışı op uw telefoon</string>
+    <string name="esleme_adim2">Instellingen › Mijn apparaten › Een tv toevoegen</string>
+    <string name="esleme_adim3">Richt de camera van uw telefoon op de code</string>
+    <string name="esleme_ayni_wifi">Uw telefoon en tv moeten op hetzelfde wifinetwerk zitten.</string>
+    <string name="esleme_onay_soru">Deze telefoon toevoegen?</string>
+    <string name="esleme_onay_aciklama">De toegevoegde telefoon kan zijn locatie en de gebeden die hij markeert naar deze tv sturen.</string>
+    <string name="ekleyin">Toevoegen</string>
+    <string name="hayir">Nee</string>
+    <string name="esleme_eklendi">%1$s toegevoegd</string>
+    <string name="konumunuz_geldi">Uw locatie is ontvangen</string>
+    <string name="konuma_gore_hesaplanacak">De gebedstijden worden voor deze locatie berekend.</string>
+    <string name="qr_konum_alindi">Locatie ontvangen</string>
+    <string name="qr_kodu">Koppelcode om met uw telefoon te scannen</string>
+    <string name="ag_yok">De tv is niet met een netwerk verbonden</string>
+    <string name="ag_yok_aciklama">U kunt doorgaan door de 7-cijferige code van uw telefoon in te voeren of uw stad te kiezen.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Voer de code van uw telefoon in</string>
+    <string name="kod_yol">Op uw telefoon: Instellingen › Mijn apparaten › Een tv toevoegen</string>
+    <string name="kod_hatali">De code klopt niet. Controleer de 7 cijfers op uw telefoon; verbeter een verkeerd cijfer met “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Als uw afstandsbediening cijfertoetsen heeft, kunt u daar ook mee typen.</string>
+    <string name="kod_bos_hane">leeg cijfer</string>
+    <string name="kod_sil">Wissen</string>
+    <string name="kod_sil_aciklama">Het laatste cijfer wissen</string>
+    <string name="kod_geri">Terug</string>
+    <string name="vazgecin">Annuleren</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Kies uw stad</string>
+    <string name="il_merkezine_gore">De gebedstijden worden berekend voor het centrum van de stad.</string>
+    <string name="il_secili">%1$s, gekozen</string>
+    <string name="dream_il_yok">Open de app Namaz Akışı en kies uw stad om het bord met gebedstijden te zien.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Locatie: %1$s</string>
+    <string name="ayar_konum_yok">Geen locatie gekozen</string>
+    <string name="ayar_telefon_ekleyin">Een telefoon toevoegen</string>
+    <string name="ayar_konumu_kodla">Locatie met een code invoeren</string>
+    <string name="ayar_bagli_telefonlar">Telefoons verbonden met deze tv</string>
+    <string name="ayar_telefon_yok">Nog geen telefoon toegevoegd. Gebruik “%1$s” links en scan de code die verschijnt.</string>
+    <string name="kaldirin">Verwijderen</string>
+    <string name="ayar_ne_gonderir">Wat sturen telefoons?</string>
+    <string name="ayar_madde_konum">Locatie: de gebedstijden volgen die</string>
+    <string name="ayar_madde_namazlar">Gemarkeerde gebeden, voor wie daarvoor kiest</string>
+    <string name="ayar_madde_sifreli">Versleuteld, alleen op uw thuisnetwerk</string>
+    <string name="son_haber_yok">Nog geen informatie</string>
+    <string name="son_haber_az_once">Zojuist</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d min geleden</item>
+        <item quantity="other">%1$d min geleden</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d u geleden</item>
+        <item quantity="other">%1$d u geleden</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d dag geleden</item>
+        <item quantity="other">%1$d dagen geleden</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s verwijderen?</string>
+    <string name="kaldir_aciklama">Deze telefoon kan dan geen informatie meer naar de tv sturen. Om hem opnieuw toe te voegen, moet u de QR-code opnieuw scannen.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Locatie van uw telefoon</string>
+</resources>

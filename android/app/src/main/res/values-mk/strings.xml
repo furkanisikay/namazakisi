@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Makedonca (Kiril) kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/mk. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Тековниот намаз, кога истекува, и Клањав со еден допир</string>
+  <string name="widget_genis_aciklama">Денешните пет намази, одбројување и Клањав со еден допир</string>
+  <string name="widget_kapak_adi">Времиња за намаз на надворешниот екран</string>
+  <string name="widget_kapak_aciklama">Денешните времиња за намаз и одбројување за надворешниот екран на Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Класичен</string>
+  <string name="widget_klasik_aciklama">Класичен зелен изглед: преостанато време до следниот намаз</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Класичен широк</string>
+  <string name="widget_klasik_genis_aciklama">Класичен зелен изглед: одбројување и денешните времиња за намаз</string>
+  <string name="widget_ayet_adi">Ајет на денот</string>
+  <string name="widget_ayet_aciklama">Ајет и превод на неговото значење, нов секој ден по сабах</string>
+  <string name="widget_ayar_zemin_palet">Боја на апликацијата (светол тон)</string>
+  <string name="widget_ayar_ayet_icerik">Во квадратна големина прикажете</string>
+  <string name="widget_ayar_ayet_icerik_meal">Превод</string>
+  <string name="widget_ayar_ayet_icerik_hat">Арапски текст (калиграфија)</string>
+  <string name="kutu_kildim_etiket">Клањав</string>
+  <string name="kisayol_kildim_kisa">Клањав</string>
+  <string name="kisayol_kildim_uzun">Го клањав тековниот намаз</string>
+  <string name="kisayol_kible_kisa">Кибла</string>
+  <string name="kisayol_kible_uzun">Прикажете ја насоката на киблата</string>
+  <string name="kisayol_kaza_kisa">Пропуштени</string>
+  <string name="kisayol_kaza_uzun">Отворете ја евиденцијата на пропуштени намази</string>
+  <string name="kildim_onay_baslik">Да се означи намазот (%1$s) како клањан?</string>
+  <string name="kildim_onay_mesaj">Не е јасно која апликација го испрати ова барање. Ако клањавте, потврдете.</string>
+  <string name="kildim_onay_evet">Клањав</string>
+  <string name="kildim_onay_vazgec">Откажете</string>
+  <string name="kildim_guven_baslik">Да се дозволи %1$s да ги означува вашите намази како клањани?</string>
+  <string name="kildim_guven_mesaj">Намазот што сега би се означил: %1$s. Одлуката подоцна можете да ја промените во Поставки &gt; Апликации што можат да означат намаз.</string>
+  <string name="kildim_guven_tarayici_mesaj">Намазот што сега би се означил: %1$s. Ова барање дојде од прелистувач; бидејќи секоја веб-страница може да ја отвори оваа врска, не може да се даде трајна дозвола.</string>
+  <string name="kildim_guven_her_zaman">Секогаш дозволете</string>
+  <string name="kildim_guven_bu_sefer">Само овој пат</string>
+  <string name="kildim_guven_engelle">Блокирајте</string>
+  <string name="kildim_guven_engellendi">%1$s повеќе не може да ги означува вашите намази. Можете да го промените тоа во Поставки.</string>
+  <string name="widget_ayar_baslik">Прилагодете го виџетот</string>
+  <string name="widget_ayar_zemin">Позадина</string>
+  <string name="widget_ayar_zemin_material">Бои од позадината</string>
+  <string name="widget_ayar_zemin_sistem">Системска тема</string>
+  <string name="widget_ayar_zemin_acik">Светла</string>
+  <string name="widget_ayar_zemin_koyu">Темна</string>
+  <string name="widget_ayar_zemin_seffaf">Проѕирна</string>
+  <string name="widget_ayar_opaklik">Непроѕирност на позадината</string>
+  <string name="widget_ayar_gosterim">Прикажете со голем текст</string>
+  <string name="widget_ayar_gosterim_kalan">Преостанато време</string>
+  <string name="widget_ayar_gosterim_bitis">Време на истек</string>
+  <string name="widget_ayar_gosterim_not">Времето на истек се прикажува во секоја големина.</string>
+  <string name="widget_ayar_sonraki">Прикажете го следниот намаз</string>
+  <string name="widget_ayar_vazgec">Откажете</string>
+  <string name="widget_ayar_kaydet">Зачувајте</string>
+  <string name="kildim_onay_kanal_adi">Потврда за Клањав</string>
+  <string name="kildim_onay_kanal_aciklama">Тивка потврда што се прикажува неколку секунди кога ќе допрете „Клањав“ во известување</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Истекува %1$s</string>
+  <string name="widget_giris">Настапува %1$s</string>
+  <string name="widget_namaz_vakti">Време за намаз</string>
+  <string name="widget_uygulamayi_acin">Отворете ја апликацијата</string>
+  <string name="widget_siradaki">Следен: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Моментално нема намаз за клањање</string>
+  <string name="widget_dugme_kildim">Клањав</string>
+  <string name="widget_dugme_isaretleniyor">Се означува</string>
+  <string name="widget_dugme_kilindi">Клањано</string>
+  <string name="widget_dugme_vakit_girmedi">Уште не е време</string>
+  <string name="widget_klasik_uygulamayi_acin">отворете ја апликацијата</string>
+  <string name="widget_klasik_erisim_veri_yok">Отворете ја апликацијата за да ги видите времињата за намаз</string>
+  <string name="widget_klasik_erisim_siradaki">Следен намаз: %1$s, настапува во %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Пладне за</string>
+  <string name="widget_onizleme_klasik_genis">Акшам за</string>
+  <string name="widget_onizleme_imsak">Сабах</string>
+  <string name="widget_onizleme_gunes">Изгрејсонце</string>
+  <string name="widget_onizleme_ogle">Пладне</string>
+  <string name="widget_onizleme_ikindi">Икиндија</string>
+  <string name="widget_onizleme_aksam">Акшам</string>
+  <string name="widget_onizleme_yatsi">Јација</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s: вашиот намаз е означен како клањан. Аллах нека прими.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s: намазот веќе е означен како клањан.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Моментално нема намаз за клањање. Следен: %1$s, настапува во %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Моментално нема намаз за клањање.</string>
+  <string name="kildim_sonuc_veri_yok">Нема податоци за времињата. Отворете ја апликацијата еднаш.</string>
+  <string name="kildim_sonuc_vakit_degisti">Времето за намаз се промени, означувањето не е извршено. Обидете се повторно.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Апликацијата за навигација не можеше да се отвори.</string>
+  <string name="arac_adsiz_cami">Џамија</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Податоците за времињата не можеа да се прочитаат.</string>
+  <string name="asistan_isaretleme_yapilamadi">Намазот не можеше да се означи.</string>
+  <string name="asistan_aciklama">Можете да прашате за времињата за намаз, да го означите тековниот намаз како клањан и да го отворите екранот за кибла.</string>
+</resources>

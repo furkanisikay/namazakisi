@@ -74,7 +74,7 @@ object SaatAnonsu {
      * @param bitti HER yolda tam bir kez, ana iş parçacığında, denemenin sonucuyla çağrılır
      *   (zaman aşımı `HATA`); sonuç diske de yazılır.
      */
-    fun konus(context: Context, metin: String, bitti: (SesDurumu) -> Unit) {
+    fun konus(context: Context, metin: String, dil: String = "tr-TR", bitti: (SesDurumu) -> Unit) {
         val app = context.applicationContext
         val tamam = AtomicBoolean(false)
         val ana = Handler(Looper.getMainLooper())
@@ -103,8 +103,8 @@ object SaatAnonsu {
                 return
             }
             try {
-                val dil = t.setLanguage(Locale.forLanguageTag("tr-TR"))
-                val yok = dil == TextToSpeech.LANG_MISSING_DATA || dil == TextToSpeech.LANG_NOT_SUPPORTED
+                val sonuc = t.setLanguage(Locale.forLanguageTag(dil))
+                val yok = sonuc == TextToSpeech.LANG_MISSING_DATA || sonuc == TextToSpeech.LANG_NOT_SUPPORTED
                 if (yok) {
                     bitir(SesDurumu.TURKCE_YOK)
                     return

@@ -12,12 +12,15 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { yarinVakitleriniHesapla } from '../../../core/anaEkran/genisEkranEkleri';
 import { GUNLUK_FARZ, haftaBasi, haftaOzetiHesapla } from '../../../core/anaEkran/haftaOzeti';
 import { localTarihAraligindakiNamazlariGetir } from '../../../data/local/LocalNamazServisi';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { bicim, sayili, sayiYaz } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { kazaVerileriniYukle } from '../../store/kazaSlice';
 
 interface Props {
@@ -66,6 +69,7 @@ const Bolum: React.FC<{ ikon: string; baslik: string; children: React.ReactNode;
 
 export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiIso, okumaAnahtari, uzat = false }) => {
     const renkler = useRenkler();
+    const m = useMetin().anaEkran.genis;
     const dispatch = useAppDispatch();
     const navigation = useNavigation<{ navigate: (ad: string) => void }>();
     const mevcutSeri = useAppSelector((s) => s.seri?.seriDurumu?.mevcutSeri ?? 0);
@@ -94,10 +98,13 @@ export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiI
         };
     }, [gunTarihiIso, okumaAnahtari]);
 
-    const hafta = React.useMemo(() => haftaOzetiHesapla(gunTarihiIso, kilinanlar), [gunTarihiIso, kilinanlar]);
+    // `m` bağımlılık: gün harfleri ve yarının vakit adları etkin dilde üretilir.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const hafta = React.useMemo(() => haftaOzetiHesapla(gunTarihiIso, kilinanlar), [gunTarihiIso, kilinanlar, m]);
     const yarin = React.useMemo(
         () => guvenli(() => (lat === undefined || lng === undefined ? null : yarinVakitleriniHesapla({ lat, lng }, gunTarihiIso))),
-        [lat, lng, gunTarihiIso]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [lat, lng, gunTarihiIso, m]
     );
 
     return (
@@ -109,11 +116,11 @@ export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiI
                 uzat && stil.uzananKart,
             ]}
         >
-            <Bolum ikon="fire" baslik="Bu hafta" ilk uzat={uzat}>
-                <View className="flex-row items-baseline gap-2 mb-4" accessible accessibilityLabel={`${mevcutSeri} günlük seri`}>
+            <Bolum ikon="fire" baslik={m.buHafta} ilk uzat={uzat}>
+                <View className="flex-row items-baseline gap-2 mb-4" accessible accessibilityLabel={sayili(m.seriErisim, mevcutSeri)}>
                     <Text style={[stil.buyukSayi, { color: renkler.metin }]}>{mevcutSeri}</Text>
                     <Text className="text-base" style={{ color: renkler.metinIkincil }}>
-                        günlük seri
+                        {sayili(m.seriEtiketi, mevcutSeri)}
                     </Text>
                 </View>
                 {/* Haftanın günleri: her gün beş kutucuk (beş vakit), aşağıdan yukarı dolar. */}
@@ -123,7 +130,7 @@ export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiI
                             key={g.tarih}
                             className="items-center"
                             accessible
-                            accessibilityLabel={g.gelecekMi ? `${g.harf}, henüz gelmedi` : `${g.harf}, ${g.kilinan} vakit kılındı`}
+                            accessibilityLabel={g.gelecekMi ? bicim(m.gunGelmedi, { gun: g.harf }) : sayili(m.gunKilinan, g.kilinan, { gun: g.harf })}
                         >
                             <View style={stil.kutuSutunu}>
                                 {Array.from({ length: GUNLUK_FARZ }, (_, i) => GUNLUK_FARZ - 1 - i).map((i) => (
@@ -149,41 +156,41 @@ export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiI
                     ))}
                 </View>
                 <Text className="text-sm mt-4" style={{ color: renkler.metin }}>
-                    {`Bu hafta %${hafta.yuzde} kılındı (${hafta.kilinan}/${hafta.toplam})`}
+                    {bicim(m.haftaOzeti, { yuzde: hafta.yuzde, kilinan: hafta.kilinan, toplam: hafta.toplam })}
                 </Text>
             </Bolum>
 
             {kaza ? (
-                <Bolum ikon="book" baslik="Kaza" uzat={uzat}>
+                <Bolum ikon="book" baslik={m.kaza} uzat={uzat}>
                     <View className="flex-row items-center justify-between">
                         <Text className="text-base" style={{ color: renkler.metin }}>
                             <Text className="text-2xl font-bold">
-                                {kaza.toplamGizleMi ? '••••' : kaza.toplamKalan.toLocaleString('tr-TR')}
+                                {kaza.toplamGizleMi ? '••••' : sayiYaz(kaza.toplamKalan)}
                             </Text>
-                            {' kaza kaldı'}
+                            {sayili(m.kazaKaldi, kaza.toplamKalan)}
                         </Text>
                         <TouchableOpacity
                             onPress={() => navigation.navigate('KazaDefteri')}
                             accessibilityRole="button"
-                            accessibilityLabel="Kaza defterini açın"
+                            accessibilityLabel={m.kazaDefteriniAcin}
                             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                             className="flex-row items-center gap-2 px-4 py-2 rounded-full"
                             style={{ backgroundColor: renkler.birincil + '20' }}
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                Açın
+                                {m.acin}
                             </Text>
-                            <FontAwesome5 name="chevron-right" size={11} color={renkler.metin} />
+                            <YonluIkon name="chevron-right" size={11} color={renkler.metin} />
                         </TouchableOpacity>
                     </View>
                 </Bolum>
             ) : null}
 
             {yarin ? (
-                <Bolum ikon="calendar-day" baslik={`Yarın, ${yarin.tarihMetni}`} uzat={uzat}>
+                <Bolum ikon="calendar-day" baslik={bicim(m.yarin, { tarih: yarin.tarihMetni })} uzat={uzat}>
                     <View className="flex-row flex-wrap" testID="genis-yarin-vakitleri">
                         {yarin.satirlar.map((s) => (
-                            <View key={s.ad} className="w-1/3 py-2" accessible accessibilityLabel={`Yarın ${s.ad} ${s.saat}`}>
+                            <View key={s.ad} className="w-1/3 py-2" accessible accessibilityLabel={bicim(m.yarinVakitErisim, { ad: s.ad, saat: s.saat })}>
                                 <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
                                     {s.ad}
                                 </Text>

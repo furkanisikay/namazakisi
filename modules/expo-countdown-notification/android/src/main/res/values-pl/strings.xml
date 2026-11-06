@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Odliczanie na żywo</string>
+    <string name="countdown_kanal_canli_aciklama">Odliczania na Now Bar i na pasku stanu</string>
+    <string name="countdown_kanal_genel_ad">Odliczanie: powiadomienia</string>
+    <string name="countdown_kanal_genel_aciklama">Kanał powiadomień z odliczaniem</string>
+
+    <string name="countdown_eylem_kildim">Odprawiono</string>
+    <string name="countdown_eylem_durdur">Zatrzymaj</string>
+
+    <string name="countdown_yedek_vakit">Pospiesz się, czas modlitwy zaraz się skończy.</string>
+    <string name="countdown_yedek_iftar">Czas się kończy.</string>
+    <string name="countdown_yedek_sahur">Możesz jeszcze jeść i pić; post wkrótce się zacznie.</string>
+    <string name="countdown_yedek_seri">Dzisiejsze modlitwy nie są pełne; nie trać serii.</string>
+
+    <string name="countdown_onek_vakit">Do końca czasu</string>
+    <string name="countdown_onek_vakit_dar">Czas się kończy</string>
+    <string name="countdown_onek_iftar">Do iftaru</string>
+    <string name="countdown_onek_iftar_dar">Do iftaru</string>
+    <string name="countdown_onek_sahur">Do końca suhur</string>
+    <string name="countdown_onek_sahur_dar">Suhur się kończy</string>
+    <string name="countdown_onek_seri">Aby ocalić serię</string>
+    <string name="countdown_onek_seri_dar">Seria się kończy</string>
+</resources>

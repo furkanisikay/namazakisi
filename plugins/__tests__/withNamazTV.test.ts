@@ -76,6 +76,16 @@ describe('withNamazTV — Xcode hedefi', () => {
         expect(dosyalar).toEqual(expect.arrayContaining(['TvPano.swift in Sources', 'iller.json in Resources']));
     });
 
+    it("N'Ko yazı tipi Resources fazındadır (Sources'ta değil)", () => {
+        const { proje } = kur();
+        const hedef = proje.pbxTargetByName(eklenti.TV_HEDEFI);
+        const nesneler = proje.hash.project.objects;
+        const faz = (ad: string) => hedef.buildPhases.find((f: { comment: string }) => f.comment === ad);
+        const dosyalar = (ad: string) => nesneler[`PBX${ad}BuildPhase`][faz(ad).value].files.map((f: { comment: string }) => f.comment);
+        expect(dosyalar('Resources')).toEqual(['iller.json in Resources', 'NotoSansNKo-Regular.ttf in Resources']);
+        expect(dosyalar('Sources').filter((d: string) => d.includes('.ttf'))).toEqual([]);
+    });
+
     it('ana hedef DEĞİŞMEZ: ilk application hedefi ana kalır, bağımlılık/gömme yok', () => {
         const { proje, anaUuid } = kur();
         expect(proje.getFirstTarget().uuid).toBe(anaUuid);
@@ -91,15 +101,28 @@ describe('withNamazTV — Xcode hedefi', () => {
         expect(proje.hash.project.objects.PBXProject[proje.hash.project.rootObject].targets.length).toBe(sayi);
     });
 
-    it('dosyaları yazar: Swift kaynakları, iller.json, Info.plist (sürüm ana uygulamayla aynı)', () => {
+    it("dosyaları yazar: Swift kaynakları, iller.json, N'Ko yazı tipi, Info.plist (sürüm ana uygulamayla aynı)", () => {
         const gecici = fs.mkdtempSync(path.join(os.tmpdir(), 'namaz-tv-'));
         const adlar = eklenti.tvDosyalariniYaz(gecici, '1.2.3', '45');
-        expect(adlar).toEqual(expect.arrayContaining(['NamazTVUygulamasi.swift', 'TvPano.swift', 'TvVakitHesabi.swift']));
+        expect(adlar).toEqual(expect.arrayContaining(['NamazTVUygulamasi.swift', 'TvPano.swift', 'TvVakitHesabi.swift', 'TvYaziTipi.swift']));
+        expect(adlar.filter((ad: string) => !ad.endsWith('.swift'))).toEqual([]);
         const dizin = path.join(gecici, eklenti.TV_HEDEFI);
         expect(JSON.parse(fs.readFileSync(path.join(dizin, 'iller.json'), 'utf8'))).toHaveLength(81);
         const plist = fs.readFileSync(path.join(dizin, 'Info.plist'), 'utf8');
         expect(plist).toContain('<string>1.2.3</string>');
         expect(plist).toContain('<string>45</string>');
+        // N'Ko: tvOS'ta sistem yazı tipi yok → tek kaynaktan birebir kopya + UIAppFonts kaydı.
+        expect(plist).toMatch(/<key>UIAppFonts<\/key>\s*<array>\s*<string>NotoSansNKo-Regular\.ttf<\/string>\s*<\/array>/);
+        expect(fs.readFileSync(path.join(dizin, 'NotoSansNKo-Regular.ttf'))).toEqual(
+            fs.readFileSync(path.join(KOK, 'assets/fonts/NotoSansNKo-Regular.ttf'))
+        );
+        expect(fs.readFileSync(path.join(KOK, 'targets/tv/TvYaziTipi.swift'), 'utf8')).toContain(
+            'static let nkoAdi = "NotoSansNKo-Regular"'
+        );
+        // Font vermeyen metin kökten N'Ko yazı tipini alır.
+        expect(fs.readFileSync(path.join(KOK, 'targets/tv/NamazTVUygulamasi.swift'), 'utf8')).toMatch(
+            /TvKokGorunumu\(\)\s*\.nkoVarsayilanYaziTipi\(\)/
+        );
         fs.rmSync(gecici, { recursive: true, force: true });
     });
 });

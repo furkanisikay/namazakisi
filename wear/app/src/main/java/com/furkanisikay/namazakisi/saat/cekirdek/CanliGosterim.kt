@@ -33,14 +33,14 @@ object CanliGosterim {
     private data class Aday(val g: Gosterim, val oncelik: Int, val sira: Int)
 
     /** Şu an gösterilecek tek sayaç (yoksa null). */
-    fun aktif(yuk: Yuk?, bekleyen: Set<String>, simdi: Long): Gosterim? {
+    fun aktif(yuk: Yuk?, bekleyen: Set<String>, simdi: Long, dil: String = "tr"): Gosterim? {
         if (yuk == null) return null
         val adaylar = mutableListOf<Aday>()
         sonDakikaPencereleri(yuk)
             .filter { simdi >= it.bas && simdi < it.bitis && !AlarmZinciri.kilinmisMi(yuk, bekleyen, it.tarih, it.vakit) }
             .forEach {
                 adaylar += Aday(
-                    Gosterim("${it.ad} vakti çıkıyor", it.ad, it.bitis, it.tarih, it.vakit, it.vakit, true),
+                    Gosterim(saatDili(dil).vaktiCikiyor(it.ad(dil)), it.ad(dil), it.bitis, it.tarih, it.vakit, it.vakit, true),
                     VAKIT_ONCELIGI,
                     0,
                 )

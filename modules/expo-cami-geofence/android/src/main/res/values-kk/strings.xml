@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- kk -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Мешіттемін</string>
+    <string name="camigeofence_kanal_durum_aciklama">Мешітте екеніңіз анықталғанда келетін үнсіз хабар</string>
+    <string name="camigeofence_kanal_soru_ad">Мешіттен шыққаннан кейін</string>
+    <string name="camigeofence_kanal_soru_aciklama">Мешіттен шыққаннан кейін намазыңызды белгілеуге арналған сұрақ</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Намаз режимі қосулы. Еске салғыштар дыбыссыз келеді.</string>
+    <string name="camigeofence_govde_mod">Намаз режимі қосулы.</string>
+    <string name="camigeofence_govde_sessiz">Еске салғыштар дыбыссыз келеді.</string>
+    <string name="camigeofence_govde_normal">Еске салғыштар әдеттегідей келеді.</string>
+    <string name="camigeofence_eylem_modu_kapat">Режимді өшіру</string>
+    <string name="camigeofence_eylem_cami_degil">Мешіт емес</string>
+
+    <string name="camigeofence_soru_baslik">Мешіттесіз бе?</string>
+    <string name="camigeofence_soru_govde">Сіз %1$s жанындасыз. Сенімді болмағандықтан сізден сұраймыз.</string>
+    <string name="camigeofence_varsayilan_ad">Мешіт</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Намаз режимін қосу</string>
+    <string name="camigeofence_eylem_evet_camideyim">Иә, мешіттемін</string>
+    <string name="camigeofence_eylem_hayir">Жоқ</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s оқыдыңыз ба?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Бір түртумен белгілей аласыз.</string>
+    <string name="camigeofence_eylem_kildim">Оқыдым</string>
+    <string name="camigeofence_namaz_imsak">Таң намазын</string>
+    <string name="camigeofence_namaz_ogle">Бесін намазын</string>
+    <string name="camigeofence_namaz_ikindi">Екінті намазын</string>
+    <string name="camigeofence_namaz_aksam">Ақшам намазын</string>
+    <string name="camigeofence_namaz_yatsi">Құптан намазын</string>
+    <string name="camigeofence_namaz_cuma">Жұма намазын</string>
+
+    <string name="camigeofence_mod_kural_adi">Намаз</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı оны жұма уағызы кезінде, мешітте немесе намаз уақыты кіргенде қосады</string>
+</resources>

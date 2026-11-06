@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Kiswahili terimleri: src/core/dil/sozluk/sw (vakit.ts basi). Kiswahili (beta).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Swala inayofuata";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Hukuambia Swala inayofuata na saa inapoingia.";
+"Şu anki vakti kıldım" = "Nimeswali Swala ya sasa";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Huweka alama Swala ya sasa imeswaliwa. Kumbukumbu inaongezwa unapofungua programu.";
+"Onay iste" = "Omba uthibitisho";
+"Kıbleyi aç" = "Fungua Kibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Hufungua programu kwa dira ya Kibla.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Nimeswali";
+"Kıble" = "Kibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Jina la Swala inayofuata";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Hutoa jina la Swala inayofuata. Unaweza kulitumia kama sharti katika Shortcuts.";
+"Sıradaki vakte kalan dakika" = "Dakika hadi Swala inayofuata";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Hutoa dakika ngapi zimebaki hadi Swala inayofuata iingie. Hurudisha -1 ikiwa hakuna taarifa.";
+"Şu anki vakit kılındı mı?" = "Je, Swala ya sasa imewekwa alama imeswaliwa?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Hutoa ndiyo ikiwa Swala ya sasa imewekwa alama imeswaliwa. Hutoa hapana ikiwa hakuna Swala ya kuweka alama.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Kimya cha Swala";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Hurudisha kweli katika dakika za kwanza baada ya wakati wa Swala kuingia. Hutumika katika Shortcuts kuwasha Focus.";
+"Süre (dakika)" = "Muda (dakika)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Dakika ${dakika} baada ya wakati wa Swala kuingia";
+"Namaz sessizliğinin bitişi" = "Mwisho wa kimya cha Swala";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Hutoa saa ambayo kimya kinaisha. Hutoa wakati wa sasa ikiwa hakuna kimya sasa.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Mwisho wa dakika ${dakika} baada ya wakati wa Swala kuingia";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Vikumbusho vya Swala";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Focus hii ikiwa imewashwa, vikumbusho vya Swala vinafika bila sauti na bila kuwasha skrini.";
+"Hatırlatmaları sessiz ver" = "Toa vikumbusho kimya";
+"Hatırlatmalar sessiz gelir" = "Vikumbusho vinafika kimya";
+"Hatırlatmalar her zamanki gibi" = "Vikumbusho kama kawaida";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Huweka alama Swala inayoonyeshwa kwenye wijeti imeswaliwa.";
+"Tarih" = "Tarehe";
+"Vakit" = "Swala";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Simamisha kengele ya Swala";
+"Namazı kıldım" = "Nimeswali";
+"Alarm" = "Kengele";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Picha ya aya ya siku";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Hutoa aya ya leo kama picha yenye ukubwa wa skrini yako. Unaweza kuitumia pamoja na hatua ya Set Wallpaper katika Shortcuts.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Fungua programu mara moja ili kutayarisha aya ya siku.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Picha haikuweza kutayarishwa. Jaribu tena baada ya muda mfupi.";

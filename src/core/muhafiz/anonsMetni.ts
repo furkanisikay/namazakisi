@@ -1,21 +1,27 @@
 import type { MuhafizVakti } from './matrisTipleri';
 import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
+import { canli, metin } from '../dil/aktifDil';
+import { dakikaUyumu } from '../dil/sure';
+import { tr } from '../dil/sozluk/tr';
+import { sablonlar, sablonuYerellestir } from '../hatirlatma/anonsSablonlari';
 
-export const VAKIT_ADLARI_ANONS: Record<MuhafizVakti, string> = {
-  imsak: 'Sabah', ogle: 'Öğle', ikindi: 'İkindi', aksam: 'Akşam', yatsi: 'Yatsı',
-};
+/** `{vakit}` yerine okunan ad, etkin dilde (sesli okuma motoru da etkin dilde konuşur). */
+export const VAKIT_ADLARI_ANONS: Readonly<Record<MuhafizVakti, string>> = canli((s) => ({
+  imsak: s.vakit.adlar.imsak,
+  ogle: s.vakit.adlar.ogle,
+  ikindi: s.vakit.adlar.ikindi,
+  aksam: s.vakit.adlar.aksam,
+  yatsi: s.vakit.adlar.yatsi,
+}));
 
 // Şablonlar vakit-agnostik ve "sen" dili (AGENTS.md muhafız istisnası).
 //
 // ÇIKIŞ havuzu — ölçü "vaktin çıkmasına kalan dakika". Bu diziler mevcut
 // kullanıcıların hücrelerinde YAZILI duruyor (boş kutu bunlarla dolduruluyordu)
 // → metinleri değiştirmek diskteki veriyi öksüz bırakır, BİREBİR korunur.
-export const ANONS_SABLONLARI: string[] = [
-  '{vakit} vakti çıkıyor, son {süre} dakika.',
-  '{vakit} namazını kaçırma, {süre} dakika kaldı.',
-  'Vakit daralıyor, {vakit} namazına {süre} dakika.',
-];
+// TÜRKÇE kayıt (sözlük `anons.sablon.muhafizCikis`): diskteki eski veriyle eşleşme ve testler.
+export const ANONS_SABLONLARI: readonly string[] = tr.anons.sablon.muhafizCikis;
 
 /**
  * GİRİŞ havuzu — ölçü "vaktin girişinden geçen dakika".
@@ -28,15 +34,11 @@ export const ANONS_SABLONLARI: string[] = [
  * ÇIKIŞ HAVUZUYLA İNDEKS İNDEKS EŞLENİR — `yonDegisimindeMetniCevir` çeviriyi
  * bu eşlemeden okur. Bir havuza şablon eklerken DİĞERİNE de aynı indekste ekle.
  */
-export const ANONS_SABLONLARI_GIRIS: string[] = [
-  '{vakit} vakti girdi, {süre} dakika geçti.',
-  '{vakit} namazını geciktirme, üzerinden {süre} dakika geçti.',
-  'Vakit ilerliyor, {vakit} namazına dur, {süre} dakika oldu.',
-];
+export const ANONS_SABLONLARI_GIRIS: readonly string[] = tr.anons.sablon.muhafizGiris;
 
-/** Yönün hazır metin havuzu. Verilmezse çıkış (tarihsel davranış). */
+/** Yönün hazır metin havuzu, ETKİN dilde. Verilmezse çıkış (tarihsel davranış). */
 export function anonsSablonlari(yon: PencereYonu = VARSAYILAN_PENCERE_YONU): string[] {
-  return yon === 'girisindenItibaren' ? ANONS_SABLONLARI_GIRIS : ANONS_SABLONLARI;
+  return [...sablonlar(yon === 'girisindenItibaren' ? 'muhafizGiris' : 'muhafizCikis')];
 }
 
 /** BOŞ anons kutusunu dolduran şablon (tek kaynak — üç çağıran da buradan alır). */
@@ -44,11 +46,8 @@ export function varsayilanAnonsMetni(yon: PencereYonu = VARSAYILAN_PENCERE_YONU)
   return anonsSablonlari(yon)[0];
 }
 
-/** `{yön}` yer tutucusunun karşılığı — metnin tek yöne-bağımlı sözcüğü. */
-const YON_IFADESI: Record<PencereYonu, string> = {
-  cikisaDogru: 'kaldı',
-  girisindenItibaren: 'geçti',
-};
+/** `{yön}` yer tutucusunun karşılığı — metnin tek yöne-bağımlı sözcüğü (etkin dilde). */
+const metinYon = (yon: PencereYonu): string => metin().anons.yon[yon];
 
 /**
  * Şablonu okunabilir metne çevirir.
@@ -67,16 +66,21 @@ export function anonsMetniniCoz(
   olcuDk: number,
   yon: PencereYonu = VARSAYILAN_PENCERE_YONU
 ): string {
-  const metin = sablon
-    .split('{vakit}').join(VAKIT_ADLARI_ANONS[vakit])
-    .split('{süre}').join(String(olcuDk))
-    .split('{yön}').join(YON_IFADESI[yon]);
+  // Hazır şablon (herhangi bir dilde) etkin dile çevrilir; kullanıcının yazdığı metin aynen.
+  const yerel = sablonuYerellestir(sablon);
+  const cumle = dakikaUyumu(
+    yerel
+      .split('{vakit}').join(VAKIT_ADLARI_ANONS[vakit])
+      .split('{süre}').join(String(olcuDk)) // dil-haric: yer tutucu jetonu
+      .split('{yön}').join(metinYon(yon)), // dil-haric: yer tutucu jetonu
+    olcuDk
+  );
   // Bilinmeyen `{…}` (yazım hatası, başka yüzeyden taşınan metin) BOŞA indirgenir — TTS
   // "süslü parantez" okumasın; ek yüzeylerin `anonsCoz`'uyla aynı kural. Temizlik YALNIZ
   // bilinmeyen yer tutucu varken yapılır: bilinenleri taşıyan metinler birebir aynı kalır
   // (kayıt-oynat). Sonuç boşsa muhafız SESSİZ kalır (bilinçli).
-  if (!/\{[^{}]*\}/.test(metin)) return metin;
-  return metin
+  if (!/\{[^{}]*\}/.test(cumle)) return cumle;
+  return cumle
     .replace(/\{[^{}]*\}/g, '')
     .replace(/[ \t]{2,}/g, ' ')
     .replace(/[ \t]+([.,;:!?])/g, '$1')

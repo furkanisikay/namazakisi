@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Camideyim / Namaz modu metinleri — Hintçe (beta). Terimler: JS src/core/dil/sozluk/hi/cami.ts. -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">मस्जिद में हूँ</string>
+    <string name="camigeofence_kanal_durum_aciklama">मस्जिद में आपकी मौजूदगी का पता चलने पर ख़ामोश सूचना</string>
+    <string name="camigeofence_kanal_soru_ad">मस्जिद से निकलने के बाद</string>
+    <string name="camigeofence_kanal_soru_aciklama">मस्जिद से निकलने के बाद नमाज़ पर निशान लगाने के लिए एक सवाल</string>
+
+    <string name="camigeofence_govde_mod_sessiz">नमाज़ मोड चालू है। रिमाइंडर चुपचाप आएंगे।</string>
+    <string name="camigeofence_govde_mod">नमाज़ मोड चालू है।</string>
+    <string name="camigeofence_govde_sessiz">रिमाइंडर चुपचाप आएंगे।</string>
+    <string name="camigeofence_govde_normal">रिमाइंडर हमेशा की तरह आएंगे।</string>
+    <string name="camigeofence_eylem_modu_kapat">मोड बंद करें</string>
+    <string name="camigeofence_eylem_cami_degil">मस्जिद नहीं</string>
+
+    <string name="camigeofence_soru_baslik">क्या आप मस्जिद में हैं?</string>
+    <string name="camigeofence_soru_govde">आप %1$s के पास हैं। पक्का नहीं है, इसलिए आपसे पूछा जा रहा है।</string>
+    <string name="camigeofence_varsayilan_ad">मस्जिद</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">नमाज़ मोड चालू करें</string>
+    <string name="camigeofence_eylem_evet_camideyim">हाँ, मैं मस्जिद में हूँ</string>
+    <string name="camigeofence_eylem_hayir">नहीं</string>
+
+    <string name="camigeofence_kildiniz_mi">क्या आपने %1$s की नमाज़ पढ़ ली?</string>
+    <string name="camigeofence_kildiniz_mi_govde">एक टैप से निशान लगाया जा सकता है।</string>
+    <string name="camigeofence_eylem_kildim">नमाज़ पढ़ ली</string>
+    <string name="camigeofence_namaz_imsak">फ़ज्र</string>
+    <string name="camigeofence_namaz_ogle">ज़ुहर</string>
+    <string name="camigeofence_namaz_ikindi">अस्र</string>
+    <string name="camigeofence_namaz_aksam">मग़रिब</string>
+    <string name="camigeofence_namaz_yatsi">इशा</string>
+    <string name="camigeofence_namaz_cuma">जुमा</string>
+
+    <string name="camigeofence_mod_kural_adi">नमाज़</string>
+    <string name="camigeofence_mod_tetik_aciklama">जुमा के ख़ुतबे के दौरान, मस्जिद में होने पर या नमाज़ का वक़्त शुरू होने पर Namaz Akışı इसे चालू करता है</string>
+</resources>

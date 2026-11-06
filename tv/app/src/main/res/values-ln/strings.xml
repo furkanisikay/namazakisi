@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lingala. Terimler: JS src/core/dil/sozluk/ln (vakit.ts başı). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ln</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Etando ya bangonga ya losambo</string>
+    <string name="ayarlar">Mibongiseli</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Etikali %2$s tii %1$s</string>
+    <string name="pano_vaktine">Tii %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s na %2$s</string>
+    <string name="pano_kerahat_vakti">Ntango ya makruh</string>
+    <string name="pano_bitis">ekosila %1$s</string>
+    <string name="pano_kerahat_erisim">Ntango ya makruh, %1$s, ekosila %2$s. %3$s</string>
+    <string name="pano_cumaya">Jumu\'a na %1$s</string>
+    <string name="pano_cikis_geldi">ntango ya kobima</string>
+    <string name="pano_cikis">bobima na %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Ntango ya kobima mpɔ na Jumu\'a ekoki</string>
+    <string name="pano_cuma_cikis_erisim">Bobima mpɔ na Jumu\'a na %1$s</string>
+    <string name="pano_bugun_cuma">Lɛlɔ ezali Jumu\'a</string>
+    <string name="pano_ogle">Dhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Lɛlɔ ezali Jumu\'a. Losambo ya Jumu\'a ezali na ntango ya Dhuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Mibongiseli: kobakisa telefone, esika, ba telefone ekangani</string>
+    <string name="pano_simdiki_vakit">ntango ya losambo ya sikoyo</string>
+    <string name="pano_siradaki_vakit">ntango ya losambo elandi</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Bobakisa telefone na bino", "Bokoma code", "Nakopona engumba ngai moko", "Bobakisa". -->
+    <string name="kodla_girin">Bokoma code</string>
+    <string name="ili_kendim_secin">Nakopona engumba ngai moko</string>
+    <string name="yeniden_deneyin">Bomeka lisusu</string>
+    <string name="telefon_varsayilan">Telefone</string>
+    <string name="esleme_ekleniyor">Ezali kobakisa %1$s</string>
+    <string name="esleme_gonderiyor">Telefone na bino ezali kotinda esika mpe ezalela na yango…</string>
+    <string name="esleme_tamamlanamadi">Bokangani ekoki kosila te</string>
+    <string name="esleme_saklanamadi">TV oyo ekoki kobomba fungola ya bokangani na libateli te. Bokoki kokoma esika na bino na code to kopona engumba na bino.</string>
+    <string name="telefonunuzu_ekleyin">Bobakisa telefone na bino</string>
+    <string name="esleme_alt">Bangonga ya losambo mpɔ na esika na bino; losambo oyo bosambeli ekomonana mpe.</string>
+    <string name="esleme_adim1">Bofungola Namaz Akışı na telefone na bino</string>
+    <string name="esleme_adim2">Mibongiseli › Bisaleli na ngai › Bobakisa TV</string>
+    <string name="esleme_adim3">Botalisa kamera ya telefone na bino na code</string>
+    <string name="esleme_ayni_wifi">Telefone na TV na bino esengeli kozala na Wi-Fi mɔkɔ.</string>
+    <string name="esleme_onay_soru">Bobakisa telefone oyo?</string>
+    <string name="esleme_onay_aciklama">Telefone oyo ebakisami ekoki kotinda esika na yango mpe losambo oyo etiaka elembo na TV oyo.</string>
+    <string name="ekleyin">Bobakisa</string>
+    <string name="hayir">Te</string>
+    <string name="esleme_eklendi">%1$s ebakisami</string>
+    <string name="konumunuz_geldi">Esika na bino ekomi</string>
+    <string name="konuma_gore_hesaplanacak">Bangonga ya losambo ekotangama mpɔ na esika oyo.</string>
+    <string name="qr_konum_alindi">Esika ezwami</string>
+    <string name="qr_kodu">Code ya bokangani ya kotanga na telefone na bino</string>
+    <string name="ag_yok">TV ekangani na Wi-Fi te</string>
+    <string name="ag_yok_aciklama">Bokoki kokoba na kokoma code ya mitango 7 oyo ezali na telefone na bino to na kopona engumba na bino.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Bokoma code oyo ezali na telefone na bino</string>
+    <string name="kod_yol">Na telefone na bino: Mibongiseli › Bisaleli na ngai › Bobakisa TV</string>
+    <string name="kod_hatali">Code ekokani te. Botala mitango 7 oyo ezali na telefone na bino; bobongisa motango ya mabe na “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Soki télécommande na bino ezali na babouton ya mitango, bokoki mpe kokoma na yango.</string>
+    <string name="kod_bos_hane">motango ezangi</string>
+    <string name="kod_sil">Bolongola</string>
+    <string name="kod_sil_aciklama">Bolongola motango ya suka</string>
+    <string name="kod_geri">Nsima</string>
+    <string name="vazgecin">Botika</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Bopona engumba na bino</string>
+    <string name="il_merkezine_gore">Bangonga ya losambo etangamaka mpɔ na katikati ya engumba.</string>
+    <string name="il_secili">%1$s, eponami</string>
+    <string name="dream_il_yok">Mpɔ na komona etando ya bangonga ya losambo, bofungola aplikasiɔ Namaz Akışı mpe bopona engumba na bino.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Esika: %1$s</string>
+    <string name="ayar_konum_yok">Esika eponami te</string>
+    <string name="ayar_telefon_ekleyin">Bobakisa telefone</string>
+    <string name="ayar_konumu_kodla">Bokoma esika na code</string>
+    <string name="ayar_bagli_telefonlar">Ba telefone ekangani na TV oyo</string>
+    <string name="ayar_telefon_yok">Telefone mɔkɔ te ebakisami naino. Bosalela “%1$s” na loboko ya mwasi mpe botanga code oyo ekomonana.</string>
+    <string name="kaldirin">Bolongola</string>
+    <string name="ayar_ne_gonderir">Ba telefone etindaka nini?</string>
+    <string name="ayar_madde_konum">Esika: bangonga ya losambo elandaka yango</string>
+    <string name="ayar_madde_namazlar">Losambo oyo etiami elembo, mpɔ na baye baponi</string>
+    <string name="ayar_madde_sifreli">Na sekrɛ, kaka na Wi-Fi ya ndako na bino</string>
+    <string name="son_haber_yok">Sango ezali naino te</string>
+    <string name="son_haber_az_once">Sikoyo</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">min %1$d eleki</item>
+        <item quantity="other">min %1$d eleki</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">h %1$d eleki</item>
+        <item quantity="other">h %1$d eleki</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">mokɔlɔ %1$d eleki</item>
+        <item quantity="other">mikɔlɔ %1$d eleki</item>
+    </plurals>
+    <string name="kaldir_soru">Bolongola %1$s?</string>
+    <string name="kaldir_aciklama">Telefone oyo ekoki lisusu kotinda sango na TV te. Mpɔ na kobakisa yango lisusu, bosengeli kotanga code QR lisusu.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Esika ya telefone na bino</string>
+</resources>

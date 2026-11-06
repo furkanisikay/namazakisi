@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kannada. Terimler JS sozluk/kn ile aynı (ಕೌಂಟ್‌ಡೌನ್, ಸರಣಿ, ಸಹರಿ). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">ಲೈವ್ ಕೌಂಟ್‌ಡೌನ್‌ಗಳು</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar ಮತ್ತು ಸ್ಥಿತಿ ಪಟ್ಟಿಯಲ್ಲಿನ ಕೌಂಟ್‌ಡೌನ್‌ಗಳು</string>
+    <string name="countdown_kanal_genel_ad">ಕೌಂಟ್‌ಡೌನ್ ಅಧಿಸೂಚನೆಗಳು</string>
+    <string name="countdown_kanal_genel_aciklama">ಕೌಂಟ್‌ಡೌನ್ ಅಧಿಸೂಚನೆಗಳ ಚಾನಲ್</string>
+
+    <string name="countdown_eylem_kildim">ನಮಾಝ್ ಮಾಡಿದೆ</string>
+    <string name="countdown_eylem_durdur">ನಿಲ್ಲಿಸಿ</string>
+
+    <string name="countdown_yedek_vakit">ಬೇಗ ಮಾಡಿರಿ, ನಮಾಝ್ ಸಮಯ ಮುಗಿಯಲಿದೆ.</string>
+    <string name="countdown_yedek_iftar">ಸಮಯ ಕಡಿಮೆಯಾಗುತ್ತಿದೆ.</string>
+    <string name="countdown_yedek_sahur">ಇನ್ನೂ ತಿನ್ನಬಹುದು, ಕುಡಿಯಬಹುದು; ಉಪವಾಸ ಶೀಘ್ರದಲ್ಲೇ ಆರಂಭವಾಗುತ್ತದೆ.</string>
+    <string name="countdown_yedek_seri">ಇಂದಿನ ನಮಾಝ್‌ಗಳು ಪೂರ್ಣವಾಗಿಲ್ಲ; ನಿಮ್ಮ ಸರಣಿಯನ್ನು ಕಳೆದುಕೊಳ್ಳಬೇಡಿ.</string>
+
+    <string name="countdown_onek_vakit">ಸಮಯ ಮುಗಿಯಲು</string>
+    <string name="countdown_onek_vakit_dar">ಸಮಯ ಮುಗಿಯುತ್ತಿದೆ</string>
+    <string name="countdown_onek_iftar">ಇಫ್ತಾರ್‌ಗೆ</string>
+    <string name="countdown_onek_iftar_dar">ಇಫ್ತಾರ್‌ಗೆ</string>
+    <string name="countdown_onek_sahur">ಸಹರಿ ಮುಗಿಯಲು</string>
+    <string name="countdown_onek_sahur_dar">ಸಹರಿ ಮುಗಿಯುತ್ತಿದೆ</string>
+    <string name="countdown_onek_seri">ಸರಣಿ ಉಳಿಸಲು</string>
+    <string name="countdown_onek_seri_dar">ಸರಣಿ ಮುಗಿಯುತ್ತಿದೆ</string>
+</resources>

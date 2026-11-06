@@ -1,6 +1,8 @@
 # Ortak acilis (ozellik turu): uygulamayi temiz baslatir, ana ekrani bekler,
 # acilis modallarini kapatir. Alt cizgiyle baslayan dosyalar hat tarafindan
 # AKIS olarak calistirilmaz; diger akislar `runFlow` ile cagirir.
+# Iki dilli: metin secicileri "(TR|EN)" alternasyonudur (dil=tr|en); TR/EN degerleri
+# sozlukte (src/core/dil/sozluk/{tr,en}) AYNI anahtardan alinir. Kararli testID varsa `id:`.
 appId: com.furkanisikay.namazakisi
 ---
 - launchApp:
@@ -9,23 +11,25 @@ appId: com.furkanisikay.namazakisi
 # (pencere acikken uygulama erisilebilirlik agacinda gorunmez).
 - runFlow:
     when:
-      visible: ".*isn't responding.*"
+      visible: ".*(isn't responding|yanıt vermiyor).*"
     commands:
-      - tapOn: "Wait"
+      - tapOn: "(Wait|Bekle)"
 # Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"; toparlanmada "Toparlanma modu: …"). Kıble Dalga 4'ten
 # beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "(Seri|Toparlanma modu): .*"
+    visible: "(Seri|Toparlanma modu|Streak|Recovery mode): .*"
     timeout: 90000
 # Yedek: hide_error_dialogs tutmazsa sistem ANR penceresini "Wait" ile kapat
 # (pencere acikken uygulama erisilebilirlik agacinda gorunmez).
 - runFlow:
     when:
-      visible: ".*isn't responding.*"
+      visible: ".*(isn't responding|yanıt vermiyor).*"
     commands:
-      - tapOn: "Wait"
+      - tapOn: "(Wait|Bekle)"
 - repeat:
     while:
-      visible: "Devam Et"
+      visible:
+        id: "kutlama-devam"
     commands:
-      - tapOn: "Devam Et"
+      - tapOn:
+          id: "kutlama-devam"

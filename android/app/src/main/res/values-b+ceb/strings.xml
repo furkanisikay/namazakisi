@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sebuano kaynaklar (dalga 13). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ceb. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Ang karon nga Salah, kanus-a kini matapos, ug Nag-ampo ko sa usa ka tap</string>
+  <string name="widget_genis_aciklama">Ang lima ka Salah karon, countdown, ug Nag-ampo ko sa usa ka tap</string>
+  <string name="widget_kapak_adi">Mga oras sa Salah sa cover screen</string>
+  <string name="widget_kapak_aciklama">Mga oras sa Salah karon ug countdown alang sa cover screen sa Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klasiko</string>
+  <string name="widget_klasik_aciklama">Klasikong berde nga hitsura: nahabilin nga oras hangtod sa sunod nga Salah</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klasiko nga lapad</string>
+  <string name="widget_klasik_genis_aciklama">Klasikong berde nga hitsura: countdown ug mga oras sa Salah karon</string>
+  <string name="widget_ayet_adi">Bersikulo sa adlaw</string>
+  <string name="widget_ayet_aciklama">Usa ka bersikulo ug ang hubad niini, bag-o matag adlaw sa Fajr</string>
+  <string name="widget_ayar_zemin_palet">Kolor sa app (hayag nga tono)</string>
+  <string name="widget_ayar_ayet_icerik">Sa kwadrado nga gidak-on, ipakita</string>
+  <string name="widget_ayar_ayet_icerik_meal">Hubad</string>
+  <string name="widget_ayar_ayet_icerik_hat">Arabikong teksto (kaligrapiya)</string>
+  <string name="kutu_kildim_etiket">Nag-ampo ko</string>
+  <string name="kisayol_kildim_kisa">Nag-ampo ko</string>
+  <string name="kisayol_kildim_uzun">Nag-ampo ko sa karon nga Salah</string>
+  <string name="kisayol_kible_kisa">Qibla</string>
+  <string name="kisayol_kible_uzun">Ipakita ang direksyon sa Qibla</string>
+  <string name="kisayol_kaza_kisa">Listahan sa qada</string>
+  <string name="kisayol_kaza_uzun">Ablihi ang Listahan sa qada</string>
+  <string name="kildim_onay_baslik">Markahan ba ang %1$s nga nakaampo na?</string>
+  <string name="kildim_onay_mesaj">Dili klaro kung unsang app ang nagpadala niining hangyo. Kumpirmaha kon nakaampo na kamo.</string>
+  <string name="kildim_onay_evet">Nag-ampo ko</string>
+  <string name="kildim_onay_vazgec">Kanselaha</string>
+  <string name="kildim_guven_baslik">Tugotan ba ang %1$s nga markahan ang inyong mga Salah nga nakaampo na?</string>
+  <string name="kildim_guven_mesaj">Salah nga markahan karon: %1$s. Mausab ninyo unya ang inyong desisyon sa Mga setting &gt; Mga app nga makamarka sa Nag-ampo ko.</string>
+  <string name="kildim_guven_tarayici_mesaj">Salah nga markahan karon: %1$s. Gikan sa browser kining hangyo; tungod kay bisan unsang web page makaabli niining link, dili mahatag ang permanenteng pagtugot.</string>
+  <string name="kildim_guven_her_zaman">Tugoti kanunay</string>
+  <string name="kildim_guven_bu_sefer">Karon lang</string>
+  <string name="kildim_guven_engelle">Babagi</string>
+  <string name="kildim_guven_engellendi">Dili na makamarka ang %1$s sa inyong mga Salah. Mausab ninyo kini sa Mga setting.</string>
+  <string name="widget_ayar_baslik">I-customize ang widget</string>
+  <string name="widget_ayar_zemin">Background</string>
+  <string name="widget_ayar_zemin_material">Mga kolor sa wallpaper</string>
+  <string name="widget_ayar_zemin_sistem">Tema sa sistema</string>
+  <string name="widget_ayar_zemin_acik">Hayag</string>
+  <string name="widget_ayar_zemin_koyu">Ngitngit</string>
+  <string name="widget_ayar_zemin_seffaf">Tin-aw</string>
+  <string name="widget_ayar_opaklik">Kabaga sa background</string>
+  <string name="widget_ayar_gosterim">Ipakita sa dagkong teksto</string>
+  <string name="widget_ayar_gosterim_kalan">Nahabilin nga oras</string>
+  <string name="widget_ayar_gosterim_bitis">Oras sa pagtapos</string>
+  <string name="widget_ayar_gosterim_not">Ang oras sa pagtapos makita sa matag gidak-on.</string>
+  <string name="widget_ayar_sonraki">Ipakita ang sunod nga Salah</string>
+  <string name="widget_ayar_vazgec">Kanselaha</string>
+  <string name="widget_ayar_kaydet">I-save</string>
+  <string name="kildim_onay_kanal_adi">Kumpirmasyon sa Nag-ampo ko</string>
+  <string name="kildim_onay_kanal_aciklama">Hilom nga kumpirmasyon nga makita sulod sa pipila ka segundo inig tap ninyo sa \"Nag-ampo ko\" sa pahibalo</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Matapos %1$s</string>
+  <string name="widget_giris">Magsugod %1$s</string>
+  <string name="widget_namaz_vakti">Oras sa Salah</string>
+  <string name="widget_uygulamayi_acin">Ablihi ang app</string>
+  <string name="widget_siradaki">Sunod: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Walay Salah nga markahan karon</string>
+  <string name="widget_dugme_kildim">Nag-ampo ko</string>
+  <string name="widget_dugme_isaretleniyor">Gimarkahan</string>
+  <string name="widget_dugme_kilindi">Nakaampo na</string>
+  <string name="widget_dugme_vakit_girmedi">Dili pa oras</string>
+  <string name="widget_klasik_uygulamayi_acin">ablihi ang app</string>
+  <string name="widget_klasik_erisim_veri_yok">Ablihi ang app aron makita ang mga oras sa Salah</string>
+  <string name="widget_klasik_erisim_siradaki">Sunod nga Salah: %1$s, magsugod sa %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Hangtod sa Dhuhr</string>
+  <string name="widget_onizleme_klasik_genis">Hangtod sa Maghrib</string>
+  <string name="widget_onizleme_imsak">Fajr</string>
+  <string name="widget_onizleme_gunes">Pagsubang sa adlaw</string>
+  <string name="widget_onizleme_ogle">Dhuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s: gimarkahan nga nakaampo na. Dawaton unta sa Allah.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s: gimarkahan na nga nakaampo na.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Walay Salah nga markahan karon. Sunod ang %1$s, magsugod sa %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Walay Salah nga markahan karon.</string>
+  <string name="kildim_sonuc_veri_yok">Walay datos sa oras sa Salah. Ablihi ang app kausa.</string>
+  <string name="kildim_sonuc_vakit_degisti">Nausab ang oras sa Salah, busa walay namarkahan. Sulayi pag-usab.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Dili maablihan ang navigation app.</string>
+  <string name="arac_adsiz_cami">Masjid</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Dili mabasa ang datos sa oras sa Salah.</string>
+  <string name="asistan_isaretleme_yapilamadi">Dili mamarkahan ang Salah.</string>
+  <string name="asistan_aciklama">Makapangutana kamo sa mga oras sa Salah, makamarka sa karon nga Salah nga nakaampo na ug makaabli sa screen sa Qibla.</string>
+</resources>

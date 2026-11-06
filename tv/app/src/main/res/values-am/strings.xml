@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Amharca. Terimler: src/core/dil/sozluk/am (vakit.ts başı). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">am</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">የሶላት ሰዓቶች ሰሌዳ</string>
+    <string name="ayarlar">ቅንብሮች</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s ለመግባት %2$s ቀርቷል</string>
+    <string name="pano_vaktine">%1$s እስኪገባ</string>
+    <string name="pano_vaktine_kalan">%1$s ከ%2$s በኋላ</string>
+    <string name="pano_kerahat_vakti">ሶላት ክልክል የሆነበት ወቅት</string>
+    <string name="pano_bitis">በ%1$s ያበቃል</string>
+    <string name="pano_kerahat_erisim">ሶላት ክልክል የሆነበት ወቅት፣ %1$s፣ በ%2$s ያበቃል። %3$s</string>
+    <string name="pano_cumaya">ጁሙዓ ከ%1$s በኋላ</string>
+    <string name="pano_cikis_geldi">የመውጫ ሰዓት</string>
+    <string name="pano_cikis">በ%1$s ውጣ</string>
+    <string name="pano_cuma_cikis_geldi_erisim">ወደ ጁሙዓ የሚወጡበት ሰዓት ደርሷል</string>
+    <string name="pano_cuma_cikis_erisim">ወደ ጁሙዓ በ%1$s ውጡ</string>
+    <string name="pano_bugun_cuma">ዛሬ ጁሙዓ ነው</string>
+    <string name="pano_ogle">ዙህር %1$s</string>
+    <string name="pano_bugun_cuma_erisim">ዛሬ ጁሙዓ ነው። የጁሙዓ ሶላት በዙህር ሰዓት፣ %1$s ነው</string>
+    <string name="pano_ayarlar_erisim">ቅንብሮች፦ ስልክ አክል፣ አካባቢ፣ የተገናኙ ስልኮች</string>
+    <string name="pano_simdiki_vakit">የአሁኑ የሶላት ሰዓት</string>
+    <string name="pano_siradaki_vakit">ቀጣዩ የሶላት ሰዓት</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "ስልክዎን ያክሉ", "ኮድ አስገባ", "ከተማውን ራሴ እመርጣለሁ", "አክል". -->
+    <string name="kodla_girin">ኮድ አስገባ</string>
+    <string name="ili_kendim_secin">ከተማውን ራሴ እመርጣለሁ</string>
+    <string name="yeniden_deneyin">እንደገና ሞክር</string>
+    <string name="telefon_varsayilan">ስልክ</string>
+    <string name="esleme_ekleniyor">%1$s በመጨመር ላይ</string>
+    <string name="esleme_gonderiyor">ስልክዎ አካባቢውን እና ሁኔታውን እየላከ ነው…</string>
+    <string name="esleme_tamamlanamadi">ማጣመሩ ሊጠናቀቅ አልቻለም</string>
+    <string name="esleme_saklanamadi">ይህ ቴሌቪዥን የግንኙነት ቁልፉን በደህንነት ማስቀመጥ አይችልም። አካባቢዎን በኮድ ማስገባት ወይም ከተማዎን መምረጥ ይችላሉ።</string>
+    <string name="telefonunuzu_ekleyin">ስልክዎን ያክሉ</string>
+    <string name="esleme_alt">ለአካባቢዎ የሶላት ሰዓቶች፤ የሰገዷቸው ሶላቶችም ይታያሉ።</string>
+    <string name="esleme_adim1">በስልክዎ ላይ Namaz Akışıን ይክፈቱ</string>
+    <string name="esleme_adim2">ቅንብሮች › መሣሪያዎቼ › ቴሌቪዥን አክል</string>
+    <string name="esleme_adim3">የስልክዎን ካሜራ ወደ ኮዱ ያቅኑ</string>
+    <string name="esleme_ayni_wifi">ስልክዎ እና ቴሌቪዥኑ በአንድ የWi-Fi አውታረ መረብ ላይ መሆን አለባቸው።</string>
+    <string name="esleme_onay_soru">ይህ ስልክ ይጨመር?</string>
+    <string name="esleme_onay_aciklama">የተጨመረው ስልክ አካባቢውን እና ምልክት የሚያደርግባቸውን ሶላቶች ወደዚህ ቴሌቪዥን መላክ ይችላል።</string>
+    <string name="ekleyin">አክል</string>
+    <string name="hayir">አይ</string>
+    <string name="esleme_eklendi">%1$s ተጨምሯል</string>
+    <string name="konumunuz_geldi">አካባቢዎ ደርሷል</string>
+    <string name="konuma_gore_hesaplanacak">የሶላት ሰዓቶች ለዚህ አካባቢ ይሰላሉ።</string>
+    <string name="qr_konum_alindi">አካባቢ ተቀብሏል</string>
+    <string name="qr_kodu">በስልክዎ የሚቃኝ የማጣመሪያ ኮድ</string>
+    <string name="ag_yok">ቴሌቪዥኑ ከአውታረ መረብ ጋር አልተገናኘም</string>
+    <string name="ag_yok_aciklama">ከስልክዎ የሚገኘውን ባለ 7 አሃዝ ኮድ በማስገባት ወይም ከተማዎን በመምረጥ መቀጠል ይችላሉ።</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">ከስልክዎ የሚገኘውን ኮድ ያስገቡ</string>
+    <string name="kod_yol">በስልክዎ ላይ፦ ቅንብሮች › መሣሪያዎቼ › ቴሌቪዥን አክል</string>
+    <string name="kod_hatali">ኮዱ አልተዛመደም። በስልክዎ ላይ ያሉትን 7 አሃዞች ያረጋግጡ፤ የተሳሳተ አሃዝን በ“%1$s” ያስተካክሉ።</string>
+    <string name="kod_rakamli_kumanda">ሪሞትዎ የቁጥር ቁልፎች ካሉት በእነሱም መጻፍ ይችላሉ።</string>
+    <string name="kod_bos_hane">ባዶ አሃዝ</string>
+    <string name="kod_sil">ሰርዝ</string>
+    <string name="kod_sil_aciklama">የመጨረሻውን አሃዝ ሰርዝ</string>
+    <string name="kod_geri">ተመለስ</string>
+    <string name="vazgecin">ሰርዝ</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">ከተማዎን ይምረጡ</string>
+    <string name="il_merkezine_gore">የሶላት ሰዓቶች ለከተማው መሃል ይሰላሉ።</string>
+    <string name="il_secili">%1$s፣ ተመርጧል</string>
+    <string name="dream_il_yok">የሶላት ሰዓቶች ሰሌዳን ለማየት የNamaz Akışı መተግበሪያን ይክፈቱና ከተማዎን ይምረጡ።</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">አካባቢ፦ %1$s</string>
+    <string name="ayar_konum_yok">ምንም አካባቢ አልተመረጠም</string>
+    <string name="ayar_telefon_ekleyin">ስልክ አክል</string>
+    <string name="ayar_konumu_kodla">አካባቢን በኮድ አስገባ</string>
+    <string name="ayar_bagli_telefonlar">ከዚህ ቴሌቪዥን ጋር የተገናኙ ስልኮች</string>
+    <string name="ayar_telefon_yok">ገና ምንም ስልክ አልተጨመረም። በግራ በኩል ያለውን “%1$s” ይጠቀሙና የሚታየውን ኮድ ይቃኙ።</string>
+    <string name="kaldirin">አስወግድ</string>
+    <string name="ayar_ne_gonderir">ስልኮች ምን ይልካሉ?</string>
+    <string name="ayar_madde_konum">አካባቢ፦ የሶላት ሰዓቶች እሱን ይከተላሉ</string>
+    <string name="ayar_madde_namazlar">ምልክት የተደረገባቸው ሶላቶች፣ ለመረጡ ሰዎች</string>
+    <string name="ayar_madde_sifreli">የተመሰጠረ፣ በቤትዎ አውታረ መረብ ላይ ብቻ</string>
+    <string name="son_haber_yok">ገና ምንም መረጃ የለም</string>
+    <string name="son_haber_az_once">አሁን</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">ከ%1$d ደቂ በፊት</item>
+        <item quantity="other">ከ%1$d ደቂ በፊት</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">ከ%1$d ሰዓ በፊት</item>
+        <item quantity="other">ከ%1$d ሰዓ በፊት</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">ከ%1$d ቀን በፊት</item>
+        <item quantity="other">ከ%1$d ቀናት በፊት</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s ይወገድ?</string>
+    <string name="kaldir_aciklama">ይህ ስልክ ከአሁን በኋላ ወደ ቴሌቪዥኑ መረጃ መላክ አይችልም። እንደገና ለማከል የQR ኮዱን እንደገና መቃኘት ያስፈልግዎታል።</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">የስልክዎ አካባቢ</string>
+</resources>

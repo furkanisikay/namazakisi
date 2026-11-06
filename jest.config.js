@@ -75,6 +75,8 @@ module.exports = {
     "\\.bin$": "<rootDir>/__mocks__/sesDosyasiMock.js",
     // Aynı sebeple görsel varlıklar (harita cami ikonu `require('...png')`).
     "\\.(png|jpg|jpeg)$": "<rootDir>/__mocks__/sesDosyasiMock.js",
+    // Paketlenen yazı tipleri (günün ayeti Arapça satırı, `useFonts`).
+    "\\.(ttf|otf)$": "<rootDir>/__mocks__/sesDosyasiMock.js",
   },
   // Expo modullerini transform et
   transformIgnorePatterns: [

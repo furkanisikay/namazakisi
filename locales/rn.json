@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Ikibanza canyu gikoreshwa mu guharura neza ibihe vy’isengesho vy’aho muri. Ikibanza canyu kiguma ku gikoresho canyu.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ikibanza canyu gikoreshwa mu guharura neza ibihe vy’isengesho vy’aho muri kandi, nimba Ituze mu isengesho rikora, mu gufungura Uburyo bw’isengesho iyo mwinjiye mu musigiti. Ikibanza canyu kiguma ku gikoresho canyu.",
+  "NSLocationAlwaysUsageDescription": "Ikibanza canyu gikoreshwa mu kuvugurura vyikora ibihe vy’isengesho iyo muhinduye igisagara kandi, nimba Ituze mu isengesho rikora, mu gufungura Uburyo bw’isengesho iyo mwinjiye mu musigiti. Ikibanza canyu kiguma ku gikoresho canyu.",
+  "NSCameraUsageDescription": "Kamera yanyu ikoreshwa mu kwerekana ubutumbero hejuru y’ivyo kamera ibona no mu gusoma kode yo guhuza iri kuri televiziyo yanyu. Amashusho ntabikwa kandi ntava ku gikoresho canyu.",
+  "NSCalendarsUsageDescription": "Uruhusha rwa kalendari rukoreshwa mu kwongera ibihe vy’isengesho muri kalendari yanyu kandi, nimwabifungura, mu kuraba nimba ibikorwa biri muri kalendari yanyu bihuriranye n’igihe c’isengesho. Amakuru ya kalendari yanyu aguma ku gikoresho canyu.",
+  "NSCalendarsFullAccessUsageDescription": "Uruhusha rwa kalendari rukoreshwa mu kwongera ibihe vy’isengesho muri kalendari yanyu kandi, nimwabifungura, mu kuraba nimba ibikorwa biri muri kalendari yanyu bihuriranye n’igihe c’isengesho. Amakuru ya kalendari yanyu aguma ku gikoresho canyu.",
+  "NSLocalNetworkUsageDescription": "Porogarama yihuza na televiziyo iri ku murongo w’i muhira kugira iyirungikire ibihe vy’isengesho n’amasengesho mwemeje. Amakuru afise ibanga kandi aca gusa hagati y’ivyo bikoresho vyompi.",
+  "NSAlarmKitUsageDescription": "Intambwe z’inyibutsa muhitamwo ”Inzogera nyayo” zishirwaho nk’inzogera, kugira muzumve naho terefone yanyu yoba iri mu bucece canke Focus ikora.",
+  "\"Vakti kıldım\"": "Nasenze",
+  "\"Kıble\"": "Ubutumbero"
+}

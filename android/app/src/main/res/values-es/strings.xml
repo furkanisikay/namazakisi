@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- es — İspanyolca (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/es (hitap "usted"; Kıldım "Ya recé", Kılındı "Rezado"). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">El rezo actual, cuándo termina y «Ya recé» con un toque</string>
+  <string name="widget_genis_aciklama">Los cinco rezos de hoy, una cuenta atrás y «Ya recé» con un toque</string>
+  <string name="widget_kapak_adi">Horas de rezo en la pantalla exterior</string>
+  <string name="widget_kapak_aciklama">Las horas de rezo de hoy y una cuenta atrás para la pantalla exterior del Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Clásico</string>
+  <string name="widget_klasik_aciklama">Aspecto verde clásico: tiempo restante hasta el siguiente rezo</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Clásico ancho</string>
+  <string name="widget_klasik_genis_aciklama">Aspecto verde clásico: cuenta atrás y horas de rezo de hoy</string>
+  <string name="widget_ayet_adi">Aleya del día</string>
+  <string name="widget_ayet_aciklama">Una aleya y su traducción, renovadas cada día en Fajr</string>
+  <string name="widget_ayar_zemin_palet">Color de la aplicación (tono claro)</string>
+  <string name="widget_ayar_ayet_icerik">En tamaño cuadrado, mostrar</string>
+  <string name="widget_ayar_ayet_icerik_meal">Traducción</string>
+  <string name="widget_ayar_ayet_icerik_hat">Texto árabe (caligrafía)</string>
+  <string name="kutu_kildim_etiket">Ya recé</string>
+  <string name="kisayol_kildim_kisa">Ya recé</string>
+  <string name="kisayol_kildim_uzun">Ya recé el rezo actual</string>
+  <string name="kisayol_kible_kisa">Alquibla</string>
+  <string name="kisayol_kible_uzun">Mostrar la dirección de la alquibla</string>
+  <string name="kisayol_kaza_kisa">Registro de qada</string>
+  <string name="kisayol_kaza_uzun">Abrir el registro de qada</string>
+  <string name="kildim_onay_baslik">¿Marcar %1$s como rezado?</string>
+  <string name="kildim_onay_mesaj">No está claro qué aplicación envió esta solicitud. Confírmelo si ya rezó.</string>
+  <string name="kildim_onay_evet">Ya recé</string>
+  <string name="kildim_onay_vazgec">Cancelar</string>
+  <string name="kildim_guven_baslik">¿Permitir que %1$s marque sus rezos como rezados?</string>
+  <string name="kildim_guven_mesaj">Rezo que se marcará ahora: %1$s. Puede cambiar su decisión más tarde en Ajustes &gt; Aplicaciones que marcan «Ya recé».</string>
+  <string name="kildim_guven_tarayici_mesaj">Rezo que se marcará ahora: %1$s. Esta solicitud llegó desde un navegador; como cualquier página web puede abrir este enlace, no se puede dar un permiso permanente.</string>
+  <string name="kildim_guven_her_zaman">Permitir siempre</string>
+  <string name="kildim_guven_bu_sefer">Solo esta vez</string>
+  <string name="kildim_guven_engelle">Bloquear</string>
+  <string name="kildim_guven_engellendi">%1$s ya no puede marcar sus rezos. Puede cambiarlo en Ajustes.</string>
+  <string name="widget_ayar_baslik">Personalizar el widget</string>
+  <string name="widget_ayar_zemin">Fondo</string>
+  <string name="widget_ayar_zemin_material">Colores del fondo de pantalla</string>
+  <string name="widget_ayar_zemin_sistem">Tema del sistema</string>
+  <string name="widget_ayar_zemin_acik">Claro</string>
+  <string name="widget_ayar_zemin_koyu">Oscuro</string>
+  <string name="widget_ayar_zemin_seffaf">Transparente</string>
+  <string name="widget_ayar_opaklik">Opacidad del fondo</string>
+  <string name="widget_ayar_gosterim">Mostrar en grande</string>
+  <string name="widget_ayar_gosterim_kalan">Tiempo restante</string>
+  <string name="widget_ayar_gosterim_bitis">Hora de fin</string>
+  <string name="widget_ayar_gosterim_not">La hora de fin se muestra en todos los tamaños.</string>
+  <string name="widget_ayar_sonraki">Mostrar el siguiente rezo</string>
+  <string name="widget_ayar_vazgec">Cancelar</string>
+  <string name="widget_ayar_kaydet">Guardar</string>
+  <string name="kildim_onay_kanal_adi">Confirmación de «Ya recé»</string>
+  <string name="kildim_onay_kanal_aciklama">Una confirmación discreta que se muestra unos segundos al tocar «Ya recé» en una notificación</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Termina %1$s</string>
+  <string name="widget_giris">Comienza %1$s</string>
+  <string name="widget_namaz_vakti">Hora del rezo</string>
+  <string name="widget_uygulamayi_acin">Abra la aplicación</string>
+  <string name="widget_siradaki">Siguiente: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Ahora no hay rezo para marcar</string>
+  <string name="widget_dugme_kildim">Ya recé</string>
+  <string name="widget_dugme_isaretleniyor">Marcando</string>
+  <string name="widget_dugme_kilindi">Rezado</string>
+  <string name="widget_dugme_vakit_girmedi">Aún no es la hora</string>
+  <string name="widget_klasik_uygulamayi_acin">abra la aplicación</string>
+  <string name="widget_klasik_erisim_veri_yok">Abra la aplicación para ver las horas de rezo</string>
+  <string name="widget_klasik_erisim_siradaki">Siguiente rezo: %1$s, comienza a las %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Dhuhr en</string>
+  <string name="widget_onizleme_klasik_genis">Maghrib en</string>
+  <string name="widget_onizleme_imsak">Fajr</string>
+  <string name="widget_onizleme_gunes">Salida del sol</string>
+  <string name="widget_onizleme_ogle">Dhuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s se marcó como rezado. Que Allah lo acepte.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s ya está marcado como rezado.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Ahora no hay ningún rezo para marcar. Siguiente: %1$s, a las %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Ahora no hay ningún rezo para marcar.</string>
+  <string name="kildim_sonuc_veri_yok">No hay horas de rezo. Abra la aplicación una vez.</string>
+  <string name="kildim_sonuc_vakit_degisti">La hora del rezo cambió y no se marcó nada. Vuelva a intentarlo.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">No se pudo abrir la aplicación de navegación.</string>
+  <string name="arac_adsiz_cami">Mezquita</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">No se pudieron leer las horas de rezo.</string>
+  <string name="asistan_isaretleme_yapilamadi">No se pudo marcar el rezo.</string>
+  <string name="asistan_aciklama">Puede preguntar las horas de rezo, marcar el rezo actual como rezado y abrir la pantalla de la alquibla.</string>
+</resources>

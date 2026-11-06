@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- N'Ko kaynakları (sağdan sola). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/nqo. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">ߛߊߟߌ ߛߌߛߍ߲߬ ߕߊ߸ ߊ߬ ߓߍ߫ ߓߊ߲߫ ߕߎ߬ߡߊ ߡߌ߲߬߸ ߊߣߌ ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫ ߘߌߜߌ ߞߋߟߋ߲߫ ߣߊ߬</string>
+  <string name="widget_genis_aciklama">ߓߌ߬ ߛߊߟߌ ߘߎ߬ߙߎ߫߸ ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ ߊߣߌ ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫ ߘߌߜߌ ߞߋߟߋ߲߫ ߣߊ߬</string>
+  <string name="widget_kapak_adi">ߘߊߕߎߜߎ ߢߍ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬</string>
+  <string name="widget_kapak_aciklama">ߓߌ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߣߌ߫ ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ Galaxy Z Flip ߘߊߕߎߜߎ ߢߍ߫ ߞߊߡߊ߬</string>
+  <string name="widget_klasik_adi">Namaz Akışı — ߗߏߜߏ ߞߐ߬ߙߐ</string>
+  <string name="widget_klasik_aciklama">ߓߌ߲ߞߍߣߍ ߗߏߜߏ ߞߐ߬ߙߐ: ߥߊ߯ߕߌ߫ ߡߌ߲߬ ߕߏߙߊ ߝߏ߫ ߛߊߟߌ ߣߕߊ߬</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — ߗߏߜߏ ߞߐ߬ߙߐ ߓߊ߯</string>
+  <string name="widget_klasik_genis_aciklama">ߓߌ߲ߞߍߣߍ ߗߏߜߏ ߞߐ߬ߙߐ: ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ ߊߣߌ ߓߌ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬</string>
+  <string name="widget_ayet_adi">ߓߌ߬ ߊߦߊ</string>
+  <string name="widget_ayet_aciklama">ߊߦߊ ߣߌ߫ ߊ߬ ߓߊߦߍߟߍߡߊ߲ߠߌ߸ ߊ߬ ߓߍ߫ ߞߎߘߊ ߟߏ߲ ߏ߬ ߟߏ߲ ߖߍߡߎߙߍ߲ ߣߊ߬</string>
+  <string name="widget_ayar_zemin_palet">ߔߏߙߏߜߊߙߊߡߎ ߢߍߜߍ߲ (ߦߋߟߋ߲)</string>
+  <string name="widget_ayar_ayet_icerik">ߓߏ߲߬ߧߊ߬ ߣߊߣߌߞߍߣߍ߲ ߣߊ߬߸ ߡߌ߲߬ ߦߌ߬ߘߊ߬</string>
+  <string name="widget_ayar_ayet_icerik_meal">ߓߊߦߍߟߍߡߊ߲ߠߌ</string>
+  <string name="widget_ayar_ayet_icerik_hat">ߊߙߊߓߎߞߊ߲ ߛߓߍ߫ (ߛߓߍߟߌ ߗߍߢߌ)</string>
+  <string name="kutu_kildim_etiket">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+  <string name="kisayol_kildim_kisa">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+  <string name="kisayol_kildim_uzun">ߒ ߓߘߊ߫ ߛߊߟߌ ߛߌߛߍ߲߬ ߕߊ ߞߍ߫</string>
+  <string name="kisayol_kible_kisa">ߞߌߓߌߟߊ</string>
+  <string name="kisayol_kible_uzun">ߞߌߓߌߟߊ ߢߊߛߌ߲߫ ߦߌ߬ߘߊ߬</string>
+  <string name="kisayol_kaza_kisa">ߞߊߘߊ ߛߓߍߟߌ</string>
+  <string name="kisayol_kaza_uzun">ߞߊߘߊ ߛߓߍߟߌ ߘߊߦߟߍ߬</string>
+  <string name="kildim_onay_baslik">%1$s ߛߓߍ߫ ߞߏ߫ ߊ߬ ߞߍߣߍ߲ ߥߊ߫؟</string>
+  <string name="kildim_onay_mesaj">ߊ߬ ߡߊ߬ ߟߐ߲߫ ߔߏߙߏߜߊߙߊߡߎ ߡߌ߲߬ ߦߋ߫ ߣߌ߲߬ ߢߌߣߌߣߌ ߗߌ. ߣߌ߫ ߊߟߎ߫ ߦߋ߫ ߛߊߟߌ ߞߍ߫߸ ߊߟߎ߫ ߦߋ߫ ߊ߬ ߟߊߛߙߋߦߊ߫.</string>
+  <string name="kildim_onay_evet">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+  <string name="kildim_onay_vazgec">ߊ߬ ߘߐߛߊ߬</string>
+  <string name="kildim_guven_baslik">%1$s ߞߊ߬ ߘߊߢߍ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߛߊߟߌ ߟߎ߬ ߛߓߍ߫ ߞߏ߫ ߎ߯ ߞߍߣߍ߲ ߥߊ߫؟</string>
+  <string name="kildim_guven_mesaj">ߛߊߟߌ ߡߌ߲߬ ߓߍߣߊ߬ ߛߓߍ߫ ߛߌߛߍ߲߬: %1$s. ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߟߊߕߌߜߍ ߦߍߟߍߡߊ ߞߐߝߍ߬ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ &gt; ߔߏߙߏߜߊߙߊߡߎ ߡߌ߲ߠߎ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫ ߛߓߍ߫ ߞߐ߬ߣߐ.</string>
+  <string name="kildim_guven_tarayici_mesaj">ߛߊߟߌ ߡߌ߲߬ ߓߍߣߊ߬ ߛߓߍ߫ ߛߌߛߍ߲߬: %1$s. ߣߌ߲߬ ߢߌߣߌߣߌ ߓߐߙߊ Internet ߢߍ߫ ߟߊ߫; ߓߊߥߏ Internet ߢߍ߫ ߏ߬ ߢߍ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߣߌ߲߬ ߖߍ߲ߛߍ߲߫ ߘߊߦߟߍ߬߸ ߘߊߢߍ ߛߊߓߊߕߌߟߋ߲ ߕߍ߫ ߛߋ߫ ߞߊ߬ ߘߌ߫.</string>
+  <string name="kildim_guven_her_zaman">ߊ߬ ߘߊߢߍ ߕߎ߬ߡߊ ߓߍ߯</string>
+  <string name="kildim_guven_bu_sefer">ߣߌ߲߬ ߛߌߢߍ ߘߐߙߐ߲߫</string>
+  <string name="kildim_guven_engelle">ߊ߬ ߓߊߟߌ߫</string>
+  <string name="kildim_guven_engellendi">%1$s ߕߍ߫ ߛߋ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߛߊߟߌ ߟߎ߬ ߛߓߍ߫ ߕߎߜߎ߲. ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߣߌ߲߬ ߦߍߟߍߡߊ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ ߞߐ߬ߣߐ.</string>
+  <string name="widget_ayar_baslik">Widget ߟߊߓߍ߲߬</string>
+  <string name="widget_ayar_zemin">ߞߐߜߐ</string>
+  <string name="widget_ayar_zemin_material">ߞߐߜߐߖߊ ߢߍߜߍ߲ ߟߎ߬</string>
+  <string name="widget_ayar_zemin_sistem">ߛߌߛߌߕߍߡߎ ߦߋߗߏߜߏ</string>
+  <string name="widget_ayar_zemin_acik">ߦߋߟߋ߲</string>
+  <string name="widget_ayar_zemin_koyu">ߘߌ߬ߓߌ</string>
+  <string name="widget_ayar_zemin_seffaf">ߖߍߟߋ߲</string>
+  <string name="widget_ayar_opaklik">ߞߐߜߐ ߖߍߦߊ</string>
+  <string name="widget_ayar_gosterim">ߊ߬ ߦߌ߬ߘߊ߬ ߛߓߍ߫ ߓߊ߯ ߟߊ߫</string>
+  <string name="widget_ayar_gosterim_kalan">ߥߊ߯ߕߌ߫ ߡߌ߲߬ ߕߏߙߊ</string>
+  <string name="widget_ayar_gosterim_bitis">ߟߊߓߊ߲ ߥߊ߯ߕߌ߫</string>
+  <string name="widget_ayar_gosterim_not">ߟߊߓߊ߲ ߥߊ߯ߕߌ߫ ߓߍ߫ ߦߌ߬ߘߊ߬ ߓߏ߲߬ߧߊ߬ ߓߍ߯ ߟߊ߫.</string>
+  <string name="widget_ayar_sonraki">ߛߊߟߌ ߣߕߊ߬ ߦߌ߬ߘߊ߬</string>
+  <string name="widget_ayar_vazgec">ߊ߬ ߘߐߛߊ߬</string>
+  <string name="widget_ayar_kaydet">ߊ߬ ߡߙߊ߬</string>
+  <string name="kildim_onay_kanal_adi">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫ ߟߊߛߍߙߍߦߊߟߌ</string>
+  <string name="kildim_onay_kanal_aciklama">ߟߊߛߍߙߍߦߊߟߌ ߡߊߞߎ߲߬ ߡߌ߲߬ ߓߍ߫ ߦߌ߬ߘߊ߬ ߝߌ߬ߟߊ߲ ߘߐ߯ߣߌ߲ ߞߐ߬ߣߐ ߣߌ߫ ߊߟߎ߫ ߦߋ߫ “ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫” ߘߌߜߌ ߞߌ߬ߓߊ߬ߙߏ߬ ߞߐ߬ߣߐ</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">ߊ߬ ߓߍ߫ ߓߊ߲߫ %1$s</string>
+  <string name="widget_giris">ߊ߬ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ %1$s</string>
+  <string name="widget_namaz_vakti">ߛߊߟߌ ߥߊ߯ߕߌ߫</string>
+  <string name="widget_uygulamayi_acin">ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬</string>
+  <string name="widget_siradaki">ߊ߬ ߣߕߊ߬: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">ߛߊߟߌ ߛߌ߫ ߕߍ߫ ߞߊ߬ ߛߓߍ߫ ߛߌߛߍ߲߬</string>
+  <string name="widget_dugme_kildim">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+  <string name="widget_dugme_isaretleniyor">ߊ߬ ߓߍ߫ ߛߓߍ߫</string>
+  <string name="widget_dugme_kilindi">ߞߍߣߍ߲</string>
+  <string name="widget_dugme_vakit_girmedi">ߥߊ߯ߕߌ߫ ߡߊ߬ ߛߋ߫ ߝߟߐ</string>
+  <string name="widget_klasik_uygulamayi_acin">ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬</string>
+  <string name="widget_klasik_erisim_veri_yok">ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߟߊߖߍ</string>
+  <string name="widget_klasik_erisim_siradaki">ߛߊߟߌ ߣߕߊ߬: %1$s߸ ߊ߬ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ߖ߭ߎߤߎߙߌ ߡߊ߬</string>
+  <string name="widget_onizleme_klasik_genis">ߝߌߕߌߙߌ ߡߊ߬</string>
+  <string name="widget_onizleme_imsak">ߖߍߡߎߙߍ߲</string>
+  <string name="widget_onizleme_gunes">ߕߟߋ߬ߓߐ</string>
+  <string name="widget_onizleme_ogle">ߖ߭ߎߤߎߙߌ</string>
+  <string name="widget_onizleme_ikindi">ߟߊ߲ߛߊߙߊ</string>
+  <string name="widget_onizleme_aksam">ߝߌߕߌߙߌ</string>
+  <string name="widget_onizleme_yatsi">ߛߊߝߏ߫</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s ߛߍߓߍ߲ߠߊ ߞߏ߫ ߊ߬ ߞߍߣߍ߲. ߊߟߊ߫ ߦߋ߫ ߊ߬ ߟߊߡߌ߬ߘߊ߬.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s ߛߓߍߣߍ߲߫ ߘߏ߲߬ ߞߊ߬ ߓߊ߲߫ ߞߏ߫ ߊ߬ ߞߍߣߍ߲.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">ߛߊߟߌ ߛߌ߫ ߕߍ߫ ߦߋ߲߬ ߞߊ߬ ߛߓߍ߫ ߛߌߛߍ߲߬. ߊ߬ ߣߕߊ߬ ߦߋ߫ %1$s ߦߋ߫߸ ߊ߬ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">ߛߊߟߌ ߛߌ߫ ߕߍ߫ ߦߋ߲߬ ߞߊ߬ ߛߓߍ߫ ߛߌߛߍ߲߬.</string>
+  <string name="kildim_sonuc_veri_yok">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߞߎ߲߬ߠߊ߬ߝߏߣߌ߲ ߕߍ߫ ߦߋ߲߬. ߊߟߎ߫ ߦߋ߫ ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߛߌߢߍ ߞߋߟߋ߲߫.</string>
+  <string name="kildim_sonuc_vakit_degisti">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߦߍߟߍߡߊߣߊ߸ ߏ߬ ߞߏߛߐ߲߬ ߝߏߦߌ߬ ߡߊ߬ ߛߓߍ߫. ߊߟߎ߫ ߦߋ߫ ߊ߬ ߞߍ߫ ߕߎߜߎ߲.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">ߛߌߙߊ ߦߌ߬ߘߊ߬ ߔߏߙߏߜߊߙߊߡߎ ߡߊ߬ ߛߋ߫ ߞߊ߬ ߘߊߦߟߍ߬.</string>
+  <string name="arac_adsiz_cami">ߕߌ߲ߓߌߘߌ߲ߘߊ</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߞߎ߲߬ߠߊ߬ߝߏߣߌ߲ ߡߊ߬ ߛߋ߫ ߞߊ߬ ߞߊߟߊ߲.</string>
+  <string name="asistan_isaretleme_yapilamadi">ߛߊߟߌ ߡߊ߬ ߛߋ߫ ߞߊ߬ ߛߓߍ߫.</string>
+  <string name="asistan_aciklama">ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߢߌ߬ߣߌ߲߬ߞߊ߬߸ ߞߊ߬ ߛߊߟߌ ߛߌߛߍ߲߬ ߕߊ ߛߓߍ߫ ߞߏ߫ ߊ߬ ߞߍߣߍ߲ ߊߣߌ ߞߊ߬ ߞߌߓߌߟߊ ߢߍ߫ ߘߊߦߟߍ߬.</string>
+</resources>

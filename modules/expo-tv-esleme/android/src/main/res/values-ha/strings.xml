@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Haɗa talabijin — Hausa (JS src/core/dil/sozluk/ha). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Ku sa lambar QR da ke allon talabijin a cikin firam</string>
+    <string name="tvesleme_qr_vazgec">Soke</string>
+    <string name="tvesleme_qr_vazgec_erisim">Soke karantawa</string>
+    <string name="tvesleme_qr_yabanci">Wannan lambar QR ba ta Namaz Akışı TV ba ce. Ku karanta lambar da ke kan talabijin.</string>
+    <string name="tvesleme_qr_okundu">An karanta lambar</string>
+</resources>

@@ -16,6 +16,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { hedefMsCoz, useKalanSure } from './GeriSayimMetni';
 import { BirimliSure } from '../common/BirimliSure';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { kalanSureSesli } from '../../../core/utils/kalanSureParcalari';
 
 interface MasaustuGeriSayimProps {
@@ -41,13 +43,19 @@ const MasaustuGeriSayimBileseni: React.FC<MasaustuGeriSayimProps> = ({
     kilitli,
 }) => {
     const renkler = useRenkler();
+    const metinler = useMetin();
+    const m = metinler.anaEkran.kart;
+    const kilindi = metinler.vakit.durum.kilindi;
     const hedefMs = useMemo(() => hedefMsCoz(hedefIso), [hedefIso]);
     const kalanSureStr = useKalanSure(hedefMs, onSayacBitti);
-    const ustEtiket = kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT';
-    const sayacEtiketi = kilitli ? 'Vaktin girmesine kalan' : 'Vaktin çıkmasına kalan';
-    const erisimEtiketi = `${vakitAdi} vakti, ${vakitAraligi}. ${sayacEtiketi} ${kalanSureSesli(kalanSureStr)}.${
-        tamamlandi ? ' Kılındı.' : ''
-    }`;
+    const ustEtiket = kilitli ? m.siradakiVakit : m.suankiVakit;
+    const sayacEtiketi = kilitli ? m.girmesineKalan : m.cikmasinaKalan;
+    const erisimEtiketi = `${bicim(m.masaustuErisim, {
+        ad: vakitAdi,
+        aralik: vakitAraligi,
+        sayac: sayacEtiketi,
+        kalan: kalanSureSesli(kalanSureStr),
+    })}${tamamlandi ? ` ${kilindi}.` : ''}`;
 
     return (
         <View
@@ -62,7 +70,7 @@ const MasaustuGeriSayimBileseni: React.FC<MasaustuGeriSayimProps> = ({
                 {tamamlandi && (
                     <View style={[stiller.cip, { backgroundColor: renkler.durum.basarili + '20' }]}>
                         <FontAwesome5 name="check-circle" size={12} color={renkler.durum.basarili} />
-                        <Text style={[stiller.cipMetni, { color: renkler.metin }]}>Kılındı</Text>
+                        <Text style={[stiller.cipMetni, { color: renkler.metin }]}>{kilindi}</Text>
                     </View>
                 )}
             </View>

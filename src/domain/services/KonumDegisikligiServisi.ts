@@ -25,6 +25,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
+import { DilServisi } from './DilServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import {
@@ -42,6 +43,7 @@ import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { WidgetServisi } from './WidgetServisi';
+import { GununAyetiServisi } from './GununAyetiServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
 import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
 import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
@@ -129,6 +131,10 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
             longitude: koordinatlar.lng,
         });
     });
+
+    // 1b. Vakit adı takımı ülkeye bağlıdır (Fransızca: Cezayir "Sobh"); metin üreten
+    // tüketicilerden ÖNCE çözülür. Açılışta `baglamHazir` → `DilServisi.hazir` aynısını yapar.
+    await guvenliCalistir('Vakit adi takimi', () => DilServisi.vakitTakiminiYenile());
 
     // 2. Ayarları ham depolamadan oku (store yok — arka planda da çalışmalı)
     const [muhafizAyarlari, vakitSayacAyarlari, iftarAyarlari, sahurAyarlari] = await Promise.all([
@@ -230,6 +236,11 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
 
         guvenliCalistir('Widget', () =>
             WidgetServisi.getInstance().vakitleriyaz(koordinatlar),
+        ),
+
+        // Günün ayeti (#380/#381): ayet imsakta değişir; imsak şehirle kayar.
+        guvenliCalistir('Gunun ayeti', () =>
+            GununAyetiServisi.getInstance().yaz(koordinatlar),
         ),
 
         // Cuma hatırlatması da konuma bağlıdır: öğle vakti kayınca hatırlatma anı

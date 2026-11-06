@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">テレビ画面のQRコードを枠の中に合わせてください</string>
+    <string name="tvesleme_qr_vazgec">キャンセル</string>
+    <string name="tvesleme_qr_vazgec_erisim">読み取りをキャンセル</string>
+    <string name="tvesleme_qr_yabanci">このQRコードはNamaz Akışı TVのものではありません。テレビのコードを読み取ってください。</string>
+    <string name="tvesleme_qr_okundu">コードを読み取りました</string>
+</resources>

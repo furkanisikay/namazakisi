@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ckb -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Soranî). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: نوێژم کرد</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: دۆخی کاتی نوێژ</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: ڕووداوی کاتی نوێژ</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "ئێوە". -->
+  <string name="otomasyon_bilgi_baslik">ئەم ڕێکخستنە لە ئەپێکی ئۆتۆماتیکەوە زیاد دەکرێت</string>
+  <string name="otomasyon_bilgi_tarayici">وێبگەڕەکان ناتوانن ڕێگەپێدانی ھەمیشەیی وەربگرن. لە لیستی پێوەکراوەکانی ئەپێکی وەک Tasker، MacroDroid یان Automate زیادی بکەن.</string>
+  <string name="otomasyon_bilgi_eklenti">بە ھەڵبژاردنی «Namaz Akışı» لە لیستی پێوەکراوەکانی ئەپێکی وەک Tasker، MacroDroid یان Automate زیادی بکەن.</string>
+  <string name="otomasyon_engelli_baslik">%1$s بلۆک کراوە</string>
+  <string name="otomasyon_engelli_mesaj">پێشتر ئەم ئەپەتان لە نیشانەکردنی نوێژەکانتان بلۆک کردووە. دەتوانن لە Namaz Akışı لە ڕێکخستنەکان &gt; «ئەو ئەپانەی نوێژم کرد نیشانە دەکەن» ڕێگەی پێبدەن.</string>
+  <string name="otomasyon_izin_baslik">لەگەڵ %1$s بەکاربھێنرێت؟</string>
+  <string name="otomasyon_izin_kosul">%1$s دەتوانێت بزانێت کاتی نوێژ کەی دێت، کەی دەردەچێت و کەی لە مزگەوتن، و ئۆتۆماتیکەکانتان جێبەجێ بکات. دەتوانن بڕیارەکەتان لە Namaz Akışı لە ڕێکخستنەکان &gt; «ئەو ئەپانەی نوێژم کرد نیشانە دەکەن» بگۆڕن.</string>
+  <string name="otomasyon_izin_kildim">%1$s دەتوانێت بەو ئۆتۆماتیکەی دانتان ناوە نوێژی ئێستا وەک کراو نیشانە بکات. دەتوانن بڕیارەکەتان لە Namaz Akışı لە ڕێکخستنەکان &gt; «ئەو ئەپانەی نوێژم کرد نیشانە دەکەن» بگۆڕن.</string>
+  <string name="otomasyon_izin_ver">ڕێگەدان</string>
+  <string name="otomasyon_engelle">بلۆککردن</string>
+  <string name="otomasyon_vazgec">پاشگەزبوونەوە</string>
+  <string name="otomasyon_tamam">باشە</string>
+  <string name="otomasyon_tur_baslik">کەی کار بکات؟</string>
+  <string name="otomasyon_ileri">دواتر</string>
+  <string name="otomasyon_vakit_baslik">کام نوێژ؟</string>
+  <string name="otomasyon_herhangi_vakit">ھەر کاتێکی نوێژ</string>
+  <string name="otomasyon_kaydet">پاشەکەوتکردن</string>
+  <string name="otomasyon_kosul_icinde">تا کاتی نوێژە</string>
+  <string name="otomasyon_kosul_cikiyor">تا کاتی نوێژ خەریکە دەردەچێت (%1$d خولەک ماوە، پارێزەری نوێژ چالاکە)</string>
+  <string name="otomasyon_kosul_camide">تا لە مزگەوتن</string>
+  <string name="otomasyon_olay_girdi">کاتێک کاتی نوێژ دێت</string>
+  <string name="otomasyon_olay_cikiyor">کاتێک کاتی نوێژ خەریکە دەردەچێت (%1$d خولەک ماوە، پارێزەری نوێژ چالاکە)</string>
+  <string name="otomasyon_olay_camide">کاتێک دەزانرێت لە مزگەوتن</string>
+</resources>

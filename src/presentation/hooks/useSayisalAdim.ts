@@ -15,6 +15,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AccessibilityActionEvent } from 'react-native';
+import { metin } from '../../core/dil/aktifDil';
 import {
     sinirdaMi,
     sonrakiAdimDegeri,
@@ -152,6 +153,16 @@ export function useSayisalAdim({ deger, min, max, adim = 1, onChange }: SayisalA
 
 /** Ayarlanabilir değer kutusu için ortak erişilebilirlik eylemleri. */
 export const AYARLANABILIR_EYLEMLER = [
-    { name: 'increment' as const, label: 'Artır' },
-    { name: 'decrement' as const, label: 'Azalt' },
+    {
+        name: 'increment' as const,
+        get label(): string {
+            return metin().genel.ortak.artir;
+        },
+    },
+    {
+        name: 'decrement' as const,
+        get label(): string {
+            return metin().genel.ortak.azalt;
+        },
+    },
 ];

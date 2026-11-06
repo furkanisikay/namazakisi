@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+    <string name="camigeofence_kanal_durum_aciklama">ߞߌ߬ߓߊ߬ߙߏ߬ ߡߊߞߎ߲߬ ߣߌ߫ ߊߟߎ߫ ߦߋߙߊ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+    <string name="camigeofence_kanal_soru_ad">ߕߌ߲ߓߌߘߌ߲ߘߊ ߓߐߟߌ ߞߐߝߍ߬</string>
+    <string name="camigeofence_kanal_soru_aciklama">ߢߌ߬ߣߌ߲߬ߞߊ߬ߟߌ ߥߊߟߊߛߊ ߊߟߎ߫ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߛߊߟߌ ߛߓߍ߫ ߊߟߎ߫ ߓߐߟߌ ߞߐߝߍ߬ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+
+    <string name="camigeofence_govde_mod_sessiz">ߛߊߟߌ ߗߏߜߏ ߘߊߦߍߟߍߣߍ߲ ߘߏ߲߬. ߤߊߞߌߟߌߖߌߜߌ߲ ߟߎ߬ ߓߍߣߊ߬ ߛߋ߫ ߡߊߞߎ߲߬ ߣߊ߬.</string>
+    <string name="camigeofence_govde_mod">ߛߊߟߌ ߗߏߜߏ ߘߊߦߍߟߍߣߍ߲ ߘߏ߲߬.</string>
+    <string name="camigeofence_govde_sessiz">ߤߊߞߌߟߌߖߌߜߌ߲ ߟߎ߬ ߓߍߣߊ߬ ߛߋ߫ ߡߊߞߎ߲߬ ߣߊ߬.</string>
+    <string name="camigeofence_govde_normal">ߤߊߞߌߟߌߖߌߜߌ߲ ߟߎ߬ ߓߍߣߊ߬ ߛߋ߫ ߌ ߣߴߊ߬ ߝߐ߫ ߊ߬ ߗߏߜߏ ߝߟߐ.</string>
+    <string name="camigeofence_eylem_modu_kapat">ߗߏߜߏ ߘߊߕߎߜߎ</string>
+    <string name="camigeofence_eylem_cami_degil">ߊ߬ ߕߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߦߋ߫</string>
+
+    <string name="camigeofence_soru_baslik">ߊߟߎ߫ ߓߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫ ߥߊ߫؟</string>
+    <string name="camigeofence_soru_govde">ߊߟߎ߫ ߛߎߙߎߢߊߙߊ %1$s ߟߊ߫. ߊ߲ ߡߊ߬ ߘߊ߫ ߊ߬ ߟߊ߫߸ ߏ߬ ߞߏߛߐ߲߬ ߊ߲ ߓߍ߫ ߊߟߎ߫ ߢߌ߬ߣߌ߲߬ߞߊ߬.</string>
+    <string name="camigeofence_varsayilan_ad">ߕߌ߲ߓߌߘߌ߲ߘߊ</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">ߛߊߟߌ ߗߏߜߏ ߘߊߦߟߍ߬</string>
+    <string name="camigeofence_eylem_evet_camideyim">ߐ߲߬ߤߐ߲߫߸ ߒ ߓߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+    <string name="camigeofence_eylem_hayir">ߊ߬ߦߌ߫</string>
+
+    <string name="camigeofence_kildiniz_mi">ߊߟߎ߫ ߓߘߊ߫ %1$s ߞߍ߫ ߥߊ߫؟</string>
+    <string name="camigeofence_kildiniz_mi_govde">ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊ߬ ߛߓߍ߫ ߘߌߜߌ ߞߋߟߋ߲߫ ߣߊ߬.</string>
+    <string name="camigeofence_eylem_kildim">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+    <string name="camigeofence_namaz_imsak">ߖߍߡߎߙߍ߲</string>
+    <string name="camigeofence_namaz_ogle">ߖ߭ߎߤߎߙߌ</string>
+    <string name="camigeofence_namaz_ikindi">ߟߊ߲ߛߊߙߊ</string>
+    <string name="camigeofence_namaz_aksam">ߝߌߕߌߙߌ</string>
+    <string name="camigeofence_namaz_yatsi">ߛߊߝߏ߫</string>
+    <string name="camigeofence_namaz_cuma">ߛߌ߬ߣߌ߲߬ߟߏ߲ ߛߊߟߌ</string>
+
+    <string name="camigeofence_mod_kural_adi">ߛߊߟߌ</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı ߓߍ߫ ߊ߬ ߘߊߦߟߍ߬ ߛߌ߬ߣߌ߲߬ߟߏ߲ ߥߊߖߎߟߌ ߥߊ߯ߕߌ߫߸ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫ ߥߟߊ߫ ߣߌ߫ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߛߋߙߊ</string>
+</resources>

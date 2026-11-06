@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Peştuca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: لمونځ مې وکړ</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: د وخت حالت</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: د وخت پېښه</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">دا ترتیب له یوه اتومات کړنو اپ څخه اضافه کېږي</string>
+  <string name="otomasyon_bilgi_tarayici">براوزرونو ته دایمي اجازه نه ورکول کېږي. دا د Tasker، MacroDroid یا Automate په څېر د یوه اپ د پلګ انونو له لړلیک څخه اضافه کړئ.</string>
+  <string name="otomasyon_bilgi_eklenti">د Tasker، MacroDroid یا Automate په څېر د یوه اپ د پلګ انونو له لړلیک څخه «Namaz Akışı» وټاکئ او اضافه یې کړئ.</string>
+  <string name="otomasyon_engelli_baslik">%1$s بند دی</string>
+  <string name="otomasyon_engelli_mesaj">تاسو مخکې دا اپ ستاسو د لمونځونو له نښه کولو بند کړی و. په Namaz Akışı کې د ترتیبات &gt; «هغه اپونه چې لمونځ مې وکړ نښه کولای شي» له پاڼې اجازه ورکولای شئ.</string>
+  <string name="otomasyon_izin_baslik">ایا له %1$s سره وکارول شي؟</string>
+  <string name="otomasyon_izin_kosul">%1$s کولای شي پوه شي چې کله د لمانځه وخت پیلېږي، کله وځي او کله تاسو په جومات کې یاست، او ستاسو اتومات کړنې وچلوي. خپله پرېکړه په Namaz Akışı کې د ترتیبات &gt; «هغه اپونه چې لمونځ مې وکړ نښه کولای شي» له پاڼې بدلولای شئ.</string>
+  <string name="otomasyon_izin_kildim">%1$s کولای شي ستاسو د جوړې شوې اتومات کړنې په مرسته اوسنی وخت د ادا شوي په توګه نښه کړي. خپله پرېکړه په Namaz Akışı کې د ترتیبات &gt; «هغه اپونه چې لمونځ مې وکړ نښه کولای شي» له پاڼې بدلولای شئ.</string>
+  <string name="otomasyon_izin_ver">اجازه ورکړئ</string>
+  <string name="otomasyon_engelle">بند یې کړئ</string>
+  <string name="otomasyon_vazgec">لغوه</string>
+  <string name="otomasyon_tamam">سمه ده</string>
+  <string name="otomasyon_tur_baslik">کله وچلېږي؟</string>
+  <string name="otomasyon_ileri">مخکې</string>
+  <string name="otomasyon_vakit_baslik">کوم وخت؟</string>
+  <string name="otomasyon_herhangi_vakit">هر وخت</string>
+  <string name="otomasyon_kaydet">خوندي کړئ</string>
+  <string name="otomasyon_kosul_icinde">د لمانځه د وخت دننه</string>
+  <string name="otomasyon_kosul_cikiyor">کله چې وخت وځي (%1$d دقیقې پاتې، ساتونکی فعال)</string>
+  <string name="otomasyon_kosul_camide">په جومات کې</string>
+  <string name="otomasyon_olay_girdi">کله چې وخت پیل شي</string>
+  <string name="otomasyon_olay_cikiyor">کله چې وخت وځي (%1$d دقیقې پاتې، ساتونکی فعال)</string>
+  <string name="otomasyon_olay_camide">کله چې معلومه شي چې په جومات کې یاست</string>
+</resources>

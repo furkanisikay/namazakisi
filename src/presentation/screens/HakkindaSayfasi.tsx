@@ -26,6 +26,8 @@ import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { guncellemeKontrolEt } from '../store/guncellemeSlice';
 import { Logger } from '../../core/utils/Logger';
 import { guvenilirBaglantiMi } from '../../domain/services/GuncellemeServisi';
+import { useMetin } from '../hooks/useMetin';
+import { bicim } from '../../core/dil/aktifDil';
 
 /**
  * Bilgi satiri bileseni
@@ -39,6 +41,7 @@ interface BilgiSatiriProps {
 
 const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPress }) => {
   const renkler = useRenkler();
+  const m = useMetin().genel.hakkinda;
 
   const icerik = (
     <View
@@ -56,7 +59,9 @@ const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPre
             color={onPress ? renkler.birincil : renkler.metin}
           />
         )}
+        {/* rakamKoru: sürüm numarası ve bağlantı adları Batı rakamıyla kalır (metin kapısı). */}
         <Text
+          rakamKoru
           className="text-sm font-semibold"
           style={{ color: onPress ? renkler.birincil : renkler.metin }}
         >
@@ -80,7 +85,7 @@ const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPre
         activeOpacity={0.7}
         accessibilityRole="link"
         accessibilityLabel={`${etiket}: ${deger}`}
-        accessibilityHint="Tarayıcıda açılır"
+        accessibilityHint={m.tarayicidaAcilir}
       >
         {icerik}
       </TouchableOpacity>
@@ -95,6 +100,7 @@ const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPre
  */
 export const HakkindaSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const m = useMetin().genel.hakkinda;
   const dispatch = useAppDispatch();
 
   // Guncelleme durumu
@@ -165,10 +171,10 @@ export const HakkindaSayfasi: React.FC = () => {
 
   // Guncelleme butonu icerigi
   const guncellemeDurumMetni = kontrolEdiliyor
-    ? 'Kontrol ediliyor...'
+    ? m.kontrolEdiliyor
     : guncellemeMevcut && bilgi
-      ? `${bilgi.yeniVersiyonEtiketi ?? `v${bilgi.yeniVersiyon}`} mevcut`
-      : 'Güncel';
+      ? bicim(m.mevcut, { surum: bilgi.yeniVersiyonEtiketi ?? `v${bilgi.yeniVersiyon}` })
+      : m.guncel;
 
   const guncellemeDurumRengi = guncellemeMevcut && bilgi
     ? renkler.bilgi
@@ -218,7 +224,7 @@ export const HakkindaSayfasi: React.FC = () => {
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: renkler.metinIkincil }}
           >
-            UYGULAMA BİLGİLERİ
+            {m.uygulamaBilgileri}
           </Text>
 
           <View
@@ -226,12 +232,12 @@ export const HakkindaSayfasi: React.FC = () => {
             style={{ backgroundColor: renkler.kartArkaplan }}
           >
             <BilgiSatiri
-              etiket="Versiyon"
+              etiket={m.versiyon}
               deger={UYGULAMA.VERSIYON}
               ikonAdi="code-branch"
             />
             <BilgiSatiri
-              etiket="Geliştirici"
+              etiket={m.gelistirici}
               deger="Furkan ISIKAY"
               ikonAdi="user"
               onPress={() => handleWebSitesiAc('https://furkanisikay.com.tr')}
@@ -251,7 +257,7 @@ export const HakkindaSayfasi: React.FC = () => {
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: renkler.metinIkincil }}
           >
-            GÜNCELLEME
+            {m.guncellemeBaslik}
           </Text>
 
           {/* "İndir" butonu kontrol butonunun İÇİNDE değil KARDEŞİNDE durur: Touchable
@@ -289,7 +295,7 @@ export const HakkindaSayfasi: React.FC = () => {
                   className="text-base font-semibold"
                   style={{ color: renkler.metin }}
                 >
-                  Güncelleme Kontrolü
+                  {m.guncellemeKontrolu}
                 </Text>
                 <Text
                   className="text-xs mt-0.5"
@@ -314,10 +320,10 @@ export const HakkindaSayfasi: React.FC = () => {
                 activeOpacity={0.7}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 accessibilityRole="button"
-                accessibilityLabel="Güncellemeyi indirin"
+                accessibilityLabel={m.indirErisim}
               >
                 <Text className="text-xs font-bold" style={{ color: '#FFFFFF' }}>
-                  İndir
+                  {m.indir}
                 </Text>
               </TouchableOpacity>
             )}
@@ -330,7 +336,7 @@ export const HakkindaSayfasi: React.FC = () => {
             © {guncelYil} Furkan ISIKAY
           </Text>
           <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-            Tüm hakları saklıdır.
+            {m.haklar}
           </Text>
           {/* Camideyim cami verisi ve ilçe merkezi koordinatları OpenStreetMap türevidir (ODbL) — atıf zorunlu. */}
           <TouchableOpacity
@@ -338,10 +344,22 @@ export const HakkindaSayfasi: React.FC = () => {
             style={{ minHeight: 44 }}
             onPress={() => Linking.openURL('https://www.openstreetmap.org/copyright').catch(() => undefined)}
             accessibilityRole="link"
-            accessibilityLabel="Cami ve ilçe merkezi verisi: OpenStreetMap katkıcıları, ODbL lisansı. Ayrıntılar için açın"
+            accessibilityLabel={m.osmErisim}
           >
             <Text className="text-xs text-center" style={{ color: renkler.metinIkincil }}>
-              Cami ve ilçe merkezi verisi: © OpenStreetMap katkıcıları (ODbL)
+              {m.osm}
+            </Text>
+          </TouchableOpacity>
+          {/* Dünya şehirleri GeoNames türevidir (CC BY 4.0) — atıf ve "değiştirildi" notu zorunlu. */}
+          <TouchableOpacity
+            className="justify-center"
+            style={{ minHeight: 44 }}
+            onPress={() => Linking.openURL('https://www.geonames.org').catch(() => undefined)}
+            accessibilityRole="link"
+            accessibilityLabel={m.geonamesErisim}
+          >
+            <Text className="text-xs text-center" style={{ color: renkler.metinIkincil }}>
+              {m.geonames}
             </Text>
           </TouchableOpacity>
         </View>

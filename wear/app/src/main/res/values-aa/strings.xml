@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Afar (Qafar af). Terimler: src/core/dil/sozluk/aa. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">aa</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Lakal tan salat</string>
+    <string name="tile_aciklama">Lakal tan salat kee kay wakti</string>
+    <string name="komplikasyon_adi">Raqte wakti</string>
+    <string name="cikis_saati_komplikasyon_adi">Salat gexa wakti</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Lakal tan salat</string>
+    <string name="bugun_tile_adi">Asaaku</string>
+    <string name="bugun_tile_aciklama">Asaakuh konoy salat; abteen namma xagissot calaamisa</string>
+    <string name="ilerleme_komplikasyon_adi">Ayroh ossiyya</string>
+    <string name="dagilim_komplikasyon_adi">Ayroh ubla</string>
+    <string name="kerahat_komplikasyon_adi">Karaaha le wakti</string>
+    <string name="son_dakikalar_kanal_adi">Ellecabo daqiiqa</string>
+    <string name="son_dakikalar_kanal_aciklama">Abinniton salaatih ellecabo daqiiqal gaba saaqat foocal loowiyya</string>
+    <string name="tesbihat_adi">Tasbiix</string>
+    <string name="tesbihat_kanal_adi">Tasbiix</string>
+    <string name="tesbihat_kanal_aciklama">Duudume wee tasbiix fan gacaanamkeh gaba saaqat foocal xongolo mali calaamat</string>
+    <string name="kible_adi">Kiblat</string>
+    <string name="kible_komplikasyon_adi">Kiblat</string>
+    <string name="camideyim_kanal_adi">Masgidil an</string>
+    <string name="camideyim_kanal_aciklama">Sinni telefoon masgidil tanim warissek gaba saaqat foocal xongolo mali calaamat</string>
+    <string name="uyandirma_kanal_adi">Xongolo mali ugussa</string>
+    <string name="uyandirma_kanal_aciklama">Subci kee Tahajjudih ruqrusat sa sin ugussa</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Salat abe</string>
+    <string name="kilindi_isareti">✓ Abime</string>
+    <string name="kapat">Alifa</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Salat wakti ublaanamkeh sinni telefoonal Namaz Akışı faka.</string>
+    <string name="yuk_eskidi">Salat waktih maxco qusba hinna. Qusbisaanamkeh sinni telefoonal Namaz Akışı faka.</string>
+    <string name="guncelleme_gerekli">Sinni gaba saaqatal Namaz Akışı qusbisa.</string>
+    <string name="bildirim_izni">Sinni telefoon sin luk ma tanuk kaadu kassisiyya beytaanamkeh, gaba saaqat massossiyyal Namaz Akışı warsa acuwa.</string>
+    <string name="cami_soru">Masgidil tanaa?</string>
+    <string name="cami_evet">Yeey</string>
+    <string name="cami_evet_aciklama">Yeey, masgidil an. Salat caala fakta</string>
+    <string name="cami_hayir">Maleey</string>
+    <string name="cami_hayir_aciklama">Maleey, masgidil ma anu</string>
+    <string name="camidesiniz">Masgidil tanin</string>
+    <string name="cami_degil">Ama masgid hinna</string>
+    <string name="cami_degil_aciklama">Ama masgid hinna. Ama arac kaadu masgid innal ma loowimta</string>
+    <string name="tesbihat_ac">Tasbiix loowiyya faka</string>
+    <string name="kible_ac">Kiblat kompaas faka</string>
+    <string name="ses_dene">Xongolo mokkora</string>
+    <string name="ses_dene_aciklama">Gaba saaqatih afak kawsiyya mokkora</string>
+    <string name="telefonda_acin">Telefoonal faka</string>
+    <string name="telefonda_ekran_ac">Sinni telefoonal %1$s faka</string>
+    <string name="ekran_kaza">Qadaa kitaab</string>
+    <string name="ekran_camideyim">Masgidil an</string>
+    <string name="ekran_ayarlar">Massossiyya</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">abime, ittal hayimta</string>
+    <string name="durum_kilindi">abime</string>
+    <string name="durum_girmedi">wakti ma culin</string>
+    <string name="durum_simdiki">asaakuh salat wakti, calaamisaanamah xagisa</string>
+    <string name="durum_simdiki_kalan">asaakuh salat wakti, %1$s, calaamisaanamah xagisa</string>
+    <string name="durum_kilinmadi">abime wee, calaamisaanamah xagisa</string>
+    <string name="isaretleyin">Abime calaamisa</string>
+    <string name="esitleniyor">ittal hayimta</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">«Salat abe» oggola</string>
+    <string name="vazgecin">Caba</string>
+    <string name="vazgec">Caba</string>
+    <string name="kerahat_vaktindesiniz">Asaaku karaaha le wakti.</string>
+    <string name="kilindi_dua">Abime. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Salat caala faka, %1$s gexa. Alifaanamah xagisa</string>
+    <string name="namaz_modu_ac_aciklama">Sinni telefoonal Salat caala faka</string>
+    <string name="namaz_modu_kapatin">Salat caala alifa</string>
+    <string name="namaz_modu_acin">Salat caala faka</string>
+    <string name="namaz_modu_acik_bitis">Faka, %1$s gexa</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Gita geyimta…</string>
+    <string name="kible_yuk_yok">Kiblat geyaanamkeh sinni telefoonal Namaz Akışı faka.</string>
+    <string name="kible_konum_yok">Kiblat geyaanamkeh sinni telefoonal arac faka. Namaz Akışı qusba hinna tekkek, qusbisa.</string>
+    <string name="kible_sensor_yok">Ama gaba saaqat kompaas sensor mali. Kiblat gita sinni telefoonal ubtaanam duddan.</string>
+    <string name="kible_kuzeyden">Kiblat %1$d° (Shimaalak)</string>
+    <string name="kible_derece">Kiblat %1$d°</string>
+    <string name="kible_telefonda_ac">Sinni telefoonal kiblat faka</string>
+    <string name="kible_erisim">%1$s. Kiblat Shimaalak %2$d°, %3$s</string>
+    <string name="kible_hizali">Kiblat fanah afkuntaanam</string>
+    <string name="kible_kalibrasyon">Massossaanamkeh, sinni gaba qaranal 8 innal gexsa</string>
+    <string name="kible_egim">Sinni gaba saaqat baaxoh inna haysa</string>
+    <string name="kible_titresim_acik">Ruqrusa gita faka. Alifaanamah xagisa</string>
+    <string name="kible_titresim_kapali">Ruqrusa gita alifime. Fakaanamah xagisa</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">W</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbiix duudume. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Inkih %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Loowa</string>
+    <string name="tesbihat_bastan_baslayin">Qimbisok qimbisa</string>
+    <string name="tesbihat_bastan_soru">Qimbisok qimbisnaa?</string>
+    <string name="tesbihat_sifirlanir">Loowo qimbisol gacta.</string>
+    <string name="tesbihat_geri_al">Gacisa</string>
+    <string name="tesbihat_geri_al_aciklama">Ellecabo loowo gacisa</string>
+    <string name="tesbihat_yeniden">Qagitak qimbisa</string>
+    <string name="tesbihat_yeniden_aciklama">Tasbiix qagitak qimbisa</string>
+    <string name="tesbihat_suruyor">Tasbiix tatrusta: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Salat abe. Ugussa alifta</string>
+    <string name="uyandirma_kapat_aciklama">Ugussa alifa</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı faka</string>
+    <string name="tile_vakitler_icin">Salat waktih xagisa</string>
+    <string name="tile_telefonda_acin">Sinni telefoonal app faka</string>
+    <string name="tile_sonra">%1$s lakal</string>
+    <string name="tile_siradaki_aciklama">Lakal tan salat %1$s, saaqat %2$s culta. App faka</string>
+    <string name="tile_giris">culta %1$s</string>
+    <string name="tile_cikis">gexa %1$s</string>
+    <string name="bugun_bos_satir1">App faka</string>
+    <string name="bugun_bos_satir2">sinni telefoonal</string>
+    <string name="bugun_acma_aciklamasi">Asaaku %1$d/%2$d salat abime. App faka</string>
+    <string name="bugun_sayi">Asaaku %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Karaaha le wakti · oggolaanamkeh kaadu xagisa</string>
+    <string name="bugun_onay_tekrar">Oggolaanamkeh kaadu xagisa</string>
+    <string name="bugun_tamam">Asaakuh salat duudume</string>
+    <string name="bugun_kilinmadi">%1$s abime wee</string>
+    <string name="bugun_siradaki">Lakal: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Kaadu xagisa</string>
+    <string name="bugun_kilindi">%1$s abime</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s abime, ittal hayimta</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Salat wakti qambaalta; sinni telefoonal Namaz Akışı faka</string>
+    <string name="komplikasyon_bekleniyor">Wakti qambaalta</string>
+    <string name="komplikasyon_vakit">Salat</string>
+    <string name="komplikasyon_cikis">Gexa</string>
+    <string name="komplikasyon_sirada">Lakal</string>
+    <string name="gun_durumu_aciklama">Asaaku %1$d salaatak %2$d abime</string>
+    <string name="gun_durumu_kilinmamis">%1$s; abime wee: %2$s</string>
+    <string name="komplikasyon_namaz">Salat</string>
+    <string name="komplikasyon_kerahat">Karaaha</string>
+    <string name="kerahat_icinde_aciklama">Karaaha le wakti, %1$s gexa</string>
+    <string name="kerahat_siradaki_aciklama">Lakal tan karaaha le wakti %1$s</string>
+    <string name="kible_komplikasyon">Kiblat Shimaalak %1$d°. Kompaas faka</string>
+    <string name="kible_komplikasyon_konumlu">Kiblat Shimaalak %1$d°, %2$s. Kompaas faka</string>
+    <string name="kible_komplikasyon_konum_yok">Kiblat geyaanamkeh sinni telefoonal arac faka</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Sissik le kassisiyya · Ruqrusa</string>
+    <string name="muhafiz_kanal_acil">Sissik le kassisiyya</string>
+    <string name="muhafiz_kanal_titresimli">Salat kassisiyya · Ruqrusa</string>
+    <string name="muhafiz_kanal">Salat kassisiyya</string>
+    <string name="muhafiz_kanal_aciklama">Sinni telefoon sin luk ma tanuk kaadu sinni gaba saaqatal ubbulta salat kassisiyya</string>
+    <string name="son_dakikalar_cikis">Gexa: %1$s</string>
+    <string name="son_dakikalar_bitis">Gexa: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s gexam fanah raqte wakti</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s raqte wakti</string>
+    <string name="cami_namaz_modu_bitis">Salat caala · %1$s gexa</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Sinni telefoonal fakime</string>
+    <string name="telefona_ulasilamadi">Sinni telefoon ma geyimta</string>
+</resources>

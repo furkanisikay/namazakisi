@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari
 import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari.Durum
 import expo.modules.countdownnotification.cekirdek.CanliTaniKurallari
+import expo.modules.countdownnotification.cekirdek.rakamlariYerellestir
 
 /**
  * Android 16 "Live Update" ikiz yolu — issue #282 (durum çubuğu çipi + One UI 8 Now Bar).
@@ -275,10 +276,15 @@ object CanliGuncelleme {
     @RequiresApi(API_36)
     private fun olustur(context: Context, d: Durum, simdi: Long): Notification {
         val kanal = d.kanalId.ifEmpty { CountdownNotificationHelper.FOREGROUND_CHANNEL_ID }
+        // Native'in kendi metinleri (çip, eylemler) arayüz dilinde; başlık/gövde JS'ten gelir.
+        val m = context.dildeBaglam()
+        // Görünen metin seçilen rakamla (Arapçada "arab" → ٠-٩); saklı durum ve kimlik Batı
+        // rakamıyla kalır. Chronometer'ı SystemUI cihaz yerel ayarıyla çizer (zorlanamaz).
+        val sifir = ArayuzDili.rakamSifiri(context)
         val builder = Notification.Builder(context, kanal)
             .setSmallIcon(CountdownNotificationHelper.smallIconRes(context, d.kucukIkon))
-            .setContentTitle(d.baslik)
-            .setContentText(d.metin)
+            .setContentTitle(rakamlariYerellestir(d.baslik, sifir))
+            .setContentText(rakamlariYerellestir(d.metin, sifir))
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setColorized(false)
@@ -288,7 +294,7 @@ object CanliGuncelleme {
             .setUsesChronometer(true)
             .setChronometerCountDown(true)
             // Durum çubuğu çipi + Now Bar kısa metni ("12 dk").
-            .setShortCriticalText(CanliGuncellemeKurallari.kisaMetin(d.hedefMs - simdi))
+            .setShortCriticalText(rakamlariYerellestir(CanliGuncellemeKurallari.kisaMetin(d.hedefMs - simdi, ArayuzDili.oku(context)), sifir))
             .setContentIntent(CountdownNotificationHelper.launchPendingIntent(context))
             .setDeleteIntent(CountdownNotificationHelper.stopPendingIntent(context, d.id))
             .setCategory(Notification.CATEGORY_ALARM)
@@ -315,7 +321,7 @@ object CanliGuncelleme {
             builder.addAction(
                 Notification.Action.Builder(
                     Icon.createWithResource(context, android.R.drawable.checkbox_on_background),
-                    "Kıldım",
+                    m.getString(R.string.countdown_eylem_kildim),
                     kildimPendingIntent(context, d.id, d.kildimTarih, d.kildimVakit)
                 ).build()
             )
@@ -323,7 +329,7 @@ object CanliGuncelleme {
         builder.addAction(
             Notification.Action.Builder(
                 Icon.createWithResource(context, android.R.drawable.ic_menu_close_clear_cancel),
-                "Durdur",
+                m.getString(R.string.countdown_eylem_durdur),
                 CountdownNotificationHelper.stopPendingIntent(context, d.id)
             ).build()
         )

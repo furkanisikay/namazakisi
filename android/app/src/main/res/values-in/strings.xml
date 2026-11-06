@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- id — Endonezce (beta). Android niteleyicisi values-in (values-id hiç seçilmez). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/id. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Waktu salat saat ini, kapan berakhir, dan Sudah salat dengan satu ketukan</string>
+  <string name="widget_genis_aciklama">Lima waktu salat hari ini, hitung mundur, dan Sudah salat dengan satu ketukan</string>
+  <string name="widget_kapak_adi">Waktu salat di layar sampul</string>
+  <string name="widget_kapak_aciklama">Waktu salat hari ini dan hitung mundur untuk layar sampul Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klasik</string>
+  <string name="widget_klasik_aciklama">Tampilan hijau klasik: sisa waktu hingga waktu salat berikutnya</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klasik lebar</string>
+  <string name="widget_klasik_genis_aciklama">Tampilan hijau klasik: hitung mundur dan waktu salat hari ini</string>
+  <string name="widget_ayet_adi">Ayat hari ini</string>
+  <string name="widget_ayet_aciklama">Ayat dan terjemahannya, berganti setiap hari saat Subuh</string>
+  <string name="widget_ayar_zemin_palet">Warna aplikasi (nada terang)</string>
+  <string name="widget_ayar_ayet_icerik">Pada ukuran persegi, tampilkan</string>
+  <string name="widget_ayar_ayet_icerik_meal">Terjemahan</string>
+  <string name="widget_ayar_ayet_icerik_hat">Teks Arab (kaligrafi)</string>
+  <string name="kutu_kildim_etiket">Sudah salat</string>
+  <string name="kisayol_kildim_kisa">Sudah salat</string>
+  <string name="kisayol_kildim_uzun">Sudah salat untuk waktu saat ini</string>
+  <string name="kisayol_kible_kisa">Kiblat</string>
+  <string name="kisayol_kible_uzun">Tampilkan arah kiblat</string>
+  <string name="kisayol_kaza_kisa">Catatan Qada</string>
+  <string name="kisayol_kaza_uzun">Buka Catatan Qada</string>
+  <string name="kildim_onay_baslik">Tandai salat %1$s sudah ditunaikan?</string>
+  <string name="kildim_onay_mesaj">Tidak jelas aplikasi mana yang mengirim permintaan ini. Konfirmasikan jika Anda sudah menunaikan salat.</string>
+  <string name="kildim_onay_evet">Sudah salat</string>
+  <string name="kildim_onay_vazgec">Batal</string>
+  <string name="kildim_guven_baslik">Izinkan %1$s menandai salat Anda sudah ditunaikan?</string>
+  <string name="kildim_guven_mesaj">Waktu salat yang akan ditandai saat ini: %1$s. Anda dapat mengubah keputusan ini nanti di Pengaturan &gt; Aplikasi yang menandai Sudah salat.</string>
+  <string name="kildim_guven_tarayici_mesaj">Waktu salat yang akan ditandai saat ini: %1$s. Permintaan ini datang dari browser; karena setiap halaman web dapat membuka tautan ini, izin permanen tidak dapat diberikan.</string>
+  <string name="kildim_guven_her_zaman">Selalu izinkan</string>
+  <string name="kildim_guven_bu_sefer">Hanya kali ini</string>
+  <string name="kildim_guven_engelle">Blokir</string>
+  <string name="kildim_guven_engellendi">%1$s tidak dapat lagi menandai salat Anda. Anda dapat mengubahnya di Pengaturan.</string>
+  <string name="widget_ayar_baslik">Sesuaikan widget</string>
+  <string name="widget_ayar_zemin">Latar</string>
+  <string name="widget_ayar_zemin_material">Warna wallpaper</string>
+  <string name="widget_ayar_zemin_sistem">Tema sistem</string>
+  <string name="widget_ayar_zemin_acik">Terang</string>
+  <string name="widget_ayar_zemin_koyu">Gelap</string>
+  <string name="widget_ayar_zemin_seffaf">Transparan</string>
+  <string name="widget_ayar_opaklik">Kepekatan latar</string>
+  <string name="widget_ayar_gosterim">Tampilkan dengan teks besar</string>
+  <string name="widget_ayar_gosterim_kalan">Sisa waktu</string>
+  <string name="widget_ayar_gosterim_bitis">Waktu berakhir</string>
+  <string name="widget_ayar_gosterim_not">Waktu berakhir ditampilkan di semua ukuran.</string>
+  <string name="widget_ayar_sonraki">Tampilkan waktu salat berikutnya</string>
+  <string name="widget_ayar_vazgec">Batal</string>
+  <string name="widget_ayar_kaydet">Simpan</string>
+  <string name="kildim_onay_kanal_adi">Konfirmasi Sudah salat</string>
+  <string name="kildim_onay_kanal_aciklama">Konfirmasi senyap yang tampil beberapa detik saat Anda mengetuk \"Sudah salat\" di notifikasi</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Berakhir %1$s</string>
+  <string name="widget_giris">Masuk %1$s</string>
+  <string name="widget_namaz_vakti">Waktu salat</string>
+  <string name="widget_uygulamayi_acin">Buka aplikasi</string>
+  <string name="widget_siradaki">Berikutnya: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Tidak ada waktu salat yang berjalan</string>
+  <string name="widget_dugme_kildim">Sudah salat</string>
+  <string name="widget_dugme_isaretleniyor">Menandai</string>
+  <string name="widget_dugme_kilindi">Ditunaikan</string>
+  <string name="widget_dugme_vakit_girmedi">Belum masuk waktu</string>
+  <string name="widget_klasik_uygulamayi_acin">buka aplikasi</string>
+  <string name="widget_klasik_erisim_veri_yok">Buka aplikasi untuk melihat waktu salat</string>
+  <string name="widget_klasik_erisim_siradaki">Waktu salat berikutnya %1$s, masuk pukul %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Dzuhur dalam</string>
+  <string name="widget_onizleme_klasik_genis">Maghrib dalam</string>
+  <string name="widget_onizleme_imsak">Subuh</string>
+  <string name="widget_onizleme_gunes">Terbit</string>
+  <string name="widget_onizleme_ogle">Dzuhur</string>
+  <string name="widget_onizleme_ikindi">Ashar</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isya</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">Salat %1$s Anda ditandai sudah ditunaikan. Semoga Allah menerimanya.</string>
+  <string name="kildim_sonuc_zaten_kilindi">Salat %1$s sudah ditandai ditunaikan.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Saat ini tidak ada waktu salat yang berjalan. Berikutnya %1$s, masuk pukul %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Saat ini tidak ada waktu salat yang berjalan.</string>
+  <string name="kildim_sonuc_veri_yok">Tidak ada data waktu salat. Buka aplikasi sekali.</string>
+  <string name="kildim_sonuc_vakit_degisti">Waktu salat berganti, penandaan tidak dilakukan. Coba lagi.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Aplikasi navigasi tidak dapat dibuka.</string>
+  <string name="arac_adsiz_cami">Masjid</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Data waktu salat tidak dapat dibaca.</string>
+  <string name="asistan_isaretleme_yapilamadi">Salat tidak dapat ditandai.</string>
+  <string name="asistan_aciklama">Anda dapat menanyakan waktu salat, menandai waktu salat saat ini sudah ditunaikan, dan membuka layar kiblat.</string>
+</resources>

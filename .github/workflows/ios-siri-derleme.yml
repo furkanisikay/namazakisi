@@ -195,7 +195,7 @@ jobs:
           META="$APP/Metadata.appintents"
           [ -d "$META" ] || { echo "Metadata.appintents YOK — Siri/Kısayollar intent'leri göremez"; ls "$APP"; exit 1; }
           ls -la "$META"
-          for ad in SiradakiNamazIntent SimdikiVaktiKildimIntent KibleyiAcIntent NamazOdakFiltresi NamazSessizligiIntent NamazSessizligiBitisiIntent KildimDugmesiIntent NamazAlarmDurdurIntent NamazAlarmErteleIntent NamazAlarmKildimIntent SiradakiVakitAdiIntent SiradakiVakteKalanDakikaIntent SimdikiVakitKilindiMiIntent; do
+          for ad in SiradakiNamazIntent SimdikiVaktiKildimIntent KibleyiAcIntent NamazOdakFiltresi NamazSessizligiIntent NamazSessizligiBitisiIntent KildimDugmesiIntent NamazAlarmDurdurIntent NamazAlarmErteleIntent NamazAlarmKildimIntent SiradakiVakitAdiIntent SiradakiVakteKalanDakikaIntent SimdikiVakitKilindiMiIntent GununAyetiGorseliIntent; do
             grep -rqa "$ad" "$META" || { echo "Metadata'da $ad yok"; exit 1; }
           done
           echo "✅ Metadata.appintents Siri, widget ve alarm intent'lerini taşıyor"

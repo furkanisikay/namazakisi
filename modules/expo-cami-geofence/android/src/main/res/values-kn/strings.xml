@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kannada. Terimler JS sozluk/kn ile aynı (ನಮಾಝ್ ಮೋಡ್, ಮಸೀದಿ). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">ಮಸೀದಿಯಲ್ಲಿ</string>
+    <string name="camigeofence_kanal_durum_aciklama">ನೀವು ಮಸೀದಿಯಲ್ಲಿರುವುದು ಪತ್ತೆಯಾದಾಗ ನಿಶ್ಶಬ್ದ ಸೂಚನೆ</string>
+    <string name="camigeofence_kanal_soru_ad">ಮಸೀದಿಯಿಂದ ಹೊರಬಂದ ನಂತರ</string>
+    <string name="camigeofence_kanal_soru_aciklama">ಮಸೀದಿಯಿಂದ ಹೊರಬಂದ ನಂತರ ನಮಾಝ್ ಗುರುತಿಸಲು ಒಂದು ಪ್ರಶ್ನೆ</string>
+
+    <string name="camigeofence_govde_mod_sessiz">ನಮಾಝ್ ಮೋಡ್ ಆನ್ ಆಗಿದೆ. ಜ್ಞಾಪನೆಗಳು ನಿಶ್ಶಬ್ದವಾಗಿ ಬರುತ್ತವೆ.</string>
+    <string name="camigeofence_govde_mod">ನಮಾಝ್ ಮೋಡ್ ಆನ್ ಆಗಿದೆ.</string>
+    <string name="camigeofence_govde_sessiz">ಜ್ಞಾಪನೆಗಳು ನಿಶ್ಶಬ್ದವಾಗಿ ಬರುತ್ತವೆ.</string>
+    <string name="camigeofence_govde_normal">ಜ್ಞಾಪನೆಗಳು ಎಂದಿನಂತೆ ಬರುತ್ತವೆ.</string>
+    <string name="camigeofence_eylem_modu_kapat">ಮೋಡ್ ಆಫ್ ಮಾಡಿ</string>
+    <string name="camigeofence_eylem_cami_degil">ಮಸೀದಿ ಅಲ್ಲ</string>
+
+    <string name="camigeofence_soru_baslik">ನೀವು ಮಸೀದಿಯಲ್ಲಿದ್ದೀರಾ?</string>
+    <string name="camigeofence_soru_govde">ನೀವು %1$s ಹತ್ತಿರದಲ್ಲಿದ್ದೀರಿ. ನಮಗೆ ಖಚಿತವಿಲ್ಲ, ಆದ್ದರಿಂದ ನಿಮ್ಮನ್ನು ಕೇಳುತ್ತಿದ್ದೇವೆ.</string>
+    <string name="camigeofence_varsayilan_ad">ಮಸೀದಿ</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">ನಮಾಝ್ ಮೋಡ್ ಆನ್ ಮಾಡಿ</string>
+    <string name="camigeofence_eylem_evet_camideyim">ಹೌದು, ನಾನು ಮಸೀದಿಯಲ್ಲಿದ್ದೇನೆ</string>
+    <string name="camigeofence_eylem_hayir">ಇಲ್ಲ</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s ನಮಾಝ್ ನಿರ್ವಹಿಸಿದಿರಾ?</string>
+    <string name="camigeofence_kildiniz_mi_govde">ಒಂದೇ ಟ್ಯಾಪ್‌ನಲ್ಲಿ ಗುರುತಿಸಬಹುದು.</string>
+    <string name="camigeofence_eylem_kildim">ನಮಾಝ್ ಮಾಡಿದೆ</string>
+    <string name="camigeofence_namaz_imsak">ಫಜ್ರ್</string>
+    <string name="camigeofence_namaz_ogle">ಝುಹರ್</string>
+    <string name="camigeofence_namaz_ikindi">ಅಸರ್</string>
+    <string name="camigeofence_namaz_aksam">ಮಗ್ರಿಬ್</string>
+    <string name="camigeofence_namaz_yatsi">ಇಶಾ</string>
+    <string name="camigeofence_namaz_cuma">ಜುಮಾ</string>
+
+    <string name="camigeofence_mod_kural_adi">ನಮಾಝ್</string>
+    <string name="camigeofence_mod_tetik_aciklama">ಜುಮಾ ಖುತ್ಬಾ ಸಮಯದಲ್ಲಿ, ಮಸೀದಿಯಲ್ಲಿ ಅಥವಾ ನಮಾಝ್ ಸಮಯ ಆರಂಭವಾದಾಗ Namaz Akışı ಇದನ್ನು ಆನ್ ಮಾಡುತ್ತದೆ</string>
+</resources>

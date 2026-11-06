@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">У џамији</string>
+    <string name="camigeofence_kanal_durum_aciklama">Тихо обавештење када се открије да сте у џамији</string>
+    <string name="camigeofence_kanal_soru_ad">После изласка из џамије</string>
+    <string name="camigeofence_kanal_soru_aciklama">Питање да бисте означили намаз када изађете из џамије</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Режим намаза је укључен. Подсетници ће стизати тихо.</string>
+    <string name="camigeofence_govde_mod">Режим намаза је укључен.</string>
+    <string name="camigeofence_govde_sessiz">Подсетници ће стизати тихо.</string>
+    <string name="camigeofence_govde_normal">Подсетници ће стизати као и обично.</string>
+    <string name="camigeofence_eylem_modu_kapat">Искључите режим</string>
+    <string name="camigeofence_eylem_cami_degil">Није џамија</string>
+
+    <string name="camigeofence_soru_baslik">Да ли сте у џамији?</string>
+    <string name="camigeofence_soru_govde">Близу сте: %1$s. Нисмо сигурни, па вас питамо.</string>
+    <string name="camigeofence_varsayilan_ad">Џамија</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Укључите Режим намаза</string>
+    <string name="camigeofence_eylem_evet_camideyim">Да, у џамији сам</string>
+    <string name="camigeofence_eylem_hayir">Не</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s: да ли сте клањали?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Можете означити једним додиром.</string>
+    <string name="camigeofence_eylem_kildim">Клањано</string>
+    <string name="camigeofence_namaz_imsak">Сабах</string>
+    <string name="camigeofence_namaz_ogle">Подне</string>
+    <string name="camigeofence_namaz_ikindi">Икиндија</string>
+    <string name="camigeofence_namaz_aksam">Акшам</string>
+    <string name="camigeofence_namaz_yatsi">Јација</string>
+    <string name="camigeofence_namaz_cuma">Џума</string>
+
+    <string name="camigeofence_mod_kural_adi">Намаз</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı га укључује током џума-хутбе, у џамији или када наступи време намаза</string>
+</resources>

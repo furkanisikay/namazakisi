@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Geri sayım metinleri — Pencapça, Şahmuki (beta). Terimler: JS src/core/dil/sozluk/pa (sayac, nowBar). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">لائیو اُلٹی گنتیاں</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar تے سٹیٹس بار وچ اُلٹی گنتیاں</string>
+    <string name="countdown_kanal_genel_ad">اُلٹی گنتی دیاں اطلاعاں</string>
+    <string name="countdown_kanal_genel_aciklama">اُلٹی گنتی دیاں اطلاعاں لئی</string>
+
+    <string name="countdown_eylem_kildim">نماز پڑھ لئی</string>
+    <string name="countdown_eylem_durdur">روکو</string>
+
+    <string name="countdown_yedek_vakit">جلدی کرو، نماز دا وقت مکن والا اے۔</string>
+    <string name="countdown_yedek_iftar">وقت تھوڑا رہ گیا اے۔</string>
+    <string name="countdown_yedek_sahur">اجے کھادا پیتا جا سکدا اے؛ روزہ چھیتی شروع ہووے گا۔</string>
+    <string name="countdown_yedek_seri">اج دیاں نمازاں ادھوریاں نیں، اپنا تسلسل نہ گواؤ۔</string>
+
+    <string name="countdown_onek_vakit">وقت مکن وچ</string>
+    <string name="countdown_onek_vakit_dar">وقت مک رہیا اے</string>
+    <string name="countdown_onek_iftar">افطار تک</string>
+    <string name="countdown_onek_iftar_dar">افطار تک</string>
+    <string name="countdown_onek_sahur">سحری مکن وچ</string>
+    <string name="countdown_onek_sahur_dar">سحری مک رہی اے</string>
+    <string name="countdown_onek_seri">تسلسل بچاؤن لئی</string>
+    <string name="countdown_onek_seri_dar">تسلسل مک رہیا اے</string>
+</resources>

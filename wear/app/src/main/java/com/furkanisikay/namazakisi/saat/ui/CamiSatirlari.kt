@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.wear.compose.material3.Icon
 import com.furkanisikay.namazakisi.saat.R
 import androidx.compose.runtime.Composable
@@ -41,14 +42,14 @@ fun CamiSatiri(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
     ) {
         Text(
-            baslik,
+            yerelRakam(baslik),
             style = MaterialTheme.typography.titleSmall,
             color = renk(SaatPaleti.EYLEM),
             textAlign = TextAlign.Center,
             modifier = Modifier.semantics { heading() },
         )
         if (alt.isNotEmpty()) {
-            Text(alt, style = MaterialTheme.typography.labelSmall, color = renk(SaatPaleti.METIN2), textAlign = TextAlign.Center, maxLines = 2)
+            Text(yerelRakam(alt), style = MaterialTheme.typography.labelSmall, color = renk(SaatPaleti.METIN2), textAlign = TextAlign.Center, maxLines = 2)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
             for ((etiket, aciklama, eylem) in dugmeler) {
@@ -71,18 +72,17 @@ fun CamiSatiri(
  */
 @Composable
 fun NamazModuSatiri(acikBitis: String?, kilitli: Boolean, onDokun: () -> Unit) {
+    val aciklama = if (acikBitis != null) {
+        stringResource(R.string.namaz_modu_acik_aciklama, acikBitis)
+    } else {
+        stringResource(R.string.namaz_modu_ac_aciklama)
+    }
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         CompactButton(
             onClick = onDokun,
             enabled = !kilitli,
             colors = if (acikBitis != null) ButtonDefaults.buttonColors() else ButtonDefaults.filledTonalButtonColors(),
-            modifier = Modifier.semantics {
-                contentDescription = if (acikBitis != null) {
-                    "Namaz modu açık, bitiş $acikBitis. Kapatmak için dokunun"
-                } else {
-                    "Telefonunuzda Namaz modunu açın"
-                }
-            },
+            modifier = Modifier.semantics { contentDescription = aciklama },
             // Cami simgesi: düğme metni okunmadan da "namaz modu" diye tanınır (dekoratif).
             icon = {
                 Icon(
@@ -91,10 +91,12 @@ fun NamazModuSatiri(acikBitis: String?, kilitli: Boolean, onDokun: () -> Unit) {
                     modifier = Modifier.size(18.dp),
                 )
             },
-            label = { Text(if (acikBitis != null) "Namaz modunu kapatın" else "Namaz modunu açın") },
+            label = {
+                Text(stringResource(if (acikBitis != null) R.string.namaz_modu_kapatin else R.string.namaz_modu_acin))
+            },
         )
         if (acikBitis != null) {
-            Text("Açık, bitiş $acikBitis", style = MaterialTheme.typography.labelSmall, color = renk(SaatPaleti.METIN2))
+            Text(yerelRakam(stringResource(R.string.namaz_modu_acik_bitis, acikBitis)), style = MaterialTheme.typography.labelSmall, color = renk(SaatPaleti.METIN2))
         }
     }
 }

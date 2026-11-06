@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lingala. Terimler: JS src/core/dil/sozluk/ln (vakit.ts başı). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ln</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Losambo elandi</string>
+    <string name="tile_aciklama">Losambo oyo elandi mpe ngonga na yango</string>
+    <string name="komplikasyon_adi">Ntango etikali</string>
+    <string name="cikis_saati_komplikasyon_adi">Ngonga ya suka ya losambo</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Losambo elandi</string>
+    <string name="bugun_tile_adi">Lɛlɔ</string>
+    <string name="bugun_tile_aciklama">Losambo mitano ya lɛlɔ; botia elembo na oyo bosambeli na kofina mbala mibale</string>
+    <string name="ilerleme_komplikasyon_adi">Bokoli ya mokɔlɔ</string>
+    <string name="dagilim_komplikasyon_adi">Botali ya mokɔlɔ</string>
+    <string name="kerahat_komplikasyon_adi">Ntango ya makruh</string>
+    <string name="son_dakikalar_kanal_adi">Miniti ya suka</string>
+    <string name="son_dakikalar_kanal_aciklama">Kotanga ntango na ekran ya montre na miniti ya suka ya losambo oyo bosambeli naino te</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Elembo ya kimia na ekran ya montre mpɔ na kozonga na tasbih oyo esili te</string>
+    <string name="kible_adi">Qibla</string>
+    <string name="kible_komplikasyon_adi">Qibla</string>
+    <string name="camideyim_kanal_adi">Nazali na moskeye</string>
+    <string name="camideyim_kanal_aciklama">Elembo ya kimia na ekran ya montre ntango telefone na bino eyebisi ete bozali na moskeye</string>
+    <string name="uyandirma_kanal_adi">Kolamusa na kimia</string>
+    <string name="uyandirma_kanal_aciklama">Elamusaka bino kaka na koningana, mpɔ na Fajr mpe Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Nasambeli</string>
+    <string name="kilindi_isareti">✓ Esambelami</string>
+    <string name="kapat">Bokanga</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Bofungola Namaz Akışı na telefone na bino mpɔ na komona bangonga ya losambo.</string>
+    <string name="yuk_eskidi">Sango ya bangonga ya losambo ezali ya kala. Bofungola Namaz Akışı na telefone na bino mpɔ na kozongisa yango ya sika.</string>
+    <string name="guncelleme_gerekli">Bobongisa Namaz Akışı na montre na bino na version ya sika.</string>
+    <string name="bildirim_izni">Mpɔ na kozwa bokundoli ata soki telefone ezali na bino te, bopesa ndingisa ya mayebisi ya Namaz Akışı na mibongiseli ya montre.</string>
+    <string name="cami_soru">Bozali na moskeye?</string>
+    <string name="cami_evet">Ɛɛ</string>
+    <string name="cami_evet_aciklama">Ɛɛ, nazali na moskeye. Efungolaka Ndɛngɛ ya losambo</string>
+    <string name="cami_hayir">Te</string>
+    <string name="cami_hayir_aciklama">Te, nazali na moskeye te</string>
+    <string name="camidesiniz">Bozali na moskeye</string>
+    <string name="cami_degil">Oyo ezali moskeye te</string>
+    <string name="cami_degil_aciklama">Oyo ezali moskeye te. Esika oyo ekotangama lisusu lokola moskeye te</string>
+    <string name="tesbihat_ac">Bofungola motangi ya tasbih</string>
+    <string name="kible_ac">Bofungola busole ya Qibla</string>
+    <string name="ses_dene">Bomeka lokito</string>
+    <string name="ses_dene_aciklama">Bomeka kotanga na mongongo ya montre</string>
+    <string name="telefonda_acin">Bofungola na telefone</string>
+    <string name="telefonda_ekran_ac">Bofungola %1$s na telefone na bino</string>
+    <string name="ekran_kaza">Buku ya qada</string>
+    <string name="ekran_camideyim">Nazali na moskeye</string>
+    <string name="ekran_ayarlar">Mibongiseli</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">esambelami, ezali koyokanisa</string>
+    <string name="durum_kilindi">esambelami</string>
+    <string name="durum_girmedi">ntango ekoki naino te</string>
+    <string name="durum_simdiki">ntango ya losambo ya sikoyo, bofina mpɔ na kotia elembo</string>
+    <string name="durum_simdiki_kalan">ntango ya losambo ya sikoyo, %1$s, bofina mpɔ na kotia elembo</string>
+    <string name="durum_kilinmadi">esambelami te, bofina mpɔ na kotia elembo</string>
+    <string name="isaretleyin">Botia elembo: esambelami</string>
+    <string name="esitleniyor">ezali koyokanisa</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Bondima Nasambeli</string>
+    <string name="vazgecin">Botika</string>
+    <string name="vazgec">Botika</string>
+    <string name="kerahat_vaktindesiniz">Sikoyo ezali ntango ya makruh.</string>
+    <string name="kilindi_dua">Esambelami. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Ndɛngɛ ya losambo efungwami, ekosila %1$s. Bofina mpɔ na kokanga yango</string>
+    <string name="namaz_modu_ac_aciklama">Bofungola Ndɛngɛ ya losambo na telefone na bino</string>
+    <string name="namaz_modu_kapatin">Bokanga Ndɛngɛ ya losambo</string>
+    <string name="namaz_modu_acin">Bofungola Ndɛngɛ ya losambo</string>
+    <string name="namaz_modu_acik_bitis">Efungwami, ekosila %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Ezali koluka ngambo…</string>
+    <string name="kible_yuk_yok">Bofungola Namaz Akışı na telefone na bino mpɔ na koyeba Qibla.</string>
+    <string name="kible_konum_yok">Bofungola esika na telefone na bino mpɔ na koyeba Qibla. Soki Namaz Akışı ezali ya sika te, bobongisa yango.</string>
+    <string name="kible_sensor_yok">Montre oyo ezali na capteur ya busole te. Bokoki komona ngambo ya Qibla na telefone na bino.</string>
+    <string name="kible_kuzeyden">Qibla %1$d° (kobanda nɔrdi)</string>
+    <string name="kible_derece">Qibla %1$d°</string>
+    <string name="kible_telefonda_ac">Bofungola Qibla na telefone na bino</string>
+    <string name="kible_erisim">%1$s. Qibla ezali %2$d° kobanda nɔrdi, %3$s</string>
+    <string name="kible_hizali">Bozali kotala Qibla</string>
+    <string name="kible_kalibrasyon">Mpɔ na kobongisa, boningisa loboko na bino na likolo lokola motango 8</string>
+    <string name="kible_egim">Bosimba montre na bino semba na mabele</string>
+    <string name="kible_titresim_acik">Kokamba na koningana efungwami. Bofina mpɔ na kokanga yango</string>
+    <string name="kible_titresim_kapali">Kokamba na koningana ekangami. Bofina mpɔ na kofungola yango</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">W</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbih esili. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Nyɔnsɔ %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Botanga</string>
+    <string name="tesbihat_bastan_baslayin">Bobanda lisusu</string>
+    <string name="tesbihat_bastan_soru">Bobanda lisusu?</string>
+    <string name="tesbihat_sifirlanir">Motango ezongi na zéro.</string>
+    <string name="tesbihat_geri_al">Bozongisa</string>
+    <string name="tesbihat_geri_al_aciklama">Bozongisa motango ya suka</string>
+    <string name="tesbihat_yeniden">Bobanda lisusu</string>
+    <string name="tesbihat_yeniden_aciklama">Bobanda tasbih lisusu</string>
+    <string name="tesbihat_suruyor">Tasbih ezali kokoba: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Nasambeli. Ekangaka kolamusa</string>
+    <string name="uyandirma_kapat_aciklama">Bokanga kolamusa</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Bofungola Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Bofina mpɔ na bangonga ya losambo</string>
+    <string name="tile_telefonda_acin">Bofungola aplikasiɔ na telefone na bino</string>
+    <string name="tile_sonra">na %1$s</string>
+    <string name="tile_siradaki_aciklama">Losambo oyo elandi %1$s, ekobanda na %2$s. Bofungola aplikasiɔ</string>
+    <string name="tile_giris">ekobanda %1$s</string>
+    <string name="tile_cikis">ekosila %1$s</string>
+    <string name="bugun_bos_satir1">Bofungola aplikasiɔ</string>
+    <string name="bugun_bos_satir2">na telefone na bino</string>
+    <string name="bugun_acma_aciklamasi">Lɛlɔ losambo %1$d/%2$d esambelami. Bofungola aplikasiɔ</string>
+    <string name="bugun_sayi">Lɛlɔ %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Ntango ya makruh · bofina lisusu mpɔ na kondima</string>
+    <string name="bugun_onay_tekrar">Bofina lisusu mpɔ na kondima</string>
+    <string name="bugun_tamam">Losambo ya lɛlɔ esili</string>
+    <string name="bugun_kilinmadi">%1$s esambelami te</string>
+    <string name="bugun_siradaki">Oyo elandi: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Bofina lisusu</string>
+    <string name="bugun_kilindi">%1$s esambelami</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s esambelami, ezali koyokanisa</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Ezali kozela bangonga ya losambo; bofungola Namaz Akışı na telefone na bino</string>
+    <string name="komplikasyon_bekleniyor">Ezali kozela</string>
+    <string name="komplikasyon_vakit">Losambo</string>
+    <string name="komplikasyon_cikis">Esilaka</string>
+    <string name="komplikasyon_sirada">Elandi</string>
+    <string name="gun_durumu_aciklama">Lɛlɔ losambo %2$d na %1$d esambelami</string>
+    <string name="gun_durumu_kilinmamis">%1$s; esambelami te: %2$s</string>
+    <string name="komplikasyon_namaz">Losambo</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">Ezali ntango ya makruh, ekosila %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Ntango ya makruh oyo elandi %1$s</string>
+    <string name="kible_komplikasyon">Qibla ezali %1$d° kobanda nɔrdi. Bofungola busole</string>
+    <string name="kible_komplikasyon_konumlu">Qibla ezali %1$d° kobanda nɔrdi, %2$s. Bofungola busole</string>
+    <string name="kible_komplikasyon_konum_yok">Bofungola esika na telefone na bino mpɔ na koyeba Qibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Bokundoli ya noki · Koningana</string>
+    <string name="muhafiz_kanal_acil">Bokundoli ya noki</string>
+    <string name="muhafiz_kanal_titresimli">Bokundoli ya losambo · Koningana</string>
+    <string name="muhafiz_kanal">Bokundoli ya losambo</string>
+    <string name="muhafiz_kanal_aciklama">Bokundoli ya losambo oyo emonanaka na montre na bino ata soki telefone ezali na bino te</string>
+    <string name="son_dakikalar_cikis">Esilaka: %1$s</string>
+    <string name="son_dakikalar_bitis">Esilaka: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Ntango etikali tii %1$s esila</string>
+    <string name="son_dakikalar_kalan_erisim">Ntango etikali mpɔ na %1$s</string>
+    <string name="cami_namaz_modu_bitis">Ndɛngɛ ya losambo · ekosila %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Efungwami na telefone na bino</string>
+    <string name="telefona_ulasilamadi">Telefone na bino ekoki kozwama te</string>
+</resources>

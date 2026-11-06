@@ -17,6 +17,14 @@ import { useRenkler } from '../../core/theme';
 import { BOYUTLAR } from '../../core/constants/UygulamaSabitleri';
 import { OZEL_GUN_RENGI } from '../../core/constants/OzelGunRengi';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
+import { bicim, metin } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
+
+const ikiHane = (n: number) => String(n).padStart(2, '0');
+
+/** Sayısal tarih ("24.10.2026"); `Intl`/`toLocale*`'e bağlı değil (Hermes ICU). */
+export const sayisalTarih = (t: Date): string =>
+    bicim(metin().hatirlatma.ozelGun.tarih, { gun: ikiHane(t.getDate()), ay: ikiHane(t.getMonth() + 1), yil: t.getFullYear() });
 
 interface OzelGunTakvimiProps {
     gorunur: boolean;
@@ -30,6 +38,7 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
     onBaslat,
 }) => {
     const renkler = useRenkler();
+    const m = useMetin().hatirlatma.ozelGun;
     const [baslangicTarihi, setBaslangicTarihi] = useState(new Date());
     const [bitisTarihi, setBitisTarihi] = useState(
         new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Varsayilan 7 gun
@@ -73,32 +82,32 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
                     <View style={[styles.suruklemeBar, { backgroundColor: renkler.sinir }]} />
 
                     <Text style={[styles.baslik, { color: renkler.metin }]}>
-                        Özel Gün Başlat
+                        {m.takvimBaslik}
                     </Text>
                     <Text style={[styles.aciklama, { color: renkler.metinIkincil }]}>
-                        Seçeceğiniz tarihler arasında namaz seriniz dondurulacaktır. Bu günlerde namaz hatırlatmaları da durur.
+                        {m.takvimAciklama}
                     </Text>
 
                     <View style={styles.seciciGrup}>
-                        <Text style={[styles.etiket, { color: renkler.metin }]}>Başlangıç Tarihi</Text>
+                        <Text style={[styles.etiket, { color: renkler.metin }]}>{m.baslangic}</Text>
                         <TouchableOpacity
                             style={[styles.tarihButon, { backgroundColor: renkler.kartArkaplan }]}
                             onPress={() => setSeciciModu('baslangic')}
                         >
                             <Text style={[styles.tarihMetin, { color: renkler.metin }]}>
-                                {baslangicTarihi.toLocaleDateString('tr-TR')}
+                                {sayisalTarih(baslangicTarihi)}
                             </Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.seciciGrup}>
-                        <Text style={[styles.etiket, { color: renkler.metin }]}>Tahmini Bitiş Tarihi</Text>
+                        <Text style={[styles.etiket, { color: renkler.metin }]}>{m.bitis}</Text>
                         <TouchableOpacity
                             style={[styles.tarihButon, { backgroundColor: renkler.kartArkaplan }]}
                             onPress={() => setSeciciModu('bitis')}
                         >
                             <Text style={[styles.tarihMetin, { color: renkler.metin }]}>
-                                {bitisTarihi.toLocaleDateString('tr-TR')}
+                                {sayisalTarih(bitisTarihi)}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -118,7 +127,7 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
                                     style={styles.iosTamamButon}
                                     onPress={() => setSeciciModu(null)}
                                 >
-                                    <Text style={{ color: renkler.vurgu, fontWeight: 'bold' }}>Tamam</Text>
+                                    <Text style={{ color: renkler.vurgu, fontWeight: 'bold' }}>{m.tamam}</Text>
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -131,7 +140,7 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
                             onPress={onKapat}
                             accessibilityRole="button"
                         >
-                            <Text style={[styles.butonMetin, { color: renkler.metinIkincil }]}>İptal</Text>
+                            <Text style={[styles.butonMetin, { color: renkler.metinIkincil }]}>{m.iptal}</Text>
                         </TouchableOpacity>
                         {/* Birincil: "Özel Gün Başlat" ile aynı pembe. renkler.birincil DEĞİL —
                             beyaz metin varsayılan yeşil üstünde 2,78:1 kalıyor (OzelGunRengi.ts). */}
@@ -140,7 +149,7 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
                             onPress={() => onBaslat(baslangicTarihi, bitisTarihi)}
                             accessibilityRole="button"
                         >
-                            <Text style={[styles.butonMetin, styles.birincilButonMetin]}>Modu Başlat</Text>
+                            <Text style={[styles.butonMetin, styles.birincilButonMetin]}>{m.modu}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rumence kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ro (vakit adları Fajr · Răsărit · Dhuhr · Asr · Maghrib · Ișa; "M-am rugat" / "Efectuată"). Yalnız virgüllü ș ț. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Rugăciunea curentă, când se încheie și M-am rugat cu o atingere</string>
+  <string name="widget_genis_aciklama">Cele cinci rugăciuni de azi, o numărătoare inversă și M-am rugat cu o atingere</string>
+  <string name="widget_kapak_adi">Orele de rugăciune pe ecranul exterior</string>
+  <string name="widget_kapak_aciklama">Orele de rugăciune de azi și o numărătoare inversă pentru ecranul exterior al Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Clasic</string>
+  <string name="widget_klasik_aciklama">Aspect verde clasic: timpul rămas până la următoarea rugăciune</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Clasic lat</string>
+  <string name="widget_klasik_genis_aciklama">Aspect verde clasic: numărătoare inversă și orele de rugăciune de azi</string>
+  <string name="widget_ayet_adi">Versetul zilei</string>
+  <string name="widget_ayet_aciklama">Un verset și traducerea lui, reînnoite zilnic la Fajr</string>
+  <string name="widget_ayar_zemin_palet">Culoarea aplicației (ton deschis)</string>
+  <string name="widget_ayar_ayet_icerik">La dimensiunea pătrată, afișați</string>
+  <string name="widget_ayar_ayet_icerik_meal">Traducerea</string>
+  <string name="widget_ayar_ayet_icerik_hat">Textul arab (caligrafie)</string>
+  <string name="kutu_kildim_etiket">M-am rugat</string>
+  <string name="kisayol_kildim_kisa">M-am rugat</string>
+  <string name="kisayol_kildim_uzun">Am efectuat rugăciunea curentă</string>
+  <string name="kisayol_kible_kisa">Qibla</string>
+  <string name="kisayol_kible_uzun">Afișați direcția Qiblei</string>
+  <string name="kisayol_kaza_kisa">Recuperare</string>
+  <string name="kisayol_kaza_uzun">Deschideți Registrul de recuperare</string>
+  <string name="kildim_onay_baslik">Marcați %1$s ca efectuată?</string>
+  <string name="kildim_onay_mesaj">Nu este clar ce aplicație a trimis această cerere. Confirmați dacă v-ați rugat.</string>
+  <string name="kildim_onay_evet">M-am rugat</string>
+  <string name="kildim_onay_vazgec">Anulați</string>
+  <string name="kildim_guven_baslik">Permiteți aplicației %1$s să marcheze rugăciunile ca efectuate?</string>
+  <string name="kildim_guven_mesaj">Rugăciunea care va fi marcată acum: %1$s. Puteți schimba decizia ulterior în Setări &gt; Aplicații care pot marca M-am rugat.</string>
+  <string name="kildim_guven_tarayici_mesaj">Rugăciunea care va fi marcată acum: %1$s. Această cerere a venit dintr-un browser; deoarece orice pagină web poate deschide acest link, nu se poate acorda permisiune permanentă.</string>
+  <string name="kildim_guven_her_zaman">Permiteți întotdeauna</string>
+  <string name="kildim_guven_bu_sefer">Doar de data aceasta</string>
+  <string name="kildim_guven_engelle">Blocați</string>
+  <string name="kildim_guven_engellendi">%1$s nu mai poate marca rugăciunile. Puteți schimba asta din Setări.</string>
+  <string name="widget_ayar_baslik">Personalizați widgetul</string>
+  <string name="widget_ayar_zemin">Fundal</string>
+  <string name="widget_ayar_zemin_material">Culorile imaginii de fundal</string>
+  <string name="widget_ayar_zemin_sistem">Tema sistemului</string>
+  <string name="widget_ayar_zemin_acik">Luminos</string>
+  <string name="widget_ayar_zemin_koyu">Întunecat</string>
+  <string name="widget_ayar_zemin_seffaf">Transparent</string>
+  <string name="widget_ayar_opaklik">Opacitatea fundalului</string>
+  <string name="widget_ayar_gosterim">Afișați cu text mare</string>
+  <string name="widget_ayar_gosterim_kalan">Timp rămas</string>
+  <string name="widget_ayar_gosterim_bitis">Ora de final</string>
+  <string name="widget_ayar_gosterim_not">Ora de final este afișată la orice dimensiune.</string>
+  <string name="widget_ayar_sonraki">Afișați următoarea rugăciune</string>
+  <string name="widget_ayar_vazgec">Anulați</string>
+  <string name="widget_ayar_kaydet">Salvați</string>
+  <string name="kildim_onay_kanal_adi">Confirmare M-am rugat</string>
+  <string name="kildim_onay_kanal_aciklama">O confirmare discretă afișată câteva secunde când atingeți „M-am rugat” într-o notificare</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Se încheie %1$s</string>
+  <string name="widget_giris">Începe %1$s</string>
+  <string name="widget_namaz_vakti">Timpul rugăciunii</string>
+  <string name="widget_uygulamayi_acin">Deschideți aplicația</string>
+  <string name="widget_siradaki">Urmează: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Nicio rugăciune de marcat acum</string>
+  <string name="widget_dugme_kildim">M-am rugat</string>
+  <string name="widget_dugme_isaretleniyor">Se marchează</string>
+  <string name="widget_dugme_kilindi">Efectuată</string>
+  <string name="widget_dugme_vakit_girmedi">Încă nu e timpul</string>
+  <string name="widget_klasik_uygulamayi_acin">deschideți aplicația</string>
+  <string name="widget_klasik_erisim_veri_yok">Deschideți aplicația ca să vedeți orele de rugăciune</string>
+  <string name="widget_klasik_erisim_siradaki">Următoarea rugăciune: %1$s, începe la %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Până la Dhuhr</string>
+  <string name="widget_onizleme_klasik_genis">Până la Maghrib</string>
+  <string name="widget_onizleme_imsak">Fajr</string>
+  <string name="widget_onizleme_gunes">Răsărit</string>
+  <string name="widget_onizleme_ogle">Dhuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Ișa</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s a fost marcată ca efectuată. Allah să primească.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s este deja marcată ca efectuată.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Nu există acum nicio rugăciune de marcat. Urmează %1$s, care începe la %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Nu există acum nicio rugăciune de marcat.</string>
+  <string name="kildim_sonuc_veri_yok">Nu există date despre orele de rugăciune. Deschideți aplicația o dată.</string>
+  <string name="kildim_sonuc_vakit_degisti">Timpul rugăciunii s-a schimbat, așa că nu s-a marcat nimic. Încercați din nou.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Aplicația de navigare nu a putut fi deschisă.</string>
+  <string name="arac_adsiz_cami">Moschee</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Datele despre orele de rugăciune nu au putut fi citite.</string>
+  <string name="asistan_isaretleme_yapilamadi">Rugăciunea nu a putut fi marcată.</string>
+  <string name="asistan_aciklama">Puteți cere orele de rugăciune, marca rugăciunea curentă ca efectuată și deschide ecranul Qibla.</string>
+</resources>

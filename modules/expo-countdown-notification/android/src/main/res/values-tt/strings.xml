@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tt -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Туры санагычлар</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar һәм халәт юлындагы кире санаулар</string>
+    <string name="countdown_kanal_genel_ad">Кире санау хәбәрнамәләре</string>
+    <string name="countdown_kanal_genel_aciklama">Кире санау хәбәрнамәләре каналы</string>
+
+    <string name="countdown_eylem_kildim">Укыдым</string>
+    <string name="countdown_eylem_durdur">Туктату</string>
+
+    <string name="countdown_yedek_vakit">Ашык, намаз вакыты чыгып бара.</string>
+    <string name="countdown_yedek_iftar">Вакыт бетеп килә.</string>
+    <string name="countdown_yedek_sahur">Әле ашап-эчәргә ярый; ураза тиздән башлана.</string>
+    <string name="countdown_yedek_seri">Бүгенге намазлар тулы түгел; серияңне югалтма.</string>
+
+    <string name="countdown_onek_vakit">Вакыт беткәнче</string>
+    <string name="countdown_onek_vakit_dar">Вакыт бетә</string>
+    <string name="countdown_onek_iftar">Авыз ачуга кадәр</string>
+    <string name="countdown_onek_iftar_dar">Авыз ачуга</string>
+    <string name="countdown_onek_sahur">Сәхәр беткәнче</string>
+    <string name="countdown_onek_sahur_dar">Сәхәр бетә</string>
+    <string name="countdown_onek_seri">Серияне саклау өчен</string>
+    <string name="countdown_onek_seri_dar">Серия бетә</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Botia code QR ya ekran ya TV na kati ya ndelo</string>
+    <string name="tvesleme_qr_vazgec">Botika</string>
+    <string name="tvesleme_qr_vazgec_erisim">Botika kotanga code</string>
+    <string name="tvesleme_qr_yabanci">Code QR oyo ezali ya Namaz Akışı TV te. Botanga code oyo ezali na TV.</string>
+    <string name="tvesleme_qr_okundu">Code etangami</string>
+</resources>

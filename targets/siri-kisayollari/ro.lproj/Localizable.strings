@@ -1,0 +1,58 @@
+// ro — Rumence (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Rumence terimler: src/core/dil/sozluk/ro (Fajr · Răsărit · Dhuhr · Asr · Maghrib · Ișa; "M-am rugat"). Yalnız virgüllü ș ț.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Rugăciunea următoare";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Spune rugăciunea următoare și ora la care începe.";
+"Şu anki vakti kıldım" = "Am efectuat rugăciunea curentă";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Marchează rugăciunea curentă ca efectuată. Înregistrarea se adaugă când deschideți aplicația.";
+"Onay iste" = "Cere confirmare";
+"Kıbleyi aç" = "Deschide Qibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Deschide aplicația cu busola Qiblei.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "M-am rugat";
+"Kıble" = "Qibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Numele rugăciunii următoare";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Dă numele rugăciunii următoare. Îl puteți folosi ca condiție în Scurtături.";
+"Sıradaki vakte kalan dakika" = "Minute până la rugăciunea următoare";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Dă câte minute au rămas până începe rugăciunea următoare. Returnează -1 dacă nu există informații.";
+"Şu anki vakit kılındı mı?" = "Rugăciunea curentă este marcată ca efectuată?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Dă da dacă rugăciunea curentă este marcată ca efectuată. Dă nu dacă nu există nicio rugăciune de marcat.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Liniște pentru rugăciune";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Returnează adevărat în primele minute după începutul timpului unei rugăciuni. Se folosește în Scurtături pentru a activa o Concentrare.";
+"Süre (dakika)" = "Durată (minute)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Cele ${dakika} minute de după începutul timpului unei rugăciuni";
+"Namaz sessizliğinin bitişi" = "Sfârșitul liniștii pentru rugăciune";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Dă ora la care se încheie liniștea. Dă ora curentă dacă acum nu este liniște.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Sfârșitul celor ${dakika} minute de după începutul timpului unei rugăciuni";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Mementouri de rugăciune";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Cât această Concentrare este activată, mementourile de rugăciune sosesc fără sunet și fără să aprindă ecranul.";
+"Hatırlatmaları sessiz ver" = "Livrați discret mementourile";
+"Hatırlatmalar sessiz gelir" = "Mementourile sosesc silențios";
+"Hatırlatmalar her zamanki gibi" = "Mementouri ca de obicei";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Marchează ca efectuată rugăciunea afișată în widget.";
+"Tarih" = "Dată";
+"Vakit" = "Rugăciune";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Oprește alarma de rugăciune";
+"Namazı kıldım" = "M-am rugat";
+"Alarm" = "Alarmă";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Imaginea versetului zilei";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Dă versetul de azi ca imagine de dimensiunea ecranului. O puteți folosi cu pasul Setează imaginea de fundal din Scurtături.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Deschideți aplicația o dată ca să se pregătească versetul zilei.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Imaginea nu a putut fi pregătită. Încercați din nou peste puțin timp.";

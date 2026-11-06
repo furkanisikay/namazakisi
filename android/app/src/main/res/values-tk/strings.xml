@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Türkmence kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/tk. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Häzirki namaz, onuň gutarýan wagty we bir basyşda Okadym</string>
+  <string name="widget_genis_aciklama">Şu günki bäş wagt namaz, yza sanaw we bir basyşda Okadym</string>
+  <string name="widget_kapak_adi">Daşky ekranda namaz wagtlary</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip daşky ekrany üçin şu günki namaz wagtlary we yza sanaw</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klassyky</string>
+  <string name="widget_klasik_aciklama">Klassyky ýaşyl görnüş: indiki namaza galan wagt</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klassyky giň</string>
+  <string name="widget_klasik_genis_aciklama">Klassyky ýaşyl görnüş: yza sanaw we şu günki namaz wagtlary</string>
+  <string name="widget_ayet_adi">Günüň aýaty</string>
+  <string name="widget_ayet_aciklama">Her gün ertir wagtynda täzelenýän aýat</string>
+  <string name="widget_ayar_zemin_palet">Programmanyň reňki (açyk öwüşgin)</string>
+  <string name="widget_ayar_ayet_icerik">Inedördül ölçegde görkez</string>
+  <string name="widget_ayar_ayet_icerik_meal">Terjime</string>
+  <string name="widget_ayar_ayet_icerik_hat">Arapça tekst (hat)</string>
+  <string name="kutu_kildim_etiket">Okadym</string>
+  <string name="kisayol_kildim_kisa">Okadym</string>
+  <string name="kisayol_kildim_uzun">Häzirki namazy okadym</string>
+  <string name="kisayol_kible_kisa">Kybla</string>
+  <string name="kisayol_kible_uzun">Kybla ugruny görkez</string>
+  <string name="kisayol_kaza_kisa">Kaza depderi</string>
+  <string name="kisayol_kaza_uzun">Kaza depderini aç</string>
+  <string name="kildim_onay_baslik">%1$s okaldy diýip bellensinmi?</string>
+  <string name="kildim_onay_mesaj">Bu haýyşy haýsy programmanyň iberendigi belli däl. Okan bolsaňyz tassyklaň.</string>
+  <string name="kildim_onay_evet">Okadym</string>
+  <string name="kildim_onay_vazgec">Ýatyryň</string>
+  <string name="kildim_guven_baslik">%1$s namazlaryňyzy okaldy diýip bellesinmi?</string>
+  <string name="kildim_guven_mesaj">Häzir belleniljek namaz: %1$s. Kararyňyzy soňra Sazlamalar &gt; Okadym belleýän programmalar bölüminden üýtgedip bilersiňiz.</string>
+  <string name="kildim_guven_tarayici_mesaj">Häzir belleniljek namaz: %1$s. Bu haýyş brauzerden geldi; bu salgyny islendik web sahypa açyp bilýändigi üçin hemişelik rugsat berip bolmaýar.</string>
+  <string name="kildim_guven_her_zaman">Hemişe rugsat beriň</string>
+  <string name="kildim_guven_bu_sefer">Diňe bu gezek</string>
+  <string name="kildim_guven_engelle">Bökdäň</string>
+  <string name="kildim_guven_engellendi">%1$s indi namazlaryňyzy belläp bilmeýär. Muny Sazlamalardan üýtgedip bilersiňiz.</string>
+  <string name="widget_ayar_baslik">Widjeti sazlaň</string>
+  <string name="widget_ayar_zemin">Fon</string>
+  <string name="widget_ayar_zemin_material">Diwar kagyzynyň reňkleri</string>
+  <string name="widget_ayar_zemin_sistem">Ulgam temasy</string>
+  <string name="widget_ayar_zemin_acik">Ýagty</string>
+  <string name="widget_ayar_zemin_koyu">Garaňky</string>
+  <string name="widget_ayar_zemin_seffaf">Aýna ýaly</string>
+  <string name="widget_ayar_opaklik">Fonuň dykyzlygy</string>
+  <string name="widget_ayar_gosterim">Uly ýazgyda görkez</string>
+  <string name="widget_ayar_gosterim_kalan">Galan wagt</string>
+  <string name="widget_ayar_gosterim_bitis">Gutarýan wagty</string>
+  <string name="widget_ayar_gosterim_not">Gutarýan wagty her ölçegde görkezilýär.</string>
+  <string name="widget_ayar_sonraki">Indiki namazy görkez</string>
+  <string name="widget_ayar_vazgec">Ýatyryň</string>
+  <string name="widget_ayar_kaydet">Ýatda saklaň</string>
+  <string name="kildim_onay_kanal_adi">Okadym tassyklamasy</string>
+  <string name="kildim_onay_kanal_aciklama">Habarnamada “Okadym” düwmesine basanyňyzda birnäçe sekunt görkezilýän sessiz tassyklama</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Gutarýar: %1$s</string>
+  <string name="widget_giris">Girýär: %1$s</string>
+  <string name="widget_namaz_vakti">Namaz wagty</string>
+  <string name="widget_uygulamayi_acin">Programmany açyň</string>
+  <string name="widget_siradaki">Indiki: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Häzir belläp boljak namaz ýok</string>
+  <string name="widget_dugme_kildim">Okadym</string>
+  <string name="widget_dugme_isaretleniyor">Bellenýär</string>
+  <string name="widget_dugme_kilindi">Okaldy</string>
+  <string name="widget_dugme_vakit_girmedi">Entek wagty däl</string>
+  <string name="widget_klasik_uygulamayi_acin">programmany açyň</string>
+  <string name="widget_klasik_erisim_veri_yok">Namaz wagtlaryny görmek üçin programmany açyň</string>
+  <string name="widget_klasik_erisim_siradaki">Indiki namaz: %1$s, girýän wagty %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Öýlä çenli</string>
+  <string name="widget_onizleme_klasik_genis">Agşama çenli</string>
+  <string name="widget_onizleme_imsak">Ertir</string>
+  <string name="widget_onizleme_gunes">Gün dogşy</string>
+  <string name="widget_onizleme_ogle">Öýle</string>
+  <string name="widget_onizleme_ikindi">Ikindi</string>
+  <string name="widget_onizleme_aksam">Agşam</string>
+  <string name="widget_onizleme_yatsi">Ýassy</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s okaldy diýip bellendi. Alla kabul etsin.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s eýýäm okaldy diýip bellenen.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Häzir belläp boljak namaz ýok. Indiki namaz %1$s, sagat %2$s bolanda başlaýar.</string>
+  <string name="kildim_sonuc_vakit_yok">Häzir belläp boljak namaz ýok.</string>
+  <string name="kildim_sonuc_veri_yok">Namaz wagtlary barada maglumat ýok. Programmany bir gezek açyň.</string>
+  <string name="kildim_sonuc_vakit_degisti">Namaz wagty üýtgedi, şonuň üçin hiç zat bellenmedi. Gaýtadan synanyşyň.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Nawigasiýa programmasy açylmady.</string>
+  <string name="arac_adsiz_cami">Metjit</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Namaz wagtlary barada maglumat okalmady.</string>
+  <string name="asistan_isaretleme_yapilamadi">Namaz bellenmedi.</string>
+  <string name="asistan_aciklama">Namaz wagtlaryny sorap, häzirki namazy okaldy diýip belläp we Kybla ekranyny açyp bilersiňiz.</string>
+</resources>

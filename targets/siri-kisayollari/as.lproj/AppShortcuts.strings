@@ -1,0 +1,17 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "${applicationName} এপত পৰৱৰ্তী নামাজ কেতিয়া";
+"${applicationName} sıradaki namaz" = "${applicationName} পৰৱৰ্তী নামাজ";
+"${applicationName} ile sıradaki namazı söyle" = "${applicationName} এপৰ জৰিয়তে পৰৱৰ্তী নামাজ কওক";
+"${applicationName} namaz vakti" = "${applicationName} নামাজৰ সময়";
+"${applicationName} şu anki vakti kıldım" = "${applicationName} এপত বৰ্তমানৰ নামাজ পঢ়িছোঁ";
+"${applicationName} namazımı kıldım" = "${applicationName} এপত মই নামাজ পঢ়িছোঁ";
+"${applicationName} ile vakti kıldım olarak işaretle" = "${applicationName} এপত বৰ্তমানৰ নামাজ পঢ়া হ’ল বুলি চিহ্নিত কৰক";
+"${applicationName} kıbleyi aç" = "${applicationName} এপত কিবলা খোলক";
+"${applicationName} ile kıbleyi göster" = "${applicationName} এপৰ জৰিয়তে কিবলা দেখুৱাওক";
+"${applicationName} günün ayeti görseli" = "${applicationName} আজিৰ আয়াতৰ ছবি";
+"${applicationName} ile günün ayeti görselini hazırla" = "${applicationName} এপৰ জৰিয়তে আজিৰ আয়াতৰ ছবি সাজু কৰক";

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Ukraynaca). "Молитву здійснено" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Будильник молитви</string>
+  <string name="alarm_kildim">Молитву здійснено</string>
+  <string name="alarm_kapat">Вимкнути</string>
+  <string name="alarm_kanal_aciklamasi">Справжній будильник, що дзвонить на вибраних вами кроках нагадування</string>
+</resources>

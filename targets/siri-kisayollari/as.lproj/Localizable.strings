@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Assamca terimler: src/core/dil/sozluk/as.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "পৰৱৰ্তী নামাজ";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "পৰৱৰ্তী নামাজ আৰু ই আৰম্ভ হোৱাৰ সময় কয়।";
+"Şu anki vakti kıldım" = "বৰ্তমানৰ নামাজ পঢ়িছোঁ";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "বৰ্তমানৰ নামাজ পঢ়া হ’ল বুলি চিহ্নিত কৰে। আপুনি এপ খুলিলে ৰেকৰ্ডটো যোগ হয়।";
+"Onay iste" = "নিশ্চিতকৰণ বিচাৰক";
+"Kıbleyi aç" = "কিবলা খোলক";
+"Uygulamayı Kıble pusulasıyla açar." = "কিবলা কম্পাছৰ সৈতে এপটো খোলে।";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "নামাজ পঢ়িছোঁ";
+"Kıble" = "কিবলা";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "পৰৱৰ্তী নামাজৰ নাম";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "পৰৱৰ্তী নামাজৰ নাম দিয়ে। Shortcuts-ত চৰ্ত হিচাপে ব্যৱহাৰ কৰিব পাৰে।";
+"Sıradaki vakte kalan dakika" = "পৰৱৰ্তী নামাজলৈ বাকী মিনিট";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "পৰৱৰ্তী নামাজ আৰম্ভ হ’বলৈ কিমান মিনিট বাকী দিয়ে। তথ্য নাথাকিলে -1 দিয়ে।";
+"Şu anki vakit kılındı mı?" = "বৰ্তমানৰ নামাজ পঢ়া হ’ল বুলি চিহ্নিত কৰা হৈছেনে?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "বৰ্তমানৰ নামাজ পঢ়া হ’ল বুলি চিহ্নিত থাকিলে হয় দিয়ে। চিহ্নিত কৰিবলগীয়া নামাজ নাথাকিলে নহয় দিয়ে।";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "নামাজৰ নীৰৱতা";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "নামাজৰ সময় আৰম্ভ হোৱাৰ পিছৰ প্ৰথম কেইমিনিটত সঁচা দিয়ে। Shortcuts-ত ফ’কাছ অন কৰিবলৈ ব্যৱহাৰ কৰা হয়।";
+"Süre (dakika)" = "সময় (মিনিট)";
+"Vakit girdikten sonraki ${dakika} dakika" = "নামাজৰ সময় আৰম্ভ হোৱাৰ পিছৰ ${dakika} মিনিট";
+"Namaz sessizliğinin bitişi" = "নামাজৰ নীৰৱতাৰ শেষ";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "নীৰৱতা শেষ হোৱাৰ সময় দিয়ে। এতিয়া নীৰৱতা নাথাকিলে বৰ্তমানৰ সময় দিয়ে।";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "নামাজৰ সময় আৰম্ভ হোৱাৰ পিছৰ ${dakika} মিনিটৰ শেষ";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "নামাজৰ সোঁৱৰণী";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "এই ফ’কাছ অন থাকোঁতে নামাজৰ সোঁৱৰণী ধ্বনি নোহোৱাকৈ আৰু স্ক্ৰীন নজ্বলোৱাকৈ আহে।";
+"Hatırlatmaları sessiz ver" = "সোঁৱৰণী নীৰৱে দিয়ক";
+"Hatırlatmalar sessiz gelir" = "সোঁৱৰণী নীৰৱে আহে";
+"Hatırlatmalar her zamanki gibi" = "সোঁৱৰণী সদায়ৰ দৰে";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "ৱিজেটত দেখুওৱা নামাজ পঢ়া হ’ল বুলি চিহ্নিত কৰে।";
+"Tarih" = "তাৰিখ";
+"Vakit" = "নামাজ";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "নামাজৰ এলাৰ্ম বন্ধ কৰক";
+"Namazı kıldım" = "নামাজ পঢ়িছোঁ";
+"Alarm" = "এলাৰ্ম";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "আজিৰ আয়াতৰ ছবি";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "আজিৰ আয়াত আপোনাৰ স্ক্ৰীনৰ আকাৰৰ ছবি হিচাপে দিয়ে। Shortcuts-ত Set Wallpaper পদক্ষেপৰ সৈতে ব্যৱহাৰ কৰিব পাৰে।";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "আজিৰ আয়াত সাজু কৰিবলৈ এবাৰ এপটো খোলক।";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "ছবি সাজু কৰিব পৰা নগ’ল। অলপ পিছত পুনৰ চেষ্টা কৰক।";

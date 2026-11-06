@@ -16,6 +16,7 @@ import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesGorunenAdi } from './sesKimligi';
 import { adimKapaliMi, kanalAcikMi } from './kanalKumesi';
 import { gercekTekrarDk } from './planButcesi';
+import { bicim, canli, metin } from '../dil/aktifDil';
 
 /** Ozette gosterilen kanallar — GOSTERIM SIRASI budur (bildirim, sesli, titresim, alarm). */
 export type OzetKanali = 'bildirim' | 'sesli' | 'titresim' | 'alarm';
@@ -23,12 +24,7 @@ export type OzetKanali = 'bildirim' | 'sesli' | 'titresim' | 'alarm';
 export const OZET_KANAL_SIRASI: readonly OzetKanali[] = ['bildirim', 'sesli', 'titresim', 'alarm'];
 
 /** Kanalin cumle icindeki adi (kucuk harf; Turkce `toLowerCase` tuzagi yok — sabit). */
-export const OZET_KANAL_ADLARI: Record<OzetKanali, string> = {
-  bildirim: 'bildirim',
-  sesli: 'sesli okuma',
-  titresim: 'titreşim',
-  alarm: 'gerçek alarm',
-};
+export const OZET_KANAL_ADLARI: Readonly<Record<OzetKanali, string>> = canli((s) => s.muhafizAyar.ozet.kanal);
 
 export interface AdimOzeti {
   /** Hicbir kanal acik degil — "Kapali" (motorun dili: uyari GELMEZ). */
@@ -51,7 +47,7 @@ export interface AdimOzeti {
  * Kullaniciya donuk metin (kibar "siz" kaydi, cumle parcasi).
  */
 export const esikIfadesi = (esikDk: number, yon: PencereYonu): string =>
-  yon === 'girisindenItibaren' ? `girişten ${esikDk} dk sonra` : `${esikDk} dk kala`;
+  bicim(yon === 'girisindenItibaren' ? metin().muhafizAyar.ozet.esikGiris : metin().muhafizAyar.ozet.esikCikis, { dk: esikDk });
 
 /** Kanal kumesinden acik kanallari GOSTERIM sirasinda cikarir. */
 export function acikOzetKanallari(kanallar: SeviyeAyari['kanallar'] | undefined): OzetKanali[] {
@@ -84,11 +80,12 @@ export function adimOzetiOlustur(
 
 /** "bildirim", "bildirim ve titreşim", "bildirim, sesli okuma ve titreşim". */
 export function kanalListesiMetni(kanallar: readonly OzetKanali[], sesAdi?: string): string {
+  const o = metin().muhafizAyar.ozet;
   const adlar = kanallar.map((k) =>
-    k === 'bildirim' && sesAdi ? `${OZET_KANAL_ADLARI.bildirim} (${sesAdi})` : OZET_KANAL_ADLARI[k]
+    k === 'bildirim' && sesAdi ? bicim(o.kanalSesli, { kanal: o.kanal.bildirim, ses: sesAdi }) : o.kanal[k]
   );
   if (adlar.length <= 1) return adlar[0] ?? '';
-  return `${adlar.slice(0, -1).join(', ')} ve ${adlar[adlar.length - 1]}`;
+  return bicim(o.listeSon, { bas: adlar.slice(0, -1).join(', '), son: adlar[adlar.length - 1] });
 }
 
 /**
@@ -107,7 +104,8 @@ export function seviyeOzetiOlustur(
   baglam: OzetBaglami = {}
 ): string {
   const ozet = adimOzetiOlustur(seviye, yon, baglam);
-  if (ozet.kapali) return 'Kapalı — uyarı almazsınız';
+  const o = metin().muhafizAyar.ozet;
+  if (ozet.kapali) return o.kapali;
   const govde = `${ozet.zaman}: ${kanalListesiMetni(ozet.kanallar, ozet.sesAdi)}`;
-  return ozet.tekrarDk ? `${govde}; ${ozet.tekrarDk} dakikada bir tekrarlanır` : govde;
+  return ozet.tekrarDk ? bicim(o.tekrar, { govde, dk: ozet.tekrarDk }) : govde;
 }

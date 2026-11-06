@@ -1,0 +1,58 @@
+/* el */
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Yunanca terimler: src/core/dil/sozluk/el (JS rehberi bu adlari alintilar: cami.ios, gununAyeti.ios).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Επόμενη προσευχή";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Λέει την επόμενη προσευχή και την ώρα που αρχίζει.";
+"Şu anki vakti kıldım" = "Τέλεσα την τρέχουσα προσευχή";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Σημειώνει την τρέχουσα προσευχή ως τελεσμένη. Η καταγραφή προστίθεται όταν ανοίξετε την εφαρμογή.";
+"Onay iste" = "Ζήτηση επιβεβαίωσης";
+"Kıbleyi aç" = "Άνοιγμα Κίμπλα";
+"Uygulamayı Kıble pusulasıyla açar." = "Ανοίγει την εφαρμογή με την πυξίδα Κίμπλα.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Προσευχήθηκα";
+"Kıble" = "Κίμπλα";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Όνομα επόμενης προσευχής";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Δίνει το όνομα της επόμενης προσευχής. Μπορείτε να το χρησιμοποιήσετε ως συνθήκη στις Συντομεύσεις.";
+"Sıradaki vakte kalan dakika" = "Λεπτά έως την επόμενη προσευχή";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Δίνει πόσα λεπτά απομένουν μέχρι να αρχίσει η επόμενη προσευχή. Επιστρέφει -1 αν δεν υπάρχουν πληροφορίες.";
+"Şu anki vakit kılındı mı?" = "Έχει σημειωθεί η τρέχουσα προσευχή ως τελεσμένη;";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Δίνει ναι αν η τρέχουσα προσευχή έχει σημειωθεί ως τελεσμένη. Δίνει όχι αν δεν υπάρχει προσευχή για σήμανση.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Σιωπή προσευχής";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Επιστρέφει αληθές στα πρώτα λεπτά μετά την έναρξη μιας ώρας προσευχής. Χρησιμοποιείται στις Συντομεύσεις για την ενεργοποίηση μιας Εστίασης.";
+"Süre (dakika)" = "Διάρκεια (λεπτά)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Τα ${dakika} λεπτά μετά την έναρξη μιας ώρας προσευχής";
+"Namaz sessizliğinin bitişi" = "Τέλος της σιωπής προσευχής";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Δίνει την ώρα που τελειώνει η σιωπή. Δίνει την τρέχουσα ώρα αν δεν υπάρχει σιωπή αυτή τη στιγμή.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Τέλος των ${dakika} λεπτών μετά την έναρξη μιας ώρας προσευχής";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Υπενθυμίσεις προσευχής";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Όσο αυτή η Εστίαση είναι ενεργή, οι υπενθυμίσεις προσευχής έρχονται χωρίς ήχο και χωρίς να ανάβει η οθόνη.";
+"Hatırlatmaları sessiz ver" = "Αθόρυβη παράδοση υπενθυμίσεων";
+"Hatırlatmalar sessiz gelir" = "Οι υπενθυμίσεις έρχονται αθόρυβα";
+"Hatırlatmalar her zamanki gibi" = "Οι υπενθυμίσεις όπως πάντα";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Σημειώνει την προσευχή του widget ως τελεσμένη.";
+"Tarih" = "Ημερομηνία";
+"Vakit" = "Προσευχή";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Διακοπή ξυπνητηριού προσευχής";
+"Namazı kıldım" = "Προσευχήθηκα";
+"Alarm" = "Ξυπνητήρι";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Εικόνα εδαφίου της ημέρας";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Δίνει το σημερινό εδάφιο ως εικόνα στο μέγεθος της οθόνης σας. Μπορείτε να τη χρησιμοποιήσετε με το βήμα ορισμού ταπετσαρίας στις Συντομεύσεις.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Ανοίξτε την εφαρμογή μία φορά για να προετοιμαστεί το εδάφιο της ημέρας.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Δεν ήταν δυνατή η προετοιμασία της εικόνας. Δοκιμάστε ξανά σε λίγο.";

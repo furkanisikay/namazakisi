@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tt -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Телевизор экранындагы QR кодны рамка эченә туры китерегез</string>
+    <string name="tvesleme_qr_vazgec">Баш тарту</string>
+    <string name="tvesleme_qr_vazgec_erisim">Сканерлаудан баш тарту</string>
+    <string name="tvesleme_qr_yabanci">Бу QR код Namaz Akışı TV кушымтасыныкы түгел. Телевизордагы кодны сканерлагыз.</string>
+    <string name="tvesleme_qr_okundu">Код укылды</string>
+</resources>

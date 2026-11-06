@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.cekirdek
 
 import java.util.Calendar
+import java.util.Locale
 import java.util.TimeZone
 
 /**
@@ -30,8 +31,13 @@ object WidgetDuzenSecici {
     }
 }
 
+/**
+ * [PALET] yalnız günün ayeti widget'ında seçilir (yapılandırma ekranı yalnız orada gösterir):
+ * uygulama palet renginin açık tonu (`DuvarKagidiKurallari.acikTon`). Namaz widget'ları bu
+ * değeri görürse açık palete düşer.
+ */
 enum class WidgetZemini(val kod: String) {
-    MATERIAL("material"), ACIK("acik"), KOYU("koyu"), SEFFAF("seffaf");
+    MATERIAL("material"), ACIK("acik"), KOYU("koyu"), SEFFAF("seffaf"), PALET("palet");
 
     companion object {
         fun coz(kod: String?): WidgetZemini = values().firstOrNull { it.kod == kod } ?: MATERIAL
@@ -114,10 +120,14 @@ object KildimDurumKarari {
     }
 }
 
-/** "HH:mm" — saat dilimi enjekte edilir (testte deterministik). */
+/**
+ * "HH:mm" — saat dilimi enjekte edilir (testte deterministik). DAİMA Batı rakamı
+ * (`Locale.ROOT`): örtük varsayılan yerel ayar ar-SA cihazda Doğu rakamı yazıp seçimi
+ * atlıyordu; seçilen rakam çizim kenarında uygulanır (`cekirdek/Rakam`).
+ */
 fun saatMetni(ms: Long, saatDilimi: TimeZone = TimeZone.getDefault()): String {
     val c = Calendar.getInstance(saatDilimi).apply { timeInMillis = ms }
-    return "%02d:%02d".format(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
+    return "%02d:%02d".format(Locale.ROOT, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
 }
 
 enum class KutuDurumu { AKTIF, PASIF, KULLANILAMAZ }
@@ -125,7 +135,7 @@ enum class KutuDurumu { AKTIF, PASIF, KULLANILAMAZ }
 /**
  * Hızlı ayarlar kutusunun görünümü.
  * Cümle içinde saate hal eki EKLENMEZ ("15:42'de" okunuşa göre değişir — AGENTS.md
- * zaman şeridi kuralı) → "Çıkış 15:42" / "Giriş 12:58".
+ * zaman şeridi kuralı) → "Çıkış 15:42" / "Giriş 12:58" (İngilizce "Ends 15:42" / "Starts 12:58").
  */
 data class KutuGorunumu(
     val etiket: String,
@@ -136,35 +146,43 @@ data class KutuGorunumu(
 )
 
 object KutuGorunumKarari {
-    fun hesapla(durum: VakitDurumu, kildim: KildimDurumu, saat: (Long) -> String): KutuGorunumu {
+    fun hesapla(
+        durum: VakitDurumu,
+        kildim: KildimDurumu,
+        saat: (Long) -> String,
+        dil: String = MetinDili.TR,
+    ): KutuGorunumu {
+        val m = MetinDili.metinler(dil)
         val aktif = durum.aktif
         val bitis = durum.bitisMs
         if (aktif != null && bitis != null) {
-            val ad = VakitKodlari.gorunenAd(aktif.kod)
+            val ad = VakitKodlari.gorunenAd(aktif.kod, dil)
             return when (kildim) {
                 KildimDurumu.KILINDI -> KutuGorunumu(
-                    ad, "Kılındı", KutuDurumu.AKTIF, false,
-                    "$ad namazı kılındı olarak işaretli",
+                    ad, m.kutuKilindi, KutuDurumu.AKTIF, false,
+                    MetinDili.bicim(m.kutuKilindiErisim, "ad" to ad),
                 )
                 KildimDurumu.BEKLIYOR -> KutuGorunumu(
-                    ad, "İşaretleniyor", KutuDurumu.AKTIF, false,
-                    "$ad namazı işaretleniyor",
+                    ad, m.kutuIsaretleniyor, KutuDurumu.AKTIF, false,
+                    MetinDili.bicim(m.kutuIsaretleniyorErisim, "ad" to ad),
                 )
                 else -> KutuGorunumu(
-                    ad, "Çıkış ${saat(bitis)}", KutuDurumu.PASIF, true,
-                    "$ad namazı kılınmadı. Kılındı olarak işaretlemek için dokunun",
+                    ad, MetinDili.bicim(m.kutuCikis, "saat" to saat(bitis)), KutuDurumu.PASIF, true,
+                    MetinDili.bicim(m.kutuKilinmadiErisim, "ad" to ad),
                 )
             }
         }
         val sonraki = durum.sonraki
             ?: return KutuGorunumu(
-                "Namaz vakti", "Uygulamayı açın", KutuDurumu.KULLANILAMAZ, false,
-                "Vakit bilgisi yok. Uygulamayı açın",
+                m.namazVakti,
+                m.uygulamayiAcin,
+                KutuDurumu.KULLANILAMAZ, false,
+                m.vakitBilgisiYok,
             )
-        val ad = VakitKodlari.gorunenAd(sonraki.kod)
+        val ad = VakitKodlari.gorunenAd(sonraki.kod, dil)
         return KutuGorunumu(
-            ad, "Giriş ${saat(sonraki.ms)}", KutuDurumu.KULLANILAMAZ, false,
-            "Şu an kılınacak vakit yok. Sıradaki $ad, giriş ${saat(sonraki.ms)}",
+            ad, MetinDili.bicim(m.kutuGiris, "saat" to saat(sonraki.ms)), KutuDurumu.KULLANILAMAZ, false,
+            MetinDili.bicim(m.kutuVakitYokErisim, "ad" to ad, "saat" to saat(sonraki.ms)),
         )
     }
 }

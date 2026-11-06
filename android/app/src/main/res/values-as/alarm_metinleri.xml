@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Assamca). "নামাজ পঢ়িছোঁ" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">নামাজৰ এলাৰ্ম</string>
+  <string name="alarm_kildim">নামাজ পঢ়িছোঁ</string>
+  <string name="alarm_kapat">অফ কৰক</string>
+  <string name="alarm_kanal_aciklamasi">আপুনি বাছনি কৰা সোঁৱৰণীৰ পদক্ষেপত বজা প্ৰকৃত এলাৰ্ম</string>
+</resources>

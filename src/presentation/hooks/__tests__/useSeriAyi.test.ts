@@ -12,7 +12,8 @@ import { renderHook, waitFor, act } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { localTarihAraligindakiNamazlariGetir } from '../../../data/local/LocalNamazServisi';
 import { Logger } from '../../../core/utils/Logger';
-import { useSeriAyi, KIBAR_HATA_METNI } from '../useSeriAyi';
+import { useSeriAyi, kibarHataMetni } from '../useSeriAyi';
+import { aktifDiliKur, aktifDilSifirla } from '../../../core/dil/aktifDil';
 import { NamazVaktiHesaplayiciServisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
 
 jest.mock('../../store/hooks', () => ({ useAppSelector: jest.fn(), useAppDispatch: jest.fn() }));
@@ -100,6 +101,17 @@ describe('useSeriAyi', () => {
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
   });
 
+  it('NÖBETÇİ: ay–yıl sırası dilden gelir (Korece yıl önce)', async () => {
+    aktifDiliKur('ko');
+    try {
+      const { result } = renderHook(() => useSeriAyi());
+      await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+      expect(result.current.ayAdi).toMatch(/^\d{4}년 /);
+    } finally {
+      aktifDilSifirla();
+    }
+  });
+
   it('okuma başarısız (basarili:false) olduğunda sonsuz spinner YOK — hata dolar, yukleniyor false olur', async () => {
     (localTarihAraligindakiNamazlariGetir as jest.Mock).mockResolvedValue({
       basarili: false,
@@ -111,7 +123,7 @@ describe('useSeriAyi', () => {
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
     // KRITIK (inceleme bulgusu): UI'a giden hata DAİMA sabit/kibar metindir —
     // LocalNamazServisi'nin ham error.message'ı asla ekrana sızmaz.
-    expect(result.current.hata).toBe(KIBAR_HATA_METNI);
+    expect(result.current.hata).toBe(kibarHataMetni());
   });
 
   it('KRITIK (inceleme bulgusu): ham teknik hata metni Logger.error\'a gider, UI\'a sızmaz', async () => {
@@ -136,7 +148,7 @@ describe('useSeriAyi', () => {
     const { result } = renderHook(() => useSeriAyi());
 
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
-    expect(result.current.hata).toBe(KIBAR_HATA_METNI);
+    expect(result.current.hata).toBe(kibarHataMetni());
   });
 
   it('yenidenDene çağrıldığında okuma tekrar denenir ve önceki hata temizlenir', async () => {
@@ -146,7 +158,7 @@ describe('useSeriAyi', () => {
     });
 
     const { result } = renderHook(() => useSeriAyi());
-    await waitFor(() => expect(result.current.hata).toBe(KIBAR_HATA_METNI));
+    await waitFor(() => expect(result.current.hata).toBe(kibarHataMetni()));
 
     (localTarihAraligindakiNamazlariGetir as jest.Mock).mockResolvedValueOnce({ basarili: true, veri: [] });
     act(() => {

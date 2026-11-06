@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Saha kalibu din tumdi</string>
+    <string name="countdown_kanal_canli_aciklama">Saha kalibu Now Bar mini zuɣusaa kuligu ni</string>
+    <string name="countdown_kanal_genel_ad">Saha kalibu lahabaya</string>
+    <string name="countdown_kanal_genel_aciklama">Saha kalibu lahabaya soli</string>
+
+    <string name="countdown_eylem_kildim">N puhi jiŋli</string>
+    <string name="countdown_eylem_durdur">Ŋmaami ya</string>
+
+    <string name="countdown_yedek_vakit">Yɔɣimi ya, jiŋli saha ni naai pumpɔŋɔ.</string>
+    <string name="countdown_yedek_iftar">Saha bi lahi waɣi.</string>
+    <string name="countdown_yedek_sahur">Yi na ni tooi di ka nyu; nolɔri ni piligi pumpɔŋɔ.</string>
+    <string name="countdown_yedek_seri">Zuŋɔ jiŋa na bi naai; di chɛ ya ka yi dolibu kpi.</string>
+
+    <string name="countdown_onek_vakit">Pɔi ka saha naai</string>
+    <string name="countdown_onek_vakit_dar">Saha naari</string>
+    <string name="countdown_onek_iftar">Pɔi ka iftar paai</string>
+    <string name="countdown_onek_iftar_dar">Pɔi ka iftar</string>
+    <string name="countdown_onek_sahur">Pɔi ka Saɣila naai</string>
+    <string name="countdown_onek_sahur_dar">Saɣila naari</string>
+    <string name="countdown_onek_seri">N-ti gu yi dolibu</string>
+    <string name="countdown_onek_seri_dar">Dolibu naari</string>
+</resources>

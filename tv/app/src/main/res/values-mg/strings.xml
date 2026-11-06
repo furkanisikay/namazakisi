@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Malgaşça. Terimler JS src/core/dil/sozluk/mg ile aynı; eşleştirme etiketleri telefondaki cihaz.tv metinleriyle birebir. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">mg</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Takelaka fotoanan\'ny soalat</string>
+    <string name="ayarlar">Fikirana</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s sisa mankany amin\'ny %1$s</string>
+    <string name="pano_vaktine">Mankany amin\'ny %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s afaka %2$s</string>
+    <string name="pano_kerahat_vakti">Fotoana tsy tokony hivavahana</string>
+    <string name="pano_bitis">tapitra %1$s</string>
+    <string name="pano_kerahat_erisim">Fotoana tsy tokony hivavahana, %1$s, tapitra %2$s. %3$s</string>
+    <string name="pano_cumaya">Zoma afaka %1$s</string>
+    <string name="pano_cikis_geldi">fotoana hiaingana</string>
+    <string name="pano_cikis">miaingà amin\'ny %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Fotoana hiaingana ho any amin\'ny soalat Zoma izao</string>
+    <string name="pano_cuma_cikis_erisim">Miaingà ho any amin\'ny soalat Zoma amin\'ny %1$s</string>
+    <string name="pano_bugun_cuma">Zoma anio</string>
+    <string name="pano_ogle">Zohr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Zoma anio. Atao amin\'ny fotoanan\'ny Zohr ny soalat Zoma, %1$s</string>
+    <string name="pano_ayarlar_erisim">Fikirana: hanampy finday, toerana, finday mifandray</string>
+    <string name="pano_simdiki_vakit">fotoanan\'ny soalat ankehitriny</string>
+    <string name="pano_siradaki_vakit">fotoanan\'ny soalat manaraka</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Ampio ny findainao", "Ampidiro ny kaody", "Hifidy ny tanàna aho", "Ampio". -->
+    <string name="kodla_girin">Ampidiro ny kaody</string>
+    <string name="ili_kendim_secin">Hifidy ny tanàna aho</string>
+    <string name="yeniden_deneyin">Andramo indray</string>
+    <string name="telefon_varsayilan">Finday</string>
+    <string name="esleme_ekleniyor">Ampidirina ny %1$s</string>
+    <string name="esleme_gonderiyor">Mandefa ny toerany sy ny toe-javatra ny findainao…</string>
+    <string name="esleme_tamamlanamadi">Tsy vita ny fampifandraisana</string>
+    <string name="esleme_saklanamadi">Tsy afaka mitahiry soa aman-tsara ny lakilen\'ny fifandraisana ity fahitalavitra ity. Azonao ampidirina amin\'ny kaody ny toeranao na fidiana ny tanànanao.</string>
+    <string name="telefonunuzu_ekleyin">Ampio ny findainao</string>
+    <string name="esleme_alt">Fotoanan\'ny soalat araka ny toeranao; miseho koa ny soalat efa nataonao.</string>
+    <string name="esleme_adim1">Sokafy ao amin\'ny findainao ny Namaz Akışı</string>
+    <string name="esleme_adim2">Fikirana › Ireo fitaovako › Hanampy fahitalavitra</string>
+    <string name="esleme_adim3">Atodiho mankany amin\'ny kaody ny fakantsarin\'ny findainao</string>
+    <string name="esleme_ayni_wifi">Tsy maintsy ao amin\'ny tambajotra Wi-Fi mitovy ny findainao sy ny fahitalavitra.</string>
+    <string name="esleme_onay_soru">Hampidirina ve ity finday ity?</string>
+    <string name="esleme_onay_aciklama">Afaka mandefa ny toerany sy ny soalat marihiny any amin\'ity fahitalavitra ity ny finday nampidirina.</string>
+    <string name="ekleyin">Ampio</string>
+    <string name="hayir">Tsia</string>
+    <string name="esleme_eklendi">Nampidirina ny %1$s</string>
+    <string name="konumunuz_geldi">Tonga ny toeranao</string>
+    <string name="konuma_gore_hesaplanacak">Hokajiana araka ity toerana ity ny fotoanan\'ny soalat.</string>
+    <string name="qr_konum_alindi">Voaray ny toerana</string>
+    <string name="qr_kodu">Kaody fampifandraisana hovakian\'ny findainao</string>
+    <string name="ag_yok">Tsy mifandray amin\'ny tambajotra ny fahitalavitra</string>
+    <string name="ag_yok_aciklama">Azonao tohizana amin\'ny fampidirana ny kaody 7 isa avy amin\'ny findainao na amin\'ny fifidianana ny tanànanao.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Ampidiro ny kaody avy amin\'ny findainao</string>
+    <string name="kod_yol">Ao amin\'ny findainao: Fikirana › Ireo fitaovako › Hanampy fahitalavitra</string>
+    <string name="kod_hatali">Tsy nifanaraka ny kaody. Jereo ireo isa 7 ao amin\'ny findainao; ahitsio amin\'ny « %1$s » ny isa diso.</string>
+    <string name="kod_rakamli_kumanda">Raha misy bokotra isa ny fanaraha-davitrao, azonao soratana amin\'izy ireo koa.</string>
+    <string name="kod_bos_hane">isa foana</string>
+    <string name="kod_sil">Fafao</string>
+    <string name="kod_sil_aciklama">Fafao ny isa farany</string>
+    <string name="kod_geri">Hiverina</string>
+    <string name="vazgecin">Foano</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Fidio ny tanànanao</string>
+    <string name="il_merkezine_gore">Kajiana ho an\'ny ivon\'ny tanàna ny fotoanan\'ny soalat.</string>
+    <string name="il_secili">%1$s, voafidy</string>
+    <string name="dream_il_yok">Mba hahitana ny takelaka fotoanan\'ny soalat, sokafy ny fampiharana Namaz Akışı ary fidio ny tanànanao.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Toerana: %1$s</string>
+    <string name="ayar_konum_yok">Tsy misy toerana voafidy</string>
+    <string name="ayar_telefon_ekleyin">Hanampy finday</string>
+    <string name="ayar_konumu_kodla">Ampidiro amin\'ny kaody ny toerana</string>
+    <string name="ayar_bagli_telefonlar">Finday mifandray amin\'ity fahitalavitra ity</string>
+    <string name="ayar_telefon_yok">Mbola tsy misy finday nampidirina. Ampiasao ny « %1$s » eo ankavia ary vakio ny kaody miseho.</string>
+    <string name="kaldirin">Esory</string>
+    <string name="ayar_ne_gonderir">Inona no alefan\'ny finday?</string>
+    <string name="ayar_madde_konum">Toerana: manaraka azy ny fotoanan\'ny soalat</string>
+    <string name="ayar_madde_namazlar">Soalat voamarika, ho an\'izay mifidy azy</string>
+    <string name="ayar_madde_sifreli">Voaaro amin\'ny kaody miafina, ao amin\'ny tambajotra ao an-tranonao ihany</string>
+    <string name="son_haber_yok">Mbola tsy misy vaovao</string>
+    <string name="son_haber_az_once">Vao izao</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d min lasa izay</item>
+        <item quantity="other">%1$d min lasa izay</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d ora lasa izay</item>
+        <item quantity="other">%1$d ora lasa izay</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d andro lasa izay</item>
+        <item quantity="other">%1$d andro lasa izay</item>
+    </plurals>
+    <string name="kaldir_soru">Hesorina ve ny %1$s?</string>
+    <string name="kaldir_aciklama">Tsy afaka mandefa vaovao any amin\'ny fahitalavitra intsony ity finday ity. Raha hampiditra azy indray, mila mamaky indray ny kaody QR ianao.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Toerana ao amin\'ny findainao</string>
+</resources>

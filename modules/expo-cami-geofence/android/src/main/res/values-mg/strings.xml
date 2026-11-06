@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Ao amin\'ny moske</string>
+    <string name="camigeofence_kanal_durum_aciklama">Fampahafantarana mangina rehefa hita fa ao amin\'ny moske ianao</string>
+    <string name="camigeofence_kanal_soru_ad">Aorian\'ny fialana amin\'ny moske</string>
+    <string name="camigeofence_kanal_soru_aciklama">Fanontaniana iray mba hahafahanao manamarika ny soalatrao rehefa miala amin\'ny moske ianao</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Mandeha ny Fomba soalat. Ho tonga mangina ny fampahatsiahivana.</string>
+    <string name="camigeofence_govde_mod">Mandeha ny Fomba soalat.</string>
+    <string name="camigeofence_govde_sessiz">Ho tonga mangina ny fampahatsiahivana.</string>
+    <string name="camigeofence_govde_normal">Ho tonga toy ny mahazatra ny fampahatsiahivana.</string>
+    <string name="camigeofence_eylem_modu_kapat">Vonoy ny fomba</string>
+    <string name="camigeofence_eylem_cami_degil">Tsy moske</string>
+
+    <string name="camigeofence_soru_baslik">Ao amin\'ny moske ve ianao?</string>
+    <string name="camigeofence_soru_govde">Eo akaikin\'ny %1$s ianao. Tsy azonay antoka, ka manontany anao izahay.</string>
+    <string name="camigeofence_varsayilan_ad">Moske</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Alefaso ny Fomba soalat</string>
+    <string name="camigeofence_eylem_evet_camideyim">Eny, ao amin\'ny moske aho</string>
+    <string name="camigeofence_eylem_hayir">Tsia</string>
+
+    <string name="camigeofence_kildiniz_mi">Nivavaka ny %1$s ve ianao?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Azonao marihina amin\'ny fikitihana iray izy.</string>
+    <string name="camigeofence_eylem_kildim">Nivavaka aho</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Zohr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Zoma</string>
+
+    <string name="camigeofence_mod_kural_adi">Soalat</string>
+    <string name="camigeofence_mod_tetik_aciklama">Alefan\'ny Namaz Akışı mandritra ny khotba Zoma, ao amin\'ny moske na rehefa manomboka ny fotoanan\'ny soalat</string>
+</resources>

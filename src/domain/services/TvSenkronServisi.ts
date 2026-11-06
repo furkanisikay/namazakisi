@@ -22,6 +22,10 @@ import { konumMetniHesapla, type KonumMetniGirdisi } from '../../core/ayarlar/ko
 import { base64Coz, zarfla } from '../../core/cihazAgi/kanal';
 import { yukuYaz, type DurumAnlikGoruntusu } from '../../core/cihazAgi/yuk';
 import { camiyeGitOncedenDk } from '../../core/camiyeGit/camiyeGitAyarlari';
+import { tvHesapOzeti } from '../../core/vakit/tvHesapOzeti';
+import { tvRakamOzeti } from '../../core/dil/rakam';
+import { kayitliUlkeKodu } from '../../core/konum/ulkeTespiti';
+import { HesapAyariServisi } from './HesapAyariServisi';
 import { fnv1aHex } from '../../core/kaza/kazaHareketi';
 import type { VakitAdi } from '../../core/types';
 import { Logger } from '../../core/utils/Logger';
@@ -215,8 +219,18 @@ export class TvSenkronServisi {
         const cuma = await LocalCumaHatirlatmaServisi.getAyarlar().catch(() => null);
         const camiye = await LocalCamiyeGitServisi.getAyarlar().catch(() => null);
         const ramazan = await ramazanMi();
+        // TV vakitleri kendisi hesaplar: telefonun yöntemi de gitmeli (yoksa TV Diyanet'le hesaplar).
+        const hesap = konum
+            ? await HesapAyariServisi.yukle()
+                  .then((a) => tvHesapOzeti(a, konum.koordinat.lat, new Date()))
+                  .catch(() => null)
+            : null;
+        // TV rakamı telefonla aynı kuralla çözer (kendi dilinde): ülke + açık seçimler gider.
+        const rakam = tvRakamOzeti(konum?.ulke ?? null, await rakamSecimleriniOku());
         return {
             ...(konum ? { ad: konum.ad, konum: konum.koordinat } : {}),
+            ...(hesap ? { hesap } : {}),
+            ...(rakam ? { rakam } : {}),
             kilinan,
             ozelGun,
             cuma: { aktif: cuma?.aktif === true, cikisDk: camiye ? camiyeGitOncedenDk(camiye) : null },
@@ -261,14 +275,26 @@ export async function yerelAgVarMi(): Promise<boolean> {
     }
 }
 
-async function konumuOku(): Promise<{ koordinat: { lat: number; lng: number }; ad: string } | null> {
+/** Dil ayarındaki rakam seçimleri (dil → sistem); okunamazsa null. */
+async function rakamSecimleriniOku(): Promise<unknown> {
+    try {
+        const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
+        return ham ? (JSON.parse(ham) as { rakam?: unknown }).rakam ?? null : null;
+    } catch {
+        return null;
+    }
+}
+
+async function konumuOku(): Promise<{ koordinat: { lat: number; lng: number }; ad: string; ulke: string | null } | null> {
     try {
         const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI);
         if (!ham) return null;
-        const k = JSON.parse(ham) as Partial<KonumMetniGirdisi> & { koordinatlar?: { lat: number; lng: number } };
+        const k = JSON.parse(ham) as Partial<KonumMetniGirdisi> &
+            Parameters<typeof kayitliUlkeKodu>[0] & { koordinatlar?: { lat: number; lng: number } };
         if (!koordinatGecerliMi(k.koordinatlar)) return null;
         return {
             koordinat: k.koordinatlar,
+            ulke: kayitliUlkeKodu(k),
             ad: konumMetniHesapla({
                 konumModu: k.konumModu === 'oto' ? 'oto' : 'manuel',
                 gpsAdres: k.gpsAdres ?? null,

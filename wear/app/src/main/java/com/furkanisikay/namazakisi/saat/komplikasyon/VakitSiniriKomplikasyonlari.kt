@@ -23,9 +23,11 @@ import com.furkanisikay.namazakisi.saat.veri.YukDeposu
  */
 abstract class SaatEtiketiKomplikasyonu : GuvenliKomplikasyonServisi() {
     protected abstract val yalnizNamaz: Boolean
-    protected abstract val bekleyenBaslik: String
 
-    protected abstract fun etiket(a: ZamanCizelgesi.Aralik): VakitSiniri.Etiket
+    /** Veri yokken SHORT_TEXT başlığı (kaynak dizgesi). */
+    protected abstract val bekleyenBaslik: Int
+
+    protected abstract fun etiket(a: ZamanCizelgesi.Aralik, dil: String): VakitSiniri.Etiket
 
     /** İkon: etiketin anlattığı vakit. */
     protected abstract fun ikonVakti(a: ZamanCizelgesi.Aralik): String
@@ -51,22 +53,22 @@ abstract class SaatEtiketiKomplikasyonu : GuvenliKomplikasyonServisi() {
 
     /** Telefon henüz veri göndermediyse ya da çizelge tükendiyse: "—". */
     override fun varsayilan(tur: ComplicationType): ComplicationData? {
-        val aciklama = duz("Vakit bilgisi bekleniyor; telefonda Namaz Akışı'nı açın")
+        val aciklama = duz(getString(R.string.komplikasyon_bekleniyor_aciklama))
         val ikon = KomplikasyonOrtak.monokrom(this, R.drawable.ic_vakit)
         val dokunus = KomplikasyonOrtak.uygulamayiAc(this)
         return when (tur) {
             ComplicationType.SHORT_TEXT ->
                 ShortTextComplicationData.Builder(duz("—"), aciklama)
-                    .setTitle(duz(bekleyenBaslik)).setMonochromaticImage(ikon).setTapAction(dokunus).build()
+                    .setTitle(duz(getString(bekleyenBaslik))).setMonochromaticImage(ikon).setTapAction(dokunus).build()
             ComplicationType.LONG_TEXT ->
-                LongTextComplicationData.Builder(duz("Vakitler bekleniyor"), aciklama)
+                LongTextComplicationData.Builder(duz(getString(R.string.komplikasyon_bekleniyor)), aciklama)
                     .setMonochromaticImage(ikon).setTapAction(dokunus).build()
             else -> null
         }
     }
 
     private fun veri(tur: ComplicationType, a: ZamanCizelgesi.Aralik): ComplicationData? {
-        val e = etiket(a)
+        val e = etiket(a, dil)
         val aciklama = duz(e.aciklama)
         val ikon = KomplikasyonOrtak.monokrom(this, KomplikasyonOrtak.vakitIkonu(ikonVakti(a)))
         val dokunus = KomplikasyonOrtak.uygulamayiAc(this)
@@ -85,10 +87,10 @@ abstract class SaatEtiketiKomplikasyonu : GuvenliKomplikasyonServisi() {
 /** "Vakit çıkış saati": sayılan sınırın (kalan süre yuvasıyla AYNI an) saati. */
 class VakitCikisSaatiKomplikasyonServisi : SaatEtiketiKomplikasyonu() {
     override val yalnizNamaz = false
-    override val bekleyenBaslik = "Çıkış"
+    override val bekleyenBaslik = R.string.komplikasyon_cikis
 
-    override fun etiket(a: ZamanCizelgesi.Aralik) =
-        VakitSiniri.cikisSaati(a.onceki?.vakit, a.siradaki.vakit, VakitHesabi.saat(a.siradaki.ms))
+    override fun etiket(a: ZamanCizelgesi.Aralik, dil: String) =
+        VakitSiniri.cikisSaati(a.onceki?.vakit, a.siradaki.vakit, VakitHesabi.saat(a.siradaki.ms), dil)
 
     override fun ikonVakti(a: ZamanCizelgesi.Aralik) = VakitHesabi.sayilanAn(a.onceki, a.siradaki).vakit
 }
@@ -96,10 +98,10 @@ class VakitCikisSaatiKomplikasyonServisi : SaatEtiketiKomplikasyonu() {
 /** "Sıradaki namaz": sıradaki namaz vaktinin adı ve giriş saati (güneş atlanır). */
 class SiradakiNamazKomplikasyonServisi : SaatEtiketiKomplikasyonu() {
     override val yalnizNamaz = true
-    override val bekleyenBaslik = "Sırada"
+    override val bekleyenBaslik = R.string.komplikasyon_sirada
 
-    override fun etiket(a: ZamanCizelgesi.Aralik) =
-        VakitSiniri.siradaki(a.siradaki.vakit, VakitHesabi.saat(a.siradaki.ms))
+    override fun etiket(a: ZamanCizelgesi.Aralik, dil: String) =
+        VakitSiniri.siradaki(a.siradaki.vakit, VakitHesabi.saat(a.siradaki.ms), dil)
 
     override fun ikonVakti(a: ZamanCizelgesi.Aralik) = a.siradaki.vakit
 }

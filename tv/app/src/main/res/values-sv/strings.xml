@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İsveççe. Terimler: src/core/dil/sozluk/sv. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">sv</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Tavla med bönetider</string>
+    <string name="ayarlar">Inställningar</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s kvar till %1$s</string>
+    <string name="pano_vaktine">Till %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s om %2$s</string>
+    <string name="pano_kerahat_vakti">Makruh-tid</string>
+    <string name="pano_bitis">slutar %1$s</string>
+    <string name="pano_kerahat_erisim">Makruh-tid, %1$s, slutar %2$s. %3$s</string>
+    <string name="pano_cumaya">Fredagsbön om %1$s</string>
+    <string name="pano_cikis_geldi">dags att gå</string>
+    <string name="pano_cikis">gå klockan %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Det är dags att gå till fredagsbönen</string>
+    <string name="pano_cuma_cikis_erisim">Gå till fredagsbönen klockan %1$s</string>
+    <string name="pano_bugun_cuma">I dag är det fredagsbön</string>
+    <string name="pano_ogle">Dhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">I dag är det fredagsbön. Fredagsbönen bes vid tiden för Dhuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Inställningar: lägg till en telefon, plats, anslutna telefoner</string>
+    <string name="pano_simdiki_vakit">aktuell bönetid</string>
+    <string name="pano_siradaki_vakit">nästa bönetid</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Add your phone", "Enter code", "I'll choose the city myself", "Add". -->
+    <string name="kodla_girin">Ange kod</string>
+    <string name="ili_kendim_secin">Jag väljer staden själv</string>
+    <string name="yeniden_deneyin">Försök igen</string>
+    <string name="telefon_varsayilan">Telefon</string>
+    <string name="esleme_ekleniyor">Lägger till %1$s</string>
+    <string name="esleme_gonderiyor">Telefonen skickar sin plats och status…</string>
+    <string name="esleme_tamamlanamadi">Parkopplingen kunde inte slutföras</string>
+    <string name="esleme_saklanamadi">Den här tv:n kan inte lagra anslutningsnyckeln säkert. Du kan ange din plats med en kod eller välja din stad.</string>
+    <string name="telefonunuzu_ekleyin">Lägg till din telefon</string>
+    <string name="esleme_alt">Bönetider för din plats; bönerna du har bett visas också.</string>
+    <string name="esleme_adim1">Öppna Namaz Akışı på telefonen</string>
+    <string name="esleme_adim2">Inställningar › Mina enheter › Lägg till en tv</string>
+    <string name="esleme_adim3">Rikta telefonens kamera mot koden</string>
+    <string name="esleme_ayni_wifi">Telefonen och tv:n måste vara i samma wifi-nätverk.</string>
+    <string name="esleme_onay_soru">Lägga till den här telefonen?</string>
+    <string name="esleme_onay_aciklama">Den tillagda telefonen kan skicka sin plats och bönerna den markerar till den här tv:n.</string>
+    <string name="ekleyin">Lägg till</string>
+    <string name="hayir">Nej</string>
+    <string name="esleme_eklendi">%1$s har lagts till</string>
+    <string name="konumunuz_geldi">Din plats har kommit</string>
+    <string name="konuma_gore_hesaplanacak">Bönetiderna beräknas för den här platsen.</string>
+    <string name="qr_konum_alindi">Platsen har tagits emot</string>
+    <string name="qr_kodu">Parkopplingskod att skanna med telefonen</string>
+    <string name="ag_yok">Tv:n är inte ansluten till något nätverk</string>
+    <string name="ag_yok_aciklama">Du kan fortsätta genom att ange den 7-siffriga koden från telefonen eller välja din stad.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Ange koden från telefonen</string>
+    <string name="kod_yol">På telefonen: Inställningar › Mina enheter › Lägg till en tv</string>
+    <string name="kod_hatali">Koden stämde inte. Kontrollera de 7 siffrorna på telefonen; rätta en felaktig siffra med ”%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Om fjärrkontrollen har sifferknappar kan du även skriva med dem.</string>
+    <string name="kod_bos_hane">tom siffra</string>
+    <string name="kod_sil">Radera</string>
+    <string name="kod_sil_aciklama">Radera den sista siffran</string>
+    <string name="kod_geri">Tillbaka</string>
+    <string name="vazgecin">Avbryt</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Välj din stad</string>
+    <string name="il_merkezine_gore">Bönetiderna beräknas för stadens centrum.</string>
+    <string name="il_secili">%1$s, vald</string>
+    <string name="dream_il_yok">Öppna appen Namaz Akışı och välj din stad för att se tavlan med bönetider.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Plats: %1$s</string>
+    <string name="ayar_konum_yok">Ingen plats vald</string>
+    <string name="ayar_telefon_ekleyin">Lägg till en telefon</string>
+    <string name="ayar_konumu_kodla">Ange plats med en kod</string>
+    <string name="ayar_bagli_telefonlar">Telefoner anslutna till den här tv:n</string>
+    <string name="ayar_telefon_yok">Ingen telefon har lagts till än. Använd ”%1$s” till vänster och skanna koden som visas.</string>
+    <string name="kaldirin">Ta bort</string>
+    <string name="ayar_ne_gonderir">Vad skickar telefonerna?</string>
+    <string name="ayar_madde_konum">Plats: bönetiderna följer den</string>
+    <string name="ayar_madde_namazlar">Markerade böner, för den som väljer det</string>
+    <string name="ayar_madde_sifreli">Krypterat, bara i ditt hemnätverk</string>
+    <string name="son_haber_yok">Ingen information än</string>
+    <string name="son_haber_az_once">Nyss</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">för %1$d min sedan</item>
+        <item quantity="other">för %1$d min sedan</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">för %1$d h sedan</item>
+        <item quantity="other">för %1$d h sedan</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">för %1$d dag sedan</item>
+        <item quantity="other">för %1$d dagar sedan</item>
+    </plurals>
+    <string name="kaldir_soru">Ta bort %1$s?</string>
+    <string name="kaldir_aciklama">Den här telefonen kan inte längre skicka information till tv:n. För att lägga till den igen behöver du skanna QR-koden igen.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Telefonens plats</string>
+</resources>

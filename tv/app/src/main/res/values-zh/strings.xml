@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Basitleştirilmiş Çince. Terimler: src/core/dil/sozluk/zh. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">zh</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">礼拜时间看板</string>
+    <string name="ayarlar">设置</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">距%1$s还有%2$s</string>
+    <string name="pano_vaktine">距%1$s</string>
+    <string name="pano_vaktine_kalan">%2$s后%1$s</string>
+    <string name="pano_kerahat_vakti">禁止礼拜的时间</string>
+    <string name="pano_bitis">%1$s结束</string>
+    <string name="pano_kerahat_erisim">禁止礼拜的时间，%1$s，%2$s结束。%3$s</string>
+    <string name="pano_cumaya">%1$s后主麻</string>
+    <string name="pano_cikis_geldi">该出发了</string>
+    <string name="pano_cikis">%1$s出发</string>
+    <string name="pano_cuma_cikis_geldi_erisim">该出发去礼主麻了</string>
+    <string name="pano_cuma_cikis_erisim">%1$s出发去礼主麻</string>
+    <string name="pano_bugun_cuma">今天是主麻日</string>
+    <string name="pano_ogle">晌礼 %1$s</string>
+    <string name="pano_bugun_cuma_erisim">今天是主麻日。主麻礼拜在晌礼时间，%1$s</string>
+    <string name="pano_ayarlar_erisim">设置: 添加手机、位置、已连接的手机</string>
+    <string name="pano_simdiki_vakit">当前礼拜时间</string>
+    <string name="pano_siradaki_vakit">下一个礼拜时间</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "添加您的手机", "输入代码", "我自己选择城市", "添加". -->
+    <string name="kodla_girin">输入代码</string>
+    <string name="ili_kendim_secin">我自己选择城市</string>
+    <string name="yeniden_deneyin">重试</string>
+    <string name="telefon_varsayilan">手机</string>
+    <string name="esleme_ekleniyor">正在添加%1$s</string>
+    <string name="esleme_gonderiyor">您的手机正在发送位置和状态…</string>
+    <string name="esleme_tamamlanamadi">无法完成配对</string>
+    <string name="esleme_saklanamadi">这台电视无法安全地保存连接密钥。您可以用代码输入位置，或选择您的城市。</string>
+    <string name="telefonunuzu_ekleyin">添加您的手机</string>
+    <string name="esleme_alt">您所在位置的礼拜时间；您已礼的拜也会显示。</string>
+    <string name="esleme_adim1">在手机上打开 Namaz Akışı</string>
+    <string name="esleme_adim2">设置 › 我的设备 › 添加电视</string>
+    <string name="esleme_adim3">将手机相机对准代码</string>
+    <string name="esleme_ayni_wifi">手机和电视必须连接同一 Wi-Fi 网络。</string>
+    <string name="esleme_onay_soru">添加这部手机吗？</string>
+    <string name="esleme_onay_aciklama">添加的手机可以将其位置和标记的礼拜发送到这台电视。</string>
+    <string name="ekleyin">添加</string>
+    <string name="hayir">否</string>
+    <string name="esleme_eklendi">已添加%1$s</string>
+    <string name="konumunuz_geldi">已收到您的位置</string>
+    <string name="konuma_gore_hesaplanacak">礼拜时间将按此位置计算。</string>
+    <string name="qr_konum_alindi">已收到位置</string>
+    <string name="qr_kodu">供手机扫描的配对代码</string>
+    <string name="ag_yok">电视未连接网络</string>
+    <string name="ag_yok_aciklama">您可以输入手机上的7位代码或选择您的城市来继续。</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">输入手机上的代码</string>
+    <string name="kod_yol">在手机上: 设置 › 我的设备 › 添加电视</string>
+    <string name="kod_hatali">代码不匹配。核对手机上的7位数字；输错的数字可以用“%1$s”修正。</string>
+    <string name="kod_rakamli_kumanda">如果遥控器有数字键，也可以用它们输入。</string>
+    <string name="kod_bos_hane">空位</string>
+    <string name="kod_sil">删除</string>
+    <string name="kod_sil_aciklama">删除最后一位数字</string>
+    <string name="kod_geri">返回</string>
+    <string name="vazgecin">取消</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">选择您的城市</string>
+    <string name="il_merkezine_gore">礼拜时间按市中心计算。</string>
+    <string name="il_secili">%1$s，已选择</string>
+    <string name="dream_il_yok">要查看礼拜时间看板，打开 Namaz Akışı 应用并选择您的城市。</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">位置: %1$s</string>
+    <string name="ayar_konum_yok">未选择位置</string>
+    <string name="ayar_telefon_ekleyin">添加手机</string>
+    <string name="ayar_konumu_kodla">用代码输入位置</string>
+    <string name="ayar_bagli_telefonlar">连接到这台电视的手机</string>
+    <string name="ayar_telefon_yok">尚未添加手机。使用左侧的“%1$s”并扫描出现的代码。</string>
+    <string name="kaldirin">移除</string>
+    <string name="ayar_ne_gonderir">手机会发送什么？</string>
+    <string name="ayar_madde_konum">位置: 礼拜时间随之变化</string>
+    <string name="ayar_madde_namazlar">已标记的礼拜，仅限选择发送的人</string>
+    <string name="ayar_madde_sifreli">加密，仅在您的家庭网络中</string>
+    <string name="son_haber_yok">暂无信息</string>
+    <string name="son_haber_az_once">刚刚</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">%1$d分钟前</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">%1$d小时前</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">%1$d天前</item>
+    </plurals>
+    <string name="kaldir_soru">移除%1$s吗？</string>
+    <string name="kaldir_aciklama">这部手机将无法再向电视发送信息。如需重新添加，需要再次扫描二维码。</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">您手机的位置</string>
+</resources>

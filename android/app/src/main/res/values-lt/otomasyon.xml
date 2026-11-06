@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Litvanca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Atlikau maldą</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Maldos laiko būsena</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Maldos laiko įvykis</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Šis nustatymas pridedamas iš automatizavimo programos</string>
+  <string name="otomasyon_bilgi_tarayici">Naršyklėms nuolatinis leidimas nesuteikiamas. Pridėkite iš tokios programos kaip „Tasker“, „MacroDroid“ ar „Automate“ papildinių sąrašo.</string>
+  <string name="otomasyon_bilgi_eklenti">Pridėkite pasirinkę „Namaz Akışı“ tokios programos kaip „Tasker“, „MacroDroid“ ar „Automate“ papildinių sąraše.</string>
+  <string name="otomasyon_engelli_baslik">%1$s užblokuota</string>
+  <string name="otomasyon_engelli_mesaj">Anksčiau užblokavote šiai programai žymėti jūsų maldas. Leisti galite „Namaz Akışı“ skiltyje Nustatymai &gt; „Įgaliotos programos“.</string>
+  <string name="otomasyon_izin_baslik">Naudoti su %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s galės sužinoti, kada prasideda maldos laikas, kada jis baigiasi ir kada esate mečetėje, ir vykdyti jūsų automatizavimus. Sprendimą galite pakeisti „Namaz Akışı“ skiltyje Nustatymai &gt; „Įgaliotos programos“.</string>
+  <string name="otomasyon_izin_kildim">%1$s galės jūsų nustatytu automatizavimu pažymėti dabartinę maldą kaip atliktą. Sprendimą galite pakeisti „Namaz Akışı“ skiltyje Nustatymai &gt; „Įgaliotos programos“.</string>
+  <string name="otomasyon_izin_ver">Leisti</string>
+  <string name="otomasyon_engelle">Blokuoti</string>
+  <string name="otomasyon_vazgec">Atšaukti</string>
+  <string name="otomasyon_tamam">Gerai</string>
+  <string name="otomasyon_tur_baslik">Kada vykdyti?</string>
+  <string name="otomasyon_ileri">Toliau</string>
+  <string name="otomasyon_vakit_baslik">Kuri malda?</string>
+  <string name="otomasyon_herhangi_vakit">Bet kuris maldos laikas</string>
+  <string name="otomasyon_kaydet">Išsaugoti</string>
+  <string name="otomasyon_kosul_icinde">Kol tęsiasi maldos laikas</string>
+  <string name="otomasyon_kosul_cikiyor">Kol baigiasi maldos laikas (liko %1$d min., įjungtas Maldos sargas)</string>
+  <string name="otomasyon_kosul_camide">Kol esate mečetėje</string>
+  <string name="otomasyon_olay_girdi">Kai prasideda maldos laikas</string>
+  <string name="otomasyon_olay_cikiyor">Kai baigiasi maldos laikas (liko %1$d min., įjungtas Maldos sargas)</string>
+  <string name="otomasyon_olay_camide">Kai nustatoma, kad esate mečetėje</string>
+</resources>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mdh -->
+<!-- Maguindanao kaynakları. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/mdh. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Su sambayang saguna, kanu malipus, endu Midsambayang ako sa isa a tap</string>
+  <string name="widget_genis_aciklama">Su lima a sambayang saguna a gay, countdown, endu Midsambayang ako sa isa a tap</string>
+  <string name="widget_kapak_adi">Manga waktu nu sambayang sa cover screen</string>
+  <string name="widget_kapak_aciklama">Manga waktu nu sambayang saguna a gay endu countdown para sa cover screen nu Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klasik</string>
+  <string name="widget_klasik_aciklama">Klasik a gadung: nasama a timpu taman sa kasunud a sambayang</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klasik a masla</string>
+  <string name="widget_klasik_genis_aciklama">Klasik a gadung: countdown endu manga waktu nu sambayang saguna a gay</string>
+  <string name="widget_ayet_adi">Ayat nu gay</string>
+  <string name="widget_ayet_aciklama">Isa a ayat endu su salin nin, bagu uman gay sa Subuh</string>
+  <string name="widget_ayar_zemin_palet">Kulay nu app (malayag)</string>
+  <string name="widget_ayar_ayet_icerik">Sa kadakel a kwadradu, ipailay</string>
+  <string name="widget_ayar_ayet_icerik_meal">Salin</string>
+  <string name="widget_ayar_ayet_icerik_hat">Sulat a Arab (kaligrapi)</string>
+  <string name="kutu_kildim_etiket">Midsambayang ako</string>
+  <string name="kisayol_kildim_kisa">Midsambayang ako</string>
+  <string name="kisayol_kildim_uzun">Midsambayang ako sa sambayang saguna</string>
+  <string name="kisayol_kible_kisa">Qiblat</string>
+  <string name="kisayol_kible_uzun">Ipailay su tampal nu Qiblat</string>
+  <string name="kisayol_kaza_kisa">Listahan nu qada</string>
+  <string name="kisayol_kaza_uzun">Bukatan su Listahan nu qada</string>
+  <string name="kildim_onay_baslik">Tandaan a midsambayang su %1$s?</string>
+  <string name="kildim_onay_mesaj">Di katawan i antawa a app i pedsugu sa pangeni ini. Benalen u nasambayang nu den.</string>
+  <string name="kildim_onay_evet">Midsambayang ako</string>
+  <string name="kildim_onay_vazgec">Ibatal</string>
+  <string name="kildim_guven_baslik">Inggan su %1$s sa permiso a tandaan a midsambayang su manga sambayang nu?</string>
+  <string name="kildim_guven_mesaj">Sambayang a tandaan saguna: %1$s. Mailisan nu su napili nu sa ulyan kanu Manga setting &gt; Manga app a aden permiso.</string>
+  <string name="kildim_guven_tarayici_mesaj">Sambayang a tandaan saguna: %1$s. Ebpun sa browser su pangeni ini; ka mabukatan nu apiya ngin a web page su link ini, di mainggay su permanenti a permiso.</string>
+  <string name="kildim_guven_her_zaman">Inggay uman timpu</string>
+  <string name="kildim_guven_bu_sefer">Saguna bu</string>
+  <string name="kildim_guven_engelle">I-block</string>
+  <string name="kildim_guven_engellendi">Di den matandaan nu %1$s su manga sambayang nu. Mailisan nu ini kanu Manga setting.</string>
+  <string name="widget_ayar_baslik">Ilisan su widget</string>
+  <string name="widget_ayar_zemin">Background</string>
+  <string name="widget_ayar_zemin_material">Manga kulay nu wallpaper</string>
+  <string name="widget_ayar_zemin_sistem">Tema nu system</string>
+  <string name="widget_ayar_zemin_acik">Malayag</string>
+  <string name="widget_ayar_zemin_koyu">Malibutng</string>
+  <string name="widget_ayar_zemin_seffaf">Malinaw</string>
+  <string name="widget_ayar_opaklik">Kapal nu background</string>
+  <string name="widget_ayar_gosterim">Ipailay sa masla a sulat</string>
+  <string name="widget_ayar_gosterim_kalan">Nasama a timpu</string>
+  <string name="widget_ayar_gosterim_bitis">Oras nu kalipus</string>
+  <string name="widget_ayar_gosterim_not">Pedpailay su oras nu kalipus sa uman kadakel.</string>
+  <string name="widget_ayar_sonraki">Ipailay su kasunud a sambayang</string>
+  <string name="widget_ayar_vazgec">Ibatal</string>
+  <string name="widget_ayar_kaydet">Itagu</string>
+  <string name="kildim_onay_kanal_adi">Kapangimbenal sa Midsambayang ako</string>
+  <string name="kildim_onay_kanal_aciklama">Kapangimbenal a da suara a mailay sa paydu a segundu amayka i-tap nu su \"Midsambayang ako\" sa notification</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Malipus %1$s</string>
+  <string name="widget_giris">Makawma %1$s</string>
+  <string name="widget_namaz_vakti">Waktu nu sambayang</string>
+  <string name="widget_uygulamayi_acin">Bukatan su app</string>
+  <string name="widget_siradaki">Kasunud: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Da sambayang a tandaan saguna</string>
+  <string name="widget_dugme_kildim">Midsambayang ako</string>
+  <string name="widget_dugme_isaretleniyor">Pedtandaan</string>
+  <string name="widget_dugme_kilindi">Midsambayang</string>
+  <string name="widget_dugme_vakit_girmedi">Da pan waktu</string>
+  <string name="widget_klasik_uygulamayi_acin">bukatan su app</string>
+  <string name="widget_klasik_erisim_veri_yok">Bukatan su app para mailay su manga waktu nu sambayang</string>
+  <string name="widget_klasik_erisim_siradaki">Kasunud a sambayang: %1$s, makawma sa %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Taman sa Dhuhur</string>
+  <string name="widget_onizleme_klasik_genis">Taman sa Maghrib</string>
+  <string name="widget_onizleme_imsak">Subuh</string>
+  <string name="widget_onizleme_gunes">Kasebang nu senang</string>
+  <string name="widget_onizleme_ogle">Dhuhur</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">Natandaan a midsambayang su %1$s. Talimaen nu Allah.</string>
+  <string name="kildim_sonuc_zaten_kilindi">Natandaan den a midsambayang su %1$s.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Da sambayang a tandaan saguna. Kasunud su %1$s, magpamula sa %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Da sambayang a tandaan saguna.</string>
+  <string name="kildim_sonuc_veri_yok">Da datos nu waktu nu sambayang. Bukatan su app sa isa a timpu.</string>
+  <string name="kildim_sonuc_vakit_degisti">Nailisan su waktu nu sambayang, na da natandaan. Ulit manem.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Di nabukatan su app nu navigation.</string>
+  <string name="arac_adsiz_cami">Masjid</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Di nabasa su datos nu waktu nu sambayang.</string>
+  <string name="asistan_isaretleme_yapilamadi">Di natandaan su sambayang.</string>
+  <string name="asistan_aciklama">Mapangeni nu su manga waktu nu sambayang, matandaan a midsambayang su sambayang saguna endu mabukatan su screen nu Qiblat.</string>
+</resources>

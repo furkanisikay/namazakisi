@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Afar terimleri: src/core/dil/sozluk/aa (salat, Salat abe, kiblat, Ayroh aayat).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Lakal tan salat";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Lakal tan salat kee kay culta saaqat siinih yaaba.";
+"Şu anki vakti kıldım" = "Asaakuh salat abe";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Asaakuh salat abime calaamisa. Maxco app faktaanam waqdi osimta.";
+"Onay iste" = "Oggolo essera";
+"Kıbleyi aç" = "Kiblat faka";
+"Uygulamayı Kıble pusulasıyla açar." = "App kiblat kompaas luk fakta.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Salat abe";
+"Kıble" = "Kiblat";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Lakal tan salaatih migaq";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Lakal tan salaatih migaq yacee. Shortcuts addal faxxiima innal taamitaanam duddan.";
+"Sıradaki vakte kalan dakika" = "Lakal tan salaatah raqte daqiiqa";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Lakal tan salat culam fanah ayyu daqiiqa raqtem yacee. Maxco mali tekkek -1 yacee.";
+"Şu anki vakit kılındı mı?" = "Asaakuh salat abime calaamisimtaa?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Asaakuh salat abime calaamisime tekkek yeey yacee. Calaamisimta salat mali tekkek maleey yacee.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Salat xongolo mali";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Salat wakti culek lakal tan naharsi daqiiqal tanin tekkek true yacee. Shortcuts addal Focus fakaanamkeh taamitimta.";
+"Süre (dakika)" = "Wakti (daqiiqa)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Salat wakti culek lakal tan ${dakika} daqiiqa";
+"Namaz sessizliğinin bitişi" = "Salat xongolo mali ellecabo";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Xongolo mali duddumta saaqat yacee. Asaaku xongolo mali mali tekkek asaakuh wakti yacee.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Salat wakti culek lakal tan ${dakika} daqiiqah ellecabo";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Salat kassisiyya";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Ama Focus faka waqdi, salat kassisiyya xongolo kee fooca ifoh malik yamaate.";
+"Hatırlatmaları sessiz ver" = "Kassisiyya xongolo malik rub";
+"Hatırlatmalar sessiz gelir" = "Kassisiyya xongolo malik yamaate";
+"Hatırlatmalar her zamanki gibi" = "Kassisiyya caadat innal";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Widgetil tan salat abime calaamisa.";
+"Tarih" = "Ayro";
+"Vakit" = "Salat";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Salat alarm xiqisa";
+"Namazı kıldım" = "Salat abe";
+"Alarm" = "Alarm";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Ayroh aayat suura";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Asaakuh aayat sinni foocah caddot suura innal yacee. Shortcuts addal Set Wallpaper gurra luk taamitaanam duddan.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Ayroh aayat massossaanamkeh app inki adda faka.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Suura massoysime wee. Dago lakal kaadu mokkora.";

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pencapça, yalnız Şahmuki (beta). Terimler: JS src/core/dil/sozluk/pa (فجر، طلوعِ آفتاب، ظہر، عصر، مغرب، عشاء؛ جمعہ، مکروہ وقت). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">pa</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">نماز دے وقتاں دا بورڈ</string>
+    <string name="ayarlar">ترتیباں</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s تک %2$s باقی</string>
+    <string name="pano_vaktine">%1$s تک</string>
+    <string name="pano_vaktine_kalan">%1$s تک %2$s</string>
+    <string name="pano_kerahat_vakti">مکروہ وقت</string>
+    <string name="pano_bitis">اختتام %1$s</string>
+    <string name="pano_kerahat_erisim">مکروہ وقت، %1$s، اختتام %2$s۔ %3$s</string>
+    <string name="pano_cumaya">جمعہ تک %1$s</string>
+    <string name="pano_cikis_geldi">ٹرن دا وقت</string>
+    <string name="pano_cikis">%1$s تے ٹر پوو</string>
+    <string name="pano_cuma_cikis_geldi_erisim">جمعہ لئی ٹرن دا وقت ہو گیا</string>
+    <string name="pano_cuma_cikis_erisim">جمعہ لئی %1$s تے ٹر پوو</string>
+    <string name="pano_bugun_cuma">اج جمعہ اے</string>
+    <string name="pano_ogle">ظہر %1$s</string>
+    <string name="pano_bugun_cuma_erisim">اج جمعہ اے۔ جمعہ دی نماز ظہر دے وقت اے، %1$s</string>
+    <string name="pano_ayarlar_erisim">ترتیباں: فون شامل کرو، مقام، جُڑے فون</string>
+    <string name="pano_simdiki_vakit">موجودہ نماز دا وقت</string>
+    <string name="pano_siradaki_vakit">اگلی نماز دا وقت</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "اپنا فون شامل کرو", "کوڈ نال لکھو", "شہر آپ چُنو", "شامل کرو". -->
+    <string name="kodla_girin">کوڈ نال لکھو</string>
+    <string name="ili_kendim_secin">شہر آپ چُنو</string>
+    <string name="yeniden_deneyin">فیر کوشش کرو</string>
+    <string name="telefon_varsayilan">فون</string>
+    <string name="esleme_ekleniyor">%1$s شامل ہو رہیا اے</string>
+    <string name="esleme_gonderiyor">تہاڈا فون اپنا مقام تے حالت گھل رہیا اے…</string>
+    <string name="esleme_tamamlanamadi">جوڑ پورا نہیں ہو سکیا</string>
+    <string name="esleme_saklanamadi">ایہہ ٹی وی کنکشن دی کُنجی محفوظ طریقے نال نہیں رکھ سکدا۔ اپنا مقام کوڈ نال لکھیا جا سکدا اے یا اپنا شہر چُنیا جا سکدا اے۔</string>
+    <string name="telefonunuzu_ekleyin">اپنا فون شامل کرو</string>
+    <string name="esleme_alt">تہاڈے مقام دے نماز دے وقت؛ تہاڈیاں پڑھیاں نمازاں وی نظر آؤندیاں نیں۔</string>
+    <string name="esleme_adim1">اپنے فون تے Namaz Akışı کھولو</string>
+    <string name="esleme_adim2">ترتیباں › میریاں ڈیوائساں › ٹی وی شامل کرو</string>
+    <string name="esleme_adim3">اپنے فون دا کیمرا کوڈ ول کرو</string>
+    <string name="esleme_ayni_wifi">تہاڈا فون تے ٹی وی اکو Wi-Fi نیٹ ورک تے ہونے چاہیدے نیں۔</string>
+    <string name="esleme_onay_soru">کیہ ایہہ فون شامل کرو گے؟</string>
+    <string name="esleme_onay_aciklama">شامل کیتا فون اپنا مقام تے اپنیاں نشان لائیاں نمازاں ایس ٹی وی نوں گھل سکدا اے۔</string>
+    <string name="ekleyin">شامل کرو</string>
+    <string name="hayir">نہیں</string>
+    <string name="esleme_eklendi">%1$s شامل ہو گیا</string>
+    <string name="konumunuz_geldi">تہاڈا مقام اپڑ گیا</string>
+    <string name="konuma_gore_hesaplanacak">نماز دے وقت ایس مقام دے مطابق کڈھے جان گے۔</string>
+    <string name="qr_konum_alindi">مقام مل گیا</string>
+    <string name="qr_kodu">فون نال سکین کرن والا جوڑ کوڈ</string>
+    <string name="ag_yok">ٹی وی کسے نیٹ ورک نال جُڑیا ہویا نہیں</string>
+    <string name="ag_yok_aciklama">اپنے فون والا 7 ہندسیاں دا کوڈ لکھ کے یا اپنا شہر چُن کے جاری رکھیا جا سکدا اے۔</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">اپنے فون والا کوڈ لکھو</string>
+    <string name="kod_yol">اپنے فون تے: ترتیباں › میریاں ڈیوائساں › ٹی وی شامل کرو</string>
+    <string name="kod_hatali">کوڈ میل نہیں کھاندا۔ فون تے 7 ہندسے ویکھو؛ غلط ہندسہ “%1$s” نال ٹھیک کرو۔</string>
+    <string name="kod_rakamli_kumanda">جے تہاڈے ریموٹ تے ہندسیاں والے بٹن نیں تاں اوہناں نال وی لکھیا جا سکدا اے۔</string>
+    <string name="kod_bos_hane">خالی ہندسہ</string>
+    <string name="kod_sil">مٹاؤ</string>
+    <string name="kod_sil_aciklama">آخری ہندسہ مٹاؤ</string>
+    <string name="kod_geri">واپس</string>
+    <string name="vazgecin">منسوخ کرو</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">اپنا شہر چُنو</string>
+    <string name="il_merkezine_gore">نماز دے وقت شہر دے مرکز دے مطابق کڈھے جاندے نیں۔</string>
+    <string name="il_secili">%1$s، چُنیا ہویا</string>
+    <string name="dream_il_yok">نماز دے وقتاں دا بورڈ ویکھن لئی Namaz Akışı ایپ کھولو تے اپنا شہر چُنو۔</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">مقام: %1$s</string>
+    <string name="ayar_konum_yok">کوئی مقام نہیں چُنیا</string>
+    <string name="ayar_telefon_ekleyin">فون شامل کرو</string>
+    <string name="ayar_konumu_kodla">مقام کوڈ نال لکھو</string>
+    <string name="ayar_bagli_telefonlar">ایس ٹی وی نال جُڑے فون</string>
+    <string name="ayar_telefon_yok">اجے کوئی فون شامل نہیں کیتا گیا۔ کھبے پاسے “%1$s” ورتو تے نظر آؤن والا کوڈ سکین کرو۔</string>
+    <string name="kaldirin">ہٹاؤ</string>
+    <string name="ayar_ne_gonderir">فون کیہ گھلدے نیں؟</string>
+    <string name="ayar_madde_konum">مقام: نماز دے وقت ایہدے مطابق چلدے نیں</string>
+    <string name="ayar_madde_namazlar">نشان لائیاں نمازاں، جیہڑے چاہن اوہناں لئی</string>
+    <string name="ayar_madde_sifreli">خفیہ، صرف تہاڈے گھر دے نیٹ ورک تے</string>
+    <string name="son_haber_yok">اجے کوئی معلومات نہیں</string>
+    <string name="son_haber_az_once">ہنے ہنے</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d منٹ پہلاں</item>
+        <item quantity="other">%1$d منٹ پہلاں</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d گھنٹہ پہلاں</item>
+        <item quantity="other">%1$d گھنٹے پہلاں</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d دن پہلاں</item>
+        <item quantity="other">%1$d دن پہلاں</item>
+    </plurals>
+    <string name="kaldir_soru">کیہ %1$s نوں ہٹاؤ گے؟</string>
+    <string name="kaldir_aciklama">ایہہ فون ہن ٹی وی نوں معلومات نہیں گھل سکے گا۔ فیر شامل کرن لئی QR کوڈ دوبارہ سکین کرنا پوے گا۔</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">تہاڈے فون دا مقام</string>
+</resources>

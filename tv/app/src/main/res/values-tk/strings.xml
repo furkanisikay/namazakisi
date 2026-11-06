@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Türkmence. Terimler: src/core/dil/sozluk/tk. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">tk</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Namaz wagtlary tagtasy</string>
+    <string name="ayarlar">Sazlamalar</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s wagtyna %2$s galdy</string>
+    <string name="pano_vaktine">%1$s wagtyna çenli</string>
+    <string name="pano_vaktine_kalan">%1$s: %2$s soň</string>
+    <string name="pano_kerahat_vakti">Mekruh wagt</string>
+    <string name="pano_bitis">%1$s gutarýar</string>
+    <string name="pano_kerahat_erisim">Mekruh wagt, %1$s, %2$s gutarýar. %3$s</string>
+    <string name="pano_cumaya">Juma: %1$s soň</string>
+    <string name="pano_cikis_geldi">çykmak wagty</string>
+    <string name="pano_cikis">çykyş %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Juma üçin çykmak wagty geldi</string>
+    <string name="pano_cuma_cikis_erisim">Juma üçin çykyş wagty %1$s</string>
+    <string name="pano_bugun_cuma">Şu gün juma</string>
+    <string name="pano_ogle">Öýle %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Şu gün juma. Juma namazy öýle wagtynda, %1$s</string>
+    <string name="pano_ayarlar_erisim">Sazlamalar: telefon goşmak, ýerleşiş, birikdirilen telefonlar</string>
+    <string name="pano_simdiki_vakit">häzirki namaz wagty</string>
+    <string name="pano_siradaki_vakit">indiki namaz wagty</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Telefonyňyzy goşuň", "Kod girizmek", "Şäheri özüm saýlaýaryn", "Goşmak". -->
+    <string name="kodla_girin">Kod girizmek</string>
+    <string name="ili_kendim_secin">Şäheri özüm saýlaýaryn</string>
+    <string name="yeniden_deneyin">Gaýtadan synanyşyň</string>
+    <string name="telefon_varsayilan">Telefon</string>
+    <string name="esleme_ekleniyor">%1$s goşulýar</string>
+    <string name="esleme_gonderiyor">Telefonyňyz ýerleşişini we ýagdaýyny iberýär…</string>
+    <string name="esleme_tamamlanamadi">Jübütlemek tamamlanmady</string>
+    <string name="esleme_saklanamadi">Bu telewizor baglanyşyk açaryny howpsuz saklap bilmeýär. Ýerleşişiňizi kod bilen girizip ýa-da şäheriňizi saýlap bilersiňiz.</string>
+    <string name="telefonunuzu_ekleyin">Telefonyňyzy goşuň</string>
+    <string name="esleme_alt">Ýerleşişiňiz üçin namaz wagtlary; okan namazlaryňyz hem görünýär.</string>
+    <string name="esleme_adim1">Telefonyňyzda Namaz Akışı-ny açyň</string>
+    <string name="esleme_adim2">Sazlamalar › Enjamlarym › Telewizor goşuň</string>
+    <string name="esleme_adim3">Telefonyňyzyň kamerasyny koda tutuň</string>
+    <string name="esleme_ayni_wifi">Telefonyňyz we telewizoryňyz şol bir Wi-Fi toruna birikmeli.</string>
+    <string name="esleme_onay_soru">Bu telefon goşulsynmy?</string>
+    <string name="esleme_onay_aciklama">Goşulan telefon öz ýerleşişini we belleýän namazlaryny bu telewizora iberip biler.</string>
+    <string name="ekleyin">Goşmak</string>
+    <string name="hayir">Ýok</string>
+    <string name="esleme_eklendi">%1$s goşuldy</string>
+    <string name="konumunuz_geldi">Ýerleşişiňiz geldi</string>
+    <string name="konuma_gore_hesaplanacak">Namaz wagtlary şu ýerleşiş üçin hasaplanar.</string>
+    <string name="qr_konum_alindi">Ýerleşiş alyndy</string>
+    <string name="qr_kodu">Telefonyňyz bilen skanirlenjek jübütleme kody</string>
+    <string name="ag_yok">Telewizor tora birikmedik</string>
+    <string name="ag_yok_aciklama">Telefonyňyzdaky 7 sanly kody girizip ýa-da şäheriňizi saýlap dowam edip bilersiňiz.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Telefonyňyzdaky kody giriziň</string>
+    <string name="kod_yol">Telefonyňyzda: Sazlamalar › Enjamlarym › Telewizor goşuň</string>
+    <string name="kod_hatali">Kod gabat gelmedi. Telefonyňyzdaky 7 sany barlaň; ýalňyş sany “%1$s” bilen düzediň.</string>
+    <string name="kod_rakamli_kumanda">Pultuňyzda san düwmeleri bar bolsa, olar bilen hem ýazyp bilersiňiz.</string>
+    <string name="kod_bos_hane">boş san</string>
+    <string name="kod_sil">Poz</string>
+    <string name="kod_sil_aciklama">Soňky sany pozuň</string>
+    <string name="kod_geri">Yza</string>
+    <string name="vazgecin">Ýatyryň</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Şäheriňizi saýlaň</string>
+    <string name="il_merkezine_gore">Namaz wagtlary şäheriň merkezi üçin hasaplanýar.</string>
+    <string name="il_secili">%1$s, saýlandy</string>
+    <string name="dream_il_yok">Namaz wagtlary tagtasyny görmek üçin Namaz Akışı programmasyny açyň we şäheriňizi saýlaň.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Ýerleşiş: %1$s</string>
+    <string name="ayar_konum_yok">Ýerleşiş saýlanmady</string>
+    <string name="ayar_telefon_ekleyin">Telefon goşuň</string>
+    <string name="ayar_konumu_kodla">Ýerleşişi kod bilen giriziň</string>
+    <string name="ayar_bagli_telefonlar">Bu telewizora birikdirilen telefonlar</string>
+    <string name="ayar_telefon_yok">Entek telefon goşulmady. Çepdäki “%1$s” ulanyň we peýda bolan kody skanirläň.</string>
+    <string name="kaldirin">Aýyryň</string>
+    <string name="ayar_ne_gonderir">Telefonlar näme iberýär?</string>
+    <string name="ayar_madde_konum">Ýerleşiş: namaz wagtlary oňa eýerýär</string>
+    <string name="ayar_madde_namazlar">Bellenen namazlar, saýlanlar üçin</string>
+    <string name="ayar_madde_sifreli">Şifrlenen, diňe öý toruňyzda</string>
+    <string name="son_haber_yok">Entek maglumat ýok</string>
+    <string name="son_haber_az_once">Ýaňy</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d min öň</item>
+        <item quantity="other">%1$d min öň</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d sag öň</item>
+        <item quantity="other">%1$d sag öň</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d gün öň</item>
+        <item quantity="other">%1$d gün öň</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s aýrylsynmy?</string>
+    <string name="kaldir_aciklama">Bu telefon indi telewizora maglumat iberip bilmez. Gaýtadan goşmak üçin QR kody ýene skanirlemeli.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Telefonyňyzdaky ýerleşiş</string>
+</resources>

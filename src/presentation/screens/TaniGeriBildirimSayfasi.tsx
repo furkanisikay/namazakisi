@@ -14,17 +14,20 @@ import {
 import { Anahtar } from '../components/common/Anahtar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { hatirlatmayiGuncelle } from '../store/taniSlice';
 import { TaniOnizleme } from '../components/Tani/TaniOnizleme';
+import { useMetin } from '../hooks/useMetin';
 
 /**
  * Tanı ve Geri Bildirim Ayarları Sayfası
  */
 export const TaniGeriBildirimSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const m = useMetin().genel.tani.sayfa;
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const hatirlatmaAcik = useAppSelector((state) => state.tani.hatirlatmaAcik);
@@ -45,7 +48,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
             className="text-sm leading-5"
             style={{ color: renkler.metinIkincil }}
           >
-            Bir sorun yaşarsanız teknik tanı kaydını bize iletebilirsiniz. Hiçbir şey otomatik gönderilmez; kişisel verileriniz paylaşılmaz.
+            {m.ozet}
           </Text>
         </View>
 
@@ -68,7 +71,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
               className="text-base font-bold ml-2"
               style={{ color: renkler.birincilMetin ?? '#FFFFFF' }}
             >
-              Sorun bildirin
+              {m.sorunBildirin}
             </Text>
           </TouchableOpacity>
         </View>
@@ -79,7 +82,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
             className="text-xs font-bold tracking-wider mx-4 mb-3"
             style={{ color: renkler.metinIkincil }}
           >
-            AYARLAR
+            {m.ayarlarBaslik}
           </Text>
 
           <View
@@ -102,13 +105,13 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 className="text-base font-semibold"
                 style={{ color: renkler.metin }}
               >
-                Sorun olunca hatırlatın
+                {m.hatirlatin}
               </Text>
               <Text
                 className="text-sm mt-0.5"
                 style={{ color: renkler.metinIkincil }}
               >
-                Bir hata olursa bildirimle sorar
+                {m.hatirlatinAciklama}
               </Text>
             </View>
             <Anahtar
@@ -126,7 +129,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
             className="text-xs font-bold tracking-wider mx-4 mb-3"
             style={{ color: renkler.metinIkincil }}
           >
-            ARAÇLAR
+            {m.araclarBaslik}
           </Text>
 
           {/* Gönderilecek bilgiyi görün */}
@@ -152,16 +155,16 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 className="text-base font-semibold"
                 style={{ color: renkler.metin }}
               >
-                Gönderilecek bilgiyi görün
+                {m.gonderilecek}
               </Text>
               <Text
                 className="text-sm mt-0.5"
                 style={{ color: renkler.metinIkincil }}
               >
-                Göndermeden önce tamamını görürsünüz
+                {m.gonderilecekAciklama}
               </Text>
             </View>
-            <FontAwesome5
+            <YonluIkon
               name="chevron-right"
               size={14}
               color={renkler.metinIkincil}
@@ -191,16 +194,16 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 className="text-base font-semibold"
                 style={{ color: renkler.metin }}
               >
-                Tanı kayıtlarını açın
+                {m.kayitlar}
               </Text>
               <Text
                 className="text-sm mt-0.5"
                 style={{ color: renkler.metinIkincil }}
               >
-                Uygulamanın teknik günlüğü
+                {m.kayitlarAciklama}
               </Text>
             </View>
-            <FontAwesome5
+            <YonluIkon
               name="chevron-right"
               size={14}
               color={renkler.metinIkincil}

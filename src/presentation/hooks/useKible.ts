@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Coordinates, Qibla } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 import { aciFarki, aciNormalize, hizalandiMi } from '../../core/kible/acilar';
 import { DunyaTabani, EksenDenetimi, Vektor3, VektorSuzgeci, dikOrani, egimDerece } from '../../core/kible/cihazYonelimi';
 import {
@@ -242,7 +243,7 @@ export const useKible = (aktif = true): UseKibleSonuc => {
         if (izin.status !== 'granted') {
           if (isMounted) {
             setIzinTekrarSorulabilir(typeof izin.canAskAgain === 'boolean' ? izin.canAskAgain : null);
-            setHata('Kıble yönünü bulmak için konum izni gerekiyor.');
+            setHata(metin().kible.hata.izinGerekli);
             setYukleniyor(false);
           }
           return;
@@ -290,10 +291,10 @@ export const useKible = (aktif = true): UseKibleSonuc => {
         const hataMesaji = (err as Error)?.message || '';
         if (hataMesaji.includes('location is unavailable') || hataMesaji.includes('location services')) {
           Logger.warn('Kible', 'Konum servisi kullanilamiyor', hataMesaji);
-          if (isMounted) setHata('Konum servislerine erişilemiyor. Lütfen cihazınızın konum ayarlarını kontrol edin.');
+          if (isMounted) setHata(metin().kible.hata.konumServisi);
         } else {
           Logger.error('Kible', 'Kible servisi hatasi', err);
-          if (isMounted) setHata('Kıble servisi başlatılamadı.');
+          if (isMounted) setHata(metin().kible.hata.baslatilamadi);
         }
         if (isMounted) setYukleniyor(false);
       }

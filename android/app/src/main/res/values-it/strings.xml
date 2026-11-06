@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İtalyanca kaynaklar (dalga 10). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/it. Kesme işareti ’ (U+2019, kaçış gerekmez). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">L’orario attuale, quando finisce e Ho pregato con un tocco</string>
+  <string name="widget_genis_aciklama">Le cinque preghiere di oggi, un conto alla rovescia e Ho pregato con un tocco</string>
+  <string name="widget_kapak_adi">Orari sullo schermo esterno</string>
+  <string name="widget_kapak_aciklama">Gli orari di oggi e un conto alla rovescia per lo schermo esterno del Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Classico</string>
+  <string name="widget_klasik_aciklama">Aspetto verde classico: tempo rimasto al prossimo orario</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Classico largo</string>
+  <string name="widget_klasik_genis_aciklama">Aspetto verde classico: conto alla rovescia e orari di oggi</string>
+  <string name="widget_ayet_adi">Versetto del giorno</string>
+  <string name="widget_ayet_aciklama">Un versetto e la sua traduzione, rinnovati ogni giorno al Fajr</string>
+  <string name="widget_ayar_zemin_palet">Colore dell’app (tono chiaro)</string>
+  <string name="widget_ayar_ayet_icerik">Nel formato quadrato, mostrare</string>
+  <string name="widget_ayar_ayet_icerik_meal">Traduzione</string>
+  <string name="widget_ayar_ayet_icerik_hat">Testo arabo (calligrafia)</string>
+  <string name="kutu_kildim_etiket">Ho pregato</string>
+  <string name="kisayol_kildim_kisa">Ho pregato</string>
+  <string name="kisayol_kildim_uzun">Ho compiuto la preghiera attuale</string>
+  <string name="kisayol_kible_kisa">Qibla</string>
+  <string name="kisayol_kible_uzun">Mostrare la direzione della qibla</string>
+  <string name="kisayol_kaza_kisa">Recuperi</string>
+  <string name="kisayol_kaza_uzun">Aprire il registro dei recuperi</string>
+  <string name="kildim_onay_baslik">Segnare %1$s come compiuto?</string>
+  <string name="kildim_onay_mesaj">Non è chiaro quale app abbia inviato questa richiesta. Confermi se ha pregato.</string>
+  <string name="kildim_onay_evet">Ho pregato</string>
+  <string name="kildim_onay_vazgec">Annullare</string>
+  <string name="kildim_guven_baslik">Consentire a %1$s di segnare le sue preghiere come compiute?</string>
+  <string name="kildim_guven_mesaj">Preghiera da segnare ora: %1$s. Può cambiare la decisione in seguito in Impostazioni &gt; App che segnano Ho pregato.</string>
+  <string name="kildim_guven_tarayici_mesaj">Preghiera da segnare ora: %1$s. Questa richiesta arriva da un browser; poiché qualsiasi pagina web può aprire questo collegamento, non si può dare un’autorizzazione permanente.</string>
+  <string name="kildim_guven_her_zaman">Consentire sempre</string>
+  <string name="kildim_guven_bu_sefer">Solo questa volta</string>
+  <string name="kildim_guven_engelle">Bloccare</string>
+  <string name="kildim_guven_engellendi">%1$s non può più segnare le sue preghiere. Può cambiarlo nelle Impostazioni.</string>
+  <string name="widget_ayar_baslik">Personalizzare il widget</string>
+  <string name="widget_ayar_zemin">Sfondo</string>
+  <string name="widget_ayar_zemin_material">Colori dello sfondo</string>
+  <string name="widget_ayar_zemin_sistem">Tema di sistema</string>
+  <string name="widget_ayar_zemin_acik">Chiaro</string>
+  <string name="widget_ayar_zemin_koyu">Scuro</string>
+  <string name="widget_ayar_zemin_seffaf">Trasparente</string>
+  <string name="widget_ayar_opaklik">Opacità dello sfondo</string>
+  <string name="widget_ayar_gosterim">Mostrare a caratteri grandi</string>
+  <string name="widget_ayar_gosterim_kalan">Tempo rimasto</string>
+  <string name="widget_ayar_gosterim_bitis">Ora di fine</string>
+  <string name="widget_ayar_gosterim_not">L’ora di fine compare in ogni dimensione.</string>
+  <string name="widget_ayar_sonraki">Mostrare il prossimo orario</string>
+  <string name="widget_ayar_vazgec">Annullare</string>
+  <string name="widget_ayar_kaydet">Salvare</string>
+  <string name="kildim_onay_kanal_adi">Conferma di Ho pregato</string>
+  <string name="kildim_onay_kanal_aciklama">Una conferma discreta mostrata per qualche secondo quando tocca «Ho pregato» in una notifica</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Fine %1$s</string>
+  <string name="widget_giris">Inizio %1$s</string>
+  <string name="widget_namaz_vakti">Orario di preghiera</string>
+  <string name="widget_uygulamayi_acin">Aprire l’app</string>
+  <string name="widget_siradaki">Prossimo: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Nessuna preghiera da segnare ora</string>
+  <string name="widget_dugme_kildim">Ho pregato</string>
+  <string name="widget_dugme_isaretleniyor">Segno in corso</string>
+  <string name="widget_dugme_kilindi">Compiuta</string>
+  <string name="widget_dugme_vakit_girmedi">Non è ancora l’ora</string>
+  <string name="widget_klasik_uygulamayi_acin">aprire l’app</string>
+  <string name="widget_klasik_erisim_veri_yok">Apra l’app per vedere gli orari di preghiera</string>
+  <string name="widget_klasik_erisim_siradaki">Prossimo orario: %1$s, inizia alle %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Zuhr tra</string>
+  <string name="widget_onizleme_klasik_genis">Maghrib tra</string>
+  <string name="widget_onizleme_imsak">Fajr</string>
+  <string name="widget_onizleme_gunes">Sorgere del sole</string>
+  <string name="widget_onizleme_ogle">Zuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s è segnato come compiuto. Che Allah l’accetti.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s è già segnato come compiuto.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Al momento non c’è una preghiera da segnare. La prossima è %1$s, alle %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Al momento non c’è una preghiera da segnare.</string>
+  <string name="kildim_sonuc_veri_yok">Nessun dato sugli orari. Apra l’app una volta.</string>
+  <string name="kildim_sonuc_vakit_degisti">L’orario di preghiera è cambiato, quindi non è stato segnato nulla. Riprovi.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Impossibile aprire l’app di navigazione.</string>
+  <string name="arac_adsiz_cami">Moschea</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Impossibile leggere i dati degli orari di preghiera.</string>
+  <string name="asistan_isaretleme_yapilamadi">Impossibile segnare la preghiera.</string>
+  <string name="asistan_aciklama">Può chiedere gli orari di preghiera, segnare come compiuta la preghiera attuale e aprire la schermata della qibla.</string>
+</resources>

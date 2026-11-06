@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tt -->
+<!-- Gerçek alarm (Tatarca). "Укыдым" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Намаз уяткычы</string>
+  <string name="alarm_kildim">Укыдым</string>
+  <string name="alarm_kapat">Сүндерү</string>
+  <string name="alarm_kanal_aciklamasi">Сез сайлаган искәртү адымнарында шалтырый торган чын уяткыч</string>
+</resources>

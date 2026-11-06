@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Gürcüce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: ვილოცე</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: ლოცვის დროის მდგომარეობა</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: ლოცვის დროის მოვლენა</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">ეს პარამეტრი ავტომატიზაციის აპიდან ემატება</string>
+  <string name="otomasyon_bilgi_tarayici">ბრაუზერები მუდმივ ნებართვას ვერ მიიღებენ. დაამატეთ Tasker-ის, MacroDroid-ის ან Automate-ის მსგავსი აპის დანამატების სიიდან.</string>
+  <string name="otomasyon_bilgi_eklenti">დაამატეთ „Namaz Akışı“-ის არჩევით Tasker-ის, MacroDroid-ის ან Automate-ის მსგავსი აპის დანამატების სიიდან.</string>
+  <string name="otomasyon_engelli_baslik">%1$s დაბლოკილია</string>
+  <string name="otomasyon_engelli_mesaj">ამ აპს ადრე აუკრძალეთ ლოცვების მონიშვნა. დაშვება შეგიძლიათ Namaz Akışı-ში: პარამეტრები &gt; „აპები, რომლებიც „ვილოცე“-ს ნიშნავენ“.</string>
+  <string name="otomasyon_izin_baslik">გამოვიყენოთ %1$s-თან?</string>
+  <string name="otomasyon_izin_kosul">%1$s შეძლებს გაიგოს, როდის დგება ლოცვის დრო, როდის სრულდება და როდის ხართ მეჩეთში, და გაუშვას თქვენი ავტომატიზაციები. გადაწყვეტილების შეცვლა შეგიძლიათ Namaz Akışı-ში: პარამეტრები &gt; „აპები, რომლებიც „ვილოცე“-ს ნიშნავენ“.</string>
+  <string name="otomasyon_izin_kildim">%1$s შეძლებს მიმდინარე ლოცვის შესრულებულად მონიშვნას თქვენ მიერ დაყენებული ავტომატიზაციით. გადაწყვეტილების შეცვლა შეგიძლიათ Namaz Akışı-ში: პარამეტრები &gt; „აპები, რომლებიც „ვილოცე“-ს ნიშნავენ“.</string>
+  <string name="otomasyon_izin_ver">დაშვება</string>
+  <string name="otomasyon_engelle">დაბლოკვა</string>
+  <string name="otomasyon_vazgec">გაუქმება</string>
+  <string name="otomasyon_tamam">კარგი</string>
+  <string name="otomasyon_tur_baslik">როდის გაეშვას?</string>
+  <string name="otomasyon_ileri">შემდეგი</string>
+  <string name="otomasyon_vakit_baslik">რომელი ლოცვა?</string>
+  <string name="otomasyon_herhangi_vakit">ნებისმიერი ლოცვის დრო</string>
+  <string name="otomasyon_kaydet">შენახვა</string>
+  <string name="otomasyon_kosul_icinde">სანამ ლოცვის დრო გრძელდება</string>
+  <string name="otomasyon_kosul_cikiyor">სანამ ლოცვის დრო სრულდება (დარჩა %1$d წთ, ლოცვის მცველი ჩართულია)</string>
+  <string name="otomasyon_kosul_camide">მეჩეთში ყოფნისას</string>
+  <string name="otomasyon_olay_girdi">ლოცვის დროის დადგომისას</string>
+  <string name="otomasyon_olay_cikiyor">როცა ლოცვის დრო სრულდება (დარჩა %1$d წთ, ლოცვის მცველი ჩართულია)</string>
+  <string name="otomasyon_olay_camide">როცა დადგინდება, რომ მეჩეთში ხართ</string>
+</resources>

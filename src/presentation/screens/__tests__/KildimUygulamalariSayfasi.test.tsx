@@ -37,6 +37,7 @@ jest.mock('../../../domain/services/KildimGuvenServisi', () => ({
 }));
 
 import { KildimUygulamalariSayfasi } from '../KildimUygulamalariSayfasi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const RENKLER = {
     birincil: '#4CAF50',
@@ -108,5 +109,28 @@ describe('KildimUygulamalariSayfasi', () => {
         mockKullanilabilir.mockReturnValue(false);
         const { getByText } = kur();
         expect(getByText('Bu ayar yalnız Android telefonlarda kullanılabilir.')).toBeTruthy();
+    });
+});
+
+describe('KildimUygulamalariSayfasi — İngilizce', () => {
+    let geriAl: () => void;
+    beforeEach(() => {
+        geriAl = ingilizceyeGec();
+        mockKullanilabilir.mockReturnValue(true);
+        mockListeAl.mockResolvedValue([TASKER, RUTIN]);
+    });
+    afterEach(() => geriAl());
+
+    it('liste ve boş durum İngilizce', async () => {
+        const dolu = kur();
+        await dolu.findByTestId(`kildim-uygulama-${RUTIN.paket}`);
+        // Uygulama adı ("Modlar ve Rutinler") cihazdan gelen veridir.
+        expect(turkceKalanlar(dolu.toJSON() as never, ['Listeden', 'Engel', 'Kapat'])).toEqual([]);
+        expect(dolu.getByText(/Allowed/)).toBeTruthy();
+        dolu.unmount();
+        mockListeAl.mockResolvedValue([]);
+        const bos = kur();
+        await bos.findByTestId('kildim-uygulamalari-bos');
+        expect(turkceKalanlar(bos.toJSON() as never)).toEqual([]);
     });
 });

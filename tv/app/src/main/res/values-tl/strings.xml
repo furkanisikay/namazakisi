@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Filipino (values-tl: AOSP tl ≡ fil). Terms: src/core/dil/sozluk/fil. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">fil</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Board ng mga oras ng dasal</string>
+    <string name="ayarlar">Mga setting</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s na lang bago ang %1$s</string>
+    <string name="pano_vaktine">Bago ang %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s sa loob ng %2$s</string>
+    <string name="pano_kerahat_vakti">Makruh na oras</string>
+    <string name="pano_bitis">matatapos %1$s</string>
+    <string name="pano_kerahat_erisim">Makruh na oras, %1$s, matatapos %2$s. %3$s</string>
+    <string name="pano_cumaya">Jumu\'ah sa loob ng %1$s</string>
+    <string name="pano_cikis_geldi">oras nang umalis</string>
+    <string name="pano_cikis">umalis sa %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Oras nang umalis para sa Jumu\'ah</string>
+    <string name="pano_cuma_cikis_erisim">Umalis para sa Jumu\'ah sa %1$s</string>
+    <string name="pano_bugun_cuma">Jumu\'ah ngayon</string>
+    <string name="pano_ogle">Dhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Jumu\'ah ngayon. Ang dasal na Jumu\'ah ay sa oras ng Dhuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Mga setting: magdagdag ng telepono, lokasyon, mga nakakonektang telepono</string>
+    <string name="pano_simdiki_vakit">kasalukuyang oras ng dasal</string>
+    <string name="pano_siradaki_vakit">susunod na oras ng dasal</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Idagdag ang telepono", "Ilagay ang code", "Ako ang pipili ng lungsod", "Idagdag". -->
+    <string name="kodla_girin">Ilagay ang code</string>
+    <string name="ili_kendim_secin">Ako ang pipili ng lungsod</string>
+    <string name="yeniden_deneyin">Subukang muli</string>
+    <string name="telefon_varsayilan">Telepono</string>
+    <string name="esleme_ekleniyor">Idinadagdag ang %1$s</string>
+    <string name="esleme_gonderiyor">Ipinapadala ng telepono ang lokasyon at status nito…</string>
+    <string name="esleme_tamamlanamadi">Hindi natapos ang pagpapares</string>
+    <string name="esleme_saklanamadi">Hindi ligtas na maiimbak ng TV na ito ang connection key. Maaari ninyong ilagay ang lokasyon gamit ang code o pumili ng lungsod.</string>
+    <string name="telefonunuzu_ekleyin">Idagdag ang telepono</string>
+    <string name="esleme_alt">Mga oras ng dasal para sa inyong lokasyon; lalabas din ang mga naidasal ninyo.</string>
+    <string name="esleme_adim1">Buksan ang Namaz Akışı sa telepono</string>
+    <string name="esleme_adim2">Mga setting › Mga device ko › Magdagdag ng TV</string>
+    <string name="esleme_adim3">Itapat ang camera ng telepono sa code</string>
+    <string name="esleme_ayni_wifi">Dapat nasa parehong Wi-Fi network ang telepono at TV.</string>
+    <string name="esleme_onay_soru">Idagdag ang teleponong ito?</string>
+    <string name="esleme_onay_aciklama">Maipapadala ng idinagdag na telepono sa TV na ito ang lokasyon nito at ang mga dasal na minamarkahan nito.</string>
+    <string name="ekleyin">Idagdag</string>
+    <string name="hayir">Hindi</string>
+    <string name="esleme_eklendi">Naidagdag ang %1$s</string>
+    <string name="konumunuz_geldi">Dumating ang inyong lokasyon</string>
+    <string name="konuma_gore_hesaplanacak">Kakalkulahin ang mga oras ng dasal para sa lokasyong ito.</string>
+    <string name="qr_konum_alindi">Natanggap ang lokasyon</string>
+    <string name="qr_kodu">Code ng pagpapares na i-scan ng telepono</string>
+    <string name="ag_yok">Hindi nakakonekta sa network ang TV</string>
+    <string name="ag_yok_aciklama">Maaari kayong magpatuloy sa paglalagay ng 7-digit na code mula sa telepono o sa pagpili ng lungsod.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Ilagay ang code mula sa telepono</string>
+    <string name="kod_yol">Sa telepono: Mga setting › Mga device ko › Magdagdag ng TV</string>
+    <string name="kod_hatali">Hindi tugma ang code. Suriin ang 7 digit sa telepono; itama ang maling digit gamit ang “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Kung may number key ang remote, maaari rin kayong mag-type gamit ang mga ito.</string>
+    <string name="kod_bos_hane">bakanteng digit</string>
+    <string name="kod_sil">Burahin</string>
+    <string name="kod_sil_aciklama">Burahin ang huling digit</string>
+    <string name="kod_geri">Bumalik</string>
+    <string name="vazgecin">Kanselahin</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Pumili ng lungsod</string>
+    <string name="il_merkezine_gore">Kinakalkula ang mga oras ng dasal para sa sentro ng lungsod.</string>
+    <string name="il_secili">%1$s, napili</string>
+    <string name="dream_il_yok">Para makita ang board ng mga oras ng dasal, buksan ang app na Namaz Akışı at pumili ng lungsod.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Lokasyon: %1$s</string>
+    <string name="ayar_konum_yok">Walang napiling lokasyon</string>
+    <string name="ayar_telefon_ekleyin">Magdagdag ng telepono</string>
+    <string name="ayar_konumu_kodla">Ilagay ang lokasyon gamit ang code</string>
+    <string name="ayar_bagli_telefonlar">Mga teleponong nakakonekta sa TV na ito</string>
+    <string name="ayar_telefon_yok">Wala pang idinagdag na telepono. Gamitin ang “%1$s” sa kaliwa at i-scan ang lalabas na code.</string>
+    <string name="kaldirin">Alisin</string>
+    <string name="ayar_ne_gonderir">Ano ang ipinapadala ng mga telepono?</string>
+    <string name="ayar_madde_konum">Lokasyon: sinusundan ito ng mga oras ng dasal</string>
+    <string name="ayar_madde_namazlar">Mga minarkahang dasal, para sa mga pumili nito</string>
+    <string name="ayar_madde_sifreli">Naka-encrypt, sa network lang ng inyong bahay</string>
+    <string name="son_haber_yok">Wala pang impormasyon</string>
+    <string name="son_haber_az_once">Ngayon lang</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d min ang nakalipas</item>
+        <item quantity="other">%1$d min ang nakalipas</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d oras ang nakalipas</item>
+        <item quantity="other">%1$d oras ang nakalipas</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d araw ang nakalipas</item>
+        <item quantity="other">%1$d araw ang nakalipas</item>
+    </plurals>
+    <string name="kaldir_soru">Alisin ang %1$s?</string>
+    <string name="kaldir_aciklama">Hindi na makakapagpadala ng impormasyon sa TV ang teleponong ito. Para idagdag ito muli, kailangan ninyong i-scan muli ang QR code.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Lokasyon ng inyong telepono</string>
+</resources>

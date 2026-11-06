@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Japonca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı：礼拝しました</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı：礼拝時間の状態</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı：礼拝時間のイベント</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — です/ます. -->
+  <string name="otomasyon_bilgi_baslik">この設定はオートメーションアプリから追加します</string>
+  <string name="otomasyon_bilgi_tarayici">ブラウザーは常に許可を得ることはできません。Tasker、MacroDroid、Automateなどのアプリのプラグイン一覧から追加してください。</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker、MacroDroid、Automateなどのアプリのプラグイン一覧から「Namaz Akışı」を選んで追加してください。</string>
+  <string name="otomasyon_engelli_baslik">%1$sはブロックされています</string>
+  <string name="otomasyon_engelli_mesaj">以前、このアプリが礼拝を記録することをブロックしました。Namaz Akışıの 設定 &gt; 「礼拝しました」を記録するアプリ で許可できます。</string>
+  <string name="otomasyon_izin_baslik">%1$sで使いますか？</string>
+  <string name="otomasyon_izin_kosul">%1$sは、礼拝時間が始まったとき、終わりが近いとき、モスクにいるときを知り、オートメーションを実行できます。判断はNamaz Akışıの 設定 &gt; 「礼拝しました」を記録するアプリ で変更できます。</string>
+  <string name="otomasyon_izin_kildim">%1$sは、設定したオートメーションで現在の礼拝を礼拝済みにできます。判断はNamaz Akışıの 設定 &gt; 「礼拝しました」を記録するアプリ で変更できます。</string>
+  <string name="otomasyon_izin_ver">許可</string>
+  <string name="otomasyon_engelle">ブロック</string>
+  <string name="otomasyon_vazgec">キャンセル</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">いつ実行しますか？</string>
+  <string name="otomasyon_ileri">次へ</string>
+  <string name="otomasyon_vakit_baslik">どの礼拝ですか？</string>
+  <string name="otomasyon_herhangi_vakit">いずれかの礼拝時間</string>
+  <string name="otomasyon_kaydet">保存</string>
+  <string name="otomasyon_kosul_icinde">礼拝時間の間</string>
+  <string name="otomasyon_kosul_cikiyor">礼拝時間がまもなく終わる間（残り%1$d分、礼拝見守りオン）</string>
+  <string name="otomasyon_kosul_camide">モスクにいる間</string>
+  <string name="otomasyon_olay_girdi">礼拝時間になったとき</string>
+  <string name="otomasyon_olay_cikiyor">礼拝時間がまもなく終わるとき（残り%1$d分、礼拝見守りオン）</string>
+  <string name="otomasyon_olay_camide">モスクにいると検出されたとき</string>
+</resources>

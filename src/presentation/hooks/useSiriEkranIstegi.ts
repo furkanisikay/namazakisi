@@ -39,7 +39,8 @@ async function simgedenKildim(): Promise<void> {
         kisaBildirimGoster(kildimSonucMetni(await KildimKuyruguServisi.getInstance().simdikiVaktiKildim()));
     } catch (e) {
         Logger.warn('SiriEkranIstegi', 'Hizli eylemden Kildim islenemedi', e);
-        kisaBildirimGoster('İşaretleme yapılamadı. Lütfen uygulamadan işaretleyin.');
+        const { metin } = require('../../core/dil/aktifDil') as typeof import('../../core/dil/aktifDil');
+        kisaBildirimGoster(metin().genel.kildim.hataMetni);
     }
 }
 

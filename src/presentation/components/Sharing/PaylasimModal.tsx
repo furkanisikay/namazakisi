@@ -8,6 +8,7 @@ import { BlurView } from 'expo-blur';
 import { Logger } from '../../../core/utils/Logger';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { BildirimModali, BildirimTipi } from '../common/BildirimModali';
+import { useMetin } from '../../hooks/useMetin';
 
 interface PaylasimModalProps {
   gorunur: boolean;
@@ -29,6 +30,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
   children,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().seri.paylasim;
   const viewRef = useRef<View | null>(null);
   const [paylasiliyor, setPaylasiliyor] = useState(false);
   const [captureLayout, setCaptureLayout] = useState({ width: 0, height: 0 });
@@ -49,7 +51,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
       setPaylasiliyor(true);
 
       if (!viewRef.current) {
-        bildirimGoster('hata', 'Görsel hazır değil', 'Görsel henüz hazır değil. Lütfen birkaç saniye sonra tekrar deneyin.');
+        bildirimGoster('hata', m.hazirDegilBaslik, m.hazirDegilMesaj);
         return;
       }
 
@@ -78,7 +80,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
 
     } catch (error) {
       Logger.error('PaylasimModal', 'Paylasim hatasi', error);
-      bildirimGoster('hata', 'Görsel oluşturulamadı', 'Görsel oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+      bildirimGoster('hata', m.olusturulamadiBaslik, m.olusturulamadiMesaj);
     } finally {
       setPaylasiliyor(false);
     }
@@ -92,11 +94,11 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
     if (isAvailable) {
       await Sharing.shareAsync(uri, {
         mimeType: 'image/png',
-        dialogTitle: 'Başarını Paylaş', // Android için
+        dialogTitle: m.modalBaslik, // Android için
         UTI: 'public.png', // iOS için
       });
     } else {
-      bildirimGoster('bilgi', 'Paylaşım kullanılamıyor', 'Paylaşım özelliği bu cihazda kullanılamıyor.');
+      bildirimGoster('bilgi', m.kullanilamiyorBaslik, m.kullanilamiyorMesaj);
     }
   };
 
@@ -127,7 +129,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
           <View className="w-12 h-1.5 rounded-full bg-gray-300 mb-6 opacity-50" />
 
           <Text className="text-lg font-bold mb-6 text-center" style={{ color: renkler.metin }}>
-            Başarını Paylaş
+            {m.modalBaslik}
           </Text>
 
           {/* Yakalanacak Alan (Kullanıcıya önizleme olarak da sunulur) */}
@@ -163,7 +165,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
               disabled={paylasiliyor}
               accessibilityRole="button"
             >
-              <Text className="font-semibold" style={{ color: renkler.metin }}>Kapat</Text>
+              <Text className="font-semibold" style={{ color: renkler.metin }}>{m.kapat}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -172,7 +174,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
               onPress={paylas}
               disabled={paylasiliyor}
               accessibilityRole="button"
-              accessibilityLabel="Hikâyenize ekleyin"
+              accessibilityLabel={m.hikaye}
               accessibilityState={{ busy: paylasiliyor, disabled: paylasiliyor }}
             >
               {paylasiliyor ? (
@@ -180,14 +182,14 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
               ) : (
                 <>
                   <FontAwesome5 name="share-alt" size={18} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
-                  <Text className="font-bold" style={{ color: renkler.birincilMetin }}>Hikâyenize ekleyin</Text>
+                  <Text className="font-bold" style={{ color: renkler.birincilMetin }}>{m.hikaye}</Text>
                 </>
               )}
             </TouchableOpacity>
           </View>
 
           <Text className="text-xs text-center opacity-60" style={{ color: renkler.metinIkincil }}>
-            Instagram, WhatsApp ve diğerlerinde paylaşılabilir.
+            {m.platformlar}
           </Text>
 
         </View>
@@ -200,7 +202,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
       tip={bildirim.tip}
       baslik={bildirim.baslik}
       mesaj={bildirim.mesaj}
-      birincilEtiket="Tamam"
+      birincilEtiket={m.tamam}
       birincilIkon="check"
       onBirincil={bildirimKapat}
       onKapat={bildirimKapat}

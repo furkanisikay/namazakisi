@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_seri_gradient"
@@ -27,7 +28,7 @@
             android:id="@+id/tv_prefix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Serini Kurtarmana"
+            tools:text="Serini Kurtarmana"
             android:textColor="#FFC107"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -47,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Bugünkü namazların eksik, serini kaybetme."
+            tools:text="Bugünkü namazların eksik, serini kaybetme."
             android:textColor="#E8EDF8"
             android:textSize="15sp"
             android:textStyle="italic" />

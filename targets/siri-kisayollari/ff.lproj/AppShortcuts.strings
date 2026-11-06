@@ -1,0 +1,18 @@
+// ff — Pular (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "Tuma juulde garoore e ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} juulde garoore";
+"${applicationName} ile sıradaki namazı söyle" = "Wi’u kam juulde garoore e ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} waqutu juulde";
+"${applicationName} şu anki vakti kıldım" = "Mi juulii juulde jooni ndee e ${applicationName}";
+"${applicationName} namazımı kıldım" = "Mi juulii e ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Maandin juulde jooni ndee ko juulaama e ${applicationName}";
+"${applicationName} kıbleyi aç" = "Uddit qibla e ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Hollu kam qibla e ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} natal aaya ñalawma";
+"${applicationName} ile günün ayeti görselini hazırla" = "Moƴƴin natal aaya ñalawma e ${applicationName}";

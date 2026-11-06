@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (İsveççe). "Jag har bett" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Bönealarm</string>
+  <string name="alarm_kildim">Jag har bett</string>
+  <string name="alarm_kapat">Stäng av</string>
+  <string name="alarm_kanal_aciklamasi">Ett riktigt alarm som ringer vid de påminnelsesteg du väljer</string>
+</resources>

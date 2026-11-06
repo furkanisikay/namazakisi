@@ -1,4 +1,5 @@
 import { BOS_CIHAZ_DURUMU, canliYuzeyAdi, durumNotlari, durumNotu, EYLEM_ETIKETLERI, type CihazDurumu } from '../durumNotlari';
+import { aktifDiliKur, aktifDilSifirla } from '../../dil/aktifDil';
 import { isletimSistemiSurumu } from '../surum';
 
 const android = (ek: Partial<CihazDurumu>): CihazDurumu => ({ ...BOS_CIHAZ_DURUMU, surum: isletimSistemiSurumu('android', 35), ...ek });
@@ -41,6 +42,22 @@ describe('durumNotu — ölçebildiğini sorma', () => {
         expect(durumNotu('turkceTts', android({ turkceTts: true }))).toBeNull();
     });
 
+    it('telefonlarda sesi olmayan dilde "indirin" denmez: düğmesiz bilgi satırı, ses varsa sus', () => {
+        try {
+            aktifDiliKur('en');
+            expect(durumNotu('turkceTts', android({ turkceTts: false }))?.eylem).toBe('ttsIndir');
+            aktifDiliKur('ak');
+            for (const d of [android({ turkceTts: false }), ios({ turkceTts: false })]) {
+                const not = durumNotu('turkceTts', d);
+                expect(not?.tip).toBe('bilgi');
+                expect(not?.eylem).toBeUndefined();
+            }
+            expect(durumNotu('turkceTts', android({ turkceTts: true }))).toBeNull();
+        } finally {
+            aktifDilSifirla();
+        }
+    });
+
     it('metinler kibar, teknik terimsiz ve tek cümle; her eylemin etiketi var', () => {
         const hepsi = durumNotlari(
             ['bildirimIzni', 'konumIzni', 'tamAlarm', 'tamEkran', 'pil', 'dndErisimi', 'turkceTts', 'alarmSesi', 'canliGuncelleme'],
@@ -57,5 +74,25 @@ describe('durumNotu — ölçebildiğini sorma', () => {
         expect(canliYuzeyAdi(true)).toContain('Now Bar');
         expect(canliYuzeyAdi(false)).not.toContain('Now Bar');
         expect(canliYuzeyAdi(null)).not.toContain('Now Bar');
+    });
+});
+
+describe('durumNotu — İngilizce', () => {
+    const TR = /[çğıöşüÇĞİÖŞÜ]/;
+    beforeEach(() => aktifDiliKur('en'));
+    afterEach(() => aktifDilSifirla());
+
+    it('her satır ve düğme etiketi İngilizce', () => {
+        const kosullar = ['bildirimIzni', 'konumIzni', 'takvimIzni', 'tamAlarm', 'tamEkran', 'pil', 'dndErisimi', 'turkceTts', 'alarmSesi', 'canliGuncelleme'] as const;
+        const kapali = { bildirimIzni: 'sorulabilir', konumIzni: 'reddedildi', takvimIzni: 'sorulabilir', tamAlarm: false, tamEkran: false, pilMuaf: false, dndErisimi: false, turkceTts: false, alarmSesiAcik: false, canliGuncelleme: 'kapali' } as const;
+        const notlar = [...durumNotlari(kosullar, android(kapali)), ...durumNotlari(kosullar, ios(kapali))];
+        expect(notlar.length).toBeGreaterThan(10);
+        for (const n of notlar) {
+            expect(n.metin).not.toMatch(TR);
+            if (n.eylem) expect(EYLEM_ETIKETLERI[n.eylem]).not.toMatch(TR);
+        }
+        expect(EYLEM_ETIKETLERI.bildirimIzni).toBe('Allow');
+        expect(canliYuzeyAdi(true)).toBe('in the status bar and Now Bar');
+        expect(canliYuzeyAdi(false)).toBe('in the status bar');
     });
 });

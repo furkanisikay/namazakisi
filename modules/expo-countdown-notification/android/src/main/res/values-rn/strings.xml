@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Igihe gisigaye c’ako kanya</string>
+    <string name="countdown_kanal_canli_aciklama">Igihe gisigaye muri Now Bar no mu kabari k’uko ibintu bimeze</string>
+    <string name="countdown_kanal_genel_ad">Amamenyesha y’igihe gisigaye</string>
+    <string name="countdown_kanal_genel_aciklama">Umugwi w’amamenyesha y’igihe gisigaye</string>
+
+    <string name="countdown_eylem_kildim">Nasenze</string>
+    <string name="countdown_eylem_durdur">Muhagarike</string>
+
+    <string name="countdown_yedek_vakit">Mwihute, igihe c’isengesho kiri hafi kurangira.</string>
+    <string name="countdown_yedek_iftar">Igihe kiriko kirarangira.</string>
+    <string name="countdown_yedek_sahur">Murashobora kurya no kunywa; ugupfunga kuregereje gutangura.</string>
+    <string name="countdown_yedek_seri">Amasengesho y’uyu musi ntaruzura; ntimutakaze uruhererekane rwanyu.</string>
+
+    <string name="countdown_onek_vakit">Gushika igihe kirangiye</string>
+    <string name="countdown_onek_vakit_dar">Igihe kirarangira</string>
+    <string name="countdown_onek_iftar">Gushika ifutari</string>
+    <string name="countdown_onek_iftar_dar">Gushika ifutari</string>
+    <string name="countdown_onek_sahur">Gushika suhuri irangiye</string>
+    <string name="countdown_onek_sahur_dar">Suhuri irarangira</string>
+    <string name="countdown_onek_seri">Kugira murokore uruhererekane</string>
+    <string name="countdown_onek_seri_dar">Uruhererekane rurarangira</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ms — Malayca (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Muatkan kod QR pada skrin TV di dalam bingkai</string>
+    <string name="tvesleme_qr_vazgec">Batal</string>
+    <string name="tvesleme_qr_vazgec_erisim">Batalkan pengimbasan</string>
+    <string name="tvesleme_qr_yabanci">Kod QR ini bukan milik Namaz Akışı TV. Imbas kod pada TV.</string>
+    <string name="tvesleme_qr_okundu">Kod telah diimbas</string>
+</resources>

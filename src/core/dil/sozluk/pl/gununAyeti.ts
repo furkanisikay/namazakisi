@@ -1,0 +1,75 @@
+import type { Sozluk } from '../tr';
+
+/**
+ * Lehçede QuranEnc meali yok (sahip kararı): ekranda yalnız Arapça metin (Tanzil) ve künye görünür.
+ * Meal anlatan cümleler buna göre yazıldı; `mealKaynagi`/`sayfaKunye` tip bütünlüğü içindir.
+ */
+export const gununAyeti: Sozluk['gununAyeti'] = {
+  baslik: 'Werset dnia',
+  etiket: 'WERSET DNIA',
+  kisaKunye: '{sure} {ref}',
+  kuran: 'Koran',
+  mealKaynagi: '{yayimci}, QuranEnc {surum}',
+  sayfaKunye: 'Koran {ref} · Przekład: {yayimci}, QuranEnc {surum} · Tekst arabski: Tanzil Project',
+  arapcaKaynagi: 'Tekst arabski: Tanzil',
+  sigmiyor: 'Dzisiejszy werset nie mieści się w tym rozmiarze. Dotknij, aby go przeczytać.',
+  acin: 'Otwórz',
+  sayfa: {
+    tarih: '{gunAdi}, {gun} {ay}',
+    kisaTarih: '{gun} {ay}',
+    metniPaylasin: 'Udostępnij tekst',
+    paylasilamadi: 'Udostępnianie jest niedostępne na tym urządzeniu.',
+    gorselPaylasin: 'Udostępnij jako obraz',
+    widgetVeDuvar: 'Widżet i tapeta',
+    widgetVeDuvarAciklama: 'Dodaj go do ekranu głównego, oglądaj na ekranie blokady',
+    oncekiGunler: 'Poprzednie dni',
+    dun: 'Wczoraj',
+    kaynakNotu: 'Tekst arabski pochodzi z projektu Tanzil i jest pokazywany bez zmian.',
+    mealYok: 'Nie ma jeszcze przekładu na język polski, dlatego pokazywany jest tekst arabski.',
+    tanzilBaglanti: 'Tekst arabski: Tanzil Project (tanzil.net)',
+  },
+  ayar: {
+    widgetBolum: 'Widżet',
+    widgetEkleyin: 'Dodaj widżet do ekranu głównego',
+    widgetEkleyinAciklama: 'Przytrzymaj puste miejsce na ekranie głównym, Widżety, Namaz Akışı, Werset dnia',
+    widgetEkleyinAciklamaIos: 'Przytrzymaj puste miejsce na ekranie początkowym, Edycja, Dodaj widżet, Namaz Akışı',
+    widgetEkleDugme: 'Dodaj do ekranu głównego',
+    duvarBolum: 'Tapeta',
+    duvarAnahtar: 'Zmieniaj codziennie',
+    duvarAcikOzet: 'Wł. · odświeżana codziennie o Fadżr',
+    duvarKapaliOzet: 'Wył.',
+    yer: 'Gdzie',
+    yerler: { kilit: 'Ekran blokady', ana: 'Ekran główny', ikisi: 'Oba' },
+    zemin: 'Tło',
+    zeminler: { gece: 'Noc', kagit: 'Papier', palet: 'Paleta' },
+    arapca: 'Pokazuj też tekst arabski',
+    arapcaNot: 'Niektórzy uczeni odradzają wnoszenie do łazienki telefonu z wersetem na ekranie.',
+    onizleyin: 'Podgląd dzisiejszego obrazu',
+    kapatNotu: 'Po wyłączeniu ostatni obraz zostanie na ekranie; poprzednią tapetę wybierz ponownie z galerii.',
+    kullanilamiyor: 'Niedostępne',
+    engelli: 'Zmiana tapety jest wyłączona na tym urządzeniu (zarządzanie przez pracę lub szkołę), więc tego ustawienia nie można włączyć.',
+    yazilamadi: 'Nie udało się ustawić dzisiejszego obrazu. Ponowna próba nastąpi po otwarciu aplikacji.',
+    yerlestirildi: 'Tapeta ustawiona',
+    onizlemeErisim: 'Podgląd dzisiejszej tapety',
+  },
+  onay: {
+    baslik: 'Tapeta się zmieni',
+    metin:
+      'Codziennie o Fadżr werset dnia pojawi się na ekranie blokady. Aplikacja nie może zachować obecnej tapety: po wyłączeniu wybierz ją ponownie z galerii.',
+    acin: 'Włącz',
+  },
+  ios: {
+    aciklama:
+      'Na iPhonie aplikacje nie mogą same zmieniać tapety. Aplikacja Skróty może robić to codziennie rano; wystarczy ją raz skonfigurować.',
+    ucAdim: 'Trzy kroki',
+    adim1:
+      'W aplikacji Skróty utwórz nowy skrót. Najpierw dodaj czynność „Obraz wersetu dnia”, a potem czynność ustawiającą zdjęcie tapety (wyszukaj „Tapeta”).',
+    kisayollariAcin: 'Otwórz Skróty',
+    adim2: 'W Skrótach, na karcie Automatyzacja, utwórz nową automatyzację Pora dnia i wybierz godzinę po Fadżr (np. 07:30).',
+    adim3: 'Wybierz Uruchom natychmiast i podłącz dodany skrót.',
+    elle: 'Albo ręcznie',
+    gorseliKaydedin: 'Zapisz dzisiejszy obraz',
+    kaydetIpucu: 'W otwartym menu udostępniania możesz zapisać obraz w Zdjęciach.',
+    not: 'Automatyzacja działa o stałej, wybranej godzinie i nie może śledzić czasu Fadżr; jeśli uruchomi się przed Fadżr, ustawi wczorajszy werset.',
+  },
+};

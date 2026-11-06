@@ -5,10 +5,11 @@
  * - haftalık hedef sabit "35 namaz" DEĞİL, seri tam gün eşiğinden türer.
  */
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { cleanup, render, fireEvent } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { IlerlemeSayfasi } from '../IlerlemeSayfasi';
 import { aylikIstatistikleriYukle, haftalikIstatistikleriYukle } from '../../../store/namazSlice';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 jest.mock('../../../store/hooks', () => ({ useAppSelector: jest.fn(), useAppDispatch: jest.fn() }));
 
@@ -152,5 +153,75 @@ describe('IlerlemeSayfasi', () => {
     const { getAllByText } = render(<IlerlemeSayfasi />);
     const adlar = getAllByText(/Kazanıl/).map((n) => n.props.children);
     expect(adlar).toEqual(['Kazanılmış', 'Kazanılmamış']);
+  });
+});
+
+describe('IlerlemeSayfasi — İngilizce', () => {
+  /** Türkçe harfsiz ama Türkçe sözcükler (bu sayfada geçebilecek). */
+  const YASAKLI = ['Seviye', 'Puan', 'puan', 'namaz', 'rozet', 'Oran', 'Vakit', 'vakit', 'Ekim', 'Pzt\\b', 'Sal\\b', 'Per\\b', 'Cum\\b', 'Paz\\b', 'Sabah'];
+  const gunEn = (tarih: string, tamamlananNamaz: number) => ({
+    tarih,
+    gunAdi: 'Pzt', // slice'ta yükleme anının dilinde saklı ad — ekranda KULLANILMAMALI
+    toplamNamaz: 5,
+    tamamlananNamaz,
+    tamamlanmaYuzdesi: tamamlananNamaz * 20,
+  });
+  const durum = () => {
+    const temel = stateOlustur();
+    return {
+      ...temel,
+      namaz: {
+        ...temel.namaz,
+        haftalikIstatistik: {
+          ...temel.namaz.haftalikIstatistik,
+          gunlukVeriler: [12, 13, 14, 15, 16, 17, 18].map((g, i) => gunEn(`2026-10-${g}`, [3, 5, 2, 0, 4, 0, 0][i])),
+          enIyiGun: gunEn('2026-10-13', 5),
+        },
+        aylikIstatistik: {
+          ...temel.namaz.aylikIstatistik,
+          ay: 9,
+          namazBazindaYuzdeler: { Sabah: 40, 'Öğle': 60, 'İkindi': 20, 'Akşam': 80, 'Yatsı': 100 },
+        },
+      },
+      seri: {
+        ...temel.seri,
+        // Rozet kartı bu dosyada ad'ı düz yazan bir mock'tur (kendi İngilizce testi Sharing/__tests__/ingilizce).
+        rozetDetaylari: [],
+        // Slice'ta Türkçe saklanmış kopyalar (yükleme anının dili): ekran kimlikten çizer.
+        seviyeDurumu: { mevcutSeviye: 2, toplamPuan: 150, mevcutSeviyePuani: 50, sonrakiSeviyeKalanPuan: 150, rank: 'Tâlip', rankIkonu: '⭐' },
+      },
+    };
+  };
+  let geriAl: () => void;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockOdak.odakta = true;
+    useAppDispatchMock.mockReturnValue(jest.fn());
+    useAppSelectorMock.mockImplementation((selector: (s: ReturnType<typeof durum>) => unknown) => selector(durum()));
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => {
+    // Önce ağaçları kaldır: dil geri dönerken takılı ekranlar act dışında yeniden çizilmesin.
+    cleanup();
+    geriAl();
+  });
+
+  it('başlık, haftalık oran, seviye kartı İngilizce; gün ve rank adı kimlikten', () => {
+    const r = render(<IlerlemeSayfasi />);
+    expect(r.getByText('Progress')).toBeTruthy();
+    expect(r.getByText('Mon')).toBeTruthy();
+    expect(r.getByLabelText('Prayers prayed: 14 / 21')).toBeTruthy();
+    expect(r.getByText('Talib')).toBeTruthy();
+    expect(r.getByText('150 points to Salik')).toBeTruthy();
+    expect(turkceKalanlar(r.toJSON() as never, YASAKLI)).toEqual([]);
+  });
+
+  it('aylık oran: ay adı numaradan, vakit adları İngilizce', () => {
+    const r = render(<IlerlemeSayfasi />);
+    fireEvent.press(r.getByLabelText('Monthly'));
+    expect(r.getByText('October 2026')).toBeTruthy();
+    expect(r.getByText('Dhuhr')).toBeTruthy();
+    expect(r.getByText('100%')).toBeTruthy();
+    expect(turkceKalanlar(r.toJSON() as never, YASAKLI)).toEqual([]);
   });
 });

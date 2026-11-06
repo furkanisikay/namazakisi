@@ -10,8 +10,10 @@
 import React from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface KazaDigerSatiri {
   anahtar: string;
@@ -34,6 +36,7 @@ interface KazaDigerMenusuProps {
 
 export const KazaDigerMenusu: React.FC<KazaDigerMenusuProps> = ({ gorunur, onKapat, satirlar, ust }) => {
   const renkler = useRenkler();
+  const m = useMetin();
   useDonanimGeriTusu(gorunur, onKapat);
 
   return (
@@ -45,12 +48,12 @@ export const KazaDigerMenusu: React.FC<KazaDigerMenusuProps> = ({ gorunur, onKap
         <View testID="kaza-diger-menusu" style={[stiller.sayfa, { backgroundColor: renkler.kartArkaplan }]}>
           <View style={stiller.baslikSatiri}>
             <Text accessibilityRole="header" style={[stiller.baslik, { color: renkler.metin }]}>
-              Diğer
+              {m.kaza.diger.baslik}
             </Text>
             <TouchableOpacity
               onPress={onKapat}
               accessibilityRole="button"
-              accessibilityLabel="Kapatın"
+              accessibilityLabel={m.ortak.kapatin}
               style={stiller.kapat}
             >
               <FontAwesome5 name="times" size={18} color={renkler.metinIkincil} />
@@ -75,7 +78,7 @@ export const KazaDigerMenusu: React.FC<KazaDigerMenusuProps> = ({ gorunur, onKap
                     <Text style={[stiller.satirBaslik, { color: renkler.metin }]}>{s.baslik}</Text>
                     {s.alt ? <Text style={[stiller.satirAlt, { color: renkler.metinIkincil }]}>{s.alt}</Text> : null}
                   </View>
-                  <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+                  <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} />
                 </TouchableOpacity>
               );
             })}

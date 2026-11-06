@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Mooré). "M pʋʋsa" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Pʋʋsg alaarme</string>
+  <string name="alarm_kildim">M pʋʋsa</string>
+  <string name="alarm_kapat">Pag-y</string>
+  <string name="alarm_kanal_aciklamasi">Alaarm sɩd-sɩd sẽn wiid tẽegr tʋʋm nins y sẽn tũusã wakatẽ</string>
+</resources>

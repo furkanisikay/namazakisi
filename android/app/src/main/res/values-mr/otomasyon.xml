@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Marathi). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: नमाज पढली</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: नमाजच्या वेळेची स्थिती</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: नमाजच्या वेळेची घटना</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — saygılı "तुम्ही". -->
+  <string name="otomasyon_bilgi_baslik">ही सेटिंग ऑटोमेशन ॲपमधून जोडली जाते</string>
+  <string name="otomasyon_bilgi_tarayici">ब्राउझरना कायमची परवानगी मिळू शकत नाही. Tasker, MacroDroid किंवा Automate सारख्या ॲपच्या प्लगइन यादीतून ती जोडा.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid किंवा Automate सारख्या ॲपच्या प्लगइन यादीतून \"Namaz Akışı\" निवडून ती जोडा.</string>
+  <string name="otomasyon_engelli_baslik">%1$s ब्लॉक केले आहे</string>
+  <string name="otomasyon_engelli_mesaj">तुम्ही आधी या ॲपला तुमच्या नमाजची नोंद करण्यापासून ब्लॉक केले होते. तुम्ही Namaz Akışı मध्ये सेटिंग्ज &gt; \"नमाज पढली\" नोंदवणारी ॲप्स येथे त्याला अनुमती देऊ शकता.</string>
+  <string name="otomasyon_izin_baslik">%1$s सोबत वापरायचे का?</string>
+  <string name="otomasyon_izin_kosul">नमाजची वेळ केव्हा सुरू होते, केव्हा संपत येते आणि तुम्ही मशिदीत केव्हा असता हे %1$s ला कळू शकते आणि ते तुमची ऑटोमेशन चालवू शकते. तुम्ही तुमचा निर्णय Namaz Akışı मध्ये सेटिंग्ज &gt; \"नमाज पढली\" नोंदवणारी ॲप्स येथे बदलू शकता.</string>
+  <string name="otomasyon_izin_kildim">तुम्ही सेट केलेल्या ऑटोमेशनने %1$s सध्याची नमाज \"अदा झाली\" म्हणून नोंदवू शकते. तुम्ही तुमचा निर्णय Namaz Akışı मध्ये सेटिंग्ज &gt; \"नमाज पढली\" नोंदवणारी ॲप्स येथे बदलू शकता.</string>
+  <string name="otomasyon_izin_ver">अनुमती द्या</string>
+  <string name="otomasyon_engelle">ब्लॉक करा</string>
+  <string name="otomasyon_vazgec">रद्द करा</string>
+  <string name="otomasyon_tamam">ठीक आहे</string>
+  <string name="otomasyon_tur_baslik">ते केव्हा चालावे?</string>
+  <string name="otomasyon_ileri">पुढे</string>
+  <string name="otomasyon_vakit_baslik">कोणती नमाज?</string>
+  <string name="otomasyon_herhangi_vakit">कोणतीही नमाजची वेळ</string>
+  <string name="otomasyon_kaydet">सेव्ह करा</string>
+  <string name="otomasyon_kosul_icinde">नमाजची वेळ सुरू असताना</string>
+  <string name="otomasyon_kosul_cikiyor">नमाजची वेळ संपत येत असताना (%1$d मि बाकी, नमाज रक्षक सुरू)</string>
+  <string name="otomasyon_kosul_camide">मशिदीत असताना</string>
+  <string name="otomasyon_olay_girdi">नमाजची वेळ सुरू झाल्यावर</string>
+  <string name="otomasyon_olay_cikiyor">नमाजची वेळ संपत येत असताना (%1$d मि बाकी, नमाज रक्षक सुरू)</string>
+  <string name="otomasyon_olay_camide">तुम्ही मशिदीत असल्याचे ओळखल्यावर</string>
+</resources>

@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Mahali ulipo panatumika kukokotoa nyakati za Swala kwa usahihi kwa ajili ya mahali ulipo. Mahali ulipo panabaki kwenye kifaa chako.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Mahali ulipo panatumika kukokotoa nyakati za Swala kwa usahihi kwa ajili ya mahali ulipo na, ikiwa Niko msikitini imewashwa, kuwasha Hali ya Swala unapoingia msikitini. Mahali ulipo panabaki kwenye kifaa chako.",
+  "NSLocationAlwaysUsageDescription": "Mahali ulipo panatumika kusasisha nyakati za Swala kiotomatiki unapobadilisha mji na, ikiwa Niko msikitini imewashwa, kuwasha Hali ya Swala unapoingia msikitini. Mahali ulipo panabaki kwenye kifaa chako.",
+  "NSCameraUsageDescription": "Kamera yako inatumika kuonyesha mwelekeo wa Kibla juu ya mwonekano wa kamera na kuchanganua msimbo wa kuunganisha ulio kwenye TV yako. Picha hazihifadhiwi na hazitoki kwenye kifaa chako.",
+  "NSCalendarsUsageDescription": "Ufikiaji wa kalenda unatumika kuongeza nyakati za Swala kwenye kalenda yako na, ukiuwasha, kukagua kama matukio katika kalenda yako yanagongana na wakati wa Swala. Data ya kalenda yako inabaki kwenye kifaa chako.",
+  "NSCalendarsFullAccessUsageDescription": "Ufikiaji wa kalenda unatumika kuongeza nyakati za Swala kwenye kalenda yako na, ukiuwasha, kukagua kama matukio katika kalenda yako yanagongana na wakati wa Swala. Data ya kalenda yako inabaki kwenye kifaa chako.",
+  "NSLocalNetworkUsageDescription": "Programu inaunganisha na TV iliyo kwenye mtandao wako wa ndani ili kuituma nyakati zako za Swala na Swala ulizoziwekea alama. Data imesimbwa na inasafiri kati ya vifaa hivyo viwili tu.",
+  "NSAlarmKitUsageDescription": "Hatua za vikumbusho unazochagulia “Kengele halisi” zinawekwa kama kengele, ili uzisikie hata simu yako ikiwa kwenye kimya au Focus ikiwa imewashwa.",
+  "\"Vakti kıldım\"": "Nimeswali",
+  "\"Kıble\"": "Kibla"
+}

@@ -1,0 +1,18 @@
+// ne — Nepalce (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "${applicationName} मा अर्को नमाज कहिले हो";
+"${applicationName} sıradaki namaz" = "${applicationName} अर्को नमाज";
+"${applicationName} ile sıradaki namazı söyle" = "${applicationName} बाट अर्को नमाज बताउनुहोस्";
+"${applicationName} namaz vakti" = "${applicationName} नमाजको समय";
+"${applicationName} şu anki vakti kıldım" = "${applicationName} मा हालको नमाज पढें";
+"${applicationName} namazımı kıldım" = "${applicationName} मा नमाज पढें";
+"${applicationName} ile vakti kıldım olarak işaretle" = "${applicationName} मा हालको नमाजमा पढियो चिन्ह लगाउनुहोस्";
+"${applicationName} kıbleyi aç" = "${applicationName} मा किब्ला खोल्नुहोस्";
+"${applicationName} ile kıbleyi göster" = "${applicationName} बाट किब्ला देखाउनुहोस्";
+"${applicationName} günün ayeti görseli" = "${applicationName} आजको आयतको तस्बिर";
+"${applicationName} ile günün ayeti görselini hazırla" = "${applicationName} बाट आजको आयतको तस्बिर तयार गर्नुहोस्";

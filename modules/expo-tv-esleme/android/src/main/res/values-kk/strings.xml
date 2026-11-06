@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- kk -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Теледидар экранындағы QR кодты жақтаудың ішіне сыйғызыңыз</string>
+    <string name="tvesleme_qr_vazgec">Бас тарту</string>
+    <string name="tvesleme_qr_vazgec_erisim">Сканерлеуден бас тарту</string>
+    <string name="tvesleme_qr_yabanci">Бұл QR код Namaz Akışı TV қолданбасына тиесілі емес. Теледидардағы кодты сканерлеңіз.</string>
+    <string name="tvesleme_qr_okundu">Код сканерленді</string>
+</resources>

@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Gamiton ang inyong lokasyon aron husto nga makuwenta ang mga oras sa Salah sa inyong nahimutangan. Ang inyong lokasyon magpabilin sa inyong device.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Gamiton ang inyong lokasyon aron husto nga makuwenta ang mga oras sa Salah sa inyong nahimutangan ug, kon naka-on ang Anaa sa masjid, aron ma-on ang Mode sa Salah inig sulod ninyo sa masjid. Ang inyong lokasyon magpabilin sa inyong device.",
+  "NSLocationAlwaysUsageDescription": "Gamiton ang inyong lokasyon aron awtomatikong ma-update ang mga oras sa Salah kon mobalhin kamo og siyudad ug, kon naka-on ang Anaa sa masjid, aron ma-on ang Mode sa Salah inig sulod ninyo sa masjid. Ang inyong lokasyon magpabilin sa inyong device.",
+  "NSCameraUsageDescription": "Gamiton ang inyong kamera aron ipakita ang direksyon sa Qibla ibabaw sa view sa kamera ug aron i-scan ang pairing code sa inyong TV. Dili tipigan ang mga hulagway ug dili kini mogawas sa inyong device.",
+  "NSCalendarsUsageDescription": "Gamiton ang access sa kalendaryo aron idugang ang mga oras sa Salah sa inyong kalendaryo ug, kon i-on ninyo, aron susihon kon ang mga kalihokan sa inyong kalendaryo nagdungan sa oras sa Salah. Ang datos sa inyong kalendaryo magpabilin sa inyong device.",
+  "NSCalendarsFullAccessUsageDescription": "Gamiton ang access sa kalendaryo aron idugang ang mga oras sa Salah sa inyong kalendaryo ug, kon i-on ninyo, aron susihon kon ang mga kalihokan sa inyong kalendaryo nagdungan sa oras sa Salah. Ang datos sa inyong kalendaryo magpabilin sa inyong device.",
+  "NSLocalNetworkUsageDescription": "Mokonektar ang app sa TV sa inyong lokal nga network aron ipadala niini ang inyong mga oras sa Salah ug ang mga Salah nga inyong gimarkahan. Naka-encrypt ang datos ug moagi lang tali sa duha ka device.",
+  "NSAlarmKitUsageDescription": "Ang mga lakang sa pahinumdom diin inyong gipili ang “Tinuod nga alarm” i-set isip alarm, aron madungog ninyo kini bisan naka-silent ang telepono o naka-on ang Focus.",
+  "\"Vakti kıldım\"": "Nag-ampo ko",
+  "\"Kıble\"": "Qibla"
+}

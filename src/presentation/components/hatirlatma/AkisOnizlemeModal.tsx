@@ -41,6 +41,8 @@ import { OzetCipleri } from './OzetCipleri';
 import { SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import { ZamanSeridi } from './ZamanSeridi';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import {
     kalanDkAni,
     saatMetni,
@@ -50,7 +52,7 @@ import {
 } from '../../../core/muhafiz/zamanSeridi';
 import {
     pencerePlaniOlustur,
-    GIRIS_SESLI_GECIKME_NOTU,
+    girisSesliGecikmeNotu,
     TON_ETIKETLERI,
     alarmOnizlemeEtiketi,
     type PencereTanimi,
@@ -75,6 +77,8 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
     onKapat,
 }) => {
     const renkler = useRenkler();
+    const mh = useMetin().hatirlatma;
+    const mk = mh.akis;
     useDonanimGeriTusu(gorunur, onKapat);
 
     // "Dinle" ile baslatilan ses ekran kapaninca DEVAM ETMEMELI: native
@@ -161,16 +165,16 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                             </View>
                             <View className="flex-1">
                                 <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                    {tanim.baslik} akışı
+                                    {bicim(mk.baslik, { ad: tanim.baslik })}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                     {adimlar.length > 0 && tanim.onizlemeOzeti
                                         ? tanim.onizlemeOzeti(adimlar.length)
                                         : adimlar.length > 0
                                         ? girisYonu
-                                            ? `Vakit girdikten sonra ${adimlar.length} hatırlatma alırsınız`
-                                            : `Vakit çıkmadan önce ${adimlar.length} hatırlatma alırsınız`
-                                        : 'Bu vakitte hatırlatma yok'}
+                                            ? sayili(mk.girisOzet, adimlar.length)
+                                            : sayili(mk.cikisOzet, adimlar.length)
+                                        : mk.yok}
                                 </Text>
                             </View>
                             <TouchableOpacity
@@ -178,7 +182,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                 onPress={onKapat}
                                 activeOpacity={0.7}
                                 accessibilityRole="button"
-                                accessibilityLabel="Kapat"
+                                accessibilityLabel={mh.adim.kapat}
                             >
                                 <FontAwesome5 name="times" size={18} color={renkler.metinIkincil} />
                             </TouchableOpacity>
@@ -219,8 +223,8 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                 style={{ marginRight: 8, marginTop: 1 }}
                             />
                             <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metinIkincil }}>
-                                Önizlemedir, bildirim gönderilmez. Duymak için “Dinle”ye dokunun.
-                                {girisYonu && sesliAdimVar ? ` ${GIRIS_SESLI_GECIKME_NOTU}` : ''}
+                                {mk.bilgi}
+                                {girisYonu && sesliAdimVar ? ` ${girisSesliGecikmeNotu()}` : ''}
                             </Text>
                         </View>
 
@@ -230,8 +234,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                             <View className="items-center py-12">
                                 <FontAwesome5 name="bell-slash" size={34} color={renkler.metinIkincil} />
                                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                                    {tanim.baslik} vaktinde tüm adımlar kapalı. Bir adımı açarak akışı
-                                    oluşturabilirsiniz.
+                                    {bicim(mk.tumKapali, { ad: tanim.baslik })}
                                 </Text>
                             </View>
                         ) : (
@@ -244,7 +247,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                     // (persona çalışması 2026-10-19: "Nazik/Uyarı/Sert/Acil" jargon);
                                     // sertlik renk/ikonla görünür, ekran okuyucuya etikette söylenir.
                                     const adimEtiketi = tanim.tonSecilebilir
-                                        ? `${adim.adimIndeks + 1}. hatırlatma`
+                                        ? bicim(mh.pencere.adimNumara, { n: adim.adimIndeks + 1 })
                                         : bilgi.baslik;
                                     const tonErisim = tanim.tonSecilebilir ? `, ${TON_ETIKETLERI[kademe]}` : '';
                                     // Alarm yalnız planın işaretlediği tetikte çalar; diğer tetikler bildirimdir.
@@ -367,7 +370,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                         kanallar={adim.kanallar}
                                                         bildirimSesi={adim.bildirimSesi}
                                                         cozulmusMetin={anonsMetni ?? ''}
-                                                        erisimEtiketi={`${adim.olcuDk} dakika ${girisYonu ? 'sonra' : 'kala'} çalacak uyarıyı dinleyin`}
+                                                        erisimEtiketi={bicim(girisYonu ? mk.dinleGiris : mk.dinleCikis, { dk: adim.olcuDk })}
                                                     />
                                                 </View>
                                             )}
@@ -377,8 +380,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
 
                                 {sertAdimVar && (
                                     <Text className="text-[11px] mt-1 px-1 leading-4" style={{ color: renkler.metinIkincil }}>
-                                        Not: “Sert uyarı” adımının bildirim metni her seferinde hatırlatma
-                                        havuzundan seçilir; burada örnek bir metin gösterilir.
+                                        {bicim(mk.sertNot, { ad: mh.pencere.seviye.sert })}
                                     </Text>
                                 )}
                             </View>

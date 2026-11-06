@@ -11,7 +11,10 @@
  * tuzak (#13). Buraya ISO parse SOKMA.
  */
 
-import { NamazAdi } from '../constants/UygulamaSabitleri';
+import { NamazAdi, namazAdiGoster } from '../constants/UygulamaSabitleri';
+import { aktifDil, bicim, metin } from '../dil/aktifDil';
+import { dakikaKisa, dakikaUzun } from '../dil/sure';
+import { ayetMeali } from '../icerik/nassDili';
 
 /** JavaScript `Date.getDay()` degeri: 0 Pazar … 5 Cuma. */
 const CUMA_GUN_INDEKSI = 5;
@@ -74,25 +77,11 @@ export const namazGorunenAdi = (
   namazAdi: string,
   tarih: Date,
   cumaGosterilsin: boolean
-): string => (cumaGosterilsin && namazAdi === NamazAdi.Ogle && cumaMi(tarih) ? 'Cuma' : namazAdi);
+): string =>
+  cumaGosterilsin && namazAdi === NamazAdi.Ogle && cumaMi(tarih) ? metin().vakit.cuma : namazAdiGoster(namazAdi);
 
-export const sureMetniOlustur = (dakika: number): string => {
-  const saat = Math.floor(dakika / 60);
-  const kalanDk = dakika % 60;
-
-  if (saat === 0) return `${kalanDk} dakika`;
-  if (kalanDk === 0) return `${saat} saat`;
-  return `${saat} saat ${kalanDk} dakika`;
-};
-
-/** Başlık için kısa süre: "45 dk" / "1 sa" / "1 sa 30 dk". */
-const kisaSureMetni = (dakika: number): string => {
-  const d = Math.max(0, Math.floor(dakika));
-  const saat = Math.floor(d / 60);
-  const kalanDk = d % 60;
-  if (saat === 0) return `${kalanDk} dk`;
-  return kalanDk === 0 ? `${saat} sa` : `${saat} sa ${kalanDk} dk`;
-};
+/** Cümle içi süre ("1 saat 30 dakika" / "1 hour 30 minutes"), etkin dilde (sesli okuma da). */
+export const sureMetniOlustur = (dakika: number): string => dakikaUzun(dakika);
 
 /**
  * Cuma hatırlatmasının başlığı — ÖNDEN OKUNUR (issue #287): bileklikler
@@ -101,10 +90,17 @@ const kisaSureMetni = (dakika: number): string => {
  * girişine kalan süredir (gövde bunu açıkça söyler).
  */
 export const cumaBasligiOlustur = (oncedenDk: number): string =>
-  `Cuma · ${kisaSureMetni(oncedenDk)} kaldı · namaz yaklaşıyor`;
+  bicim(metin().bildirim.cuma.baslik, { sure: dakikaKisa(oncedenDk) });
 
 /** Cuma'ya ÖZGÜ nass (Cuma 62/9) — yalnız bu bildirimde, yalnız cumanın İLK tetiğinde. */
-export const CUMA_NASSI = `"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`;
+export const CUMA_NASSI = `"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`; // dil-haric: Türkçe nass
+
+/** Cuma nassı etkin dilde: Türkçede yukarıdaki metin, diğer dillerde QuranEnc meali + künye (yoksa boş). */
+export function cumaNassi(): string {
+  if (aktifDil() === 'tr') return CUMA_NASSI;
+  const meal = ayetMeali('62:9');
+  return meal ? `${meal.metin}\n— ${meal.kaynak}` : '';
+}
 
 /**
  * Cuma hatırlatmasının başlık + gövdesi — üretici (`cumaPlaniOlustur`), servis ve "Akışı
@@ -112,13 +108,15 @@ export const CUMA_NASSI = `"Cuma günü namaza çağırıldığında Allah'ı an
  * Nass yalnız İLK tetikte: her tekrarda okunması hem gürültü hem nassın değerini aşındırır.
  */
 export const cumaBildirimMetni = (kalanDk: number, ilk: boolean): { baslik: string; govde: string } => {
-  const sure = sureMetniOlustur(kalanDk);
+  const sure = dakikaUzun(kalanDk);
+  const m = metin().bildirim.cuma;
+  const nass = ilk ? cumaNassi() : '';
   return {
     // Önden okunur (issue #287): bileklikler başlığın ilk ~16 karakterini gösterir.
     baslik: cumaBasligiOlustur(kalanDk),
     govde: ilk
-      ? `Öğle vaktine ${sure} kaldı. Hazırlan, camiye yola çık.\n${CUMA_NASSI}`
-      : `Öğle vaktine ${sure} kaldı. Camiye yola çık.`,
+      ? `${bicim(m.govdeIlk, { sure })}${nass ? `\n${nass}` : ''}`
+      : bicim(m.govde, { sure }),
   };
 };
 
@@ -127,5 +125,5 @@ export const cumaBildirimMetni = (kalanDk: number, ilk: boolean): { baslik: stri
  * GİRİŞİNE kalan süredir — cuma namazı hutbeyle öğle girdikten sonra başlar.
  */
 export const cumaAnonsMetni = (kalanDk: number): string =>
-  `Cuma için öğle vaktine ${sureMetniOlustur(kalanDk)} kaldı. Hazırlan, camiye yola çık.`;
+  bicim(metin().anons.otomatik.cuma, { sure: sureMetniOlustur(kalanDk) });
 

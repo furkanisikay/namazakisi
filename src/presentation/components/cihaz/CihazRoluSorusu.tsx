@@ -14,9 +14,11 @@ import { rolSorulmaliMi } from '../../../core/cihaz/cihazRolu';
 import { cihazRoluOku, cihazRoluYaz } from '../../../data/local/LocalCihazRoluServisi';
 import { cihazRoluAyarla } from '../../hooks/useHatirlatmaKapisi';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
 
 export const CihazRoluSorusu: React.FC = () => {
     const renkler = useRenkler();
+    const m = useMetin().cihaz.rol;
     const [gorunur, setGorunur] = React.useState(false);
 
     React.useEffect(() => {
@@ -64,7 +66,7 @@ export const CihazRoluSorusu: React.FC = () => {
     return (
         <Modal visible={gorunur} animationType="fade" transparent statusBarTranslucent onRequestClose={sonra}>
             <View style={stil.kok}>
-                <Pressable style={[StyleSheet.absoluteFill, stil.perde]} onPress={sonra} accessibilityLabel="Sonra karar verin" />
+                <Pressable style={[StyleSheet.absoluteFill, stil.perde]} onPress={sonra} accessibilityLabel={m.sonraKararErisim} />
                 <View
                     testID="cihaz-rolu-sorusu"
                     style={[stil.kart, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}
@@ -77,24 +79,23 @@ export const CihazRoluSorusu: React.FC = () => {
                             <FontAwesome5 name="tablet-alt" size={18} color={renkler.birincil} />
                         </View>
                         <Text className="flex-1 text-base font-bold" style={{ color: renkler.metin }} accessibilityRole="header">
-                            Bu cihaz sizin ana telefonunuz mu?
+                            {m.soru}
                         </Text>
                     </View>
                     <Text className="text-sm leading-5" style={{ color: renkler.metinIkincil }}>
-                        Hatırlatmaları tek cihaz verir; aynı uyarı iki cihazda birden çalmaz. İkinci cihaz vakitleri
-                        gösterir ve Kıldım işaretler. Sonradan Ayarlar &gt; Ekran ve cihazlar bölümünden değiştirebilirsiniz.
+                        {m.aciklama}
                     </Text>
-                    {dugme('Evet, ana telefonum', 'mobile-alt', true, () => sec('ana'), 'cihaz-rolu-ana')}
-                    {dugme('Hayır, bu ikinci cihaz', 'tablet-alt', false, () => sec('ikincil'), 'cihaz-rolu-ikincil')}
+                    {dugme(m.ana, 'mobile-alt', true, () => sec('ana'), 'cihaz-rolu-ana')}
+                    {dugme(m.ikincil, 'tablet-alt', false, () => sec('ikincil'), 'cihaz-rolu-ikincil')}
                     <Pressable
                         onPress={sonra}
                         accessibilityRole="button"
-                        accessibilityLabel="Sonra"
+                        accessibilityLabel={m.sonra}
                         className="items-center justify-center mt-2"
                         style={{ minHeight: 44 }}
                     >
                         <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                            Sonra
+                            {m.sonra}
                         </Text>
                     </Pressable>
                 </View>

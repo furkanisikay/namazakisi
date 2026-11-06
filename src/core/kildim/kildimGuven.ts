@@ -7,6 +7,8 @@
  * görünen metinler vardır (kibar "siz" — arayüz yönetimi, ibadet çağrısı değil).
  */
 
+import { bicim, canli, metin } from '../dil/aktifDil';
+
 export type KildimGuvenKarari = 'izin' | 'engel';
 
 export interface KildimGuvenKaydi {
@@ -99,7 +101,7 @@ export function guvenListesiniSirala(liste: readonly KildimGuvenKaydi[]): Kildim
     return [...liste].sort(
         (a, b) =>
             sira(a.karar) - sira(b.karar) ||
-            a.ad.localeCompare(b.ad, 'tr') ||
+            a.ad.localeCompare(b.ad, 'tr') || // dil-haric: sıralama yereli (native ile aynı)
             a.paket.localeCompare(b.paket)
     );
 }
@@ -107,22 +109,19 @@ export function guvenListesiniSirala(liste: readonly KildimGuvenKaydi[]): Kildim
 // ── Metinler (kibar "siz") ──────────────────────────────────────────────────
 
 export const kildimIzinSorusu = (uygulamaAdi: string): string =>
-    `${uygulamaAdi} namazlarınızı kılındı olarak işaretleyebilsin mi?`;
+    bicim(metin().genel.kildim.izinSorusu, { uygulama: uygulamaAdi });
 
 export const kildimIzinAciklamasi = (vakitAdi: string): string =>
-    `Şu an işaretlenecek vakit: ${vakitAdi}. Kararınızı daha sonra Ayarlar > Otomasyonlarla kullanın > Kıldım işaretleyebilen uygulamalar bölümünden değiştirebilirsiniz.`;
+    bicim(metin().genel.kildim.izinAciklamasi, { vakit: vakitAdi });
 
 export const kildimTarayiciAciklamasi = (vakitAdi: string): string =>
-    `Şu an işaretlenecek vakit: ${vakitAdi}. Bu istek bir tarayıcıdan geldi; her web sayfası bu bağlantıyı açabildiği için kalıcı izin verilemez.`;
+    bicim(metin().genel.kildim.tarayiciAciklamasi, { vakit: vakitAdi });
 
 export const kildimEngellendiMetni = (uygulamaAdi: string): string =>
-    `${uygulamaAdi} artık namazlarınızı işaretleyemez. Ayarlardan değiştirebilirsiniz.`;
+    bicim(metin().genel.kildim.engellendi, { uygulama: uygulamaAdi });
 
-export const KILDIM_GUVEN_ETIKETLERI = {
-    herZaman: 'Her zaman izin verin',
-    buSefer: 'Yalnız bu sefer',
-    engelle: 'Engelleyin',
-} as const;
+/** Canlı görünüm: okunduğu an etkin dilin etiketleri. */
+export const KILDIM_GUVEN_ETIKETLERI = canli((s) => s.genel.kildim.etiketler);
 
 export const guvenKarariEtiketi = (karar: KildimGuvenKarari): string =>
-    karar === 'izin' ? 'İzin verildi' : 'Engellendi';
+    karar === 'izin' ? metin().genel.kildim.izinVerildi : metin().genel.kildim.engellendiEtiketi;

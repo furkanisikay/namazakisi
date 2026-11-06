@@ -7,6 +7,7 @@ import {
     type CamiyeGitAyarlari,
 } from '../../core/camiyeGit/camiyeGitAyarlari';
 import type { RootState } from './store';
+import { metin } from '../../core/dil/aktifDil';
 
 interface CamiyeGitState {
     ayarlar: CamiyeGitAyarlari;
@@ -64,13 +65,13 @@ const camiyeGitSlice = createSlice({
             })
             .addCase(camiyeGitAyarlariniYukle.rejected, (state, action) => {
                 state.yukleniyor = false;
-                state.hata = action.error.message || 'Ayarlar yüklenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.yuklenemedi;
             })
             .addCase(camiyeGitAyariniGuncelle.fulfilled, (state, action) => {
                 state.ayarlar = action.payload;
             })
             .addCase(camiyeGitAyariniGuncelle.rejected, (state, action) => {
-                state.hata = action.error.message || 'Ayar güncellenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.guncellenemedi;
             });
     },
 });

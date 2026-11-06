@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Okubala ekiseera okw’akaseera kano</string>
+    <string name="countdown_kanal_canli_aciklama">Okubala ekiseera mu Now Bar ne mu bbaala y’embeera</string>
+    <string name="countdown_kanal_genel_ad">Obubaka bw’okubala ekiseera</string>
+    <string name="countdown_kanal_genel_aciklama">Omukutu gw’obubaka bw’okubala ekiseera</string>
+
+    <string name="countdown_eylem_kildim">Nsaaze</string>
+    <string name="countdown_eylem_durdur">Yimiriza</string>
+
+    <string name="countdown_yedek_vakit">Yanguwa, ekiseera ky’esswala kinaatera okuggwaako.</string>
+    <string name="countdown_yedek_iftar">Ekiseera kiggwaawo.</string>
+    <string name="countdown_yedek_sahur">Okyayinza okulya n’okunywa; okusiiba kunaatera okutandika.</string>
+    <string name="countdown_yedek_seri">Esswala za leero tezinnaggwa; tofiirwa muddiriŋŋanwa gwo.</string>
+
+    <string name="countdown_onek_vakit">Okutuusa ekiseera okuggwaako</string>
+    <string name="countdown_onek_vakit_dar">Ekiseera kiggwaako</string>
+    <string name="countdown_onek_iftar">Okutuusa iftar</string>
+    <string name="countdown_onek_iftar_dar">Okutuusa iftar</string>
+    <string name="countdown_onek_sahur">Okutuusa sahur okuggwaako</string>
+    <string name="countdown_onek_sahur_dar">Sahur eggwaako</string>
+    <string name="countdown_onek_seri">Okukuuma omuddiriŋŋanwa gwo</string>
+    <string name="countdown_onek_seri_dar">Omuddiriŋŋanwa guggwaako</string>
+</resources>

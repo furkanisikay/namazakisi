@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Somali. Terms: src/core/dil/sozluk/so (vakit.ts header comment). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">so</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Salaadda xigta</string>
+    <string name="tile_aciklama">Salaadda xigta iyo waqtigeeda</string>
+    <string name="komplikasyon_adi">Waqtiga haray</string>
+    <string name="cikis_saati_komplikasyon_adi">Dhammaadka salaadda</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Salaadda xigta</string>
+    <string name="bugun_tile_adi">Maanta</string>
+    <string name="bugun_tile_aciklama">Shanta salaadood ee maanta; ku calaamadee kuwa aad tukatay laba taabasho</string>
+    <string name="ilerleme_komplikasyon_adi">Horumarka maalinlaha ah</string>
+    <string name="dagilim_komplikasyon_adi">Guudmarka maalinta</string>
+    <string name="kerahat_komplikasyon_adi">Waqti makruuh ah</string>
+    <string name="son_dakikalar_kanal_adi">Daqiiqadaha ugu dambeeya</string>
+    <string name="son_dakikalar_kanal_aciklama">Tirin wejiga saacadda daqiiqadaha ugu dambeeya ee salaad aadan tukan</string>
+    <string name="tesbihat_adi">Tasbiix</string>
+    <string name="tesbihat_kanal_adi">Tasbiix</string>
+    <string name="tesbihat_kanal_aciklama">Calaamad aamusan oo wejiga saacadda ah si aad ugu noqoto tasbiix aan dhammaan</string>
+    <string name="kible_adi">Qibla</string>
+    <string name="kible_komplikasyon_adi">Qibla</string>
+    <string name="camideyim_kanal_adi">Masjidka ayaan joogaa</string>
+    <string name="camideyim_kanal_aciklama">Calaamad aamusan oo wejiga saacadda ah marka taleefankaagu sheego inaad masjidka joogto</string>
+    <string name="uyandirma_kanal_adi">Toosin aamusan</string>
+    <string name="uyandirma_kanal_aciklama">Wuxuu kugu toosiyaa gariir oo kaliya, Subax iyo Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Waan tukaday</string>
+    <string name="kilindi_isareti">✓ La tukaday</string>
+    <string name="kapat">Dami</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Ka fur Namaz Akışı taleefankaaga si aad u aragto waqtiyada salaadda.</string>
+    <string name="yuk_eskidi">Xogta waqtiga salaaddu waa duug. Ka fur Namaz Akışı taleefankaaga si loo cusboonaysiiyo.</string>
+    <string name="guncelleme_gerekli">Ku cusboonaysii Namaz Akışı saacaddaada.</string>
+    <string name="bildirim_izni">Si aad u hesho xusuusin xitaa marka taleefankaagu kula jirin, oggolow ogeysiisyada Namaz Akışı dejinta saacadda.</string>
+    <string name="cami_soru">Masjidka ma joogtaa?</string>
+    <string name="cami_evet">Haa</string>
+    <string name="cami_evet_aciklama">Haa, masjidka ayaan joogaa. Wuxuu shidaa qaabka Salaadda</string>
+    <string name="cami_hayir">Maya</string>
+    <string name="cami_hayir_aciklama">Maya, masjidka ma joogo</string>
+    <string name="camidesiniz">Waxaad joogtaa masjidka</string>
+    <string name="cami_degil">Kani masjid ma aha</string>
+    <string name="cami_degil_aciklama">Kani masjid ma aha. Meeshan mar dambe looma tirin doono masjid</string>
+    <string name="tesbihat_ac">Fur tiriyaha tasbiixa</string>
+    <string name="kible_ac">Fur jiheeyaha Qiblada</string>
+    <string name="ses_dene">Tijaabi codka</string>
+    <string name="ses_dene_aciklama">Tijaabi akhrinta codka ee saacadda</string>
+    <string name="telefonda_acin">Ka fur taleefanka</string>
+    <string name="telefonda_ekran_ac">Ka fur %1$s taleefankaaga</string>
+    <string name="ekran_kaza">Buugga qadaa</string>
+    <string name="ekran_camideyim">Masjidka ayaan joogaa</string>
+    <string name="ekran_ayarlar">Dejinta</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">la tukaday, waa la isku waafajinayaa</string>
+    <string name="durum_kilindi">la tukaday</string>
+    <string name="durum_girmedi">waqtigu weli ma gelin</string>
+    <string name="durum_simdiki">waqtiga salaadda hadda, taabo si aad u calaamadeyso</string>
+    <string name="durum_simdiki_kalan">waqtiga salaadda hadda, %1$s, taabo si aad u calaamadeyso</string>
+    <string name="durum_kilinmadi">lama tukan, taabo si aad u calaamadeyso</string>
+    <string name="isaretleyin">U calaamadee la tukaday</string>
+    <string name="esitleniyor">waa la isku waafajinayaa</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Xaqiiji Waan tukaday</string>
+    <string name="vazgecin">Ka noqo</string>
+    <string name="vazgec">Ka noqo</string>
+    <string name="kerahat_vaktindesiniz">Hadda waa waqti makruuh ah.</string>
+    <string name="kilindi_dua">La tukaday. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Qaabka Salaadda waa shidan yahay, wuxuu dhammaanayaa %1$s. Taabo si aad u damiso</string>
+    <string name="namaz_modu_ac_aciklama">Ka shid qaabka Salaadda taleefankaaga</string>
+    <string name="namaz_modu_kapatin">Dami qaabka Salaadda</string>
+    <string name="namaz_modu_acin">Shid qaabka Salaadda</string>
+    <string name="namaz_modu_acik_bitis">Shidan, wuxuu dhammaanayaa %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Jihada waa la raadinayaa…</string>
+    <string name="kible_yuk_yok">Ka fur Namaz Akışı taleefankaaga si aad u hesho Qiblada.</string>
+    <string name="kible_konum_yok">Ka shid goobta taleefankaaga si aad u hesho Qiblada. Haddii Namaz Akışı uusan cusbayn, cusboonaysii.</string>
+    <string name="kible_sensor_yok">Saacaddani ma laha dareeme jiheeye. Jihada Qiblada waxaad ku arki kartaa taleefankaaga.</string>
+    <string name="kible_kuzeyden">Qibla %1$d° (laga bilaabo waqooyiga)</string>
+    <string name="kible_derece">Qibla %1$d°</string>
+    <string name="kible_telefonda_ac">Ka fur Qiblada taleefankaaga</string>
+    <string name="kible_erisim">%1$s. Qibladu waa %2$d° waqooyiga, %3$s</string>
+    <string name="kible_hizali">Waxaad u jeeddaa Qiblada</string>
+    <string name="kible_kalibrasyon">Si aad u hagaajiso, curcurkaaga hawada ugu dhaqaaji qaabka lambarka 8</string>
+    <string name="kible_egim">Saacaddaada u qabo si siman dhulka</string>
+    <string name="kible_titresim_acik">Hagidda gariirku waa shidan tahay. Taabo si aad u damiso</string>
+    <string name="kible_titresim_kapali">Hagidda gariirku waa dansan tahay. Taabo si aad u shiddo</string>
+    <string name="kible_harf_kuzey">W</string>
+    <string name="kible_harf_dogu">B</string>
+    <string name="kible_harf_guney">K</string>
+    <string name="kible_harf_bati">G</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbiixa waa la dhammaystiray. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Wadarta %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Tiri</string>
+    <string name="tesbihat_bastan_baslayin">Bilowga ka bilow</string>
+    <string name="tesbihat_bastan_soru">Ma bilowga ka bilaabaysaa?</string>
+    <string name="tesbihat_sifirlanir">Tirinta waa la eber-gelinayaa.</string>
+    <string name="tesbihat_geri_al">Ka noqo</string>
+    <string name="tesbihat_geri_al_aciklama">Ka noqo tirintii ugu dambeysay</string>
+    <string name="tesbihat_yeniden">Dib u bilow</string>
+    <string name="tesbihat_yeniden_aciklama">Dib u bilow tasbiixa</string>
+    <string name="tesbihat_suruyor">Tasbiixu wuu socdaa: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Waan tukaday. Wuxuu damiyaa toosinta</string>
+    <string name="uyandirma_kapat_aciklama">Dami toosinta</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Fur Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Taabo si aad u aragto waqtiyada salaadda</string>
+    <string name="tile_telefonda_acin">Ka fur barnaamijka taleefankaaga</string>
+    <string name="tile_sonra">%1$s kadib</string>
+    <string name="tile_siradaki_aciklama">Salaadda xigta %1$s, waxay bilaabmaysaa %2$s. Fur barnaamijka</string>
+    <string name="tile_giris">bilow %1$s</string>
+    <string name="tile_cikis">dhammaad %1$s</string>
+    <string name="bugun_bos_satir1">Ka fur barnaamijka</string>
+    <string name="bugun_bos_satir2">taleefankaaga</string>
+    <string name="bugun_acma_aciklamasi">Maanta %1$d/%2$d salaadood ayaa la tukaday. Fur barnaamijka</string>
+    <string name="bugun_sayi">Maanta %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Waqti makruuh · mar kale taabo si aad u xaqiijiso</string>
+    <string name="bugun_onay_tekrar">Mar kale taabo si aad u xaqiijiso</string>
+    <string name="bugun_tamam">Salaadaha maanta waa dhammaystiran yihiin</string>
+    <string name="bugun_kilinmadi">%1$s lama tukan</string>
+    <string name="bugun_siradaki">Xiga: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Mar kale taabo</string>
+    <string name="bugun_kilindi">%1$s la tukaday</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s la tukaday, waa la isku waafajinayaa</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Waqtiyada salaadda waa la sugayaa; ka fur Namaz Akışı taleefankaaga</string>
+    <string name="komplikasyon_bekleniyor">Waa la sugayaa</string>
+    <string name="komplikasyon_vakit">Salaad</string>
+    <string name="komplikasyon_cikis">Dhammaad</string>
+    <string name="komplikasyon_sirada">Xiga</string>
+    <string name="gun_durumu_aciklama">Maanta %2$d ka mid ah %1$d salaadood ayaa la tukaday</string>
+    <string name="gun_durumu_kilinmamis">%1$s; lama tukan: %2$s</string>
+    <string name="komplikasyon_namaz">Salaado</string>
+    <string name="komplikasyon_kerahat">Makruuh</string>
+    <string name="kerahat_icinde_aciklama">Waa waqti makruuh ah, wuxuu dhammaanayaa %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Waqtiga makruuhka xiga %1$s</string>
+    <string name="kible_komplikasyon">Qibladu waa %1$d° waqooyiga. Fur jiheeyaha</string>
+    <string name="kible_komplikasyon_konumlu">Qibladu waa %1$d° waqooyiga, %2$s. Fur jiheeyaha</string>
+    <string name="kible_komplikasyon_konum_yok">Ka shid goobta taleefankaaga si aad u hesho Qiblada</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Xusuusin degdeg ah · Gariir</string>
+    <string name="muhafiz_kanal_acil">Xusuusin degdeg ah</string>
+    <string name="muhafiz_kanal_titresimli">Xusuusinta salaadda · Gariir</string>
+    <string name="muhafiz_kanal">Xusuusinta salaadda</string>
+    <string name="muhafiz_kanal_aciklama">Xusuusinta salaadda ee lagu muujiyo saacaddaada xitaa marka taleefankaagu kula jirin</string>
+    <string name="son_dakikalar_cikis">Dhammaad: %1$s</string>
+    <string name="son_dakikalar_bitis">Dhammaad: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Waqtiga u haray dhammaadka %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Waqtiga u haray %1$s</string>
+    <string name="cami_namaz_modu_bitis">Qaabka Salaadda · wuxuu dhammaanayaa %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Waxaa laga furay taleefankaaga</string>
+    <string name="telefona_ulasilamadi">Taleefankaaga lama gaari karo</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (İtalyanca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Ho pregato</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Stato dell’orario</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Evento dell’orario</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "Lei". -->
+  <string name="otomasyon_bilgi_baslik">Questa impostazione si aggiunge da un’app di automazione</string>
+  <string name="otomasyon_bilgi_tarayici">I browser non possono ottenere un’autorizzazione permanente. La aggiunga dall’elenco dei plugin di un’app come Tasker, MacroDroid o Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">La aggiunga scegliendo «Namaz Akışı» dall’elenco dei plugin di un’app come Tasker, MacroDroid o Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s è bloccata</string>
+  <string name="otomasyon_engelli_mesaj">In precedenza ha impedito a questa app di segnare le sue preghiere. Può consentirlo in Namaz Akışı in Impostazioni &gt; «App che segnano Ho pregato».</string>
+  <string name="otomasyon_izin_baslik">Usare con %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s può sapere quando inizia un orario di preghiera, quando sta per finire e quando lei è in moschea, ed eseguire le sue automazioni. Può cambiare la decisione in Namaz Akışı in Impostazioni &gt; «App che segnano Ho pregato».</string>
+  <string name="otomasyon_izin_kildim">%1$s può segnare come compiuta la preghiera attuale con l’automazione impostata. Può cambiare la decisione in Namaz Akışı in Impostazioni &gt; «App che segnano Ho pregato».</string>
+  <string name="otomasyon_izin_ver">Consentire</string>
+  <string name="otomasyon_engelle">Bloccare</string>
+  <string name="otomasyon_vazgec">Annullare</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Quando deve partire?</string>
+  <string name="otomasyon_ileri">Avanti</string>
+  <string name="otomasyon_vakit_baslik">Quale preghiera?</string>
+  <string name="otomasyon_herhangi_vakit">Qualsiasi orario</string>
+  <string name="otomasyon_kaydet">Salvare</string>
+  <string name="otomasyon_kosul_icinde">Durante un orario di preghiera</string>
+  <string name="otomasyon_kosul_cikiyor">Mentre un orario sta per finire (mancano %1$d min, Custode della preghiera attivo)</string>
+  <string name="otomasyon_kosul_camide">Mentre si è in moschea</string>
+  <string name="otomasyon_olay_girdi">All’inizio di un orario di preghiera</string>
+  <string name="otomasyon_olay_cikiyor">Quando un orario sta per finire (mancano %1$d min, Custode della preghiera attivo)</string>
+  <string name="otomasyon_olay_camide">Quando viene rilevata la presenza in moschea</string>
+</resources>

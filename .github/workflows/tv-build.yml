@@ -23,6 +23,8 @@ on:
       - 'src/domain/services/KazaHesaplayiciServisi.ts'
       - 'src/domain/services/TurkiyeKonumServisi.ts'
       - 'src/domain/services/__tests__/TvVakitParitesi.test.ts'
+      - 'src/core/vakit/**'
+      - 'src/core/cihazAgi/yuk.ts'
       - 'src/core/constants/UygulamaSabitleri.ts'
       - '.github/workflows/tv-build.yml'
   workflow_dispatch:

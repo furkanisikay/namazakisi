@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- fr — Fransızca (beta). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">À la mosquée</string>
+    <string name="camigeofence_kanal_durum_aciklama">Une notification discrète quand votre présence à la mosquée est détectée</string>
+    <string name="camigeofence_kanal_soru_ad">Après la mosquée</string>
+    <string name="camigeofence_kanal_soru_aciklama">Une question pour marquer votre prière après avoir quitté la mosquée</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Le mode prière est activé. Les rappels arriveront en silence.</string>
+    <string name="camigeofence_govde_mod">Le mode prière est activé.</string>
+    <string name="camigeofence_govde_sessiz">Les rappels arriveront en silence.</string>
+    <string name="camigeofence_govde_normal">Les rappels arriveront normalement.</string>
+    <string name="camigeofence_eylem_modu_kapat">Désactiver le mode</string>
+    <string name="camigeofence_eylem_cami_degil">Pas une mosquée</string>
+
+    <string name="camigeofence_soru_baslik">Êtes-vous à la mosquée ?</string>
+    <string name="camigeofence_soru_govde">Vous êtes près de %1$s. Comme nous n’en sommes pas sûrs, nous vous posons la question.</string>
+    <string name="camigeofence_varsayilan_ad">Mosquée</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Activer le mode prière</string>
+    <string name="camigeofence_eylem_evet_camideyim">Oui, je suis à la mosquée</string>
+    <string name="camigeofence_eylem_hayir">Non</string>
+
+    <string name="camigeofence_kildiniz_mi">Avez-vous prié %1$s ?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Vous pouvez la marquer d’une seule touche.</string>
+    <string name="camigeofence_eylem_kildim">J’ai prié</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Joumoua</string>
+
+    <string name="camigeofence_mod_kural_adi">Prière</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı l’active pendant le prêche de Joumoua, à la mosquée ou au début d’une heure de prière</string>
+</resources>

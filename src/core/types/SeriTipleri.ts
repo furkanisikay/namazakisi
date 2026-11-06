@@ -3,6 +3,9 @@
  * Baris Ozcan'in "zinciri kirma" motivasyonu ve Duolingo streak sisteminden esinlenilmistir
  */
 
+import { metin } from '../dil/aktifDil';
+import type { Sozluk } from '../dil/sozluk/tr';
+
 // ==================== SERI (STREAK) TIPLERI ====================
 
 /**
@@ -312,144 +315,123 @@ export interface SeriHedefi {
   rozetId: string;
 }
 
+type HedefAnahtari = keyof Sozluk['seri']['hedefler'];
+type RozetAnahtari = keyof Sozluk['seri']['rozetler'];
+
+/**
+ * Görünen metinler sözlükten (`seri` ad alanı) OKUNDUĞU AN çözülür (getter): tanımı yayan
+ * (`{ ...tanim }`) kod o anki dilin metnini kopyalar. Redux'ta saklanan kopyalar dil
+ * değişince bayatlar → ekranlar adı kimlikten çizer (`rozetMetni`, `seviyeAdi`).
+ */
+function seriHedefi(gun: number, ikon: string, rozetId: HedefAnahtari): SeriHedefi {
+  return {
+    gun,
+    get ad() {
+      return metin().seri.hedefler[rozetId].ad;
+    },
+    get aciklama() {
+      return metin().seri.hedefler[rozetId].aciklama;
+    },
+    ikon,
+    rozetId,
+  };
+}
+
 /**
  * Onceden tanimlanmis seri hedefleri
  */
 export const SERI_HEDEFLERI: SeriHedefi[] = [
-  {
-    gun: 7,
-    ad: 'İlk Hafta',
-    aciklama: '7 gün kesintisiz namaz kıl',
-    ikon: '🌱',
-    rozetId: 'ilk_adim',
-  },
-  {
-    gun: 21,
-    ad: 'Alışkanlık Ustası',
-    aciklama: '21 gun - alışkanlık oluşturma süresi',
-    ikon: '🔥',
-    rozetId: 'aliskanlik_ustasi',
-  },
-  {
-    gun: 60,
-    ad: 'Kararlılık',
-    aciklama: '60 gün kesintisiz devam',
-    ikon: '💎',
-    rozetId: 'kararlilik',
-  },
-  {
-    gun: 90,
-    ad: 'Efsane',
-    aciklama: '90 gün - üstün kararlılık',
-    ikon: '👑',
-    rozetId: 'efsane',
-  },
+  seriHedefi(7, '🌱', 'ilk_adim'),
+  seriHedefi(21, '🔥', 'aliskanlik_ustasi'),
+  seriHedefi(60, '💎', 'kararlilik'),
+  seriHedefi(90, '👑', 'efsane'),
 ];
 
+/** Seri hedefinin sentence case adı (Tesbih); bilinmeyen kimlikte `null`. */
+export function seriHedefiCumleAdi(rozetId: string): string | null {
+  const h = (metin().seri.hedefler as Record<string, { cumle: string } | undefined>)[rozetId];
+  return h ? h.cumle : null;
+}
+
 // ==================== SEVIYE TANIMLARI ====================
+
+/** Seviye (rank) adı, etkin dilde; bilinmeyen seviyede ilk seviyenin adı. */
+export function seviyeAdi(seviye: number): string {
+  const adlar = metin().seri.seviyeler;
+  return adlar[seviye - 1] ?? adlar[0];
+}
+
+function seviyeTanimi(seviye: number, minPuan: number, ikon: string): SeviyeTanimi {
+  return {
+    seviye,
+    minPuan,
+    get rank() {
+      return seviyeAdi(seviye);
+    },
+    ikon,
+  };
+}
 
 /**
  * Tum seviye tanimlari
  */
 export const SEVIYE_TANIMLARI: SeviyeTanimi[] = [
-  { seviye: 1, minPuan: 0, rank: 'Mübtedi', ikon: '🌙' },
-  { seviye: 2, minPuan: 100, rank: 'Tâlip', ikon: '⭐' },
-  { seviye: 3, minPuan: 300, rank: 'Sâlik', ikon: '🌟' },
-  { seviye: 4, minPuan: 600, rank: 'Mürid', ikon: '💫' },
-  { seviye: 5, minPuan: 1000, rank: 'Ârif', ikon: '✨' },
-  { seviye: 6, minPuan: 1500, rank: 'Hâfız', ikon: '🏆' },
-  { seviye: 7, minPuan: 2500, rank: 'Kâmil', ikon: '👑' },
+  seviyeTanimi(1, 0, '🌙'),
+  seviyeTanimi(2, 100, '⭐'),
+  seviyeTanimi(3, 300, '🌟'),
+  seviyeTanimi(4, 600, '💫'),
+  seviyeTanimi(5, 1000, '✨'),
+  seviyeTanimi(6, 1500, '🏆'),
+  seviyeTanimi(7, 2500, '👑'),
 ];
 
 // ==================== ROZET TANIMLARI ====================
+
+/** Rozetin görünen metinleri, etkin dilde; bilinmeyen kimlikte `null`. */
+export function rozetMetni(id: string): { ad: string; aciklama: string; kosul: string } | null {
+  return (metin().seri.rozetler as Record<string, { ad: string; aciklama: string; kosul: string } | undefined>)[id] ?? null;
+}
+
+function rozetTanimi(
+  id: RozetAnahtari,
+  ikon: string,
+  tip: RozetTipi,
+  seviye: RozetSeviyesi,
+  kosul: number
+): RozetTanimi {
+  return {
+    id,
+    get ad() {
+      return metin().seri.rozetler[id].ad;
+    },
+    get aciklama() {
+      return metin().seri.rozetler[id].aciklama;
+    },
+    ikon,
+    tip,
+    seviye,
+    kosul,
+    get kosulAciklamasi() {
+      return metin().seri.rozetler[id].kosul;
+    },
+  };
+}
 
 /**
  * Tum rozet tanimlari
  */
 export const ROZET_TANIMLARI: RozetTanimi[] = [
   // Seri rozetleri
-  {
-    id: 'ilk_adim',
-    ad: 'İlk Adım',
-    aciklama: 'İlk haftayı tamamladınız!',
-    ikon: '🌱',
-    tip: 'seri',
-    seviye: 'bronz',
-    kosul: 7,
-    kosulAciklamasi: '7 günlük seri',
-  },
-  {
-    id: 'aliskanlik_ustasi',
-    ad: 'Alışkanlık Ustası',
-    aciklama: '21 gün - alışkanlık oluşturma süresi tamamlandı!',
-    ikon: '🔥',
-    tip: 'seri',
-    seviye: 'gumus',
-    kosul: 21,
-    kosulAciklamasi: '21 günlük seri',
-  },
-  {
-    id: 'kararlilik',
-    ad: 'Kararlı',
-    aciklama: '60 gün kesintisiz namaz kıldınız!',
-    ikon: '💎',
-    tip: 'seri',
-    seviye: 'altin',
-    kosul: 60,
-    kosulAciklamasi: '60 günlük seri',
-  },
-  {
-    id: 'efsane',
-    ad: 'Efsane',
-    aciklama: '90 gün - üstün kararlılık gösterdiniz!',
-    ikon: '👑',
-    tip: 'seri',
-    seviye: 'elmas',
-    kosul: 90,
-    kosulAciklamasi: '90 günlük seri',
-  },
+  rozetTanimi('ilk_adim', '🌱', 'seri', 'bronz', 7),
+  rozetTanimi('aliskanlik_ustasi', '🔥', 'seri', 'gumus', 21),
+  rozetTanimi('kararlilik', '💎', 'seri', 'altin', 60),
+  rozetTanimi('efsane', '👑', 'seri', 'elmas', 90),
   // Ozel rozetler
-  {
-    id: 'toparlanma_ustasi',
-    ad: 'Toparlanma Ustası',
-    aciklama: '3 kez toparlanma modunu başarıyla tamamladınız!',
-    ikon: '🔄',
-    tip: 'ozel',
-    seviye: 'gumus',
-    kosul: 3,
-    kosulAciklamasi: '3 kez toparlanma',
-  },
-  {
-    id: 'mukemmeliyetci',
-    ad: 'Mükemmeliyetçi',
-    aciklama: '30 gün boyunca 5/5 namaz kıldınız!',
-    ikon: '⭐',
-    tip: 'ozel',
-    seviye: 'altin',
-    kosul: 30,
-    kosulAciklamasi: '30 gün 5/5 namaz',
-  },
+  rozetTanimi('toparlanma_ustasi', '🔄', 'ozel', 'gumus', 3),
+  rozetTanimi('mukemmeliyetci', '⭐', 'ozel', 'altin', 30),
   // Toplam rozetler
-  {
-    id: 'yuz_namaz',
-    ad: '100 Namaz',
-    aciklama: 'Toplam 100 namaz kıldınız!',
-    ikon: '💯',
-    tip: 'toplam',
-    seviye: 'bronz',
-    kosul: 100,
-    kosulAciklamasi: '100 namaz kılmak',
-  },
-  {
-    id: 'bin_namaz',
-    ad: '1000 Namaz',
-    aciklama: 'Toplam 1000 namaz kıldınız!',
-    ikon: '🏅',
-    tip: 'toplam',
-    seviye: 'altin',
-    kosul: 1000,
-    kosulAciklamasi: '1000 namaz kılmak',
-  },
+  rozetTanimi('yuz_namaz', '💯', 'toplam', 'bronz', 100),
+  rozetTanimi('bin_namaz', '🏅', 'toplam', 'altin', 1000),
 ];
 
 // ==================== GUN BITIS SAATI SECENEKLERI ====================
@@ -466,13 +448,23 @@ export interface GunBitisSaatiSecenegi {
   aciklama: string;
 }
 
+function gunBitisSecenegi(deger: string, anahtar: keyof Sozluk['seri']['gunBitis']): GunBitisSaatiSecenegi {
+  return {
+    deger,
+    etiket: deger,
+    get aciklama() {
+      return metin().seri.gunBitis[anahtar];
+    },
+  };
+}
+
 /**
  * Varsayilan gun bitis saati secenekleri
  */
 export const GUN_BITIS_SAATI_SECENEKLERI: GunBitisSaatiSecenegi[] = [
-  { deger: '04:00', etiket: '04:00', aciklama: 'Erken yatanlar için' },
-  { deger: '05:00', etiket: '05:00', aciklama: 'Varsayılan - çoğu imsak vaktinden önce' },
-  { deger: '06:00', etiket: '06:00', aciklama: 'Geç yatanlar için' },
+  gunBitisSecenegi('04:00', 'erken'),
+  gunBitisSecenegi('05:00', 'varsayilan'),
+  gunBitisSecenegi('06:00', 'gec'),
 ];
 
 // ==================== KUTLAMA TIPLERI ====================

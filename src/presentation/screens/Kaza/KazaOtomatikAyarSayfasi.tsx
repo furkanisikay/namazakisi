@@ -13,11 +13,11 @@
  * Ayar defterdedir (`otoAyar` hareketi) → iki cihaz aynı izdüşümü hesaplar.
  * Vitir ayrı bir anahtar DEĞİLDİR: ORTAK mezhep ayarına bağlıdır (Hanefî: vacip).
  */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
@@ -36,19 +36,11 @@ import { kisaBildirimGoster } from '../../components/common/KisaBildirim';
 import { BolumBasligi, IkonCipi, KazaDugme, KazaKart, SecimCipi } from '../../components/kaza/KazaOrtak';
 import { gunMetni } from '../../components/kaza/kazaMetinleri';
 import type { KayitsizGunTercihi } from '../../../core/kaza/kazaHareketi';
+import { bicim, sayili, sayiYaz } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
-const TARAMA_SECENEKLERI: ReadonlyArray<{ gun: number; etiket: string }> = [
-  { gun: 7, etiket: 'Son 7 gün' },
-  { gun: 30, etiket: 'Son 30 gün' },
-  { gun: 90, etiket: 'Son 90 gün' },
-  { gun: GECMIS_TARAMA_AZAMI_GUN, etiket: 'Son 1 yıl' },
-];
-
-const NASIL_CALISIR: ReadonlyArray<{ ikon: string; metin: string }> = [
-  { ikon: 'hourglass-end', metin: 'Vakit işaretlenmeden çıkar' },
-  { ikon: 'plus-circle', metin: 'Namaz günü bitince (ertesi imsak) deftere +1 eklenir' },
-  { ikon: 'undo', metin: 'Sonra "kıldım" derseniz kendiliğinden geri alınır' },
-];
+const TARAMA_GUNLERI: readonly number[] = [7, 30, 90, GECMIS_TARAMA_AZAMI_GUN];
+const NASIL_IKONLARI = ['hourglass-end', 'plus-circle', 'undo'] as const;
 
 export const KazaOtomatikAyarSayfasi: React.FC = () => {
   const renkler = useRenkler();
@@ -62,6 +54,21 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
   const [taramaGun, setTaramaGun] = useState<number | null>(null);
   const [onizleme, setOnizleme] = useState<KazaDefteri.GecmisTaramaOnizlemesi | null>(null);
   const [mesgul, setMesgul] = useState(false);
+  const sozluk = useMetin().kaza;
+  const m = sozluk.ayar;
+
+  const taramaSecenekleri = useMemo(
+    () =>
+      TARAMA_GUNLERI.map((gun) => ({
+        gun,
+        etiket: gun === GECMIS_TARAMA_AZAMI_GUN ? m.sonYil : sayili(sozluk.sonGun, gun),
+      })),
+    [m, sozluk]
+  );
+  const nasilCalisir = useMemo(
+    () => [m.nasil1, m.nasil2, m.nasil3].map((metin, i) => ({ ikon: NASIL_IKONLARI[i], metin })),
+    [m]
+  );
 
   useEffect(() => {
     dispatch(kazaOneriAyarlariniYukle());
@@ -89,13 +96,13 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
         kisaBildirimGoster(basari);
         return true;
       } catch {
-        kisaBildirimGoster('Ayar kaydedilemedi. Lütfen tekrar deneyin.');
+        kisaBildirimGoster(m.kaydedilemedi);
         return false;
       } finally {
         setMesgul(false);
       }
     },
-    [dispatch]
+    [dispatch, m]
   );
 
   const taramaSec = useCallback(
@@ -105,28 +112,28 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
       try {
         setOnizleme(await KazaDefteri.gecmisTaramaOnizlemesi(gunEkle(bugun, -gun)));
       } catch {
-        kisaBildirimGoster('Önizleme hazırlanamadı. Lütfen tekrar deneyin.');
+        kisaBildirimGoster(m.onizlemeHata);
       }
     },
-    [bugun]
+    [bugun, m]
   );
 
   const taramayiUygula = useCallback(async () => {
     if (!onizleme) return;
     const tamam = await yaz(
       { aktif: true, gun: onizleme.baslangic, kayitsiz: oto?.kayitsiz },
-      `${gunMetni(onizleme.baslangic)} itibarıyla tarandı`
+      bicim(m.tarandi, { gun: gunMetni(onizleme.baslangic) })
     );
     if (tamam) {
       setTaramaGun(null);
       setOnizleme(null);
     }
-  }, [onizleme, oto?.kayitsiz, yaz]);
+  }, [onizleme, oto?.kayitsiz, yaz, m]);
 
   if (!kazaDurumu || !oto) {
     return (
       <SafeAreaView style={[stiller.kap, { backgroundColor: renkler.arkaplan }]} edges={['bottom', 'left', 'right']}>
-        <Text style={[stiller.yukleniyor, { color: renkler.metinIkincil }]}>Yükleniyor...</Text>
+        <Text style={[stiller.yukleniyor, { color: renkler.metinIkincil }]}>{sozluk.yukleniyor}</Text>
       </SafeAreaView>
     );
   }
@@ -140,16 +147,16 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
     <SafeAreaView style={[stiller.kap, { backgroundColor: renkler.arkaplan }]} edges={['bottom', 'left', 'right']}>
       <ScrollView contentContainerStyle={stiller.icerik}>
         <Text style={[stiller.ozet, { color: renkler.metinIkincil }]}>
-          İşaretlemediğiniz farzlar, namaz günü bitince deftere kendiliğinden eklenir.
+          {m.ozet}
         </Text>
 
         <KazaKart>
           <View style={stiller.anahtarSatiri}>
             <IkonCipi ikon="robot" renk={renkler.birincil} />
             <View style={stiller.esnek}>
-              <Text style={[stiller.baslik, { color: renkler.metin }]}>Kılınmayan farzları ekleyin</Text>
+              <Text style={[stiller.baslik, { color: renkler.metin }]}>{m.kilinmayanEkle}</Text>
               <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
-                {oto.aktif && oto.baslangic ? `${gunMetni(oto.baslangic)}'den beri açık` : 'Kapalı'}
+                {oto.aktif && oto.baslangic ? bicim(m.acikBeri, { gun: gunMetni(oto.baslangic) }) : m.kapali}
               </Text>
             </View>
             <Anahtar
@@ -158,24 +165,24 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
               onValueChange={(acik) => {
                 void yaz(
                   { aktif: acik, kayitsiz: oto.kayitsiz },
-                  acik ? 'Otomatik ekleme açıldı' : 'Otomatik ekleme kapatıldı'
+                  acik ? sozluk.satir.otoAcildi : sozluk.satir.otoKapatildi
                 );
               }}
               trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
               thumbColor={oto.aktif ? renkler.birincil : renkler.kartArkaplan}
-              accessibilityLabel="Kılınmayan farzları otomatik ekleyin"
+              accessibilityLabel={m.kilinmayanErisim}
             />
           </View>
         </KazaKart>
 
-        <BolumBasligi>Her farzla bir kaza</BolumBasligi>
+        <BolumBasligi>{m.herFarzBaslik}</BolumBasligi>
         <KazaKart>
           <View style={stiller.anahtarSatiri}>
             <IkonCipi ikon="link" renk={renkler.birincil} />
             <View style={stiller.esnek}>
-              <Text style={[stiller.baslik, { color: renkler.metin }]}>Farzdan sonra kaza önerin</Text>
+              <Text style={[stiller.baslik, { color: renkler.metin }]}>{m.farzSonrasi}</Text>
               <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
-                Ana ekranda bir farzı "Kıldım" deyince bir kaza önerir. Kerahat vaktinde sorulmaz.
+                {m.farzSonrasiAlt}
               </Text>
             </View>
             {oneriAyarlariYuklendi && oneriAyarlari ? (
@@ -186,15 +193,15 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
                 }}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                 thumbColor={oneriAyarlari.farzSonrasiOner ? renkler.birincil : renkler.kartArkaplan}
-                accessibilityLabel="Her farzdan sonra kaza önerin"
+                accessibilityLabel={m.farzSonrasiErisim}
               />
             ) : null}
           </View>
         </KazaKart>
 
-        <BolumBasligi>Otomatik eklemede ne olur</BolumBasligi>
+        <BolumBasligi>{m.neOlurBaslik}</BolumBasligi>
         <KazaKart>
-          {NASIL_CALISIR.map((a, i) => (
+          {nasilCalisir.map((a, i) => (
             <View key={a.metin} style={[stiller.adim, i > 0 && stiller.adimAra]}>
               <IkonCipi ikon={a.ikon} renk={renkler.bilgi} boyut={32} />
               <Text style={[stiller.adimMetin, { color: renkler.metin }]}>{a.metin}</Text>
@@ -202,21 +209,17 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
           ))}
         </KazaKart>
 
-        <BolumBasligi>Vitir</BolumBasligi>
+        <BolumBasligi>{m.vitirBaslik}</BolumBasligi>
         <KazaKart>
           <View style={stiller.anahtarSatiri}>
             <IkonCipi ikon="star-half-alt" renk={renkler.vurgu} />
             <View style={stiller.esnek}>
               <Text style={[stiller.baslik, { color: renkler.metin }]}>
-                {vitirEklenir === null
-                  ? 'Mezhebiniz okunuyor…'
-                  : vitirEklenir
-                    ? 'Yatsıyla birlikte vitir de eklenir'
-                    : 'Vitir eklenmez'}
+                {vitirEklenir === null ? m.mezhepOkunuyor : vitirEklenir ? m.vitirEklenir : m.vitirEklenmez}
               </Text>
               <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
                 {mezhep
-                  ? `Mezhep: ${MEZHEP_ADLARI[mezhep]}${vitirEklenir ? ' · vitir vaciptir' : ''}. Namaz vakitlerini etkilemez.`
+                  ? bicim(m.mezhep, { mezhep: MEZHEP_ADLARI[mezhep], vacip: vitirEklenir ? m.vitirVacip : '' })
                   : ''}
               </Text>
             </View>
@@ -228,67 +231,69 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
               })
             }
             accessibilityRole="button"
-            accessibilityLabel="Mezhebi ortak ayardan değiştirin"
+            accessibilityLabel={m.mezhepErisim}
             style={stiller.baglanti}
           >
-            <Text style={[stiller.baglantiMetin, { color: renkler.metin }]}>Mezhebi değiştirin</Text>
-            <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+            <Text style={[stiller.baglantiMetin, { color: renkler.metin }]}>{m.mezhepDegistir}</Text>
+            <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} />
           </TouchableOpacity>
         </KazaKart>
 
-        <BolumBasligi>Hiç işaret olmayan günler</BolumBasligi>
+        <BolumBasligi>{m.isaretsizBaslik}</BolumBasligi>
         <KazaKart>
           <View style={stiller.ciplar}>
             <SecimCipi
-              etiket="Bana sorun"
+              etiket={m.banaSorun}
               secili={oto.kayitsiz === 'sor'}
-              onPress={() => yaz({ aktif: oto.aktif, kayitsiz: 'sor' }, 'Bu günler size sorulacak')}
+              onPress={() => yaz({ aktif: oto.aktif, kayitsiz: 'sor' }, m.sorulacak)}
             />
             <SecimCipi
-              etiket="Doğrudan ekleyin"
+              etiket={m.dogrudanEkleyin}
               secili={oto.kayitsiz === 'ekle'}
-              onPress={() => yaz({ aktif: oto.aktif, kayitsiz: 'ekle' }, 'Bu günler doğrudan eklenecek')}
+              onPress={() => yaz({ aktif: oto.aktif, kayitsiz: 'ekle' }, m.dogrudanEklenecek)}
             />
           </View>
           <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
-            Uygulamayı açmadığınız günler yanlışlıkla borç yazmasın diye önce size gösterilir.
+            {m.isaretsizAlt}
           </Text>
         </KazaKart>
         <Text style={[stiller.not, { color: renkler.metinIkincil }]}>
-          Özel gün kaydı olan günler (hayız, nifas) eklenmez. Her otomatik kayıt hareket geçmişinde görünür ve tek
-          dokunuşla kaldırılabilir.
+          {m.ozelGunNot}
         </Text>
 
-        <BolumBasligi>Geçmiş günleri tarayın</BolumBasligi>
+        <BolumBasligi>{m.gecmisBaslik}</BolumBasligi>
         <KazaKart>
           <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
-            Başlangıcı geriye alırsanız kaç kayıt ekleneceğini önce gösteririz. En fazla bir yıl geriye gidilebilir.
+            {m.gecmisAlt}
           </Text>
           <View style={[stiller.ciplar, stiller.ustBosluk]}>
-            {TARAMA_SECENEKLERI.map((t) => (
+            {taramaSecenekleri.map((t) => (
               <SecimCipi key={t.gun} etiket={t.etiket} secili={taramaGun === t.gun} onPress={() => taramaSec(t.gun)} />
             ))}
           </View>
           {taramaGun !== null && taramaGereksiz && (
             <Text style={[stiller.alt, { color: renkler.metin }]}>
-              Otomatik ekleme bu aralığı zaten kapsıyor; eklenecek yeni kayıt yok.
+              {m.kapsiyor}
             </Text>
           )}
           {onizleme && !taramaGereksiz && (
             <View testID="gecmis-tarama-onizleme">
               <Text style={[stiller.baslik, { color: renkler.metin }]}>
-                {onizleme.eklenecek > 0 ? `${onizleme.eklenecek} kayıt eklenecek` : 'Eklenecek kayıt yok'}
+                {onizleme.eklenecek > 0 ? sayili(m.kayitEklenecek, onizleme.eklenecek) : m.kayitYok}
               </Text>
               <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
-                {gunMetni(onizleme.baslangic)}'den itibaren · Kalan kaza {onizleme.eskiKalan.toLocaleString('tr-TR')} →{' '}
-                {onizleme.yeniKalan.toLocaleString('tr-TR')}
-                {onizleme.bekleyenGun > 0 ? ` · ${onizleme.bekleyenGun} işaretsiz gün size sorulacak` : ''}
+                {bicim(m.onizlemeAlt, {
+                  gun: gunMetni(onizleme.baslangic),
+                  eski: sayiYaz(onizleme.eskiKalan),
+                  yeni: sayiYaz(onizleme.yeniKalan),
+                })}
+                {onizleme.bekleyenGun > 0 ? sayili(m.bekleyenSorulacak, onizleme.bekleyenGun) : ''}
               </Text>
               {!oto.aktif && (
-                <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>Tarama otomatik eklemeyi de açar.</Text>
+                <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>{m.taramaAcar}</Text>
               )}
               <KazaDugme
-                etiket="Tarayın ve ekleyin"
+                etiket={m.tarayin}
                 ikon="search"
                 onPress={taramayiUygula}
                 devreDisi={mesgul || (onizleme.eklenecek === 0 && onizleme.bekleyenGun === 0)}

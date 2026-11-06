@@ -1,7 +1,7 @@
 /**
  * Telefon → ana ekran widget'ı / hızlı ayarlar kutusu VERİ SÖZLEŞMESİ (issue #275/#276) — SAF.
  *
- * Vakitler JS'te hesaplanır (tek kaynak: `CalculationMethod.Turkey()`, gün bazında
+ * Vakitler JS'te hesaplanır (tek kaynak: etkin hesap ayarı `aktifPrayerTimes`, gün bazında
  * ayrı `PrayerTimes`) ve native `WidgetVeri` modülüyle SharedPreferences'a yazılır;
  * widget, kutu ve kısayol yalnız GÖSTERİR / karar verir.
  *

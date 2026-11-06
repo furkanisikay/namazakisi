@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shqip. Termat: JS src/core/dil/sozluk/sq (hitap "ju"). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">sq</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Tabela e kohëve të namazit</string>
+    <string name="ayarlar">Cilësimet</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Edhe %2$s deri te %1$s</string>
+    <string name="pano_vaktine">Deri te %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s pas %2$s</string>
+    <string name="pano_kerahat_vakti">Koha mekruh</string>
+    <string name="pano_bitis">mbaron %1$s</string>
+    <string name="pano_kerahat_erisim">Koha mekruh, %1$s, mbaron %2$s. %3$s</string>
+    <string name="pano_cumaya">Xhumaja pas %1$s</string>
+    <string name="pano_cikis_geldi">koha për t’u nisur</string>
+    <string name="pano_cikis">nisuni në %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Është koha të niseni për në xhuma</string>
+    <string name="pano_cuma_cikis_erisim">Nisuni për në xhuma në %1$s</string>
+    <string name="pano_bugun_cuma">Sot është xhuma</string>
+    <string name="pano_ogle">Dreka %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Sot është xhuma. Namazi i xhumasë falet në kohën e drekës, %1$s</string>
+    <string name="pano_ayarlar_erisim">Cilësimet: shtoni një telefon, vendndodhja, telefonat e lidhur</string>
+    <string name="pano_simdiki_vakit">vakti aktual</string>
+    <string name="pano_siradaki_vakit">vakti i radhës</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Shtoni telefonin", "Shkruani kodin", "Do ta zgjedh vetë qytetin", "Shtoni". -->
+    <string name="kodla_girin">Shkruani kodin</string>
+    <string name="ili_kendim_secin">Do ta zgjedh vetë qytetin</string>
+    <string name="yeniden_deneyin">Provoni sërish</string>
+    <string name="telefon_varsayilan">Telefoni</string>
+    <string name="esleme_ekleniyor">Po shtohet %1$s</string>
+    <string name="esleme_gonderiyor">Telefoni juaj po dërgon vendndodhjen dhe gjendjen…</string>
+    <string name="esleme_tamamlanamadi">Çiftimi nuk u përfundua</string>
+    <string name="esleme_saklanamadi">Ky televizor nuk mund ta ruajë në mënyrë të sigurt çelësin e lidhjes. Mund ta jepni vendndodhjen me kod ose të zgjidhni qytetin.</string>
+    <string name="telefonunuzu_ekleyin">Shtoni telefonin</string>
+    <string name="esleme_alt">Kohët e namazit për vendndodhjen tuaj; shfaqen edhe namazet që keni falur.</string>
+    <string name="esleme_adim1">Hapni Namaz Akışı në telefon</string>
+    <string name="esleme_adim2">Cilësimet › Pajisjet e mia › Shtoni një televizor</string>
+    <string name="esleme_adim3">Drejtojeni kamerën e telefonit nga kodi</string>
+    <string name="esleme_ayni_wifi">Telefoni dhe televizori duhet të jenë në të njëjtin rrjet Wi-Fi.</string>
+    <string name="esleme_onay_soru">Ta shtoni këtë telefon?</string>
+    <string name="esleme_onay_aciklama">Telefoni i shtuar mund t’i dërgojë këtij televizori vendndodhjen dhe namazet që shënon.</string>
+    <string name="ekleyin">Shtoni</string>
+    <string name="hayir">Jo</string>
+    <string name="esleme_eklendi">%1$s u shtua</string>
+    <string name="konumunuz_geldi">Vendndodhja juaj arriti</string>
+    <string name="konuma_gore_hesaplanacak">Kohët e namazit do të llogariten për këtë vendndodhje.</string>
+    <string name="qr_konum_alindi">Vendndodhja u mor</string>
+    <string name="qr_kodu">Kodi i çiftimit për t’u skanuar me telefon</string>
+    <string name="ag_yok">Televizori nuk është i lidhur me rrjetin</string>
+    <string name="ag_yok_aciklama">Mund të vazhdoni duke shkruar kodin 7-shifror nga telefoni ose duke zgjedhur qytetin.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Shkruani kodin nga telefoni</string>
+    <string name="kod_yol">Në telefon: Cilësimet › Pajisjet e mia › Shtoni një televizor</string>
+    <string name="kod_hatali">Kodi nuk përputhet. Kontrolloni 7 shifrat në telefon; korrigjoni një shifër të gabuar me “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Nëse telekomanda ka butona me numra, mund të shkruani edhe me ta.</string>
+    <string name="kod_bos_hane">shifër bosh</string>
+    <string name="kod_sil">Fshi</string>
+    <string name="kod_sil_aciklama">Fshini shifrën e fundit</string>
+    <string name="kod_geri">Mbrapa</string>
+    <string name="vazgecin">Anuloni</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Zgjidhni qytetin tuaj</string>
+    <string name="il_merkezine_gore">Kohët e namazit llogariten për qendrën e qytetit.</string>
+    <string name="il_secili">%1$s, i zgjedhur</string>
+    <string name="dream_il_yok">Për të parë tabelën e kohëve të namazit, hapni aplikacionin Namaz Akışı dhe zgjidhni qytetin.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Vendndodhja: %1$s</string>
+    <string name="ayar_konum_yok">Nuk u zgjodh vendndodhje</string>
+    <string name="ayar_telefon_ekleyin">Shtoni një telefon</string>
+    <string name="ayar_konumu_kodla">Jepni vendndodhjen me kod</string>
+    <string name="ayar_bagli_telefonlar">Telefonat e lidhur me këtë televizor</string>
+    <string name="ayar_telefon_yok">Ende nuk është shtuar asnjë telefon. Përdorni “%1$s” në të majtë dhe skanoni kodin që shfaqet.</string>
+    <string name="kaldirin">Hiqni</string>
+    <string name="ayar_ne_gonderir">Çfarë dërgojnë telefonat?</string>
+    <string name="ayar_madde_konum">Vendndodhjen: kohët e namazit e ndjekin atë</string>
+    <string name="ayar_madde_namazlar">Namazet e shënuara, për ata që e zgjedhin</string>
+    <string name="ayar_madde_sifreli">Të enkriptuara, vetëm në rrjetin e shtëpisë</string>
+    <string name="son_haber_yok">Ende pa informacion</string>
+    <string name="son_haber_az_once">Sapo</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">para %1$d min</item>
+        <item quantity="other">para %1$d min</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">para %1$d ore</item>
+        <item quantity="other">para %1$d orësh</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">para %1$d dite</item>
+        <item quantity="other">para %1$d ditësh</item>
+    </plurals>
+    <string name="kaldir_soru">Ta hiqni %1$s?</string>
+    <string name="kaldir_aciklama">Ky telefon nuk do të mund t’i dërgojë më informacion televizorit. Për ta shtuar sërish, duhet ta skanoni sërish kodin QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Vendndodhja e telefonit tuaj</string>
+</resources>

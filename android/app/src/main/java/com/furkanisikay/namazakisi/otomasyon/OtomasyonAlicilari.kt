@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.furkanisikay.namazakisi.arayuzDili
 import com.furkanisikay.namazakisi.cekirdek.EklentiAyari
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 import com.furkanisikay.namazakisi.cekirdek.KosulKipi
@@ -16,6 +17,8 @@ import com.furkanisikay.namazakisi.cekirdek.SorguSonucu
 import com.furkanisikay.namazakisi.kildim.KildimGuvenDeposu
 import com.furkanisikay.namazakisi.kildim.KildimIslemleri
 import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 
 /**
  * Dışa açık eklenti alıcılarının ORTAK doğrulaması (issue #278).
@@ -74,7 +77,7 @@ class OtomasyonEylemAlici : BroadcastReceiver() {
         if (ayar !is EklentiAyari.Kildim) return
         try {
             val sonuc = KildimIslemleri.simdikiVaktiKuyrugaAl(context, KildimKuyruguKurallari.KAYNAK_OTOMASYON)
-            Toast.makeText(context.applicationContext, KildimIslemleri.sonucMetni(sonuc), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context.applicationContext, KildimIslemleri.sonucMetni(context, sonuc).rakamla(context.rakamSifiri()), Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Log.w("OtomasyonEylemAlici", "Kildim islenemedi", e)
         }
@@ -107,17 +110,19 @@ class OtomasyonKosulAlici : BroadcastReceiver() {
         val ayar = EklentiDogrulama.yetkiliAyar(this, ctx, intent, OtomasyonProtokolu.KOSUL_SORGULA)
             as? EklentiAyari.Kosul ?: return SorguSonucu(OtomasyonProtokolu.SONUC_BILINMIYOR)
         val simdi = System.currentTimeMillis()
+        // `%vakit` arayüz dilinde (görünen ad); `%vakitkodu` dilden bağımsız kimlik.
+        val dil = ctx.arayuzDili()
         return when (ayar.kip) {
             KosulKipi.OLAY -> {
                 val gecis = try { intent.getBundleExtra(OtomasyonProtokolu.TASKER_GECIS_VERISI) } catch (_: Exception) { null }
                 val mesaj = gecis?.getInt(OtomasyonProtokolu.TASKER_MESAJ_KIMLIGI, 0) ?: 0
                 val olay = if (mesaj != 0) OtomasyonDeposu.olayBul(ctx, mesaj) else null
-                OtomasyonKurallari.olayiDegerlendir(ayar, olay, simdi)
+                OtomasyonKurallari.olayiDegerlendir(ayar, olay, simdi, dil)
             }
             KosulKipi.DURUM -> {
                 val a = WidgetVeriDeposu.anlik(ctx, simdi)
                 OtomasyonKurallari.durumuDegerlendir(
-                    ayar, a.durum, a.vakitler.isNotEmpty(), OtomasyonDeposu.sonCikiyor(ctx), OtomasyonDeposu.camide(ctx), simdi,
+                    ayar, a.durum, a.vakitler.isNotEmpty(), OtomasyonDeposu.sonCikiyor(ctx), OtomasyonDeposu.camide(ctx), simdi, dil,
                 )
             }
         }

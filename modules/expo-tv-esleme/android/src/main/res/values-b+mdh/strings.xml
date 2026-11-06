@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mdh -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Ibetad su QR code sa screen nu TV sa dalem nu kwadru</string>
+    <string name="tvesleme_qr_vazgec">Ibatal</string>
+    <string name="tvesleme_qr_vazgec_erisim">Ibatal su kapagilay sa code</string>
+    <string name="tvesleme_qr_yabanci">Kena Namaz Akışı TV su QR code ini. Ilayn su code sa TV.</string>
+    <string name="tvesleme_qr_okundu">Nailay su code</string>
+</resources>

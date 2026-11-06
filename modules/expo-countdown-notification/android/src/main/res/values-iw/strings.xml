@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">ספירה לאחור בזמן אמת</string>
+    <string name="countdown_kanal_canli_aciklama">ספירות לאחור ב-Now Bar ובשורת המצב</string>
+    <string name="countdown_kanal_genel_ad">התראות ספירה לאחור</string>
+    <string name="countdown_kanal_genel_aciklama">ערוץ להתראות ספירה לאחור</string>
+
+    <string name="countdown_eylem_kildim">התפללתי</string>
+    <string name="countdown_eylem_durdur">עצירה</string>
+
+    <string name="countdown_yedek_vakit">מהרו, זמן התפילה עומד להסתיים.</string>
+    <string name="countdown_yedek_iftar">הזמן אוזל.</string>
+    <string name="countdown_yedek_sahur">אפשר עדיין לאכול ולשתות; הצום מתחיל בקרוב.</string>
+    <string name="countdown_yedek_seri">התפילות של היום לא הושלמו; אל תאבדו את הרצף.</string>
+
+    <string name="countdown_onek_vakit">עד סוף הזמן</string>
+    <string name="countdown_onek_vakit_dar">הזמן מסתיים</string>
+    <string name="countdown_onek_iftar">עד האפטאר</string>
+    <string name="countdown_onek_iftar_dar">עד האפטאר</string>
+    <string name="countdown_onek_sahur">עד סוף הסחור</string>
+    <string name="countdown_onek_sahur_dar">הסחור מסתיים</string>
+    <string name="countdown_onek_seri">כדי לשמור על הרצף</string>
+    <string name="countdown_onek_seri_dar">הרצף מסתיים</string>
+</resources>

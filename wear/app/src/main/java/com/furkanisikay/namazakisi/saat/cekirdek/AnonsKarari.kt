@@ -66,14 +66,13 @@ object AnonsKarari {
      * Ana ekrandaki bilgi satırı (kibar "siz"). Saat bu ayarla konuşmayacaksa null; konuşacak
      * ama konuşamıyorsa nedeni söylenir — bildirim yine titreşir.
      */
-    fun bilgiMetni(anonsYeri: String?, hoparlor: Boolean, durum: SesDurumu): String? {
+    fun bilgiMetni(anonsYeri: String?, hoparlor: Boolean, durum: SesDurumu, dil: String = "tr"): String? {
         if (!saatKonusabilir(anonsYeri)) return null
+        val d = saatDili(dil)
         return when {
-            !hoparlor -> "Saatinizde hoparlör yok; sesli anonslar yalnız titreşimle bildirilir."
-            durum == SesDurumu.MOTOR_YOK ->
-                "Saatinizde metin okuma motoru bulunamadı; sesli anonslar yalnız titreşimle bildirilir."
-            durum == SesDurumu.TURKCE_YOK ->
-                "Saatinizde Türkçe ses yok; sesli anonslar yalnız titreşimle bildirilir."
+            !hoparlor -> d.hoparlorYokBilgi
+            durum == SesDurumu.MOTOR_YOK -> d.motorYokBilgi
+            durum == SesDurumu.TURKCE_YOK -> d.sesYokBilgi
             else -> null
         }
     }
@@ -83,21 +82,28 @@ object AnonsKarari {
      * telefon YANINDAYKEN bilerek konuşmaz (çift konuşma yok) — "saatim konuşmuyor"
      * izleniminin en olası nedeni budur, ekran bunu açıkça söyler.
      */
-    fun yerAciklamasi(anonsYeri: String?): String? = when (anonsYeri) {
-        AnonsYerleri.OTOMATIK -> "Telefonunuz yanınızdayken sesli okumayı telefonunuz yapar; saatiniz yalnız telefon uzaktayken konuşur. Yalnız sesli anonsu açık hatırlatmalar okunur."
-        AnonsYerleri.SAAT -> "Sesli okumayı saatiniz yapar. Yalnız sesli anonsu açık hatırlatmalar okunur."
+    fun yerAciklamasi(anonsYeri: String?, dil: String = "tr"): String? = when (anonsYeri) {
+        AnonsYerleri.OTOMATIK -> saatDili(dil).otomatikYerAciklamasi
+        AnonsYerleri.SAAT -> saatDili(dil).saatYerAciklamasi
         else -> null
     }
 
     /** Deneme sonucunun kısa onay metni. */
-    fun denemeSonucu(durum: SesDurumu, hoparlor: Boolean): String = when {
-        !hoparlor -> "Saatinizde hoparlör yok"
-        durum == SesDurumu.KONUSTU -> "Ses çalıştı"
-        durum == SesDurumu.MOTOR_YOK -> "Metin okuma motoru yok"
-        durum == SesDurumu.TURKCE_YOK -> "Türkçe ses yok"
-        else -> "Ses çalınamadı"
+    fun denemeSonucu(durum: SesDurumu, hoparlor: Boolean, dil: String = "tr"): String {
+        val d = saatDili(dil)
+        return when {
+            !hoparlor -> d.hoparlorYok
+            durum == SesDurumu.KONUSTU -> d.sesCalisti
+            durum == SesDurumu.MOTOR_YOK -> d.motorYok
+            durum == SesDurumu.TURKCE_YOK -> d.sesYok
+            else -> d.sesCalinamadi
+        }
     }
 
-    /** Deneme cümlesi (arayüz denemesi — kibar "siz"). */
+    /**
+     * Deneme cümlesi (arayüz denemesi — kibar "siz"). TÜRKÇE KALIR: `SaatAnonsu` motoru
+     * `tr-TR` sesiyle kurar (anons metni telefondan, telefonun uygulama dilinde gelir; yük
+     * dili taşımaz). Saat sesi dile bağlanınca bu da dile bağlanır.
+     */
     const val DENEME_METNI = "Namaz Akışı sesli okuması saatinizde çalışıyor."
 }

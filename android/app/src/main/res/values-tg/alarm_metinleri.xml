@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tg — Tacikçe (beta). -->
+<!-- Gerçek alarm (Tacikçe). "Хондам" bildirimdeki düğmeyle aynı ad (JS `bildirim.eylem.kildim`). -->
+<resources>
+  <string name="alarm_baslik">Ҳушдори намоз</string>
+  <string name="alarm_kildim">Хондам</string>
+  <string name="alarm_kapat">Хомӯш кардан</string>
+  <string name="alarm_kanal_aciklamasi">Ҳушдори воқеие, ки дар қадамҳои интихобкардаи ёдоварӣ садо медиҳад</string>
+</resources>

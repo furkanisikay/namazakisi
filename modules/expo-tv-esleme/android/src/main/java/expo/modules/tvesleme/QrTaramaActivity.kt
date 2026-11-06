@@ -57,6 +57,8 @@ class QrTaramaActivity : AppCompatActivity() {
     private lateinit var cerceve: TaramaCercevesi
     private lateinit var ipucu: TextView
     private var sonYabanciMs = 0L
+    /** Uygulamanın arayüz dilindeki metinler (aktivite cihaz dilinde açılır). */
+    private val metinler: Context by lazy { dildeBaglam() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +69,7 @@ class QrTaramaActivity : AppCompatActivity() {
         }
         cerceve = TaramaCercevesi(this)
         ipucu = TextView(this).apply {
-            text = "TV ekranındaki kare kodu çerçeveye alın"
+            text = metinler.getString(R.string.tvesleme_qr_ipucu)
             setTextColor(Color.WHITE)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
             typeface = Typeface.DEFAULT_BOLD
@@ -75,7 +77,7 @@ class QrTaramaActivity : AppCompatActivity() {
             setPadding(dp(24), dp(16), dp(24), dp(16))
         }
         val vazgec = TextView(this).apply {
-            text = "Vazgeçin"
+            text = metinler.getString(R.string.tvesleme_qr_vazgec)
             setTextColor(Color.WHITE)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f)
             gravity = Gravity.CENTER
@@ -87,7 +89,7 @@ class QrTaramaActivity : AppCompatActivity() {
                 setColor(0x66000000)
                 setStroke(dp(1), 0x99FFFFFF.toInt())
             }
-            contentDescription = "Taramadan vazgeçin"
+            contentDescription = metinler.getString(R.string.tvesleme_qr_vazgec_erisim)
             isClickable = true
             isFocusable = true
             setOnClickListener {
@@ -151,7 +153,7 @@ class QrTaramaActivity : AppCompatActivity() {
                 if (simdi - sonYabanciMs > 2500) {
                     sonYabanciMs = simdi
                     runOnUiThread {
-                        ipucu.text = "Bu kod Namaz Akışı TV'ye ait değil. TV'deki kodu okutun."
+                        ipucu.text = metinler.getString(R.string.tvesleme_qr_yabanci)
                         ipucu.announceForAccessibility(ipucu.text)
                     }
                 }
@@ -168,7 +170,7 @@ class QrTaramaActivity : AppCompatActivity() {
 
     private fun yakalandi(metin: String) {
         cerceve.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-        ipucu.text = "Kod okundu"
+        ipucu.text = metinler.getString(R.string.tvesleme_qr_okundu)
         val sonuc = Intent().putExtra(EKSTRA_METIN, metin)
         cerceve.yakala(animasyonAcik()) {
             setResult(Activity.RESULT_OK, sonuc)

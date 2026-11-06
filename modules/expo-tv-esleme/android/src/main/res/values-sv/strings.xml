@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Placera QR-koden på tv-skärmen inom ramen</string>
+    <string name="tvesleme_qr_vazgec">Avbryt</string>
+    <string name="tvesleme_qr_vazgec_erisim">Avbryt skanningen</string>
+    <string name="tvesleme_qr_yabanci">Den här QR-koden tillhör inte Namaz Akışı TV. Skanna koden på tv:n.</string>
+    <string name="tvesleme_qr_okundu">Koden har skannats</string>
+</resources>

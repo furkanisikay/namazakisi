@@ -17,14 +17,17 @@
  * Saate HAL EKİ EKLENMEZ ("11:47'ye" okunuşa göre değişir) → "… saatine kadar".
  */
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
+import { bicim, canli, metin, sayili } from '../dil/aktifDil';
+import { hadisGosterilir } from '../icerik/nassDili';
 import type { NafileTuru, TeheccudPenceresi } from './nafileTipleri';
 
 const saatMetni = (t: Date): string =>
     `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
 
 export const NAFILE_NASLARI = {
-    kusluk: '"Bunların hepsinin yerine kuşluk vaktinde kılınacak iki rekât namaz yeter." (Müslim, Salâtü\'l-müsâfirîn 84)',
-    teheccud: '"Farz namazlardan sonra en faziletli namaz gece namazıdır." (Müslim, Sıyâm 202-203)',
+    // Türkçe hadis metni (yalnız `hadisGosterilir()` dilinde eklenir).
+    kusluk: '"Bunların hepsinin yerine kuşluk vaktinde kılınacak iki rekât namaz yeter." (Müslim, Salâtü\'l-müsâfirîn 84)', // dil-haric: nass
+    teheccud: '"Farz namazlardan sonra en faziletli namaz gece namazıdır." (Müslim, Sıyâm 202-203)', // dil-haric: nass
 } as const;
 
 /**
@@ -70,45 +73,47 @@ const baglamCoz = (g: NafileMetinGirdisi): Baglam => {
     };
 };
 
+/** Nass ilk tetikte, yalnız hadis gösterilen dilde (Türkçe dışında hadis yok). */
+const nassEki = (nass: string): string => (hadisGosterilir() ? `\n${nass}` : '');
+
 export function nafileBildirimMetni(g: NafileMetinGirdisi): { baslik: string; govde: string } {
     const son = saatMetni(g.son);
     const { ilk, giris, dk, sonUcteBirGirdi } = baglamCoz(g);
+    const m = metin().nafile.bildirim;
     switch (g.tur) {
         case 'kusluk':
             if (!ilk) {
-                return { baslik: 'Kuşluk vakti', govde: `Kuşluk vakti sürüyor; ${son} saatine kadar kılabilirsin.` };
+                return { baslik: m.kuslukBaslik, govde: bicim(m.kuslukSuruyor, { son }) };
             }
             return {
-                baslik: 'Kuşluk vakti',
+                baslik: m.kuslukBaslik,
                 govde: giris
-                    ? `Kuşluk vakti girdi. İki rekât için güzel bir an; vakit ${son} saatine kadar sürer.\n${NAFILE_NASLARI.kusluk}`
-                    : `Kuşluk vaktinin bitmesine ${dk} dakika var. İki rekât için güzel bir an; vakit ${son} saatine kadar sürer.\n${NAFILE_NASLARI.kusluk}`,
+                    ? `${bicim(m.kuslukGirdi, { son })}${nassEki(NAFILE_NASLARI.kusluk)}`
+                    : `${sayili(m.kuslukBitiyor, dk, { son })}${nassEki(NAFILE_NASLARI.kusluk)}`,
             };
         case 'evvabin':
-            if (!ilk) return { baslik: 'Evvâbîn', govde: `Evvâbîn için vakit sürüyor. Yatsı vakti ${son}.` };
+            if (!ilk) return { baslik: m.evvabinBaslik, govde: bicim(m.evvabinSuruyor, { son }) };
             return {
-                baslik: 'Evvâbîn',
-                govde: giris
-                    ? `Akşam namazından sonra evvâbîn için güzel bir an. Yatsı vakti ${son}.`
-                    : `Evvâbîn için ${dk} dakika var. Yatsı vakti ${son}.`,
+                baslik: m.evvabinBaslik,
+                govde: giris ? bicim(m.evvabinGirdi, { son }) : sayili(m.evvabinKalan, dk, { son }),
             };
         case 'teheccud':
             if (g.uyandirma) {
                 return {
-                    baslik: 'Teheccüd vakti',
+                    baslik: m.teheccudBaslik,
                     govde: sonUcteBirGirdi
-                        ? `Kalk; gecenin son üçte biri girdi. İmsak vakti ${son}.\n${NAFILE_NASLARI.teheccud}`
-                        : `Kalk; imsaka ${dk} dakika kaldı. İmsak vakti ${son}.`,
+                        ? `${bicim(m.uyandirSonUcte, { son })}${nassEki(NAFILE_NASLARI.teheccud)}`
+                        : sayili(m.uyandirKalan, dk, { son }),
                 };
             }
             return sonUcteBirGirdi
                 ? {
-                    baslik: 'Gecenin son üçte biri',
-                    govde: `Teheccüd için en bereketli saatler. İmsak vakti ${son}.\n${NAFILE_NASLARI.teheccud}`,
+                    baslik: m.sonUcteBaslik,
+                    govde: `${bicim(m.sonUcteGovde, { son })}${nassEki(NAFILE_NASLARI.teheccud)}`,
                 }
                 : {
-                    baslik: 'Teheccüd vakti',
-                    govde: `İmsaka ${dk} dakika kaldı. Teheccüd için güzel bir vakit.`,
+                    baslik: m.teheccudBaslik,
+                    govde: sayili(m.teheccudKalan, dk),
                 };
     }
 }
@@ -123,25 +128,18 @@ export function nafileBildirimMetni(g: NafileMetinGirdisi): { baslik: string; go
  */
 export function nafileAnonsMetni(g: NafileMetinGirdisi): string {
     const { ilk, giris, dk, sonUcteBirGirdi } = baglamCoz(g);
+    const o = metin().anons.otomatik;
     switch (g.tur) {
         case 'kusluk':
-            if (!ilk) return 'Kuşluk vakti sürüyor.';
-            return giris ? 'Kuşluk vakti girdi. İki rekât için güzel bir an.' : `Kuşluk vaktinin bitmesine ${dk} dakika var.`;
+            if (!ilk) return o.kuslukSuruyor;
+            return giris ? o.kuslukGirdi : sayili(o.kuslukBitiyor, dk);
         case 'evvabin':
-            if (!ilk) return 'Evvâbîn için vakit sürüyor.';
-            return giris ? 'Evvâbîn vakti. İki rekât için güzel bir an.' : `Evvâbîn için ${dk} dakika var.`;
+            if (!ilk) return o.evvabinSuruyor;
+            return giris ? o.evvabinGirdi : sayili(o.evvabinKalan, dk);
         case 'teheccud':
-            return sonUcteBirGirdi
-                ? 'Teheccüd vakti. Gecenin son üçte biri girdi.'
-                : `Teheccüd vakti. İmsaka ${dk} dakika kaldı.`;
+            return sonUcteBirGirdi ? o.teheccudSonUcte : sayili(o.teheccudKalan, dk);
     }
 }
 
-/** Gösterge şeridi ve kart açıklamaları (arayüz dili — kibar "siz"). */
-export const NAFILE_ACIKLAMALARI: Record<NafileTuru, string> = {
-    kusluk:
-        'Güneş doğduktan yaklaşık 45 dakika sonra başlar, öğle vaktine 10 dakika kalana kadar sürer. İşrak, kuşluğun ilk vaktidir; en faziletlisi gündüzün ilk dörtte biri geçtikten sonradır.',
-    evvabin: 'Akşam namazından sonra, yatsı vaktine kadar kılınır.',
-    teheccud:
-        'Yatsıdan sonra uyuyup kalktıktan sonra, imsaka kadar kılınır. En faziletli zamanı gecenin son üçte biridir.',
-};
+/** Gösterge şeridi ve kart açıklamaları (arayüz dili — kibar "siz"), etkin dilde. */
+export const NAFILE_ACIKLAMALARI: Readonly<Record<NafileTuru, string>> = canli((s) => s.nafile.aciklamalar);

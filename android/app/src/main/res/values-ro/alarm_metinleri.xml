@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Rumence). "M-am rugat" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alarmă de rugăciune</string>
+  <string name="alarm_kildim">M-am rugat</string>
+  <string name="alarm_kapat">Opriți</string>
+  <string name="alarm_kanal_aciklamasi">O alarmă reală care sună la pașii de memento aleși</string>
+</resources>

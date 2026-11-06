@@ -2,6 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { namazAdiGoster } from '../../../core/constants/UygulamaSabitleri';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 
 interface KerahatOnayModalProps {
@@ -34,10 +37,11 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
     onVazgec,
 }) => {
     const renkler = useRenkler();
+    const m = useMetin().anaEkran.kerahatOnay;
 
     // Modal "fade" ile kapanırken parent namazAdi'yı boşaltır; son geçerli adı
     // önbelleğe alıp animasyon boyunca göstererek metin kaymasını (flicker) önle.
-    const [sonNamazAdi, setSonNamazAdi] = React.useState(namazAdi || 'Namaz');
+    const [sonNamazAdi, setSonNamazAdi] = React.useState(namazAdi || '');
     React.useEffect(() => {
         if (gorunur && namazAdi) {
             setSonNamazAdi(namazAdi);
@@ -76,10 +80,10 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
                         </View>
                         <View className="flex-1">
                             <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                Kerahat Vakti
+                                {m.baslik}
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {sonNamazAdi} namazını işaretliyorsunuz
+                                {bicim(m.isaretliyorsunuz, { namaz: namazAdiGoster(sonNamazAdi) })}
                             </Text>
                         </View>
                     </View>
@@ -98,8 +102,7 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
 
                     {/* Onay sorusu — kibar "siz" dili */}
                     <Text className="text-sm leading-5 mb-5" style={{ color: renkler.metin }}>
-                        Kerahat vakti olsa da {sonNamazAdi} namazınızı kıldığınız için işaretleyebilirsiniz.
-                        Yine de kılındı olarak işaretlemek istiyor musunuz?
+                        {bicim(m.soru, { namaz: namazAdiGoster(sonNamazAdi) })}
                     </Text>
 
                     {/* Butonlar */}
@@ -110,10 +113,10 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
                             onPress={onVazgec}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel="Vazgeç"
+                            accessibilityLabel={m.vazgec}
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                                Vazgeç
+                                {m.vazgec}
                             </Text>
                         </TouchableOpacity>
 
@@ -124,11 +127,11 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
                             activeOpacity={0.85}
                             accessibilityRole="button"
                             // Görünen metin etiketin başında durur (sesli komutla bulunabilir).
-                            accessibilityLabel="Yine de işaretleyin"
+                            accessibilityLabel={m.yineDeErisim}
                         >
                             <FontAwesome5 name="check" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                                Yine de İşaretle
+                                {m.yineDe}
                             </Text>
                         </TouchableOpacity>
                     </View>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Telugu). "ఆచరించాను" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">నమాజ్ అలారం</string>
+  <string name="alarm_kildim">ఆచరించాను</string>
+  <string name="alarm_kapat">ఆఫ్ చేయండి</string>
+  <string name="alarm_kanal_aciklamasi">మీరు ఎంచుకున్న రిమైండర్ దశల్లో మోగే నిజమైన అలారం</string>
+</resources>

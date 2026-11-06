@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">N be jiŋli ni</string>
+    <string name="camigeofence_kanal_durum_aciklama">Lahabali din ka kukoli bɛ yi nya ni yi be jiŋli ni</string>
+    <string name="camigeofence_kanal_soru_ad">Jiŋli yibu nyaaŋa</string>
+    <string name="camigeofence_kanal_soru_aciklama">Bohigu ka yi ni tooi dalim yi jiŋli yi yi yi jiŋli ni nyaaŋa</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Jiŋli soli yooya. Teebu ni kana ka kukoli kani.</string>
+    <string name="camigeofence_govde_mod">Jiŋli soli yooya.</string>
+    <string name="camigeofence_govde_sessiz">Teebu ni kana ka kukoli kani.</string>
+    <string name="camigeofence_govde_normal">Teebu ni kana kamani di ni kanaa shɛm.</string>
+    <string name="camigeofence_eylem_modu_kapat">Kparimi ya soli maa</string>
+    <string name="camigeofence_eylem_cami_degil">Pa jiŋli</string>
+
+    <string name="camigeofence_soru_baslik">Yi be jiŋli ni?</string>
+    <string name="camigeofence_soru_govde">Yi be %1$s sani. Ti bi dihi tabili, dinzuɣu ti bohiri ya.</string>
+    <string name="camigeofence_varsayilan_ad">Jiŋli</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Yoomi ya Jiŋli soli</string>
+    <string name="camigeofence_eylem_evet_camideyim">Iin, n be jiŋli ni</string>
+    <string name="camigeofence_eylem_hayir">Aayi</string>
+
+    <string name="camigeofence_kildiniz_mi">Yi puhi %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Yi ni tooi dalim li ni dihibu yini.</string>
+    <string name="camigeofence_eylem_kildim">N puhi jiŋli</string>
+    <string name="camigeofence_namaz_imsak">Subaahi</string>
+    <string name="camigeofence_namaz_ogle">Azafari</string>
+    <string name="camigeofence_namaz_ikindi">Lahisari</string>
+    <string name="camigeofence_namaz_aksam">Magarbi</string>
+    <string name="camigeofence_namaz_yatsi">Isha’i</string>
+    <string name="camigeofence_namaz_cuma">Alizumma</string>
+
+    <string name="camigeofence_mod_kural_adi">Jiŋli</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı yooiri li Alizumma hutuba saha, jiŋli ni bee jiŋli saha yi paai</string>
+</resources>

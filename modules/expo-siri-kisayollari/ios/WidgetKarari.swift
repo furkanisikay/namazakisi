@@ -49,24 +49,29 @@ public struct WidgetKontrolDurumu: Equatable, Sendable {
 public enum WidgetKarari {
     /// Kontrol Merkezi kontrolunun o anki durumu. Karar Siri "Kildim" ile AYNI
     /// (`VakitKarari.kildimKarari`); dokunusta `dugmeKarari` yeniden degerlendirir.
+    /// `dil`: arayuz dili (`ArayuzDili.coz`); baslik CIZIM aninda bu dilde kurulur.
     public static func kontrolDurumu(
         vakitler: [SiriVakitAni]?,
         kilinanlar: [String: [String]],
         bekleyenler: [SiriBekleyenKildim],
-        simdiMs: Int64
+        simdiMs: Int64,
+        dil: String = ArayuzDili.varsayilan
     ) -> WidgetKontrolDurumu {
+        let m = VakitMetinleri.dil(dil)
         guard let vakitler, !vakitler.isEmpty else {
-            return WidgetKontrolDurumu(tur: .vakitYok, baslik: "Uygulamayı açın", tarih: "", vakit: "")
+            return WidgetKontrolDurumu(tur: .vakitYok, baslik: m.uygulamayiAcin, tarih: "", vakit: "")
         }
         switch VakitKarari.kildimKarari(
-            vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyenler, simdiMs: simdiMs
+            vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyenler, simdiMs: simdiMs, dil: dil
         ) {
         case let .aday(v, kayit, ad):
-            return WidgetKontrolDurumu(tur: .kilinabilir, baslik: "\(ad) · Kıldım", tarih: v.tarih, vakit: kayit)
+            return WidgetKontrolDurumu(
+                tur: .kilinabilir, baslik: VakitMetinleri.bicim(m.kontrolKildim, ["ad": ad]), tarih: v.tarih, vakit: kayit
+            )
         case let .zatenKilindi(ad):
-            return WidgetKontrolDurumu(tur: .kilindi, baslik: "\(ad) kılındı", tarih: "", vakit: "")
+            return WidgetKontrolDurumu(tur: .kilindi, baslik: VakitMetinleri.bicim(m.kontrolKilindi, ["ad": ad]), tarih: "", vakit: "")
         case .vakitYok:
-            return WidgetKontrolDurumu(tur: .vakitYok, baslik: "Kılınacak vakit yok", tarih: "", vakit: "")
+            return WidgetKontrolDurumu(tur: .vakitYok, baslik: m.kontrolVakitYok, tarih: "", vakit: "")
         }
     }
 
@@ -138,5 +143,151 @@ public enum WidgetKarari {
             return .isaretle
         }
         return .gecersiz
+    }
+}
+
+// MARK: - Gunun ayeti (#380 iOS ikizi) — yuk v1 ve "su anki kayit" karari
+
+/**
+ * GUNUN AYETI YUKU (v1) — sozlesme `docs/ajan/gunun-ayeti.md`. JS (`GununAyetiServisi`)
+ * 14 gunluk plani App Group'a yazar (`SiriDeposu.gununAyetiYaz`); native ayet SECMEZ ve
+ * namaz vakti HESAPLAMAZ: `baslangicMs <= simdi` olan SON kaydi cizer, plan biterse son
+ * kaydi gostermeye devam eder. Metinler JS'te etkin dilde cozulmus gelir (native ek
+ * ceviri tasimaz). `duvar` alani iOS'ta YOK SAYILIR (Codable bilinmeyen anahtari atlar).
+ *
+ * Bu bolum bilincli olarak `WidgetKarari.swift` icindedir: dosya zaten pod'da derlenir,
+ * widget uzantisina kopyalanir ve CI Swift testinin derleme listesindedir (yeni bir dosya
+ * hepsine ayrica eklenmek zorunda kalirdi).
+ */
+public struct GununAyetiMetinleri: Codable, Equatable, Sendable {
+    /// Ust etiket ("GÜNÜN AYETİ").
+    public let etiket: String
+    /// Sigmayan boyutta gosterilen "dokunun" metni.
+    public let sigmiyor: String
+    public let acin: String
+    /// Arapca cizildiginde kaynak ("Arapça: Tanzil").
+    public let arapcaKaynagi: String
+}
+
+public struct GununAyetiKaydi: Codable, Equatable, Sendable {
+    /// Namaz gunu (`YYYY-MM-DD`).
+    public let gun: String
+    /// Kaydin gecerli oldugu an (o namaz gununun imsaki), epoch ms.
+    public let baslangicMs: Int64
+    public let ref: String
+    /// Tanzil Uthmani, birebir.
+    public let ar: String
+    /// Etkin dildeki meal; meali olmayan dilde nil (yalniz Arapca cizilir).
+    public let meal: String?
+    /// "İnşirâh 94:6" / "Quran 94:6".
+    public let kisaKunye: String
+    /// "Rowwad Translation Center, QuranEnc 1.0.4"; meal yoksa nil.
+    public let mealKaynagi: String?
+
+    public init(gun: String, baslangicMs: Int64, ref: String, ar: String, meal: String?, kisaKunye: String, mealKaynagi: String?) {
+        self.gun = gun
+        self.baslangicMs = baslangicMs
+        self.ref = ref
+        self.ar = ar
+        self.meal = meal
+        self.kisaKunye = kisaKunye
+        self.mealKaynagi = mealKaynagi
+    }
+}
+
+public struct GununAyetiYuku: Codable, Equatable, Sendable {
+    public let v: Int
+    public let dil: String
+    public let metin: GununAyetiMetinleri
+    public let plan: [GununAyetiKaydi]
+}
+
+/// Zaman cizelgesi girdisi: `ms` aninda `kayit` gosterilir.
+public struct GununAyetiGirdisi: Equatable, Sendable {
+    public let ms: Int64
+    public let kayit: GununAyetiKaydi
+}
+
+public enum GununAyetiKarari {
+    /// Widget turu (`kind`). Kopru YALNIZ bu turu tazeler (`reloadTimelines(ofKind:)`).
+    public static let widgetTuru = "GununAyetiWidget"
+    /// Desteklenen yuk surumu; baska surum okunmaz (bos durum cizilir).
+    public static let surum = 1
+
+    /// Ham JSON → yuk. Bozuk / baska surum / bos plan → nil.
+    public static func coz(_ ham: String?) -> GununAyetiYuku? {
+        guard let ham, let veri = ham.data(using: .utf8),
+              let yuk = try? JSONDecoder().decode(GununAyetiYuku.self, from: veri),
+              yuk.v == surum, !yuk.plan.isEmpty else { return nil }
+        return yuk
+    }
+
+    /// Baslangica gore sirali (JS sirali yazar; savunma). Esit baslangicta yazim sirasi korunur.
+    static func sirali(_ plan: [GununAyetiKaydi]) -> [GununAyetiKaydi] {
+        return plan.enumerated()
+            .sorted {
+                $0.element.baslangicMs != $1.element.baslangicMs
+                    ? $0.element.baslangicMs < $1.element.baslangicMs
+                    : $0.offset < $1.offset
+            }
+            .map { $0.element }
+    }
+
+    /// Simdi gosterilecek kayit: `baslangicMs <= simdi` olan SON kayit. Plan bittiyse bu
+    /// zaten son kayittir (bayat ama bos ekrandan iyi); hicbiri baslamadiysa (cihaz saati
+    /// geri, plan erken yazildi) ILK kayit. Bos plan → nil.
+    public static func gecerliKayit(_ plan: [GununAyetiKaydi], simdiMs: Int64) -> GununAyetiKaydi? {
+        let liste = sirali(plan)
+        return liste.last(where: { $0.baslangicMs <= simdiMs }) ?? liste.first
+    }
+
+    /// Zaman cizelgesi: simdiki kayit `simdiMs` aninda + baslangici gelecekte olan her kayit
+    /// kendi `baslangicMs`'inde. Plan bittiyse tek girdi (son kayit).
+    public static func girdiler(_ plan: [GununAyetiKaydi], simdiMs: Int64) -> [GununAyetiGirdisi] {
+        guard let simdiki = gecerliKayit(plan, simdiMs: simdiMs) else { return [] }
+        let gelecek = sirali(plan).filter { $0.baslangicMs > simdiMs && $0.baslangicMs > simdiki.baslangicMs }
+        return [GununAyetiGirdisi(ms: simdiMs, kayit: simdiki)]
+            + gelecek.map { GununAyetiGirdisi(ms: $0.baslangicMs, kayit: $0) }
+    }
+
+    /// Serif tasarimda (New York; Android'de Noto Serif) OLMAYAN yazilar: Ibrani, N'Ko, Gurcu, Devanagari, Bengal, Gucarati, Tamil,
+    /// Telugu, Kannada, Malayalam, Sinhala, Tay, Khmer, Hangil, Ge'ez, Han (CJK), kana (Hiragana, Katakana) ve
+    /// CJK/tam genislik noktalama. Kotlin ikizi
+    /// `GununAyetiKurallari.SERIFSIZ_ARALIKLAR` (ayni araliklar, ayni sira).
+    public static let serifsizAraliklar: [ClosedRange<UInt32>] = [
+        0x0590...0x05FF, 0x07C0...0x07FF, 0x0900...0x097F, 0x0980...0x09FF, 0x0A80...0x0AFF, 0x0B80...0x0BFF,
+        0x0C00...0x0C7F, 0x0C80...0x0CFF, 0x0D00...0x0D7F, 0x0D80...0x0DFF, 0x0E00...0x0E7F, 0x10A0...0x10FF,
+        0x1100...0x11FF, 0x1200...0x139F, 0x1780...0x17FF, 0x1C90...0x1CBF, 0x2D00...0x2D2F, 0x2D80...0x2DDF,
+        0x3000...0x303F, 0x3040...0x30FF, 0x3130...0x318F, 0x31F0...0x31FF, 0x3400...0x4DBF, 0x4E00...0x9FFF,
+        0xA960...0xA97F, 0xAB00...0xAB2F, 0xAC00...0xD7FF, 0xF900...0xFAFF, 0xFB1D...0xFB4F, 0xFF00...0xFFEF,
+    ]
+
+    /// Meal serif yazi tipiyle mi cizilir? Ibrani, N'Ko, Gurcu, Ge'ez (Amharca), Devanagari, Bengal, Gucarati, Tamil, Telugu, Kannada, Malayalam,
+    /// Sinhala, Tay, Khmer, Korece, Cince ve Japonca (kanji, kana)
+    /// yazilarinda serif tasarim yok → sistem tasarimi; aksi halde Latin noktalama serif, harfler
+    /// sistem yedeginden karisik cizilirdi. Vietnamca (Latin + yigilmis ses isareti) serif kalir.
+    /// Kotlin ikizi `GununAyetiKurallari.mealSerifMi`.
+    public static func mealSerifMi(_ meal: String) -> Bool {
+        return !meal.unicodeScalars.contains { s in serifsizAraliklar.contains { $0.contains(s.value) } }
+    }
+
+    /// Kisayollar duvar kagidi gorselinin govdesi: meal; meali olmayan dilde (ar ve mealsiz diller ku, tk,
+    /// tt, sd, pl) kisa kunye (gorsel Arapca CIZMEZ, ana uygulamada Arapca font yok).
+    public static func gorselGovdesi(_ kayit: GununAyetiKaydi) -> String {
+        kayit.meal ?? kayit.kisaKunye
+    }
+
+    /// Widget ve erisim etiketinin govdesi: meal; meali olmayan dilde Arapca metin.
+    public static func widgetGovdesi(_ kayit: GununAyetiKaydi) -> String {
+        kayit.meal ?? kayit.ar
+    }
+
+    /// Kunye satiri: "kisaKunye · mealKaynagi" (+ Arapca cizildiyse " · Arapça: Tanzil").
+    /// Meal kaynagi gosterildigi her yuzeyde ZORUNLU (QuranEnc kosulu).
+    public static func kunyeSatiri(_ kayit: GununAyetiKaydi, metin: GununAyetiMetinleri, arapcaVar: Bool) -> String {
+        var parcalar = [kayit.kisaKunye]
+        if let k = kayit.mealKaynagi, !k.isEmpty { parcalar.append(k) }
+        if arapcaVar { parcalar.append(metin.arapcaKaynagi) }
+        return parcalar.joined(separator: " · ")
     }
 }

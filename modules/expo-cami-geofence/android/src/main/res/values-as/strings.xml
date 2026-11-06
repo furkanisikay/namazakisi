@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">মছজিদত আছোঁ</string>
+    <string name="camigeofence_kanal_durum_aciklama">আপুনি মছজিদত থকা বুলি ধৰা পৰিলে এটা নীৰৱ জাননী</string>
+    <string name="camigeofence_kanal_soru_ad">মছজিদ এৰাৰ পিছত</string>
+    <string name="camigeofence_kanal_soru_aciklama">মছজিদ এৰাৰ পিছত আপোনাৰ নামাজ চিহ্নিত কৰিবলৈ এটা প্ৰশ্ন</string>
+
+    <string name="camigeofence_govde_mod_sessiz">নামাজ ম’ড অন আছে। সোঁৱৰণী নীৰৱে আহিব।</string>
+    <string name="camigeofence_govde_mod">নামাজ ম’ড অন আছে।</string>
+    <string name="camigeofence_govde_sessiz">সোঁৱৰণী নীৰৱে আহিব।</string>
+    <string name="camigeofence_govde_normal">সোঁৱৰণী সদায়ৰ দৰে আহিব।</string>
+    <string name="camigeofence_eylem_modu_kapat">ম’ড অফ কৰক</string>
+    <string name="camigeofence_eylem_cami_degil">মছজিদ নহয়</string>
+
+    <string name="camigeofence_soru_baslik">আপুনি মছজিদত আছেনে?</string>
+    <string name="camigeofence_soru_govde">আপুনি %1$s-ৰ ওচৰত আছে। আমি নিশ্চিত নহয়, সেয়ে আপোনাক সুধিছোঁ।</string>
+    <string name="camigeofence_varsayilan_ad">মছজিদ</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">নামাজ ম’ড অন কৰক</string>
+    <string name="camigeofence_eylem_evet_camideyim">হয়, মই মছজিদত আছোঁ</string>
+    <string name="camigeofence_eylem_hayir">নহয়</string>
+
+    <string name="camigeofence_kildiniz_mi">আপুনি %1$sৰ নামাজ পঢ়িলেনে?</string>
+    <string name="camigeofence_kildiniz_mi_govde">এবাৰ টিপিয়েই চিহ্নিত কৰিব পাৰে।</string>
+    <string name="camigeofence_eylem_kildim">নামাজ পঢ়িছোঁ</string>
+    <string name="camigeofence_namaz_imsak">ফজৰ</string>
+    <string name="camigeofence_namaz_ogle">জোহৰ</string>
+    <string name="camigeofence_namaz_ikindi">আছৰ</string>
+    <string name="camigeofence_namaz_aksam">মাগৰিব</string>
+    <string name="camigeofence_namaz_yatsi">ঈশ্বা</string>
+    <string name="camigeofence_namaz_cuma">জুমুআ</string>
+
+    <string name="camigeofence_mod_kural_adi">নামাজ</string>
+    <string name="camigeofence_mod_tetik_aciklama">জুমুআৰ খুতবাৰ সময়ত, মছজিদত বা নামাজৰ সময় আৰম্ভ হ’লে Namaz Akışı-এ অন কৰে</string>
+</resources>

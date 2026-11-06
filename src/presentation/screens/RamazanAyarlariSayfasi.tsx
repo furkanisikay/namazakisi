@@ -34,6 +34,7 @@ import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { TanitimResmi } from '../components/hareket/TanitimResmi';
+import { useMetin } from '../hooks/useMetin';
 
 /**
  * Ramazan Ayarlari Sayfasi
@@ -52,6 +53,7 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
  */
 const RamazanAyarlariIcerik: React.FC = () => {
   const renkler = useRenkler();
+  const mr = useMetin().muhafizAyar.ramazan;
   const scrollRef = useVurguKurulumu();
   const dispatch = useAppDispatch();
   const { butonTiklandiFeedback } = useFeedback();
@@ -112,7 +114,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
         />
         {/* İftar Sayacı Ayarı */}
         <View className="mb-6">
-          <BolumBasligi metin="İftar" ikon="moon" />
+          <BolumBasligi metin={mr.iftar} ikon="moon" />
 
           <AyarCapasi id="iftarSayaci">
           <View
@@ -137,13 +139,13 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   className="text-base font-semibold"
                   style={{ color: renkler.metin }}
                 >
-                  İftar Sayacı
+                  {mr.iftarSayaci}
                 </Text>
                 <Text
                   className="text-sm mt-0.5"
                   style={{ color: renkler.metinIkincil }}
                 >
-                  Sabahtan akşama iftara kalan süre görünür
+                  {mr.iftarAciklama}
                 </Text>
               </View>
               <Anahtar
@@ -154,7 +156,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   true: `${iftarRenk}60`,
                 }}
                 thumbColor={ayarlar.aktif ? iftarRenk : '#f4f3f4'}
-                accessibilityLabel="İftar sayacı"
+                accessibilityLabel={mr.iftarEtiketi}
               />
             </View>
 
@@ -175,7 +177,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                     className="text-sm flex-1"
                     style={{ color: renkler.metinIkincil }}
                   >
-                    Akşam girdikten 10 dakika sonra kendiliğinden kalkar.
+                    {mr.iftarKalkar}
                   </Text>
                 </View>
                 <CanliGuncellemeBilgisi />
@@ -187,7 +189,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
 
         {/* Sahur Sayacı Ayarı */}
         <View className="mb-6">
-          <BolumBasligi metin="Sahur" ikon="utensils" />
+          <BolumBasligi metin={mr.sahur} ikon="utensils" />
 
           <AyarCapasi id="sahurSayaci">
           <View
@@ -212,13 +214,13 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   className="text-base font-semibold"
                   style={{ color: renkler.metin }}
                 >
-                  Sahur Sayacı
+                  {mr.sahurSayaci}
                 </Text>
                 <Text
                   className="text-sm mt-0.5"
                   style={{ color: renkler.metinIkincil }}
                 >
-                  Yatsıdan imsaka sahura kalan süre görünür
+                  {mr.sahurAciklama}
                 </Text>
               </View>
               <Anahtar
@@ -229,7 +231,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   true: `${sahurRenk}60`,
                 }}
                 thumbColor={sahurAyarlar.aktif ? sahurRenk : '#f4f3f4'}
-                accessibilityLabel="Sahur sayacı"
+                accessibilityLabel={mr.sahurEtiketi}
               />
             </View>
 
@@ -250,7 +252,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                     className="text-sm flex-1"
                     style={{ color: renkler.metinIkincil }}
                   >
-                    İmsak girdikten 10 dakika sonra kendiliğinden kalkar.
+                    {mr.sahurKalkar}
                   </Text>
                 </View>
                 <CanliGuncellemeBilgisi />
@@ -279,7 +281,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
             className="flex-1 text-sm leading-5"
             style={{ color: renkler.metin }}
           >
-            Sayaç hesaplamaya dayanır; orucunuzu ezanla açın. Esas olan Diyanet takvimidir.
+            {mr.not}
           </Text>
         </View>
       </Animated.View>

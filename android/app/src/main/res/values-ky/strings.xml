@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Кыргызча kaynaklar (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ky. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Азыркы намаз, анын бүтүшү жана бир басуу менен «Окудум»</string>
+  <string name="widget_genis_aciklama">Бүгүнкү беш намаз, артка санак жана бир басуу менен «Окудум»</string>
+  <string name="widget_kapak_adi">Сырткы экрандагы намаз убактылары</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip сырткы экраны үчүн бүгүнкү намаз убактылары жана артка санак</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Классикалык</string>
+  <string name="widget_klasik_aciklama">Классикалык жашыл көрүнүш: кийинки намазга калган убакыт</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Классикалык кенен</string>
+  <string name="widget_klasik_genis_aciklama">Классикалык жашыл көрүнүш: артка санак жана бүгүнкү намаз убактылары</string>
+  <string name="widget_ayet_adi">Күндүн аяты</string>
+  <string name="widget_ayet_aciklama">Аят жана анын котормосу, күн сайын багымдатта жаңыланат</string>
+  <string name="widget_ayar_zemin_palet">Колдонмонун түсү (ачык тон)</string>
+  <string name="widget_ayar_ayet_icerik">Чарчы өлчөмдө көрсөтүү</string>
+  <string name="widget_ayar_ayet_icerik_meal">Котормо</string>
+  <string name="widget_ayar_ayet_icerik_hat">Арабча текст (каллиграфия)</string>
+  <string name="kutu_kildim_etiket">Окудум</string>
+  <string name="kisayol_kildim_kisa">Окудум</string>
+  <string name="kisayol_kildim_uzun">Азыркы намазды окудум</string>
+  <string name="kisayol_kible_kisa">Кыбыла</string>
+  <string name="kisayol_kible_uzun">Кыбыла багытын көрсөтүү</string>
+  <string name="kisayol_kaza_kisa">Каза дептери</string>
+  <string name="kisayol_kaza_uzun">Каза дептерин ачуу</string>
+  <string name="kildim_onay_baslik">%1$s окулду деп белгиленсинби?</string>
+  <string name="kildim_onay_mesaj">Бул суроону кайсы колдонмо жөнөткөнү белгисиз. Намаз окуган болсоңуз, ырастаңыз.</string>
+  <string name="kildim_onay_evet">Окудум</string>
+  <string name="kildim_onay_vazgec">Жокко чыгаруу</string>
+  <string name="kildim_guven_baslik">%1$s колдонмосуна намаздарыңызды окулду деп белгилөөгө уруксат бересизби?</string>
+  <string name="kildim_guven_mesaj">Азыр белгилене турган намаз: %1$s. Чечимиңизди кийин Жөндөөлөр &gt; «Окудум» деп белгилеген колдонмолор бөлүмүнөн өзгөртө аласыз.</string>
+  <string name="kildim_guven_tarayici_mesaj">Азыр белгилене турган намаз: %1$s. Бул суроо браузерден келди; бул шилтемени каалаган веб-барак ача алгандыктан, туруктуу уруксат берүүгө болбойт.</string>
+  <string name="kildim_guven_her_zaman">Дайыма уруксат берүү</string>
+  <string name="kildim_guven_bu_sefer">Ушул жолу гана</string>
+  <string name="kildim_guven_engelle">Бөгөттөө</string>
+  <string name="kildim_guven_engellendi">%1$s мындан ары намаздарыңызды белгилей албайт. Муну Жөндөөлөрдөн өзгөртө аласыз.</string>
+  <string name="widget_ayar_baslik">Виджетти ыңгайлаштыруу</string>
+  <string name="widget_ayar_zemin">Фон</string>
+  <string name="widget_ayar_zemin_material">Тушкагаздын түстөрү</string>
+  <string name="widget_ayar_zemin_sistem">Тутумдун темасы</string>
+  <string name="widget_ayar_zemin_acik">Жарык</string>
+  <string name="widget_ayar_zemin_koyu">Караңгы</string>
+  <string name="widget_ayar_zemin_seffaf">Тунук</string>
+  <string name="widget_ayar_opaklik">Фондун тунуксуздугу</string>
+  <string name="widget_ayar_gosterim">Чоң жазуу менен көрсөтүү</string>
+  <string name="widget_ayar_gosterim_kalan">Калган убакыт</string>
+  <string name="widget_ayar_gosterim_bitis">Бүтүү убактысы</string>
+  <string name="widget_ayar_gosterim_not">Бүтүү убактысы бардык өлчөмдөрдө көрсөтүлөт.</string>
+  <string name="widget_ayar_sonraki">Кийинки намазды көрсөтүү</string>
+  <string name="widget_ayar_vazgec">Жокко чыгаруу</string>
+  <string name="widget_ayar_kaydet">Сактоо</string>
+  <string name="kildim_onay_kanal_adi">«Окудум» ырастоосу</string>
+  <string name="kildim_onay_kanal_aciklama">Билдирмеде «Окудум» дегенди басканыңызда бир нече секунд көрүнгөн тынч ырастоо</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Бүтөт %1$s</string>
+  <string name="widget_giris">Кирет %1$s</string>
+  <string name="widget_namaz_vakti">Намаз убактысы</string>
+  <string name="widget_uygulamayi_acin">Колдонмону ачыңыз</string>
+  <string name="widget_siradaki">Кийинкиси: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Азыр белгилей турган намаз жок</string>
+  <string name="widget_dugme_kildim">Окудум</string>
+  <string name="widget_dugme_isaretleniyor">Белгиленүүдө</string>
+  <string name="widget_dugme_kilindi">Окулду</string>
+  <string name="widget_dugme_vakit_girmedi">Азырынча кире элек</string>
+  <string name="widget_klasik_uygulamayi_acin">колдонмону ачыңыз</string>
+  <string name="widget_klasik_erisim_veri_yok">Намаз убактыларын көрүү үчүн колдонмону ачыңыз</string>
+  <string name="widget_klasik_erisim_siradaki">Кийинки намаз: %1$s, саат %2$s башталат</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Бешим убактысына</string>
+  <string name="widget_onizleme_klasik_genis">Шам убактысына</string>
+  <string name="widget_onizleme_imsak">Багымдат</string>
+  <string name="widget_onizleme_gunes">Күн чыгыш</string>
+  <string name="widget_onizleme_ogle">Бешим</string>
+  <string name="widget_onizleme_ikindi">Аср</string>
+  <string name="widget_onizleme_aksam">Шам</string>
+  <string name="widget_onizleme_yatsi">Куптан</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s окулду деп белгиленди. Алла кабыл кылсын.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s мурунтан эле окулду деп белгиленген.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Азыр белгилей турган намаз жок. Кийинкиси %1$s, саат %2$s башталат.</string>
+  <string name="kildim_sonuc_vakit_yok">Азыр белгилей турган намаз жок.</string>
+  <string name="kildim_sonuc_veri_yok">Намаз убактысы тууралуу маалымат жок. Колдонмону бир жолу ачыңыз.</string>
+  <string name="kildim_sonuc_vakit_degisti">Намаз убактысы өзгөргөндүктөн эч нерсе белгиленген жок. Кайра аракет кылыңыз.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Навигация колдонмосу ачылган жок.</string>
+  <string name="arac_adsiz_cami">Мечит</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Намаз убактысы тууралуу маалымат окулган жок.</string>
+  <string name="asistan_isaretleme_yapilamadi">Намаз белгиленген жок.</string>
+  <string name="asistan_aciklama">Намаз убактыларын сурап, азыркы намазды окулду деп белгилеп жана Кыбыла экранын ача аласыз.</string>
+</resources>

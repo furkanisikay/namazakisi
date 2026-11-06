@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Live aftellingen</string>
+    <string name="countdown_kanal_canli_aciklama">Aftellingen in de Now Bar en de statusbalk</string>
+    <string name="countdown_kanal_genel_ad">Aftelmeldingen</string>
+    <string name="countdown_kanal_genel_aciklama">Kanaal voor aftelmeldingen</string>
+
+    <string name="countdown_eylem_kildim">Gebeden</string>
+    <string name="countdown_eylem_durdur">Stoppen</string>
+
+    <string name="countdown_yedek_vakit">Haast u, de gebedstijd loopt bijna af.</string>
+    <string name="countdown_yedek_iftar">De tijd loopt af.</string>
+    <string name="countdown_yedek_sahur">U kunt nog eten en drinken; het vasten begint zo!</string>
+    <string name="countdown_yedek_seri">De gebeden van vandaag zijn niet compleet; verlies uw reeks niet.</string>
+
+    <string name="countdown_onek_vakit">Tot de tijd afloopt</string>
+    <string name="countdown_onek_vakit_dar">Tijd loopt af</string>
+    <string name="countdown_onek_iftar">Tot iftar</string>
+    <string name="countdown_onek_iftar_dar">Tot iftar</string>
+    <string name="countdown_onek_sahur">Tot de suhoor eindigt</string>
+    <string name="countdown_onek_sahur_dar">Suhoor eindigt</string>
+    <string name="countdown_onek_seri">Om uw reeks te redden</string>
+    <string name="countdown_onek_seri_dar">Reeks loopt af</string>
+</resources>

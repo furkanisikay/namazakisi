@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- fa — Farsça (beta). -->
+<!-- Farsça kaynaklar. Terimler: JS src/core/dil/sozluk/fa (صبح، ظهر، عصر، مغرب، عشا؛ «خواندم» / «خوانده شد»؛ قبله؛ هشدار). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">fa</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">نماز بعدی</string>
+    <string name="tile_aciklama">نماز بعدی و ساعت آن</string>
+    <string name="komplikasyon_adi">زمان باقی‌مانده</string>
+    <string name="cikis_saati_komplikasyon_adi">زمان پایان نماز</string>
+    <string name="siradaki_namaz_komplikasyon_adi">نماز بعدی</string>
+    <string name="bugun_tile_adi">امروز</string>
+    <string name="bugun_tile_aciklama">پنج نماز امروز؛ نمازهای خوانده‌شده را با دو ضربه علامت بزنید</string>
+    <string name="ilerleme_komplikasyon_adi">پیشرفت روزانه</string>
+    <string name="dagilim_komplikasyon_adi">نمای کلی روز</string>
+    <string name="kerahat_komplikasyon_adi">وقت مکروه</string>
+    <string name="son_dakikalar_kanal_adi">دقیقه‌های آخر</string>
+    <string name="son_dakikalar_kanal_aciklama">شمارش معکوس روی صفحهٔ ساعت در دقیقه‌های آخرِ نمازی که هنوز نخوانده‌اید</string>
+    <string name="tesbihat_adi">تسبیح</string>
+    <string name="tesbihat_kanal_adi">تسبیح</string>
+    <string name="tesbihat_kanal_aciklama">نماد آرام روی صفحهٔ ساعت برای بازگشت به تسبیح ناتمام</string>
+    <string name="kible_adi">قبله</string>
+    <string name="kible_komplikasyon_adi">قبله</string>
+    <string name="camideyim_kanal_adi">در مسجدم</string>
+    <string name="camideyim_kanal_aciklama">نماد آرام روی صفحهٔ ساعت وقتی تلفن گزارش می‌دهد که در مسجد هستید</string>
+    <string name="uyandirma_kanal_adi">بیدارباش بی‌صدا</string>
+    <string name="uyandirma_kanal_aciklama">فقط با لرزش بیدارتان می‌کند، برای صبح و تهجد</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">خواندم</string>
+    <string name="kilindi_isareti">✓ خوانده شد</string>
+    <string name="kapat">خاموش کردن</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">برای دیدن اوقات نماز، Namaz Akışı را روی تلفن باز کنید.</string>
+    <string name="yuk_eskidi">اطلاعات اوقات نماز قدیمی شده است. برای تازه کردن، Namaz Akışı را روی تلفن باز کنید.</string>
+    <string name="guncelleme_gerekli">Namaz Akışı را روی ساعت خود به‌روز کنید.</string>
+    <string name="bildirim_izni">برای دریافت یادآوری حتی وقتی تلفن همراهتان نیست، در تنظیمات ساعت به اعلان‌های Namaz Akışı اجازه دهید.</string>
+    <string name="cami_soru">در مسجد هستید؟</string>
+    <string name="cami_evet">بله</string>
+    <string name="cami_evet_aciklama">بله، در مسجدم. حالت نماز را روشن می‌کند</string>
+    <string name="cami_hayir">نه</string>
+    <string name="cami_hayir_aciklama">نه، در مسجد نیستم</string>
+    <string name="camidesiniz">در مسجد هستید</string>
+    <string name="cami_degil">اینجا مسجد نیست</string>
+    <string name="cami_degil_aciklama">اینجا مسجد نیست. این مکان دیگر مسجد به حساب نمی‌آید</string>
+    <string name="tesbihat_ac">باز کردن شمارندهٔ تسبیح</string>
+    <string name="kible_ac">باز کردن قطب‌نمای قبله</string>
+    <string name="ses_dene">آزمایش صدا</string>
+    <string name="ses_dene_aciklama">آزمایش خواندن با صدای ساعت</string>
+    <string name="telefonda_acin">باز کردن روی تلفن</string>
+    <string name="telefonda_ekran_ac">باز کردن %1$s روی تلفن</string>
+    <string name="ekran_kaza">دفتر قضا</string>
+    <string name="ekran_camideyim">در مسجدم</string>
+    <string name="ekran_ayarlar">تنظیمات</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">خوانده شد، در حال همگام‌سازی</string>
+    <string name="durum_kilindi">خوانده شد</string>
+    <string name="durum_girmedi">هنوز وقتش نشده</string>
+    <string name="durum_simdiki">نماز کنونی، برای علامت زدن ضربه بزنید</string>
+    <string name="durum_simdiki_kalan">نماز کنونی، %1$s، برای علامت زدن ضربه بزنید</string>
+    <string name="durum_kilinmadi">خوانده نشد، برای علامت زدن ضربه بزنید</string>
+    <string name="isaretleyin">علامت زدن به‌عنوان خوانده‌شده</string>
+    <string name="esitleniyor">در حال همگام‌سازی</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">تأیید «خواندم»</string>
+    <string name="vazgecin">انصراف</string>
+    <string name="vazgec">انصراف</string>
+    <string name="kerahat_vaktindesiniz">اکنون وقت مکروه است.</string>
+    <string name="kilindi_dua">خوانده شد. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">حالت نماز روشن است، پایان %1$s. برای خاموش کردن ضربه بزنید</string>
+    <string name="namaz_modu_ac_aciklama">روشن کردن حالت نماز روی تلفن</string>
+    <string name="namaz_modu_kapatin">خاموش کردن حالت نماز</string>
+    <string name="namaz_modu_acin">روشن کردن حالت نماز</string>
+    <string name="namaz_modu_acik_bitis">روشن، پایان %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">در حال پیدا کردن جهت…</string>
+    <string name="kible_yuk_yok">برای پیدا کردن قبله، Namaz Akışı را روی تلفن باز کنید.</string>
+    <string name="kible_konum_yok">برای پیدا کردن قبله، موقعیت را روی تلفن روشن کنید. اگر Namaz Akışı به‌روز نیست، آن را به‌روز کنید.</string>
+    <string name="kible_sensor_yok">این ساعت حسگر قطب‌نما ندارد. می‌توانید جهت قبله را روی تلفن ببینید.</string>
+    <string name="kible_kuzeyden">قبله %1$d° (از شمال)</string>
+    <string name="kible_derece">قبله %1$d°</string>
+    <string name="kible_telefonda_ac">باز کردن قبله روی تلفن</string>
+    <string name="kible_erisim">%1$s. قبله %2$d° از شمال، %3$s</string>
+    <string name="kible_hizali">رو به قبله هستید</string>
+    <string name="kible_kalibrasyon">برای تنظیم، مچ خود را در هوا به شکل عدد 8 حرکت دهید</string>
+    <string name="kible_egim">ساعت را موازی زمین نگه دارید</string>
+    <string name="kible_titresim_acik">راهنمایی با لرزش روشن است. برای خاموش کردن ضربه بزنید</string>
+    <string name="kible_titresim_kapali">راهنمایی با لرزش خاموش است. برای روشن کردن ضربه بزنید</string>
+    <string name="kible_harf_kuzey">ش</string>
+    <string name="kible_harf_dogu">ق</string>
+    <string name="kible_harf_guney">ج</string>
+    <string name="kible_harf_bati">غ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">تسبیح کامل شد. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s، %2$d / %3$d. مجموع %4$d / %5$d</string>
+    <string name="tesbihat_sayin">شمردن</string>
+    <string name="tesbihat_bastan_baslayin">شروع از اول</string>
+    <string name="tesbihat_bastan_soru">از اول شروع شود؟</string>
+    <string name="tesbihat_sifirlanir">شمارش صفر می‌شود.</string>
+    <string name="tesbihat_geri_al">لغو</string>
+    <string name="tesbihat_geri_al_aciklama">لغو آخرین شمارش</string>
+    <string name="tesbihat_yeniden">شروع دوباره</string>
+    <string name="tesbihat_yeniden_aciklama">شروع دوبارهٔ تسبیح</string>
+    <string name="tesbihat_suruyor">تسبیح در جریان است: %1$s، %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">خواندم. بیدارباش را خاموش می‌کند</string>
+    <string name="uyandirma_kapat_aciklama">خاموش کردن بیدارباش</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">باز کردن Namaz Akışı</string>
+    <string name="tile_vakitler_icin">برای اوقات نماز ضربه بزنید</string>
+    <string name="tile_telefonda_acin">برنامه را روی تلفن باز کنید</string>
+    <string name="tile_sonra">%1$s دیگر</string>
+    <string name="tile_siradaki_aciklama">نماز بعدی %1$s، آغاز ساعت %2$s. برنامه را باز کنید</string>
+    <string name="tile_giris">آغاز %1$s</string>
+    <string name="tile_cikis">پایان %1$s</string>
+    <string name="bugun_bos_satir1">برنامه را</string>
+    <string name="bugun_bos_satir2">روی تلفن باز کنید</string>
+    <string name="bugun_acma_aciklamasi">امروز %1$d از %2$d نماز خوانده شد. برنامه را باز کنید</string>
+    <string name="bugun_sayi">امروز %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">وقت مکروه · برای تأیید دوباره ضربه بزنید</string>
+    <string name="bugun_onay_tekrar">برای تأیید دوباره ضربه بزنید</string>
+    <string name="bugun_tamam">نمازهای امروز کامل است</string>
+    <string name="bugun_kilinmadi">%1$s خوانده نشد</string>
+    <string name="bugun_siradaki">بعدی: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">دوباره ضربه بزنید</string>
+    <string name="bugun_kilindi">%1$s خوانده شد</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s خوانده شد، در حال همگام‌سازی</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">در انتظار اوقات نماز؛ Namaz Akışı را روی تلفن باز کنید</string>
+    <string name="komplikasyon_bekleniyor">در انتظار اوقات</string>
+    <string name="komplikasyon_vakit">نماز</string>
+    <string name="komplikasyon_cikis">پایان</string>
+    <string name="komplikasyon_sirada">بعدی</string>
+    <string name="gun_durumu_aciklama">امروز %2$d از %1$d نماز خوانده شد</string>
+    <string name="gun_durumu_kilinmamis">%1$s؛ خوانده‌نشده: %2$s</string>
+    <string name="komplikasyon_namaz">نمازها</string>
+    <string name="komplikasyon_kerahat">مکروه</string>
+    <string name="kerahat_icinde_aciklama">وقت مکروه است، پایان %1$s</string>
+    <string name="kerahat_siradaki_aciklama">وقت مکروه بعدی %1$s</string>
+    <string name="kible_komplikasyon">قبله %1$d° از شمال. باز کردن قطب‌نما</string>
+    <string name="kible_komplikasyon_konumlu">قبله %1$d° از شمال، %2$s. باز کردن قطب‌نما</string>
+    <string name="kible_komplikasyon_konum_yok">برای پیدا کردن قبله، موقعیت را روی تلفن روشن کنید</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">یادآور فوری · با لرزش</string>
+    <string name="muhafiz_kanal_acil">یادآور فوری</string>
+    <string name="muhafiz_kanal_titresimli">یادآور نماز · با لرزش</string>
+    <string name="muhafiz_kanal">یادآور نماز</string>
+    <string name="muhafiz_kanal_aciklama">یادآوری‌های نماز که حتی وقتی تلفن همراهتان نیست روی ساعت نمایش داده می‌شوند</string>
+    <string name="son_dakikalar_cikis">پایان: %1$s</string>
+    <string name="son_dakikalar_bitis">پایان: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">زمان باقی‌مانده تا پایان وقت %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">زمان باقی‌مانده برای %1$s</string>
+    <string name="cami_namaz_modu_bitis">حالت نماز · پایان %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">روی تلفن باز شد</string>
+    <string name="telefona_ulasilamadi">به تلفن شما دسترسی نشد</string>
+</resources>

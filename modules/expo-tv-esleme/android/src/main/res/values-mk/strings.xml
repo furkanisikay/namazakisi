@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mk — Makedonca, Kiril (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Сместете го QR-кодот од екранот на ТВ во рамката</string>
+    <string name="tvesleme_qr_vazgec">Откажете</string>
+    <string name="tvesleme_qr_vazgec_erisim">Откажете го скенирањето</string>
+    <string name="tvesleme_qr_yabanci">Овој QR-код не припаѓа на Namaz Akışı за ТВ. Скенирајте го кодот на ТВ.</string>
+    <string name="tvesleme_qr_okundu">Кодот е скениран</string>
+</resources>

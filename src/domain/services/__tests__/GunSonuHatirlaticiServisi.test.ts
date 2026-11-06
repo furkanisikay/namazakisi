@@ -21,7 +21,7 @@ import {
 } from '../GunSonuHatirlaticiServisi';
 import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { kayitDegistiDinleyicisiEkle, localNamazDurumunuGuncelle } from '../../../data/local/LocalNamazServisi';
-import { GUN_SONU_GOVDE } from '../../../core/seri/gunSonuPlani';
+import { gunSonuGovdesi } from '../../../core/seri/gunSonuPlani';
 import { gunEkle, tarihiISOFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
 
 type Istek = { identifier: string; content: { title: string; body: string }; trigger: { type: string; date: Date } };
@@ -63,7 +63,7 @@ afterEach(() => {
 });
 
 describe('gunSonuHatirlatmalariniGuncelle', () => {
-  test('Android: 7 seri gunu icin AYRI tarihli (DATE) tetik, govde GUN_SONU_GOVDE', async () => {
+  test('Android: 7 seri gunu icin AYRI tarihli (DATE) tetik, govde gunSonuGovdesi()', async () => {
     const simdi = ogle();
     await gunSonuHatirlatmalariniGuncelle(imsak, AYAR, simdi);
 
@@ -74,7 +74,7 @@ describe('gunSonuHatirlatmalariniGuncelle', () => {
       expect(istek.identifier).toBe(`gun_sonu_hatirlatici_${gunEkle(bugun, i)}`);
       expect(istek.trigger.type).toBe('date');
       expect([istek.trigger.date.getHours(), istek.trigger.date.getMinutes()]).toEqual([4, 30]);
-      expect(istek.content.body).toBe(GUN_SONU_GOVDE);
+      expect(istek.content.body).toBe(gunSonuGovdesi());
     });
   });
 

@@ -19,8 +19,8 @@
  *
  * SAF: zaman ve vakit hesaplayıcısı enjekte edilebilir.
  */
-import { Coordinates, PrayerTimes, Rounding } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates, Rounding, type CalculationParameters } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 
 export interface YaymaKoordinati {
     lat: number;
@@ -40,13 +40,12 @@ export const YAYMA_VAKIT_TOLERANSI_MS = 60 * 1000;
 
 /** Bugünün 6 vakti + yarının imsağı, YUVARLANMAMIŞ (dakika yuvarlaması kaymayı gizlemesin). */
 export const varsayilanYaymaVakitleri: YaymaVakitHesaplayici = (koordinat, simdi) => {
-    const params = turkiyeHesapParametreleri();
-    params.rounding = Rounding.None;
+    const yuvarlamasiz = (p: CalculationParameters) => { p.rounding = Rounding.None; };
     const koord = new Coordinates(koordinat.lat, koordinat.lng);
     const yarin = new Date(simdi);
     yarin.setDate(yarin.getDate() + 1);
-    const bugun = new PrayerTimes(koord, simdi, params);
-    const ertesi = new PrayerTimes(koord, yarin, params);
+    const bugun = aktifPrayerTimes(koord, simdi, yuvarlamasiz);
+    const ertesi = aktifPrayerTimes(koord, yarin, yuvarlamasiz);
     return [bugun.fajr, bugun.sunrise, bugun.dhuhr, bugun.asr, bugun.maghrib, bugun.isha, ertesi.fajr].map((d) =>
         d.getTime()
     );

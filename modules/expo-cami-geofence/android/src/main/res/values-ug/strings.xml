@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ug — Uygurca (beta). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">مەسچىتتىمەن</string>
+    <string name="camigeofence_kanal_durum_aciklama">مەسچىتتە ئىكەنلىكىڭىز بايقالغاندا ئۈنسىز ئۇقتۇرۇش</string>
+    <string name="camigeofence_kanal_soru_ad">مەسچىتتىن چىققاندىن كېيىن</string>
+    <string name="camigeofence_kanal_soru_aciklama">مەسچىتتىن چىققاندىن كېيىن نامىزىڭىزنى بەلگىلىشىڭىز ئۈچۈن سوئال</string>
+
+    <string name="camigeofence_govde_mod_sessiz">ناماز ھالىتى ئوچۇق. ئەسكەرتىشلەر ئۈنسىز كېلىدۇ.</string>
+    <string name="camigeofence_govde_mod">ناماز ھالىتى ئوچۇق.</string>
+    <string name="camigeofence_govde_sessiz">ئەسكەرتىشلەر ئۈنسىز كېلىدۇ.</string>
+    <string name="camigeofence_govde_normal">ئەسكەرتىشلەر ئادەتتىكىدەك كېلىدۇ.</string>
+    <string name="camigeofence_eylem_modu_kapat">ھالەتنى تاقاش</string>
+    <string name="camigeofence_eylem_cami_degil">مەسچىت ئەمەس</string>
+
+    <string name="camigeofence_soru_baslik">مەسچىتتىمۇسىز؟</string>
+    <string name="camigeofence_soru_govde">%1$s نىڭ يېنىدىسىز. جەزم قىلالمىغاچقا سىزدىن سوراۋاتىمىز.</string>
+    <string name="camigeofence_varsayilan_ad">مەسچىت</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">ناماز ھالىتىنى ئېچىڭ</string>
+    <string name="camigeofence_eylem_evet_camideyim">ھەئە، مەسچىتتىمەن</string>
+    <string name="camigeofence_eylem_hayir">ياق</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s نامىزىنى ئوقۇدىڭىزمۇ؟</string>
+    <string name="camigeofence_kildiniz_mi_govde">بىرلا چېكىش بىلەن بەلگىلىيەلەيسىز.</string>
+    <string name="camigeofence_eylem_kildim">ناماز ئوقۇدۇم</string>
+    <string name="camigeofence_namaz_imsak">بامدات</string>
+    <string name="camigeofence_namaz_ogle">پېشىن</string>
+    <string name="camigeofence_namaz_ikindi">ئەسىر</string>
+    <string name="camigeofence_namaz_aksam">شام</string>
+    <string name="camigeofence_namaz_yatsi">خۇپتەن</string>
+    <string name="camigeofence_namaz_cuma">جۈمە</string>
+
+    <string name="camigeofence_mod_kural_adi">ناماز</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı ئۇنى جۈمە خۇتبىسى ۋاقتىدا، مەسچىتتە ياكى ناماز ۋاقتى كىرگەندە ئاچىدۇ</string>
+</resources>

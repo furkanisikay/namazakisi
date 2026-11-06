@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Türkmence). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Okadym</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Namaz wagty ýagdaýy</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Namaz wagty wakasy</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Bu sazlama awtomatlaşdyrma programmasyndan goşulýar</string>
+  <string name="otomasyon_bilgi_tarayici">Brauzerler hemişelik rugsat alyp bilmeýär. Ony Tasker, MacroDroid ýa-da Automate ýaly programmanyň goşmaçalar sanawyndan goşuň.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid ýa-da Automate ýaly programmanyň goşmaçalar sanawyndan “Namaz Akışı” saýlap goşuň.</string>
+  <string name="otomasyon_engelli_baslik">%1$s bökdeldi</string>
+  <string name="otomasyon_engelli_mesaj">Bu programmanyň namazlaryňyzy bellemegini öň bökdäpdiňiz. Oňa Namaz Akışı-da Sazlamalar &gt; “Okadym belleýän programmalar” bölüminde rugsat berip bilersiňiz.</string>
+  <string name="otomasyon_izin_baslik">%1$s bilen ulanylsynmy?</string>
+  <string name="otomasyon_izin_kosul">%1$s namaz wagtynyň haçan girýändigini, haçan çykýandygyny we haçan metjitdedigiňizi bilip, awtomatlaşdyrmalaryňyzy işledip biler. Kararyňyzy Namaz Akışı-da Sazlamalar &gt; “Okadym belleýän programmalar” bölüminde üýtgedip bilersiňiz.</string>
+  <string name="otomasyon_izin_kildim">%1$s sazlan awtomatlaşdyrmaňyz bilen häzirki namazy okaldy diýip belläp biler. Kararyňyzy Namaz Akışı-da Sazlamalar &gt; “Okadym belleýän programmalar” bölüminde üýtgedip bilersiňiz.</string>
+  <string name="otomasyon_izin_ver">Rugsat beriň</string>
+  <string name="otomasyon_engelle">Bökdäň</string>
+  <string name="otomasyon_vazgec">Ýatyryň</string>
+  <string name="otomasyon_tamam">Bolýar</string>
+  <string name="otomasyon_tur_baslik">Haçan işlesin?</string>
+  <string name="otomasyon_ileri">Indiki</string>
+  <string name="otomasyon_vakit_baslik">Haýsy namaz?</string>
+  <string name="otomasyon_herhangi_vakit">Islendik namaz wagty</string>
+  <string name="otomasyon_kaydet">Ýatda saklaň</string>
+  <string name="otomasyon_kosul_icinde">Namaz wagty dowam edýärkä</string>
+  <string name="otomasyon_kosul_cikiyor">Namaz wagty çykmakçy bolanda (%1$d min galanda, Namaz goragçysy açyk)</string>
+  <string name="otomasyon_kosul_camide">Metjitde bolanda</string>
+  <string name="otomasyon_olay_girdi">Namaz wagty girende</string>
+  <string name="otomasyon_olay_cikiyor">Namaz wagty çykmakçy bolanda (%1$d min galanda, Namaz goragçysy açyk)</string>
+  <string name="otomasyon_olay_camide">Metjitdedigiňiz anyklananda</string>
+</resources>

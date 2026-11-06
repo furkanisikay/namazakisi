@@ -24,6 +24,7 @@
  */
 
 import { scryptAsync } from '@noble/hashes/scrypt';
+import { bicim, metin } from '../dil/aktifDil';
 import naclUtil from 'tweetnacl-util';
 
 /** Zarfta taşınan KDF parametreleri. */
@@ -114,7 +115,7 @@ export function parolayiNormalizeEt(parola: string): string {
 /** Parola kurala uyuyor mu? Uygunsa `null`, değilse kullanıcıya gösterilecek neden. */
 export function parolaSorunu(parola: string): string | null {
   if (parolayiNormalizeEt(parola).length < PAROLA_EN_AZ_UZUNLUK) {
-    return `Parolanız en az ${PAROLA_EN_AZ_UZUNLUK} karakter olmalı.`;
+    return bicim(metin().yedekleme.parolaKisa, { n: PAROLA_EN_AZ_UZUNLUK });
   }
   return null;
 }

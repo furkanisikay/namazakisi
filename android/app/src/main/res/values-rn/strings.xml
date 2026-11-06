@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kirundi kaynakları (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: docs/ajan/coklu-dil.md terim sözlüğü + JS src/core/dil/sozluk/en. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Isengesho ry’ubu, igihe rirangira, na Nasenze mu gukanda rimwe</string>
+  <string name="widget_genis_aciklama">Amasengesho atanu y’uyu musi, igihe gisigaye, na Nasenze mu gukanda rimwe</string>
+  <string name="widget_kapak_adi">Ibihe vy’isengesho kuri ecran y’inyuma</string>
+  <string name="widget_kapak_aciklama">Ibihe vy’isengesho vy’uyu musi n’igihe gisigaye kuri ecran y’inyuma ya Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Iya kera</string>
+  <string name="widget_klasik_aciklama">Indabo y’icatsi ya kera: igihe gisigaye gushika ku isengesho rikurikira</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Iya kera nini</string>
+  <string name="widget_klasik_genis_aciklama">Indabo y’icatsi ya kera: igihe gisigaye n’ibihe vy’isengesho vy’uyu musi</string>
+  <string name="widget_ayet_adi">Umurongo w’umusi</string>
+  <string name="widget_ayet_aciklama">Umurongo n’ubusobanuro bwawo, bihindurwa buri musi kuri Fajri</string>
+  <string name="widget_ayar_zemin_palet">Ibara rya porogarama (ryoroshe)</string>
+  <string name="widget_ayar_ayet_icerik">Ku rugero rw’impande zingana, mwerekane</string>
+  <string name="widget_ayar_ayet_icerik_meal">Ubusobanuro</string>
+  <string name="widget_ayar_ayet_icerik_hat">Inyandiko y’Icarabu (hati nziza)</string>
+  <string name="kutu_kildim_etiket">Nasenze</string>
+  <string name="kisayol_kildim_kisa">Nasenze</string>
+  <string name="kisayol_kildim_uzun">Nasenze isengesho ry’ubu</string>
+  <string name="kisayol_kible_kisa">Ubutumbero</string>
+  <string name="kisayol_kible_uzun">Mwerekane ubutumbero (Qibla)</string>
+  <string name="kisayol_kaza_kisa">Igitabo ca Qadha</string>
+  <string name="kisayol_kaza_uzun">Mwugurure Igitabo ca Qadha</string>
+  <string name="kildim_onay_baslik">Mwemeze ko %1$s yasenzwe?</string>
+  <string name="kildim_onay_mesaj">Ntibizwi neza porogarama yarungitse iki gisabwa. Mwemeze nimba mwasenze.</string>
+  <string name="kildim_onay_evet">Nasenze</string>
+  <string name="kildim_onay_vazgec">Mureke</string>
+  <string name="kildim_guven_baslik">%1$s yemererwe kwemeza ko amasengesho yanyu yasenzwe?</string>
+  <string name="kildim_guven_mesaj">Isengesho rigiye kwemezwa ubu: %1$s. Murashobora guhindura icemezo canyu hanyuma mu Mahitamwo &gt; Porogarama zishobora kwemeza amasengesho.</string>
+  <string name="kildim_guven_tarayici_mesaj">Isengesho rigiye kwemezwa ubu: %1$s. Iki gisabwa caturutse muri mushakisha; kubera urubuga urwo ari rwo rwose rushobora kwugurura iri huriro, uruhusha rw’igihe cose ntirushobora gutangwa.</string>
+  <string name="kildim_guven_her_zaman">Mwemere hama</string>
+  <string name="kildim_guven_bu_sefer">Ubu gusa</string>
+  <string name="kildim_guven_engelle">Mubuze</string>
+  <string name="kildim_guven_engellendi">%1$s ntigishobora kwemeza amasengesho yanyu. Murashobora kubihindura mu Mahitamwo.</string>
+  <string name="widget_ayar_baslik">Mutunganye widget</string>
+  <string name="widget_ayar_zemin">Inyuma</string>
+  <string name="widget_ayar_zemin_material">Amabara y’ishusho y’inyuma</string>
+  <string name="widget_ayar_zemin_sistem">Igicapo ca sisitemu</string>
+  <string name="widget_ayar_zemin_acik">Kirabagirana</string>
+  <string name="widget_ayar_zemin_koyu">Cijimye</string>
+  <string name="widget_ayar_zemin_seffaf">Kibonerana</string>
+  <string name="widget_ayar_opaklik">Ukutabonerana kw’inyuma</string>
+  <string name="widget_ayar_gosterim">Mwerekane mu nyuguti nini</string>
+  <string name="widget_ayar_gosterim_kalan">Igihe gisigaye</string>
+  <string name="widget_ayar_gosterim_bitis">Isaha y’impera</string>
+  <string name="widget_ayar_gosterim_not">Isaha y’impera yerekanwa ku rugero rwose.</string>
+  <string name="widget_ayar_sonraki">Mwerekane isengesho rikurikira</string>
+  <string name="widget_ayar_vazgec">Mureke</string>
+  <string name="widget_ayar_kaydet">Mubike</string>
+  <string name="kildim_onay_kanal_adi">Icemezo ca Nasenze</string>
+  <string name="kildim_onay_kanal_aciklama">Icemezo citonze kiboneka amasegonda make iyo mukanze ”Nasenze” mu imenyesha</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Kirangira %1$s</string>
+  <string name="widget_giris">Gitangura %1$s</string>
+  <string name="widget_namaz_vakti">Igihe c’isengesho</string>
+  <string name="widget_uygulamayi_acin">Mwugurure porogarama</string>
+  <string name="widget_siradaki">Rikurikira: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Nta sengesho ryo kwemeza ubu</string>
+  <string name="widget_dugme_kildim">Nasenze</string>
+  <string name="widget_dugme_isaretleniyor">Biriko biremezwa</string>
+  <string name="widget_dugme_kilindi">Ryasenzwe</string>
+  <string name="widget_dugme_vakit_girmedi">Igihe ntikiragera</string>
+  <string name="widget_klasik_uygulamayi_acin">mwugurure porogarama</string>
+  <string name="widget_klasik_erisim_veri_yok">Mwugurure porogarama kugira mubone ibihe vy’isengesho</string>
+  <string name="widget_klasik_erisim_siradaki">Isengesho rikurikira: %1$s, gitangura ku isaha %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Adhuhuri haciye</string>
+  <string name="widget_onizleme_klasik_genis">Maghrib haciye</string>
+  <string name="widget_onizleme_imsak">Fajri</string>
+  <string name="widget_onizleme_gunes">Izuba rirashe</string>
+  <string name="widget_onizleme_ogle">Adhuhuri</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">Isengesho rya %1$s ryemejwe. Allah abyakire.</string>
+  <string name="kildim_sonuc_zaten_kilindi">Isengesho rya %1$s ryari ryaremejwe.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Nta sengesho ryo kwemeza ubu. Rikurikira ni %1$s, gitangura ku isaha %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Nta sengesho ryo kwemeza ubu.</string>
+  <string name="kildim_sonuc_veri_yok">Nta makuru y’ibihe vy’isengesho. Mwugurure porogarama rimwe.</string>
+  <string name="kildim_sonuc_vakit_degisti">Igihe c’isengesho cahindutse, ni co gituma nta kintu cemejwe. Mwongere mugerageze.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Porogarama yo kurangira inzira ntiyashoboye kwuguruka.</string>
+  <string name="arac_adsiz_cami">Umusigiti</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Amakuru y’ibihe vy’isengesho ntiyashoboye gusomwa.</string>
+  <string name="asistan_isaretleme_yapilamadi">Isengesho ntiryashoboye kwemezwa.</string>
+  <string name="asistan_aciklama">Murashobora kubaza ibihe vy’isengesho, kwemeza ko isengesho ry’ubu ryasenzwe no kwugurura urupapuro rw’ubutumbero.</string>
+</resources>

@@ -13,6 +13,9 @@ import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { TURKIYE_ILLERI_OFFLINE } from '../TurkiyeKonumServisi';
 import { mekruhVakitKontrolEt } from '../KazaHesaplayiciServisi';
 import { KAZA_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
+import { aktifHesapAyariniKur, aktifHesapSifirla } from '../../../core/vakit/aktifHesap';
+import { tvHesapOzeti } from '../../../core/vakit/tvHesapOzeti';
+import type { HesapAyari } from '../../../core/vakit/hesapProfilleri';
 
 const KOK = path.resolve(__dirname, '../../../..');
 
@@ -92,6 +95,43 @@ describe('Android TV panosu — telefonla vakit paritesi', () => {
         }
       }
       expect(denetlenen).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Türkiye dışı yöntemler (vakit-fiksturu-dunya.json)', () => {
+    const dunya: {
+      ornekler: { ad: string; lat: number; lng: number; tarih: string; ayar: HesapAyari; hesap: unknown; vakitler: Ornek['vakitler'] }[];
+    } = JSON.parse(fs.readFileSync(path.join(KOK, 'tv/app/src/test/resources/vakit-fiksturu-dunya.json'), 'utf8'));
+    afterEach(() => aktifHesapSifirla());
+
+    it('TV özeti telefonun yüke koyduğu özetle aynı', () => {
+      expect(dunya.ornekler.length).toBeGreaterThanOrEqual(60);
+      for (const o of dunya.ornekler) {
+        const [y, a, g] = o.tarih.split('-').map(Number);
+        expect(tvHesapOzeti(o.ayar, o.lat, new Date(y, a - 1, g))).toEqual(o.hesap);
+      }
+    });
+
+    it('vakitler telefonun gerçek servis yolundan (etkin hesap ayarıyla) birebir çıkar', () => {
+      const servis = NamazVaktiHesaplayiciServisi.getInstance();
+      for (const o of dunya.ornekler) {
+        aktifHesapAyariniKur(o.ayar);
+        servis.yapilandir({ latitude: o.lat, longitude: o.lng });
+        const [y, a, g] = o.tarih.split('-').map(Number);
+        const v = servis.getGunlukVakitler(new Date(y, a - 1, g));
+        expect({
+          imsak: v!.imsak.getTime(),
+          gunes: v!.gunes.getTime(),
+          ogle: v!.ogle.getTime(),
+          ikindi: v!.ikindi.getTime(),
+          aksam: v!.aksam.getTime(),
+          yatsi: v!.yatsi.getTime(),
+        }).toEqual(o.vakitler);
+      }
+    });
+
+    it('dokunulmamış Diyanet ayarında özet yok (TV Türkiye yolunu kullanır)', () => {
+      expect(tvHesapOzeti({ profil: 'diyanet' }, 41, new Date(2026, 9, 24))).toBeNull();
     });
   });
 

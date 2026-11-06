@@ -18,6 +18,7 @@ import {
     type GeceSessizligi,
 } from '../../../core/muhafiz/geceSessizligi';
 import { geceSessizligiOzeti } from '../../../core/hatirlatma/hatirlatmaOzetleri';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface GeceSessizligiSatiriProps {
     ayar: GeceSessizligi | undefined;
@@ -27,6 +28,8 @@ export interface GeceSessizligiSatiriProps {
 
 export const GeceSessizligiSatiri: React.FC<GeceSessizligiSatiriProps> = ({ ayar, onDegistir, testID = 'satir-gece-sessizligi' }) => {
     const renkler = useRenkler();
+    const m = useMetin();
+    const mg = m.hatirlatma.gece;
     const [acik, setAcik] = React.useState(false);
     const taban = ayar ?? { ...VARSAYILAN_GECE_SESSIZLIGI, aktif: false };
     const [secim, setSecim] = React.useState({ saat: taban.baslangicSaat, dakika: taban.baslangicDakika });
@@ -40,7 +43,7 @@ export const GeceSessizligiSatiri: React.FC<GeceSessizligiSatiriProps> = ({ ayar
         <>
             <AnahtarSatiri
                 ikon="cloud-moon"
-                baslik="Gece sessiz saatler"
+                baslik={mg.baslik}
                 ozet={geceSessizligiOzeti(ayar)}
                 deger={ayar?.aktif === true}
                 onDegistir={(v) => onDegistir({ ...taban, aktif: v })}
@@ -50,12 +53,12 @@ export const GeceSessizligiSatiri: React.FC<GeceSessizligiSatiriProps> = ({ ayar
             <BildirimModali
                 gorunur={acik}
                 tip="bilgi"
-                baslik="Gece sessiz saatler"
-                mesaj="Seçtiğiniz saatten imsağa kadar vakit çıkmadan hatırlatması gelmez. Yatsı hatırlatmaları ve yatsıya kurduğunuz alarm sessizlik başlamadan önce gelir. Diğer alarmlarınız yine çalar."
+                baslik={mg.baslik}
+                mesaj={mg.mesaj}
                 icerik={
                     <View
                         accessibilityRole="radiogroup"
-                        accessibilityLabel="Sessizlik başlangıcı"
+                        accessibilityLabel={mg.baslangicEtiketi}
                         style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 12 }}
                     >
                         {GECE_BASLANGIC_SECENEKLERI.map((s) => {
@@ -89,14 +92,14 @@ export const GeceSessizligiSatiri: React.FC<GeceSessizligiSatiriProps> = ({ ayar
                         })}
                     </View>
                 }
-                birincilEtiket="Kaydedin"
+                birincilEtiket={mg.kaydedin}
                 birincilIkon="check"
                 onBirincil={() => {
                     onDegistir({ aktif: true, baslangicSaat: secim.saat, baslangicDakika: secim.dakika });
                     setAcik(false);
                 }}
                 onKapat={() => setAcik(false)}
-                kapatEtiketi="Vazgeçin"
+                kapatEtiketi={m.ortak.vazgecin}
             />
         </>
     );

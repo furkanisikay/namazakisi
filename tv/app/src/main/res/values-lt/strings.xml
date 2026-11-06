@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lietuvių. Terminai: docs/ajan/coklu-dil.md + src/core/dil/sozluk/lt (vakit adları çekimsiz, çekim "malda"da). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">lt</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Maldų laikų lenta</string>
+    <string name="ayarlar">Nustatymai</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Iki %1$s liko %2$s</string>
+    <string name="pano_vaktine">Iki %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s po %2$s</string>
+    <string name="pano_kerahat_vakti">Nepageidautinas laikas</string>
+    <string name="pano_bitis">baigiasi %1$s</string>
+    <string name="pano_kerahat_erisim">Nepageidautinas laikas, %1$s, baigiasi %2$s. %3$s</string>
+    <string name="pano_cumaya">Džumua po %1$s</string>
+    <string name="pano_cikis_geldi">metas išeiti</string>
+    <string name="pano_cikis">išeiti %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Metas išeiti į Džumua maldą</string>
+    <string name="pano_cuma_cikis_erisim">Į Džumua maldą išeikite %1$s</string>
+    <string name="pano_bugun_cuma">Šiandien Džumua</string>
+    <string name="pano_ogle">Dhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Šiandien Džumua. Džumua malda atliekama Dhuhr metu, %1$s</string>
+    <string name="pano_ayarlar_erisim">Nustatymai: pridėti telefoną, vietovė, prijungti telefonai</string>
+    <string name="pano_simdiki_vakit">dabartinis maldos laikas</string>
+    <string name="pano_siradaki_vakit">kitas maldos laikas</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Pridėkite telefoną", "Įvesti kodu", "Pasirinksiu provinciją rankiniu būdu", "Pridėti". -->
+    <string name="kodla_girin">Įvesti kodu</string>
+    <string name="ili_kendim_secin">Pasirinksiu provinciją rankiniu būdu</string>
+    <string name="yeniden_deneyin">Bandyti dar kartą</string>
+    <string name="telefon_varsayilan">Telefonas</string>
+    <string name="esleme_ekleniyor">Pridedama: %1$s</string>
+    <string name="esleme_gonderiyor">Jūsų telefonas siunčia savo vietovę ir būseną…</string>
+    <string name="esleme_tamamlanamadi">Susieti nepavyko</string>
+    <string name="esleme_saklanamadi">Šis televizorius negali saugiai išsaugoti ryšio rakto. Vietovę galite įvesti kodu arba pasirinkti provinciją.</string>
+    <string name="telefonunuzu_ekleyin">Pridėkite telefoną</string>
+    <string name="esleme_alt">Maldų laikai pagal jūsų vietovę; rodomos ir jūsų atliktos maldos.</string>
+    <string name="esleme_adim1">Telefone atidarykite „Namaz Akışı“</string>
+    <string name="esleme_adim2">Nustatymai › Mano įrenginiai › Pridėti televizorių</string>
+    <string name="esleme_adim3">Nukreipkite telefono kamerą į kodą</string>
+    <string name="esleme_ayni_wifi">Telefonas ir televizorius turi būti tame pačiame „Wi-Fi“ tinkle.</string>
+    <string name="esleme_onay_soru">Pridėti šį telefoną?</string>
+    <string name="esleme_onay_aciklama">Pridėtas telefonas galės siųsti šiam televizoriui savo vietovę ir pažymėtas maldas.</string>
+    <string name="ekleyin">Pridėti</string>
+    <string name="hayir">Ne</string>
+    <string name="esleme_eklendi">Pridėta: %1$s</string>
+    <string name="konumunuz_geldi">Jūsų vietovė gauta</string>
+    <string name="konuma_gore_hesaplanacak">Maldų laikai bus skaičiuojami šiai vietovei.</string>
+    <string name="qr_konum_alindi">Vietovė gauta</string>
+    <string name="qr_kodu">Susiejimo kodas, kurį reikia nuskaityti telefonu</string>
+    <string name="ag_yok">Televizorius neprijungtas prie tinklo</string>
+    <string name="ag_yok_aciklama">Galite tęsti įvesdami 7 skaitmenų kodą iš telefono arba pasirinkdami provinciją.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Įveskite kodą iš telefono</string>
+    <string name="kod_yol">Telefone: Nustatymai › Mano įrenginiai › Pridėti televizorių</string>
+    <string name="kod_hatali">Kodas nesutapo. Patikrinkite 7 skaitmenis telefone; neteisingą skaitmenį ištaisykite mygtuku „%1$s“.</string>
+    <string name="kod_rakamli_kumanda">Jei pultelyje yra skaičių mygtukai, galite rašyti ir jais.</string>
+    <string name="kod_bos_hane">tuščias skaitmuo</string>
+    <string name="kod_sil">Ištrinti</string>
+    <string name="kod_sil_aciklama">Ištrinti paskutinį skaitmenį</string>
+    <string name="kod_geri">Atgal</string>
+    <string name="vazgecin">Atšaukti</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Pasirinkite provinciją</string>
+    <string name="il_merkezine_gore">Maldų laikai skaičiuojami provincijos centrui.</string>
+    <string name="il_secili">%1$s, pasirinkta</string>
+    <string name="dream_il_yok">Kad matytumėte maldų laikų lentą, atidarykite „Namaz Akışı“ programą ir pasirinkite provinciją.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Vietovė: %1$s</string>
+    <string name="ayar_konum_yok">Vietovė nepasirinkta</string>
+    <string name="ayar_telefon_ekleyin">Pridėti telefoną</string>
+    <string name="ayar_konumu_kodla">Įvesti vietovę kodu</string>
+    <string name="ayar_bagli_telefonlar">Prie šio televizoriaus prijungti telefonai</string>
+    <string name="ayar_telefon_yok">Dar nepridėtas nė vienas telefonas. Kairėje pasirinkite „%1$s“ ir nuskaitykite pasirodžiusį kodą.</string>
+    <string name="kaldirin">Pašalinti</string>
+    <string name="ayar_ne_gonderir">Ką siunčia telefonai?</string>
+    <string name="ayar_madde_konum">Vietovę: pagal ją skaičiuojami maldų laikai</string>
+    <string name="ayar_madde_namazlar">Pažymėtas maldas, jei tai pasirinkta</string>
+    <string name="ayar_madde_sifreli">Šifruota, tik jūsų namų tinkle</string>
+    <string name="son_haber_yok">Kol kas informacijos nėra</string>
+    <string name="son_haber_az_once">Ką tik</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">prieš %1$d min.</item>
+        <item quantity="few">prieš %1$d min.</item>
+        <item quantity="many">prieš %1$d min.</item>
+        <item quantity="other">prieš %1$d min.</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">prieš %1$d val.</item>
+        <item quantity="few">prieš %1$d val.</item>
+        <item quantity="many">prieš %1$d val.</item>
+        <item quantity="other">prieš %1$d val.</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">prieš %1$d dieną</item>
+        <item quantity="few">prieš %1$d dienas</item>
+        <item quantity="many">prieš %1$d dienos</item>
+        <item quantity="other">prieš %1$d dienų</item>
+    </plurals>
+    <string name="kaldir_soru">Pašalinti %1$s?</string>
+    <string name="kaldir_aciklama">Šis telefonas nebegalės siųsti informacijos televizoriui. Norėdami jį pridėti iš naujo, turėsite vėl nuskaityti QR kodą.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Jūsų telefono vietovė</string>
+</resources>

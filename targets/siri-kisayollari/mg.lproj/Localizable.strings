@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Malgasca terimler: src/core/dil/sozluk/mg (cami.ios rehberindeki eylem adlariyla birebir).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Soalat manaraka";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Milaza ny soalat manaraka sy ny ora hanombohany.";
+"Şu anki vakti kıldım" = "Nanao ny soalat ankehitriny aho";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Manamarika ho vita ny soalat ankehitriny. Ampidirina ny firaketana rehefa sokafanao ny fampiharana.";
+"Onay iste" = "Angataho ny fanamafisana";
+"Kıbleyi aç" = "Sokafy ny Kibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Manokatra ny fampiharana miaraka amin'ny kompasin'ny Kibla.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Nivavaka aho";
+"Kıble" = "Kibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Anaran'ny soalat manaraka";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Manome ny anaran'ny soalat manaraka. Azonao ampiasaina ho fepetra ao amin'ny Shortcuts izy.";
+"Sıradaki vakte kalan dakika" = "Minitra sisa mankany amin'ny soalat manaraka";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Manome ny isan'ny minitra sisa mandra-panombohan'ny soalat manaraka. Mamerina -1 raha tsy misy fampahalalana.";
+"Şu anki vakit kılındı mı?" = "Voamarika ho vita ve ny soalat ankehitriny?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Manome eny raha voamarika ho vita ny soalat ankehitriny. Manome tsia raha tsy misy soalat hamarihina.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Fahanginana soalat";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Mamerina marina mandritra ny minitra voalohany aorian'ny nidiran'ny fotoanan'ny soalat. Ampiasaina ao amin'ny Shortcuts handefasana Focus.";
+"Süre (dakika)" = "Faharetana (minitra)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Ny ${dakika} minitra aorian'ny nidiran'ny fotoanan'ny soalat";
+"Namaz sessizliğinin bitişi" = "Fiafaran'ny fahanginana soalat";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Manome ny ora hifaranan'ny fahanginana. Manome ny ora ankehitriny raha tsy misy fahanginana izao.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Fiafaran'ny ${dakika} minitra aorian'ny nidiran'ny fotoanan'ny soalat";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Fampahatsiahivana soalat";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Raha mandeha ity Focus ity, tonga tsy misy feo sy tsy mampirehitra ny efijery ny fampahatsiahivana soalat.";
+"Hatırlatmaları sessiz ver" = "Ataovy mangina ny fampahatsiahivana";
+"Hatırlatmalar sessiz gelir" = "Tonga mangina ny fampahatsiahivana";
+"Hatırlatmalar her zamanki gibi" = "Fampahatsiahivana toy ny mahazatra";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Manamarika ho vita ny soalat aseho ao amin'ny widget.";
+"Tarih" = "Daty";
+"Vakit" = "Soalat";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Ajanony ny fanairana soalat";
+"Namazı kıldım" = "Nivavaka aho";
+"Alarm" = "Fanairana";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Sarin'ny andininy anio";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Manome ny andininy anio ho sary mitovy habe amin'ny efijerinao. Azonao ampiasaina miaraka amin'ny dingana Set Wallpaper ao amin'ny Shortcuts izy.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Sokafy indray mandeha ny fampiharana mba hanomanana ny andininy anio.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Tsy voaomana ny sary. Andramo indray rehefa afaka kelikely.";

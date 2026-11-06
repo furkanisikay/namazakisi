@@ -1,0 +1,19 @@
+// bs — Boşnakça (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR. Ifade kullanicinin
+// Siri'ye soyledigi komuttur (dogal "ti" emri); cinsiyetli gecmis zaman YOK.
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "Kada je sljedeći namaz u ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} sljedeći namaz";
+"${applicationName} ile sıradaki namazı söyle" = "Reci mi sljedeći namaz u ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} namasko vrijeme";
+"${applicationName} şu anki vakti kıldım" = "Označi trenutni vakat kao klanjan u ${applicationName}";
+"${applicationName} namazımı kıldım" = "${applicationName} klanjano";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Označi vakat kao klanjan u ${applicationName}";
+"${applicationName} kıbleyi aç" = "Otvori kiblu u ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Pokaži kiblu u ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} slika ajeta dana";
+"${applicationName} ile günün ayeti görselini hazırla" = "Pripremi sliku ajeta dana u ${applicationName}";

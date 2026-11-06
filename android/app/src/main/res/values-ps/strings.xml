@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Peştuca kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ps (vakit.ts başındaki terim yorumu). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">اوسنی لمونځ، د هغه پای، او په یوه کېکاږلو «لمونځ مې وکړ»</string>
+  <string name="widget_genis_aciklama">د نن پنځه لمونځونه، شاته شمېرنه، او په یوه کېکاږلو «لمونځ مې وکړ»</string>
+  <string name="widget_kapak_adi">د پوښ سکرین د لمانځه وختونه</string>
+  <string name="widget_kapak_aciklama">د Galaxy Z Flip د پوښ سکرین لپاره د نن د لمانځه وختونه او شاته شمېرنه</string>
+  <string name="widget_klasik_adi">Namaz Akışı — کلاسیک</string>
+  <string name="widget_klasik_aciklama">کلاسیکه شنه بڼه: د بل لمانځه تر وخته پاتې وخت</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — کلاسیک پراخ</string>
+  <string name="widget_klasik_genis_aciklama">کلاسیکه شنه بڼه: شاته شمېرنه او د نن د لمانځه وختونه</string>
+  <string name="widget_ayet_adi">د ورځې آیت</string>
+  <string name="widget_ayet_aciklama">یو آیت او د هغه ژباړه، هره ورځ د سهار په وخت نوي کېږي</string>
+  <string name="widget_ayar_zemin_palet">د اپ رنګ (روښانه رنګ)</string>
+  <string name="widget_ayar_ayet_icerik">په مربع اندازه کې وښیئ</string>
+  <string name="widget_ayar_ayet_icerik_meal">ژباړه</string>
+  <string name="widget_ayar_ayet_icerik_hat">عربي متن (خطاطي)</string>
+  <string name="kutu_kildim_etiket">لمونځ مې وکړ</string>
+  <string name="kisayol_kildim_kisa">لمونځ مې وکړ</string>
+  <string name="kisayol_kildim_uzun">اوسنی لمونځ مې وکړ</string>
+  <string name="kisayol_kible_kisa">قبله</string>
+  <string name="kisayol_kible_uzun">د قبلې لوری وښیئ</string>
+  <string name="kisayol_kaza_kisa">د قضا دفتر</string>
+  <string name="kisayol_kaza_uzun">د قضا دفتر پرانیزئ</string>
+  <string name="kildim_onay_baslik">ایا %1$s د ادا شوي په توګه نښه شي؟</string>
+  <string name="kildim_onay_mesaj">معلومه نه ده چې دا غوښتنه کوم اپ لېږلې. که مو لمونځ کړی وي، تایید یې کړئ.</string>
+  <string name="kildim_onay_evet">لمونځ مې وکړ</string>
+  <string name="kildim_onay_vazgec">لغوه</string>
+  <string name="kildim_guven_baslik">ایا %1$s ستاسو لمونځونه د ادا شوي په توګه نښه کولای شي؟</string>
+  <string name="kildim_guven_mesaj">هغه وخت چې اوس نښه کېږي: %1$s. خپله پرېکړه وروسته په ترتیبات &gt; هغه اپونه چې «لمونځ مې وکړ» نښه کولای شي کې بدلولای شئ.</string>
+  <string name="kildim_guven_tarayici_mesaj">هغه وخت چې اوس نښه کېږي: %1$s. دا غوښتنه له یوه براوزر څخه راغلې؛ څرنګه چې هره وېب پاڼه دا لینک پرانیستلای شي، دایمي اجازه نه شي ورکول کېدای.</string>
+  <string name="kildim_guven_her_zaman">تل اجازه ورکړئ</string>
+  <string name="kildim_guven_bu_sefer">یوازې دا ځل</string>
+  <string name="kildim_guven_engelle">بند یې کړئ</string>
+  <string name="kildim_guven_engellendi">%1$s نور ستاسو لمونځونه نه شي نښه کولای. له ترتیباتو یې بدلولای شئ.</string>
+  <string name="widget_ayar_baslik">ویجټ برابر کړئ</string>
+  <string name="widget_ayar_zemin">شالید</string>
+  <string name="widget_ayar_zemin_material">د شالید رنګونه</string>
+  <string name="widget_ayar_zemin_sistem">د سیسټم تیم</string>
+  <string name="widget_ayar_zemin_acik">روښانه</string>
+  <string name="widget_ayar_zemin_koyu">تیاره</string>
+  <string name="widget_ayar_zemin_seffaf">روڼ</string>
+  <string name="widget_ayar_opaklik">د شالید ټینګوالی</string>
+  <string name="widget_ayar_gosterim">په لویو لیکونو کې وښیئ</string>
+  <string name="widget_ayar_gosterim_kalan">پاتې وخت</string>
+  <string name="widget_ayar_gosterim_bitis">د پای وخت</string>
+  <string name="widget_ayar_gosterim_not">د پای وخت په هره اندازه کې ښودل کېږي.</string>
+  <string name="widget_ayar_sonraki">بل لمونځ وښیئ</string>
+  <string name="widget_ayar_vazgec">لغوه</string>
+  <string name="widget_ayar_kaydet">خوندي کړئ</string>
+  <string name="kildim_onay_kanal_adi">د «لمونځ مې وکړ» تایید</string>
+  <string name="kildim_onay_kanal_aciklama">یو چوپ تایید چې کله په خبرتیا کې «لمونځ مې وکړ» کېکاږئ، څو ثانیې ښودل کېږي</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">پای %1$s</string>
+  <string name="widget_giris">پیل %1$s</string>
+  <string name="widget_namaz_vakti">د لمانځه وخت</string>
+  <string name="widget_uygulamayi_acin">اپ پرانیزئ</string>
+  <string name="widget_siradaki">بل: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">اوس د نښه کولو لمونځ نشته</string>
+  <string name="widget_dugme_kildim">لمونځ مې وکړ</string>
+  <string name="widget_dugme_isaretleniyor">نښه کېږي</string>
+  <string name="widget_dugme_kilindi">ادا شو</string>
+  <string name="widget_dugme_vakit_girmedi">وخت لا نه دی شوی</string>
+  <string name="widget_klasik_uygulamayi_acin">اپ پرانیزئ</string>
+  <string name="widget_klasik_erisim_veri_yok">د لمانځه د وختونو د لیدلو لپاره اپ پرانیزئ</string>
+  <string name="widget_klasik_erisim_siradaki">بل لمونځ: %1$s، په %2$s پیلېږي</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ماسپښین ته</string>
+  <string name="widget_onizleme_klasik_genis">ماښام ته</string>
+  <string name="widget_onizleme_imsak">سهار</string>
+  <string name="widget_onizleme_gunes">لمر ختل</string>
+  <string name="widget_onizleme_ogle">ماسپښین</string>
+  <string name="widget_onizleme_ikindi">مازدیګر</string>
+  <string name="widget_onizleme_aksam">ماښام</string>
+  <string name="widget_onizleme_yatsi">ماسخوتن</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s د ادا شوي په توګه نښه شو. الله دې قبول کړي.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s دمخه د ادا شوي په توګه نښه شوی.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">اوس د نښه کولو لمونځ نشته. بل %1$s دی، په %2$s پیلېږي.</string>
+  <string name="kildim_sonuc_vakit_yok">اوس د نښه کولو لمونځ نشته.</string>
+  <string name="kildim_sonuc_veri_yok">د لمانځه د وختونو معلومات نشته. اپ یو ځل پرانیزئ.</string>
+  <string name="kildim_sonuc_vakit_degisti">د لمانځه وخت بدل شو، نو هېڅ نښه نه شو. بیا هڅه وکړئ.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">د لارښوونې اپ پرانیستل نه شو.</string>
+  <string name="arac_adsiz_cami">جومات</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">د لمانځه د وختونو معلومات ونه لوستل شول.</string>
+  <string name="asistan_isaretleme_yapilamadi">لمونځ نښه نه شو.</string>
+  <string name="asistan_aciklama">کولای شئ د لمانځه وختونه وپوښتئ، اوسنی لمونځ د ادا شوي په توګه نښه کړئ او د قبلې سکرین پرانیزئ.</string>
+</resources>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mdh -->
+<!-- Maguindanao. Terimler: src/core/dil/sozluk/mdh. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">mdh</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Pano nu manga waktu nu sambayang</string>
+    <string name="ayarlar">Manga setting</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s pan taman sa %1$s</string>
+    <string name="pano_vaktine">Taman sa %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s sa %2$s</string>
+    <string name="pano_kerahat_vakti">Waktu a makruh</string>
+    <string name="pano_bitis">malipus %1$s</string>
+    <string name="pano_kerahat_erisim">Waktu a makruh, %1$s, malipus %2$s. %3$s</string>
+    <string name="pano_cumaya">Jum\'at sa %1$s</string>
+    <string name="pano_cikis_geldi">waktu den lumakaw</string>
+    <string name="pano_cikis">lumakaw sa %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Waktu den lumakaw para sa Jum\'at</string>
+    <string name="pano_cuma_cikis_erisim">Lumakaw para sa Jum\'at sa %1$s</string>
+    <string name="pano_bugun_cuma">Jum\'at saguna</string>
+    <string name="pano_ogle">Dhuhur %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Jum\'at saguna. Su sambayang sa Jum\'at na sa waktu nu Dhuhur, %1$s</string>
+    <string name="pano_ayarlar_erisim">Manga setting: isama su telepono, lokasyun, manga telepono a nakakonekta</string>
+    <string name="pano_simdiki_vakit">waktu nu sambayang saguna</string>
+    <string name="pano_siradaki_vakit">kasunud a waktu nu sambayang</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Isama su telepono", "Isulat su code", "Pamili ako sa inged", "Isama". -->
+    <string name="kodla_girin">Isulat su code</string>
+    <string name="ili_kendim_secin">Pamili ako sa inged</string>
+    <string name="yeniden_deneyin">Ulit manem</string>
+    <string name="telefon_varsayilan">Telepono</string>
+    <string name="esleme_ekleniyor">Pedisama su %1$s</string>
+    <string name="esleme_gonderiyor">Pedsugu su telepono nu sa lokasyun endu kalagayan nin…</string>
+    <string name="esleme_tamamlanamadi">Di nasampay su kapagkonekta</string>
+    <string name="esleme_saklanamadi">Di matagu nu TV ini sa ligtas su key nu koneksyun. Maisulat nu su lokasyun nu sa code atawka pamili sa inged nu.</string>
+    <string name="telefonunuzu_ekleyin">Isama su telepono</string>
+    <string name="esleme_alt">Manga waktu nu sambayang para sa lokasyun nu; mailay bun su manga sambayang a nasambayang nu.</string>
+    <string name="esleme_adim1">Bukatan su Namaz Akışı sa telepono nu</string>
+    <string name="esleme_adim2">Manga setting › Manga device ku › Isama su TV</string>
+    <string name="esleme_adim3">Ituru su kamera nu telepono nu sa code</string>
+    <string name="esleme_ayni_wifi">Kailangan i lu sa isa bu a Wi-Fi network su telepono endu TV nu.</string>
+    <string name="esleme_onay_soru">Isama su telepono ini?</string>
+    <string name="esleme_onay_aciklama">Su telepono a inisama na makapedsugu sa lokasyun nin endu sa manga sambayang a pedtandaan nin sa TV ini.</string>
+    <string name="ekleyin">Isama</string>
+    <string name="hayir">Di</string>
+    <string name="esleme_eklendi">Inisama su %1$s</string>
+    <string name="konumunuz_geldi">Nakawma su lokasyun nu</string>
+    <string name="konuma_gore_hesaplanacak">Pedkwentan su manga waktu nu sambayang para sa lokasyun ini.</string>
+    <string name="qr_konum_alindi">Nakwa su lokasyun</string>
+    <string name="qr_kodu">Code nu kapagkonekta a ilayn sa telepono nu</string>
+    <string name="ag_yok">Di nakakonekta sa network su TV</string>
+    <string name="ag_yok_aciklama">Maituluy nu sa kapagsulat sa code a 7 a numeru ebpun sa telepono nu atawka sa kapamili sa inged nu.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Isulat su code ebpun sa telepono nu</string>
+    <string name="kod_yol">Sa telepono nu: Manga setting › Manga device ku › Isama su TV</string>
+    <string name="kod_hatali">Di pedsibay su code. Ilay su 7 a numeru sa telepono nu; tidtuan su sala a numeru sa “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Amayka aden numeru su remote nu, maisulat nu bun lun.</string>
+    <string name="kod_bos_hane">numeru a da isi</string>
+    <string name="kod_sil">Kwaan</string>
+    <string name="kod_sil_aciklama">Kwaan su ulyanan a numeru</string>
+    <string name="kod_geri">Embalingan</string>
+    <string name="vazgecin">Ibatal</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Pamili sa inged nu</string>
+    <string name="il_merkezine_gore">Su manga waktu nu sambayang na pedkwentan para sa tenga nu inged.</string>
+    <string name="il_secili">%1$s, napili</string>
+    <string name="dream_il_yok">Para mailay su pano nu manga waktu nu sambayang, bukatan su app a Namaz Akışı endu pamili sa inged nu.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Lokasyun: %1$s</string>
+    <string name="ayar_konum_yok">Da lokasyun a napili</string>
+    <string name="ayar_telefon_ekleyin">Isama su telepono</string>
+    <string name="ayar_konumu_kodla">Isulat su lokasyun sa code</string>
+    <string name="ayar_bagli_telefonlar">Manga telepono a nakakonekta sa TV ini</string>
+    <string name="ayar_telefon_yok">Da pan telepono a inisama. Gamiten su “%1$s” sa biwang endu ilayn su code a mailay.</string>
+    <string name="kaldirin">Kwaan</string>
+    <string name="ayar_ne_gonderir">Ngin i ipedsugu nu manga telepono?</string>
+    <string name="ayar_madde_konum">Lokasyun: pedsunud lun su manga waktu nu sambayang</string>
+    <string name="ayar_madde_namazlar">Manga sambayang a natandaan, para sa manga pinamili</string>
+    <string name="ayar_madde_sifreli">Naka-encrypt, sa network bu sa walay nu</string>
+    <string name="son_haber_yok">Da pan impormasyun</string>
+    <string name="son_haber_az_once">Saguna bu</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">%1$d min den</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">%1$d or den</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">%1$d gay den</item>
+    </plurals>
+    <string name="kaldir_soru">Kwaan su %1$s?</string>
+    <string name="kaldir_aciklama">Di den makapedsugu su telepono ini sa impormasyun sa TV. Para isama manem, kailangan ilayn manem su QR code.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Lokasyun nu telepono nu</string>
+</resources>

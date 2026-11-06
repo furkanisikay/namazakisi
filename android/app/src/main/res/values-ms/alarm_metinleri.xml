@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ms — Malayca (beta). -->
+<!-- Gerçek alarm (Malayca). "Sudah solat" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Penggera solat</string>
+  <string name="alarm_kildim">Sudah solat</string>
+  <string name="alarm_kapat">Matikan</string>
+  <string name="alarm_kanal_aciklamasi">Penggera sebenar yang berbunyi pada langkah peringatan yang anda pilih</string>
+</resources>

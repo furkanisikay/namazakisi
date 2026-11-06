@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Assamca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: নামাজ পঢ়িছোঁ</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: নামাজৰ সময়ৰ অৱস্থা</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: নামাজৰ সময়ৰ ঘটনা</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">এই ছেটিং এটা অট’মেশ্বন এপৰ পৰা যোগ কৰা হয়</string>
+  <string name="otomasyon_bilgi_tarayici">ব্ৰাউজাৰে স্থায়ী অনুমতি পাব নোৱাৰে। Tasker, MacroDroid বা Automate-ৰ দৰে এপৰ প্লাগইন তালিকাৰ পৰা যোগ কৰক।</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid বা Automate-ৰ দৰে এপৰ প্লাগইন তালিকাৰ পৰা “Namaz Akışı” বাছনি কৰি যোগ কৰক।</string>
+  <string name="otomasyon_engelli_baslik">%1$s অৱৰোধ কৰা হৈছে</string>
+  <string name="otomasyon_engelli_mesaj">আপুনি আগতে এই এপক আপোনাৰ নামাজ চিহ্নিত কৰাত অৱৰোধ কৰিছিল। Namaz Akışı-ৰ ছেটিং &gt; “নামাজ পঢ়িছোঁ চিহ্নিত কৰা এপ”ত অনুমতি দিব পাৰে।</string>
+  <string name="otomasyon_izin_baslik">%1$s এপৰ সৈতে ব্যৱহাৰ কৰিবনে?</string>
+  <string name="otomasyon_izin_kosul">%1$s এপে নামাজৰ সময় কেতিয়া আৰম্ভ হয়, কেতিয়া শেষ হৈ আহে আৰু আপুনি কেতিয়া মছজিদত থাকে জানিব পাৰে, আৰু আপোনাৰ অট’মেশ্বন চলাব পাৰে। Namaz Akışı-ৰ ছেটিং &gt; “নামাজ পঢ়িছোঁ চিহ্নিত কৰা এপ”ত আপোনাৰ সিদ্ধান্ত সলনি কৰিব পাৰে।</string>
+  <string name="otomasyon_izin_kildim">আপুনি ছেট কৰা অট’মেশ্বনেৰে %1$s এপে বৰ্তমানৰ নামাজ পঢ়া হ’ল বুলি চিহ্নিত কৰিব পাৰে। Namaz Akışı-ৰ ছেটিং &gt; “নামাজ পঢ়িছোঁ চিহ্নিত কৰা এপ”ত আপোনাৰ সিদ্ধান্ত সলনি কৰিব পাৰে।</string>
+  <string name="otomasyon_izin_ver">অনুমতি দিয়ক</string>
+  <string name="otomasyon_engelle">অৱৰোধ কৰক</string>
+  <string name="otomasyon_vazgec">বাতিল কৰক</string>
+  <string name="otomasyon_tamam">ঠিক আছে</string>
+  <string name="otomasyon_tur_baslik">কেতিয়া চলিব?</string>
+  <string name="otomasyon_ileri">পৰৱৰ্তী</string>
+  <string name="otomasyon_vakit_baslik">কোন নামাজ?</string>
+  <string name="otomasyon_herhangi_vakit">যিকোনো নামাজৰ সময়</string>
+  <string name="otomasyon_kaydet">ছেভ কৰক</string>
+  <string name="otomasyon_kosul_icinde">নামাজৰ সময় চলি থাকোঁতে</string>
+  <string name="otomasyon_kosul_cikiyor">নামাজৰ সময় শেষ হৈ আহোঁতে (%1$d মিনিট বাকী, নামাজ প্ৰহৰী অন)</string>
+  <string name="otomasyon_kosul_camide">মছজিদত থাকোঁতে</string>
+  <string name="otomasyon_olay_girdi">নামাজৰ সময় আৰম্ভ হ’লে</string>
+  <string name="otomasyon_olay_cikiyor">নামাজৰ সময় শেষ হৈ আহিলে (%1$d মিনিট বাকী, নামাজ প্ৰহৰী অন)</string>
+  <string name="otomasyon_olay_camide">আপুনি মছজিদত থকা বুলি ধৰা পৰিলে</string>
+</resources>

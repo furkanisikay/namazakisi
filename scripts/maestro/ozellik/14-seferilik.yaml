@@ -7,17 +7,17 @@ appId: com.furkanisikay.namazakisi
 - runFlow:
     file: _liste-kaydir.yaml
     env:
-      HEDEF: "Namaz vakitleri\\..*"
+      HEDEF: "(Namaz vakitleri|Prayer times)\\..*"
 - tapOn:
-    text: "Namaz vakitleri\\..*"
+    text: "(Namaz vakitleri|Prayer times)\\..*"
 - scrollUntilVisible:
     element:
-      text: "Yolculuk bilgisi\\..*"
+      text: "(Yolculuk bilgisi|Travel info)\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Yolculuk bilgisi\\..*"
+    text: "(Yolculuk bilgisi|Travel info)\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/31-seferilik

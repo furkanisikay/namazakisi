@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">మస్జిద్‌లో</string>
+    <string name="camigeofence_kanal_durum_aciklama">మీరు మస్జిద్‌లో ఉన్నట్లు గుర్తించినప్పుడు నిశ్శబ్ద సూచన</string>
+    <string name="camigeofence_kanal_soru_ad">మస్జిద్ నుండి బయలుదేరిన తర్వాత</string>
+    <string name="camigeofence_kanal_soru_aciklama">మస్జిద్ నుండి బయలుదేరిన తర్వాత మీ నమాజ్‌ను గుర్తించడానికి ఒక ప్రశ్న</string>
+
+    <string name="camigeofence_govde_mod_sessiz">నమాజ్ మోడ్ ఆన్‌లో ఉంది. రిమైండర్‌లు నిశ్శబ్దంగా వస్తాయి.</string>
+    <string name="camigeofence_govde_mod">నమాజ్ మోడ్ ఆన్‌లో ఉంది.</string>
+    <string name="camigeofence_govde_sessiz">రిమైండర్‌లు నిశ్శబ్దంగా వస్తాయి.</string>
+    <string name="camigeofence_govde_normal">రిమైండర్‌లు ఎప్పటిలాగే వస్తాయి.</string>
+    <string name="camigeofence_eylem_modu_kapat">మోడ్ ఆఫ్ చేయండి</string>
+    <string name="camigeofence_eylem_cami_degil">మస్జిద్ కాదు</string>
+
+    <string name="camigeofence_soru_baslik">మీరు మస్జిద్‌లో ఉన్నారా?</string>
+    <string name="camigeofence_soru_govde">మీరు %1$s దగ్గర ఉన్నారు. ఖచ్చితంగా తెలియదు, కాబట్టి మిమ్మల్ని అడుగుతున్నాం.</string>
+    <string name="camigeofence_varsayilan_ad">మస్జిద్</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">నమాజ్ మోడ్ ఆన్ చేయండి</string>
+    <string name="camigeofence_eylem_evet_camideyim">అవును, మస్జిద్‌లో ఉన్నాను</string>
+    <string name="camigeofence_eylem_hayir">కాదు</string>
+
+    <string name="camigeofence_kildiniz_mi">మీరు %1$s ఆచరించారా?</string>
+    <string name="camigeofence_kildiniz_mi_govde">ఒక్క నొక్కుతో గుర్తించవచ్చు.</string>
+    <string name="camigeofence_eylem_kildim">ఆచరించాను</string>
+    <string name="camigeofence_namaz_imsak">ఫజ్ర్</string>
+    <string name="camigeofence_namaz_ogle">జుహ్ర్</string>
+    <string name="camigeofence_namaz_ikindi">అస్ర్</string>
+    <string name="camigeofence_namaz_aksam">మగ్రిబ్</string>
+    <string name="camigeofence_namaz_yatsi">ఇషా</string>
+    <string name="camigeofence_namaz_cuma">జుమా</string>
+
+    <string name="camigeofence_mod_kural_adi">నమాజ్</string>
+    <string name="camigeofence_mod_tetik_aciklama">జుమా ఖుత్బా సమయంలో, మస్జిద్‌లో లేదా నమాజ్ సమయం ప్రారంభమైనప్పుడు Namaz Akışı దీన్ని ఆన్ చేస్తుంది</string>
+</resources>

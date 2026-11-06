@@ -1,0 +1,58 @@
+// mk — Makedonca, Kiril (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Makedonca terimler: src/core/dil/sozluk/mk + docs/ajan/coklu-dil.md hitap kaydi.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Следен намаз";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Го кажува следниот намаз и времето кога настапува.";
+"Şu anki vakti kıldım" = "Го клањав тековниот намаз";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Го означува тековниот намаз како клањан. Записот се додава кога ќе ја отворите апликацијата.";
+"Onay iste" = "Побарај потврда";
+"Kıbleyi aç" = "Отвори ја киблата";
+"Uygulamayı Kıble pusulasıyla açar." = "Ја отвора апликацијата со компасот за кибла.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Клањав";
+"Kıble" = "Кибла";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Име на следниот намаз";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Го дава името на следниот намаз. Можете да го користите како услов во Кратенки.";
+"Sıradaki vakte kalan dakika" = "Минути до следниот намаз";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Дава колку минути остануваат до настапувањето на следниот намаз. Ако нема податок, враќа -1.";
+"Şu anki vakit kılındı mı?" = "Дали тековниот намаз е означен како клањан?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Дава да ако тековниот намаз е означен како клањан. Ако нема намаз за клањање, дава не.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Тишина за намаз";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Враќа точно во првите минути по настапувањето на времето за намаз. Се користи во Кратенки за вклучување на Фокус.";
+"Süre (dakika)" = "Траење (минути)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} минути по настапувањето на времето за намаз";
+"Namaz sessizliğinin bitişi" = "Крај на тишината за намаз";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Го дава времето кога завршува тишината. Ако моментално нема тишина, го дава сегашното време.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Крај на ${dakika} минути по настапувањето на времето за намаз";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Потсетници за намаз";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Додека е вклучен овој Фокус, потсетниците за намаз пристигнуваат без звук и без палење на екранот.";
+"Hatırlatmaları sessiz ver" = "Испраќај ги потсетниците тивко";
+"Hatırlatmalar sessiz gelir" = "Потсетниците пристигнуваат тивко";
+"Hatırlatmalar her zamanki gibi" = "Потсетниците како и обично";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Го означува намазот прикажан во виџетот како клањан.";
+"Tarih" = "Датум";
+"Vakit" = "Намаз";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Запри го алармот за намаз";
+"Namazı kıldım" = "Клањав";
+"Alarm" = "Аларм";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Слика на ајетот на денот";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Го дава денешниот ајет како слика со големината на вашиот екран. Можете да ја користите со чекорот за поставување позадина во Кратенки.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Отворете ја апликацијата еднаш за да се подготви ајетот на денот.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Сликата не можеше да се подготви. Обидете се повторно малку подоцна.";

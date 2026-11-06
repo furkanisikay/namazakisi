@@ -3,7 +3,7 @@ import {
   NOW_BAR_OGELERI,
   NOW_BAR_OGE_BILGILERI,
   NOW_BAR_ONCELIK,
-  NOW_BAR_POLITIKA_UYARISI,
+  nowBarPolitikaUyarisi,
   vakitSayacGereksinimNotu,
   etkinVakitBaslangici,
   nowBarEtkinAyarlari,
@@ -66,7 +66,7 @@ describe('Now Bar seçimi — varsayılan ilk aşamanın davranışıdır', () =
   });
 
   test('politika uyarısı sahibin istediği cümle', () => {
-    expect(NOW_BAR_POLITIKA_UYARISI).toBe(
+    expect(nowBarPolitikaUyarisi()).toBe(
       'Google sürekli açık kartları önermez; telefonunuz öne çıkarmayı geri çekebilir.'
     );
   });

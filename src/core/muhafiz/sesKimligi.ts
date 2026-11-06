@@ -24,7 +24,8 @@
  * korunur.
  */
 import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
-import { VARSAYILAN_SES, VARSAYILAN_SES_ADI } from './matrisTipleri';
+import { VARSAYILAN_SES } from './matrisTipleri';
+import { metin } from '../dil/aktifDil';
 
 /** Kullanicinin sectigi sistem sesleri bu semayla gelir (RingtoneManager). */
 const OZEL_SES_ONEKI = 'content://';
@@ -70,7 +71,8 @@ export function sesKimliginiNormalize(ham: string | undefined | null): string {
 export function sesGorunenAdi(sesKimligi: string, sesAdi?: string): string {
   const ad = sesAdi?.trim();
   if (ad) return ad;
-  return ozelSesMi(sesKimligi) ? 'Seçtiğiniz ses' : VARSAYILAN_SES_ADI;
+  const k = metin().bildirim.kanal;
+  return ozelSesMi(sesKimligi) ? k.seciliSes : k.uygulamaSesi;
 }
 
 /**

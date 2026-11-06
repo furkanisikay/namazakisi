@@ -8,16 +8,18 @@
  * kılınmamış kişiye "bekleyin" deseydi vaktin çıkmasına yol açardı.
  *
  * Kural:
- *  - gurub + bugünün ikindisi kılınmadı → "şimdi kılabilirsiniz" (GURUB_IKINDI_METNI),
+ *  - gurub + bugünün ikindisi kılınmadı → "şimdi kılabilirsiniz" (`gurubIkindiMetni`),
  *  - gurub + ikindi kılındı / ikindinin durumu bilinmiyor → servisin metni (değişmez),
  *  - şuruk / istiva → servisin metni (değişmez).
  * Kaza defterindeki uyarı bu fonksiyondan geçmez (kaza için "bekleyin" doğrudur).
  */
 
+import { metin } from '../dil/aktifDil';
+
 export type KerahatTuru = 'suruk' | 'istiva' | 'gurub';
 
-export const GURUB_IKINDI_METNI =
-    'Güneş batış vaktidir (gurub). Bugünün ikindisini henüz kılmadıysanız şimdi kılabilirsiniz.';
+/** Gurub + ikindi kılınmadı metni, etkin dilde. */
+export const gurubIkindiMetni = (): string => metin().anaEkran.kerahat.gurubIkindi;
 
 export interface KerahatGirdisi {
     /** Servisin metni (`mekruhVakitKontrolEt(..., 'farz')`). */
@@ -29,6 +31,6 @@ export interface KerahatGirdisi {
 
 export function kerahatMetniSec({ aciklama, tur, ikindiKilindi }: KerahatGirdisi): string | null {
     if (!aciklama) return null;
-    if (tur === 'gurub' && ikindiKilindi === false) return GURUB_IKINDI_METNI;
+    if (tur === 'gurub' && ikindiKilindi === false) return gurubIkindiMetni();
     return aciklama;
 }

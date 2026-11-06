@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ukraynaca kaynaklar (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/uk. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Поточна молитва, коли вона закінчується, і «Молитву здійснено» одним дотиком</string>
+  <string name="widget_genis_aciklama">Сьогоднішні п’ять молитов, відлік і «Молитву здійснено» одним дотиком</string>
+  <string name="widget_kapak_adi">Час молитов на зовнішньому екрані</string>
+  <string name="widget_kapak_aciklama">Сьогоднішній час молитов і відлік для зовнішнього екрана Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Класичний</string>
+  <string name="widget_klasik_aciklama">Класичний зелений вигляд: час до наступної молитви</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Класичний широкий</string>
+  <string name="widget_klasik_genis_aciklama">Класичний зелений вигляд: відлік і сьогоднішній час молитов</string>
+  <string name="widget_ayet_adi">Аят дня</string>
+  <string name="widget_ayet_aciklama">Аят і його переклад, щодня оновлюються у час Фаджр</string>
+  <string name="widget_ayar_zemin_palet">Колір застосунку (світлий тон)</string>
+  <string name="widget_ayar_ayet_icerik">У квадратному розмірі показувати</string>
+  <string name="widget_ayar_ayet_icerik_meal">Переклад</string>
+  <string name="widget_ayar_ayet_icerik_hat">Арабський текст (каліграфія)</string>
+  <string name="kutu_kildim_etiket">Молитву здійснено</string>
+  <string name="kisayol_kildim_kisa">Здійснено</string>
+  <string name="kisayol_kildim_uzun">Поточну молитву здійснено</string>
+  <string name="kisayol_kible_kisa">Кибла</string>
+  <string name="kisayol_kible_uzun">Показати напрямок Кибли</string>
+  <string name="kisayol_kaza_kisa">Журнал каза</string>
+  <string name="kisayol_kaza_uzun">Відкрити журнал каза</string>
+  <string name="kildim_onay_baslik">Позначити %1$s як здійснену?</string>
+  <string name="kildim_onay_mesaj">Не вдалося визначити, який застосунок надіслав цей запит. Підтвердьте, якщо ви здійснили молитву.</string>
+  <string name="kildim_onay_evet">Молитву здійснено</string>
+  <string name="kildim_onay_vazgec">Скасувати</string>
+  <string name="kildim_guven_baslik">Дозволити %1$s позначати ваші молитви як здійснені?</string>
+  <string name="kildim_guven_mesaj">Зараз буде позначено: %1$s. Змінити рішення можна пізніше в Налаштуваннях &gt; Застосунки, що позначають «Молитву здійснено».</string>
+  <string name="kildim_guven_tarayici_mesaj">Зараз буде позначено: %1$s. Цей запит надійшов із браузера; оскільки це посилання може відкрити будь-яка вебсторінка, постійний дозвіл надати не можна.</string>
+  <string name="kildim_guven_her_zaman">Завжди дозволяти</string>
+  <string name="kildim_guven_bu_sefer">Лише цього разу</string>
+  <string name="kildim_guven_engelle">Заблокувати</string>
+  <string name="kildim_guven_engellendi">%1$s більше не може позначати ваші молитви. Змінити це можна в Налаштуваннях.</string>
+  <string name="widget_ayar_baslik">Налаштування віджета</string>
+  <string name="widget_ayar_zemin">Тло</string>
+  <string name="widget_ayar_zemin_material">Кольори шпалер</string>
+  <string name="widget_ayar_zemin_sistem">Системна тема</string>
+  <string name="widget_ayar_zemin_acik">Світле</string>
+  <string name="widget_ayar_zemin_koyu">Темне</string>
+  <string name="widget_ayar_zemin_seffaf">Прозоре</string>
+  <string name="widget_ayar_opaklik">Непрозорість тла</string>
+  <string name="widget_ayar_gosterim">Показувати великим текстом</string>
+  <string name="widget_ayar_gosterim_kalan">Час, що лишився</string>
+  <string name="widget_ayar_gosterim_bitis">Час завершення</string>
+  <string name="widget_ayar_gosterim_not">Час завершення показується в усіх розмірах.</string>
+  <string name="widget_ayar_sonraki">Показувати наступну молитву</string>
+  <string name="widget_ayar_vazgec">Скасувати</string>
+  <string name="widget_ayar_kaydet">Зберегти</string>
+  <string name="kildim_onay_kanal_adi">Підтвердження «Молитву здійснено»</string>
+  <string name="kildim_onay_kanal_aciklama">Тихе підтвердження на кілька секунд, коли ви торкаєтеся «Молитву здійснено» у сповіщенні</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">До %1$s</string>
+  <string name="widget_giris">Від %1$s</string>
+  <string name="widget_namaz_vakti">Час молитви</string>
+  <string name="widget_uygulamayi_acin">Відкрийте застосунок</string>
+  <string name="widget_siradaki">Наступна: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Зараз немає молитви для позначення</string>
+  <string name="widget_dugme_kildim">Молитву здійснено</string>
+  <string name="widget_dugme_isaretleniyor">Позначаємо</string>
+  <string name="widget_dugme_kilindi">Здійснено</string>
+  <string name="widget_dugme_vakit_girmedi">Ще не час</string>
+  <string name="widget_klasik_uygulamayi_acin">відкрийте застосунок</string>
+  <string name="widget_klasik_erisim_veri_yok">Відкрийте застосунок, щоб побачити час молитов</string>
+  <string name="widget_klasik_erisim_siradaki">Наступна молитва: %1$s, о %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Зугр через</string>
+  <string name="widget_onizleme_klasik_genis">Магріб через</string>
+  <string name="widget_onizleme_imsak">Фаджр</string>
+  <string name="widget_onizleme_gunes">Схід сонця</string>
+  <string name="widget_onizleme_ogle">Зугр</string>
+  <string name="widget_onizleme_ikindi">Аср</string>
+  <string name="widget_onizleme_aksam">Магріб</string>
+  <string name="widget_onizleme_yatsi">Іша</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s позначено як здійснену. Нехай Аллаг прийме.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s уже позначено як здійснену.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Зараз немає молитви для позначення. Наступна — %1$s, о %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Зараз немає молитви для позначення.</string>
+  <string name="kildim_sonuc_veri_yok">Немає даних про час молитов. Відкрийте застосунок один раз.</string>
+  <string name="kildim_sonuc_vakit_degisti">Час молитви змінився, тому нічого не позначено. Спробуйте ще раз.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Не вдалося відкрити застосунок навігації.</string>
+  <string name="arac_adsiz_cami">Мечеть</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Не вдалося прочитати дані про час молитов.</string>
+  <string name="asistan_isaretleme_yapilamadi">Не вдалося позначити молитву.</string>
+  <string name="asistan_aciklama">Можна запитати час молитов, позначити поточну молитву як здійснену і відкрити екран Кибли.</string>
+</resources>

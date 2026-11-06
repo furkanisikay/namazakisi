@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dagbani kaynakları (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/dag. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Pumpɔŋɔ jiŋli, saha shɛli di ni naai, mini N puhi jiŋli ni dihibu yini</string>
+  <string name="widget_genis_aciklama">Zuŋɔ jiŋa anu, saha kalibu, mini N puhi jiŋli ni dihibu yini</string>
+  <string name="widget_kapak_adi">Kapak yaɣili jiŋli saha</string>
+  <string name="widget_kapak_aciklama">Zuŋɔ jiŋli saha mini saha kalibu Galaxy Z Flip kapak yaɣili zuɣu</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Kurili</string>
+  <string name="widget_klasik_aciklama">Vakaha nyabu kurili: saha din kpalim pɔi ka jiŋli din doli paai</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Kurili din yɛligi</string>
+  <string name="widget_klasik_genis_aciklama">Vakaha nyabu kurili: saha kalibu mini zuŋɔ jiŋli saha</string>
+  <string name="widget_ayet_adi">Dabsili aaya</string>
+  <string name="widget_ayet_aciklama">Aaya mini di gbinni, bɛ taɣiri li dabsili kam Subaahi</string>
+  <string name="widget_ayar_zemin_palet">App nyabu (din neei)</string>
+  <string name="widget_ayar_ayet_icerik">Shee din mali gbana anahi ni, wuhimi ya</string>
+  <string name="widget_ayar_ayet_icerik_meal">Gbinni</string>
+  <string name="widget_ayar_ayet_icerik_hat">Larabanchi sabbu (hat)</string>
+  <string name="kutu_kildim_etiket">N puhi jiŋli</string>
+  <string name="kisayol_kildim_kisa">N puhi jiŋli</string>
+  <string name="kisayol_kildim_uzun">N puhi pumpɔŋɔ jiŋli</string>
+  <string name="kisayol_kible_kisa">Alichibla</string>
+  <string name="kisayol_kible_uzun">Wuhimi ya Alichibla soli</string>
+  <string name="kisayol_kaza_kisa">Labi puhibu gbaŋ</string>
+  <string name="kisayol_kaza_uzun">Yoomi ya Labi puhibu gbaŋ</string>
+  <string name="kildim_onay_baslik">Bɛ dalim %1$s ni yi puhi?</string>
+  <string name="kildim_onay_mesaj">Bɛ bi baŋ app shɛli n-tum bɔbu ŋɔ. Dihimi ya tabili yi yi puhi.</string>
+  <string name="kildim_onay_evet">N puhi jiŋli</string>
+  <string name="kildim_onay_vazgec">Nyahimi ya</string>
+  <string name="kildim_guven_baslik">Yi ti %1$s soli ka di dalim yi jiŋa ni yi puhi?</string>
+  <string name="kildim_guven_mesaj">Jiŋli shɛli bɛ ni dalim pumpɔŋɔ: %1$s. Yi ni tooi taɣi yi yɛltɔɣa nyaaŋa Malizali &gt; App shɛŋa ni tooi dalim N puhi jiŋli ni.</string>
+  <string name="kildim_guven_tarayici_mesaj">Jiŋli shɛli bɛ ni dalim pumpɔŋɔ: %1$s. Bɔbu ŋɔ yila intanɛt na; yaɣili kam ni tooi yooi soli ŋɔ, dinzuɣu bɛ ku tooi ti soli din kpalimdi.</string>
+  <string name="kildim_guven_her_zaman">Timi ya soli saha kam</string>
+  <string name="kildim_guven_bu_sefer">Sahayini ŋɔ koŋko</string>
+  <string name="kildim_guven_engelle">Kparimi ya</string>
+  <string name="kildim_guven_engellendi">%1$s ku lahi tooi dalim yi jiŋa. Yi ni tooi taɣi ŋɔ Malizali ni.</string>
+  <string name="widget_ayar_baslik">Malimi ya widget</string>
+  <string name="widget_ayar_zemin">Nyaaŋa nyabu</string>
+  <string name="widget_ayar_zemin_material">Yaɣili foto nyabu</string>
+  <string name="widget_ayar_zemin_sistem">Tilifoŋ nyabu</string>
+  <string name="widget_ayar_zemin_acik">Din neei</string>
+  <string name="widget_ayar_zemin_koyu">Din zibisi</string>
+  <string name="widget_ayar_zemin_seffaf">Din bi sɔɣi</string>
+  <string name="widget_ayar_opaklik">Nyaaŋa nyabu kpɛŋ</string>
+  <string name="widget_ayar_gosterim">Wuhimi ya ni sabbu kpeeni</string>
+  <string name="widget_ayar_gosterim_kalan">Saha din kpalim</string>
+  <string name="widget_ayar_gosterim_bitis">Naabu saha</string>
+  <string name="widget_ayar_gosterim_not">Bɛ wuhiri naabu saha widget kam zuɣu.</string>
+  <string name="widget_ayar_sonraki">Wuhimi ya jiŋli din doli</string>
+  <string name="widget_ayar_vazgec">Nyahimi ya</string>
+  <string name="widget_ayar_kaydet">Zalimi ya</string>
+  <string name="kildim_onay_kanal_adi">N puhi jiŋli dihibu tabili</string>
+  <string name="kildim_onay_kanal_aciklama">Dihibu tabili din ka kukoli ka wuhiri sɛkɛnti biɛla yi yi dihi “N puhi jiŋli” lahabali ni</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Di naai %1$s</string>
+  <string name="widget_giris">Di paai %1$s</string>
+  <string name="widget_namaz_vakti">Jiŋli saha</string>
+  <string name="widget_uygulamayi_acin">Yoomi ya app maa</string>
+  <string name="widget_siradaki">Din doli: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Jiŋli shɛli bɛ ni yɛn dalim kani pumpɔŋɔ</string>
+  <string name="widget_dugme_kildim">N puhi jiŋli</string>
+  <string name="widget_dugme_isaretleniyor">Dalibu</string>
+  <string name="widget_dugme_kilindi">Puhiya</string>
+  <string name="widget_dugme_vakit_girmedi">Saha na bi paai</string>
+  <string name="widget_klasik_uygulamayi_acin">yoomi ya app maa</string>
+  <string name="widget_klasik_erisim_veri_yok">Yoomi ya app maa ka nya jiŋli saha</string>
+  <string name="widget_klasik_erisim_siradaki">Jiŋli din doli: %1$s, di ni paai %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Pɔi ka Azafari paai</string>
+  <string name="widget_onizleme_klasik_genis">Pɔi ka Magarbi paai</string>
+  <string name="widget_onizleme_imsak">Subaahi</string>
+  <string name="widget_onizleme_gunes">Wuntaŋ puhibu</string>
+  <string name="widget_onizleme_ogle">Azafari</string>
+  <string name="widget_onizleme_ikindi">Lahisari</string>
+  <string name="widget_onizleme_aksam">Magarbi</string>
+  <string name="widget_onizleme_yatsi">Isha’i</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">Bɛ dalim %1$s ni yi puhi. Allah ni deei.</string>
+  <string name="kildim_sonuc_zaten_kilindi">Bɛ pun dalim %1$s ni yi puhi.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Jiŋli shɛli bɛ ni yɛn dalim kani pumpɔŋɔ. Din doli nyɛla %1$s, di ni piligi %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Jiŋli shɛli bɛ ni yɛn dalim kani pumpɔŋɔ.</string>
+  <string name="kildim_sonuc_veri_yok">Jiŋli saha lahabali kani. Yoomi ya app maa sahayini.</string>
+  <string name="kildim_sonuc_vakit_degisti">Jiŋli saha taɣiya, dinzuɣu bɛ bi dalim shɛli. Lahi niŋmi ya.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Soli wuhibu app bi tooi yooi.</string>
+  <string name="arac_adsiz_cami">Jiŋli</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Bɛ bi tooi karim jiŋli saha lahabali.</string>
+  <string name="asistan_isaretleme_yapilamadi">Bɛ bi tooi dalim jiŋli maa.</string>
+  <string name="asistan_aciklama">Yi ni tooi bɔ jiŋli saha, dalim pumpɔŋɔ jiŋli ni yi puhi ka yooi Alichibla yaɣili.</string>
+</resources>

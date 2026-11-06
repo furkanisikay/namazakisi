@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Akan (Asante Twi). Terimler: src/core/dil/sozluk/ak. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ak</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Nyamefrɛ mmerɛ pon</string>
+    <string name="ayarlar">Nhyehyɛe</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s aka kosi %1$s</string>
+    <string name="pano_vaktine">Kosi %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s wɔ %2$s mu</string>
+    <string name="pano_kerahat_vakti">Makruh berɛ</string>
+    <string name="pano_bitis">ɛba awieɛ %1$s</string>
+    <string name="pano_kerahat_erisim">Makruh berɛ, %1$s, ɛba awieɛ %2$s. %3$s</string>
+    <string name="pano_cumaya">Efiada Nyamefrɛ wɔ %1$s mu</string>
+    <string name="pano_cikis_geldi">berɛ a wobɛfiri hɔ adu</string>
+    <string name="pano_cikis">fi hɔ %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Berɛ adu sɛ wofiri hɔ kɔ Efiada Nyamefrɛ</string>
+    <string name="pano_cuma_cikis_erisim">Fi hɔ kɔ Efiada Nyamefrɛ %1$s</string>
+    <string name="pano_bugun_cuma">Ɛnnɛ yɛ Efiada</string>
+    <string name="pano_ogle">Dhuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Ɛnnɛ yɛ Efiada. Efiada Nyamefrɛ wɔ Dhuhr berɛ mu, %1$s</string>
+    <string name="pano_ayarlar_erisim">Nhyehyɛe: fa fon ka ho, beaeɛ, fon a abɔ mu</string>
+    <string name="pano_simdiki_vakit">Nyamefrɛ berɛ a ɛkɔ so</string>
+    <string name="pano_siradaki_vakit">Nyamefrɛ berɛ a ɛdi hɔ</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Fa wo fon ka ho", "Kyerɛw kood", "Mɛpaw kuropɔn no ankasa", "Fa ka ho". -->
+    <string name="kodla_girin">Kyerɛw kood</string>
+    <string name="ili_kendim_secin">Mɛpaw kuropɔn no ankasa</string>
+    <string name="yeniden_deneyin">San bɔ mmɔden</string>
+    <string name="telefon_varsayilan">Fon</string>
+    <string name="esleme_ekleniyor">Ɛde %1$s reka ho</string>
+    <string name="esleme_gonderiyor">Wo fon de ne beaeɛ ne ne tebea reba…</string>
+    <string name="esleme_tamamlanamadi">Wɔantumi ammɔ mu awie</string>
+    <string name="esleme_saklanamadi">TV yi ntumi nkora nkitahodie safoa no wɔ ahobammɔ mu. Wobɛtumi de kood akyerɛw wo beaeɛ anaa woapaw wo kuropɔn.</string>
+    <string name="telefonunuzu_ekleyin">Fa wo fon ka ho</string>
+    <string name="esleme_alt">Nyamefrɛ mmerɛ ma wo beaeɛ; Nyamefrɛ a woayɛ nso da adi.</string>
+    <string name="esleme_adim1">Bue Namaz Akışı wɔ wo fon so</string>
+    <string name="esleme_adim2">Nhyehyɛe › Me afidie › Fa TV ka ho</string>
+    <string name="esleme_adim3">Fa wo fon kamera kyerɛ kood no</string>
+    <string name="esleme_ayni_wifi">Ɛsɛ sɛ wo fon ne TV no wɔ Wi-Fi koro so.</string>
+    <string name="esleme_onay_soru">Wobɛfa fon yi aka ho?</string>
+    <string name="esleme_onay_aciklama">Fon a wɔde aka ho no betumi de ne beaeɛ ne Nyamefrɛ a ɛkyerɛ aba TV yi so.</string>
+    <string name="ekleyin">Fa ka ho</string>
+    <string name="hayir">Daabi</string>
+    <string name="esleme_eklendi">Wɔde %1$s aka ho</string>
+    <string name="konumunuz_geldi">Wo beaeɛ aba</string>
+    <string name="konuma_gore_hesaplanacak">Wɔbɛbu Nyamefrɛ mmerɛ ama beaeɛ yi.</string>
+    <string name="qr_konum_alindi">Wɔanya beaeɛ</string>
+    <string name="qr_kodu">Nkitahodie kood a wode wo fon bɛhwɛ</string>
+    <string name="ag_yok">TV no mmɔɔ ntam nkitahodie biara mu</string>
+    <string name="ag_yok_aciklama">Wobɛtumi atoa so sɛ wokyerɛw nɔma 7 kood a ɛfiri wo fon so anaa wopaw wo kuropɔn.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Kyerɛw kood a ɛfiri wo fon so</string>
+    <string name="kod_yol">Wɔ wo fon so: Nhyehyɛe › Me afidie › Fa TV ka ho</string>
+    <string name="kod_hatali">Kood no nhyia. Hwɛ nɔma 7 a ɛwɔ wo fon so; fa “%1$s” siesie nɔma a ɛnteɛ.</string>
+    <string name="kod_rakamli_kumanda">Sɛ nɔma wɔ wo kumandeɛ so a, wobɛtumi de akyerɛw nso.</string>
+    <string name="kod_bos_hane">nɔma a ɛnni hɔ</string>
+    <string name="kod_sil">Popa</string>
+    <string name="kod_sil_aciklama">Popa nɔma a etwa toɔ</string>
+    <string name="kod_geri">San w’akyi</string>
+    <string name="vazgecin">Gyae</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Paw wo kuropɔn</string>
+    <string name="il_merkezine_gore">Wɔbu Nyamefrɛ mmerɛ ma kuropɔn no mfinimfini.</string>
+    <string name="il_secili">%1$s, woapaw</string>
+    <string name="dream_il_yok">Sɛ wopɛ sɛ wohunu Nyamefrɛ mmerɛ pon no a, bue Namaz Akışı app no na paw wo kuropɔn.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Beaeɛ: %1$s</string>
+    <string name="ayar_konum_yok">Wompawee beaeɛ biara</string>
+    <string name="ayar_telefon_ekleyin">Fa fon ka ho</string>
+    <string name="ayar_konumu_kodla">Fa kood kyerɛw beaeɛ</string>
+    <string name="ayar_bagli_telefonlar">Fon a abɔ TV yi mu</string>
+    <string name="ayar_telefon_yok">Wonnya mfaa fon biara nkaa ho. Fa “%1$s” a ɛwɔ benkum so no na hwɛ kood a ɛda adi no.</string>
+    <string name="kaldirin">Yi</string>
+    <string name="ayar_ne_gonderir">Dɛn na fon de ba?</string>
+    <string name="ayar_madde_konum">Beaeɛ: Nyamefrɛ mmerɛ di akyi</string>
+    <string name="ayar_madde_namazlar">Nyamefrɛ a wɔakyerɛ, ma wɔn a wɔpaw</string>
+    <string name="ayar_madde_sifreli">Ahintaw, wo fie ntam nkitahodie so nko ara</string>
+    <string name="son_haber_yok">Nsɛm biara nni hɔ</string>
+    <string name="son_haber_az_once">Seesei ara</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">sima %1$d a atwam</item>
+        <item quantity="other">sima %1$d a atwam</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">dɔnhwere %1$d a atwam</item>
+        <item quantity="other">dɔnhwere %1$d a atwam</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">da %1$d a atwam</item>
+        <item quantity="other">nna %1$d a atwam</item>
+    </plurals>
+    <string name="kaldir_soru">Wobɛyi %1$s?</string>
+    <string name="kaldir_aciklama">Fon yi rentumi mfa nsɛm mmra TV no so bio. Sɛ wopɛ sɛ wosan de ka ho a, ɛsɛ sɛ wosan hwɛ QR kood no.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Wo fon beaeɛ</string>
+</resources>

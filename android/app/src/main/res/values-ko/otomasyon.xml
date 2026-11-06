@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Korece). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: 예배 드렸어요</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: 예배 시간 상태</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: 예배 시간 이벤트</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">이 설정은 자동화 앱에서 추가합니다</string>
+  <string name="otomasyon_bilgi_tarayici">브라우저는 계속 허용을 받을 수 없습니다. Tasker, MacroDroid, Automate 같은 앱의 플러그인 목록에서 추가하세요.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid, Automate 같은 앱의 플러그인 목록에서 \"Namaz Akışı\"를 선택해 추가하세요.</string>
+  <string name="otomasyon_engelli_baslik">%1$s 앱이 차단되어 있습니다</string>
+  <string name="otomasyon_engelli_mesaj">이전에 이 앱이 예배를 표시하지 못하도록 차단했습니다. Namaz Akışı의 설정 &gt; \"예배 드렸어요를 표시하는 앱\"에서 허용할 수 있습니다.</string>
+  <string name="otomasyon_izin_baslik">%1$s 앱과 함께 사용할까요?</string>
+  <string name="otomasyon_izin_kosul">%1$s 앱이 예배 시간이 시작될 때, 끝나 갈 때, 성원에 있을 때를 알고 자동화를 실행할 수 있습니다. Namaz Akışı의 설정 &gt; \"예배 드렸어요를 표시하는 앱\"에서 결정을 바꿀 수 있습니다.</string>
+  <string name="otomasyon_izin_kildim">%1$s 앱이 설정한 자동화로 현재 예배를 완료로 표시할 수 있습니다. Namaz Akışı의 설정 &gt; \"예배 드렸어요를 표시하는 앱\"에서 결정을 바꿀 수 있습니다.</string>
+  <string name="otomasyon_izin_ver">허용</string>
+  <string name="otomasyon_engelle">차단</string>
+  <string name="otomasyon_vazgec">취소</string>
+  <string name="otomasyon_tamam">확인</string>
+  <string name="otomasyon_tur_baslik">언제 실행할까요?</string>
+  <string name="otomasyon_ileri">다음</string>
+  <string name="otomasyon_vakit_baslik">어느 예배인가요?</string>
+  <string name="otomasyon_herhangi_vakit">모든 예배 시간</string>
+  <string name="otomasyon_kaydet">저장</string>
+  <string name="otomasyon_kosul_icinde">예배 시간 중일 때</string>
+  <string name="otomasyon_kosul_cikiyor">예배 시간이 끝나 갈 때(%1$d분 남음, 예배 지킴이 켜짐)</string>
+  <string name="otomasyon_kosul_camide">성원에 있을 때</string>
+  <string name="otomasyon_olay_girdi">예배 시간이 시작될 때</string>
+  <string name="otomasyon_olay_cikiyor">예배 시간이 끝나 갈 때(%1$d분 남음, 예배 지킴이 켜짐)</string>
+  <string name="otomasyon_olay_camide">성원에 있는 것이 감지될 때</string>
+</resources>

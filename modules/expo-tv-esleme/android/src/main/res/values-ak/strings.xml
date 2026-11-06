@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Fa QR kood a ɛwɔ TV skrin no so hyɛ ahinanan no mu</string>
+    <string name="tvesleme_qr_vazgec">Gyae</string>
+    <string name="tvesleme_qr_vazgec_erisim">Gyae hwɛ no</string>
+    <string name="tvesleme_qr_yabanci">QR kood yi nyɛ Namaz Akışı TV deɛ. Hwɛ kood a ɛwɔ TV no so.</string>
+    <string name="tvesleme_qr_okundu">Wɔahwɛ kood no</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Khmerce). "បានសឡាតហើយ" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">ម៉ោងរោទ៍សឡាត</string>
+  <string name="alarm_kildim">បានសឡាតហើយ</string>
+  <string name="alarm_kapat">បិទ</string>
+  <string name="alarm_kanal_aciklamasi">ម៉ោងរោទ៍ពិតដែលរោទ៍នៅជំហានរំលឹកដែលអ្នកជ្រើស</string>
+</resources>

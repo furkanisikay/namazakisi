@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (İbranice). "התפללתי" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">מעורר תפילה</string>
+  <string name="alarm_kildim">התפללתי</string>
+  <string name="alarm_kapat">כיבוי</string>
+  <string name="alarm_kanal_aciklamasi">מעורר אמיתי שמצלצל בשלבי התזכורת שבחרתם</string>
+</resources>

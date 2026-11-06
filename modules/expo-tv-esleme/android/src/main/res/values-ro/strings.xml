@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Încadrați codul QR de pe ecranul televizorului</string>
+    <string name="tvesleme_qr_vazgec">Anulați</string>
+    <string name="tvesleme_qr_vazgec_erisim">Anulați scanarea</string>
+    <string name="tvesleme_qr_yabanci">Acest cod QR nu aparține Namaz Akışı TV. Scanați codul de pe televizor.</string>
+    <string name="tvesleme_qr_okundu">Cod scanat</string>
+</resources>

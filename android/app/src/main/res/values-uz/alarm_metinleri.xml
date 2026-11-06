@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- uz -->
+<!-- Gerçek alarm (Özbekçe, LATİN). «Oʻqidim» bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Namoz signali</string>
+  <string name="alarm_kildim">Oʻqidim</string>
+  <string name="alarm_kapat">Oʻchirish</string>
+  <string name="alarm_kanal_aciklamasi">Siz tanlagan eslatma qadamlarida jiringlaydigan haqiqiy signal</string>
+</resources>

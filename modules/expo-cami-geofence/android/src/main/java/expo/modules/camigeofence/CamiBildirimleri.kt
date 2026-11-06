@@ -15,10 +15,13 @@ import expo.modules.camigeofence.cekirdek.CamiSabitleri
  *
  * İki kanal: "Camidesiniz" SESSİZ (IMPORTANCE_LOW; namazdaki kişiyi rahatsız
  * etmez), "kıldınız mı?" sorusu varsayılan önemde (camiden çıkınca gelir).
- * Kanallar yalnız YOKSA oluşturulur (AGENTS.md: mevcut kanala ses yazmaya kalkma).
+ * Kanallar yalnız YOKSA oluşturulur (AGENTS.md: mevcut kanala ses yazmaya kalkma);
+ * var olan kanalın yalnız ADI etkin dile çekilir.
  *
  * Metin kayıtları: bunlar uygulamanın kullanıcıyla konuşmasıdır (durum + soru),
- * ibadete çağrı değil → kibar "siz" dili.
+ * ibadete çağrı değil → kibar "siz" dili. Metinler `res/values/strings.xml` (Türkçe) ve `values-en`'de,
+ * uygulamanın ARAYÜZ dilinde çözülür (`dildeBaglam`). "Camidesiniz" başlık öneki
+ * her dilde aynıdır (Samsung Rutinler anahtar kelimesi; JS `CAMIDESINIZ_ANAHTAR_KELIMESI`).
  */
 object CamiBildirimleri {
     const val KANAL_DURUM = "cami_durum"
@@ -28,31 +31,37 @@ object CamiBildirimleri {
     /** Faz 2: güven puanı sınırdayken "Camide misiniz?" (sessiz). */
     const val ID_CAMI_SORU = 7403
 
+    /** Vakit kodu → "kıldınız mı?" sorusundaki namaz adı (kaynak; dil `dildeBaglam`'dan). */
     private val NAMAZ_ADLARI = mapOf(
-        "imsak" to "Sabah namazını",
-        "ogle" to "Öğle namazını",
-        "ikindi" to "İkindi namazını",
-        "aksam" to "Akşam namazını",
-        "yatsi" to "Yatsı namazını",
+        "imsak" to R.string.camigeofence_namaz_imsak,
+        "ogle" to R.string.camigeofence_namaz_ogle,
+        "ikindi" to R.string.camigeofence_namaz_ikindi,
+        "aksam" to R.string.camigeofence_namaz_aksam,
+        "yatsi" to R.string.camigeofence_namaz_yatsi,
     )
 
+    /**
+     * Kanallar YOKSA kurulur (ses/önem bir kez yazılır); VARSA yalnız kullanıcıya
+     * görünen adı/açıklaması etkin dile çekilir ([kanaliGarantileVeAdlandir]).
+     */
     private fun kanallariGarantile(ctx: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val nm = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (nm.getNotificationChannel(KANAL_DURUM) == null) {
-            nm.createNotificationChannel(
-                NotificationChannel(KANAL_DURUM, "Camideyim", NotificationManager.IMPORTANCE_LOW).apply {
-                    description = "Camide olduğunuz algılandığında sessiz bilgi"
-                    setShowBadge(false)
-                }
-            )
+        val m = ctx.dildeBaglam()
+        val durumAd = m.getString(R.string.camigeofence_kanal_durum_ad)
+        val durumAciklama = m.getString(R.string.camigeofence_kanal_durum_aciklama)
+        nm.kanaliGarantileVeAdlandir(KANAL_DURUM, durumAd, durumAciklama) {
+            NotificationChannel(KANAL_DURUM, durumAd, NotificationManager.IMPORTANCE_LOW).apply {
+                description = durumAciklama
+                setShowBadge(false)
+            }
         }
-        if (nm.getNotificationChannel(KANAL_SORU) == null) {
-            nm.createNotificationChannel(
-                NotificationChannel(KANAL_SORU, "Camiden çıkınca", NotificationManager.IMPORTANCE_DEFAULT).apply {
-                    description = "Camiden çıkınca namazı işaretlemeniz için soru"
-                }
-            )
+        val soruAd = m.getString(R.string.camigeofence_kanal_soru_ad)
+        val soruAciklama = m.getString(R.string.camigeofence_kanal_soru_aciklama)
+        nm.kanaliGarantileVeAdlandir(KANAL_SORU, soruAd, soruAciklama) {
+            NotificationChannel(KANAL_SORU, soruAd, NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = soruAciklama
+            }
         }
     }
 
@@ -78,12 +87,15 @@ object CamiBildirimleri {
 
     fun camidesiniz(ctx: Context, c: CamiDepo.Camide, sessiz: Boolean) {
         kanallariGarantile(ctx)
-        val govde = when {
-            c.modAcildi && sessiz -> "Namaz modu açık. Hatırlatmalar sessiz gelecek."
-            c.modAcildi -> "Namaz modu açık."
-            sessiz -> "Hatırlatmalar sessiz gelecek."
-            else -> "Hatırlatmalar her zamanki gibi gelecek."
-        }
+        val m = ctx.dildeBaglam()
+        val govde = m.getString(
+            when {
+                c.modAcildi && sessiz -> R.string.camigeofence_govde_mod_sessiz
+                c.modAcildi -> R.string.camigeofence_govde_mod
+                sessiz -> R.string.camigeofence_govde_sessiz
+                else -> R.string.camigeofence_govde_normal
+            }
+        )
         val b = NotificationCompat.Builder(ctx, KANAL_DURUM)
             .setSmallIcon(R.drawable.ic_namaz_modu)
             .setContentTitle(CamiSabitleri.camidesinizBasligi(c.ad))
@@ -93,8 +105,8 @@ object CamiBildirimleri {
             .setSilent(true)
             .setContentIntent(acilis(ctx))
             .setCategory(NotificationCompat.CATEGORY_STATUS)
-        if (c.modAcildi) b.addAction(0, "Modu kapat", eylem(ctx, CamiEylemAlicisi.MODU_KAPAT, 7410))
-        b.addAction(0, "Burası cami değil", eylem(ctx, CamiEylemAlicisi.CAMI_DEGIL, 7411, mapOf(CamiEylemAlicisi.EK_YER to c.yerId, CamiEylemAlicisi.EK_AD to c.ad)))
+        if (c.modAcildi) b.addAction(0, m.getString(R.string.camigeofence_eylem_modu_kapat), eylem(ctx, CamiEylemAlicisi.MODU_KAPAT, 7410))
+        b.addAction(0, m.getString(R.string.camigeofence_eylem_cami_degil), eylem(ctx, CamiEylemAlicisi.CAMI_DEGIL, 7411, mapOf(CamiEylemAlicisi.EK_YER to c.yerId, CamiEylemAlicisi.EK_AD to c.ad)))
         gonder(ctx, ID_CAMIDE, b)
     }
 
@@ -104,22 +116,27 @@ object CamiBildirimleri {
      */
     fun camideMisiniz(ctx: Context, soru: CamiDepo.Soru, namazModu: Boolean) {
         kanallariGarantile(ctx)
-        val ad = soru.yer.ad.ifBlank { "Cami" }
+        val m = ctx.dildeBaglam()
+        val ad = soru.yer.ad.ifBlank { m.getString(R.string.camigeofence_varsayilan_ad) }
         val b = NotificationCompat.Builder(ctx, KANAL_DURUM)
             .setSmallIcon(R.drawable.ic_namaz_modu)
-            .setContentTitle("Camide misiniz?")
-            .setContentText("$ad yakınındasınız. Emin olamadığımız için size soruyoruz.")
+            .setContentTitle(m.getString(R.string.camigeofence_soru_baslik))
+            .setContentText(m.getString(R.string.camigeofence_soru_govde, ad))
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOnlyAlertOnce(true)
             .setSilent(true)
             .setAutoCancel(true)
             .setContentIntent(acilis(ctx))
             .setCategory(NotificationCompat.CATEGORY_STATUS)
-            .addAction(0, if (namazModu) "Namaz modunu aç" else "Evet, camideyim", eylem(ctx, CamiEylemAlicisi.SORU_EVET, 7413))
-            .addAction(0, "Hayır", eylem(ctx, CamiEylemAlicisi.SORU_HAYIR, 7414))
             .addAction(
                 0,
-                "Burası cami değil",
+                m.getString(if (namazModu) R.string.camigeofence_eylem_namaz_modunu_ac else R.string.camigeofence_eylem_evet_camideyim),
+                eylem(ctx, CamiEylemAlicisi.SORU_EVET, 7413),
+            )
+            .addAction(0, m.getString(R.string.camigeofence_eylem_hayir), eylem(ctx, CamiEylemAlicisi.SORU_HAYIR, 7414))
+            .addAction(
+                0,
+                m.getString(R.string.camigeofence_eylem_cami_degil),
                 eylem(ctx, CamiEylemAlicisi.CAMI_DEGIL, 7415, mapOf(CamiEylemAlicisi.EK_YER to soru.yer.id, CamiEylemAlicisi.EK_AD to soru.yer.ad)),
             )
         val kalan = soru.bitisMs - System.currentTimeMillis()
@@ -129,14 +146,15 @@ object CamiBildirimleri {
 
     fun kildinizMi(ctx: Context, vakit: String, tarih: String, cuma: Boolean) {
         kanallariGarantile(ctx)
-        val namaz = if (cuma) "Cuma namazını" else NAMAZ_ADLARI[vakit] ?: return
+        val namazKaynagi = if (cuma) R.string.camigeofence_namaz_cuma else NAMAZ_ADLARI[vakit] ?: return
+        val m = ctx.dildeBaglam()
         val b = NotificationCompat.Builder(ctx, KANAL_SORU)
             .setSmallIcon(R.drawable.ic_namaz_modu)
-            .setContentTitle("$namaz kıldınız mı?")
-            .setContentText("Tek dokunuşla işaretleyebilirsiniz.")
+            .setContentTitle(m.getString(R.string.camigeofence_kildiniz_mi, m.getString(namazKaynagi)))
+            .setContentText(m.getString(R.string.camigeofence_kildiniz_mi_govde))
             .setAutoCancel(true)
             .setContentIntent(acilis(ctx))
-            .addAction(0, "Kıldım", eylem(ctx, CamiEylemAlicisi.KILDIM, 7412, mapOf(CamiEylemAlicisi.EK_VAKIT to vakit, CamiEylemAlicisi.EK_TARIH to tarih)))
+            .addAction(0, m.getString(R.string.camigeofence_eylem_kildim), eylem(ctx, CamiEylemAlicisi.KILDIM, 7412, mapOf(CamiEylemAlicisi.EK_VAKIT to vakit, CamiEylemAlicisi.EK_TARIH to tarih)))
         gonder(ctx, ID_SORU, b)
     }
 

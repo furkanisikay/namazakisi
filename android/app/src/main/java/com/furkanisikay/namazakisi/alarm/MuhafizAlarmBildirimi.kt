@@ -15,6 +15,9 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.dildeBaglam
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
 
 /**
@@ -69,7 +72,7 @@ object MuhafizAlarmBildirimi {
         try {
             if (nm.getNotificationChannel(kanalId) != null) return
             val kanal = NotificationChannel(kanalId, ad, NotificationManager.IMPORTANCE_HIGH).apply {
-                description = context.getString(R.string.alarm_kanal_aciklamasi)
+                description = context.dildeBaglam().getString(R.string.alarm_kanal_aciklamasi)
                 setSound(alarmSesi(sesUri), ALARM_NITELIKLERI)
                 enableVibration(true)
                 vibrationPattern = DESEN
@@ -142,7 +145,7 @@ object MuhafizAlarmBildirimi {
      * bayrak yok sayılır, kilit ekranı sürümü ([herkeseAcikSurum]) düğmeyi hiç taşımaz.
      */
     private fun kildimEylemi(context: Context, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String): NotificationCompat.Action =
-        NotificationCompat.Action.Builder(0, context.getString(R.string.alarm_kildim), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KILDIM, yuk, hamYuk))
+        NotificationCompat.Action.Builder(0, context.dildeBaglam().getString(R.string.alarm_kildim), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KILDIM, yuk, hamYuk))
             .setAuthenticationRequired(true)
             .build()
 
@@ -157,17 +160,19 @@ object MuhafizAlarmBildirimi {
         yuk: MuhafizAlarmKurallari.Yuk,
         hamYuk: String,
         kapatVar: Boolean,
-    ): Notification =
-        NotificationCompat.Builder(context, kanal)
+    ): Notification {
+        val sifir = context.rakamSifiri()
+        return NotificationCompat.Builder(context, kanal)
             .setSmallIcon(R.drawable.ic_alarm_muhafiz)
-            .setContentTitle(yuk.baslik)
-            .setContentText(yuk.metin)
+            .setContentTitle(yuk.baslik.rakamla(sifir))
+            .setContentText(yuk.metin.rakamla(sifir))
             .apply {
                 if (kapatVar) {
-                    addAction(0, context.getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
+                    addAction(0, context.dildeBaglam().getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
                 }
             }
             .build()
+    }
 
     private fun ekranIntenti(context: Context, hamYuk: String, kimlik: String, baslangicMs: Long): PendingIntent {
         val intent = Intent(context, MuhafizAlarmActivity::class.java)
@@ -178,20 +183,23 @@ object MuhafizAlarmBildirimi {
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
+    // Görünen metin seçilen rakamla (yük, kimlik ve sesli okuma Batı rakamıyla kalır).
     private fun temelOlustur(context: Context, kanal: String, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String) =
-        NotificationCompat.Builder(context, kanal)
-            .setSmallIcon(R.drawable.ic_alarm_muhafiz)
-            .setContentTitle(yuk.baslik)
-            .setContentText(yuk.metin)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(yuk.metin))
-            // Saat kendi planını kurar (issue #280) — alarm bileğe köprülenmesin.
-            .setLocalOnly(true)
-            // Kilit ekranında içerik "özel": sistem [herkeseAcikSurum]'u (Kıldım'sız) gösterir.
-            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .apply {
-                // Bilgi alarmında (cuma/camiye gitme/takvim) kılınacak namaz yoktur.
-                if (MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk)) addAction(kildimEylemi(context, yuk, hamYuk))
-            }
+        context.rakamSifiri().let { sifir ->
+            NotificationCompat.Builder(context, kanal)
+                .setSmallIcon(R.drawable.ic_alarm_muhafiz)
+                .setContentTitle(yuk.baslik.rakamla(sifir))
+                .setContentText(yuk.metin.rakamla(sifir))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(yuk.metin.rakamla(sifir)))
+                // Saat kendi planını kurar (issue #280) — alarm bileğe köprülenmesin.
+                .setLocalOnly(true)
+                // Kilit ekranında içerik "özel": sistem [herkeseAcikSurum]'u (Kıldım'sız) gösterir.
+                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                .apply {
+                    // Bilgi alarmında (cuma/camiye gitme/takvim) kılınacak namaz yoktur.
+                    if (MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk)) addAction(kildimEylemi(context, yuk, hamYuk))
+                }
+        }
 
     /** Çalan alarm: tam ekran + insistent + ongoing. */
     fun calanGoster(context: Context, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String, baslangicMs: Long) {
@@ -206,7 +214,7 @@ object MuhafizAlarmBildirimi {
             .setContentIntent(ekran)
             .setFullScreenIntent(ekran, true)
             .setDeleteIntent(eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
-            .addAction(0, context.getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
+            .addAction(0, context.dildeBaglam().getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
             // Emniyet: süre dolunca susturma alarmı gelmese bile bildirim (ve sesi) biter.
             .setTimeoutAfter(MuhafizAlarmKurallari.CALMA_SURESI_MS + 60_000L)
             .apply {

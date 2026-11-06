@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ ߢߍߣߊߡߊ ߟߎ߬</string>
+    <string name="countdown_kanal_canli_aciklama">ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ ߟߎ߬ Now Bar ߣߌ߫ ߗߏߜߏߦߊ ߕߊߓߎߟߎ ߞߐ߬ߣߐ</string>
+    <string name="countdown_kanal_genel_ad">ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ ߞߌ߬ߓߊ߬ߙߏ߬ ߟߎ߬</string>
+    <string name="countdown_kanal_genel_aciklama">ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ ߞߌ߬ߓߊ߬ߙߏ߬ ߟߎ߬ ߛߌߙߊ</string>
+
+    <string name="countdown_eylem_kildim">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+    <string name="countdown_eylem_durdur">ߊ߬ ߖߐ߫</string>
+
+    <string name="countdown_yedek_vakit">ߊߟߎ߫ ߦߋ߫ ߕߋߟߌߦߊ߸ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬.</string>
+    <string name="countdown_yedek_iftar">ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬.</string>
+    <string name="countdown_yedek_sahur">ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߘߎߡߎߣߌ ߞߍ߫ ߞߊ߬ ߡߌ߲߬ ߝߟߐ; ߛߎ߲ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ ߛߐ߯ߣߌ.</string>
+    <string name="countdown_yedek_seri">ߓߌ߬ ߛߊߟߌ ߟߎ߬ ߡߊ߬ ߘߝߊ߫ ߝߟߐ; ߊߟߎ߫ ߞߊߣߊ߬ ߊߟߎ߫ ߟߊ߫ ߕߎߜߎ߲ߠߌ ߕߎߣߎ߲߫.</string>
+
+    <string name="countdown_onek_vakit">ߝߏ߫ ߥߊ߯ߕߌ߫ ߞߊ߬ ߓߊ߲߫</string>
+    <string name="countdown_onek_vakit_dar">ߥߊ߯ߕߌ߫ ߓߍ߫ ߓߊ߲߫ ߣߊ߬</string>
+    <string name="countdown_onek_iftar">ߝߏ߫ ߛߎ߲ߘߊߓߐ</string>
+    <string name="countdown_onek_iftar_dar">ߝߏ߫ ߛߎ߲ߘߊߓߐ</string>
+    <string name="countdown_onek_sahur">ߝߏ߫ ߛߎߝߎߙߍ ߞߊ߬ ߓߊ߲߫</string>
+    <string name="countdown_onek_sahur_dar">ߛߎߝߎߙߍ ߓߍ߫ ߓߊ߲߫ ߣߊ߬</string>
+    <string name="countdown_onek_seri">ߥߊߟߊߛߊ ߞߊ߬ ߊߟߎ߫ ߟߊ߫ ߕߎߜߎ߲ߠߌ ߡߙߊ߬</string>
+    <string name="countdown_onek_seri_dar">ߕߎߜߎ߲ߠߌ ߓߍ߫ ߓߊ߲߫ ߣߊ߬</string>
+</resources>

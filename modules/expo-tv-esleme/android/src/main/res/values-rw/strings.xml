@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kinyarwanda. -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Mushyire kode ya QR iri kuri ekarani ya televiziyo mu kazu</string>
+    <string name="tvesleme_qr_vazgec">Kureka</string>
+    <string name="tvesleme_qr_vazgec_erisim">Kureka gusoma kode</string>
+    <string name="tvesleme_qr_yabanci">Iyi kode ya QR si iya Namaz Akışı TV. Musome kode iri kuri televiziyo.</string>
+    <string name="tvesleme_qr_okundu">Kode yasomwe</string>
+</resources>

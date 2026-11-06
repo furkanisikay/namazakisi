@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Locația este folosită pentru a calcula exact orele de rugăciune pentru locul în care vă aflați. Locația rămâne pe dispozitiv.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Locația este folosită pentru a calcula exact orele de rugăciune pentru locul în care vă aflați și, dacă La moschee este activat, pentru a activa Modul rugăciune când intrați într-o moschee. Locația rămâne pe dispozitiv.",
+  "NSLocationAlwaysUsageDescription": "Locația este folosită pentru a actualiza automat orele de rugăciune când schimbați orașul și, dacă La moschee este activat, pentru a activa Modul rugăciune când intrați într-o moschee. Locația rămâne pe dispozitiv.",
+  "NSCameraUsageDescription": "Camera este folosită pentru a afișa direcția Qiblei peste imaginea camerei și pentru a scana codul de asociere de pe televizor. Imaginile nu sunt salvate și nu părăsesc dispozitivul.",
+  "NSCalendarsUsageDescription": "Accesul la calendar este folosit pentru a adăuga orele de rugăciune în calendar și, dacă activați funcția, pentru a verifica dacă evenimentele din calendar se suprapun cu timpul unei rugăciuni. Datele din calendar rămân pe dispozitiv.",
+  "NSCalendarsFullAccessUsageDescription": "Accesul la calendar este folosit pentru a adăuga orele de rugăciune în calendar și, dacă activați funcția, pentru a verifica dacă evenimentele din calendar se suprapun cu timpul unei rugăciuni. Datele din calendar rămân pe dispozitiv.",
+  "NSLocalNetworkUsageDescription": "Aplicația se conectează la televizorul din rețeaua locală ca să îi trimită orele de rugăciune și rugăciunile marcate. Datele sunt criptate și circulă doar între cele două dispozitive.",
+  "NSAlarmKitUsageDescription": "Pașii de memento pentru care alegeți „Alarmă reală” sunt setați ca alarme, ca să îi auziți chiar și când telefonul este pe silențios sau o Concentrare este activată.",
+  "\"Vakti kıldım\"": "M-am rugat",
+  "\"Kıble\"": "Qibla"
+}

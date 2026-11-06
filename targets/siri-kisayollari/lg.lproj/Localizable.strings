@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Luganda terimler: src/core/dil/sozluk/lg.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Esswala eddako";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Ekubuulira esswala eddako n’essaawa w’etandikira.";
+"Şu anki vakti kıldım" = "Nsaaze esswala eriwo";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Kiteeka akabonero ku sswala eriwo nti esaaliddwa. Ekiwandiiko kigattibwako bw’oggulawo app.";
+"Onay iste" = "Saba okukakasa";
+"Kıbleyi aç" = "Ggulawo Kibula";
+"Uygulamayı Kıble pusulasıyla açar." = "Kiggulawo app ne kampasi ya Kibula.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Nsaaze";
+"Kıble" = "Kibula";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Erinnya ly’esswala eddako";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Kiwa erinnya ly’esswala eddako. Osobola okulikozesa ng’ekisaanyizo mu Shortcuts.";
+"Sıradaki vakte kalan dakika" = "Eddakiika ezisigadde ku sswala eddako";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Kiwa eddakiika ezisigadde esswala eddako okutandika. Bwe watabaawo bikwatako, kiddiza -1.";
+"Şu anki vakit kılındı mı?" = "Esswala eriwo eteereddwako akabonero nti esaaliddwa?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Kiddamu yee esswala eriwo bw’eba eteereddwako akabonero nti esaaliddwa. Kiddamu nedda bwe watabaawo sswala ya kuteekako kabonero.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Akasirise k’esswala";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Kiddiza true mu ddakiika ezisooka ng’ekiseera ky’esswala kimaze okutuuka. Kikozesebwa mu Shortcuts okuteekako Focus.";
+"Süre (dakika)" = "Obuwanvu (eddakiika)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Eddakiika ${dakika} oluvannyuma lw’ekiseera ky’esswala okutuuka";
+"Namaz sessizliğinin bitişi" = "Enkomerero y’akasirise k’esswala";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Kiwa essaawa akasirise lwe kaggwaako. Bwe watabaawo kasirise kati, kiwa essaawa eriwo.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Enkomerero y’eddakiika ${dakika} oluvannyuma lw’ekiseera ky’esswala okutuuka";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Ebijjukizo by’esswala";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Focus eno bw’eba eri ku, ebijjukizo by’esswala bijja awatali ddoboozi era awatali kwakisa lutimbe.";
+"Hatırlatmaları sessiz ver" = "Ebijjukizo bijje mu kasirise";
+"Hatırlatmalar sessiz gelir" = "Ebijjukizo bijja mu kasirise";
+"Hatırlatmalar her zamanki gibi" = "Ebijjukizo nga bulijjo";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Kiteeka akabonero ku sswala eri ku wijeti nti esaaliddwa.";
+"Tarih" = "Olunaku";
+"Vakit" = "Esswala";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Yimiriza alaamu y’esswala";
+"Namazı kıldım" = "Nsaaze";
+"Alarm" = "Alaamu";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Ekifaananyi ky’aaya y’olwaleero";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Kiwa aaya ya leero ng’ekifaananyi eky’obunene bw’olutimbe lwo. Osobola okukikozesa n’omutendera Set Wallpaper mu Shortcuts.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Ggulawo app omulundi gumu okutegeka aaya y’olwaleero.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Ekifaananyi tekisobodde kutegekebwa. Ddamu ogezeeko oluvannyuma katono.";

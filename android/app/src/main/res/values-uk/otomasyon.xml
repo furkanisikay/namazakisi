@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Ukraynaca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Молитву здійснено</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Стан часу молитви</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Подія часу молитви</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "ви". -->
+  <string name="otomasyon_bilgi_baslik">Це налаштування додається із застосунку автоматизації</string>
+  <string name="otomasyon_bilgi_tarayici">Браузери не можуть отримати постійний дозвіл. Додайте його зі списку плагінів застосунку на кшталт Tasker, MacroDroid чи Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Додайте його, вибравши «Namaz Akışı» у списку плагінів застосунку на кшталт Tasker, MacroDroid чи Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s заблоковано</string>
+  <string name="otomasyon_engelli_mesaj">Раніше ви заборонили цьому застосунку позначати ваші молитви. Дозволити можна в Namaz Akışı в розділі Налаштування &gt; «Застосунки, що позначають „Молитву здійснено“».</string>
+  <string name="otomasyon_izin_baslik">Використовувати з %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s зможе дізнаватися, коли настає час молитви, коли він закінчується і коли ви в мечеті, та запускати ваші автоматизації. Змінити рішення можна в Namaz Akışı в розділі Налаштування &gt; «Застосунки, що позначають „Молитву здійснено“».</string>
+  <string name="otomasyon_izin_kildim">%1$s зможе позначати поточну молитву як здійснену за налаштованою вами автоматизацією. Змінити рішення можна в Namaz Akışı в розділі Налаштування &gt; «Застосунки, що позначають „Молитву здійснено“».</string>
+  <string name="otomasyon_izin_ver">Дозволити</string>
+  <string name="otomasyon_engelle">Заблокувати</string>
+  <string name="otomasyon_vazgec">Скасувати</string>
+  <string name="otomasyon_tamam">Готово</string>
+  <string name="otomasyon_tur_baslik">Коли запускати?</string>
+  <string name="otomasyon_ileri">Далі</string>
+  <string name="otomasyon_vakit_baslik">Яка молитва?</string>
+  <string name="otomasyon_herhangi_vakit">Будь-який час молитви</string>
+  <string name="otomasyon_kaydet">Зберегти</string>
+  <string name="otomasyon_kosul_icinde">Поки триває час молитви</string>
+  <string name="otomasyon_kosul_cikiyor">Поки час молитви закінчується (лишилося %1$d хв, Вартовий молитви ввімкнено)</string>
+  <string name="otomasyon_kosul_camide">Поки ви в мечеті</string>
+  <string name="otomasyon_olay_girdi">Коли настає час молитви</string>
+  <string name="otomasyon_olay_cikiyor">Коли час молитви закінчується (лишилося %1$d хв, Вартовий молитви ввімкнено)</string>
+  <string name="otomasyon_olay_camide">Коли визначено, що ви в мечеті</string>
+</resources>

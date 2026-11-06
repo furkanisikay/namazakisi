@@ -1,5 +1,7 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import com.furkanisikay.namazakisi.tv.R
+import androidx.compose.ui.res.stringResource
 import android.service.dreams.DreamService
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -61,19 +63,21 @@ class PanoDreamServisi : DreamService(), LifecycleOwner, SavedStateRegistryOwner
             setViewTreeSavedStateRegistryOwner(this@PanoDreamServisi)
             setContent {
                 PanoTemasi {
-                    if (il != null) {
-                        PanoEkrani(il = il, ekraniAcikTut = false, uyeler = uyeler, onAyarlar = null)
-                    } else {
-                        Box(
-                            Modifier.fillMaxSize().background(Renkler.arkaplan).padding(48.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                "Vakit panosunu görmek için Namaz Akışı uygulamasını açıp ilinizi seçin.",
-                                color = Renkler.metin,
-                                fontSize = 28.sp,
-                                textAlign = TextAlign.Center,
-                            )
+                    RakamSaglayici(il) {
+                        if (il != null) {
+                            PanoEkrani(il = il, ekraniAcikTut = false, uyeler = uyeler, onAyarlar = null)
+                        } else {
+                            Box(
+                                Modifier.fillMaxSize().background(Renkler.arkaplan).padding(48.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    stringResource(R.string.dream_il_yok),
+                                    color = Renkler.metin,
+                                    fontSize = 28.sp,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
                         }
                     }
                 }

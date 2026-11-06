@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Hintçe). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: नमाज़ पढ़ ली</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: नमाज़ के वक़्त की हालत</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: नमाज़ के वक़्त की घटना</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">यह सेटिंग किसी ऑटोमेशन ऐप से जोड़ी जाती है</string>
+  <string name="otomasyon_bilgi_tarayici">ब्राउज़र को स्थायी अनुमति नहीं दी जाती। Tasker, MacroDroid या Automate जैसे किसी ऐप की प्लगइन सूची से जोड़ें।</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid या Automate जैसे किसी ऐप की प्लगइन सूची से \"Namaz Akışı\" चुनकर जोड़ें।</string>
+  <string name="otomasyon_engelli_baslik">%1$s ब्लॉक है</string>
+  <string name="otomasyon_engelli_mesaj">आपने इस ऐप को पहले अपनी नमाज़ों पर निशान लगाने से रोक दिया था। Namaz Akışı में सेटिंग &gt; \"नमाज़ पढ़ ली\" का निशान लगाने वाले ऐप से अनुमति दी जा सकती है।</string>
+  <string name="otomasyon_izin_baslik">क्या %1$s के साथ इस्तेमाल करें?</string>
+  <string name="otomasyon_izin_kosul">%1$s जान सकता है कि नमाज़ का वक़्त कब शुरू हुआ, कब ख़त्म हो रहा है और आप कब मस्जिद में हैं, और आपके ऑटोमेशन चला सकता है। अपना फ़ैसला Namaz Akışı में सेटिंग &gt; \"नमाज़ पढ़ ली\" का निशान लगाने वाले ऐप से बदला जा सकता है।</string>
+  <string name="otomasyon_izin_kildim">%1$s आपके बनाए हुए ऑटोमेशन से मौजूदा नमाज़ पर \"पढ़ ली गई\" का निशान लगा सकता है। अपना फ़ैसला Namaz Akışı में सेटिंग &gt; \"नमाज़ पढ़ ली\" का निशान लगाने वाले ऐप से बदला जा सकता है।</string>
+  <string name="otomasyon_izin_ver">अनुमति दें</string>
+  <string name="otomasyon_engelle">ब्लॉक करें</string>
+  <string name="otomasyon_vazgec">रद्द करें</string>
+  <string name="otomasyon_tamam">ठीक है</string>
+  <string name="otomasyon_tur_baslik">कब चले?</string>
+  <string name="otomasyon_ileri">आगे</string>
+  <string name="otomasyon_vakit_baslik">कौन सी नमाज़?</string>
+  <string name="otomasyon_herhangi_vakit">किसी भी नमाज़ का वक़्त</string>
+  <string name="otomasyon_kaydet">सेव करें</string>
+  <string name="otomasyon_kosul_icinde">जब तक नमाज़ का वक़्त जारी हो</string>
+  <string name="otomasyon_kosul_cikiyor">जब नमाज़ का वक़्त ख़त्म हो रहा हो (%1$d मिनट बाक़ी, नमाज़ मुहाफ़िज़ चालू हो)</string>
+  <string name="otomasyon_kosul_camide">मस्जिद में रहते हुए</string>
+  <string name="otomasyon_olay_girdi">जब नमाज़ का वक़्त शुरू हो</string>
+  <string name="otomasyon_olay_cikiyor">जब नमाज़ का वक़्त ख़त्म हो रहा हो (%1$d मिनट बाक़ी, नमाज़ मुहाफ़िज़ चालू हो)</string>
+  <string name="otomasyon_olay_camide">जब पता चले कि आप मस्जिद में हैं</string>
+</resources>

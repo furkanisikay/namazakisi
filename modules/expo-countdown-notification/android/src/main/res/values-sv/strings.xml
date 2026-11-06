@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Live-nedräkningar</string>
+    <string name="countdown_kanal_canli_aciklama">Nedräkningar i Now Bar och statusfältet</string>
+    <string name="countdown_kanal_genel_ad">Nedräkningsaviseringar</string>
+    <string name="countdown_kanal_genel_aciklama">Kanal för nedräkningsaviseringar</string>
+
+    <string name="countdown_eylem_kildim">Jag har bett</string>
+    <string name="countdown_eylem_durdur">Stoppa</string>
+
+    <string name="countdown_yedek_vakit">Skynda dig, bönetiden håller på att ta slut.</string>
+    <string name="countdown_yedek_iftar">Tiden börjar ta slut.</string>
+    <string name="countdown_yedek_sahur">Du kan fortfarande äta och dricka; fastan börjar snart.</string>
+    <string name="countdown_yedek_seri">Dagens böner är inte fullständiga; förlora inte din svit.</string>
+
+    <string name="countdown_onek_vakit">Tills tiden slutar</string>
+    <string name="countdown_onek_vakit_dar">Tiden tar slut</string>
+    <string name="countdown_onek_iftar">Till iftar</string>
+    <string name="countdown_onek_iftar_dar">Till iftar</string>
+    <string name="countdown_onek_sahur">Tills suhur slutar</string>
+    <string name="countdown_onek_sahur_dar">Suhur slutar</string>
+    <string name="countdown_onek_seri">För att rädda din svit</string>
+    <string name="countdown_onek_seri_dar">Sviten tar slut</string>
+</resources>

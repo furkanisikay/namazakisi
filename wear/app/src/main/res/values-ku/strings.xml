@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kurmancî. Terimler: src/core/dil/sozluk/ku. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ku</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Nimêja din</string>
+    <string name="tile_aciklama">Nimêja din û dema wê</string>
+    <string name="komplikasyon_adi">Dema mayî</string>
+    <string name="cikis_saati_komplikasyon_adi">Dema dawiya nimêjê</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Nimêja din</string>
+    <string name="bugun_tile_adi">Îro</string>
+    <string name="bugun_tile_aciklama">Pênc nimêjên îro; yên ku we kirine bi du tikandinan nîşan bikin</string>
+    <string name="ilerleme_komplikasyon_adi">Pêşketina rojane</string>
+    <string name="dagilim_komplikasyon_adi">Kurteya rojê</string>
+    <string name="kerahat_komplikasyon_adi">Dema mekrûh</string>
+    <string name="son_dakikalar_kanal_adi">Deqîqeyên dawî</string>
+    <string name="son_dakikalar_kanal_aciklama">Jimartin li ser rûyê saetê di deqîqeyên dawî yên nimêjeke ku we nekiriye de</string>
+    <string name="tesbihat_adi">Tesbîh</string>
+    <string name="tesbihat_kanal_adi">Tesbîh</string>
+    <string name="tesbihat_kanal_aciklama">Îkoneke bêdeng li ser rûyê saetê ji bo vegera tesbîheke nîvco</string>
+    <string name="kible_adi">Qible</string>
+    <string name="kible_komplikasyon_adi">Qible</string>
+    <string name="camideyim_kanal_adi">Li mizgeftê</string>
+    <string name="camideyim_kanal_aciklama">Îkoneke bêdeng li ser rûyê saetê gava telefona we dibêje ku hûn li mizgeftê ne</string>
+    <string name="uyandirma_kanal_adi">Şiyarkirina bêdeng</string>
+    <string name="uyandirma_kanal_aciklama">Ji bo Sibê û Teheccudê tenê bi lerzê we şiyar dike</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Min nimêj kir</string>
+    <string name="kilindi_isareti">✓ Hat kirin</string>
+    <string name="kapat">Bigirin</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Ji bo dîtina demên nimêjê Namaz Akışı li ser telefona xwe vekin.</string>
+    <string name="yuk_eskidi">Daneyên demên nimêjê kevn in. Ji bo nûkirinê Namaz Akışı li ser telefona xwe vekin.</string>
+    <string name="guncelleme_gerekli">Namaz Akışı li ser saeta xwe nû bikin.</string>
+    <string name="bildirim_izni">Ji bo ku dema telefona we ne bi we re be jî bîranîn bistînin, di mîhengên saetê de destûr bidin agahdariyên Namaz Akışı.</string>
+    <string name="cami_soru">Hûn li mizgeftê ne?</string>
+    <string name="cami_evet">Erê</string>
+    <string name="cami_evet_aciklama">Erê, ez li mizgeftê me. Moda nimêjê vedike</string>
+    <string name="cami_hayir">Na</string>
+    <string name="cami_hayir_aciklama">Na, ez ne li mizgeftê me</string>
+    <string name="camidesiniz">Hûn li mizgeftê ne</string>
+    <string name="cami_degil">Ev ne mizgeft e</string>
+    <string name="cami_degil_aciklama">Ev ne mizgeft e. Ev cih êdî wekî mizgeft nayê hesibandin</string>
+    <string name="tesbihat_ac">Jimara tesbîhê vekin</string>
+    <string name="kible_ac">Qiblenimayê vekin</string>
+    <string name="ses_dene">Dengê biceribînin</string>
+    <string name="ses_dene_aciklama">Bi deng xwendina saetê biceribînin</string>
+    <string name="telefonda_acin">Li ser telefonê vekin</string>
+    <string name="telefonda_ekran_ac">%1$s li ser telefona xwe vekin</string>
+    <string name="ekran_kaza">Deftera qezayê</string>
+    <string name="ekran_camideyim">Li mizgeftê</string>
+    <string name="ekran_ayarlar">Mîheng</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">hat kirin, tê hevdemkirin</string>
+    <string name="durum_kilindi">hat kirin</string>
+    <string name="durum_girmedi">dem hîn nehatiye</string>
+    <string name="durum_simdiki">dema nimêjê ya niha, ji bo nîşankirinê bitikînin</string>
+    <string name="durum_simdiki_kalan">dema nimêjê ya niha, %1$s, ji bo nîşankirinê bitikînin</string>
+    <string name="durum_kilinmadi">nehat kirin, ji bo nîşankirinê bitikînin</string>
+    <string name="isaretleyin">Wekî kirî nîşan bikin</string>
+    <string name="esitleniyor">tê hevdemkirin</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">“Min nimêj kir” bipejirînin</string>
+    <string name="vazgecin">Betal bikin</string>
+    <string name="vazgec">Betal bikin</string>
+    <string name="kerahat_vaktindesiniz">Niha dema mekrûh e.</string>
+    <string name="kilindi_dua">Hat kirin. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Moda nimêjê vekirî ye, di %1$s de diqede. Ji bo girtinê bitikînin</string>
+    <string name="namaz_modu_ac_aciklama">Moda nimêjê li ser telefona xwe vekin</string>
+    <string name="namaz_modu_kapatin">Moda nimêjê bigirin</string>
+    <string name="namaz_modu_acin">Moda nimêjê vekin</string>
+    <string name="namaz_modu_acik_bitis">Vekirî, di %1$s de diqede</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Alî tê dîtin…</string>
+    <string name="kible_yuk_yok">Ji bo dîtina Qibleyê Namaz Akışı li ser telefona xwe vekin.</string>
+    <string name="kible_konum_yok">Ji bo dîtina Qibleyê cihê li ser telefona xwe vekin. Heke Namaz Akışı ne nûkirî be, wê nû bikin.</string>
+    <string name="kible_sensor_yok">Di vê saetê de hestiyarê qiblenimayê tune. Hûn dikarin aliyê Qibleyê li ser telefona xwe bibînin.</string>
+    <string name="kible_kuzeyden">Qible %1$d° (ji bakur)</string>
+    <string name="kible_derece">Qible %1$d°</string>
+    <string name="kible_telefonda_ac">Qibleyê li ser telefona xwe vekin</string>
+    <string name="kible_erisim">%1$s. Qible %2$d° ji bakur e, %3$s</string>
+    <string name="kible_hizali">Hûn ber bi Qibleyê ne</string>
+    <string name="kible_kalibrasyon">Ji bo kalîbrekirinê, zenda xwe di hewayê de bi şiklê 8 bilivînin</string>
+    <string name="kible_egim">Saeta xwe paralelî erdê bigirin</string>
+    <string name="kible_titresim_acik">Rêberiya bi lerzê vekirî ye. Ji bo girtinê bitikînin</string>
+    <string name="kible_titresim_kapali">Rêberiya bi lerzê girtî ye. Ji bo vekirinê bitikînin</string>
+    <string name="kible_harf_kuzey">Bk</string>
+    <string name="kible_harf_dogu">Rh</string>
+    <string name="kible_harf_guney">Bş</string>
+    <string name="kible_harf_bati">Rv</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tesbîh temam bû. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Bi tevahî %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Bijmêrin</string>
+    <string name="tesbihat_bastan_baslayin">Ji serî dest pê bikin</string>
+    <string name="tesbihat_bastan_soru">Ji serî dest pê bike?</string>
+    <string name="tesbihat_sifirlanir">Jimar sifir dibe.</string>
+    <string name="tesbihat_geri_al">Vegerînin</string>
+    <string name="tesbihat_geri_al_aciklama">Jimartina dawî vegerînin</string>
+    <string name="tesbihat_yeniden">Dîsa dest pê bikin</string>
+    <string name="tesbihat_yeniden_aciklama">Tesbîhê dîsa dest pê bikin</string>
+    <string name="tesbihat_suruyor">Tesbîh didome: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Min nimêj kir. Şiyarkirinê digire</string>
+    <string name="uyandirma_kapat_aciklama">Şiyarkirinê bigirin</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı vekin</string>
+    <string name="tile_vakitler_icin">Ji bo demên nimêjê bitikînin</string>
+    <string name="tile_telefonda_acin">Sepanê li ser telefona xwe vekin</string>
+    <string name="tile_sonra">piştî %1$s</string>
+    <string name="tile_siradaki_aciklama">Nimêja din %1$s, di %2$s de dest pê dike. Sepanê vekin</string>
+    <string name="tile_giris">destpêk %1$s</string>
+    <string name="tile_cikis">dawî %1$s</string>
+    <string name="bugun_bos_satir1">Sepanê vekin</string>
+    <string name="bugun_bos_satir2">li ser telefona xwe</string>
+    <string name="bugun_acma_aciklamasi">Îro %1$d/%2$d nimêj hatin kirin. Sepanê vekin</string>
+    <string name="bugun_sayi">Îro %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Dema mekrûh · ji bo pejirandinê dîsa bitikînin</string>
+    <string name="bugun_onay_tekrar">Ji bo pejirandinê dîsa bitikînin</string>
+    <string name="bugun_tamam">Nimêjên îro temam in</string>
+    <string name="bugun_kilinmadi">%1$s nehat kirin</string>
+    <string name="bugun_siradaki">Ya din: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Dîsa bitikînin</string>
+    <string name="bugun_kilindi">%1$s hat kirin</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s hat kirin, tê hevdemkirin</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Li benda demên nimêjê ye; Namaz Akışı li ser telefona xwe vekin</string>
+    <string name="komplikasyon_bekleniyor">Li benda deman</string>
+    <string name="komplikasyon_vakit">Nimêj</string>
+    <string name="komplikasyon_cikis">Diqede</string>
+    <string name="komplikasyon_sirada">Ya din</string>
+    <string name="gun_durumu_aciklama">Îro %2$d ji %1$d nimêjan hatin kirin</string>
+    <string name="gun_durumu_kilinmamis">%1$s; nehatine kirin: %2$s</string>
+    <string name="komplikasyon_namaz">Nimêj</string>
+    <string name="komplikasyon_kerahat">Mekrûh</string>
+    <string name="kerahat_icinde_aciklama">Dema mekrûh e, di %1$s de diqede</string>
+    <string name="kerahat_siradaki_aciklama">Dema mekrûh a din %1$s</string>
+    <string name="kible_komplikasyon">Qible %1$d° ji bakur e. Qiblenimayê vekin</string>
+    <string name="kible_komplikasyon_konumlu">Qible %1$d° ji bakur e, %2$s. Qiblenimayê vekin</string>
+    <string name="kible_komplikasyon_konum_yok">Ji bo dîtina Qibleyê cihê li ser telefona xwe vekin</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Bîranîna bilez · Bi lerzê</string>
+    <string name="muhafiz_kanal_acil">Bîranîna bilez</string>
+    <string name="muhafiz_kanal_titresimli">Bîranîna nimêjê · Bi lerzê</string>
+    <string name="muhafiz_kanal">Bîranîna nimêjê</string>
+    <string name="muhafiz_kanal_aciklama">Bîranînên nimêjê yên ku dema telefona we ne bi we re be jî li ser saeta we xuya dibin</string>
+    <string name="son_dakikalar_cikis">Diqede: %1$s</string>
+    <string name="son_dakikalar_bitis">Diqede: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Dema mayî heta ku %1$s biqede</string>
+    <string name="son_dakikalar_kalan_erisim">Dema mayî ji bo %1$s</string>
+    <string name="cami_namaz_modu_bitis">Moda nimêjê · di %1$s de diqede</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Li ser telefona we vebû</string>
+    <string name="telefona_ulasilamadi">Negihîşt telefona we</string>
+</resources>

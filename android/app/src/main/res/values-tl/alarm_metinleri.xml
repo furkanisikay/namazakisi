@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Filipince). "Nagdasal ako" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alarm sa dasal</string>
+  <string name="alarm_kildim">Nagdasal ako</string>
+  <string name="alarm_kapat">I-off</string>
+  <string name="alarm_kanal_aciklamasi">Tunay na alarm na tumutunog sa mga hakbang ng paalala na pinili ninyo</string>
+</resources>

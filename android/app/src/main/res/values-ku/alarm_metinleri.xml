@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Kurmancî). "Min nimêj kir" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alarma nimêjê</string>
+  <string name="alarm_kildim">Min nimêj kir</string>
+  <string name="alarm_kapat">Bigirin</string>
+  <string name="alarm_kanal_aciklamasi">Alarmeke rastîn a ku di gavên bîranînê yên ku hûn hilbijêrin de lê dide</string>
+</resources>

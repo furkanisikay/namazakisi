@@ -13,6 +13,8 @@ export interface GokOlculeri {
   yatayPay: number;
   ustPay: number;
   satirAraligi: number;
+  /** Sağdan sola arayüz: haftanın ilk günü SAĞDA (sütunlar aynalanır, Arap/Urdu takvimi). */
+  sagdanSola?: boolean;
 }
 
 export interface Nokta {
@@ -45,7 +47,8 @@ export function gokYerlesimi(o: GokOlculeri): GokYerlesimi {
     hucreGenislik,
     toplamYukseklik,
     merkez(indeks: number): Nokta {
-      const sutun = indeks % SUTUN_SAYISI;
+      const mantiksal = indeks % SUTUN_SAYISI;
+      const sutun = o.sagdanSola ? SUTUN_SAYISI - 1 - mantiksal : mantiksal;
       const satir = Math.floor(indeks / SUTUN_SAYISI);
       return {
         x: o.yatayPay + hucreGenislik * (sutun + 0.5),
@@ -87,8 +90,11 @@ export function bagYolu(a: Nokta, b: Nokta, satirSarmasi: boolean, seritY: numbe
     return `M ${baslangic.x} ${baslangic.y} L ${bitis.x} ${bitis.y}`;
   }
 
-  const baslangic: Nokta = { x: a.x + bosluk, y: a.y };
-  const bitis: Nokta = { x: b.x - bosluk, y: b.y };
+  // Soldan sağa sarmada `a` satırın SAĞ ucunda, `b` alt satırın SOL ucundadır; sağdan
+  // solada tersi. Uçlar her iki yönde de yıldızın dışına (satır ucunun ötesine) çekilir.
+  const yon = a.x >= b.x ? 1 : -1;
+  const baslangic: Nokta = { x: a.x + yon * bosluk, y: a.y };
+  const bitis: Nokta = { x: b.x - yon * bosluk, y: b.y };
   const kontrol1: Nokta = { x: baslangic.x, y: seritY };
   const kontrol2: Nokta = { x: bitis.x, y: seritY };
 

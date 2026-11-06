@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dagbani. Terimler: src/core/dil/sozluk/dag. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">dag</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Jiŋli din doli</string>
+    <string name="tile_aciklama">Jiŋli din doli mini di saha</string>
+    <string name="komplikasyon_adi">Saha din kpalim</string>
+    <string name="cikis_saati_komplikasyon_adi">Jiŋli naabu saha</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Jiŋli din doli</string>
+    <string name="bugun_tile_adi">Zuŋɔ</string>
+    <string name="bugun_tile_aciklama">Zuŋɔ jiŋa anu; dalimmi ya din yi ni puhi ni dihibu ayi</string>
+    <string name="ilerleme_komplikasyon_adi">Dabsili tooni chaŋbu</string>
+    <string name="dagilim_komplikasyon_adi">Dabsili lihibu</string>
+    <string name="kerahat_komplikasyon_adi">Makruhi saha</string>
+    <string name="son_dakikalar_kanal_adi">Minti din bahi</string>
+    <string name="son_dakikalar_kanal_aciklama">Saha kalibu wɔɔchi nini zuɣu jiŋli shɛli yi ni na bi puhi minti din bahi ni</string>
+    <string name="tesbihat_adi">Tasbihi</string>
+    <string name="tesbihat_kanal_adi">Tasbihi</string>
+    <string name="tesbihat_kanal_aciklama">Dalibu din ka kukoli wɔɔchi nini zuɣu n-ti labi tasbihi din na bi naai</string>
+    <string name="kible_adi">Alichibla</string>
+    <string name="kible_komplikasyon_adi">Alichibla</string>
+    <string name="camideyim_kanal_adi">N be jiŋli ni</string>
+    <string name="camideyim_kanal_aciklama">Dalibu din ka kukoli wɔɔchi nini zuɣu yi tilifoŋ yi yɛli ni yi be jiŋli ni</string>
+    <string name="uyandirma_kanal_adi">Yiɣisibu din ka kukoli</string>
+    <string name="uyandirma_kanal_aciklama">Di yiɣisiri ya ni nyɛɣisibu koŋko, Subaahi mini Tahajud zuɣu</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">N puhi jiŋli</string>
+    <string name="kilindi_isareti">✓ Puhiya</string>
+    <string name="kapat">Kpihimi ya</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Yoomi ya Namaz Akışı yi tilifoŋ zuɣu ka nya jiŋli saha.</string>
+    <string name="yuk_eskidi">Jiŋli saha lahabali kurigiya. Yoomi ya Namaz Akışı yi tilifoŋ zuɣu ka di mali palli.</string>
+    <string name="guncelleme_gerekli">Malimi ya Namaz Akışı palli yi wɔɔchi zuɣu.</string>
+    <string name="bildirim_izni">Yi yi bɔri ni yi nya teebu hali yi tilifoŋ yi ka yi sani, timi ya Namaz Akışı lahabaya soli wɔɔchi malizali ni.</string>
+    <string name="cami_soru">Yi be jiŋli ni?</string>
+    <string name="cami_evet">Iin</string>
+    <string name="cami_evet_aciklama">Iin, n be jiŋli ni. Di yooiri Jiŋli soli</string>
+    <string name="cami_hayir">Aayi</string>
+    <string name="cami_hayir_aciklama">Aayi, n ka jiŋli ni</string>
+    <string name="camidesiniz">Yi be jiŋli ni</string>
+    <string name="cami_degil">Ŋɔ pa jiŋli</string>
+    <string name="cami_degil_aciklama">Ŋɔ pa jiŋli. Bɛ ku lahi kali luɣili ŋɔ ni jiŋli</string>
+    <string name="tesbihat_ac">Yoomi ya tasbihi kalibu</string>
+    <string name="kible_ac">Yoomi ya Alichibla kɔmpas</string>
+    <string name="ses_dene">Lihimi ya kukoli</string>
+    <string name="ses_dene_aciklama">Lihimi ya wɔɔchi kukoli karimbu</string>
+    <string name="telefonda_acin">Yoomi tilifoŋ zuɣu</string>
+    <string name="telefonda_ekran_ac">Yoomi ya %1$s yi tilifoŋ zuɣu</string>
+    <string name="ekran_kaza">Labi puhibu gbaŋ</string>
+    <string name="ekran_camideyim">N be jiŋli ni</string>
+    <string name="ekran_ayarlar">Malizali</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">puhiya, di laɣindi</string>
+    <string name="durum_kilindi">puhiya</string>
+    <string name="durum_girmedi">saha na bi paai</string>
+    <string name="durum_simdiki">pumpɔŋɔ jiŋli saha, dihimi ya ka dalim</string>
+    <string name="durum_simdiki_kalan">pumpɔŋɔ jiŋli saha, %1$s, dihimi ya ka dalim</string>
+    <string name="durum_kilinmadi">bi puhi, dihimi ya ka dalim</string>
+    <string name="isaretleyin">Dalimmi ya ni yi puhi</string>
+    <string name="esitleniyor">di laɣindi</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Dihimi ya tabili ni yi puhi jiŋli</string>
+    <string name="vazgecin">Nyahimi ya</string>
+    <string name="vazgec">Nyahimi ya</string>
+    <string name="kerahat_vaktindesiniz">Pumpɔŋɔ nyɛla makruhi saha.</string>
+    <string name="kilindi_dua">Puhiya. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Jiŋli soli yooya, di naai %1$s. Dihimi ya ka kpari li</string>
+    <string name="namaz_modu_ac_aciklama">Yoomi ya Jiŋli soli yi tilifoŋ zuɣu</string>
+    <string name="namaz_modu_kapatin">Kparimi ya Jiŋli soli</string>
+    <string name="namaz_modu_acin">Yoomi ya Jiŋli soli</string>
+    <string name="namaz_modu_acik_bitis">Yooya, di naai %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Soli maa bɔri…</string>
+    <string name="kible_yuk_yok">Yoomi ya Namaz Akışı yi tilifoŋ zuɣu ka nya Alichibla.</string>
+    <string name="kible_konum_yok">Yoomi ya luɣili yi tilifoŋ zuɣu ka nya Alichibla. Namaz Akışı yi pa palli, malimi ya li palli.</string>
+    <string name="kible_sensor_yok">Wɔɔchi ŋɔ ka kɔmpas sɛnsa. Yi ni tooi nya Alichibla soli yi tilifoŋ zuɣu.</string>
+    <string name="kible_kuzeyden">Alichibla %1$d° (N polo)</string>
+    <string name="kible_derece">Alichibla %1$d°</string>
+    <string name="kible_telefonda_ac">Yoomi ya Alichibla yi tilifoŋ zuɣu</string>
+    <string name="kible_erisim">%1$s. Alichibla nyɛla %2$d° n-yi N polo, %3$s</string>
+    <string name="kible_hizali">Yi nini kpa Alichibla</string>
+    <string name="kible_kalibrasyon">Yi yi bɔri ni yi mali li, gilgimi ya yi nuu sagbana ni kamani 8</string>
+    <string name="kible_egim">Gbibimi ya yi wɔɔchi ka di dɔni kamani tiŋgbani</string>
+    <string name="kible_titresim_acik">Nyɛɣisibu soli wuhibu yooya. Dihimi ya ka kpari li</string>
+    <string name="kible_titresim_kapali">Nyɛɣisibu soli wuhibu kpariya. Dihimi ya ka yooi li</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">W</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbihi naaya. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Zaa %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Kalimi ya</string>
+    <string name="tesbihat_bastan_baslayin">Labi pilimi ya</string>
+    <string name="tesbihat_bastan_soru">Labi pili?</string>
+    <string name="tesbihat_sifirlanir">Kalibu maa labi piligiri.</string>
+    <string name="tesbihat_geri_al">Labimi ya</string>
+    <string name="tesbihat_geri_al_aciklama">Labimi ya kalibu din bahi</string>
+    <string name="tesbihat_yeniden">Lahi pilimi ya</string>
+    <string name="tesbihat_yeniden_aciklama">Lahi pilimi ya tasbihi</string>
+    <string name="tesbihat_suruyor">Tasbihi chaŋdi tooni: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">N puhi jiŋli. Di kpihiri yiɣisibu</string>
+    <string name="uyandirma_kapat_aciklama">Kpihimi ya yiɣisibu</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Yoomi ya Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Dihimi ya n-nya jiŋli saha</string>
+    <string name="tile_telefonda_acin">Yoomi ya app maa yi tilifoŋ zuɣu</string>
+    <string name="tile_sonra">%1$s puuni</string>
+    <string name="tile_siradaki_aciklama">Jiŋli din doli %1$s, di ni paai %2$s. Yoomi ya app maa</string>
+    <string name="tile_giris">di paai %1$s</string>
+    <string name="tile_cikis">di naai %1$s</string>
+    <string name="bugun_bos_satir1">Yoomi ya app maa</string>
+    <string name="bugun_bos_satir2">yi tilifoŋ zuɣu</string>
+    <string name="bugun_acma_aciklamasi">Zuŋɔ jiŋa %1$d/%2$d puhiya. Yoomi ya app maa</string>
+    <string name="bugun_sayi">Zuŋɔ %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Makruhi saha · lahi dihimi ya ka dihi tabili</string>
+    <string name="bugun_onay_tekrar">Lahi dihimi ya ka dihi tabili</string>
+    <string name="bugun_tamam">Zuŋɔ jiŋa naaya</string>
+    <string name="bugun_kilinmadi">%1$s bi puhi</string>
+    <string name="bugun_siradaki">Din doli: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Lahi dihimi ya</string>
+    <string name="bugun_kilindi">%1$s puhiya</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s puhiya, di laɣindi</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Di guhiri jiŋli saha; yoomi ya Namaz Akışı yi tilifoŋ zuɣu</string>
+    <string name="komplikasyon_bekleniyor">Di guhiri saha</string>
+    <string name="komplikasyon_vakit">Jiŋli</string>
+    <string name="komplikasyon_cikis">Naabu</string>
+    <string name="komplikasyon_sirada">Din doli</string>
+    <string name="gun_durumu_aciklama">Zuŋɔ jiŋa %2$d puhiya %1$d puuni</string>
+    <string name="gun_durumu_kilinmamis">%1$s; din bi puhi: %2$s</string>
+    <string name="komplikasyon_namaz">Jiŋa</string>
+    <string name="komplikasyon_kerahat">Makruhi</string>
+    <string name="kerahat_icinde_aciklama">Pumpɔŋɔ nyɛla makruhi saha, di naai %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Makruhi saha din doli %1$s</string>
+    <string name="kible_komplikasyon">Alichibla nyɛla %1$d° n-yi N polo. Yoomi ya kɔmpas</string>
+    <string name="kible_komplikasyon_konumlu">Alichibla nyɛla %1$d° n-yi N polo, %2$s. Yoomi ya kɔmpas</string>
+    <string name="kible_komplikasyon_konum_yok">Yoomi ya luɣili yi tilifoŋ zuɣu ka nya Alichibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Teebu din yɔɣi · Nyɛɣisibu</string>
+    <string name="muhafiz_kanal_acil">Teebu din yɔɣi</string>
+    <string name="muhafiz_kanal_titresimli">Jiŋli teebu · Nyɛɣisibu</string>
+    <string name="muhafiz_kanal">Jiŋli teebu</string>
+    <string name="muhafiz_kanal_aciklama">Jiŋli teebu din yiri yi wɔɔchi zuɣu hali yi tilifoŋ yi ka yi sani</string>
+    <string name="son_dakikalar_cikis">Naabu: %1$s</string>
+    <string name="son_dakikalar_bitis">Naabu: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Saha din kpalim pɔi ka %1$s naai</string>
+    <string name="son_dakikalar_kalan_erisim">Saha din kpalim %1$s zuɣu</string>
+    <string name="cami_namaz_modu_bitis">Jiŋli soli · di naai %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Di yooya yi tilifoŋ zuɣu</string>
+    <string name="telefona_ulasilamadi">Yi tilifoŋ bi paai</string>
+</resources>

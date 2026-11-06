@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Litvanca terimler: src/core/dil/sozluk/lt + docs/ajan/coklu-dil.md terim sozlugu.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Kita malda";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Pasako kitą maldą ir kada prasideda jos laikas.";
+"Şu anki vakti kıldım" = "Atlikau dabartinę maldą";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Pažymi dabartinę maldą kaip atliktą. Įrašas pridedamas, kai atidarote programą.";
+"Onay iste" = "Prašyti patvirtinimo";
+"Kıbleyi aç" = "Atidaryti kiblą";
+"Uygulamayı Kıble pusulasıyla açar." = "Atidaro programą su kiblos kompasu.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Atlikau maldą";
+"Kıble" = "Kibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Kitos maldos pavadinimas";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Pateikia kitos maldos pavadinimą. Sparčiuosiuose klavišuose galite jį naudoti kaip sąlygą.";
+"Sıradaki vakte kalan dakika" = "Minutės iki kitos maldos";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Pateikia, kiek minučių liko iki kitos maldos laiko pradžios. Jei informacijos nėra, grąžina -1.";
+"Şu anki vakit kılındı mı?" = "Ar dabartinė malda pažymėta kaip atlikta?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Grąžina „taip“, jei dabartinė malda pažymėta kaip atlikta. Jei atliktinos maldos nėra, grąžina „ne“.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Maldos tyla";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Grąžina „true“ per pirmąsias minutes nuo maldos laiko pradžios. Naudojama sparčiuosiuose klavišuose Fokusavimui įjungti.";
+"Süre (dakika)" = "Trukmė (minutėmis)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} min. nuo maldos laiko pradžios";
+"Namaz sessizliğinin bitişi" = "Maldos tylos pabaiga";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Pateikia laiką, kada baigsis tyla. Jei dabar tylos nėra, pateikia dabartinį laiką.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "${dakika} min. nuo maldos laiko pradžios pabaiga";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Maldų priminimai";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Kol įjungtas šis Fokusavimas, maldų priminimai ateina be garso ir neįjungdami ekrano.";
+"Hatırlatmaları sessiz ver" = "Priminimai tyliai";
+"Hatırlatmalar sessiz gelir" = "Priminimai ateina tyliai";
+"Hatırlatmalar her zamanki gibi" = "Priminimai kaip įprasta";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Pažymi valdiklyje rodomą maldą kaip atliktą.";
+"Tarih" = "Data";
+"Vakit" = "Malda";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Sustabdyti maldos žadintuvą";
+"Namazı kıldım" = "Atlikau maldą";
+"Alarm" = "Žadintuvas";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Dienos ajato paveikslėlis";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Pateikia šiandienos ajatą kaip jūsų ekrano dydžio paveikslėlį. Sparčiuosiuose klavišuose galite jį naudoti su veiksmu „Nustatyti ekrano foną“.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Kad paruoštumėte dienos ajatą, vieną kartą atidarykite programą.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Nepavyko paruošti paveikslėlio. Netrukus bandykite dar kartą.";

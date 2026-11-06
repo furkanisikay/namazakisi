@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Urduca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: نماز پڑھ لی</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: نماز کے وقت کی حالت</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: نماز کے وقت کا واقعہ</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">یہ ترتیب کسی آٹومیشن ایپ سے شامل کی جاتی ہے</string>
+  <string name="otomasyon_bilgi_tarayici">براؤزرز کو مستقل اجازت نہیں دی جاتی۔ Tasker، MacroDroid یا Automate جیسی کسی ایپ کی پلگ ان فہرست سے شامل کریں۔</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker، MacroDroid یا Automate جیسی کسی ایپ کی پلگ ان فہرست سے \"Namaz Akışı\" منتخب کر کے شامل کریں۔</string>
+  <string name="otomasyon_engelli_baslik">%1$s بلاک ہے</string>
+  <string name="otomasyon_engelli_mesaj">آپ نے اس ایپ کو پہلے اپنی نمازوں پر نشان لگانے سے روک دیا تھا۔ Namaz Akışı میں ترتیبات &gt; \"نماز پڑھ لی\" کا نشان لگانے والی ایپس سے اجازت دی جا سکتی ہے۔</string>
+  <string name="otomasyon_izin_baslik">کیا %1$s کے ساتھ استعمال کریں؟</string>
+  <string name="otomasyon_izin_kosul">%1$s جان سکتی ہے کہ نماز کا وقت کب شروع ہوا، کب ختم ہو رہا ہے اور آپ کب مسجد میں ہیں، اور آپ کی آٹومیشنز چلا سکتی ہے۔ اپنا فیصلہ Namaz Akışı میں ترتیبات &gt; \"نماز پڑھ لی\" کا نشان لگانے والی ایپس سے بدلا جا سکتا ہے۔</string>
+  <string name="otomasyon_izin_kildim">%1$s آپ کی بنائی ہوئی آٹومیشن سے موجودہ نماز پر ادا شدہ کا نشان لگا سکتی ہے۔ اپنا فیصلہ Namaz Akışı میں ترتیبات &gt; \"نماز پڑھ لی\" کا نشان لگانے والی ایپس سے بدلا جا سکتا ہے۔</string>
+  <string name="otomasyon_izin_ver">اجازت دیں</string>
+  <string name="otomasyon_engelle">بلاک کریں</string>
+  <string name="otomasyon_vazgec">منسوخ کریں</string>
+  <string name="otomasyon_tamam">ٹھیک ہے</string>
+  <string name="otomasyon_tur_baslik">کب چلے؟</string>
+  <string name="otomasyon_ileri">آگے</string>
+  <string name="otomasyon_vakit_baslik">کون سی نماز؟</string>
+  <string name="otomasyon_herhangi_vakit">کسی بھی نماز کا وقت</string>
+  <string name="otomasyon_kaydet">محفوظ کریں</string>
+  <string name="otomasyon_kosul_icinde">جب تک نماز کا وقت جاری ہو</string>
+  <string name="otomasyon_kosul_cikiyor">جب نماز کا وقت ختم ہو رہا ہو (%1$d منٹ باقی، نماز محافظ آن ہو)</string>
+  <string name="otomasyon_kosul_camide">مسجد میں ہونے کے دوران</string>
+  <string name="otomasyon_olay_girdi">جب نماز کا وقت شروع ہو</string>
+  <string name="otomasyon_olay_cikiyor">جب نماز کا وقت ختم ہو رہا ہو (%1$d منٹ باقی، نماز محافظ آن ہو)</string>
+  <string name="otomasyon_olay_camide">جب آپ کے مسجد میں ہونے کا پتا چلے</string>
+</resources>

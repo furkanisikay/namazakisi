@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Malgaşça). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür; src/core/otomasyon/nativeEtiketler.ts mg bloğuyla birebir. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nivavaka aho</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Toetry ny fotoanan\'ny soalat</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Zava-mitranga amin\'ny fotoanan\'ny soalat</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Avy amin\'ny fampiharana asa mandeha ho azy no anampiana ity fikirana ity</string>
+  <string name="otomasyon_bilgi_tarayici">Tsy afaka mahazo alalana maharitra ny mpitety tranonkala. Ampidiro avy ao amin\'ny lisitry ny plugin amin\'ny fampiharana toy ny Tasker, MacroDroid na Automate izy.</string>
+  <string name="otomasyon_bilgi_eklenti">Ampidiro amin\'ny fifidianana ny « Namaz Akışı » ao amin\'ny lisitry ny plugin amin\'ny fampiharana toy ny Tasker, MacroDroid na Automate.</string>
+  <string name="otomasyon_engelli_baslik">Voasakana i %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Nosakananao tsy hanamarika ny soalatrao teo aloha ity fampiharana ity. Azonao avela izy ao amin\'ny Namaz Akışı, ao amin\'ny Fikirana &gt; Fampiharana manamarika ny « Nivavaka aho ».</string>
+  <string name="otomasyon_izin_baslik">Hampiasaina miaraka amin\'i %1$s ve?</string>
+  <string name="otomasyon_izin_kosul">Afaka mahafantatra i %1$s rehefa manomboka ny fotoanan\'ny soalat, rehefa efa ho tapitra izy ary rehefa ao amin\'ny moske ianao, ary afaka mampandeha ny asa mandeha ho azy anao. Azonao ovaina ny fanapahan-kevitrao ao amin\'ny Namaz Akışı, ao amin\'ny Fikirana &gt; Fampiharana manamarika ny « Nivavaka aho ».</string>
+  <string name="otomasyon_izin_kildim">Afaka manamarika ho vita ny soalat ankehitriny i %1$s amin\'ny asa mandeha ho azy napetrakao. Azonao ovaina ny fanapahan-kevitrao ao amin\'ny Namaz Akışı, ao amin\'ny Fikirana &gt; Fampiharana manamarika ny « Nivavaka aho ».</string>
+  <string name="otomasyon_izin_ver">Avelao</string>
+  <string name="otomasyon_engelle">Sakano</string>
+  <string name="otomasyon_vazgec">Foano</string>
+  <string name="otomasyon_tamam">Ekena</string>
+  <string name="otomasyon_tur_baslik">Rahoviana no handeha izy?</string>
+  <string name="otomasyon_ileri">Manaraka</string>
+  <string name="otomasyon_vakit_baslik">Soalat inona?</string>
+  <string name="otomasyon_herhangi_vakit">Fotoanan\'ny soalat rehetra</string>
+  <string name="otomasyon_kaydet">Tehirizo</string>
+  <string name="otomasyon_kosul_icinde">Mandritra ny fotoanan\'ny soalat</string>
+  <string name="otomasyon_kosul_cikiyor">Rehefa efa ho tapitra ny fotoanan\'ny soalat (%1$d min sisa, mandeha ny Mpiambina ny soalat)</string>
+  <string name="otomasyon_kosul_camide">Raha ao amin\'ny moske ianao</string>
+  <string name="otomasyon_olay_girdi">Rehefa manomboka ny fotoanan\'ny soalat</string>
+  <string name="otomasyon_olay_cikiyor">Rehefa efa ho tapitra ny fotoanan\'ny soalat (%1$d min sisa, mandeha ny Mpiambina ny soalat)</string>
+  <string name="otomasyon_olay_camide">Rehefa hita fa ao amin\'ny moske ianao</string>
+</resources>

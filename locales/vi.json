@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Vị trí của bạn được dùng để tính giờ Salah chính xác cho nơi bạn đang ở. Vị trí được giữ trên thiết bị của bạn.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Vị trí của bạn được dùng để tính giờ Salah chính xác cho nơi bạn đang ở và, nếu bật Tại Masjid, để bật Chế độ Salah khi bạn vào Masjid. Vị trí được giữ trên thiết bị của bạn.",
+  "NSLocationAlwaysUsageDescription": "Vị trí của bạn được dùng để tự động cập nhật giờ Salah khi bạn đổi thành phố và, nếu bật Tại Masjid, để bật Chế độ Salah khi bạn vào Masjid. Vị trí được giữ trên thiết bị của bạn.",
+  "NSCameraUsageDescription": "Máy ảnh được dùng để hiển thị hướng Qiblah trên khung hình máy ảnh và để quét mã ghép nối trên TV. Hình ảnh không được lưu và không rời khỏi thiết bị của bạn.",
+  "NSCalendarsUsageDescription": "Quyền truy cập lịch được dùng để thêm giờ Salah vào lịch và, nếu bạn bật, để kiểm tra các sự kiện trong lịch có trùng giờ Salah không. Dữ liệu lịch được giữ trên thiết bị của bạn.",
+  "NSCalendarsFullAccessUsageDescription": "Quyền truy cập lịch được dùng để thêm giờ Salah vào lịch và, nếu bạn bật, để kiểm tra các sự kiện trong lịch có trùng giờ Salah không. Dữ liệu lịch được giữ trên thiết bị của bạn.",
+  "NSLocalNetworkUsageDescription": "Ứng dụng kết nối với TV trong mạng cục bộ để gửi giờ Salah và các lần Salah bạn đã đánh dấu. Dữ liệu được mã hóa và chỉ truyền giữa hai thiết bị.",
+  "NSAlarmKitUsageDescription": "Các bước nhắc mà bạn chọn “Báo thức thật” sẽ được đặt làm báo thức, để bạn vẫn nghe thấy cả khi điện thoại ở chế độ im lặng hoặc khi bật Tập trung.",
+  "\"Vakti kıldım\"": "Tôi đã hành lễ",
+  "\"Kıble\"": "Qiblah"
+}

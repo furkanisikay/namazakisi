@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Kirundi). "Nasenze" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Inzogera y’isengesho</string>
+  <string name="alarm_kildim">Nasenze</string>
+  <string name="alarm_kapat">Muzimye</string>
+  <string name="alarm_kanal_aciklamasi">Inzogera nyayo isona ku ntambwe z’inyibutsa muhitamwo</string>
+</resources>

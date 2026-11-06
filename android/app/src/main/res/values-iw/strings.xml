@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İbranice kaynaklar (he; Android niteleyicisi values-iw). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/he. Geresh ASCII "'" → XML'de \'. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">התפילה הנוכחית, מתי היא מסתיימת, ו\"התפללתי\" בהקשה אחת</string>
+  <string name="widget_genis_aciklama">חמש התפילות של היום, ספירה לאחור ו\"התפללתי\" בהקשה אחת</string>
+  <string name="widget_kapak_adi">זמני תפילה במסך החיצוני</string>
+  <string name="widget_kapak_aciklama">זמני התפילה של היום וספירה לאחור למסך החיצוני של Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — קלאסי</string>
+  <string name="widget_klasik_aciklama">מראה ירוק קלאסי: הזמן שנותר עד התפילה הבאה</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — קלאסי רחב</string>
+  <string name="widget_klasik_genis_aciklama">מראה ירוק קלאסי: ספירה לאחור וזמני התפילה של היום</string>
+  <string name="widget_ayet_adi">פסוק היום</string>
+  <string name="widget_ayet_aciklama">פסוק ותרגומו, מתחדש בכל יום בפג\'ר</string>
+  <string name="widget_ayar_zemin_palet">צבע האפליקציה (גוון בהיר)</string>
+  <string name="widget_ayar_ayet_icerik">בגודל ריבועי, הצגה של</string>
+  <string name="widget_ayar_ayet_icerik_meal">תרגום</string>
+  <string name="widget_ayar_ayet_icerik_hat">הטקסט הערבי (קליגרפיה)</string>
+  <string name="kutu_kildim_etiket">התפללתי</string>
+  <string name="kisayol_kildim_kisa">התפללתי</string>
+  <string name="kisayol_kildim_uzun">התפללתי את התפילה הנוכחית</string>
+  <string name="kisayol_kible_kisa">קיבלה</string>
+  <string name="kisayol_kible_uzun">הצגת כיוון הקיבלה</string>
+  <string name="kisayol_kaza_kisa">יומן השלמות</string>
+  <string name="kisayol_kaza_uzun">פתיחת יומן ההשלמות</string>
+  <string name="kildim_onay_baslik">לסמן את תפילת %1$s כבוצעה?</string>
+  <string name="kildim_onay_mesaj">לא ברור איזו אפליקציה שלחה את הבקשה. אשרו אם התפללתם.</string>
+  <string name="kildim_onay_evet">התפללתי</string>
+  <string name="kildim_onay_vazgec">ביטול</string>
+  <string name="kildim_guven_baslik">לאפשר ל-%1$s לסמן את התפילות שלכם כבוצעו?</string>
+  <string name="kildim_guven_mesaj">התפילה שתסומן עכשיו: %1$s. אפשר לשנות את ההחלטה מאוחר יותר בהגדרות &gt; אפליקציות שמסמנות \"התפללתי\".</string>
+  <string name="kildim_guven_tarayici_mesaj">התפילה שתסומן עכשיו: %1$s. הבקשה הגיעה מדפדפן; מכיוון שכל דף אינטרנט יכול לפתוח את הקישור הזה, אי אפשר לתת הרשאה קבועה.</string>
+  <string name="kildim_guven_her_zaman">לאפשר תמיד</string>
+  <string name="kildim_guven_bu_sefer">רק הפעם</string>
+  <string name="kildim_guven_engelle">חסימה</string>
+  <string name="kildim_guven_engellendi">%1$s כבר לא יכולה לסמן את התפילות שלכם. אפשר לשנות זאת בהגדרות.</string>
+  <string name="widget_ayar_baslik">התאמה אישית של הווידג\'ט</string>
+  <string name="widget_ayar_zemin">רקע</string>
+  <string name="widget_ayar_zemin_material">צבעי הטפט</string>
+  <string name="widget_ayar_zemin_sistem">ערכת הנושא של המערכת</string>
+  <string name="widget_ayar_zemin_acik">בהיר</string>
+  <string name="widget_ayar_zemin_koyu">כהה</string>
+  <string name="widget_ayar_zemin_seffaf">שקוף</string>
+  <string name="widget_ayar_opaklik">אטימות הרקע</string>
+  <string name="widget_ayar_gosterim">הצגה בכתב גדול</string>
+  <string name="widget_ayar_gosterim_kalan">הזמן שנותר</string>
+  <string name="widget_ayar_gosterim_bitis">שעת הסיום</string>
+  <string name="widget_ayar_gosterim_not">שעת הסיום מוצגת בכל גודל.</string>
+  <string name="widget_ayar_sonraki">הצגת התפילה הבאה</string>
+  <string name="widget_ayar_vazgec">ביטול</string>
+  <string name="widget_ayar_kaydet">שמירה</string>
+  <string name="kildim_onay_kanal_adi">אישור \"התפללתי\"</string>
+  <string name="kildim_onay_kanal_aciklama">אישור שקט שמוצג לכמה שניות כשמקישים על \"התפללתי\" בהתראה</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">סיום %1$s</string>
+  <string name="widget_giris">תחילה %1$s</string>
+  <string name="widget_namaz_vakti">זמן תפילה</string>
+  <string name="widget_uygulamayi_acin">פתיחת האפליקציה</string>
+  <string name="widget_siradaki">הבאה: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">אין עכשיו תפילה לסימון</string>
+  <string name="widget_dugme_kildim">התפללתי</string>
+  <string name="widget_dugme_isaretleniyor">מסמן</string>
+  <string name="widget_dugme_kilindi">בוצעה</string>
+  <string name="widget_dugme_vakit_girmedi">עוד לא הגיע</string>
+  <string name="widget_klasik_uygulamayi_acin">פתחו את האפליקציה</string>
+  <string name="widget_klasik_erisim_veri_yok">פתחו את האפליקציה כדי לראות את זמני התפילה</string>
+  <string name="widget_klasik_erisim_siradaki">התפילה הבאה: %1$s, מתחילה ב-%2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">זוהר בעוד</string>
+  <string name="widget_onizleme_klasik_genis">מגרב בעוד</string>
+  <string name="widget_onizleme_imsak">פג\'ר</string>
+  <string name="widget_onizleme_gunes">זריחה</string>
+  <string name="widget_onizleme_ogle">זוהר</string>
+  <string name="widget_onizleme_ikindi">עצר</string>
+  <string name="widget_onizleme_aksam">מגרב</string>
+  <string name="widget_onizleme_yatsi">עשאא</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">תפילת %1$s סומנה כבוצעה. אללה יקבל.</string>
+  <string name="kildim_sonuc_zaten_kilindi">תפילת %1$s כבר מסומנת כבוצעה.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">אין עכשיו תפילה לסימון. התפילה הבאה: %1$s, מתחילה ב-%2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">אין עכשיו תפילה לסימון.</string>
+  <string name="kildim_sonuc_veri_yok">אין נתוני זמני תפילה. פתחו את האפליקציה פעם אחת.</string>
+  <string name="kildim_sonuc_vakit_degisti">זמן התפילה השתנה, ולכן לא סומן דבר. נסו שוב.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">לא ניתן היה לפתוח את אפליקציית הניווט.</string>
+  <string name="arac_adsiz_cami">מסגד</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">לא ניתן היה לקרוא את נתוני זמני התפילה.</string>
+  <string name="asistan_isaretleme_yapilamadi">לא ניתן היה לסמן את התפילה.</string>
+  <string name="asistan_aciklama">אפשר לשאול על זמני התפילה, לסמן את התפילה הנוכחית כבוצעה ולפתוח את מסך הקיבלה.</string>
+</resources>

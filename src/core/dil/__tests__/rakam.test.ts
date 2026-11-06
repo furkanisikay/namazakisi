@@ -1,0 +1,297 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import {
+  RAKAM_SECIMLI_DILLER,
+  RAKAM_ULKE_VARSAYILANLARI,
+  dilRakamVarsayilani,
+  dilYerelRakami,
+  rakamSecimiGecerliMi,
+  rakamlariCevir,
+  rakamlariNormallestir,
+  rakamSecilebilir,
+  rakamSistemiCoz,
+  tvRakamOzeti,
+} from '../rakam';
+import { DILLER } from '../diller';
+import { aktifDiliKur, aktifDilSifirla, aktifRakamSistemi, rakamSisteminiKur } from '../aktifDil';
+
+describe('rakamSistemiCoz', () => {
+  it('Arapçada varsayılan Doğu Arap rakamı (Körfez/Ortadoğu ve ülke bilinmezken)', () => {
+    expect(rakamSistemiCoz('ar', undefined, null)).toBe('arab');
+    for (const ulke of ['SA', 'AE', 'EG', 'IQ', 'JO', 'KW', 'QA']) expect(rakamSistemiCoz('ar', undefined, ulke)).toBe('arab');
+  });
+
+  it('Mağrip ülkeleri (DZ, MA, TN, LY, MR, EH) Batı rakamı', () => {
+    expect(Object.keys(RAKAM_ULKE_VARSAYILANLARI.ar ?? {}).sort()).toEqual(['DZ', 'EH', 'LY', 'MA', 'MR', 'TN']);
+    for (const ulke of ['DZ', 'MA', 'TN', 'LY', 'MR', 'EH']) expect(rakamSistemiCoz('ar', undefined, ulke)).toBe('latn');
+  });
+
+  it('açık seçim ülkeyi ezer; geçersiz seçim yok sayılır', () => {
+    expect(rakamSistemiCoz('ar', 'arab', 'MA')).toBe('arab');
+    expect(rakamSistemiCoz('ar', 'latn', 'SA')).toBe('latn');
+    expect(rakamSistemiCoz('ar', 'hindi', 'MA')).toBe('latn');
+    expect(rakamSistemiCoz('ar', 42, 'SA')).toBe('arab');
+  });
+
+  it('Bengalcede Bangladeş ve Hindistan dahil HER ülkede Bengalce rakam; ülke istisnası yok', () => {
+    expect(RAKAM_ULKE_VARSAYILANLARI.bn).toBeUndefined();
+    for (const ulke of [null, 'BD', 'IN', 'GB', 'US', 'TR', 'MA', 'SA']) expect(rakamSistemiCoz('bn', undefined, ulke)).toBe('beng');
+    expect(dilRakamVarsayilani('bn')).toBe('beng');
+  });
+
+  it('Bengalcede açık seçim (Batı ya da Bengalce) ülkeyi ezer; başka dilin yerel rakamı geçersiz', () => {
+    expect(rakamSistemiCoz('bn', 'latn', 'BD')).toBe('latn');
+    expect(rakamSistemiCoz('bn', 'beng', 'IN')).toBe('beng');
+    expect(rakamSistemiCoz('bn', 'arab', 'BD')).toBe('beng');
+    expect(rakamSistemiCoz('ar', 'beng', 'SA')).toBe('arab');
+    expect(rakamSistemiCoz('ar', 'beng', 'MA')).toBe('latn');
+    expect(rakamSecimiGecerliMi('bn', 'arab')).toBe(false);
+    expect(rakamSecimiGecerliMi('ar', 'beng')).toBe(false);
+    expect(rakamSecimiGecerliMi('bn', 'latn')).toBe(true);
+    expect(rakamSecimiGecerliMi('tr', 'latn')).toBe(false);
+  });
+
+  it('dil → yerel rakam eşlemesi TEK yerde: Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe, Marathi, Pencapça, Assamca, Nepalce, N\'Ko', () => {
+    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'as', 'bn', 'ckb', 'fa', 'mr', 'ne', 'nqo', 'pa', 'ps', 'sd']);
+    // Sindhçe CLDR varsayılanı Doğu Arap rakamı (Node `Intl.NumberFormat('sd')` → ١٢٬٣٤٥.٦).
+    expect(dilYerelRakami('sd')).toBe('arab');
+    expect(rakamSistemiCoz('sd', undefined, 'PK')).toBe('arab');
+    expect(rakamSistemiCoz('sd', 'latn', 'PK')).toBe('latn');
+    expect(rakamSecimiGecerliMi('sd', 'arabext')).toBe(false);
+    expect(dilYerelRakami('ar')).toBe('arab');
+    expect(dilYerelRakami('bn')).toBe('beng');
+    expect(dilYerelRakami('fa')).toBe('arabext');
+    expect(dilYerelRakami('ps')).toBe('arabext');
+    expect(dilYerelRakami('ckb')).toBe('arab');
+    expect(dilYerelRakami('ur')).toBeNull();
+    expect(dilYerelRakami('ug')).toBeNull();
+  });
+
+  it('dalga 12: Marathi ve Nepalce Devanagari, Assamca Bengalce, Pencapça (Şahmuki) Fars rakamıyla başlar; Hintçe Batı kalır', () => {
+    // CLDR varsayılanları (Node `Intl.NumberFormat`): mr, ne `deva` (१२,३४५.६), as `beng`, `pa-Arab` `arabext`; hi `latn`.
+    expect(dilYerelRakami('mr')).toBe('deva');
+    expect(dilYerelRakami('ne')).toBe('deva');
+    expect(dilYerelRakami('as')).toBe('beng');
+    expect(dilYerelRakami('pa')).toBe('arabext');
+    expect(dilYerelRakami('hi')).toBeNull();
+    for (const ulke of [null, 'IN', 'NP', 'PK', 'TR']) {
+      expect(rakamSistemiCoz('mr', undefined, ulke)).toBe('deva');
+      expect(rakamSistemiCoz('ne', undefined, ulke)).toBe('deva');
+      expect(rakamSistemiCoz('as', undefined, ulke)).toBe('beng');
+      expect(rakamSistemiCoz('pa', undefined, ulke)).toBe('arabext');
+    }
+    expect(rakamSistemiCoz('mr', 'latn', 'IN')).toBe('latn');
+    expect(rakamSistemiCoz('pa', 'latn', 'PK')).toBe('latn');
+    // Seçim yalnız Batı ya da dilin kendi sistemi: Pencapçada `latn` ve `arabext`, Nepalcede `deva`.
+    expect(rakamSecimiGecerliMi('pa', 'arabext')).toBe(true);
+    expect(rakamSecimiGecerliMi('pa', 'latn')).toBe(true);
+    expect(rakamSecimiGecerliMi('pa', 'arab')).toBe(false);
+    expect(rakamSecimiGecerliMi('pa', 'deva')).toBe(false);
+    expect(rakamSecimiGecerliMi('ne', 'deva')).toBe(true);
+    expect(rakamSecimiGecerliMi('ne', 'beng')).toBe(false);
+    expect(rakamSecimiGecerliMi('as', 'deva')).toBe(false);
+    expect(rakamSecimiGecerliMi('bn', 'deva')).toBe(false);
+    expect(rakamSecimiGecerliMi('hi', 'deva')).toBe(false);
+    expect(rakamSistemiCoz('mr', 'beng', 'IN')).toBe('deva');
+    // Yerel rakamsız dalga 12 dilleri (CLDR `latn`).
+    for (const dil of ['fil', 'te', 'kn', 'si', 'km'] as const) expect(rakamSecilebilir(dil)).toBe(false);
+  });
+
+  it("dalga 13: N'Ko N'Ko rakamıyla başlar (CLDR nqo `nkoo`); seçim yalnız `latn` ve `nkoo`, öteki dillerde seçici yok", () => {
+    expect(new Intl.NumberFormat('nqo').resolvedOptions().numberingSystem).toBe('nkoo');
+    expect(dilYerelRakami('nqo')).toBe('nkoo');
+    for (const ulke of [null, 'GN', 'ML', 'CI']) expect(rakamSistemiCoz('nqo', undefined, ulke)).toBe('nkoo');
+    expect(rakamSistemiCoz('nqo', 'latn', 'GN')).toBe('latn');
+    expect(rakamSecimiGecerliMi('nqo', 'nkoo')).toBe(true);
+    expect(rakamSecimiGecerliMi('nqo', 'latn')).toBe(true);
+    for (const yanlis of ['arab', 'arabext', 'beng', 'deva']) expect(rakamSecimiGecerliMi('nqo', yanlis)).toBe(false);
+    expect(rakamSecimiGecerliMi('ar', 'nkoo')).toBe(false);
+    for (const dil of ['he', 'ka', 'lt', 'mg', 'lg', 'rw', 'rn', 'ln', 'dag', 'mos', 'aa', 'mdh', 'ak', 'ceb'] as const) {
+      expect(rakamSecilebilir(dil)).toBe(false);
+    }
+  });
+
+  it('Farsça ve Peştuca Fars rakamıyla, Soranî Doğu Arap rakamıyla başlar; seçim yalnız kendi sistemi ya da Batı', () => {
+    for (const ulke of [null, 'IR', 'AF', 'TR']) {
+      expect(rakamSistemiCoz('fa', undefined, ulke)).toBe('arabext');
+      expect(rakamSistemiCoz('ps', undefined, ulke)).toBe('arabext');
+      expect(rakamSistemiCoz('ckb', undefined, ulke)).toBe('arab');
+    }
+    expect(rakamSistemiCoz('fa', 'latn', 'IR')).toBe('latn');
+    expect(rakamSistemiCoz('ps', 'latn', 'AF')).toBe('latn');
+    expect(rakamSistemiCoz('ckb', 'latn', 'IQ')).toBe('latn');
+    // Başka sistemin seçimi geçersiz: Farsçada `arab`, Soranîde `arabext`.
+    expect(rakamSecimiGecerliMi('fa', 'arab')).toBe(false);
+    expect(rakamSecimiGecerliMi('ps', 'arab')).toBe(false);
+    expect(rakamSecimiGecerliMi('fa', 'arabext')).toBe(true);
+    expect(rakamSecimiGecerliMi('fa', 'latn')).toBe(true);
+    expect(rakamSecimiGecerliMi('ckb', 'arabext')).toBe(false);
+    expect(rakamSecimiGecerliMi('ckb', 'arab')).toBe(true);
+    expect(rakamSecimiGecerliMi('ar', 'arabext')).toBe(false);
+    expect(rakamSistemiCoz('fa', 'arab', 'IR')).toBe('arabext');
+    expect(rakamSistemiCoz('ckb', 'arabext', 'IQ')).toBe('arab');
+    // Uygurcada yerel rakam yok: seçici yok, her zaman Batı.
+    expect(rakamSecilebilir('ug')).toBe(false);
+    expect(rakamSistemiCoz('ug', 'arabext', 'CN')).toBe('latn');
+  });
+
+  it('Urduca ve diğer diller her zaman Batı rakamı; seçim ve ülke yok sayılır (seçici yok)', () => {
+    expect(rakamSistemiCoz('ur', 'arab', 'PK')).toBe('latn');
+    for (const d of DILLER) {
+      if (RAKAM_SECIMLI_DILLER.includes(d.kod)) continue;
+      expect(rakamSecilebilir(d.kod)).toBe(false);
+      expect(dilYerelRakami(d.kod)).toBeNull();
+      expect(rakamSistemiCoz(d.kod, 'arab', 'SA')).toBe('latn');
+      expect(rakamSistemiCoz(d.kod, 'beng', 'BD')).toBe('latn');
+      expect(rakamSistemiCoz(d.kod, 'arabext', 'IR')).toBe('latn');
+      expect(rakamSistemiCoz(d.kod, 'deva', 'IN')).toBe('latn');
+      expect(rakamSistemiCoz(d.kod, 'nkoo', 'GN')).toBe('latn');
+      expect(dilRakamVarsayilani(d.kod)).toBe('latn');
+    }
+    expect(rakamSecilebilir('ar')).toBe(true);
+    expect(rakamSecilebilir('bn')).toBe(true);
+  });
+});
+
+describe('rakamlariCevir / rakamlariNormallestir', () => {
+  it('Batı rakamlarını Doğu Arap rakamına çevirir, diğer karakterlere dokunmaz', () => {
+    expect(rakamlariCevir('05:12 · 1447 هـ', 'arab')).toBe('٠٥:١٢ · ١٤٤٧ هـ');
+    expect(rakamlariCevir('0123456789', 'arab')).toBe('٠١٢٣٤٥٦٧٨٩');
+    expect(rakamlariCevir('12:05', 'latn')).toBe('12:05');
+  });
+
+  it('Batı rakamlarını Bengalce rakama çevirir (০ U+09E6)', () => {
+    expect(rakamlariCevir('0123456789', 'beng')).toBe('০১২৩৪৫৬৭৮৯');
+    expect(rakamlariCevir('আসর 15:42', 'beng')).toBe('আসর ১৫:৪২');
+  });
+
+  it('Batı rakamlarını Fars rakamına çevirir (۰ U+06F0)', () => {
+    expect(rakamlariCevir('0123456789', 'arabext')).toBe('۰۱۲۳۴۵۶۷۸۹');
+    expect(rakamlariCevir('12:05', 'arabext')).toBe('۱۲:۰۵');
+  });
+
+  it('Batı rakamlarını Devanagari rakama çevirir (० U+0966), girişte Batıya döner', () => {
+    expect(rakamlariCevir('0123456789', 'deva')).toBe('०१२३४५६७८९');
+    expect(rakamlariCevir('मगरिब 18:05', 'deva')).toBe('मगरिब १८:०५');
+    expect(rakamlariNormallestir('वर्ष २०२६')).toBe('वर्ष 2026');
+    expect(rakamlariNormallestir(rakamlariCevir('12:05 · 1447', 'deva'))).toBe('12:05 · 1447');
+  });
+
+  it("Batı rakamlarını N'Ko rakamına çevirir (߀ U+07C0), girişte Batıya döner", () => {
+    expect(rakamlariCevir('0123456789', 'nkoo')).toBe('\u07c0\u07c1\u07c2\u07c3\u07c4\u07c5\u07c6\u07c7\u07c8\u07c9');
+    expect(rakamlariNormallestir('\u07c2\u07c0\u07c2\u07c6')).toBe('2026');
+    expect(rakamlariNormallestir(rakamlariCevir('12:05 · 1447', 'nkoo'))).toBe('12:05 · 1447');
+  });
+
+  it('girişte Doğu Arap ve Farsça/Urduca rakamları Batıya çevirir', () => {
+    expect(rakamlariNormallestir('١٩٩٥')).toBe('1995');
+    expect(rakamlariNormallestir('۲۰۲۶')).toBe('2026');
+    expect(rakamlariNormallestir('١2۳')).toBe('123');
+    expect(rakamlariNormallestir('abc')).toBe('abc');
+  });
+
+  it('girişte Bengalce rakamları da Batıya çevirir', () => {
+    expect(rakamlariNormallestir('১৯৯৫')).toBe('1995');
+    expect(rakamlariNormallestir('২0২৬')).toBe('2026');
+    expect(rakamlariNormallestir('বছর ২০২৬')).toBe('বছর 2026');
+  });
+
+  it('gidiş-dönüş kayıpsız', () => {
+    const ornek = '2026-10-26 18:45';
+    expect(rakamlariNormallestir(rakamlariCevir(ornek, 'arab'))).toBe(ornek);
+    expect(rakamlariNormallestir(rakamlariCevir(ornek, 'beng'))).toBe(ornek);
+    expect(rakamlariNormallestir(rakamlariCevir(ornek, 'arabext'))).toBe(ornek);
+  });
+});
+
+describe('etkin rakam sistemi (aktifDil)', () => {
+  afterEach(() => aktifDilSifirla());
+
+  it('dil değişince dilin varsayılanına döner; kurulan değer okunur', () => {
+    expect(aktifRakamSistemi()).toBe('latn');
+    aktifDiliKur('ar');
+    expect(aktifRakamSistemi()).toBe('arab');
+    expect(rakamSisteminiKur('latn')).toBe(true);
+    expect(rakamSisteminiKur('latn')).toBe(false);
+    aktifDiliKur('ur');
+    expect(aktifRakamSistemi()).toBe('latn');
+    aktifDiliKur('bn');
+    expect(aktifRakamSistemi()).toBe('beng');
+    aktifDiliKur('fa');
+    expect(aktifRakamSistemi()).toBe('arabext');
+    aktifDiliKur('ckb');
+    expect(aktifRakamSistemi()).toBe('arab');
+    aktifDiliKur('ug');
+    expect(aktifRakamSistemi()).toBe('latn');
+  });
+
+  it('etkin dile ait olmayan sistem kurulamaz (dilin varsayılanına düşer)', () => {
+    aktifDiliKur('bn');
+    expect(rakamSisteminiKur('arab')).toBe(false);
+    expect(aktifRakamSistemi()).toBe('beng');
+    aktifDiliKur('tr');
+    expect(rakamSisteminiKur('beng')).toBe(false);
+    expect(aktifRakamSistemi()).toBe('latn');
+  });
+});
+
+/**
+ * Nöbetçi: sözlükte Doğu Arap (U+0660–0669), Farsça (U+06F0–06F9), Bengalce (U+09E6–09EF) ya da
+ * Devanagari (U+0966–096F) ya da N'Ko (U+07C0–07C9) rakamı OLMAZ. Rakamlar her zaman Batı rakamıyla yazılır; yerel rakam yalnız çizimde (metin
+ * kapısı) üretilir — yoksa Mağrip kullanıcısı ve rakam seçimini değiştiren kişi karışık rakam görür.
+ */
+describe('nöbetçi: sözlükte yerel rakam yok', () => {
+  const kok = path.join(__dirname, '..', 'sozluk');
+  const dosyalar: string[] = [];
+  const gez = (d: string) => {
+    for (const ad of fs.readdirSync(d)) {
+      const p = path.join(d, ad);
+      if (fs.statSync(p).isDirectory()) gez(p);
+      else if (/\.tsx?$/.test(ad)) dosyalar.push(p);
+    }
+  };
+  gez(kok);
+
+  it('hiçbir sözlük dosyasında yok (dosya:satır listesi boş)', () => {
+    expect(dosyalar.length).toBeGreaterThan(100);
+    const ihlaller = dosyalar.flatMap((p) =>
+      fs
+        .readFileSync(p, 'utf8')
+        .split('\n')
+        .flatMap((satir, i) => (/[\u0660-\u0669\u06F0-\u06F9\u09E6-\u09EF\u0966-\u096F\u07C0-\u07C9]/.test(satir) ? [`${path.relative(kok, p)}:${i + 1}`] : []))
+    );
+    expect(ihlaller).toEqual([]);
+  });
+});
+
+describe('TV rakam özeti (cihaz ağı yükü)', () => {
+  it('ülke ve yalnız GEÇERLİ açık seçimler gider; ikisi de yoksa null', () => {
+    expect(tvRakamOzeti('MA', { ar: 'latn', fa: 'arab', bn: 'beng', ur: 'latn', xx: 'arab' })).toEqual({
+      u: 'MA',
+      s: { ar: 'latn', bn: 'beng' },
+    });
+    expect(tvRakamOzeti(null, { fa: 'arabext' })).toEqual({ s: { fa: 'arabext' } });
+    expect(tvRakamOzeti('SA', null)).toEqual({ u: 'SA' });
+    expect(tvRakamOzeti('sa', 'bozuk')).toBeNull();
+    expect(tvRakamOzeti(null, undefined)).toBeNull();
+  });
+
+  /**
+   * TV kararı kendi dilinde verir (`tv/.../cekirdek/Rakam.kt > RakamKarari`): eşlemeler telefonla
+   * birebir kalmalı, yoksa aynı ülkede TV ile telefon farklı rakam yazar.
+   */
+  it('NÖBETÇİ: TV eşlemesi telefonla aynı (dil → yerel sistem, ülke istisnaları)', () => {
+    const kt = fs.readFileSync(
+      path.join(__dirname, '../../../../tv/app/src/main/java/com/furkanisikay/namazakisi/tv/cekirdek/Rakam.kt'),
+      'utf8'
+    );
+    const yerel = Object.fromEntries(
+      [...kt.match(/private val YEREL = mapOf\(([^)]*)\)/)![1].matchAll(/"(\w+)" to "(\w+)"/g)].map((m) => [m[1], m[2]])
+    );
+    expect(yerel).toEqual(Object.fromEntries(RAKAM_SECIMLI_DILLER.map((d) => [d, dilYerelRakami(d)])));
+    const ulke = kt.match(/private val ULKE = mapOf\("(\w+)" to setOf\(([^)]*)\)\.associateWith \{ "latn" \}\)/)!;
+    const ulkeler = [...ulke[2].matchAll(/"([A-Z]{2})"/g)].map((m) => m[1]);
+    const beklenen = Object.entries(RAKAM_ULKE_VARSAYILANLARI).map(([d, t]) => [d, Object.keys(t!).sort(), Object.values(t!)]);
+    expect(beklenen).toEqual([[ulke[1], [...ulkeler].sort(), ulkeler.map(() => 'latn')]]);
+  });
+});

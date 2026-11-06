@@ -22,6 +22,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
@@ -36,6 +37,7 @@ import { Depolama } from '../../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { yedeklemeOzeti } from '../../../core/ayarlar/ozetler';
 import { BolumBasligi } from '../../components/ortak/BolumBasligi';
+import { useMetin } from '../../hooks/useMetin';
 
 /**
  * Büyük aksiyon kartı — birincil eylem (yedek oluştur) ve ikincil eylem
@@ -99,7 +101,7 @@ const AksiyonKarti: React.FC<AksiyonKartiProps> = ({
           {aciklama}
         </Text>
       </View>
-      <FontAwesome5
+      <YonluIkon
         name="chevron-right"
         size={14}
         color={renkler.metinIkincil}
@@ -125,6 +127,7 @@ export const YedeklemeSayfasi: React.FC = () => {
  */
 const YedeklemeIcerik: React.FC = () => {
   const renkler = useRenkler();
+  const m = useMetin().yedekleme.sayfa;
   const scrollRef = useVurguKurulumu();
   const navigation = useNavigation();
   const { butonTiklandiFeedback, hataFeedback } = useFeedback();
@@ -219,7 +222,7 @@ const YedeklemeIcerik: React.FC = () => {
               </View>
               <View className="flex-1">
                 <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                  Son dışa aktarma
+                  {m.sonDisaAktarma}
                 </Text>
                 <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
                   {yedeklemeOzeti(sonDisaAktarma, new Date())}
@@ -232,19 +235,19 @@ const YedeklemeIcerik: React.FC = () => {
             >
               <FontAwesome5 name="file-alt" size={13} color={renkler.basarili} solid />
               <Text className="text-sm ml-2 flex-1" style={{ color: renkler.metinIkincil }}>
-                Kayıtlar, rozetler ve ayarlar tek dosyada. Dosya parola içermez; güvendiğiniz bir yerde saklayın.
+                {m.guvence}
               </Text>
             </View>
           </View>
 
-          <BolumBasligi metin="İşlemler" />
+          <BolumBasligi metin={m.islemler} />
 
           {/* Yedek oluştur */}
           <AyarCapasi id="disaAktar">
             <AksiyonKarti
               ikon="cloud-upload-alt"
-              baslik="Yedek oluşturun"
-              aciklama="Dosyayı kaydedin ya da paylaşın."
+              baslik={m.yedekOlusturun}
+              aciklama={m.yedekOlusturunAciklama}
               onPress={handleYedekOlustur}
               yukleniyor={yedekleniyor}
             />
@@ -254,8 +257,8 @@ const YedeklemeIcerik: React.FC = () => {
           <AyarCapasi id="iceAktar">
             <AksiyonKarti
               ikon="cloud-download-alt"
-              baslik="Yedekten geri yükleyin"
-              aciklama="Bir yedek dosyasını seçin; hiçbir kayıt silinmez."
+              baslik={m.geriYukleyin}
+              aciklama={m.geriYukleyinAciklama}
               onPress={handleIceAktar}
               pasif={yedekleniyor}
             />
@@ -266,8 +269,8 @@ const YedeklemeIcerik: React.FC = () => {
           {esitlemeVar && (
             <AksiyonKarti
               ikon="sync-alt"
-              baslik="Cihazlar arası eşitleme"
-              aciklama="Kendi bulut hesabınızla, şifreli olarak."
+              baslik={m.esitleme}
+              aciklama={m.esitlemeAciklama}
               onPress={handleEsitleme}
               pasif={yedekleniyor}
             />
@@ -279,9 +282,9 @@ const YedeklemeIcerik: React.FC = () => {
       <BildirimModali
         gorunur={hataModaliGorunur}
         tip="hata"
-        baslik="Yedek oluşturulamadı"
-        mesaj="Yedek dosyası hazırlanamadı. Tekrar deneyin."
-        birincilEtiket="Tekrar deneyin"
+        baslik={m.hataBaslik}
+        mesaj={m.hataMesaj}
+        birincilEtiket={m.tekrarDeneyin}
         onBirincil={handleTekrarDene}
         onKapat={() => setHataModaliGorunur(false)}
       />

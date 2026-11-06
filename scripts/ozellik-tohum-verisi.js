@@ -31,7 +31,130 @@
  */
 const { tohumVerisi, gun } = require('./magaza-tohum-verisi');
 
-const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim'];
+const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim', 'dunya', 'jakim', 'baku'];
+
+/**
+ * `ses` varyantinda sabaha secilmis sesin adi. Bu UYGULAMA METNI DEGIL: kullanicinin sectigi
+ * dosyanin/sesin adidir (uygulama `sesAdi`'ni oldugu gibi gosterir). Kare turu Turkce disi dilde
+ * de inandirici olsun diye kare dili (`TOHUM_DIL`) adina gore secilir; adlar her dilin sozlugundeki
+ * sabah vakti adi (`vakit.adlar.imsak`) ve ezan sozcugunden (`hatirlatma.sesSecim.dosyaIpucu`) turetildi.
+ */
+const SABAH_SESI_ADLARI = {
+    tr: 'Sabah ezanı',
+    en: 'Fajr adhan',
+    id: 'Azan Subuh',
+    de: 'Fajr-Adhan',
+    fr: 'Adhan du Fajr',
+    bs: 'Sabahski ezan',
+    ru: 'Азан Фаджр',
+    ms: 'Azan Subuh',
+    ar: 'أذان الفجر',
+    ur: 'فجر کی اذان',
+    es: 'Adhan del Fajr',
+    nl: 'Fajr-adhan',
+    sq: 'Ezani i sabahut',
+    hi: 'फ़ज्र की अज़ान',
+    bn: 'ফজরের আযান',
+    fa: 'اذان صبح',
+    ps: 'د سهار اذان',
+    ckb: 'بانگی بەیانی',
+    ug: 'بامدات ئەزانى',
+    az: 'Sübh azanı',
+    uz: 'Бомдод азони',
+    kk: 'Таң азаны',
+    ky: 'Багымдат азаны',
+    tg: 'Азони бомдод',
+    sw: 'Adhana ya Alfajiri',
+    ha: 'Kiran sallar Asuba',
+    am: 'የፈጅር አዛን',
+    om: 'Azaana Subhii',
+    so: 'Aadaanka Subax',
+    ff: 'Ewnaango Subaka',
+    yo: 'Ìpè ìrun Subh',
+    zh: '晨礼宣礼',
+    ta: 'ஃபஜ்ர் பாங்கு',
+    ml: 'സുബ്‌ഹ് ബാങ്ക്',
+    th: 'อะซานซุบฮ์',
+    ko: '새벽 아잔',
+    vi: 'Azan Fajr',
+    // Avrupa (dalga 10): sözlük henüz İngilizce iskelet; adlar o dilin yerleşik yazımıyla (yerli okuyucuyla DOĞRULANMADI).
+    pt: 'Adhan do Fajr',
+    it: 'Adhan del Fajr',
+    sv: 'Fajr-adhan',
+    uk: 'Азан Фаджр',
+    ro: 'Ezanul de Fajr',
+    hr: 'Sabahski ezan',
+    sr: 'Сабахски езан',
+    el: 'Αζάν Φατζρ',
+    // Dalga 11: sözlük henüz İngilizce iskelet; adlar o dilin yerleşik yazımıyla (yerli okuyucuyla DOĞRULANMADI).
+    ku: 'Banga sibê',
+    tk: 'Ertir azany',
+    tt: 'Иртәнге азан',
+    sd: 'فجر جي اذان',
+    pl: 'Adhan Fadżr',
+    ja: 'ファジュルのアザーン',
+    gu: 'ફજરની અઝાન',
+    bg: 'Сутрешен езан',
+    mk: 'Сабахски езан',
+    // Dalga 12: sözlük henüz İngilizce iskelet; adlar o dilin yerleşik yazımıyla (yerli okuyucuyla DOĞRULANMADI).
+    fil: 'Adhan ng Fajr',
+    te: 'ఫజ్ర్ అజాన్',
+    kn: 'ಫಜ್ರ್ ಅಜಾನ್',
+    mr: 'फजरची अजान',
+    pa: 'فجر دی اذان',
+    as: 'ফজৰৰ আজান',
+    ne: 'फज्रको अजान',
+    si: 'ෆජ්ර් අදාන්',
+    km: 'អាហ្សានហ្វាជរ៍',
+    // Dalga 13: sözlük İngilizce iskelet; adlar o dilin yerleşik yazımıyla (yerli okuyucuyla DOĞRULANMADI). Yazımı
+    // kaynakla doğrulanamayan Dagbani, Mooré, Afar ve N'Ko İngilizce kalır (kare dili Türkçeye düşmesin).
+    he: 'אזאן הפג׳ר',
+    ka: 'ფაჯრის აზანი',
+    lt: 'Fadžro azanas',
+    mg: 'Adhan Fajr',
+    lg: 'Adhana ya Fajr',
+    rw: 'Adhana ya Fajr',
+    rn: 'Adhana ya Fajr',
+    ln: 'Adhan ya Fajr',
+    dag: 'Fajr adhan',
+    mos: 'Fajr adhan',
+    aa: 'Fajr adhan',
+    mdh: 'Adhan sa Fajr',
+    ak: 'Fajr Adhan',
+    ceb: 'Adhan sa Fajr',
+    nqo: 'Fajr adhan',
+};
+
+/** Kare dilindeki sabah sesi adi (bilinmeyen dil → Turkce). */
+function sabahSesiAdi(dil = process.env.TOHUM_DIL || 'tr') {
+    return SABAH_SESI_ADLARI[dil] || SABAH_SESI_ADLARI.tr;
+}
+
+/** `dunya*` varyantlarinin konumu: Kuala Lumpur, elle secilmis dunya sehri. */
+const DUNYA_KONUMU = {
+    konumModu: 'manuel',
+    seciliSehirId: '',
+    seciliIlId: null,
+    seciliIlceId: null,
+    seciliIlAdi: 'Kuala Lumpur',
+    seciliIlceAdi: '',
+    gpsAdres: null,
+    koordinatlar: { lat: 3.1412, lng: 101.6865 },
+    sonGpsGuncellemesi: null,
+    akilliTakipAktif: false,
+    takipHassasiyeti: 'dengeli',
+    ulkeKodu: 'MY',
+    dunyaSehri: { ad: 'Kuala Lumpur', ulke: 'MY', bolge: 'Kuala Lumpur', saatDilimi: 'Asia/Kuala_Lumpur' },
+};
+
+/** `baku` varyantinin konumu: Baki (Azerbaycan; iki takvim esit secenek, varsayilan yok). */
+const BAKU_KONUMU = {
+    ...DUNYA_KONUMU,
+    seciliIlAdi: 'Bakı',
+    koordinatlar: { lat: 40.4093, lng: 49.8671 },
+    ulkeKodu: 'AZ',
+    dunyaSehri: { ad: 'Bakı', ulke: 'AZ', bolge: 'Bakı', saatDilimi: 'Asia/Baku' },
+};
 
 /** `ses` varyantindaki OLU URI: "kendi dosyamiz" olarak kayitli ama MediaStore satiri yok. */
 const OLU_SES_URI = 'content://media/external_primary/audio/media/999999';
@@ -173,7 +296,7 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         // gecer ve `vakit_bildirim_<hash8>` kanali kurulur (hat `dumpsys` ile doker).
         depo.vakit_bildirim_ayarlari = JSON.stringify({ imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true });
         depo['@namaz_akisi/vakit_bildirim_sesleri'] = JSON.stringify({
-            imsak: { bildirimSesi: 'content://settings/system/alarm_alert', sesAdi: 'Sabah ezanı' },
+            imsak: { bildirimSesi: 'content://settings/system/alarm_alert', sesAdi: sabahSesiAdi() },
             // OLU URI (kayitli "kendi dosyamiz" ama MediaStore satiri yok): olu-URI
             // dogrulamasinin kaniti — dokumde bunun `vakit_bildirim_<hash8>` kanali
             // CIKMAMALI (ogle taban kanala duser). Kayit: `sesIceAktarimTercihXml`.
@@ -191,6 +314,23 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         depo[anahtar] = JSON.stringify(bugun);
         // Kare duayi gostersin: kaza onerisi (1,6 sn sonra acilir) bu tohumda KAPALI —
         // yavas emulator/simulatorde dokunus + kare 1,6 sn'yi asip modal duayi ortuyordu.
+        depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
+    }
+
+    if (varyant === 'dunya' || varyant === 'jakim') {
+        // Turkiye disi elle secilmis sehir (Kuala Lumpur). `dunya`: hesap ayari YOK → ana
+        // ekranda "bolgenizin takvimi" karti acilir. `jakim`: JAKIM secilmis, kart
+        // sorulmus sayilir. Kaza onerisi kapali: iki modal ust uste binmesin.
+        depo['@namaz_akisi/konum_ayarlari'] = JSON.stringify(DUNYA_KONUMU);
+        depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
+        if (varyant === 'jakim') {
+            depo.hesap_ayari = JSON.stringify({ profil: 'jakim', secildi: true, sorulanUlkeler: ['MY'] });
+        }
+    }
+
+    if (varyant === 'baku') {
+        // Azerbaycan: hesap ayari YOK → ana ekranda iki takvimi (MWL, QMİ) esit soran kart.
+        depo['@namaz_akisi/konum_ayarlari'] = JSON.stringify(BAKU_KONUMU);
         depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
     }
 
@@ -298,6 +438,8 @@ module.exports = {
     camideyimTercihXml,
     sesIceAktarimTercihXml,
     OLU_SES_URI,
+    SABAH_SESI_ADLARI,
+    sabahSesiAdi,
 };
 
 // Hat betigi: `node scripts/ozellik-tohum-verisi.js --ses-xml > /tmp/namazakisi_ses_ice_aktarim.xml`

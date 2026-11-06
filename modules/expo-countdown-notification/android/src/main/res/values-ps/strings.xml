@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">ژوندۍ شمېرنې</string>
+    <string name="countdown_kanal_canli_aciklama">په Now Bar او د حالت په پټه کې شاته شمېرنې</string>
+    <string name="countdown_kanal_genel_ad">د شاته شمېرنې خبرتیاوې</string>
+    <string name="countdown_kanal_genel_aciklama">د شاته شمېرنې د خبرتیاوو چینل</string>
+
+    <string name="countdown_eylem_kildim">لمونځ مې وکړ</string>
+    <string name="countdown_eylem_durdur">ودروئ</string>
+
+    <string name="countdown_yedek_vakit">بیړه وکړه، د لمانځه وخت پای ته رسېږي.</string>
+    <string name="countdown_yedek_iftar">وخت ختمېږي.</string>
+    <string name="countdown_yedek_sahur">لا هم خوړل او څښل کېدای شي؛ روژه ژر پیلېږي.</string>
+    <string name="countdown_yedek_seri">د نن لمونځونه دې نیمګړي دي؛ خپله لړۍ له لاسه مه ورکوه.</string>
+
+    <string name="countdown_onek_vakit">د وخت تر پایه</string>
+    <string name="countdown_onek_vakit_dar">وخت پای ته رسېږي</string>
+    <string name="countdown_onek_iftar">تر افطاره</string>
+    <string name="countdown_onek_iftar_dar">تر افطاره</string>
+    <string name="countdown_onek_sahur">د پېشمني تر پایه</string>
+    <string name="countdown_onek_sahur_dar">پېشمنی پای ته رسېږي</string>
+    <string name="countdown_onek_seri">د لړۍ د ساتلو لپاره</string>
+    <string name="countdown_onek_seri_dar">لړۍ پای ته رسېږي</string>
+</resources>

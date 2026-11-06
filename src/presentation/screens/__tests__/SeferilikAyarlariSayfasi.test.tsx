@@ -32,6 +32,7 @@ import seferilikReducer from '../../store/seferilikSlice';
 import { SeferilikAyarlariSayfasi } from '../SeferilikAyarlariSayfasi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { SEFERILIK_KAYNAK_LISTESI } from '../../../core/seferilik/seferilikMetni';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const ANKARA = { lat: 39.9208, lng: 32.8541 };
 const ESKISEHIR = { lat: 39.7767, lng: 30.5206 };
@@ -91,5 +92,23 @@ describe('SeferilikAyarlariSayfasi', () => {
       expect(ac).toHaveBeenLastCalledWith(k.url);
     }
     ac.mockRestore();
+  });
+});
+
+describe('SeferilikAyarlariSayfasi — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => geriAl());
+
+  it('sayfada Türkçe metin kalmaz; 190 Fetva Hattı Türkiye dışı dilde gösterilmez', async () => {
+    const { toJSON, getByText, queryByText } = kur();
+    await waitFor(() => expect(getByText('Çankaya, Ankara')).toBeTruthy());
+    await waitFor(() => expect(getByText(/about \d+ km away/)).toBeTruthy());
+    // Kaynak fetva başlıkları "(in Turkish)" etiketiyle İngilizcedir; yer adı veridir.
+    const kalan = turkceKalanlar(toJSON() as never, ['Bilgi', 'Kaynak', 'Yolculuk']).filter((m) => m !== 'Çankaya, Ankara');
+    expect(kalan).toEqual([]);
+    expect(queryByText(/190/)).toBeNull();
   });
 });

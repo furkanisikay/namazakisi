@@ -23,6 +23,8 @@ export interface Secenek<T extends string | number> {
     /** Bu cihazda yok: soluk + dokununca `kullanilamazNedeni`. */
     kullanilamaz?: boolean;
     kullanilamazNedeni?: string;
+    /** Açıklama örnek rakam taşıyor (ör. "0123"): metin kapısı rakamları çevirmesin. */
+    aciklamaRakamKoru?: boolean;
 }
 
 export interface SecenekListesiProps<T extends string | number> {
@@ -99,7 +101,9 @@ function SecenekOgesi<T extends string | number>({
                     {secenek.etiket}
                 </Text>
                 {kart && secenek.aciklama ? (
-                    <Text style={{ fontSize: 14, marginTop: 2, color: renkler.metinIkincil }}>{secenek.aciklama}</Text>
+                    <Text rakamKoru={secenek.aciklamaRakamKoru} style={{ fontSize: 14, marginTop: 2, color: renkler.metinIkincil }}>
+                        {secenek.aciklama}
+                    </Text>
                 ) : null}
             </View>
             {secenek.kullanilamaz && kart ? (

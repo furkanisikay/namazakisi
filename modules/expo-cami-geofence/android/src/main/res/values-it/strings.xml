@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">In moschea</string>
+    <string name="camigeofence_kanal_durum_aciklama">Un avviso discreto quando viene rilevata la sua presenza in moschea</string>
+    <string name="camigeofence_kanal_soru_ad">Dopo l’uscita dalla moschea</string>
+    <string name="camigeofence_kanal_soru_aciklama">Una domanda per segnare la preghiera dopo l’uscita dalla moschea</string>
+
+    <string name="camigeofence_govde_mod_sessiz">La modalità preghiera è attiva. I promemoria arriveranno in silenzio.</string>
+    <string name="camigeofence_govde_mod">La modalità preghiera è attiva.</string>
+    <string name="camigeofence_govde_sessiz">I promemoria arriveranno in silenzio.</string>
+    <string name="camigeofence_govde_normal">I promemoria arriveranno come al solito.</string>
+    <string name="camigeofence_eylem_modu_kapat">Disattivare la modalità</string>
+    <string name="camigeofence_eylem_cami_degil">Non è una moschea</string>
+
+    <string name="camigeofence_soru_baslik">È in moschea?</string>
+    <string name="camigeofence_soru_govde">È vicino a %1$s. Non ne siamo sicuri, quindi glielo chiediamo.</string>
+    <string name="camigeofence_varsayilan_ad">Moschea</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Attivare la modalità preghiera</string>
+    <string name="camigeofence_eylem_evet_camideyim">Sì, sono in moschea</string>
+    <string name="camigeofence_eylem_hayir">No</string>
+
+    <string name="camigeofence_kildiniz_mi">Ha compiuto %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Può segnarla con un solo tocco.</string>
+    <string name="camigeofence_eylem_kildim">Ho pregato</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Zuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Jumu’ah</string>
+
+    <string name="camigeofence_mod_kural_adi">Preghiera</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı la attiva durante il sermone del venerdì, in moschea o all’inizio di un orario di preghiera</string>
+</resources>

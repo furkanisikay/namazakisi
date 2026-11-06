@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tt -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Tatarca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Укыдым</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Намаз вакыты халәте</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Намаз вакыты вакыйгасы</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "сез". -->
+  <string name="otomasyon_bilgi_baslik">Бу көйләү автоматлаштыру кушымтасыннан өстәлә</string>
+  <string name="otomasyon_bilgi_tarayici">Браузерлар даими рөхсәт ала алмый. Аны Tasker, MacroDroid яки Automate кебек кушымтаның плагиннар исемлегеннән өстәгез.</string>
+  <string name="otomasyon_bilgi_eklenti">Аны Tasker, MacroDroid яки Automate кебек кушымтаның плагиннар исемлегеннән «Namaz Akışı»ны сайлап өстәгез.</string>
+  <string name="otomasyon_engelli_baslik">%1$s блокланган</string>
+  <string name="otomasyon_engelli_mesaj">Бу кушымтага намазларыгызны билгеләүне элек блоклаган идегез. Аңа Namaz Akışı кушымтасында Көйләүләр &gt; «“Укыдым” дип билгели ала торган кушымталар» бүлегендә рөхсәт бирә аласыз.</string>
+  <string name="otomasyon_izin_baslik">%1$s белән кулланыргамы?</string>
+  <string name="otomasyon_izin_kosul">%1$s намаз вакыты кергәнне, чыгып барганны һәм сезнең мәчеттә булуыгызны белеп, автоматлаштыруларыгызны җибәрә ала. Карарыгызны Namaz Akışı кушымтасында Көйләүләр &gt; «“Укыдым” дип билгели ала торган кушымталар» бүлегендә үзгәртә аласыз.</string>
+  <string name="otomasyon_izin_kildim">%1$s сез көйләгән автоматлаштыру белән хәзерге намазны укылды дип билгели ала. Карарыгызны Namaz Akışı кушымтасында Көйләүләр &gt; «“Укыдым” дип билгели ала торган кушымталар» бүлегендә үзгәртә аласыз.</string>
+  <string name="otomasyon_izin_ver">Рөхсәт бирү</string>
+  <string name="otomasyon_engelle">Блоклау</string>
+  <string name="otomasyon_vazgec">Баш тарту</string>
+  <string name="otomasyon_tamam">Ярый</string>
+  <string name="otomasyon_tur_baslik">Кайчан эшләсен?</string>
+  <string name="otomasyon_ileri">Алга</string>
+  <string name="otomasyon_vakit_baslik">Кайсы намаз?</string>
+  <string name="otomasyon_herhangi_vakit">Теләсә кайсы намаз вакыты</string>
+  <string name="otomasyon_kaydet">Саклау</string>
+  <string name="otomasyon_kosul_icinde">Намаз вакыты барганда</string>
+  <string name="otomasyon_kosul_cikiyor">Намаз вакыты чыгып барганда (%1$d мин калды, Намаз сакчысы кабызылган)</string>
+  <string name="otomasyon_kosul_camide">Мәчеттә булганда</string>
+  <string name="otomasyon_olay_girdi">Намаз вакыты кергәч</string>
+  <string name="otomasyon_olay_cikiyor">Намаз вакыты чыгып барганда (%1$d мин калды, Намаз сакчысы кабызылган)</string>
+  <string name="otomasyon_olay_camide">Мәчеттә булуыгыз билгеләнгәч</string>
+</resources>

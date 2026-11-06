@@ -27,10 +27,10 @@
 const BIRLER_EKLERI: Record<number, string> = {
   1: 'i', // bir -> biri
   2: 'si', // iki -> ikisi (ünlüyle biter, "s" tamponu)
-  3: 'ü', // üç -> üçü
-  4: 'ü', // dört -> dördü (yazımda "4'ü")
+  3: 'ü', // dil-haric: Türkçe dilbilgisi eki · üç -> üçü
+  4: 'ü', // dil-haric: Türkçe dilbilgisi eki · dört -> dördü (yazımda "4'ü")
   5: 'i', // beş -> beşi
-  6: 'sı', // altı -> altısı (ünlüyle biter)
+  6: 'sı', // dil-haric: Türkçe dilbilgisi eki · altı -> altısı (ünlüyle biter)
   7: 'si', // yedi -> yedisi (ünlüyle biter)
   8: 'i', // sekiz -> sekizi
   9: 'u', // dokuz -> dokuzu
@@ -41,16 +41,16 @@ const ONLAR_EKLERI: Record<number, string> = {
   1: 'u', // on -> onu
   2: 'si', // yirmi -> yirmisi (ünlüyle biter)
   3: 'u', // otuz -> otuzu
-  4: 'ı', // kırk -> kırkı
+  4: 'ı', // dil-haric: Türkçe dilbilgisi eki · kırk -> kırkı
   5: 'si', // elli -> ellisi (ünlüyle biter)
-  6: 'ı', // altmış -> altmışı
+  6: 'ı', // dil-haric: Türkçe dilbilgisi eki · altmış -> altmışı
   7: 'i', // yetmiş -> yetmişi
   8: 'i', // seksen -> sekseni
-  9: 'ı', // doksan -> doksanı
+  9: 'ı', // dil-haric: Türkçe dilbilgisi eki · doksan -> doksanı
 };
 
-const SIFIR_EKI = 'ı'; // sıfır -> sıfırı
-const YUZ_EKI = 'ü'; // yüz -> yüzü (tam yüz/bin katları için basitleştirilmiş varsayım, bkz. dosya başı)
+const SIFIR_EKI = 'ı'; // dil-haric: Türkçe dilbilgisi eki · sıfır -> sıfırı
+const YUZ_EKI = 'ü'; // dil-haric: Türkçe dilbilgisi eki · yüz -> yüzü (tam yüz/bin katları için basitleştirilmiş varsayım, bkz. dosya başı)
 const VARSAYILAN_EK = 'i'; // NaN/negatif gibi beklenmeyen girdide güvenli düşüş
 
 /**

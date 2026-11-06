@@ -22,9 +22,9 @@ appId: com.furkanisikay.namazakisi
       # Kerahat vaktindeyse once kibar onay modali gelir (o zaman dua onaydan sonra).
       - runFlow:
           when:
-            visible: "Yine de işaretleyin"
+            visible: "(Yine de işaretleyin|Mark anyway)"
           commands:
-            - tapOn: "Yine de işaretleyin"
+            - tapOn: "(Yine de işaretleyin|Mark anyway)"
             - takeScreenshot: ozk/19-kabul-sonra
       - waitForAnimationToEnd:
           timeout: 2500

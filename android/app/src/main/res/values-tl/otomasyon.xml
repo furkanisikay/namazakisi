@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Filipince). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nagdasal ako</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Status ng oras ng dasal</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Event ng oras ng dasal</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Idinadagdag ang setting na ito mula sa isang automation app</string>
+  <string name="otomasyon_bilgi_tarayici">Hindi makakakuha ng permanenteng pahintulot ang mga browser. Idagdag ito mula sa listahan ng plugin ng isang app tulad ng Tasker, MacroDroid o Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Idagdag ito sa pagpili ng \"Namaz Akışı\" mula sa listahan ng plugin ng isang app tulad ng Tasker, MacroDroid o Automate.</string>
+  <string name="otomasyon_engelli_baslik">Naka-block ang %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Hinarangan ninyo dati ang app na ito na markahan ang inyong mga dasal. Mapapayagan ninyo ito sa Namaz Akışı sa Mga setting &gt; \"Mga app na nagmamarka ng Nagdasal ako\".</string>
+  <string name="otomasyon_izin_baslik">Gamitin kasama ng %1$s?</string>
+  <string name="otomasyon_izin_kosul">Malalaman ng %1$s kung kailan pumapasok ang oras ng dasal, kailan ito matatapos at kailan kayo nasa masjid, at mapapatakbo nito ang inyong mga automation. Mababago ninyo ang desisyon sa Namaz Akışı sa Mga setting &gt; \"Mga app na nagmamarka ng Nagdasal ako\".</string>
+  <string name="otomasyon_izin_kildim">Mamarkahan ng %1$s na naidasal na ang kasalukuyang dasal gamit ang automation na sine-set up ninyo. Mababago ninyo ang desisyon sa Namaz Akışı sa Mga setting &gt; \"Mga app na nagmamarka ng Nagdasal ako\".</string>
+  <string name="otomasyon_izin_ver">Payagan</string>
+  <string name="otomasyon_engelle">I-block</string>
+  <string name="otomasyon_vazgec">Kanselahin</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Kailan ito tatakbo?</string>
+  <string name="otomasyon_ileri">Susunod</string>
+  <string name="otomasyon_vakit_baslik">Aling dasal?</string>
+  <string name="otomasyon_herhangi_vakit">Anumang oras ng dasal</string>
+  <string name="otomasyon_kaydet">I-save</string>
+  <string name="otomasyon_kosul_icinde">Habang oras ng dasal</string>
+  <string name="otomasyon_kosul_cikiyor">Habang matatapos na ang oras ng dasal (%1$d min na lang, naka-on ang Tagabantay ng Dasal)</string>
+  <string name="otomasyon_kosul_camide">Habang nasa masjid</string>
+  <string name="otomasyon_olay_girdi">Kapag pumasok ang oras ng dasal</string>
+  <string name="otomasyon_olay_cikiyor">Kapag matatapos na ang oras ng dasal (%1$d min na lang, naka-on ang Tagabantay ng Dasal)</string>
+  <string name="otomasyon_olay_camide">Kapag natukoy na nasa masjid kayo</string>
+</resources>

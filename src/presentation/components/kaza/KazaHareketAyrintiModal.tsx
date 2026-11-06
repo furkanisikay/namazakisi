@@ -26,6 +26,8 @@ import {
 } from './kazaMetinleri';
 import { IkonCipi, KazaDugme, kaynakRengi } from './KazaOrtak';
 import { kisaBildirimGoster } from '../common/KisaBildirim';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 /** Defter vakti → namaz kaydı adı (vitir'in kaydı yoktur: yatsıya bağlıdır). */
 const NAMAZ_KAYDI: Record<KazaVakti, NamazAdi> = {
@@ -47,6 +49,8 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
   const hareketler = useAppSelector((s) => s.kaza.hareketler);
+  const metinler = useMetin();
+  const m = metinler.kaza.ayrinti;
   const [mesgul, setMesgul] = useState(false);
   const gorunur = satir !== null;
   useDonanimGeriTusu(gorunur, onKapat);
@@ -70,12 +74,12 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
         kisaBildirimGoster(basari);
         onKapat();
       } catch {
-        kisaBildirimGoster('İşlem tamamlanamadı. Lütfen tekrar deneyin.');
+        kisaBildirimGoster(m.hata);
       } finally {
         setMesgul(false);
       }
     },
-    [onKapat]
+    [onKapat, m]
   );
 
   if (!satir) return null;
@@ -96,23 +100,23 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
       // geçmiş gün yoluyla aynı); metin bu yüzden yalnız puanı vaat eder.
       await dispatch(puanlamayiYenidenHesapla({ sessiz: true }));
       await dispatch(kazaVerileriniYukle());
-    }, 'Kıldım olarak işaretlendi; otomatik kayıt geri alındı');
+    }, m.kildimBasari);
 
   const gizle = () =>
-    calistir(() => dispatch(temizlikUygula({ hedefIdler: [satir.kimlik] })).unwrap(), 'Kayıt defterden çıkarıldı');
+    calistir(() => dispatch(temizlikUygula({ hedefIdler: [satir.kimlik] })).unwrap(), m.cikarildi);
 
   const temizligiGeriAl = (temizlikId: string) =>
-    calistir(() => dispatch(temizlikGeriAl({ temizlikId })).unwrap(), 'Temizlik geri alındı');
+    calistir(() => dispatch(temizlikGeriAl({ temizlikId })).unwrap(), metinler.kaza.temizlikGeriAlindi);
 
   const satirlar: Array<[string, string]> = [];
   if (satir.tur === 'otomatik' && satir.gun) {
-    satirlar.push(['Neden', `${gunMetni(satir.gun)} namazı işaretlenmeden namaz günü kapandı`]);
+    satirlar.push([m.neden, bicim(m.nedenMetni, { gun: gunMetni(satir.gun) })]);
   }
-  if (satir.gun && satir.tur !== 'otomatik') satirlar.push(['Namaz günü', gunMetni(satir.gun)]);
-  satirlar.push(['Eklendiği an', `${gunMetni(tarihiISOFormatinaCevir(new Date(satir.zaman)))} ${saatMetni(satir.zaman)}`]);
-  if (satir.cihaz) satirlar.push(['Cihaz', satir.cihaz === cihaz ? 'Bu cihaz' : `Başka cihaz (${satir.cihaz})`]);
-  if (satir.hareket?.not) satirlar.push(['Not', satir.hareket.not]);
-  satirlar.push(['Kimlik', satir.kimlik]);
+  if (satir.gun && satir.tur !== 'otomatik') satirlar.push([m.namazGunu, gunMetni(satir.gun)]);
+  satirlar.push([m.eklendigiAn, `${gunMetni(tarihiISOFormatinaCevir(new Date(satir.zaman)))} ${saatMetni(satir.zaman)}`]);
+  if (satir.cihaz) satirlar.push([m.cihaz, satir.cihaz === cihaz ? m.buCihaz : bicim(m.baskaCihaz, { cihaz: satir.cihaz })]);
+  if (satir.hareket?.not) satirlar.push([m.not, satir.hareket.not]);
+  satirlar.push([m.kimlik, satir.kimlik]);
 
   return (
     <Modal visible={gorunur} animationType="fade" transparent statusBarTranslucent onRequestClose={onKapat}>
@@ -130,7 +134,7 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
                 </Text>
                 <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
                   {gorunum.etiket}
-                  {satir.gizli ? ' · gizlenmiş' : ''}
+                  {satir.gizli ? m.gizlenmis : ''}
                 </Text>
               </View>
               {delta !== '' && <Text style={[stiller.delta, { color: renkler.metin }]}>{delta}</Text>}
@@ -147,30 +151,29 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
 
             {otomatikMi && (
               <>
-                <Text style={[stiller.soru, { color: renkler.metin }]}>Aslında kıldınız mı?</Text>
+                <Text style={[stiller.soru, { color: renkler.metin }]}>{m.soru}</Text>
                 <KazaDugme
-                  etiket={satir.vakit === 'vitir' ? 'Yatsıyı kıldım olarak işaretleyin' : 'Kıldım olarak işaretleyin'}
+                  etiket={satir.vakit === 'vitir' ? m.yatsiyiKildim : m.kildimIsaretleyin}
                   ikon="check"
                   onPress={kildimIsaretle}
                   devreDisi={mesgul}
                 />
                 <Text style={[stiller.not, { color: renkler.metinIkincil }]}>
-                  Namaz kaydınız düzelir; puanınız kayıttan yeniden hesaplanır.
+                  {m.kayitDuzelir}
                 </Text>
-                <KazaDugme etiket="Yalnız defterden çıkarın" tur="ikincil" onPress={gizle} devreDisi={mesgul} />
+                <KazaDugme etiket={m.yalnizDefterden} tur="ikincil" onPress={gizle} devreDisi={mesgul} />
               </>
             )}
             {gizlenebilir && (
-              <KazaDugme etiket="Defterden çıkarın" ikon="eye-slash" tur="ikincil" onPress={gizle} devreDisi={mesgul} />
+              <KazaDugme etiket={m.defterdenCikarin} ikon="eye-slash" tur="ikincil" onPress={gizle} devreDisi={mesgul} />
             )}
             {gizleyenTemizlik && (
               <>
                 <Text style={[stiller.not, { color: renkler.metinIkincil }]}>
-                  Bu kayıt bir temizlikle gizlendi ({gizleyenTemizlik.hedefIdler?.length ?? 0} kayıt). Geri alırsanız
-                  o temizlikteki bütün kayıtlar geri gelir.
+                  {sayili(m.temizlikleGizlendi, gizleyenTemizlik.hedefIdler?.length ?? 0)}
                 </Text>
                 <KazaDugme
-                  etiket="Temizliği geri alın"
+                  etiket={m.temizligiGeriAlin}
                   ikon="undo"
                   tur="ikincil"
                   onPress={() => temizligiGeriAl(gizleyenTemizlik.id)}
@@ -180,7 +183,7 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
             )}
             {satir.tur === 'temizlik' && !satir.geriAlindi && (
               <KazaDugme
-                etiket="Temizliği geri alın"
+                etiket={m.temizligiGeriAlin}
                 ikon="undo"
                 tur="ikincil"
                 onPress={() => temizligiGeriAl(satir.kimlik)}
@@ -188,7 +191,7 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
               />
             )}
             <View style={stiller.bosluk} />
-            <KazaDugme etiket="Kapatın" tur="ikincil" onPress={onKapat} />
+            <KazaDugme etiket={metinler.ortak.kapatin} tur="ikincil" onPress={onKapat} />
           </ScrollView>
         </View>
       </View>

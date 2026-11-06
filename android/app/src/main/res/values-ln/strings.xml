@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lingala (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ln (vakit.ts başı). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Losambo ya sikoyo, ntango ekosila, mpe Nasambeli na kofina mbala mɔkɔ</string>
+  <string name="widget_genis_aciklama">Losambo mitano ya lɛlɔ, kotanga ntango, mpe Nasambeli na kofina mbala mɔkɔ</string>
+  <string name="widget_kapak_adi">Bangonga ya losambo na ekran ya libanda</string>
+  <string name="widget_kapak_aciklama">Bangonga ya losambo ya lɛlɔ mpe kotanga ntango mpɔ na ekran ya libanda ya Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Ya kala</string>
+  <string name="widget_klasik_aciklama">Ndɛngɛ ya kala ya langi ya mai ya pondu: ntango etikali tii losambo oyo elandi</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Ya kala monene</string>
+  <string name="widget_klasik_genis_aciklama">Ndɛngɛ ya kala ya langi ya mai ya pondu: kotanga ntango mpe bangonga ya losambo ya lɛlɔ</string>
+  <string name="widget_ayet_adi">Molɔngɔ ya mokɔlɔ</string>
+  <string name="widget_ayet_aciklama">Molɔngɔ mɔkɔ mpe libongoli na yango, ebongwanaka mokɔlɔ nyɔnsɔ na Fajr</string>
+  <string name="widget_ayar_zemin_palet">Langi ya aplikasiɔ (pole)</string>
+  <string name="widget_ayar_ayet_icerik">Na monene ya kare, bolakisa</string>
+  <string name="widget_ayar_ayet_icerik_meal">Libongoli</string>
+  <string name="widget_ayar_ayet_icerik_hat">Maloba ya Arabe (makomi kitoko)</string>
+  <string name="kutu_kildim_etiket">Nasambeli</string>
+  <string name="kisayol_kildim_kisa">Nasambeli</string>
+  <string name="kisayol_kildim_uzun">Nasambeli losambo ya sikoyo</string>
+  <string name="kisayol_kible_kisa">Qibla</string>
+  <string name="kisayol_kible_uzun">Bolakisa ngambo ya Qibla</string>
+  <string name="kisayol_kaza_kisa">Buku ya qada</string>
+  <string name="kisayol_kaza_uzun">Bofungola Buku ya qada</string>
+  <string name="kildim_onay_baslik">Botia elembo ete %1$s esambelami?</string>
+  <string name="kildim_onay_mesaj">Eyebani te aplikasiɔ nini etindaki bosɛngi oyo. Bondima soki bosambeli.</string>
+  <string name="kildim_onay_evet">Nasambeli</string>
+  <string name="kildim_onay_vazgec">Botika</string>
+  <string name="kildim_guven_baslik">Bopesa %1$s ndingisa ya kotia elembo na losambo na bino ete esambelami?</string>
+  <string name="kildim_guven_mesaj">Losambo oyo ekotiama elembo sikoyo: %1$s. Bokoki kobongola ekateli na bino nsima na Mibongiseli &gt; Ba aplikasiɔ oyo etiaka elembo Nasambeli.</string>
+  <string name="kildim_guven_tarayici_mesaj">Losambo oyo ekotiama elembo sikoyo: %1$s. Bosɛngi oyo euti na navigatɛrɛ; lokola lokasa nyɔnsɔ ya internet ekoki kofungola lien oyo, ndingisa ya ntango nyɔnsɔ ekoki kopesama te.</string>
+  <string name="kildim_guven_her_zaman">Bopesa ntango nyɔnsɔ</string>
+  <string name="kildim_guven_bu_sefer">Kaka mbala oyo</string>
+  <string name="kildim_guven_engelle">Bopekisa</string>
+  <string name="kildim_guven_engellendi">%1$s ekoki lisusu kotia elembo na losambo na bino te. Bokoki kobongola yango na Mibongiseli.</string>
+  <string name="widget_ayar_baslik">Bobongisa widget</string>
+  <string name="widget_ayar_zemin">Nsɔngɛ</string>
+  <string name="widget_ayar_zemin_material">Balangi ya elilingi ya ekran</string>
+  <string name="widget_ayar_zemin_sistem">Langi ya sistɛmi</string>
+  <string name="widget_ayar_zemin_acik">Pole</string>
+  <string name="widget_ayar_zemin_koyu">Molili</string>
+  <string name="widget_ayar_zemin_seffaf">Emonisaka nsima</string>
+  <string name="widget_ayar_opaklik">Bokasi ya nsɔngɛ</string>
+  <string name="widget_ayar_gosterim">Bolakisa na makomi minene</string>
+  <string name="widget_ayar_gosterim_kalan">Ntango etikali</string>
+  <string name="widget_ayar_gosterim_bitis">Ngonga ya suka</string>
+  <string name="widget_ayar_gosterim_not">Ngonga ya suka emonanaka na monene nyɔnsɔ.</string>
+  <string name="widget_ayar_sonraki">Bolakisa losambo oyo elandi</string>
+  <string name="widget_ayar_vazgec">Botika</string>
+  <string name="widget_ayar_kaydet">Bobomba</string>
+  <string name="kildim_onay_kanal_adi">Bondimi ya Nasambeli</string>
+  <string name="kildim_onay_kanal_aciklama">Bondimi ya kimia oyo emonanaka sekondi moke ntango bofini \"Nasambeli\" na liyebisi</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Ekosila %1$s</string>
+  <string name="widget_giris">Ekobanda %1$s</string>
+  <string name="widget_namaz_vakti">Ntango ya losambo</string>
+  <string name="widget_uygulamayi_acin">Bofungola aplikasiɔ</string>
+  <string name="widget_siradaki">Oyo elandi: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Losambo ya kotia elembo ezali te sikoyo</string>
+  <string name="widget_dugme_kildim">Nasambeli</string>
+  <string name="widget_dugme_isaretleniyor">Ezali kotia elembo</string>
+  <string name="widget_dugme_kilindi">Esambelami</string>
+  <string name="widget_dugme_vakit_girmedi">Ntango ekoki naino te</string>
+  <string name="widget_klasik_uygulamayi_acin">bofungola aplikasiɔ</string>
+  <string name="widget_klasik_erisim_veri_yok">Bofungola aplikasiɔ mpɔ na komona bangonga ya losambo</string>
+  <string name="widget_klasik_erisim_siradaki">Losambo oyo elandi: %1$s, ekobanda na %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Tii Dhuhr</string>
+  <string name="widget_onizleme_klasik_genis">Tii Maghrib</string>
+  <string name="widget_onizleme_imsak">Fajr</string>
+  <string name="widget_onizleme_gunes">Kobima ya moi</string>
+  <string name="widget_onizleme_ogle">Dhuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s etiami elembo ete esambelami. Allah andimela bino.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s etiami kala elembo ete esambelami.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Losambo ya kotia elembo ezali te sikoyo. Oyo elandi ezali %1$s, ekobanda na %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Losambo ya kotia elembo ezali te sikoyo.</string>
+  <string name="kildim_sonuc_veri_yok">Sango ya ntango ya losambo ezali te. Bofungola aplikasiɔ mbala mɔkɔ.</string>
+  <string name="kildim_sonuc_vakit_degisti">Ntango ya losambo ebongwani, yango wana elembo etiami te. Bomeka lisusu.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Aplikasiɔ ya nzela ekoki kofungwama te.</string>
+  <string name="arac_adsiz_cami">Moskeye</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Sango ya ntango ya losambo ekoki kotangama te.</string>
+  <string name="asistan_isaretleme_yapilamadi">Elembo ekoki kotiama na losambo te.</string>
+  <string name="asistan_aciklama">Bokoki kotuna bangonga ya losambo, kotia elembo ete losambo ya sikoyo esambelami mpe kofungola ekran ya Qibla.</string>
+</resources>

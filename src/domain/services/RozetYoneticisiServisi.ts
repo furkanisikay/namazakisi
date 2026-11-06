@@ -18,6 +18,7 @@ import {
   KutlamaTipi,
   SeriDurumu,
 } from '../../core/types/SeriTipleri';
+import { bicim, metin, sayili } from '../../core/dil/aktifDil';
 
 // ==================== ROZET YONETIMI ====================
 
@@ -294,8 +295,8 @@ export const rozetPuaniHesapla = (rozetSeviyesi: RozetSeviyesi): number => {
  */
 export const rozetKutlamasiOlustur = (rozet: RozetTanimi): KutlamaBilgisi => ({
   tip: 'rozet_kazanildi',
-  baslik: 'Allah daim etsin',
-  mesaj: `"${rozet.ad}" rozetini kazandınız.`,
+  baslik: metin().seri.kutlama.rozetBaslik,
+  mesaj: bicim(metin().seri.kutlama.rozetMesaj, { ad: rozet.ad }),
   ikon: rozet.ikon,
   ekstraVeri: { rozet },
 });
@@ -308,8 +309,8 @@ export const hedefKutlamasiOlustur = (
   hedefAd: string
 ): KutlamaBilgisi => ({
   tip: 'hedef_tamamlandi',
-  baslik: `${hedefGun} gün`,
-  mesaj: `"${hedefAd}" hedefini tamamladınız. Allah daim etsin.`,
+  baslik: sayili(metin().seri.kutlama.hedefBaslik, hedefGun),
+  mesaj: bicim(metin().seri.kutlama.hedefMesaj, { ad: hedefAd }),
   ikon: '🎯',
   ekstraVeri: { hedefGun, hedefAd },
 });
@@ -321,8 +322,8 @@ export const seviyeKutlamasiOlustur = (
   yeniSeviye: SeviyeTanimi
 ): KutlamaBilgisi => ({
   tip: 'seviye_atlandi',
-  baslik: 'Yeni seviyeniz',
-  mesaj: `Artık bir "${yeniSeviye.rank}" olarak devam ediyorsunuz. Allah daim etsin.`,
+  baslik: metin().seri.kutlama.seviyeBaslik,
+  mesaj: bicim(metin().seri.kutlama.seviyeMesaj, { rank: yeniSeviye.rank }),
   ikon: yeniSeviye.ikon,
   ekstraVeri: { seviye: yeniSeviye },
 });
@@ -334,8 +335,8 @@ export const toparlanmaKutlamasiOlustur = (
   kurtarilanSeri: number
 ): KutlamaBilgisi => ({
   tip: 'toparlanma_tamamlandi',
-  baslik: 'Serinize yeniden kavuştunuz',
-  mesaj: `${kurtarilanSeri} günlük seriniz kaldığı yerden sürüyor. Allah sebat versin.`,
+  baslik: metin().seri.kutlama.toparlanmaBaslik,
+  mesaj: sayili(metin().seri.kutlama.toparlanmaMesaj, kurtarilanSeri),
   ikon: '🔄',
   ekstraVeri: { kurtarilanSeri },
 });
@@ -345,8 +346,8 @@ export const toparlanmaKutlamasiOlustur = (
  */
 export const enUzunSeriKutlamasiOlustur = (seri: number): KutlamaBilgisi => ({
   tip: 'en_uzun_seri',
-  baslik: 'En uzun seriniz',
-  mesaj: `${seri} gün; şimdiye kadarki en uzun seriniz. Allah daim etsin.`,
+  baslik: metin().seri.kutlama.enUzunBaslik,
+  mesaj: sayili(metin().seri.kutlama.enUzunMesaj, seri),
   ikon: '🏆',
   ekstraVeri: { seri },
 });

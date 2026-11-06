@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ms — Malayca (beta). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Di masjid</string>
+    <string name="camigeofence_kanal_durum_aciklama">Makluman senyap apabila anda dikesan berada di masjid</string>
+    <string name="camigeofence_kanal_soru_ad">Selepas meninggalkan masjid</string>
+    <string name="camigeofence_kanal_soru_aciklama">Soalan supaya anda boleh menandakan solat anda selepas meninggalkan masjid</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Mod Solat dihidupkan. Peringatan akan tiba secara senyap.</string>
+    <string name="camigeofence_govde_mod">Mod Solat dihidupkan.</string>
+    <string name="camigeofence_govde_sessiz">Peringatan akan tiba secara senyap.</string>
+    <string name="camigeofence_govde_normal">Peringatan akan tiba seperti biasa.</string>
+    <string name="camigeofence_eylem_modu_kapat">Matikan mod</string>
+    <string name="camigeofence_eylem_cami_degil">Bukan masjid</string>
+
+    <string name="camigeofence_soru_baslik">Adakah anda di masjid?</string>
+    <string name="camigeofence_soru_govde">Anda berhampiran %1$s. Kami tidak pasti, jadi kami bertanya kepada anda.</string>
+    <string name="camigeofence_varsayilan_ad">Masjid</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Hidupkan mod Solat</string>
+    <string name="camigeofence_eylem_evet_camideyim">Ya, saya di masjid</string>
+    <string name="camigeofence_eylem_hayir">Tidak</string>
+
+    <string name="camigeofence_kildiniz_mi">Sudahkah anda solat %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Anda boleh menandakannya dengan satu ketikan.</string>
+    <string name="camigeofence_eylem_kildim">Sudah solat</string>
+    <string name="camigeofence_namaz_imsak">Subuh</string>
+    <string name="camigeofence_namaz_ogle">Zohor</string>
+    <string name="camigeofence_namaz_ikindi">Asar</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isyak</string>
+    <string name="camigeofence_namaz_cuma">Jumaat</string>
+
+    <string name="camigeofence_mod_kural_adi">Solat</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı menghidupkannya semasa khutbah Jumaat, ketika di masjid atau apabila masuk waktu solat</string>
+</resources>

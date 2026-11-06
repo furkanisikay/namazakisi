@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Pencapça, Şahmuki). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: نماز پڑھ لئی</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: نماز دے وقت دی حالت</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: نماز دے وقت دا واقعہ</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "تسیں". -->
+  <string name="otomasyon_bilgi_baslik">ایہہ ترتیب کسے آٹومیشن ایپ توں شامل کیتی جاندی اے</string>
+  <string name="otomasyon_bilgi_tarayici">براؤزراں نوں پکی اجازت نہیں دتی جاندی۔ Tasker، MacroDroid یا Automate ورگی کسے ایپ دی پلگ ان لسٹ توں شامل کرو۔</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker، MacroDroid یا Automate ورگی کسے ایپ دی پلگ ان لسٹ وچوں \"Namaz Akışı\" چُن کے شامل کرو۔</string>
+  <string name="otomasyon_engelli_baslik">%1$s بلاک اے</string>
+  <string name="otomasyon_engelli_mesaj">تسیں پہلاں ایس ایپ نوں اپنیاں نمازاں تے نشان لاؤن توں بلاک کیتا سی۔ اینوں Namaz Akışı وچ ترتیباں &gt; \"نماز پڑھ لئی\" دا نشان لاؤن والیاں ایپاں وچ اجازت دتی جا سکدی اے۔</string>
+  <string name="otomasyon_izin_baslik">کیہ %1$s نال ورتو گے؟</string>
+  <string name="otomasyon_izin_kosul">%1$s جان سکدی اے کہ نماز دا وقت کدوں شروع ہوندا اے، کدوں مک رہیا اے تے تسیں کدوں مسجد وچ او، تے تہاڈیاں آٹومیشناں چلا سکدی اے۔ اپنا فیصلہ Namaz Akışı وچ ترتیباں &gt; \"نماز پڑھ لئی\" دا نشان لاؤن والیاں ایپاں وچ بدلیا جا سکدا اے۔</string>
+  <string name="otomasyon_izin_kildim">%1$s تہاڈی سیٹ کیتی آٹومیشن نال موجودہ نماز تے ادا ہو گئی دا نشان لا سکدی اے۔ اپنا فیصلہ Namaz Akışı وچ ترتیباں &gt; \"نماز پڑھ لئی\" دا نشان لاؤن والیاں ایپاں وچ بدلیا جا سکدا اے۔</string>
+  <string name="otomasyon_izin_ver">اجازت دیو</string>
+  <string name="otomasyon_engelle">بلاک کرو</string>
+  <string name="otomasyon_vazgec">منسوخ کرو</string>
+  <string name="otomasyon_tamam">ٹھیک اے</string>
+  <string name="otomasyon_tur_baslik">کدوں چلے؟</string>
+  <string name="otomasyon_ileri">اگے</string>
+  <string name="otomasyon_vakit_baslik">کیہڑی نماز؟</string>
+  <string name="otomasyon_herhangi_vakit">کوئی وی نماز دا وقت</string>
+  <string name="otomasyon_kaydet">محفوظ کرو</string>
+  <string name="otomasyon_kosul_icinde">جدوں تک نماز دا وقت جاری ہووے</string>
+  <string name="otomasyon_kosul_cikiyor">جدوں نماز دا وقت مک رہیا ہووے (%1$d منٹ باقی، نماز محافظ چالو)</string>
+  <string name="otomasyon_kosul_camide">مسجد وچ ہوندیاں</string>
+  <string name="otomasyon_olay_girdi">جدوں نماز دا وقت شروع ہووے</string>
+  <string name="otomasyon_olay_cikiyor">جدوں نماز دا وقت مک رہیا ہووے (%1$d منٹ باقی، نماز محافظ چالو)</string>
+  <string name="otomasyon_olay_camide">جدوں تہاڈے مسجد وچ ہون دا پتہ لگے</string>
+</resources>

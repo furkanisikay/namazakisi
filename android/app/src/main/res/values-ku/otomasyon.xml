@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Kurmancî). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Min nimêj kir</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Rewşa dema nimêjê</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Bûyera dema nimêjê</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "hûn". -->
+  <string name="otomasyon_bilgi_baslik">Ev mîheng ji sepaneke otomasyonê tê zêdekirin</string>
+  <string name="otomasyon_bilgi_tarayici">Gerok nikarin destûra daîmî bistînin. Wê ji lîsteya pêvekan a sepaneke wekî Tasker, MacroDroid an Automate zêde bikin.</string>
+  <string name="otomasyon_bilgi_eklenti">Wê bi hilbijartina “Namaz Akışı” ji lîsteya pêvekan a sepaneke wekî Tasker, MacroDroid an Automate zêde bikin.</string>
+  <string name="otomasyon_engelli_baslik">%1$s hatiye astengkirin</string>
+  <string name="otomasyon_engelli_mesaj">We berê ev sepan ji nîşankirina nimêjên xwe asteng kiribû. Hûn dikarin di Namaz Akışı de li bin Mîheng &gt; Sepanên ku “Min nimêj kir” nîşan dikin destûr bidin.</string>
+  <string name="otomasyon_izin_baslik">Bi %1$s re bi kar bînin?</string>
+  <string name="otomasyon_izin_kosul">%1$s dikare bizane kengî dema nimêjê dest pê dike, kengî diqede û kengî hûn li mizgeftê ne, û otomasyonên we bixebitîne. Hûn dikarin biryara xwe di Namaz Akışı de li bin Mîheng &gt; Sepanên ku “Min nimêj kir” nîşan dikin biguherînin.</string>
+  <string name="otomasyon_izin_kildim">%1$s dikare bi otomasyona ku we saz kiriye nimêja niha wekî kirî nîşan bike. Hûn dikarin biryara xwe di Namaz Akışı de li bin Mîheng &gt; Sepanên ku “Min nimêj kir” nîşan dikin biguherînin.</string>
+  <string name="otomasyon_izin_ver">Destûr bidin</string>
+  <string name="otomasyon_engelle">Asteng bikin</string>
+  <string name="otomasyon_vazgec">Betal bikin</string>
+  <string name="otomasyon_tamam">Temam</string>
+  <string name="otomasyon_tur_baslik">Kengî bixebite?</string>
+  <string name="otomasyon_ileri">Pêş</string>
+  <string name="otomasyon_vakit_baslik">Kîjan nimêj?</string>
+  <string name="otomasyon_herhangi_vakit">Her dema nimêjê</string>
+  <string name="otomasyon_kaydet">Tomar bikin</string>
+  <string name="otomasyon_kosul_icinde">Dema ku dema nimêjê ye</string>
+  <string name="otomasyon_kosul_cikiyor">Dema ku dema nimêjê diqede (%1$d deq ma, Parêzvanê Nimêjê vekirî)</string>
+  <string name="otomasyon_kosul_camide">Dema ku li mizgeftê ye</string>
+  <string name="otomasyon_olay_girdi">Gava dema nimêjê dest pê dike</string>
+  <string name="otomasyon_olay_cikiyor">Gava dema nimêjê diqede (%1$d deq ma, Parêzvanê Nimêjê vekirî)</string>
+  <string name="otomasyon_olay_camide">Gava hûn li mizgeftê bên naskirin</string>
+</resources>

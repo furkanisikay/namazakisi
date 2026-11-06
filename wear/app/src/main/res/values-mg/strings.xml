@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Malgaşça. Terimler JS src/core/dil/sozluk/mg ile aynı; saat ekranı dar: düğme ve karo metinleri kısa. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">mg</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Soalat manaraka</string>
+    <string name="tile_aciklama">Ny soalat manaraka sy ny fotoanany</string>
+    <string name="komplikasyon_adi">Fotoana sisa</string>
+    <string name="cikis_saati_komplikasyon_adi">Fiafaran\'ny fotoanan\'ny soalat</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Soalat manaraka</string>
+    <string name="bugun_tile_adi">Anio</string>
+    <string name="bugun_tile_aciklama">Ny soalat dimy anio; mariho amin\'ny fikitihana roa izay efa nataonao</string>
+    <string name="ilerleme_komplikasyon_adi">Fandrosoana isan\'andro</string>
+    <string name="dagilim_komplikasyon_adi">Topy maso ny andro</string>
+    <string name="kerahat_komplikasyon_adi">Fotoana tsy tokony hivavahana</string>
+    <string name="son_dakikalar_kanal_adi">Minitra farany</string>
+    <string name="son_dakikalar_kanal_aciklama">Fanisana mihemotra eo amin\'ny endriky ny famantaranandro amin\'ny minitra farany amin\'ny soalat mbola tsy nataonao</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Sary famantarana mangina eo amin\'ny endriky ny famantaranandro hiverenana amin\'ny tasbih tsy vita</string>
+    <string name="kible_adi">Kibla</string>
+    <string name="kible_komplikasyon_adi">Kibla</string>
+    <string name="camideyim_kanal_adi">Ao amin\'ny moske</string>
+    <string name="camideyim_kanal_aciklama">Sary famantarana mangina eo amin\'ny endriky ny famantaranandro rehefa milaza ny findainao fa ao amin\'ny moske ianao</string>
+    <string name="uyandirma_kanal_adi">Fanairana mangina</string>
+    <string name="uyandirma_kanal_aciklama">Mamoha anao amin\'ny fihetsiketsehana fotsiny, ho an\'ny Fajr sy ny Tahadjoud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Nivavaka aho</string>
+    <string name="kilindi_isareti">✓ Vita</string>
+    <string name="kapat">Hidio</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Sokafy ao amin\'ny findainao ny Namaz Akışı mba hahitana ny fotoanan\'ny soalat.</string>
+    <string name="yuk_eskidi">Efa lany andro ny fotoanan\'ny soalat. Sokafy ao amin\'ny findainao ny Namaz Akışı mba hanavaozana azy.</string>
+    <string name="guncelleme_gerekli">Havaozy ny Namaz Akışı ao amin\'ny famantaranandronao.</string>
+    <string name="bildirim_izni">Mba hahazoana fampahatsiahivana na dia tsy miaraka aminao aza ny findainao, avelao ny fampandrenesan\'ny Namaz Akışı ao amin\'ny fikiran\'ny famantaranandro.</string>
+    <string name="cami_soru">Ao amin\'ny moske ve ianao?</string>
+    <string name="cami_evet">Eny</string>
+    <string name="cami_evet_aciklama">Eny, ao amin\'ny moske aho. Mandefa ny Fomba soalat</string>
+    <string name="cami_hayir">Tsia</string>
+    <string name="cami_hayir_aciklama">Tsia, tsy ao amin\'ny moske aho</string>
+    <string name="camidesiniz">Ao amin\'ny moske ianao</string>
+    <string name="cami_degil">Tsy moske ity</string>
+    <string name="cami_degil_aciklama">Tsy moske ity. Tsy hoheverina ho moske intsony ity toerana ity</string>
+    <string name="tesbihat_ac">Sokafy ny fanisana tasbih</string>
+    <string name="kible_ac">Sokafy ny kompà Kibla</string>
+    <string name="ses_dene">Andramo ny feo</string>
+    <string name="ses_dene_aciklama">Andramo ny famakiana mafy ataon\'ny famantaranandro</string>
+    <string name="telefonda_acin">Sokafy ao amin\'ny finday</string>
+    <string name="telefonda_ekran_ac">Sokafy ao amin\'ny findainao ny %1$s</string>
+    <string name="ekran_kaza">Bokin\'ny fanefana</string>
+    <string name="ekran_camideyim">Ao amin\'ny moske</string>
+    <string name="ekran_ayarlar">Fikirana</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">vita, ampifanarahina</string>
+    <string name="durum_kilindi">vita</string>
+    <string name="durum_girmedi">mbola tsy tonga</string>
+    <string name="durum_simdiki">soalat ankehitriny, kitiho raha hanamarika</string>
+    <string name="durum_simdiki_kalan">soalat ankehitriny, %1$s, kitiho raha hanamarika</string>
+    <string name="durum_kilinmadi">tsy vita, kitiho raha hanamarika</string>
+    <string name="isaretleyin">Mariho ho vita</string>
+    <string name="esitleniyor">ampifanarahina</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Hamafiso ny « Nivavaka aho »</string>
+    <string name="vazgecin">Foano</string>
+    <string name="vazgec">Foano</string>
+    <string name="kerahat_vaktindesiniz">Fotoana tsy tokony hivavahana izao.</string>
+    <string name="kilindi_dua">Vita. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Mandeha ny Fomba soalat, tapitra %1$s. Kitiho raha hamono azy</string>
+    <string name="namaz_modu_ac_aciklama">Alefaso ao amin\'ny findainao ny Fomba soalat</string>
+    <string name="namaz_modu_kapatin">Vonoy ny Fomba soalat</string>
+    <string name="namaz_modu_acin">Alefaso ny Fomba soalat</string>
+    <string name="namaz_modu_acik_bitis">Mandeha, tapitra %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Tadiavina ny lalana…</string>
+    <string name="kible_yuk_yok">Sokafy ao amin\'ny findainao ny Namaz Akışı mba hahitana ny Kibla.</string>
+    <string name="kible_konum_yok">Alefaso ao amin\'ny findainao ny toerana mba hahitana ny Kibla. Raha tsy vaovao ny Namaz Akışı, havaozy izy.</string>
+    <string name="kible_sensor_yok">Tsy misy kompà ity famantaranandro ity. Azonao jerena ao amin\'ny findainao ny lalan\'ny Kibla.</string>
+    <string name="kible_kuzeyden">Kibla %1$d° (avy amin\'ny avaratra)</string>
+    <string name="kible_derece">Kibla %1$d°</string>
+    <string name="kible_telefonda_ac">Sokafy ao amin\'ny findainao ny Kibla</string>
+    <string name="kible_erisim">%1$s. %2$d° avy amin\'ny avaratra ny Kibla, %3$s</string>
+    <string name="kible_hizali">Manatrika ny Kibla ianao</string>
+    <string name="kible_kalibrasyon">Mba hanitsiana azy, ahetsiketseho manao endrika 8 eny amin\'ny rivotra ny hatotananao</string>
+    <string name="kible_egim">Tazomy mitsivalana amin\'ny tany ny famantaranandronao</string>
+    <string name="kible_titresim_acik">Mandeha ny fitarihana amin\'ny fihetsiketsehana. Kitiho raha hamono azy</string>
+    <string name="kible_titresim_kapali">Maty ny fitarihana amin\'ny fihetsiketsehana. Kitiho raha handefa azy</string>
+    <string name="kible_harf_kuzey">Av</string>
+    <string name="kible_harf_dogu">At</string>
+    <string name="kible_harf_guney">As</string>
+    <string name="kible_harf_bati">An</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Vita ny tasbih. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Fitambarany %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Isao</string>
+    <string name="tesbihat_bastan_baslayin">Avereno hatramin\'ny voalohany</string>
+    <string name="tesbihat_bastan_soru">Haverina hatramin\'ny voalohany ve?</string>
+    <string name="tesbihat_sifirlanir">Haverina ho aotra ny isa.</string>
+    <string name="tesbihat_geri_al">Foano</string>
+    <string name="tesbihat_geri_al_aciklama">Foano ny isa farany</string>
+    <string name="tesbihat_yeniden">Avereno atomboka</string>
+    <string name="tesbihat_yeniden_aciklama">Avereno atomboka ny tasbih</string>
+    <string name="tesbihat_suruyor">Mitohy ny tasbih: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Nivavaka aho. Mamono ny fanairana</string>
+    <string name="uyandirma_kapat_aciklama">Vonoy ny fanairana</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Sokafy ny Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Kitiho raha hijery ny fotoanan\'ny soalat</string>
+    <string name="tile_telefonda_acin">Sokafy ao amin\'ny findainao ny fampiharana</string>
+    <string name="tile_sonra">afaka %1$s</string>
+    <string name="tile_siradaki_aciklama">Soalat manaraka %1$s, manomboka amin\'ny %2$s. Sokafy ny fampiharana</string>
+    <string name="tile_giris">manomboka %1$s</string>
+    <string name="tile_cikis">tapitra %1$s</string>
+    <string name="bugun_bos_satir1">Sokafy ny fampiharana</string>
+    <string name="bugun_bos_satir2">ao amin\'ny findainao</string>
+    <string name="bugun_acma_aciklamasi">Anio, soalat %1$d/%2$d no vita. Sokafy ny fampiharana</string>
+    <string name="bugun_sayi">Anio %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Tsy tokony hivavaka · kitiho indray raha hanamafy</string>
+    <string name="bugun_onay_tekrar">Kitiho indray raha hanamafy</string>
+    <string name="bugun_tamam">Vita ny soalat anio</string>
+    <string name="bugun_kilinmadi">Tsy vita ny %1$s</string>
+    <string name="bugun_siradaki">Manaraka: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Kitiho indray</string>
+    <string name="bugun_kilindi">Vita ny %1$s</string>
+    <string name="bugun_kilindi_esitleniyor">Vita ny %1$s, ampifanarahina</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Miandry ny fotoanan\'ny soalat; sokafy ao amin\'ny findainao ny Namaz Akışı</string>
+    <string name="komplikasyon_bekleniyor">Miandry</string>
+    <string name="komplikasyon_vakit">Soalat</string>
+    <string name="komplikasyon_cikis">Tapitra</string>
+    <string name="komplikasyon_sirada">Manaraka</string>
+    <string name="gun_durumu_aciklama">Anio, soalat %2$d amin\'ny %1$d no vita</string>
+    <string name="gun_durumu_kilinmamis">%1$s; tsy vita: %2$s</string>
+    <string name="komplikasyon_namaz">Soalat</string>
+    <string name="komplikasyon_kerahat">Tsy mety</string>
+    <string name="kerahat_icinde_aciklama">Fotoana tsy tokony hivavahana izao, tapitra %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Fotoana tsy tokony hivavahana manaraka %1$s</string>
+    <string name="kible_komplikasyon">%1$d° avy amin\'ny avaratra ny Kibla. Sokafy ny kompà</string>
+    <string name="kible_komplikasyon_konumlu">%1$d° avy amin\'ny avaratra ny Kibla, %2$s. Sokafy ny kompà</string>
+    <string name="kible_komplikasyon_konum_yok">Alefaso ao amin\'ny findainao ny toerana mba hahitana ny Kibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Fampahatsiahivana maika · Mihetsiketsika</string>
+    <string name="muhafiz_kanal_acil">Fampahatsiahivana maika</string>
+    <string name="muhafiz_kanal_titresimli">Fampahatsiahivana soalat · Mihetsiketsika</string>
+    <string name="muhafiz_kanal">Fampahatsiahivana soalat</string>
+    <string name="muhafiz_kanal_aciklama">Fampahatsiahivana soalat aseho ao amin\'ny famantaranandronao na dia tsy miaraka aminao aza ny findainao</string>
+    <string name="son_dakikalar_cikis">Tapitra: %1$s</string>
+    <string name="son_dakikalar_bitis">Tapitra: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Fotoana sisa mandra-pifaranan\'ny %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Fotoana sisa ho an\'ny %1$s</string>
+    <string name="cami_namaz_modu_bitis">Fomba soalat · tapitra %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Nosokafana tao amin\'ny findainao</string>
+    <string name="telefona_ulasilamadi">Tsy azo tratrarina ny findainao</string>
+</resources>

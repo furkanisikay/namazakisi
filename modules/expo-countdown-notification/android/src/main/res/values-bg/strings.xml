@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Отброявания на живо</string>
+    <string name="countdown_kanal_canli_aciklama">Отброявания в Now Bar и в лентата на състоянието</string>
+    <string name="countdown_kanal_genel_ad">Известия с отброяване</string>
+    <string name="countdown_kanal_genel_aciklama">Канал за известията с отброяване</string>
+
+    <string name="countdown_eylem_kildim">Изпълних</string>
+    <string name="countdown_eylem_durdur">Спрете</string>
+
+    <string name="countdown_yedek_vakit">Побързайте, времето за намаз изтича.</string>
+    <string name="countdown_yedek_iftar">Времето изтича.</string>
+    <string name="countdown_yedek_sahur">Още можете да ядете и пиете; постът започва скоро.</string>
+    <string name="countdown_yedek_seri">Днешните намази не са завършени; не губете серията си.</string>
+
+    <string name="countdown_onek_vakit">До края на времето</string>
+    <string name="countdown_onek_vakit_dar">Времето изтича</string>
+    <string name="countdown_onek_iftar">До ифтар</string>
+    <string name="countdown_onek_iftar_dar">До ифтар</string>
+    <string name="countdown_onek_sahur">До края на сахур</string>
+    <string name="countdown_onek_sahur_dar">Сахур изтича</string>
+    <string name="countdown_onek_seri">За да запазите серията</string>
+    <string name="countdown_onek_seri_dar">Серията изтича</string>
+</resources>

@@ -31,8 +31,8 @@
  * Bilinçli kapsam dışı (Android, ≤6 tetik): iftar/sahur/seri sayaçları —
  * pencereleri gün içinde değişir ve 120'lik diğer-tüketici payının içinde kalır.
  */
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import type { VakitAdi } from '../types';
 import type { MuhafizMatrisi } from '../muhafiz/matrisTipleri';
 import type { GeceSessizligi } from '../muhafiz/geceSessizligi';
@@ -352,11 +352,10 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
         const ayar = g.gunSonu;
         guvenli(() => {
             const konum = koordinat ? new Coordinates(koordinat.lat, koordinat.lng) : null;
-            const params = turkiyeHesapParametreleri();
             const plan = gunSonuPlaniOlustur({
                 simdi: g.simdi,
                 ayarlar: ayar,
-                imsakSaglayici: (t: Date) => (konum ? new PrayerTimes(konum, t, params).fajr ?? null : null),
+                imsakSaglayici: (t: Date) => (konum ? aktifPrayerTimes(konum, t).fajr ?? null : null),
                 gunSayisi: GUN_SONU_PLAN_GUN_SAYISI[g.platform],
                 gunAtlanirMi: ozelGundeMi,
                 gunTamMi: gunTamYuklemi(g.gunSonuKilinan ?? {}, ayar.tamGunEsigi),

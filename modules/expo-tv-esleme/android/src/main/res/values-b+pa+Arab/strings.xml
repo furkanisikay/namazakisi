@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TV eşleştirme QR tarayıcısı — Pencapça, Şahmuki (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">ٹی وی سکرین والا QR کوڈ فریم دے اندر لیاؤ</string>
+    <string name="tvesleme_qr_vazgec">منسوخ کرو</string>
+    <string name="tvesleme_qr_vazgec_erisim">سکین منسوخ کرو</string>
+    <string name="tvesleme_qr_yabanci">ایہہ QR کوڈ Namaz Akışı TV دا نہیں۔ ٹی وی تے نظر آؤن والا کوڈ سکین کرو۔</string>
+    <string name="tvesleme_qr_okundu">کوڈ سکین ہو گیا</string>
+</resources>

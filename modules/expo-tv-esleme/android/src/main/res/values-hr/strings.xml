@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Smjestite QR kôd sa zaslona televizora unutar okvira</string>
+    <string name="tvesleme_qr_vazgec">Odustanite</string>
+    <string name="tvesleme_qr_vazgec_erisim">Odustanite od skeniranja</string>
+    <string name="tvesleme_qr_yabanci">Ovaj QR kôd ne pripada aplikaciji Namaz Akışı TV. Skenirajte kôd na televizoru.</string>
+    <string name="tvesleme_qr_okundu">Kôd je skeniran</string>
+</resources>

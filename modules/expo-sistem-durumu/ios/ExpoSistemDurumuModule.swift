@@ -42,6 +42,16 @@ public class ExpoSistemDurumuModule: Module {
       return self.durum()
     }.runOnQueue(.main)
 
+    /// JS paketini yeniden yükler (yazı yönü değişince; `RCTI18nUtil` yönü yalnız başlangıçta
+    /// okunur). `AppContext.reloadAppAsync` → `RCTTriggerReloadCommandListeners`: RCTHost kayıtlı
+    /// dinleyicidir, DEBUG'a bağlı değildir. Modül kuyruğunda çağrılır; `reloadAppAsync` tetiği
+    /// kendisi ana kuyruğa taşır (Expo `CoreModule.reloadAppAsync` ile aynı yol), söz önce çözülür.
+    AsyncFunction("yenidenBaslat") { () -> Bool in
+      guard let baglam = self.appContext else { return false }
+      baglam.reloadAppAsync("yazi-yonu")
+      return true
+    }
+
     OnStartObserving {
       DispatchQueue.main.async { self.dinlemeyiBaslat() }
     }

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pencapça, yalnız Şahmuki (beta). Terimler: JS src/core/dil/sozluk/pa (فجر، طلوعِ آفتاب، ظہر، عصر، مغرب، عشاء؛ "نماز پڑھ لئی" / "ادا ہو گئی"). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">pa</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">اگلی نماز</string>
+    <string name="tile_aciklama">اگلی نماز تے اوہدا وقت</string>
+    <string name="komplikasyon_adi">باقی وقت</string>
+    <string name="cikis_saati_komplikasyon_adi">نماز دے اختتام دا وقت</string>
+    <string name="siradaki_namaz_komplikasyon_adi">اگلی نماز</string>
+    <string name="bugun_tile_adi">اج</string>
+    <string name="bugun_tile_aciklama">اج دیاں پنجے نمازاں؛ پڑھیاں ہوئیاں تے دو ٹیپ نال نشان لاؤ</string>
+    <string name="ilerleme_komplikasyon_adi">روزانہ پیش رفت</string>
+    <string name="dagilim_komplikasyon_adi">دن دا خلاصہ</string>
+    <string name="kerahat_komplikasyon_adi">مکروہ وقت</string>
+    <string name="son_dakikalar_kanal_adi">آخری منٹ</string>
+    <string name="son_dakikalar_kanal_aciklama">جیہڑی نماز اجے نہیں پڑھی اوہدے آخری منٹاں وچ گھڑی دے چہرے تے اُلٹی گنتی</string>
+    <string name="tesbihat_adi">تسبیح</string>
+    <string name="tesbihat_kanal_adi">تسبیح</string>
+    <string name="tesbihat_kanal_aciklama">ادھوری تسبیح تے واپس آؤن لئی گھڑی دے چہرے تے چُپ نشان</string>
+    <string name="kible_adi">قبلہ</string>
+    <string name="kible_komplikasyon_adi">قبلہ</string>
+    <string name="camideyim_kanal_adi">مسجد وچ آں</string>
+    <string name="camideyim_kanal_aciklama">جدوں تہاڈا فون دسے کہ تسیں مسجد وچ او تاں گھڑی دے چہرے تے چُپ نشان</string>
+    <string name="uyandirma_kanal_adi">چُپ جگانا</string>
+    <string name="uyandirma_kanal_aciklama">فجر تے تہجد لئی صرف تھرتھراہٹ نال جگاندا اے</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">نماز پڑھ لئی</string>
+    <string name="kilindi_isareti">✓ ادا ہو گئی</string>
+    <string name="kapat">بند کرو</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">نماز دے وقت ویکھن لئی اپنے فون تے Namaz Akışı کھولو۔</string>
+    <string name="yuk_eskidi">نماز دے وقتاں دی معلومات پرانی ہو گئی اے۔ تازہ کرن لئی اپنے فون تے Namaz Akışı کھولو۔</string>
+    <string name="guncelleme_gerekli">اپنی گھڑی تے Namaz Akışı اپ ڈیٹ کرو۔</string>
+    <string name="bildirim_izni">فون کول نہ ہووے تاں وی یاد دہانیاں لین لئی گھڑی دیاں ترتیباں وچ Namaz Akışı دیاں اطلاعاں دی اجازت دیو۔</string>
+    <string name="cami_soru">کیہ تسیں مسجد وچ او؟</string>
+    <string name="cami_evet">ہاں</string>
+    <string name="cami_evet_aciklama">ہاں، میں مسجد وچ آں۔ نماز موڈ چالو کردا اے</string>
+    <string name="cami_hayir">نہیں</string>
+    <string name="cami_hayir_aciklama">نہیں، میں مسجد وچ نہیں آں</string>
+    <string name="camidesiniz">تسیں مسجد وچ او</string>
+    <string name="cami_degil">ایہہ مسجد نہیں</string>
+    <string name="cami_degil_aciklama">ایہہ مسجد نہیں۔ ایہہ تھاں اگے توں مسجد نہیں گنی جاوے گی</string>
+    <string name="tesbihat_ac">تسبیح گنن والا کھولو</string>
+    <string name="kible_ac">قبلہ نما کھولو</string>
+    <string name="ses_dene">آواز آزماؤ</string>
+    <string name="ses_dene_aciklama">گھڑی دی اُچی آواز وچ پڑھائی آزماؤ</string>
+    <string name="telefonda_acin">فون تے کھولو</string>
+    <string name="telefonda_ekran_ac">اپنے فون تے %1$s کھولو</string>
+    <string name="ekran_kaza">قضا ریکارڈ</string>
+    <string name="ekran_camideyim">مسجد وچ آں</string>
+    <string name="ekran_ayarlar">ترتیباں</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">ادا ہو گئی، ہم آہنگ ہو رہی اے</string>
+    <string name="durum_kilindi">ادا ہو گئی</string>
+    <string name="durum_girmedi">اجے وقت نہیں ہویا</string>
+    <string name="durum_simdiki">موجودہ نماز دا وقت، نشان لاؤن لئی ٹیپ کرو</string>
+    <string name="durum_simdiki_kalan">موجودہ نماز دا وقت، %1$s، نشان لاؤن لئی ٹیپ کرو</string>
+    <string name="durum_kilinmadi">ادا نہیں ہوئی، نشان لاؤن لئی ٹیپ کرو</string>
+    <string name="isaretleyin">ادا ہو گئی دا نشان لاؤ</string>
+    <string name="esitleniyor">ہم آہنگ ہو رہی اے</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">نماز پڑھ لئی دی تصدیق کرو</string>
+    <string name="vazgecin">منسوخ کرو</string>
+    <string name="vazgec">منسوخ کرو</string>
+    <string name="kerahat_vaktindesiniz">ایس ویلے مکروہ وقت اے۔</string>
+    <string name="kilindi_dua">ادا ہو گئی۔ %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">نماز موڈ چالو، اختتام %1$s۔ بند کرن لئی ٹیپ کرو</string>
+    <string name="namaz_modu_ac_aciklama">اپنے فون تے نماز موڈ چالو کرو</string>
+    <string name="namaz_modu_kapatin">نماز موڈ بند کرو</string>
+    <string name="namaz_modu_acin">نماز موڈ چالو کرو</string>
+    <string name="namaz_modu_acik_bitis">چالو، اختتام %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">سمت لبھی جا رہی اے…</string>
+    <string name="kible_yuk_yok">قبلہ لبھن لئی اپنے فون تے Namaz Akışı کھولو۔</string>
+    <string name="kible_konum_yok">قبلہ لبھن لئی اپنے فون تے مقام چالو کرو۔ جے Namaz Akışı تازہ نہیں تاں اینوں اپ ڈیٹ کرو۔</string>
+    <string name="kible_sensor_yok">ایس گھڑی وچ قطب نما دا سینسر نہیں۔ قبلہ دی سمت تہاڈے فون تے ویکھی جا سکدی اے۔</string>
+    <string name="kible_kuzeyden">قبلہ %1$d° (شمال توں)</string>
+    <string name="kible_derece">قبلہ %1$d°</string>
+    <string name="kible_telefonda_ac">اپنے فون تے قبلہ کھولو</string>
+    <string name="kible_erisim">%1$s۔ قبلہ شمال توں %2$d° تے اے، %3$s</string>
+    <string name="kible_hizali">تسیں قبلہ رُخ او</string>
+    <string name="kible_kalibrasyon">کیلیبریٹ کرن لئی اپنی کلائی نوں ہوا وچ 8 دی شکل وچ گھماؤ</string>
+    <string name="kible_egim">اپنی گھڑی زمین دے متوازی رکھو</string>
+    <string name="kible_titresim_acik">تھرتھراہٹ نال رہنمائی چالو۔ بند کرن لئی ٹیپ کرو</string>
+    <string name="kible_titresim_kapali">تھرتھراہٹ نال رہنمائی بند۔ چالو کرن لئی ٹیپ کرو</string>
+    <string name="kible_harf_kuzey">ش</string>
+    <string name="kible_harf_dogu">مش</string>
+    <string name="kible_harf_guney">ج</string>
+    <string name="kible_harf_bati">مغ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">تسبیح پوری ہو گئی۔ %1$s۔ %2$d / %3$d۔ %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s، %2$d / %3$d۔ کُل %4$d / %5$d</string>
+    <string name="tesbihat_sayin">گنو</string>
+    <string name="tesbihat_bastan_baslayin">شروع توں شروع کرو</string>
+    <string name="tesbihat_bastan_soru">کیہ شروع توں شروع کرو گے؟</string>
+    <string name="tesbihat_sifirlanir">گنتی صفر ہو جاندی اے۔</string>
+    <string name="tesbihat_geri_al">واپس لوو</string>
+    <string name="tesbihat_geri_al_aciklama">آخری گنتی واپس لوو</string>
+    <string name="tesbihat_yeniden">دوبارہ شروع کرو</string>
+    <string name="tesbihat_yeniden_aciklama">تسبیح دوبارہ شروع کرو</string>
+    <string name="tesbihat_suruyor">تسبیح جاری اے: %1$s، %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">نماز پڑھ لئی۔ جگانا بند کردا اے</string>
+    <string name="uyandirma_kapat_aciklama">جگانا بند کرو</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı کھولو</string>
+    <string name="tile_vakitler_icin">نماز دے وقتاں لئی ٹیپ کرو</string>
+    <string name="tile_telefonda_acin">اپنے فون تے ایپ کھولو</string>
+    <string name="tile_sonra">%1$s وچ</string>
+    <string name="tile_siradaki_aciklama">اگلی نماز %1$s، آغاز %2$s۔ ایپ کھولو</string>
+    <string name="tile_giris">آغاز %1$s</string>
+    <string name="tile_cikis">اختتام %1$s</string>
+    <string name="bugun_bos_satir1">اپنے فون تے</string>
+    <string name="bugun_bos_satir2">ایپ کھولو</string>
+    <string name="bugun_acma_aciklamasi">اج %1$d/%2$d نمازاں ادا ہوئیاں۔ ایپ کھولو</string>
+    <string name="bugun_sayi">اج %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">مکروہ وقت · تصدیق لئی فیر ٹیپ کرو</string>
+    <string name="bugun_onay_tekrar">تصدیق لئی فیر ٹیپ کرو</string>
+    <string name="bugun_tamam">اج دیاں نمازاں پوریاں نیں</string>
+    <string name="bugun_kilinmadi">%1$s ادا نہیں ہوئی</string>
+    <string name="bugun_siradaki">اگلی: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">فیر ٹیپ کرو</string>
+    <string name="bugun_kilindi">%1$s ادا ہو گئی</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s ادا ہو گئی، ہم آہنگ ہو رہی اے</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">نماز دے وقتاں دی اڈیک؛ اپنے فون تے Namaz Akışı کھولو</string>
+    <string name="komplikasyon_bekleniyor">وقتاں دی اڈیک</string>
+    <string name="komplikasyon_vakit">نماز</string>
+    <string name="komplikasyon_cikis">اختتام</string>
+    <string name="komplikasyon_sirada">اگلی</string>
+    <string name="gun_durumu_aciklama">اج %1$d وچوں %2$d نمازاں ادا ہوئیاں</string>
+    <string name="gun_durumu_kilinmamis">%1$s؛ ادا نہیں ہوئیاں: %2$s</string>
+    <string name="komplikasyon_namaz">نمازاں</string>
+    <string name="komplikasyon_kerahat">مکروہ</string>
+    <string name="kerahat_icinde_aciklama">ایس ویلے مکروہ وقت اے، اختتام %1$s</string>
+    <string name="kerahat_siradaki_aciklama">اگلا مکروہ وقت %1$s</string>
+    <string name="kible_komplikasyon">قبلہ شمال توں %1$d° تے اے۔ قطب نما کھولو</string>
+    <string name="kible_komplikasyon_konumlu">قبلہ شمال توں %1$d° تے اے، %2$s۔ قطب نما کھولو</string>
+    <string name="kible_komplikasyon_konum_yok">قبلہ لبھن لئی اپنے فون تے مقام چالو کرو</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">فوری یاد دہانی · تھرتھراہٹ نال</string>
+    <string name="muhafiz_kanal_acil">فوری یاد دہانی</string>
+    <string name="muhafiz_kanal_titresimli">نماز دی یاد دہانی · تھرتھراہٹ نال</string>
+    <string name="muhafiz_kanal">نماز دی یاد دہانی</string>
+    <string name="muhafiz_kanal_aciklama">فون کول نہ ہووے تاں وی تہاڈی گھڑی تے وکھائیاں جان والیاں نماز دیاں یاد دہانیاں</string>
+    <string name="son_dakikalar_cikis">اختتام: %1$s</string>
+    <string name="son_dakikalar_bitis">اختتام: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s مکن وچ باقی وقت</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s لئی باقی وقت</string>
+    <string name="cami_namaz_modu_bitis">نماز موڈ · اختتام %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s۔ %3$s</string>
+    <string name="telefonda_acildi">فون تے کھل گیا</string>
+    <string name="telefona_ulasilamadi">تہاڈے فون نال رابطہ نہیں ہو سکیا</string>
+</resources>

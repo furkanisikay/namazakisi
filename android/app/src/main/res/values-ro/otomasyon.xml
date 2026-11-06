@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Rumence). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: M-am rugat</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Starea timpului de rugăciune</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Eveniment al timpului de rugăciune</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar 2. çoğul. -->
+  <string name="otomasyon_bilgi_baslik">Această setare se adaugă dintr-o aplicație de automatizare</string>
+  <string name="otomasyon_bilgi_tarayici">Browserele nu pot primi permisiune permanentă. Adăugați-o din lista de pluginuri a unei aplicații precum Tasker, MacroDroid sau Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Adăugați-o alegând „Namaz Akışı” din lista de pluginuri a unei aplicații precum Tasker, MacroDroid sau Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s este blocată</string>
+  <string name="otomasyon_engelli_mesaj">Ați blocat anterior această aplicație să vă marcheze rugăciunile. O puteți permite în Namaz Akışı din Setări &gt; „Aplicații care pot marca M-am rugat”.</string>
+  <string name="otomasyon_izin_baslik">Folosiți cu %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s poate afla când începe timpul unei rugăciuni, când se încheie și când sunteți la o moschee și poate rula automatizările. Puteți schimba decizia în Namaz Akışı din Setări &gt; „Aplicații care pot marca M-am rugat”.</string>
+  <string name="otomasyon_izin_kildim">%1$s poate marca rugăciunea curentă ca efectuată cu automatizarea configurată. Puteți schimba decizia în Namaz Akışı din Setări &gt; „Aplicații care pot marca M-am rugat”.</string>
+  <string name="otomasyon_izin_ver">Permiteți</string>
+  <string name="otomasyon_engelle">Blocați</string>
+  <string name="otomasyon_vazgec">Anulați</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Când să ruleze?</string>
+  <string name="otomasyon_ileri">Înainte</string>
+  <string name="otomasyon_vakit_baslik">Ce rugăciune?</string>
+  <string name="otomasyon_herhangi_vakit">Orice timp de rugăciune</string>
+  <string name="otomasyon_kaydet">Salvați</string>
+  <string name="otomasyon_kosul_icinde">Cât este timp de rugăciune</string>
+  <string name="otomasyon_kosul_cikiyor">Cât se încheie timpul unei rugăciuni (mai sunt %1$d min, Gardianul rugăciunii activat)</string>
+  <string name="otomasyon_kosul_camide">Cât sunteți la o moschee</string>
+  <string name="otomasyon_olay_girdi">Când începe timpul unei rugăciuni</string>
+  <string name="otomasyon_olay_cikiyor">Când se încheie timpul unei rugăciuni (mai sunt %1$d min, Gardianul rugăciunii activat)</string>
+  <string name="otomasyon_olay_camide">Când se detectează că sunteți la o moschee</string>
+</resources>

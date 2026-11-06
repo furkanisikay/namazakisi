@@ -1,0 +1,184 @@
+/**
+ * Desteklenen diller. Bir dil `secilebilir: true` olmadan seçicide görünmez ve cihaz
+ * dili olarak kendiliğinden seçilmez: JS sözlüğü tip düzeyinde her zaman tamdır, ama
+ * çıkarılmamış Türkçe metin kalırken (cırcır `turkceMetinSayaci`) ya da native metinler
+ * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
+ * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
+ */
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el' | 'ku' | 'tk' | 'tt' | 'sd' | 'pl' | 'ja' | 'gu' | 'bg' | 'mk' | 'fil' | 'te' | 'kn' | 'mr' | 'pa' | 'as' | 'ne' | 'si' | 'km' | 'he' | 'ka' | 'lt' | 'mg' | 'lg' | 'rw' | 'rn' | 'ln' | 'dag' | 'mos' | 'aa' | 'mdh' | 'ak' | 'ceb' | 'nqo';
+
+export interface DilTanimi {
+  kod: DilKodu;
+  /** Dilin kendi dilindeki adı (seçicide böyle yazılır). */
+  yerelAd: string;
+  yon: 'ltr' | 'rtl';
+  /** Sesli okuma (TTS) dili, BCP-47. */
+  ttsDili: string;
+  beta: boolean;
+  secilebilir: boolean;
+}
+
+export const DILLER: readonly DilTanimi[] = [
+  { kod: 'tr', yerelAd: 'Türkçe', yon: 'ltr', ttsDili: 'tr-TR', beta: false, secilebilir: true }, // dil-haric: dilin kendi adı (çevrilmez)
+  { kod: 'en', yerelAd: 'English', yon: 'ltr', ttsDili: 'en-US', beta: true, secilebilir: true },
+  { kod: 'id', yerelAd: 'Bahasa Indonesia', yon: 'ltr', ttsDili: 'id-ID', beta: true, secilebilir: true },
+  { kod: 'de', yerelAd: 'Deutsch', yon: 'ltr', ttsDili: 'de-DE', beta: true, secilebilir: true },
+  { kod: 'fr', yerelAd: 'Français', yon: 'ltr', ttsDili: 'fr-FR', beta: true, secilebilir: true }, // dil-haric: dilin kendi adı (çevrilmez)
+  { kod: 'bs', yerelAd: 'Bosanski', yon: 'ltr', ttsDili: 'bs-BA', beta: true, secilebilir: true },
+  { kod: 'ru', yerelAd: 'Русский', yon: 'ltr', ttsDili: 'ru-RU', beta: true, secilebilir: true },
+  { kod: 'ms', yerelAd: 'Bahasa Melayu', yon: 'ltr', ttsDili: 'ms-MY', beta: true, secilebilir: true },
+  { kod: 'ar', yerelAd: 'العربية', yon: 'rtl', ttsDili: 'ar-SA', beta: true, secilebilir: true },
+  { kod: 'ur', yerelAd: 'اردو', yon: 'rtl', ttsDili: 'ur-PK', beta: true, secilebilir: true },
+  { kod: 'es', yerelAd: 'Español', yon: 'ltr', ttsDili: 'es-ES', beta: true, secilebilir: true },
+  { kod: 'nl', yerelAd: 'Nederlands', yon: 'ltr', ttsDili: 'nl-NL', beta: true, secilebilir: true },
+  { kod: 'sq', yerelAd: 'Shqip', yon: 'ltr', ttsDili: 'sq-AL', beta: true, secilebilir: true },
+  { kod: 'hi', yerelAd: 'हिन्दी', yon: 'ltr', ttsDili: 'hi-IN', beta: true, secilebilir: true },
+  { kod: 'bn', yerelAd: 'বাংলা', yon: 'ltr', ttsDili: 'bn-BD', beta: true, secilebilir: true },
+  { kod: 'fa', yerelAd: 'فارسی', yon: 'rtl', ttsDili: 'fa-IR', beta: true, secilebilir: true },
+  { kod: 'ps', yerelAd: 'پښتو', yon: 'rtl', ttsDili: 'ps-AF', beta: true, secilebilir: true },
+  { kod: 'ckb', yerelAd: 'کوردی', yon: 'rtl', ttsDili: 'ckb-IQ', beta: true, secilebilir: true },
+  { kod: 'ug', yerelAd: 'ئۇيغۇرچە', yon: 'rtl', ttsDili: 'ug-CN', beta: true, secilebilir: true },
+  { kod: 'az', yerelAd: 'Azərbaycanca', yon: 'ltr', ttsDili: 'az-AZ', beta: true, secilebilir: true },
+  // Özbekçe adı Latin (dil varsayılanı); Kazakça Kiril. Sözlük kaynağı ikisinde de Kiril (`core/dil/yazi.ts`).
+  { kod: 'uz', yerelAd: 'Oʻzbekcha', yon: 'ltr', ttsDili: 'uz-UZ', beta: true, secilebilir: true },
+  { kod: 'kk', yerelAd: 'Қазақша', yon: 'ltr', ttsDili: 'kk-KZ', beta: true, secilebilir: true },
+  { kod: 'ky', yerelAd: 'Кыргызча', yon: 'ltr', ttsDili: 'ky-KG', beta: true, secilebilir: true },
+  { kod: 'tg', yerelAd: 'Тоҷикӣ', yon: 'ltr', ttsDili: 'tg-TJ', beta: true, secilebilir: true },
+  // Afrika (dalga 8). Fula = Pular (Gine, Fuuta Jallon; QuranEnc `fulani_rwwad` "Firo e Pular-Fulfulde"), Latin; Adlam yok.
+  { kod: 'sw', yerelAd: 'Kiswahili', yon: 'ltr', ttsDili: 'sw-TZ', beta: true, secilebilir: true },
+  { kod: 'ha', yerelAd: 'Hausa', yon: 'ltr', ttsDili: 'ha-NG', beta: true, secilebilir: true },
+  { kod: 'am', yerelAd: 'አማርኛ', yon: 'ltr', ttsDili: 'am-ET', beta: true, secilebilir: true },
+  { kod: 'om', yerelAd: 'Afaan Oromoo', yon: 'ltr', ttsDili: 'om-ET', beta: true, secilebilir: true },
+  { kod: 'so', yerelAd: 'Soomaali', yon: 'ltr', ttsDili: 'so-SO', beta: true, secilebilir: true },
+  { kod: 'ff', yerelAd: 'Pular', yon: 'ltr', ttsDili: 'ff-GN', beta: true, secilebilir: true },
+  { kod: 'yo', yerelAd: 'Èdè Yorùbá', yon: 'ltr', ttsDili: 'yo-NG', beta: true, secilebilir: true },
+  // Doğu ve Güney Asya (dalga 9); altısı da soldan sağa, Batı rakamlı (Tamil ve Tay rakamı kullanılmaz).
+  // Çince yalnız Basitleştirilmiş (`zh`; iOS `zh-Hans.lproj`, `iosYerelAdi`); Geleneksel Çince bilinçli yok.
+  { kod: 'zh', yerelAd: '简体中文', yon: 'ltr', ttsDili: 'zh-CN', beta: true, secilebilir: true },
+  { kod: 'ta', yerelAd: 'தமிழ்', yon: 'ltr', ttsDili: 'ta-IN', beta: true, secilebilir: true },
+  { kod: 'ml', yerelAd: 'മലയാളം', yon: 'ltr', ttsDili: 'ml-IN', beta: true, secilebilir: true },
+  { kod: 'th', yerelAd: 'ไทย', yon: 'ltr', ttsDili: 'th-TH', beta: true, secilebilir: true },
+  { kod: 'ko', yerelAd: '한국어', yon: 'ltr', ttsDili: 'ko-KR', beta: true, secilebilir: true },
+  { kod: 'vi', yerelAd: 'Tiếng Việt', yon: 'ltr', ttsDili: 'vi-VN', beta: true, secilebilir: true },
+  // Avrupa (dalga 10); sekizi de soldan sağa, Batı rakamlı. Portekizce Avrupa/Afrika normu (pt-PT;
+  // Mozambik, Gine-Bissau): kod `pt`, Android `values-pt` ve iOS `pt.lproj` bütün pt-* cihazları kapsar.
+  // Sırpça yalnız KİRİL (`sr`; Latin seçenek yok, Latin okuyan Sancak kullanıcısı için Boşnakça var).
+  { kod: 'pt', yerelAd: 'Português', yon: 'ltr', ttsDili: 'pt-PT', beta: true, secilebilir: true },
+  { kod: 'it', yerelAd: 'Italiano', yon: 'ltr', ttsDili: 'it-IT', beta: true, secilebilir: true },
+  { kod: 'sv', yerelAd: 'Svenska', yon: 'ltr', ttsDili: 'sv-SE', beta: true, secilebilir: true },
+  { kod: 'uk', yerelAd: 'Українська', yon: 'ltr', ttsDili: 'uk-UA', beta: true, secilebilir: true },
+  { kod: 'ro', yerelAd: 'Română', yon: 'ltr', ttsDili: 'ro-RO', beta: true, secilebilir: true },
+  { kod: 'hr', yerelAd: 'Hrvatski', yon: 'ltr', ttsDili: 'hr-HR', beta: true, secilebilir: true },
+  { kod: 'sr', yerelAd: 'Српски', yon: 'ltr', ttsDili: 'sr-RS', beta: true, secilebilir: true },
+  { kod: 'el', yerelAd: 'Ελληνικά', yon: 'ltr', ttsDili: 'el-GR', beta: true, secilebilir: true },
+  // Dalga 11 (kapalı iskelet). Kurmancî uygulama içinde `ku` (Android, iOS ve CLDR Kurmancîyi `ku`
+  // olarak taşır; `kmr` kodlu `values-b+kmr`/`kmr.lproj` klasörünü `ku` cihazı seçmez), yalnız Latin
+  // (Hawar); Soranî (`ckb`) ayrı dildir. Sindhçe Pakistan normunda Arap harfli, sağdan sola, yerel
+  // rakam `arab` (CLDR `sd` varsayılanı). Japoncada sayı ile birim bitişik (Çince gibi).
+  { kod: 'ku', yerelAd: 'Kurdî (Kurmancî)', yon: 'ltr', ttsDili: 'ku-TR', beta: true, secilebilir: true },
+  { kod: 'tk', yerelAd: 'Türkmen dili', yon: 'ltr', ttsDili: 'tk-TM', beta: true, secilebilir: true }, // dil-haric: dilin kendi adı (CLDR tk)
+  { kod: 'tt', yerelAd: 'Татар', yon: 'ltr', ttsDili: 'tt-RU', beta: true, secilebilir: true },
+  { kod: 'sd', yerelAd: 'سنڌي', yon: 'rtl', ttsDili: 'sd-PK', beta: true, secilebilir: true },
+  { kod: 'pl', yerelAd: 'Polski', yon: 'ltr', ttsDili: 'pl-PL', beta: true, secilebilir: true },
+  { kod: 'ja', yerelAd: '日本語', yon: 'ltr', ttsDili: 'ja-JP', beta: true, secilebilir: true },
+  { kod: 'gu', yerelAd: 'ગુજરાતી', yon: 'ltr', ttsDili: 'gu-IN', beta: true, secilebilir: true },
+  { kod: 'bg', yerelAd: 'Български', yon: 'ltr', ttsDili: 'bg-BG', beta: true, secilebilir: true },
+  { kod: 'mk', yerelAd: 'Македонски', yon: 'ltr', ttsDili: 'mk-MK', beta: true, secilebilir: true },
+  // Dalga 12 (beta, 2026-11-04). Filipince kodu `fil` (Android kaynak niteleyicisi `values-tl`: AOSP Tagalog'u `tl`
+  // dizininde taşır, kaynak sistemi `fil` ve `tl`'yi eşdeğer sayar). Pencapça yalnız Şahmuki (Arap harfli,
+  // Pakistan normu; sahip kararı 2026-11-04), sağdan sola, yerel rakam `arabext` (CLDR `pa-Arab`); uygulama kodu
+  // `pa`, platform etiketi `pa-Arab` (`values-b+pa+Arab`, `pa-Arab.lproj`): çıplak `pa` CLDR'de Gurmukidir,
+  // Gurmuki cihaz (`pa-IN`, `pa-Guru`) Pencapçaya EŞLENMEZ (Şahmukiyi okuyamaz). Marathi ve Nepalce yerel rakam `deva` (CLDR varsayılanı),
+  // Assamca `beng`; Telugu, Kannada, Sinhala, Khmer Batı rakamlı (CLDR `latn`). Khmerde sözcük arası boşluk yok.
+  { kod: 'fil', yerelAd: 'Filipino', yon: 'ltr', ttsDili: 'fil-PH', beta: true, secilebilir: true },
+  { kod: 'te', yerelAd: 'తెలుగు', yon: 'ltr', ttsDili: 'te-IN', beta: true, secilebilir: true },
+  { kod: 'kn', yerelAd: 'ಕನ್ನಡ', yon: 'ltr', ttsDili: 'kn-IN', beta: true, secilebilir: true },
+  { kod: 'mr', yerelAd: 'मराठी', yon: 'ltr', ttsDili: 'mr-IN', beta: true, secilebilir: true },
+  { kod: 'pa', yerelAd: 'پنجابی', yon: 'rtl', ttsDili: 'pa-PK', beta: true, secilebilir: true },
+  { kod: 'as', yerelAd: 'অসমীয়া', yon: 'ltr', ttsDili: 'as-IN', beta: true, secilebilir: true },
+  { kod: 'ne', yerelAd: 'नेपाली', yon: 'ltr', ttsDili: 'ne-NP', beta: true, secilebilir: true },
+  { kod: 'si', yerelAd: 'සිංහල', yon: 'ltr', ttsDili: 'si-LK', beta: true, secilebilir: true },
+  { kod: 'km', yerelAd: 'ខ្មែរ', yon: 'ltr', ttsDili: 'km-KH', beta: true, secilebilir: true },
+  // Dalga 13 (beta, 2026-11-05). İbranice uygulama kodu `he`, Android kaynak niteleyicisi `values-iw` (Endonezce `in`
+  // emsali: `ResourcesImpl.adjustLanguageTag` cihazın `he`sini kaynak eşlemesinden önce `iw`ye çevirir); sağdan sola.
+  // N'Ko sağdan sola, yerel rakam `nkoo` (߀–߉, CLDR `nqo` varsayılanı). Üç harfli kodlar (dag, mos, mdh, ceb, nqo)
+  // Android'de `values-b+<kod>`. Kendi adları CLDR'den; Dagbani, Mooré ve Maguindanao CLDR'de yok, Afar CLDR ana
+  // verisinde onaysız ("Qafar") → yerel adlar görev tablosundan (yerli okuyucuyla DOĞRULANMADI). Öteki dalga 13
+  // dilleri Latin ya da Gürcü harfli, soldan sağa, Batı rakamlı.
+  { kod: 'he', yerelAd: 'עברית', yon: 'rtl', ttsDili: 'he-IL', beta: true, secilebilir: true },
+  { kod: 'ka', yerelAd: 'ქართული', yon: 'ltr', ttsDili: 'ka-GE', beta: true, secilebilir: true },
+  { kod: 'lt', yerelAd: 'Lietuvių', yon: 'ltr', ttsDili: 'lt-LT', beta: true, secilebilir: true },
+  { kod: 'mg', yerelAd: 'Malagasy', yon: 'ltr', ttsDili: 'mg-MG', beta: true, secilebilir: true },
+  { kod: 'lg', yerelAd: 'Luganda', yon: 'ltr', ttsDili: 'lg-UG', beta: true, secilebilir: true },
+  { kod: 'rw', yerelAd: 'Ikinyarwanda', yon: 'ltr', ttsDili: 'rw-RW', beta: true, secilebilir: true },
+  { kod: 'rn', yerelAd: 'Ikirundi', yon: 'ltr', ttsDili: 'rn-BI', beta: true, secilebilir: true },
+  { kod: 'ln', yerelAd: 'Lingála', yon: 'ltr', ttsDili: 'ln-CD', beta: true, secilebilir: true },
+  { kod: 'dag', yerelAd: 'Dagbanli', yon: 'ltr', ttsDili: 'dag-GH', beta: true, secilebilir: true },
+  { kod: 'mos', yerelAd: 'Moore', yon: 'ltr', ttsDili: 'mos-BF', beta: true, secilebilir: true },
+  { kod: 'aa', yerelAd: 'Qafar', yon: 'ltr', ttsDili: 'aa-ET', beta: true, secilebilir: true },
+  { kod: 'mdh', yerelAd: 'Magindanawn', yon: 'ltr', ttsDili: 'mdh-PH', beta: true, secilebilir: true },
+  { kod: 'ak', yerelAd: 'Akan', yon: 'ltr', ttsDili: 'ak-GH', beta: true, secilebilir: true },
+  { kod: 'ceb', yerelAd: 'Cebuano', yon: 'ltr', ttsDili: 'ceb-PH', beta: true, secilebilir: true },
+  { kod: 'nqo', yerelAd: 'ߒߞߏ', yon: 'rtl', ttsDili: 'nqo-GN', beta: true, secilebilir: true },
+];
+
+export const VARSAYILAN_DIL: DilKodu = 'tr';
+
+/** Dil seçimi sunulur mu (Ayarlar satırı, arama kaydı, sihirbaz bağlantısı)? Tek dilde anlamsız. */
+export const dilSeciciGorunur = (): boolean => DILLER.filter((d) => d.secilebilir).length > 1;
+
+export function dilKoduMu(x: unknown): x is DilKodu {
+  return typeof x === 'string' && DILLER.some((d) => d.kod === x);
+}
+
+/**
+ * Yerel ayar kimliğinin ("en_US", "tr-TR", "zh-Hans-CN", "zh_TW") desteklenen dil kodu; yoksa null.
+ * Seçilebilirliğe BAKMAZ. Çincenin bütün yerel ayarları (Android `zh_CN`/`zh_TW_#Hant`, iOS
+ * `zh-Hans-CN`/`zh-Hant-HK`) `zh`'dir: uygulama yalnız Basitleştirilmiş Çince taşır. Aynı kural:
+ * bütün Portekizce yerel ayarları (pt-BR, pt-PT, pt-MZ, pt-AO) `pt` (Avrupa normu), Latin Sırpça
+ * cihaz (`sr-Latn-RS`, Android `sr_RS_#Latn`) `sr` (Kiril arayüz). Kurmancî: `ku`, `ku-TR`, `kmr`,
+ * `kmr-Latn` `ku`'dur; Arap harfli `ku-Arab`/`ku-IQ` cihaz da `ku` alır (uygulamada Kurmancî yalnız Latin).
+ * Filipince: `fil`, `fil-PH` ve Tagalog `tl`, `tl-PH` `fil`'dir. Pencapça YALNIZ Şahmuki cihazda: `pa-Arab`,
+ * `pa-Arab-PK`, `pa-PK`, `pa_PK_#Arab` ve Batı Pencapçası `pnb` `pa`'dır; çıplak `pa` ile Gurmuki `pa-IN`,
+ * `pa-Guru`, `pa-Guru-IN` EŞLENMEZ (null; CLDR'de çıplak `pa` Gurmukidir, Gurmuki okuyucu Şahmukiye düşmez).
+ * İbranice: `he`, `he-IL` ve Java/Android'in eski kodu `iw`, `iw-IL`, `iw_IL` `he`'dir.
+ * Büyük/küçük harf dönüşümü yapılmaz (yerel kimlikler zaten küçük harfle başlar).
+ */
+/**
+ * Uygulama koduna eşlenen başka kodlar: Java `Locale` Endonezceyi eski ISO kodu "in" ile verir (Android
+ * `in_ID`); Kurmancînin ISO 639-3 kodu `kmr` → `ku`; Tagalog `tl` (AOSP'nin Filipince kaynak kodu) → `fil`;
+ * Batı Pencapçası (ISO 639-3 `pnb`, Şahmuki) → `pa`; İbranicenin eski ISO kodu `iw` (Java `Locale`, Android `iw_IL`) → `he`.
+ */
+const ESKI_KODLAR: Readonly<Record<string, DilKodu>> = { in: 'id', kmr: 'ku', tl: 'fil', pnb: 'pa', iw: 'he' };
+
+/**
+ * Pencapça yerel ayarı Şahmuki mi (Arap betiği ya da Pakistan bölgesi; Gurmuki betik değil)? `parcalar` yerel
+ * kimliğin `-`/`_` parçalarıdır (Android `pa_PK_#Arab` betiği `#` ile yazar).
+ */
+function pencapcaSahmukiMi(parcalar: readonly string[]): boolean {
+  const alt = parcalar.slice(1).map((x) => x.replace(/^#/, ''));
+  if (alt.includes('Guru')) return false;
+  return alt.includes('Arab') || alt.includes('PK');
+}
+
+export function yerelAyarDili(yerel: string | null | undefined): DilKodu | null {
+  if (!yerel) return null;
+  const ham = yerel.split(/[-_]/)[0];
+  if (ham === 'pa') return pencapcaSahmukiMi(yerel.split(/[-_]/)) ? 'pa' : null;
+  const kod = ESKI_KODLAR[ham] ?? ham;
+  return dilKoduMu(kod) ? kod : null;
+}
+
+/** Cihaz yerel ayarından seçilebilir dili bulur; yoksa null (`yerelAyarDili` + `secilebilir`). */
+export function cihazDilindenSec(yerel: string | null | undefined): DilKodu | null {
+  const kod = yerelAyarDili(yerel);
+  return kod && DILLER.some((x) => x.kod === kod && x.secilebilir) ? kod : null;
+}
+
+/**
+ * Dilin iOS yerelleştirme adı: `targets/siri-kisayollari/<ad>.lproj`, `app.json > locales`
+ * anahtarı (Expo onu `<ad>.lproj` klasörü yapar) ve Siri eklentisinin `diller` listesi.
+ * Basitleştirilmiş Çince iOS'ta `zh-Hans`tır (Apple'ın Basitleştirilmiş Çince klasörü; çıplak `zh` eşleşmeyebilir).
+ * Pencapça (yalnız Şahmuki) `pa-Arab`tır: çıplak `pa` CLDR'de Gurmukidir.
+ */
+export const iosYerelAdi = (kod: DilKodu): string => (kod === 'zh' ? 'zh-Hans' : kod === 'pa' ? 'pa-Arab' : kod);

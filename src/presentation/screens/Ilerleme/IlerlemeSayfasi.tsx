@@ -26,10 +26,12 @@ import { SeriSekmesi } from '../Seri/SeriSekmesi';
 import { KilmaOraniBolumu, type KilmaOraniDonemi } from './KilmaOraniBolumu';
 import { RozetlerBolumu } from './RozetlerBolumu';
 import { GokHareketiBaglami } from '../Seri/gokHareketi';
+import { useMetin } from '../../hooks/useMetin';
 
 export const IlerlemeSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
   const renkler = useRenkler();
+  const m = useMetin().ilerleme;
   const odakta = useIsFocused();
   const [donem, setDonem] = useState<KilmaOraniDonemi>('haftalik');
   const { haftalikIstatistik, aylikIstatistik, yukleniyor } = useAppSelector((state) => state.namaz);
@@ -58,7 +60,7 @@ export const IlerlemeSayfasi: React.FC = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
       <View style={{ paddingHorizontal: 20, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: renkler.sinir }}>
         <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '700', color: renkler.metin }}>
-          İlerleme
+          {m.baslik}
         </Text>
       </View>
       <ScrollView

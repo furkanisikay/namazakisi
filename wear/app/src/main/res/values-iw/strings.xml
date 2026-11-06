@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İbranice (he; Android niteleyicisi values-iw). Terimler: docs/ajan/coklu-dil.md terim sözlüğü + src/core/dil/sozluk/he. Geresh ASCII "'" → XML'de \'. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">he</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">התפילה הבאה</string>
+    <string name="tile_aciklama">התפילה הבאה והשעה שלה</string>
+    <string name="komplikasyon_adi">הזמן שנותר</string>
+    <string name="cikis_saati_komplikasyon_adi">שעת סיום התפילה</string>
+    <string name="siradaki_namaz_komplikasyon_adi">התפילה הבאה</string>
+    <string name="bugun_tile_adi">היום</string>
+    <string name="bugun_tile_aciklama">חמש התפילות של היום; מסמנים את אלה שהתפללתם בשתי הקשות</string>
+    <string name="ilerleme_komplikasyon_adi">התקדמות יומית</string>
+    <string name="dagilim_komplikasyon_adi">סקירת היום</string>
+    <string name="kerahat_komplikasyon_adi">זמן מכרוה</string>
+    <string name="son_dakikalar_kanal_adi">הדקות האחרונות</string>
+    <string name="son_dakikalar_kanal_aciklama">ספירה לאחור על פני השעון בדקות האחרונות של תפילה שעוד לא התפללתם</string>
+    <string name="tesbihat_adi">תסביח</string>
+    <string name="tesbihat_kanal_adi">תסביח</string>
+    <string name="tesbihat_kanal_aciklama">סמל שקט על פני השעון כדי לחזור לתסביח שלא הושלם</string>
+    <string name="kible_adi">קיבלה</string>
+    <string name="kible_komplikasyon_adi">קיבלה</string>
+    <string name="camideyim_kanal_adi">אני במסגד</string>
+    <string name="camideyim_kanal_aciklama">סמל שקט על פני השעון כשהטלפון מדווח שאתם במסגד</string>
+    <string name="uyandirma_kanal_adi">השכמה שקטה</string>
+    <string name="uyandirma_kanal_aciklama">משכים ברטט בלבד, לפג\'ר ולתהאג\'וד</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">התפללתי</string>
+    <string name="kilindi_isareti">✓ בוצעה</string>
+    <string name="kapat">כיבוי</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">פתחו את Namaz Akışı בטלפון כדי לראות את זמני התפילה.</string>
+    <string name="yuk_eskidi">נתוני זמני התפילה לא מעודכנים. פתחו את Namaz Akışı בטלפון כדי לרענן אותם.</string>
+    <string name="guncelleme_gerekli">עדכנו את Namaz Akışı בשעון.</string>
+    <string name="bildirim_izni">כדי לקבל תזכורות גם כשהטלפון לא איתכם, אשרו התראות של Namaz Akışı בהגדרות השעון.</string>
+    <string name="cami_soru">אתם במסגד?</string>
+    <string name="cami_evet">כן</string>
+    <string name="cami_evet_aciklama">כן, אני במסגד. מפעיל את מצב תפילה</string>
+    <string name="cami_hayir">לא</string>
+    <string name="cami_hayir_aciklama">לא, אני לא במסגד</string>
+    <string name="camidesiniz">אתם במסגד</string>
+    <string name="cami_degil">זה לא מסגד</string>
+    <string name="cami_degil_aciklama">זה לא מסגד. המקום הזה לא ייחשב שוב כמסגד</string>
+    <string name="tesbihat_ac">פתיחת מונה התסביח</string>
+    <string name="kible_ac">פתיחת מצפן הקיבלה</string>
+    <string name="ses_dene">בדיקת הצליל</string>
+    <string name="ses_dene_aciklama">בדיקת ההקראה בקול של השעון</string>
+    <string name="telefonda_acin">פתיחה בטלפון</string>
+    <string name="telefonda_ekran_ac">פתיחת %1$s בטלפון</string>
+    <string name="ekran_kaza">יומן השלמות</string>
+    <string name="ekran_camideyim">אני במסגד</string>
+    <string name="ekran_ayarlar">הגדרות</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">בוצעה, מסתנכרן</string>
+    <string name="durum_kilindi">בוצעה</string>
+    <string name="durum_girmedi">עוד לא הגיע</string>
+    <string name="durum_simdiki">זמן התפילה הנוכחי, הקישו לסימון</string>
+    <string name="durum_simdiki_kalan">זמן התפילה הנוכחי, %1$s, הקישו לסימון</string>
+    <string name="durum_kilinmadi">לא בוצעה, הקישו לסימון</string>
+    <string name="isaretleyin">סימון כבוצעה</string>
+    <string name="esitleniyor">מסתנכרן</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">אישור \"התפללתי\"</string>
+    <string name="vazgecin">ביטול</string>
+    <string name="vazgec">ביטול</string>
+    <string name="kerahat_vaktindesiniz">עכשיו זמן מכרוה.</string>
+    <string name="kilindi_dua">בוצעה. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">מצב תפילה פעיל, מסתיים ב-%1$s. הקישו כדי לכבות</string>
+    <string name="namaz_modu_ac_aciklama">הפעלת מצב תפילה בטלפון</string>
+    <string name="namaz_modu_kapatin">כיבוי מצב תפילה</string>
+    <string name="namaz_modu_acin">הפעלת מצב תפילה</string>
+    <string name="namaz_modu_acik_bitis">פעיל, מסתיים ב-%1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">מאתר את הכיוון…</string>
+    <string name="kible_yuk_yok">פתחו את Namaz Akışı בטלפון כדי למצוא את הקיבלה.</string>
+    <string name="kible_konum_yok">הפעילו את המיקום בטלפון כדי למצוא את הקיבלה. אם Namaz Akışı לא מעודכנת, עדכנו אותה.</string>
+    <string name="kible_sensor_yok">אין בשעון הזה חיישן מצפן. אפשר לראות את כיוון הקיבלה בטלפון.</string>
+    <string name="kible_kuzeyden">הקיבלה %1$d° (מהצפון)</string>
+    <string name="kible_derece">הקיבלה %1$d°</string>
+    <string name="kible_telefonda_ac">פתיחת הקיבלה בטלפון</string>
+    <string name="kible_erisim">%1$s. הקיבלה ב-%2$d° מהצפון, %3$s</string>
+    <string name="kible_hizali">אתם פונים לכיוון הקיבלה</string>
+    <string name="kible_kalibrasyon">כדי לכייל, הזיזו את פרק היד באוויר בצורת 8</string>
+    <string name="kible_egim">החזיקו את השעון במקביל לקרקע</string>
+    <string name="kible_titresim_acik">הכוונה ברטט פעילה. הקישו כדי לכבות</string>
+    <string name="kible_titresim_kapali">הכוונה ברטט כבויה. הקישו כדי להפעיל</string>
+    <string name="kible_harf_kuzey">צ</string>
+    <string name="kible_harf_dogu">מז</string>
+    <string name="kible_harf_guney">ד</string>
+    <string name="kible_harf_bati">מע</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">התסביח הושלם. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. סך הכול %4$d / %5$d</string>
+    <string name="tesbihat_sayin">ספירה</string>
+    <string name="tesbihat_bastan_baslayin">התחלה מחדש</string>
+    <string name="tesbihat_bastan_soru">להתחיל מחדש?</string>
+    <string name="tesbihat_sifirlanir">הספירה תתאפס.</string>
+    <string name="tesbihat_geri_al">ביטול</string>
+    <string name="tesbihat_geri_al_aciklama">ביטול הספירה האחרונה</string>
+    <string name="tesbihat_yeniden">שוב מההתחלה</string>
+    <string name="tesbihat_yeniden_aciklama">התחלת התסביח שוב</string>
+    <string name="tesbihat_suruyor">תסביח בתהליך: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">התפללתי. מכבה את ההשכמה</string>
+    <string name="uyandirma_kapat_aciklama">כיבוי ההשכמה</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">פתיחת Namaz Akışı</string>
+    <string name="tile_vakitler_icin">הקישו לזמני התפילה</string>
+    <string name="tile_telefonda_acin">פתחו את האפליקציה בטלפון</string>
+    <string name="tile_sonra">בעוד %1$s</string>
+    <string name="tile_siradaki_aciklama">התפילה הבאה %1$s, מתחילה ב-%2$s. פתיחת האפליקציה</string>
+    <string name="tile_giris">מתחילה ב-%1$s</string>
+    <string name="tile_cikis">מסתיימת ב-%1$s</string>
+    <string name="bugun_bos_satir1">פתחו את האפליקציה</string>
+    <string name="bugun_bos_satir2">בטלפון</string>
+    <string name="bugun_acma_aciklamasi">היום בוצעו %1$d/%2$d תפילות. פתיחת האפליקציה</string>
+    <string name="bugun_sayi">היום %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">זמן מכרוה · הקישו שוב לאישור</string>
+    <string name="bugun_onay_tekrar">הקישו שוב לאישור</string>
+    <string name="bugun_tamam">התפילות של היום הושלמו</string>
+    <string name="bugun_kilinmadi">%1$s לא בוצעה</string>
+    <string name="bugun_siradaki">הבאה: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">הקישו שוב</string>
+    <string name="bugun_kilindi">%1$s בוצעה</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s בוצעה, מסתנכרן</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">ממתין לזמני התפילה; פתחו את Namaz Akışı בטלפון</string>
+    <string name="komplikasyon_bekleniyor">ממתין לזמנים</string>
+    <string name="komplikasyon_vakit">תפילה</string>
+    <string name="komplikasyon_cikis">סיום</string>
+    <string name="komplikasyon_sirada">הבאה</string>
+    <string name="gun_durumu_aciklama">היום בוצעו %2$d מתוך %1$d תפילות</string>
+    <string name="gun_durumu_kilinmamis">%1$s; לא בוצעו: %2$s</string>
+    <string name="komplikasyon_namaz">תפילות</string>
+    <string name="komplikasyon_kerahat">מכרוה</string>
+    <string name="kerahat_icinde_aciklama">עכשיו זמן מכרוה, מסתיים ב-%1$s</string>
+    <string name="kerahat_siradaki_aciklama">זמן המכרוה הבא %1$s</string>
+    <string name="kible_komplikasyon">הקיבלה ב-%1$d° מהצפון. פתיחת המצפן</string>
+    <string name="kible_komplikasyon_konumlu">הקיבלה ב-%1$d° מהצפון, %2$s. פתיחת המצפן</string>
+    <string name="kible_komplikasyon_konum_yok">הפעילו את המיקום בטלפון כדי למצוא את הקיבלה</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">תזכורת דחופה · ברטט</string>
+    <string name="muhafiz_kanal_acil">תזכורת דחופה</string>
+    <string name="muhafiz_kanal_titresimli">תזכורת תפילה · ברטט</string>
+    <string name="muhafiz_kanal">תזכורת תפילה</string>
+    <string name="muhafiz_kanal_aciklama">תזכורות תפילה שמוצגות בשעון גם כשהטלפון לא איתכם</string>
+    <string name="son_dakikalar_cikis">סיום: %1$s</string>
+    <string name="son_dakikalar_bitis">סיום: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">הזמן שנותר עד סוף %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">הזמן שנותר ל-%1$s</string>
+    <string name="cami_namaz_modu_bitis">מצב תפילה · מסתיים ב-%1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">נפתח בטלפון</string>
+    <string name="telefona_ulasilamadi">אין גישה לטלפון</string>
+</resources>

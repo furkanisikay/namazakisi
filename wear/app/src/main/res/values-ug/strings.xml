@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ug — Uygurca (beta). -->
+<!-- Uygurca. Terimler: src/core/dil/sozluk/ug (بامدات، پېشىن، ئەسىر، شام، خۇپتەن؛ «ناماز ئوقۇدۇم» / «ئوقۇلدى»). Rakam Batı (0-9). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ug</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">كېيىنكى ناماز</string>
+    <string name="tile_aciklama">كېيىنكى ناماز ۋە ۋاقتى</string>
+    <string name="komplikasyon_adi">قالغان ۋاقىت</string>
+    <string name="cikis_saati_komplikasyon_adi">ۋاقىت چىقىش سائىتى</string>
+    <string name="siradaki_namaz_komplikasyon_adi">كېيىنكى ناماز</string>
+    <string name="bugun_tile_adi">بۈگۈن</string>
+    <string name="bugun_tile_aciklama">بۈگۈنكى بەش ۋاخ؛ ئوقۇغانلىرىڭىزنى ئىككى چېكىش بىلەن بەلگىلەڭ</string>
+    <string name="ilerleme_komplikasyon_adi">كۈندىلىك ئىلگىرىلەش</string>
+    <string name="dagilim_komplikasyon_adi">كۈن ئومۇمىي كۆرۈنۈشى</string>
+    <string name="kerahat_komplikasyon_adi">مەكرۇھ ۋاقىت</string>
+    <string name="son_dakikalar_kanal_adi">ئاخىرقى مىنۇتلار</string>
+    <string name="son_dakikalar_kanal_aciklama">ئوقۇمىغان نامازنىڭ ئاخىرقى مىنۇتلىرىدا سائەت يۈزىدىكى تەتۈر ساناش</string>
+    <string name="tesbihat_adi">تەسبىھ</string>
+    <string name="tesbihat_kanal_adi">تەسبىھ</string>
+    <string name="tesbihat_kanal_aciklama">تۈگىمىگەن تەسبىھقا قايتىش ئۈچۈن سائەت يۈزىدىكى ئۈنسىز بەلگە</string>
+    <string name="kible_adi">قىبلە</string>
+    <string name="kible_komplikasyon_adi">قىبلە</string>
+    <string name="camideyim_kanal_adi">مەسچىتتىمەن</string>
+    <string name="camideyim_kanal_aciklama">تېلېفونىڭىز مەسچىتتە ئىكەنلىكىڭىزنى مەلۇم قىلغاندا سائەت يۈزىدىكى ئۈنسىز بەلگە</string>
+    <string name="uyandirma_kanal_adi">ئۈنسىز ئويغىتىش</string>
+    <string name="uyandirma_kanal_aciklama">بامدات ۋە تەھەججۇد ئۈچۈن پەقەت تىترەش بىلەن ئويغىتىدۇ</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">ناماز ئوقۇدۇم</string>
+    <string name="kilindi_isareti">✓ ئوقۇلدى</string>
+    <string name="kapat">تاقاش</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">ناماز ۋاقىتلىرىنى كۆرۈش ئۈچۈن تېلېفونىڭىزدا Namaz Akışı نى ئېچىڭ.</string>
+    <string name="yuk_eskidi">ناماز ۋاقتى سانلىق مەلۇماتى كونىراپ كەتتى. يېڭىلاش ئۈچۈن تېلېفونىڭىزدا Namaz Akışı نى ئېچىڭ.</string>
+    <string name="guncelleme_gerekli">سائىتىڭىزدىكى Namaz Akışı نى يېڭىلاڭ.</string>
+    <string name="bildirim_izni">تېلېفونىڭىز يېنىڭىزدا بولمىغاندىمۇ ئەسكەرتىش ئېلىش ئۈچۈن سائەت تەڭشەكلىرىدە Namaz Akışı ئۇقتۇرۇشلىرىغا ئىجازەت بېرىڭ.</string>
+    <string name="cami_soru">مەسچىتتىمۇسىز؟</string>
+    <string name="cami_evet">ھەئە</string>
+    <string name="cami_evet_aciklama">ھەئە، مەسچىتتىمەن. ناماز ھالىتىنى ئاچىدۇ</string>
+    <string name="cami_hayir">ياق</string>
+    <string name="cami_hayir_aciklama">ياق، مەسچىتتە ئەمەسمەن</string>
+    <string name="camidesiniz">مەسچىتتىسىز</string>
+    <string name="cami_degil">بۇ مەسچىت ئەمەس</string>
+    <string name="cami_degil_aciklama">بۇ مەسچىت ئەمەس. بۇ جاي قايتا مەسچىت دەپ ھېسابلانمايدۇ</string>
+    <string name="tesbihat_ac">تەسبىھ ساناقچىسىنى ئېچىڭ</string>
+    <string name="kible_ac">قىبلە كومپاسىنى ئېچىڭ</string>
+    <string name="ses_dene">ئاۋازنى سىناش</string>
+    <string name="ses_dene_aciklama">سائەتنىڭ ئاۋازلىق ئوقۇشىنى سىناڭ</string>
+    <string name="telefonda_acin">تېلېفوندا ئېچىش</string>
+    <string name="telefonda_ekran_ac">%1$s نى تېلېفونىڭىزدا ئېچىڭ</string>
+    <string name="ekran_kaza">قازا خاتىرىسى</string>
+    <string name="ekran_camideyim">مەسچىتتىمەن</string>
+    <string name="ekran_ayarlar">تەڭشەكلەر</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">ئوقۇلدى، قەدەمداشلىنىۋاتىدۇ</string>
+    <string name="durum_kilindi">ئوقۇلدى</string>
+    <string name="durum_girmedi">تېخى كىرمىدى</string>
+    <string name="durum_simdiki">ھازىرقى ۋاقىت، بەلگىلەش ئۈچۈن چېكىڭ</string>
+    <string name="durum_simdiki_kalan">ھازىرقى ۋاقىت، %1$s، بەلگىلەش ئۈچۈن چېكىڭ</string>
+    <string name="durum_kilinmadi">ئوقۇلمىدى، بەلگىلەش ئۈچۈن چېكىڭ</string>
+    <string name="isaretleyin">ئوقۇلدى دەپ بەلگىلەڭ</string>
+    <string name="esitleniyor">قەدەمداشلىنىۋاتىدۇ</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">«ناماز ئوقۇدۇم» نى جەزملەڭ</string>
+    <string name="vazgecin">ۋاز كېچىڭ</string>
+    <string name="vazgec">ۋاز كېچىڭ</string>
+    <string name="kerahat_vaktindesiniz">ھازىر مەكرۇھ ۋاقىت.</string>
+    <string name="kilindi_dua">ئوقۇلدى. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">ناماز ھالىتى ئوچۇق، ئاخىرلىشىشى %1$s. تاقاش ئۈچۈن چېكىڭ</string>
+    <string name="namaz_modu_ac_aciklama">تېلېفونىڭىزدا ناماز ھالىتىنى ئېچىڭ</string>
+    <string name="namaz_modu_kapatin">ناماز ھالىتىنى تاقاڭ</string>
+    <string name="namaz_modu_acin">ناماز ھالىتىنى ئېچىڭ</string>
+    <string name="namaz_modu_acik_bitis">ئوچۇق، ئاخىرلىشىشى %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">يۆنىلىش ھېسابلىنىۋاتىدۇ…</string>
+    <string name="kible_yuk_yok">قىبلىنى تېپىش ئۈچۈن تېلېفونىڭىزدا Namaz Akışı نى ئېچىڭ.</string>
+    <string name="kible_konum_yok">قىبلىنى تېپىش ئۈچۈن تېلېفونىڭىزدا ئورۇننى ئېچىڭ. Namaz Akışı يېڭىلانمىغان بولسا، يېڭىلاڭ.</string>
+    <string name="kible_sensor_yok">بۇ سائەتتە كومپاس سەزگۈچى يوق. قىبلە يۆنىلىشىنى تېلېفونىڭىزدا كۆرەلەيسىز.</string>
+    <string name="kible_kuzeyden">قىبلە %1$d° (شىمالدىن)</string>
+    <string name="kible_derece">قىبلە %1$d°</string>
+    <string name="kible_telefonda_ac">قىبلىنى تېلېفونىڭىزدا ئېچىڭ</string>
+    <string name="kible_erisim">%1$s. قىبلە شىمالدىن %2$d°، %3$s</string>
+    <string name="kible_hizali">قىبلە تەرەپكە قاراپ تۇرۇۋاتىسىز</string>
+    <string name="kible_kalibrasyon">توغرىلاش ئۈچۈن بىلىكىڭىزنى ھاۋادا 8 سىزغاندەك ھەرىكەتلەندۈرۈڭ</string>
+    <string name="kible_egim">سائىتىڭىزنى يەرگە پاراللېل تۇتۇڭ</string>
+    <string name="kible_titresim_acik">تىترەش يېتەكچىسى ئوچۇق. تاقاش ئۈچۈن چېكىڭ</string>
+    <string name="kible_titresim_kapali">تىترەش يېتەكچىسى تاقاق. ئېچىش ئۈچۈن چېكىڭ</string>
+    <string name="kible_harf_kuzey">ش</string>
+    <string name="kible_harf_dogu">ق</string>
+    <string name="kible_harf_guney">ج</string>
+    <string name="kible_harf_bati">غ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">تەسبىھ تاماملاندى. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s، %2$d / %3$d. جەمئىي %4$d / %5$d</string>
+    <string name="tesbihat_sayin">ساناڭ</string>
+    <string name="tesbihat_bastan_baslayin">باشتىن باشلاڭ</string>
+    <string name="tesbihat_bastan_soru">باشتىن باشلانسۇنمۇ؟</string>
+    <string name="tesbihat_sifirlanir">سان نۆللىنىدۇ.</string>
+    <string name="tesbihat_geri_al">ئەسلىگە قايتۇرۇش</string>
+    <string name="tesbihat_geri_al_aciklama">ئاخىرقى ساناشنى ئەسلىگە قايتۇرۇڭ</string>
+    <string name="tesbihat_yeniden">قايتا باشلاش</string>
+    <string name="tesbihat_yeniden_aciklama">تەسبىھنى قايتا باشلاڭ</string>
+    <string name="tesbihat_suruyor">تەسبىھ داۋاملىشىۋاتىدۇ: %1$s، %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">ناماز ئوقۇدۇم. ئويغىتىشنى تاقايدۇ</string>
+    <string name="uyandirma_kapat_aciklama">ئويغىتىشنى تاقاڭ</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı نى ئېچىڭ</string>
+    <string name="tile_vakitler_icin">ناماز ۋاقىتلىرى ئۈچۈن چېكىڭ</string>
+    <string name="tile_telefonda_acin">ئەپنى تېلېفونىڭىزدا ئېچىڭ</string>
+    <string name="tile_sonra">%1$s دىن كېيىن</string>
+    <string name="tile_siradaki_aciklama">كېيىنكى ناماز %1$s، كىرىشى %2$s. ئەپنى ئېچىڭ</string>
+    <string name="tile_giris">كىرىشى %1$s</string>
+    <string name="tile_cikis">چىقىشى %1$s</string>
+    <string name="bugun_bos_satir1">ئەپنى</string>
+    <string name="bugun_bos_satir2">تېلېفونىڭىزدا ئېچىڭ</string>
+    <string name="bugun_acma_aciklamasi">بۈگۈن %1$d/%2$d ناماز ئوقۇلدى. ئەپنى ئېچىڭ</string>
+    <string name="bugun_sayi">بۈگۈن %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">مەكرۇھ ۋاقىت · جەزملەش ئۈچۈن يەنە چېكىڭ</string>
+    <string name="bugun_onay_tekrar">جەزملەش ئۈچۈن يەنە چېكىڭ</string>
+    <string name="bugun_tamam">بۈگۈنكى نامازلار تولۇق</string>
+    <string name="bugun_kilinmadi">%1$s ئوقۇلمىدى</string>
+    <string name="bugun_siradaki">كېيىنكىسى: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">يەنە چېكىڭ</string>
+    <string name="bugun_kilindi">%1$s ئوقۇلدى</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s ئوقۇلدى، قەدەمداشلىنىۋاتىدۇ</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">ناماز ۋاقىتلىرى ساقلىنىۋاتىدۇ؛ تېلېفونىڭىزدا Namaz Akışı نى ئېچىڭ</string>
+    <string name="komplikasyon_bekleniyor">ۋاقىت ساقلىنىۋاتىدۇ</string>
+    <string name="komplikasyon_vakit">ناماز</string>
+    <string name="komplikasyon_cikis">چىقىش</string>
+    <string name="komplikasyon_sirada">كېيىنكى</string>
+    <string name="gun_durumu_aciklama">بۈگۈن %1$d نامازدىن %2$d ئوقۇلدى</string>
+    <string name="gun_durumu_kilinmamis">%1$s؛ ئوقۇلمىغان: %2$s</string>
+    <string name="komplikasyon_namaz">نامازلار</string>
+    <string name="komplikasyon_kerahat">مەكرۇھ</string>
+    <string name="kerahat_icinde_aciklama">ھازىر مەكرۇھ ۋاقىت، ئاخىرلىشىشى %1$s</string>
+    <string name="kerahat_siradaki_aciklama">كېيىنكى مەكرۇھ ۋاقىت %1$s</string>
+    <string name="kible_komplikasyon">قىبلە شىمالدىن %1$d°. كومپاسنى ئېچىڭ</string>
+    <string name="kible_komplikasyon_konumlu">قىبلە شىمالدىن %1$d°، %2$s. كومپاسنى ئېچىڭ</string>
+    <string name="kible_komplikasyon_konum_yok">قىبلىنى تېپىش ئۈچۈن تېلېفونىڭىزدا ئورۇننى ئېچىڭ</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">جىددىي ئەسكەرتكۈچ · تىترەيدىغان</string>
+    <string name="muhafiz_kanal_acil">جىددىي ئەسكەرتكۈچ</string>
+    <string name="muhafiz_kanal_titresimli">ناماز ئەسكەرتكۈچى · تىترەيدىغان</string>
+    <string name="muhafiz_kanal">ناماز ئەسكەرتكۈچى</string>
+    <string name="muhafiz_kanal_aciklama">تېلېفونىڭىز يېنىڭىزدا بولمىغاندىمۇ سائىتىڭىزدە كۆرسىتىلىدىغان ناماز ئەسكەرتىشلىرى</string>
+    <string name="son_dakikalar_cikis">چىقىشى: %1$s</string>
+    <string name="son_dakikalar_bitis">ئاخىرلىشىشى: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s ۋاقتىنىڭ چىقىشىغا قالغان ۋاقىت</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s ئۈچۈن قالغان ۋاقىت</string>
+    <string name="cami_namaz_modu_bitis">ناماز ھالىتى · ئاخىرلىشىشى %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">تېلېفونىڭىزدا ئېچىلدى</string>
+    <string name="telefona_ulasilamadi">تېلېفونىڭىزغا ئۇلىنالمىدى</string>
+</resources>

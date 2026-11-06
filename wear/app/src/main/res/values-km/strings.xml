@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Khmerce. Terimler: src/core/dil/sozluk/km. Saat yüzeyi dar: başlık ve düğmeler kısa. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">km</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">សឡាតបន្ទាប់</string>
+    <string name="tile_aciklama">សឡាតបន្ទាប់ និងម៉ោងរបស់វា</string>
+    <string name="komplikasyon_adi">ពេលនៅសល់</string>
+    <string name="cikis_saati_komplikasyon_adi">ម៉ោងផុតពេលសឡាត</string>
+    <string name="siradaki_namaz_komplikasyon_adi">សឡាតបន្ទាប់</string>
+    <string name="bugun_tile_adi">ថ្ងៃនេះ</string>
+    <string name="bugun_tile_aciklama">សឡាតប្រាំពេលថ្ងៃនេះ សម្គាល់សឡាតដែលបានធ្វើដោយប៉ះពីរដង</string>
+    <string name="ilerleme_komplikasyon_adi">វឌ្ឍនភាពប្រចាំថ្ងៃ</string>
+    <string name="dagilim_komplikasyon_adi">ទិដ្ឋភាពថ្ងៃ</string>
+    <string name="kerahat_komplikasyon_adi">ពេលហាមសឡាត</string>
+    <string name="son_dakikalar_kanal_adi">នាទីចុងក្រោយ</string>
+    <string name="son_dakikalar_kanal_aciklama">ការរាប់ថយក្រោយលើផ្ទាំងនាឡិកា ក្នុងនាទីចុងក្រោយនៃសឡាតដែលអ្នកមិនទាន់បានធ្វើ</string>
+    <string name="tesbihat_adi">ហ្ស៊ីកៀរ</string>
+    <string name="tesbihat_kanal_adi">ហ្ស៊ីកៀរ</string>
+    <string name="tesbihat_kanal_aciklama">រូបតំណាងស្ងាត់លើផ្ទាំងនាឡិកា ដើម្បីត្រឡប់ទៅហ្ស៊ីកៀរដែលមិនទាន់ចប់</string>
+    <string name="kible_adi">គិបឡាត់</string>
+    <string name="kible_komplikasyon_adi">គិបឡាត់</string>
+    <string name="camideyim_kanal_adi">នៅម៉ាស្ជិត</string>
+    <string name="camideyim_kanal_aciklama">រូបតំណាងស្ងាត់លើផ្ទាំងនាឡិកា ពេលទូរសព្ទរបស់អ្នករាយការណ៍ថាអ្នកនៅម៉ាស្ជិត</string>
+    <string name="uyandirma_kanal_adi">ការដាស់ស្ងាត់</string>
+    <string name="uyandirma_kanal_aciklama">ដាស់អ្នកដោយការញ័រតែប៉ុណ្ណោះ សម្រាប់ស៊ូពុស និងតះជុត</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">បានសឡាតហើយ</string>
+    <string name="kilindi_isareti">✓ បានសឡាត</string>
+    <string name="kapat">បិទ</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">បើក Namaz Akışı នៅលើទូរសព្ទ ដើម្បីមើលពេលសឡាត។</string>
+    <string name="yuk_eskidi">ទិន្នន័យពេលសឡាតហួសសម័យហើយ។ បើក Namaz Akışı នៅលើទូរសព្ទ ដើម្បីធ្វើឲ្យថ្មី។</string>
+    <string name="guncelleme_gerekli">ធ្វើបច្ចុប្បន្នភាព Namaz Akışı នៅលើនាឡិការបស់អ្នក។</string>
+    <string name="bildirim_izni">ដើម្បីទទួលការរំលឹក ទោះបីទូរសព្ទមិននៅជាមួយអ្នក សូមអនុញ្ញាតការជូនដំណឹង Namaz Akışı ក្នុងការកំណត់នាឡិកា។</string>
+    <string name="cami_soru">អ្នកនៅម៉ាស្ជិតឬ?</string>
+    <string name="cami_evet">មែន</string>
+    <string name="cami_evet_aciklama">មែន ខ្ញុំនៅម៉ាស្ជិត។ បើកមុខងារសឡាត</string>
+    <string name="cami_hayir">ទេ</string>
+    <string name="cami_hayir_aciklama">ទេ ខ្ញុំមិននៅម៉ាស្ជិតទេ</string>
+    <string name="camidesiniz">អ្នកនៅម៉ាស្ជិត</string>
+    <string name="cami_degil">នេះមិនមែនជាម៉ាស្ជិតទេ</string>
+    <string name="cami_degil_aciklama">នេះមិនមែនជាម៉ាស្ជិតទេ។ កន្លែងនេះនឹងលែងរាប់ជាម៉ាស្ជិតទៀតហើយ</string>
+    <string name="tesbihat_ac">បើកការរាប់ហ្ស៊ីកៀរ</string>
+    <string name="kible_ac">បើកត្រីវិស័យគិបឡាត់</string>
+    <string name="ses_dene">សាកល្បងសំឡេង</string>
+    <string name="ses_dene_aciklama">សាកល្បងការអានឮៗនៃនាឡិកា</string>
+    <string name="telefonda_acin">បើកនៅលើទូរសព្ទ</string>
+    <string name="telefonda_ekran_ac">បើក%1$sនៅលើទូរសព្ទ</string>
+    <string name="ekran_kaza">បញ្ជីសឡាតសងវិញ</string>
+    <string name="ekran_camideyim">នៅម៉ាស្ជិត</string>
+    <string name="ekran_ayarlar">ការកំណត់</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">បានសឡាត កំពុងធ្វើសមកាលកម្ម</string>
+    <string name="durum_kilindi">បានសឡាត</string>
+    <string name="durum_girmedi">មិនទាន់ដល់ពេល</string>
+    <string name="durum_simdiki">ពេលសឡាតបច្ចុប្បន្ន ប៉ះដើម្បីសម្គាល់</string>
+    <string name="durum_simdiki_kalan">ពេលសឡាតបច្ចុប្បន្ន %1$s ប៉ះដើម្បីសម្គាល់</string>
+    <string name="durum_kilinmadi">មិនបានសឡាត ប៉ះដើម្បីសម្គាល់</string>
+    <string name="isaretleyin">សម្គាល់ថាបានសឡាត</string>
+    <string name="esitleniyor">កំពុងធ្វើសមកាលកម្ម</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">បញ្ជាក់ បានសឡាតហើយ</string>
+    <string name="vazgecin">បោះបង់</string>
+    <string name="vazgec">បោះបង់</string>
+    <string name="kerahat_vaktindesiniz">ឥឡូវជាពេលហាមសឡាត។</string>
+    <string name="kilindi_dua">បានសឡាត។ %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">មុខងារសឡាតបើក ចប់ %1$s។ ប៉ះដើម្បីបិទ</string>
+    <string name="namaz_modu_ac_aciklama">បើកមុខងារសឡាតនៅលើទូរសព្ទ</string>
+    <string name="namaz_modu_kapatin">បិទមុខងារសឡាត</string>
+    <string name="namaz_modu_acin">បើកមុខងារសឡាត</string>
+    <string name="namaz_modu_acik_bitis">បើក ចប់ %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">កំពុងរកទិស…</string>
+    <string name="kible_yuk_yok">បើក Namaz Akışı នៅលើទូរសព្ទ ដើម្បីរកគិបឡាត់។</string>
+    <string name="kible_konum_yok">បើកទីតាំងនៅលើទូរសព្ទ ដើម្បីរកគិបឡាត់។ បើ Namaz Akışı មិនទាន់ទាន់សម័យ សូមធ្វើបច្ចុប្បន្នភាព។</string>
+    <string name="kible_sensor_yok">នាឡិកានេះគ្មានឧបករណ៍ចាប់សញ្ញាត្រីវិស័យទេ។ អ្នកអាចមើលទិសគិបឡាត់នៅលើទូរសព្ទ។</string>
+    <string name="kible_kuzeyden">គិបឡាត់ %1$d° (ពីទិសខាងជើង)</string>
+    <string name="kible_derece">គិបឡាត់ %1$d°</string>
+    <string name="kible_telefonda_ac">បើកគិបឡាត់នៅលើទូរសព្ទ</string>
+    <string name="kible_erisim">%1$s។ គិបឡាត់នៅ %2$d° ពីទិសខាងជើង %3$s</string>
+    <string name="kible_hizali">អ្នកកំពុងបែរមុខទៅគិបឡាត់</string>
+    <string name="kible_kalibrasyon">ដើម្បីតម្រឹម សូមគូររាងលេខ 8 ក្នុងខ្យល់ដោយកដៃ</string>
+    <string name="kible_egim">កាន់នាឡិកាឲ្យស្របនឹងដី</string>
+    <string name="kible_titresim_acik">ការណែនាំដោយការញ័របើក។ ប៉ះដើម្បីបិទ</string>
+    <string name="kible_titresim_kapali">ការណែនាំដោយការញ័របិទ។ ប៉ះដើម្បីបើក</string>
+    <string name="kible_harf_kuzey">ជ</string>
+    <string name="kible_harf_dogu">ក</string>
+    <string name="kible_harf_guney">ត</string>
+    <string name="kible_harf_bati">ល</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">ហ្ស៊ីកៀរបានគ្រប់។ %1$s។ %2$d / %3$d។ %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s %2$d / %3$d។ សរុប %4$d / %5$d</string>
+    <string name="tesbihat_sayin">រាប់</string>
+    <string name="tesbihat_bastan_baslayin">ចាប់ផ្ដើមពីដើម</string>
+    <string name="tesbihat_bastan_soru">ចាប់ផ្ដើមពីដើមឬ?</string>
+    <string name="tesbihat_sifirlanir">ការរាប់ត្រូវបានកំណត់ឡើងវិញ។</string>
+    <string name="tesbihat_geri_al">មិនធ្វើវិញ</string>
+    <string name="tesbihat_geri_al_aciklama">មិនធ្វើការរាប់ចុងក្រោយវិញ</string>
+    <string name="tesbihat_yeniden">ចាប់ផ្ដើមម្ដងទៀត</string>
+    <string name="tesbihat_yeniden_aciklama">ចាប់ផ្ដើមហ្ស៊ីកៀរម្ដងទៀត</string>
+    <string name="tesbihat_suruyor">ហ្ស៊ីកៀរកំពុងបន្ត៖ %1$s %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">បានសឡាតហើយ។ បិទការដាស់</string>
+    <string name="uyandirma_kapat_aciklama">បិទការដាស់</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">បើក Namaz Akışı</string>
+    <string name="tile_vakitler_icin">ប៉ះដើម្បីមើលពេលសឡាត</string>
+    <string name="tile_telefonda_acin">បើកកម្មវិធីនៅលើទូរសព្ទ</string>
+    <string name="tile_sonra">ក្នុងរយៈ %1$s</string>
+    <string name="tile_siradaki_aciklama">សឡាតបន្ទាប់%1$s ចាប់ផ្ដើមនៅ %2$s។ បើកកម្មវិធី</string>
+    <string name="tile_giris">ចូល %1$s</string>
+    <string name="tile_cikis">ផុត %1$s</string>
+    <string name="bugun_bos_satir1">បើកកម្មវិធី</string>
+    <string name="bugun_bos_satir2">នៅលើទូរសព្ទ</string>
+    <string name="bugun_acma_aciklamasi">ថ្ងៃនេះបានសឡាត %1$d/%2$d ពេល។ បើកកម្មវិធី</string>
+    <string name="bugun_sayi">ថ្ងៃនេះ %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">ពេលហាមសឡាត · ប៉ះម្ដងទៀតដើម្បីបញ្ជាក់</string>
+    <string name="bugun_onay_tekrar">ប៉ះម្ដងទៀតដើម្បីបញ្ជាក់</string>
+    <string name="bugun_tamam">សឡាតថ្ងៃនេះគ្រប់ហើយ</string>
+    <string name="bugun_kilinmadi">មិនបានសឡាត%1$s</string>
+    <string name="bugun_siradaki">បន្ទាប់៖ %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">ប៉ះម្ដងទៀត</string>
+    <string name="bugun_kilindi">បានសឡាត%1$s</string>
+    <string name="bugun_kilindi_esitleniyor">បានសឡាត%1$s កំពុងធ្វើសមកាលកម្ម</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">កំពុងរង់ចាំពេលសឡាត សូមបើក Namaz Akışı នៅលើទូរសព្ទ</string>
+    <string name="komplikasyon_bekleniyor">កំពុងរង់ចាំ</string>
+    <string name="komplikasyon_vakit">សឡាត</string>
+    <string name="komplikasyon_cikis">ផុត</string>
+    <string name="komplikasyon_sirada">បន្ទាប់</string>
+    <string name="gun_durumu_aciklama">ថ្ងៃនេះបានសឡាត %2$d ក្នុងចំណោម %1$d ពេល</string>
+    <string name="gun_durumu_kilinmamis">%1$s មិនបានសឡាត៖ %2$s</string>
+    <string name="komplikasyon_namaz">សឡាត</string>
+    <string name="komplikasyon_kerahat">ហាម</string>
+    <string name="kerahat_icinde_aciklama">ឥឡូវជាពេលហាមសឡាត ចប់ %1$s</string>
+    <string name="kerahat_siradaki_aciklama">ពេលហាមសឡាតបន្ទាប់ %1$s</string>
+    <string name="kible_komplikasyon">គិបឡាត់នៅ %1$d° ពីទិសខាងជើង។ បើកត្រីវិស័យ</string>
+    <string name="kible_komplikasyon_konumlu">គិបឡាត់នៅ %1$d° ពីទិសខាងជើង %2$s។ បើកត្រីវិស័យ</string>
+    <string name="kible_komplikasyon_konum_yok">បើកទីតាំងនៅលើទូរសព្ទ ដើម្បីរកគិបឡាត់</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">ការរំលឹកបន្ទាន់ · ញ័រ</string>
+    <string name="muhafiz_kanal_acil">ការរំលឹកបន្ទាន់</string>
+    <string name="muhafiz_kanal_titresimli">ការរំលឹកសឡាត · ញ័រ</string>
+    <string name="muhafiz_kanal">ការរំលឹកសឡាត</string>
+    <string name="muhafiz_kanal_aciklama">ការរំលឹកសឡាតដែលបង្ហាញនៅលើនាឡិកា ទោះបីទូរសព្ទមិននៅជាមួយអ្នក</string>
+    <string name="son_dakikalar_cikis">ផុត៖ %1$s</string>
+    <string name="son_dakikalar_bitis">ផុត៖ %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">ពេលនៅសល់មុន%1$sផុត</string>
+    <string name="son_dakikalar_kalan_erisim">ពេលនៅសល់សម្រាប់%1$s</string>
+    <string name="cami_namaz_modu_bitis">មុខងារសឡាត · ចប់ %1$s</string>
+    <string name="cami_erisim">%1$s៖ %2$s។ %3$s</string>
+    <string name="telefonda_acildi">បានបើកនៅលើទូរសព្ទ</string>
+    <string name="telefona_ulasilamadi">មិនអាចភ្ជាប់ទូរសព្ទបានទេ</string>
+</resources>

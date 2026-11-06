@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Luganda. Terimler: src/core/dil/sozluk/lg. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">lg</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Ekipande ky’ebiseera by’esswala</string>
+    <string name="ayarlar">Entegeka</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Ekiseera ekisigadde %1$s okutuuka: %2$s</string>
+    <string name="pano_vaktine">Okutuusa %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s mu %2$s</string>
+    <string name="pano_kerahat_vakti">Ekiseera ekikyayibwa</string>
+    <string name="pano_bitis">kiggwaako %1$s</string>
+    <string name="pano_kerahat_erisim">Ekiseera ekikyayibwa, %1$s, kiggwaako %2$s. %3$s</string>
+    <string name="pano_cumaya">Ejjuma mu %1$s</string>
+    <string name="pano_cikis_geldi">kye kiseera okugenda</string>
+    <string name="pano_cikis">genda ku %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Kye kiseera okugenda ku Ejjuma</string>
+    <string name="pano_cuma_cikis_erisim">Genda ku Ejjuma ku ssaawa %1$s</string>
+    <string name="pano_bugun_cuma">Leero Ejjuma</string>
+    <string name="pano_ogle">Dhuhur %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Leero Ejjuma. Esswala y’Ejjuma eri mu kiseera kya Dhuhur, %1$s</string>
+    <string name="pano_ayarlar_erisim">Entegeka: gattako essimu, ekifo, essimu ezigattiddwa</string>
+    <string name="pano_simdiki_vakit">ekiseera ky’esswala ekiriwo</string>
+    <string name="pano_siradaki_vakit">ekiseera ky’esswala ekiddako</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Gattako essimu yo", "Wandiika koodi", "Nja kulonda ekibuga nzekka", "Gattako". -->
+    <string name="kodla_girin">Wandiika koodi</string>
+    <string name="ili_kendim_secin">Nja kulonda ekibuga nzekka</string>
+    <string name="yeniden_deneyin">Ddamu ogezeeko</string>
+    <string name="telefon_varsayilan">Essimu</string>
+    <string name="esleme_ekleniyor">%1$s egattibwako</string>
+    <string name="esleme_gonderiyor">Essimu yo esindika ekifo kyayo n’embeera…</string>
+    <string name="esleme_tamamlanamadi">Okugatta tekusobodde kuggwa</string>
+    <string name="esleme_saklanamadi">TV eno tesobola kukuuma kisumuluzo kya kuyunga mu ngeri ey’obukuumi. Osobola okuwandiika ekifo kyo ne koodi oba okulonda ekibuga kyo.</string>
+    <string name="telefonunuzu_ekleyin">Gattako essimu yo</string>
+    <string name="esleme_alt">Ebiseera by’esswala eby’ekifo kyo; n’esswala z’osaaze zirabika.</string>
+    <string name="esleme_adim1">Ggulawo Namaz Akışı ku ssimu yo</string>
+    <string name="esleme_adim2">Entegeka › Ebyuma byange › Gattako TV</string>
+    <string name="esleme_adim3">Tunuuliza kamera y’essimu yo ku koodi</string>
+    <string name="esleme_ayni_wifi">Essimu yo ne TV birina okuba ku mukutu gwa Wi-Fi gwe gumu.</string>
+    <string name="esleme_onay_soru">Gattako essimu eno?</string>
+    <string name="esleme_onay_aciklama">Essimu egattiddwako esobola okusindika ekifo kyayo n’esswala z’eteekako akabonero ku TV eno.</string>
+    <string name="ekleyin">Gattako</string>
+    <string name="hayir">Nedda</string>
+    <string name="esleme_eklendi">%1$s egattiddwako</string>
+    <string name="konumunuz_geldi">Ekifo kyo kituuse</string>
+    <string name="konuma_gore_hesaplanacak">Ebiseera by’esswala bijja kubalibwa okusinziira ku kifo kino.</string>
+    <string name="qr_konum_alindi">Ekifo kifunise</string>
+    <string name="qr_kodu">Koodi y’okugatta gy’osoma n’essimu yo</string>
+    <string name="ag_yok">TV teyungiddwa ku mukutu</string>
+    <string name="ag_yok_aciklama">Osobola okugenda mu maaso ng’owandiika koodi ey’ennamba 7 okuva ku ssimu yo oba ng’olonda ekibuga kyo.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Wandiika koodi eva ku ssimu yo</string>
+    <string name="kod_yol">Ku ssimu yo: Entegeka › Ebyuma byange › Gattako TV</string>
+    <string name="kod_hatali">Koodi tekwatagana. Kebera ennamba 7 ku ssimu yo; tereeza ennamba enkyamu ne “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Rimooti yo bw’eba n’ebisumuluzo by’ennamba, osobola n’okuwandiika nabyo.</string>
+    <string name="kod_bos_hane">ekifo ekyereere</string>
+    <string name="kod_sil">Sangula</string>
+    <string name="kod_sil_aciklama">Sangula ennamba esembayo</string>
+    <string name="kod_geri">Emabega</string>
+    <string name="vazgecin">Sazaamu</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Londa ekibuga kyo</string>
+    <string name="il_merkezine_gore">Ebiseera by’esswala bibalibwa okusinziira ku makkati g’ekibuga.</string>
+    <string name="il_secili">%1$s, kirondeddwa</string>
+    <string name="dream_il_yok">Okulaba ekipande ky’ebiseera by’esswala, ggulawo app ya Namaz Akışı olonde ekibuga kyo.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Ekifo: %1$s</string>
+    <string name="ayar_konum_yok">Tewali kifo kirondeddwa</string>
+    <string name="ayar_telefon_ekleyin">Gattako essimu</string>
+    <string name="ayar_konumu_kodla">Wandiika ekifo ne koodi</string>
+    <string name="ayar_bagli_telefonlar">Essimu ezigattiddwa ku TV eno</string>
+    <string name="ayar_telefon_yok">Tewannabaawo ssimu egattiddwako. Kozesa “%1$s” ku kkono osome koodi erabika.</string>
+    <string name="kaldirin">Ggyawo</string>
+    <string name="ayar_ne_gonderir">Essimu zisindika ki?</string>
+    <string name="ayar_madde_konum">Ekifo: ebiseera by’esswala bikigoberera</string>
+    <string name="ayar_madde_namazlar">Esswala eziteereddwako akabonero, eri abo abalonda</string>
+    <string name="ayar_madde_sifreli">Bikuumiddwa n’ekyama, ku mukutu gw’awaka gwokka</string>
+    <string name="son_haber_yok">Tewannabaawo bikwatako</string>
+    <string name="son_haber_az_once">Kaakano</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">Eddakiika %1$d emabega</item>
+        <item quantity="other">Eddakiika %1$d emabega</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">Essaawa %1$d emabega</item>
+        <item quantity="other">Essaawa %1$d emabega</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">Olunaku %1$d emabega</item>
+        <item quantity="other">Ennaku %1$d emabega</item>
+    </plurals>
+    <string name="kaldir_soru">Ggyawo %1$s?</string>
+    <string name="kaldir_aciklama">Essimu eno tekyasobola kusindika bikwatako ku TV. Okugigattako nate, olina okuddamu okusoma koodi ya QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Ekifo ky’essimu yo</string>
+</resources>

@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "La posizione serve a calcolare con precisione gli orari di preghiera per il luogo in cui si trova. La posizione resta sul dispositivo.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "La posizione serve a calcolare con precisione gli orari di preghiera per il luogo in cui si trova e, se In moschea è attivo, ad attivare la modalità preghiera quando entra in una moschea. La posizione resta sul dispositivo.",
+  "NSLocationAlwaysUsageDescription": "La posizione serve ad aggiornare automaticamente gli orari di preghiera quando cambia città e, se In moschea è attivo, ad attivare la modalità preghiera quando entra in una moschea. La posizione resta sul dispositivo.",
+  "NSCameraUsageDescription": "La fotocamera serve a mostrare la direzione della qibla sopra l’immagine della fotocamera e a scansionare il codice di abbinamento sulla TV. Le immagini non vengono salvate e non lasciano mai il dispositivo.",
+  "NSCalendarsUsageDescription": "L’accesso al calendario serve ad aggiungere gli orari di preghiera al calendario e, se lo attiva, a verificare se gli eventi del calendario coincidono con un orario di preghiera. I dati del calendario restano sul dispositivo.",
+  "NSCalendarsFullAccessUsageDescription": "L’accesso al calendario serve ad aggiungere gli orari di preghiera al calendario e, se lo attiva, a verificare se gli eventi del calendario coincidono con un orario di preghiera. I dati del calendario restano sul dispositivo.",
+  "NSLocalNetworkUsageDescription": "L’app si collega alla TV sulla rete locale per inviarle gli orari di preghiera e le preghiere segnate. I dati sono cifrati e viaggiano solo tra i due dispositivi.",
+  "NSAlarmKitUsageDescription": "I passaggi di promemoria per cui sceglie «Vera sveglia» vengono impostati come sveglie, così li sente anche quando il telefono è in silenzioso o è attiva una Full immersion.",
+  "\"Vakti kıldım\"": "Ho pregato",
+  "\"Kıble\"": "Qibla"
+}

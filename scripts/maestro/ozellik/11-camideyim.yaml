@@ -10,9 +10,9 @@ appId: com.furkanisikay.namazakisi
 - runFlow:
     file: _liste-kaydir.yaml
     env:
-      HEDEF: "Namazda sessiz\\..*"
+      HEDEF: "(Namazda sessiz|Silent during prayer)\\..*"
 - tapOn:
-    text: "Namazda sessiz\\..*"
+    text: "(Namazda sessiz|Silent during prayer)\\..*"
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: ozk/25-camideyim-ayarlar
@@ -48,10 +48,10 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - tapOn:
-    text: ".*bina sınırı büyütme artır"
+    text: "(.*bina sınırı büyütme artır|Increase .*building outline enlargement)"
     optional: true
 - tapOn:
-    text: ".*bina sınırı büyütme artır"
+    text: "(.*bina sınırı büyütme artır|Increase .*building outline enlargement)"
     optional: true
 - waitForAnimationToEnd:
     timeout: 3000

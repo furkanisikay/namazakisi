@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- N'Ko (sağdan sola). Terimler: src/core/dil/sozluk/nqo. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">nqo</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">ߛߊߟߌ ߣߕߊ߬</string>
+    <string name="tile_aciklama">ߛߊߟߌ ߣߕߊ߬ ߣߌ߫ ߊ߬ ߥߊ߯ߕߌ߫</string>
+    <string name="komplikasyon_adi">ߥߊ߯ߕߌ߫ ߡߌ߲߬ ߕߏߙߊ</string>
+    <string name="cikis_saati_komplikasyon_adi">ߛߊߟߌ ߟߊߓߊ߲ ߥߊ߯ߕߌ߫</string>
+    <string name="siradaki_namaz_komplikasyon_adi">ߛߊߟߌ ߣߕߊ߬</string>
+    <string name="bugun_tile_adi">ߓߌ߬</string>
+    <string name="bugun_tile_aciklama">ߓߌ߬ ߛߊߟߌ ߘߎ߬ߙߎ߫; ߊߟߎ߫ ߦߋ߫ ߡߌ߲ߠߎ ߞߍ߫߸ ߏߟߎ ߛߓߍ߫ ߘߌߜߌ ߝߌ߬ߟߊ ߟߊ߫</string>
+    <string name="ilerleme_komplikasyon_adi">ߟߏ߲ ߢߍߕߊ</string>
+    <string name="dagilim_komplikasyon_adi">ߟߏ߲ ߠߊߖߍߟߌ</string>
+    <string name="kerahat_komplikasyon_adi">ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫</string>
+    <string name="son_dakikalar_kanal_adi">ߡߌ߬ߛߍ߲ ߠߊߓߊ߲ ߟߎ߬</string>
+    <string name="son_dakikalar_kanal_aciklama">ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ ߡߐ߲ߕߎߙߎ ߢߍ߫ ߞߊ߲ ߛߊߟߌ ߡߌ߲߬ ߡߊ߬ ߞߍ߫߸ ߏ߬ ߡߌ߬ߛߍ߲ ߠߊߓߊ߲ ߟߎ߬ ߟߊ߫</string>
+    <string name="tesbihat_adi">ߕߊߛߌߓߌߦߊ</string>
+    <string name="tesbihat_kanal_adi">ߕߊߛߌߓߌߦߊ</string>
+    <string name="tesbihat_kanal_aciklama">ߕߊ߯ߡߊߛߌߦߍ߲ ߡߊߞߎ߲߬ ߡߐ߲ߕߎߙߎ ߢߍ߫ ߞߊ߲ ߥߊߟߊߛߊ ߞߊ߬ ߛߋߜߌ߲ ߕߊߛߌߓߌߦߊ ߡߊ߬ ߡߌ߲߬ ߡߊ߬ ߘߝߊ߫</string>
+    <string name="kible_adi">ߞߌߓߌߟߊ</string>
+    <string name="kible_komplikasyon_adi">ߞߌߓߌߟߊ</string>
+    <string name="camideyim_kanal_adi">ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+    <string name="camideyim_kanal_aciklama">ߕߊ߯ߡߊߛߌߦߍ߲ ߡߊߞߎ߲߬ ߡߐ߲ߕߎߙߎ ߢߍ߫ ߞߊ߲ ߣߌ߫ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߏ߫ ߊߟߎ߫ ߓߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+    <string name="uyandirma_kanal_adi">ߟߊߥߎߟߌ ߡߊߞߎ߲߬</string>
+    <string name="uyandirma_kanal_aciklama">ߊ߬ ߓߍ߫ ߊߟߎ߫ ߟߊߥߎߟߌ ߦߙߍߦߙߍߟߌ ߘߐߙߐ߲߫ ߣߊ߬߸ ߖߍߡߎߙߍ߲ ߣߌ߫ ߕߊߤߊߖߎߘߎ ߞߊߡߊ߬</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫</string>
+    <string name="kilindi_isareti">✓ ߞߍߣߍ߲</string>
+    <string name="kapat">ߊ߬ ߘߊߕߎߜߎ</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߟߊߖߍ.</string>
+    <string name="yuk_eskidi">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߞߎ߲߬ߠߊ߬ߝߏߣߌ߲ ߡߊ߬ ߞߎߘߊ. ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲ ߞߊ߬ ߊ߬ ߟߊߞߎߙߊ.</string>
+    <string name="guncelleme_gerekli">ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߞߎߘߊ ߊߟߎ߫ ߟߊ߫ ߡߐ߲ߕߎߙߎ ߞߊ߲.</string>
+    <string name="bildirim_izni">ߥߊߟߊߛߊ ߞߊ߬ ߤߊߞߌߟߌߖߌߜߌ߲ ߛߐ߬ߘߐ߲߬ ߤߊߟߌ߬ ߣߌ߫ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߕߍ߫ ߊߟߎ߫ ߝߍ߬߸ ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߞߌ߬ߓߊ߬ߙߏ߬ ߟߎ߬ ߘߊߢߍ ߡߐ߲ߕߎߙߎ ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ ߞߐ߬ߣߐ.</string>
+    <string name="cami_soru">ߊߟߎ߫ ߓߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫ ߥߊ߫؟</string>
+    <string name="cami_evet">ߐ߲߬ߤߐ߲߫</string>
+    <string name="cami_evet_aciklama">ߐ߲߬ߤߐ߲߫߸ ߒ ߓߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫. ߊ߬ ߓߍ߫ ߛߊߟߌ ߗߏߜߏ ߘߊߦߟߍ߬</string>
+    <string name="cami_hayir">ߊ߬ߦߌ߫</string>
+    <string name="cami_hayir_aciklama">ߊ߬ߦߌ߫߸ ߒ ߕߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+    <string name="camidesiniz">ߊߟߎ߫ ߓߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+    <string name="cami_degil">ߣߌ߲߬ ߕߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߦߋ߫</string>
+    <string name="cami_degil_aciklama">ߣߌ߲߬ ߕߍ߫ ߕߌ߲ߓߌߘߌ߲ߘߊ ߦߋ߫. ߣߌ߲߬ ߦߙߐ߫ ߕߍߣߊ߬ ߖߊ߬ߕߋ߬ ߕߌ߲ߓߌߘߌ߲ߘߊ ߦߋ߫ ߕߎߜߎ߲</string>
+    <string name="tesbihat_ac">ߕߊߛߌߓߌߦߊ ߖߊߕߋߓߐߟߊ߲ ߘߊߦߟߍ߬</string>
+    <string name="kible_ac">ߞߌߓߌߟߊ ߓߎߛߐߟߌ ߘߊߦߟߍ߬</string>
+    <string name="ses_dene">ߡߊ߲߬ߞߊ߲ ߠߊߖߍ</string>
+    <string name="ses_dene_aciklama">ߡߐ߲ߕߎߙߎ ߞߊ߲ ߠߊ߫ ߞߊߟߊ߲ ߠߊߖߍ</string>
+    <string name="telefonda_acin">ߊ߬ ߘߊߦߟߍ߬ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="telefonda_ekran_ac">%1$s ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="ekran_kaza">ߞߊߘߊ ߛߓߍߟߌ</string>
+    <string name="ekran_camideyim">ߕߌ߲ߓߌߘߌ߲ߘߊ ߟߊ߫</string>
+    <string name="ekran_ayarlar">ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">ߞߍߣߍ߲߸ ߊ߬ ߓߍ߫ ߓߍ߲߬</string>
+    <string name="durum_kilindi">ߞߍߣߍ߲</string>
+    <string name="durum_girmedi">ߥߊ߯ߕߌ߫ ߡߊ߬ ߛߋ߫ ߝߟߐ</string>
+    <string name="durum_simdiki">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߛߌߛߍ߲߬ ߕߊ߸ ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߛߓߍ߫</string>
+    <string name="durum_simdiki_kalan">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߛߌߛߍ߲߬ ߕߊ߸ %1$s߸ ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߛߓߍ߫</string>
+    <string name="durum_kilinmadi">ߊ߬ ߡߊ߬ ߞߍ߫߸ ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߛߓߍ߫</string>
+    <string name="isaretleyin">ߊ߬ ߛߓߍ߫ ߞߏ߫ ߊ߬ ߞߍߣߍ߲</string>
+    <string name="esitleniyor">ߊ߬ ߓߍ߫ ߓߍ߲߬</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫ ߟߊߛߙߋߦߊ߫</string>
+    <string name="vazgecin">ߊ߬ ߘߐߛߊ߬</string>
+    <string name="vazgec">ߊ߬ ߘߐߛߊ߬</string>
+    <string name="kerahat_vaktindesiniz">ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫ ߟߏ ߛߌߛߍ߲߬.</string>
+    <string name="kilindi_dua">ߞߍߣߍ߲. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">ߛߊߟߌ ߗߏߜߏ ߘߊߦߍߟߍߣߍ߲߸ ߊ߬ ߓߍ߫ ߓߊ߲߫ %1$s. ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߘߊߕߎߜߎ</string>
+    <string name="namaz_modu_ac_aciklama">ߛߊߟߌ ߗߏߜߏ ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="namaz_modu_kapatin">ߛߊߟߌ ߗߏߜߏ ߘߊߕߎߜߎ</string>
+    <string name="namaz_modu_acin">ߛߊߟߌ ߗߏߜߏ ߘߊߦߟߍ߬</string>
+    <string name="namaz_modu_acik_bitis">ߊ߬ ߘߊߦߍߟߍߣߍ߲߸ ߊ߬ ߓߍ߫ ߓߊ߲߫ %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">ߢߊߛߌ߲߫ ߓߍ߫ ߢߌߣߌ…</string>
+    <string name="kible_yuk_yok">ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲ ߞߊ߬ ߞߌߓߌߟߊ ߛߐ߬ߘߐ߲߬.</string>
+    <string name="kible_konum_yok">ߊߟߎ߫ ߦߋ߫ ߦߙߐ߫ ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲ ߞߊ߬ ߞߌߓߌߟߊ ߛߐ߬ߘߐ߲߬. ߣߌ߫ Namaz Akışı ߡߊ߬ ߞߎߘߊ߸ ߊߟߎ߫ ߦߋ߫ ߊ߬ ߞߎߘߊ.</string>
+    <string name="kible_sensor_yok">ߓߎߛߐߟߌ ߛߍ߲ߛߐߙߌ ߕߍ߫ ߣߌ߲߬ ߡߐ߲ߕߎߙߎ ߟߊ߫. ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߞߌߓߌߟߊ ߢߊߛߌ߲߫ ߟߊߖߍ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲.</string>
+    <string name="kible_kuzeyden">ߞߌߓߌߟߊ %1$d° (ߛߊߤߋߟߌ ߟߊ߫)</string>
+    <string name="kible_derece">ߞߌߓߌߟߊ %1$d°</string>
+    <string name="kible_telefonda_ac">ߞߌߓߌߟߊ ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="kible_erisim">%1$s. ߞߌߓߌߟߊ ߓߍ߫ ߛߊߤߋߟߌ ߟߊ߫ %2$d°߸ %3$s</string>
+    <string name="kible_hizali">ߊߟߎ߫ ߢߍ߫ ߓߍ߫ ߞߌߓߌߟߊ ߝߍ߬</string>
+    <string name="kible_kalibrasyon">ߥߊߟߊߛߊ ߞߊ߬ ߊ߬ ߟߊߓߍ߲߬߸ ߊߟߎ߫ ߦߋ߫ ߊߟߎ߫ ߓߏߟߏߞߐߣߌ ߟߊߡߊߜߊ ߝߌߢߍ ߣߊ߬ ߌ ߣߴߊ߬ ߝߐ߫ 8</string>
+    <string name="kible_egim">ߊߟߎ߫ ߦߋ߫ ߊߟߎ߫ ߟߊ߫ ߡߐ߲ߕߎߙߎ ߟߊߟߊ߲ ߘߎߜߎߞߏߟߏ ߗߏߜߏ ߟߊ߫</string>
+    <string name="kible_titresim_acik">ߦߙߍߦߙߍߟߌ ߟߊߘߌߟߌߞߊ߲ ߘߊߦߍߟߍߣߍ߲. ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߘߊߕߎߜߎ</string>
+    <string name="kible_titresim_kapali">ߦߙߍߦߙߍߟߌ ߟߊߘߌߟߌߞߊ߲ ߘߊߕߎߜߎ߲ߠߍ߲. ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߘߊߦߟߍ߬</string>
+    <string name="kible_harf_kuzey">ߛ</string>
+    <string name="kible_harf_dogu">ߞ</string>
+    <string name="kible_harf_guney">ߥ</string>
+    <string name="kible_harf_bati">ߕ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">ߕߊߛߌߓߌߦߊ ߘߊߝߊߙߊ. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s߸ %2$d / %3$d. ߊ߬ ߓߍ߯ ߟߊߖߍߟߋ߲ %4$d / %5$d</string>
+    <string name="tesbihat_sayin">ߊ߬ ߖߊ߬ߕߋ߬</string>
+    <string name="tesbihat_bastan_baslayin">ߊ߬ ߘߊߡߌ߬ߣߊ߬ ߞߏߞߎߙߊ</string>
+    <string name="tesbihat_bastan_soru">ߊ߬ ߘߊߡߌ߬ߣߊ߬ ߞߏߞߎߙߊ ߥߊ߫؟</string>
+    <string name="tesbihat_sifirlanir">ߖߊ߬ߕߋ߬ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ ߞߏߞߎߙߊ.</string>
+    <string name="tesbihat_geri_al">ߊ߬ ߟߊߛߋߜߌ߲</string>
+    <string name="tesbihat_geri_al_aciklama">ߖߊ߬ߕߋ߬ ߟߊߓߊ߲ ߠߊߛߋߜߌ߲</string>
+    <string name="tesbihat_yeniden">ߊ߬ ߘߊߡߌ߬ߣߊ߬ ߞߏߞߎߙߊ</string>
+    <string name="tesbihat_yeniden_aciklama">ߕߊߛߌߓߌߦߊ ߘߊߡߌ߬ߣߊ߬ ߞߏߞߎߙߊ</string>
+    <string name="tesbihat_suruyor">ߕߊߛߌߓߌߦߊ ߓߍ߫ ߕߊ߯ ߝߍ߬: %1$s߸ %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">ߒ ߓߘߊ߫ ߛߊߟߌ ߞߍ߫. ߊ߬ ߓߍ߫ ߟߊߥߎߟߌ ߘߊߕߎߜߎ</string>
+    <string name="uyandirma_kapat_aciklama">ߟߊߥߎߟߌ ߘߊߕߎߜߎ</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı ߘߊߦߟߍ߬</string>
+    <string name="tile_vakitler_icin">ߊ߬ ߘߌߜߌ ߞߊ߬ ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߟߊߖߍ</string>
+    <string name="tile_telefonda_acin">ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="tile_sonra">%1$s ߞߐߝߍ߬</string>
+    <string name="tile_siradaki_aciklama">ߛߊߟߌ ߣߕߊ߬ %1$s߸ ߊ߬ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ %2$s. ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬</string>
+    <string name="tile_giris">ߊ߬ ߓߍ߫ ߘߊߡߌ߬ߣߊ߬ %1$s</string>
+    <string name="tile_cikis">ߊ߬ ߓߍ߫ ߓߊ߲߫ %1$s</string>
+    <string name="bugun_bos_satir1">ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬</string>
+    <string name="bugun_bos_satir2">ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="bugun_acma_aciklamasi">ߓߌ߬ ߛߊߟߌ %1$d/%2$d ߞߍߣߍ߲. ߔߏߙߏߜߊߙߊߡߎ ߘߊߦߟߍ߬</string>
+    <string name="bugun_sayi">ߓߌ߬ %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫ · ߊ߬ ߘߌߜߌ ߕߎߜߎ߲ ߞߊ߬ ߊ߬ ߟߊߛߙߋߦߊ߫</string>
+    <string name="bugun_onay_tekrar">ߊ߬ ߘߌߜߌ ߕߎߜߎ߲ ߞߊ߬ ߊ߬ ߟߊߛߙߋߦߊ߫</string>
+    <string name="bugun_tamam">ߓߌ߬ ߛߊߟߌ ߟߎ߬ ߘߊߝߊߙߊ</string>
+    <string name="bugun_kilinmadi">%1$s ߡߊ߬ ߞߍ߫</string>
+    <string name="bugun_siradaki">ߊ߬ ߣߕߊ߬: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">ߊ߬ ߘߌߜߌ ߕߎߜߎ߲</string>
+    <string name="bugun_kilindi">%1$s ߞߍߣߍ߲</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s ߞߍߣߍ߲߸ ߊ߬ ߓߍ߫ ߓߍ߲߬</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߓߍ߫ ߡߊߞߐߣߐ; ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="komplikasyon_bekleniyor">ߥߊ߯ߕߌ߫ ߡߊߞߐߣߐ</string>
+    <string name="komplikasyon_vakit">ߛߊߟߌ</string>
+    <string name="komplikasyon_cikis">ߟߊߓߊ߲</string>
+    <string name="komplikasyon_sirada">ߊ߬ ߣߕߊ߬</string>
+    <string name="gun_durumu_aciklama">ߓߌ߬ ߛߊߟߌ %2$d ߞߍߣߍ߲ %1$d ߟߊ߫</string>
+    <string name="gun_durumu_kilinmamis">%1$s; ߡߌ߲ߠߎ ߡߊ߬ ߞߍ߫: %2$s</string>
+    <string name="komplikasyon_namaz">ߛߊߟߌ ߟߎ߬</string>
+    <string name="komplikasyon_kerahat">ߡߊߞߎߙߎ</string>
+    <string name="kerahat_icinde_aciklama">ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫ ߟߏ߸ ߊ߬ ߓߍ߫ ߓߊ߲߫ %1$s</string>
+    <string name="kerahat_siradaki_aciklama">ߡߊߞߎߙߎ ߥߊ߯ߕߌ߫ ߣߕߊ߬ %1$s</string>
+    <string name="kible_komplikasyon">ߞߌߓߌߟߊ ߓߍ߫ ߛߊߤߋߟߌ ߟߊ߫ %1$d°. ߓߎߛߐߟߌ ߘߊߦߟߍ߬</string>
+    <string name="kible_komplikasyon_konumlu">ߞߌߓߌߟߊ ߓߍ߫ ߛߊߤߋߟߌ ߟߊ߫ %1$d°߸ %2$s. ߓߎߛߐߟߌ ߘߊߦߟߍ߬</string>
+    <string name="kible_komplikasyon_konum_yok">ߊߟߎ߫ ߦߋ߫ ߦߙߐ߫ ߘߊߦߟߍ߬ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲ ߞߊ߬ ߞߌߓߌߟߊ ߛߐ߬ߘߐ߲߬</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">ߤߊߞߌߟߌߖߌߜߌ߲ ߕߋߟߌߡߊ߲ · ߦߙߍߦߙߍߟߌ</string>
+    <string name="muhafiz_kanal_acil">ߤߊߞߌߟߌߖߌߜߌ߲ ߕߋߟߌߡߊ߲</string>
+    <string name="muhafiz_kanal_titresimli">ߛߊߟߌ ߤߊߞߌߟߌߖߌߜߌ߲ · ߦߙߍߦߙߍߟߌ</string>
+    <string name="muhafiz_kanal">ߛߊߟߌ ߤߊߞߌߟߌߖߌߜߌ߲</string>
+    <string name="muhafiz_kanal_aciklama">ߛߊߟߌ ߤߊߞߌߟߌߖߌߜߌ߲ ߡߌ߲ߠߎ ߓߍ߫ ߦߌ߬ߘߊ߬ ߊߟߎ߫ ߟߊ߫ ߡߐ߲ߕߎߙߎ ߞߊ߲ ߤߊߟߌ߬ ߣߌ߫ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߕߍ߫ ߊߟߎ߫ ߝߍ߬</string>
+    <string name="son_dakikalar_cikis">ߟߊߓߊ߲: %1$s</string>
+    <string name="son_dakikalar_bitis">ߟߊߓߊ߲: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">ߥߊ߯ߕߌ߫ ߡߌ߲߬ ߕߏߙߊ ߝߏ߫ %1$s ߞߊ߬ ߓߊ߲߫</string>
+    <string name="son_dakikalar_kalan_erisim">ߥߊ߯ߕߌ߫ ߡߌ߲߬ ߕߏߙߊ %1$s ߞߊߡߊ߬</string>
+    <string name="cami_namaz_modu_bitis">ߛߊߟߌ ߗߏߜߏ · ߊ߬ ߓߍ߫ ߓߊ߲߫ %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">ߊ߬ ߘߊߦߍߟߍߣߊ ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߞߊ߲</string>
+    <string name="telefona_ulasilamadi">ߊߟߎ߫ ߟߊ߫ ߕߋߟߋߝߐߣߌ ߕߍ߫ ߛߋ߫ ߞߊ߬ ߛߐ߬ߘߐ߲߬</string>
+</resources>

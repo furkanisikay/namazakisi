@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Mewɔ masjid</string>
+    <string name="camigeofence_kanal_durum_aciklama">Nkra komm sɛ wɔhunu sɛ wowɔ masjid a</string>
+    <string name="camigeofence_kanal_soru_ad">Sɛ wofiri masjid a</string>
+    <string name="camigeofence_kanal_soru_aciklama">Asɛmmisa a ɛma wokyerɛ wo Nyamefrɛ sɛ wofiri masjid a</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Nyamefrɛ tebea abue. Nkaeɛ bɛba komm.</string>
+    <string name="camigeofence_govde_mod">Nyamefrɛ tebea abue.</string>
+    <string name="camigeofence_govde_sessiz">Nkaeɛ bɛba komm.</string>
+    <string name="camigeofence_govde_normal">Nkaeɛ bɛba sɛdeɛ ɛtaa ba.</string>
+    <string name="camigeofence_eylem_modu_kapat">Dum tebea no</string>
+    <string name="camigeofence_eylem_cami_degil">Ɛnyɛ masjid</string>
+
+    <string name="camigeofence_soru_baslik">Wowɔ masjid?</string>
+    <string name="camigeofence_soru_govde">Wobɛn %1$s. Yɛnnim pɛpɛɛpɛ, enti yɛrebisa wo.</string>
+    <string name="camigeofence_varsayilan_ad">Masjid</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Bue Nyamefrɛ tebea</string>
+    <string name="camigeofence_eylem_evet_camideyim">Aane, mewɔ masjid</string>
+    <string name="camigeofence_eylem_hayir">Daabi</string>
+
+    <string name="camigeofence_kildiniz_mi">Woayɛ %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Wobɛtumi de mia baako akyerɛ.</string>
+    <string name="camigeofence_eylem_kildim">Mayɛ Nyamefrɛ</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Efiada</string>
+
+    <string name="camigeofence_mod_kural_adi">Nyamefrɛ</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı bue no wɔ Efiada khutbah mu, wɔ masjid anaa sɛ Nyamefrɛ berɛ du a</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Dagbani). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: N puhi jiŋli</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Jiŋli saha yɛla</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Jiŋli saha yɛli</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — saygılı çoğul. -->
+  <string name="otomasyon_bilgi_baslik">Bɛ pahiri malizali ŋɔ automation app ni</string>
+  <string name="otomasyon_bilgi_tarayici">Intanɛt app nima ku tooi nya soli din kpalimdi. Pahimi ya li app kamani Tasker, MacroDroid bee Automate plugin doya ni.</string>
+  <string name="otomasyon_bilgi_eklenti">Pahimi ya li ka piri “Namaz Akışı” app kamani Tasker, MacroDroid bee Automate plugin doya ni.</string>
+  <string name="otomasyon_engelli_baslik">Bɛ kpari %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Yi daa kpari app ŋɔ ka di ku dalim yi jiŋa. Yi ni tooi ti li soli Namaz Akışı ni Malizali &gt; “App shɛŋa ni tooi dalim N puhi jiŋli” ni.</string>
+  <string name="otomasyon_izin_baslik">Zaŋmi ya li ni %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s ni tooi baŋ jiŋli saha yi paai, di yi naari mini yi yi be jiŋli ni, ka tum yi automation nima. Yi ni tooi taɣi yi yɛltɔɣa Namaz Akışı ni Malizali &gt; “App shɛŋa ni tooi dalim N puhi jiŋli” ni.</string>
+  <string name="otomasyon_izin_kildim">%1$s ni tooi dalim pumpɔŋɔ jiŋli ni yi puhi ni automation shɛli yi ni zali. Yi ni tooi taɣi yi yɛltɔɣa Namaz Akışı ni Malizali &gt; “App shɛŋa ni tooi dalim N puhi jiŋli” ni.</string>
+  <string name="otomasyon_izin_ver">Timi ya soli</string>
+  <string name="otomasyon_engelle">Kparimi ya</string>
+  <string name="otomasyon_vazgec">Nyahimi ya</string>
+  <string name="otomasyon_tamam">Di saɣiya</string>
+  <string name="otomasyon_tur_baslik">Saha bo ka di tum?</string>
+  <string name="otomasyon_ileri">Din paya</string>
+  <string name="otomasyon_vakit_baslik">Jiŋli shɛli?</string>
+  <string name="otomasyon_herhangi_vakit">Jiŋli saha kam</string>
+  <string name="otomasyon_kaydet">Zalimi ya</string>
+  <string name="otomasyon_kosul_icinde">Jiŋli saha puuni</string>
+  <string name="otomasyon_kosul_cikiyor">Jiŋli saha yi naari (minti %1$d n-kpalim, Jiŋli Gulana yooya)</string>
+  <string name="otomasyon_kosul_camide">Yi yi be jiŋli ni</string>
+  <string name="otomasyon_olay_girdi">Jiŋli saha kam yi paai</string>
+  <string name="otomasyon_olay_cikiyor">Jiŋli saha yi naari (minti %1$d n-kpalim, Jiŋli Gulana yooya)</string>
+  <string name="otomasyon_olay_camide">Bɛ yi nya ni yi be jiŋli ni</string>
+</resources>

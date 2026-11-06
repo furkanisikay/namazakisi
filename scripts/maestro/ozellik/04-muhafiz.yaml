@@ -8,17 +8,17 @@ appId: com.furkanisikay.namazakisi
 - runFlow:
     file: _liste-kaydir.yaml
     env:
-      HEDEF: "Hatırlatmalar\\..*"
+      HEDEF: "(Hatırlatmalar|Reminders)\\..*"
 - tapOn:
-    text: "Hatırlatmalar\\..*"
+    text: "(Hatırlatmalar|Reminders)\\..*"
 - scrollUntilVisible:
     element:
-      text: "Vakit çıkmadan\\..*"
+      id: "satir-vakit-cikmadan"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Vakit çıkmadan\\..*"
+    id: "satir-vakit-cikmadan"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/06-muhafiz
@@ -33,10 +33,10 @@ appId: com.furkanisikay.namazakisi
 
 # SABAH: listenin son karti (Yatsi) acilinca icerik ekran disinda kalir.
 - tapOn:
-    text: "Sabah vakti hatırlatma ayarları.*"
+    text: "(Sabah vakti hatırlatma ayarları|Fajr reminder settings).*"
 - scrollUntilVisible:
     element:
-      text: ".*ilk hatırlatma.*"
+      id: "zaman-seridi-cumle"
     direction: DOWN
     centerElement: true
     timeout: 300000
@@ -47,12 +47,12 @@ appId: com.furkanisikay.namazakisi
 # "… — açın veya kapatın" ANAHTARDIR; ona basmak adimi kapatir.
 - scrollUntilVisible:
     element:
-      text: "1\\. hatırlatma.*düzenleyin.*"
+      id: "adim-duzenle-0"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "1\\. hatırlatma.*düzenleyin.*"
+    id: "adim-duzenle-0"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/08-adim-detay
@@ -70,10 +70,10 @@ appId: com.furkanisikay.namazakisi
 - tapOn:
     id: "adim-alarm-anahtari"
 - extendedWaitUntil:
-    visible: "Alarmı açın"
+    visible: "(Alarmı açın|Turn on alarm)"
     timeout: 10000
 - takeScreenshot: ozk/10-alarm-onay
-- tapOn: "Vazgeç"
+- tapOn: "(Vazgeç|Cancel)"
 
 # NASIL = kanal kartlari: her kanal kendi alt ayarlarini tasir. Sesli okumayi ac
 # (ilk seferde riza) → kart olculu genisler; video bu anin kaydidir.
@@ -88,9 +88,9 @@ appId: com.furkanisikay.namazakisi
 - tapOn:
     id: "adim-sesli-anahtari"
 - extendedWaitUntil:
-    visible: "Sesli okumayı açın"
+    visible: "(Sesli okumayı açın|Turn on read aloud)"
     timeout: 10000
-- tapOn: "Sesli okumayı açın"
+- tapOn: "(Sesli okumayı açın|Turn on read aloud)"
 - waitForAnimationToEnd:
     timeout: 3000
 - tapOn:
@@ -129,7 +129,7 @@ appId: com.furkanisikay.namazakisi
     timeout: 3000
 - scrollUntilVisible:
     element:
-      text: ".*ilk hatırlatma.*"
+      id: "zaman-seridi-cumle"
     direction: UP
     centerElement: true
     timeout: 300000

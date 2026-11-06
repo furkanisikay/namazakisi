@@ -3,6 +3,10 @@
   Klasik (yeşil) 1×1 widget — Widget 1.0 görünümü. Kalan süre dakikalık alarm yerine
   sistemin çizdiği `Chronometer` ile akar (Widget 2.0 kuralı); örnek metin
   (`klasik_kalan_metin`) yalnız seçici önizlemesinde ve veri yokken görünür.
+  DİL: buradaki `@string/widget_onizleme_*` YALNIZ seçici önizlemesidir (previewLayout,
+  başlatıcı CİHAZ dilinde çözer — seçicinin kendi dili de odur). Gerçek widget'ta her metni
+  `WidgetGuncelleyici.klasikCiz` UYGULAMA dilinde KODDA yazar; buraya çizimde görünecek
+  metin ekleme.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/klasik_kok"
@@ -17,7 +21,7 @@
         android:id="@+id/klasik_vakit_adi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="öğleye:"
+        android:text="@string/widget_onizleme_klasik_kucuk"
         android:textColor="@color/widget_klasik_metin"
         android:textSize="10sp"
         android:maxLines="1"

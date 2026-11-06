@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ug — Uygurca (beta). -->
+<!-- Gerçek alarm (Uygurca). «ناماز ئوقۇدۇم» bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">ناماز ئويغاتقۇچى</string>
+  <string name="alarm_kildim">ناماز ئوقۇدۇم</string>
+  <string name="alarm_kapat">تاقاش</string>
+  <string name="alarm_kanal_aciklamasi">سىز تاللىغان ئەسكەرتىش قەدەملىرىدە جىرىڭلايدىغان ھەقىقىي ئويغاتقۇچ</string>
+</resources>

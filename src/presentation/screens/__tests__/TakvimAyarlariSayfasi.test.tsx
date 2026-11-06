@@ -10,6 +10,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { Linking } from 'react-native';
 import { aktarimOzeti } from '../../../core/takvim/aktarimOzeti';
 import { VARSAYILAN_TAKVIM_AYARLARI } from '../../store/takvimSlice';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const mockDepo = new Map<string, string>();
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -219,5 +220,63 @@ describe('TakvimAyarlariSayfasi — bekleyen değişiklik', () => {
     const { queryByTestId, findByText } = render(<Sayfa />);
     expect(await findByText('Kişisel')).toBeTruthy();
     await waitFor(() => expect(queryByTestId('takvim-bekleyen-degisiklik')).toBeNull());
+  });
+});
+
+describe('TakvimAyarlariSayfasi — İngilizce', () => {
+  // "Kişisel" cihazın kendi takviminin adıdır (kullanıcı verisi), sözlük metni değil.
+  const YASAKLI = ['Vakit', 'vakit', 'dk\\b', 'Kapat', 'Tamam', 'Sabah', 'Takvim'];
+  const kalan = (r: ReturnType<typeof render>) =>
+    turkceKalanlar(r.toJSON() as never, YASAKLI).filter((m: string) => !m.includes('Kişisel'));
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => act(() => geriAl()));
+
+  it('rıza modalı, izin reddi ve izin okunamadı durumları', async () => {
+    mockIzin.durum = 'sorulabilir';
+    const Sayfa = sayfa();
+    const r = render(<Sayfa />);
+    await waitFor(() => expect(r.getAllByLabelText('Add to calendar').length).toBeGreaterThan(0));
+    expect(kalan(r)).toEqual([]);
+    await act(async () => {
+      fireEvent.press(r.getAllByLabelText('Add to calendar')[0]);
+      await Promise.resolve();
+    });
+    expect(r.getByTestId('takvim-riza-modali')).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
+    r.unmount();
+
+    mockIzin.durum = 'reddedildi';
+    mockState.takvim.ayarlar = { ...VARSAYILAN_TAKVIM_AYARLARI, aktif: true };
+    const red = render(<Sayfa />);
+    expect(await red.findByTestId('takvim-izin-satiri')).toBeTruthy();
+    expect(kalan(red)).toEqual([]);
+    red.unmount();
+
+    mockIzin.durum = null;
+    const okunamadi = render(<Sayfa />);
+    expect(await okunamadi.findByTestId('takvim-izin-okunamadi')).toBeTruthy();
+    expect(kalan(okunamadi)).toEqual([]);
+  });
+
+  it('açık takvim: vakit satırları, bekleyen bant, vakit düzenleyici ve silme modalı', async () => {
+    const eski = { ...VARSAYILAN_TAKVIM_AYARLARI, aktif: true, takvimId: 'k1', takvimAdi: 'Kişisel' };
+    mockDepo.set('@namaz_akisi/takvim_son_aktarim', aktarimOzeti(eski, mockState.konum.koordinatlar));
+    mockState.takvim.ayarlar = { ...eski, kaciGunIlerisi: 14 };
+    const Sayfa = sayfa();
+    const r = render(<Sayfa />);
+    expect(await r.findByTestId('takvim-bekleyen-degisiklik')).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
+    await act(async () => {
+      fireEvent.press(r.getAllByLabelText(/^Dhuhr: /)[0]);
+    });
+    expect(kalan(r)).toEqual([]);
+    const { TemizleModali } = require('../TakvimAyarlari/TemizleModali');
+    const temizle = render(
+      <TemizleModali gorunur onKapat={jest.fn()} secilenTakvimId="k1" secilenTakvimAdi="Kişisel" cihazTakvimleri={[]} onSilindi={jest.fn()} />
+    );
+    expect(kalan(temizle)).toEqual([]);
   });
 });

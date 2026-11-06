@@ -10,18 +10,15 @@
 import type { PresetSeviyeleri } from '../muhafiz/matrisIslemleri';
 import { presetMatrisiOlustur, presetSesliIceriyorMu } from '../muhafiz/matrisIslemleri';
 import { sesliAnonsGerekliMi, vakitUyariPlaniOlustur } from '../muhafiz/motorAdaptoru';
+import { bicim, canli, metin, sayili } from '../dil/aktifDil';
 
 /** Görünen düzeyler. `kapali` = muhafız kapalı; `ozel` seçicide yer almaz. */
 export type HatirlatmaDuzeyi = 'kapali' | 'hafif' | 'normal' | 'yogun';
 
 export const HATIRLATMA_DUZEYLERI: readonly HatirlatmaDuzeyi[] = ['kapali', 'hafif', 'normal', 'yogun'];
 
-export const DUZEY_ADLARI: Record<HatirlatmaDuzeyi, string> = {
-    kapali: 'Kapalı',
-    hafif: 'Hafif',
-    normal: 'Normal',
-    yogun: 'Yoğun',
-};
+/** Etkin dilde düzey adları (canlı görünüm: okunduğu an etkin dil). */
+export const DUZEY_ADLARI: Readonly<Record<HatirlatmaDuzeyi, string>> = canli((s) => s.hatirlatma.duzeyAdlari);
 
 export const DUZEY_IKONLARI: Record<HatirlatmaDuzeyi, string> = {
     kapali: 'bell-slash',
@@ -68,10 +65,11 @@ export function duzeyFarki(
     if (!eski || !yeni) return null;
     // Fark çipi YÖN bildirir ("+ sesli okuma"); "sesli" tek başına, hemen üstteki "Sesli okuma
     // yok" cümlesiyle çelişir gibi okunuyordu (iPhone karesi 06).
-    if (yeni.uyariSayisi !== eski.uyariSayisi) return yeni.uyariSayisi < eski.uyariSayisi ? 'daha az uyarı' : 'daha çok uyarı';
-    if (yeni.ilkDk !== eski.ilkDk) return yeni.ilkDk > eski.ilkDk ? 'daha erken başlar' : 'daha geç başlar';
+    const f = metin().hatirlatma.fark;
+    if (yeni.uyariSayisi !== eski.uyariSayisi) return yeni.uyariSayisi < eski.uyariSayisi ? f.dahaAz : f.dahaCok;
+    if (yeni.ilkDk !== eski.ilkDk) return yeni.ilkDk > eski.ilkDk ? f.dahaErken : f.dahaGec;
     if (sesliIzinVar && yeni.sesliSayisi !== eski.sesliSayisi) {
-        return yeni.sesliSayisi > eski.sesliSayisi ? '+ sesli okuma' : 'sesli okumasız';
+        return yeni.sesliSayisi > eski.sesliSayisi ? f.sesliEk : f.sesliYok;
     }
     return null;
 }
@@ -107,11 +105,9 @@ export function duzeyOnizlemeAdimlari(seviyeler: PresetSeviyeleri | null, sesliI
  * kaydedilmiş bir özel ayar varken BEŞİNCİ kart olarak görünür (hiçbir kartın seçili
  * olmaması "ne seçili?" sorusunu cevapsız bırakırdı).
  */
-export const OZEL_DUZEY_ADI = 'Kendi ayarınız';
 export const OZEL_DUZEY_IKONU = 'sliders-h';
-/** Kart altı (≤ 6 kelime): seçiliyken ve değilken. */
-export const OZEL_DUZEY_ACIKLAMASI = { secili: 'Vakit vakit siz ayarladınız', geri: 'Kaydettiğiniz ayara dönün' };
-export const OZEL_DUZEY_CUMLESI = 'Her vakit sizin ayarladığınız gibi hatırlatılır.';
+/** Ad, kart altı (≤ 6 kelime; seçiliyken `secili`, değilken `geri`) ve seçici cümlesi — etkin dilde. */
+export const OZEL_DUZEY = canli((s) => s.hatirlatma.ozel);
 
 /**
  * Seçicinin altındaki tek cümle (≤ 12 kelime).
@@ -122,10 +118,11 @@ export const OZEL_DUZEY_CUMLESI = 'Her vakit sizin ayarladığınız gibi hatır
  * Sihirbaz rıza maddesini ekranda gösterdiği için varsayılanı kullanır.
  */
 export function duzeyCumlesi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null, sesliIzinVar = true): string {
-    if (duzey === 'kapali' || !olcu) return 'Vakit çıkmadan hatırlatma gelmez.';
-    const ses = olcu.sesli && sesliIzinVar ? 'Son dakikada sesli okur.' : 'Sesli okuma yok.';
-    if (olcu.uyariSayisi === 1) return `Çıkmadan ${olcu.ilkDk} dk önce bir kez hatırlatır. ${ses}`;
-    return `Çıkmadan ${olcu.ilkDk} dk önce başlar, ${olcu.uyariSayisi} uyarı. ${ses}`;
+    const c = metin().hatirlatma.cumle;
+    if (duzey === 'kapali' || !olcu) return c.kapali;
+    const ses = olcu.sesli && sesliIzinVar ? c.sesliVar : c.sesliYok;
+    if (olcu.uyariSayisi === 1) return bicim(c.birKez, { dk: olcu.ilkDk, ses });
+    return sayili(c.coklu, olcu.uyariSayisi, { dk: olcu.ilkDk, ses });
 }
 
 /**
@@ -135,13 +132,13 @@ export function duzeyCumlesi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null, 
  * (`PlatformYetenekleri.sessizligiDelebilir`).
  */
 export function sesliBilgiMetni(sessizligiDelebilir: boolean): string {
-    return sessizligiDelebilir
-        ? "Sesli okuma alarm gibidir: sessiz modda ve Rahatsız Etmeyin'de de duyulur."
-        : 'Sesli okuma bildirim sesiyle çalar; telefon sessizdeyken duyulmaz.';
+    const b = metin().hatirlatma.sesliBilgi;
+    return sessizligiDelebilir ? b.alarm : b.bildirim;
 }
 
 /** Seçenek kartındaki kısa açıklama (≤ 6 kelime). */
 export function duzeyKisaAciklamasi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null, sesliIzinVar = true): string {
-    if (duzey === 'kapali' || !olcu) return 'Hatırlatma yok';
-    return `Vakit başına ${olcu.uyariSayisi} uyarı${olcu.sesli && sesliIzinVar ? ', sesli' : ''}`;
+    const k = metin().hatirlatma.kisa;
+    if (duzey === 'kapali' || !olcu) return k.yok;
+    return sayili(olcu.sesli && sesliIzinVar ? k.uyariSesli : k.uyari, olcu.uyariSayisi);
 }

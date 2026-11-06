@@ -71,7 +71,10 @@ public final class SaatKoprusu: NSObject, WCSessionDelegate, @unchecked Sendable
         guard oturum.isPaired, oturum.isWatchAppInstalled else { return "saatYok" }
         guard let json: String = kilitli({ sonYuk }) else { return "bekliyor" }
         do {
-            try oturum.updateApplicationContext(SaatIletisi.baglam(yukJson: json))
+            // Arayuz dili (W5) yukun KARDESI olarak gider: saat ve komplikasyon metinleri
+            // cizerken bu koddan secer. Dil degisince baglam degisir → saat yeniden cizer.
+            let dil = ArayuzDili.coz(SiriDeposu.varsayilan.arayuzDili())
+            try oturum.updateApplicationContext(SaatIletisi.baglam(yukJson: json, dil: dil))
             return "gonderildi"
         } catch {
             NSLog("[NamazSaat] Saate durum gonderilemedi: %@", error.localizedDescription)

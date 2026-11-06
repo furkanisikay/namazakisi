@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Televizoriaus ekrane esantį QR kodą sutalpinkite rėmelyje</string>
+    <string name="tvesleme_qr_vazgec">Atšaukti</string>
+    <string name="tvesleme_qr_vazgec_erisim">Atšaukti nuskaitymą</string>
+    <string name="tvesleme_qr_yabanci">Šis QR kodas nepriklauso „Namaz Akışı“ televizoriui. Nuskaitykite televizoriaus kodą.</string>
+    <string name="tvesleme_qr_okundu">Kodas nuskaitytas</string>
+</resources>

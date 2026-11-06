@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { metin } from '../../core/dil/aktifDil';
 import { LocalSeferilikServisi } from '../../data/local/LocalSeferilikServisi';
 import { LocalMezhepServisi } from '../../data/local/LocalMezhepServisi';
 import { kazaVerileriniYukle } from './kazaSlice';
@@ -126,7 +127,7 @@ const seferilikSlice = createSlice({
         // Okuma reddetmez; yine de kapı açılsın, varsayılanla devam edilsin.
         state.yuklendi = true;
         state.yukleniyor = false;
-        state.hata = action.error.message || 'Ayar yüklenemedi';
+        state.hata = action.error.message || metin().genel.hata.ayarYuklenemedi;
       })
       .addCase(seferilikKonumIsle.fulfilled, (state, action) => {
         state.ayarlar = action.payload.ayarlar;
@@ -141,7 +142,7 @@ const seferilikSlice = createSlice({
       })
       .addCase(seferilikKartiniKapat.rejected, (state, action) => {
         state.hafiza = { yolculuktaKapatildi: false };
-        state.hata = action.error.message || 'Kart kapatılamadı';
+        state.hata = action.error.message || metin().genel.hata.kartKapatilamadi;
       })
       .addCase(seferilikAyarlariniGuncelle.pending, (state, action) => {
         state.ayarlar = { ...state.ayarlar, ...action.meta.arg };
@@ -151,7 +152,7 @@ const seferilikSlice = createSlice({
         state.hata = null;
       })
       .addCase(seferilikAyarlariniGuncelle.rejected, (state, action) => {
-        state.hata = action.error.message || 'Ayar güncellenemedi';
+        state.hata = action.error.message || metin().genel.hata.ayarGuncellenemedi;
       })
       .addCase(seferilikIkametiAyarla.fulfilled, (state, action) => {
         state.ayarlar = action.payload.ayarlar;
@@ -159,7 +160,7 @@ const seferilikSlice = createSlice({
         state.hata = null;
       })
       .addCase(seferilikIkametiAyarla.rejected, (state, action) => {
-        state.hata = action.error.message || 'İkamet yeri kaydedilemedi';
+        state.hata = action.error.message || metin().genel.hata.ikametKaydedilemedi;
       });
   },
 });

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Português europeu (pt-PT). Termos: src/core/dil/sozluk/pt. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">pt</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Painel dos horários das orações</string>
+    <string name="ayarlar">Definições</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Faltam %2$s para %1$s</string>
+    <string name="pano_vaktine">Até %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s dentro de %2$s</string>
+    <string name="pano_kerahat_vakti">Horário proibido</string>
+    <string name="pano_bitis">termina às %1$s</string>
+    <string name="pano_kerahat_erisim">Horário proibido, %1$s, termina às %2$s. %3$s</string>
+    <string name="pano_cumaya">Jumu’ah dentro de %1$s</string>
+    <string name="pano_cikis_geldi">hora de sair</string>
+    <string name="pano_cikis">sair às %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">É hora de sair para o Jumu’ah</string>
+    <string name="pano_cuma_cikis_erisim">Sair para o Jumu’ah às %1$s</string>
+    <string name="pano_bugun_cuma">Hoje é dia de Jumu’ah</string>
+    <string name="pano_ogle">Zuhr %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Hoje é dia de Jumu’ah. A oração de Jumu’ah é à hora do Zuhr, %1$s</string>
+    <string name="pano_ayarlar_erisim">Definições: adicionar um telemóvel, localização, telemóveis ligados</string>
+    <string name="pano_simdiki_vakit">hora da oração atual</string>
+    <string name="pano_siradaki_vakit">próxima hora de oração</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Adicionar o telemóvel", "Introduzir código", "Escolho eu a cidade", "Adicionar". -->
+    <string name="kodla_girin">Introduzir código</string>
+    <string name="ili_kendim_secin">Escolho eu a cidade</string>
+    <string name="yeniden_deneyin">Tentar novamente</string>
+    <string name="telefon_varsayilan">Telemóvel</string>
+    <string name="esleme_ekleniyor">A adicionar %1$s</string>
+    <string name="esleme_gonderiyor">O telemóvel está a enviar a localização e o estado…</string>
+    <string name="esleme_tamamlanamadi">Não foi possível concluir o emparelhamento</string>
+    <string name="esleme_saklanamadi">Esta TV não consegue guardar a chave de ligação em segurança. Pode introduzir a localização com um código ou escolher a cidade.</string>
+    <string name="telefonunuzu_ekleyin">Adicionar o telemóvel</string>
+    <string name="esleme_alt">Horários das orações para a sua localização; as orações que rezou também aparecem.</string>
+    <string name="esleme_adim1">Abra o Namaz Akışı no telemóvel</string>
+    <string name="esleme_adim2">Definições › Os meus dispositivos › Adicionar uma TV</string>
+    <string name="esleme_adim3">Aponte a câmara do telemóvel para o código</string>
+    <string name="esleme_ayni_wifi">O telemóvel e a TV têm de estar na mesma rede Wi-Fi.</string>
+    <string name="esleme_onay_soru">Adicionar este telemóvel?</string>
+    <string name="esleme_onay_aciklama">O telemóvel adicionado pode enviar para esta TV a localização e as orações que marcar.</string>
+    <string name="ekleyin">Adicionar</string>
+    <string name="hayir">Não</string>
+    <string name="esleme_eklendi">%1$s adicionado</string>
+    <string name="konumunuz_geldi">A sua localização chegou</string>
+    <string name="konuma_gore_hesaplanacak">Os horários das orações vão ser calculados para esta localização.</string>
+    <string name="qr_konum_alindi">Localização recebida</string>
+    <string name="qr_kodu">Código de emparelhamento para ler com o telemóvel</string>
+    <string name="ag_yok">A TV não está ligada a nenhuma rede</string>
+    <string name="ag_yok_aciklama">Pode continuar introduzindo o código de 7 dígitos do telemóvel ou escolhendo a cidade.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Introduza o código do telemóvel</string>
+    <string name="kod_yol">No telemóvel: Definições › Os meus dispositivos › Adicionar uma TV</string>
+    <string name="kod_hatali">O código não corresponde. Verifique os 7 dígitos no telemóvel; corrija um dígito errado com «%1$s».</string>
+    <string name="kod_rakamli_kumanda">Se o comando tiver teclas numéricas, também pode escrever com elas.</string>
+    <string name="kod_bos_hane">dígito vazio</string>
+    <string name="kod_sil">Apagar</string>
+    <string name="kod_sil_aciklama">Apagar o último dígito</string>
+    <string name="kod_geri">Voltar</string>
+    <string name="vazgecin">Cancelar</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Escolha a sua cidade</string>
+    <string name="il_merkezine_gore">Os horários são calculados para o centro da cidade.</string>
+    <string name="il_secili">%1$s, escolhida</string>
+    <string name="dream_il_yok">Para ver o painel dos horários, abra a aplicação Namaz Akışı e escolha a sua cidade.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Localização: %1$s</string>
+    <string name="ayar_konum_yok">Nenhuma localização escolhida</string>
+    <string name="ayar_telefon_ekleyin">Adicionar um telemóvel</string>
+    <string name="ayar_konumu_kodla">Introduzir a localização com um código</string>
+    <string name="ayar_bagli_telefonlar">Telemóveis ligados a esta TV</string>
+    <string name="ayar_telefon_yok">Ainda não foi adicionado nenhum telemóvel. Use «%1$s» à esquerda e leia o código que aparece.</string>
+    <string name="kaldirin">Remover</string>
+    <string name="ayar_ne_gonderir">O que enviam os telemóveis?</string>
+    <string name="ayar_madde_konum">Localização: os horários seguem-na</string>
+    <string name="ayar_madde_namazlar">Orações marcadas, para quem o escolher</string>
+    <string name="ayar_madde_sifreli">Encriptado, só na rede da sua casa</string>
+    <string name="son_haber_yok">Ainda sem informações</string>
+    <string name="son_haber_az_once">Agora mesmo</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">há %1$d min</item>
+        <item quantity="many">há %1$d min</item>
+        <item quantity="other">há %1$d min</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">há %1$d h</item>
+        <item quantity="many">há %1$d h</item>
+        <item quantity="other">há %1$d h</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">há %1$d dia</item>
+        <item quantity="many">há %1$d de dias</item>
+        <item quantity="other">há %1$d dias</item>
+    </plurals>
+    <string name="kaldir_soru">Remover %1$s?</string>
+    <string name="kaldir_aciklama">Este telemóvel deixa de poder enviar informações para a TV. Para o adicionar de novo, tem de ler novamente o código QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Localização do telemóvel</string>
+</resources>

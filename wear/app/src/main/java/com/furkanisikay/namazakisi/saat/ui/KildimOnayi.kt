@@ -45,6 +45,7 @@ import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -64,6 +65,7 @@ import androidx.wear.compose.material3.EdgeButton
 import androidx.wear.compose.material3.EdgeButtonSize
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import kotlinx.coroutines.delay
@@ -101,6 +103,10 @@ fun KildimOnayi(
 ) {
     val azalt = hareketAzaltilmis()
     val titresim = LocalHapticFeedback.current
+    val dil = stringResource(R.string.dil_kodu)
+    val panoBasligi = stringResource(R.string.kildim_onayi)
+    val vazgecinEtiketi = stringResource(R.string.vazgecin)
+    val kildimEtiketi = stringResource(R.string.kildim)
     var onaylandi by remember { mutableStateOf(false) }
     var reddedildi by remember { mutableStateOf(false) }
     var surukleme by remember { mutableFloatStateOf(0f) }
@@ -168,8 +174,8 @@ fun KildimOnayi(
             .focusRequester(odak)
             .focusable()
             .semantics {
-                paneTitle = "Kıldım onayı"
-                customActions = listOf(CustomAccessibilityAction("Vazgeçin") { kapat(); true })
+                paneTitle = panoBasligi
+                customActions = listOf(CustomAccessibilityAction(vazgecinEtiketi) { kapat(); true })
             },
     ) {
         Canvas(Modifier.fillMaxSize().clearAndSetSemantics { }) {
@@ -189,7 +195,7 @@ fun KildimOnayi(
         ) {
             if (reddedildi) {
                 Text(
-                    AnaEkranKarari.VAKIT_DEGISTI,
+                    AnaEkranKarari.vakitDegisti(dil),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
@@ -201,7 +207,7 @@ fun KildimOnayi(
             } else if (onaylandi) {
                 // Onaylanınca soru duaya döner (sahip isteği); canlı bölge ekran okuyucuya okutur.
                 Text(
-                    AnaEkranKarari.KABUL_DUASI,
+                    AnaEkranKarari.kabulDuasi(dil),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
@@ -210,11 +216,12 @@ fun KildimOnayi(
                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 )
             } else {
-                val (ilk, ikinci) = AnaEkranKarari.onaySorusuSatirlari(ad)
+                val (ilk, ikinci) = AnaEkranKarari.onaySorusuSatirlari(ad, dil)
+                val soru = AnaEkranKarari.onaySorusu(ad, dil)
                 val boy = MaterialTheme.typography.titleMedium.fontSize
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clearAndSetSemantics { contentDescription = AnaEkranKarari.onaySorusu(ad) },
+                    modifier = Modifier.clearAndSetSemantics { contentDescription = soru },
                 ) {
                     SigdirilanMetin(ilk, enFazla = boy, renk = renk(SaatPaleti.METIN), agirlik = FontWeight.SemiBold, modifier = Modifier.fillMaxWidth())
                     SigdirilanMetin(ikinci, enFazla = boy, renk = renk(SaatPaleti.METIN), agirlik = FontWeight.SemiBold, modifier = Modifier.fillMaxWidth())
@@ -222,7 +229,7 @@ fun KildimOnayi(
             }
             if (kerahat && !reddedildi) {
                 Text(
-                    "Kerahat vaktindesiniz.",
+                    stringResource(R.string.kerahat_vaktindesiniz),
                     style = MaterialTheme.typography.labelSmall,
                     textAlign = TextAlign.Center,
                     color = renk(SaatPaleti.KERAHAT),
@@ -233,7 +240,7 @@ fun KildimOnayi(
                 CompactButton(
                     onClick = kapat,
                     colors = ButtonDefaults.filledTonalButtonColors(),
-                    label = { Text("Vazgeç") },
+                    label = { Text(stringResource(R.string.vazgec)) },
                 )
             }
         }
@@ -255,9 +262,9 @@ fun KildimOnayi(
                         containerColor = renk(SaatPaleti.EYLEM),
                         contentColor = renk(SaatPaleti.EYLEM_USTU),
                     ),
-                    modifier = Modifier.semantics { contentDescription = "Kıldım" },
+                    modifier = Modifier.semantics { contentDescription = kildimEtiketi },
                 ) {
-                    Text("Kıldım", fontWeight = FontWeight.Bold)
+                    Text(kildimEtiketi, fontWeight = FontWeight.Bold)
                 }
             } else if (onaylandi) {
                 OnayIsareti(dugmeGenislik, tik.value, halka.value)
@@ -269,6 +276,7 @@ fun KildimOnayi(
 /** Daralmış düğme: yeşil daire + çizilen onay işareti (dekoratif; sonuç ana ekranda okunur). */
 @Composable
 private fun OnayIsareti(genislik: Dp, ilerleme: Float, halka: Float) {
+    val aciklama = stringResource(R.string.kilindi_dua, AnaEkranKarari.kabulDuasi(stringResource(R.string.dil_kodu)))
     val yesil = renk(SaatPaleti.EYLEM)
     val ust = renk(SaatPaleti.EYLEM_USTU)
     Box(
@@ -287,7 +295,7 @@ private fun OnayIsareti(genislik: Dp, ilerleme: Float, halka: Float) {
                 }
             }
             .background(yesil, CircleShape)
-            .clearAndSetSemantics { contentDescription = "Kılındı. ${AnaEkranKarari.KABUL_DUASI}" },
+            .clearAndSetSemantics { contentDescription = aciklama },
     ) {
         Canvas(Modifier.size(26.dp)) {
             val yol = Path().apply {

@@ -14,6 +14,8 @@ import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, ScrollVi
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 interface TakvimCakismaRizaModalProps {
     gorunur: boolean;
@@ -31,30 +33,17 @@ interface Madde {
     metin: string;
 }
 
-const MADDELER: Madde[] = [
-    {
-        ikon: 'clock',
-        metin:
-            'Takvimlerinizdeki etkinliklerin yalnızca başlangıç ve bitiş saatleri, "tüm gün" ve "meşgul" bilgisi okunur.',
-    },
-    {
-        ikon: 'eye-slash',
-        metin:
-            'Etkinlik adı varsayılan olarak bildirimde yer almaz; "Takvimindeki bir etkinlik" yazar. Adı göstermeyi siz açabilirsiniz; açarsanız ad, bildirimle birlikte kilit ekranında ve bildirimleri aynalayan saat, bileklik ya da benzeri uygulamalarda da görünebilir. Sesli okumada ve gerçek alarm ekranında ad hiçbir zaman yer almaz.',
-    },
-    {
-        ikon: 'mobile-alt',
-        metin:
-            'İşlem yalnızca bu cihazda yapılır. Takvim bilgileriniz saklanmaz, yedeğe girmez ve hiçbir yere gönderilmez.',
-    },
-    {
-        ikon: 'toggle-off',
-        metin: 'Uyarıyı istediğiniz an kapatabilirsiniz; takvim iznini sistem ayarlarından da geri alabilirsiniz.',
-    },
-];
+const MADDE_IKONLARI = { saatler: 'clock', ad: 'eye-slash', cihaz: 'mobile-alt', kapatma: 'toggle-off' } as const;
 
 export const TakvimCakismaRizaModal: React.FC<TakvimCakismaRizaModalProps> = ({ gorunur, onKabul, onVazgec, onKapandi }) => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const mr = sozluk.takvim.riza;
+    // Bildirimdeki ad yerine geçen ifade bildirim üreticisiyle aynı kaynaktan.
+    const MADDELER: Madde[] = (Object.keys(MADDE_IKONLARI) as (keyof typeof MADDE_IKONLARI)[]).map((k) => ({
+        ikon: MADDE_IKONLARI[k],
+        metin: bicim(mr.maddeler[k], { etkinlik: sozluk.bildirim.takvim.etkinlikBir }),
+    }));
     useDonanimGeriTusu(gorunur, onVazgec);
 
     return (
@@ -67,7 +56,7 @@ export const TakvimCakismaRizaModal: React.FC<TakvimCakismaRizaModalProps> = ({ 
             onDismiss={onKapandi}
         >
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableWithoutFeedback onPress={onVazgec} accessibilityLabel="Vazgeçin">
+                <TouchableWithoutFeedback onPress={onVazgec} accessibilityLabel={mr.vazgecin}>
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
                 </TouchableWithoutFeedback>
 
@@ -93,17 +82,16 @@ export const TakvimCakismaRizaModal: React.FC<TakvimCakismaRizaModalProps> = ({ 
                             </View>
                             <View className="flex-1">
                                 <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                    Takviminiz okunsun mu?
+                                    {mr.baslik}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    Takvim çakışması uyarısı için gerekli
+                                    {mr.altBaslik}
                                 </Text>
                             </View>
                         </View>
 
                         <Text className="text-sm leading-5 mb-4" style={{ color: renkler.metin }}>
-                            Bir etkinlik, bittiğinde vaktin çıkmasına çok az süre bırakıyorsa sizi önceden
-                            uyarabilmemiz için cihazınızdaki takvimlere bakmamız gerekiyor.
+                            {mr.aciklama}
                         </Text>
 
                         <View
@@ -123,7 +111,7 @@ export const TakvimCakismaRizaModal: React.FC<TakvimCakismaRizaModalProps> = ({ 
                         </View>
 
                         <Text className="text-xs leading-4 mb-5" style={{ color: renkler.metinIkincil }}>
-                            Kabul ettiğinizde sistem sizden takvim iznini isteyecek.
+                            {mr.izinNotu}
                         </Text>
 
                         <View className="flex-row gap-3">
@@ -133,10 +121,10 @@ export const TakvimCakismaRizaModal: React.FC<TakvimCakismaRizaModalProps> = ({ 
                                 onPress={onVazgec}
                                 activeOpacity={0.7}
                                 accessibilityRole="button"
-                                accessibilityLabel="Vazgeç"
+                                accessibilityLabel={mr.vazgec}
                             >
                                 <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                                    Vazgeç
+                                    {mr.vazgec}
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -145,11 +133,11 @@ export const TakvimCakismaRizaModal: React.FC<TakvimCakismaRizaModalProps> = ({ 
                                 onPress={onKabul}
                                 activeOpacity={0.85}
                                 accessibilityRole="button"
-                                accessibilityLabel="Kabul ediyorum, takvim iznini isteyin"
+                                accessibilityLabel={mr.kabulEtiketi}
                             >
                                 <FontAwesome5 name="check" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                                 <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                                    Kabul ediyorum
+                                    {mr.kabul}
                                 </Text>
                             </TouchableOpacity>
                         </View>

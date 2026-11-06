@@ -3,9 +3,10 @@
  *
  * Geniş düzenin "Bu hafta" panelinin yarının vakitleri bölümü.
  * Hesap
- * uygulamanın tamamıyla AYNI yoldan (`gunVakitleriniHesapla` = `turkiyeHesapParametreleri`).
+ * uygulamanın tamamıyla AYNI yoldan (`gunVakitleriniHesapla` = `aktifPrayerTimes`).
  */
 import { gunVakitleriniHesapla, koordinatGecerliMi, type NafileKoordinat } from '../nafile/gunVakitleri';
+import { metin } from '../dil/aktifDil';
 import { gunEkle, tarihiGorunumFormatinaCevir } from '../utils/TarihYardimcisi';
 
 export interface YarinVakitSatiri {
@@ -30,15 +31,16 @@ export function yarinVakitleriniHesapla(
     if (!koordinatGecerliMi(koordinat)) return null;
     const yarin = gunEkle(gosterilenGunIso, 1);
     const v = gunVakitleriniHesapla(koordinat, yarin);
+    const m = metin().vakit;
     return {
         tarihMetni: tarihiGorunumFormatinaCevir(yarin),
         satirlar: [
-            { ad: 'İmsak', saat: saatMetni(v.imsak) },
-            { ad: 'Güneş', saat: saatMetni(v.gunes) },
-            { ad: 'Öğle', saat: saatMetni(v.ogle) },
-            { ad: 'İkindi', saat: saatMetni(v.ikindi) },
-            { ad: 'Akşam', saat: saatMetni(v.aksam) },
-            { ad: 'Yatsı', saat: saatMetni(v.yatsi) },
+            { ad: m.imsakVakti, saat: saatMetni(v.imsak) },
+            { ad: m.adlar.gunes, saat: saatMetni(v.gunes) },
+            { ad: m.adlar.ogle, saat: saatMetni(v.ogle) },
+            { ad: m.adlar.ikindi, saat: saatMetni(v.ikindi) },
+            { ad: m.adlar.aksam, saat: saatMetni(v.aksam) },
+            { ad: m.adlar.yatsi, saat: saatMetni(v.yatsi) },
         ],
     };
 }

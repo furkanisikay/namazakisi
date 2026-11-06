@@ -14,6 +14,7 @@ import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { BildirimModali } from '../common/BildirimModali';
 import { taniEpostasiniAc } from '../../../domain/services/TaniGonderServisi';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface TaniOnizlemeProps {
     /** Modal görünür mü */
@@ -42,6 +43,8 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
     onLoglariGor,
 }) => {
     const renkler = useRenkler();
+    const s = useMetin();
+    const m = s.genel.tani.onizleme;
     const [konumDahil, setKonumDahil] = useState(false);
     const [neOldu, setNeOldu] = useState('');
     const [hataBildirimi, setHataBildirimi] = useState(false);
@@ -113,53 +116,53 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                             </View>
                             <View className="flex-1">
                                 <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                    Ne gönderiliyor?
+                                    {m.baslik}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    Göndermeden önce görün
+                                    {m.altBaslik}
                                 </Text>
                             </View>
                         </View>
 
                         {/* Gönderilecek bölümü */}
                         <Text className="text-xs font-semibold mb-2" style={{ color: renkler.metinIkincil }}>
-                            Gönderilecek
+                            {m.gonderilecek}
                         </Text>
                         <View
                             className="rounded-xl p-3 mb-3"
                             style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                         >
-                            <SatirOgesi ikon="check" renk={renkler.birincil} metin="Uygulama sürümü" />
-                            <SatirOgesi ikon="check" renk={renkler.birincil} metin="Telefon ve Android sürümü" />
-                            <SatirOgesi ikon="check" renk={renkler.birincil} metin="Teknik kayıtlar" />
+                            <SatirOgesi ikon="check" renk={renkler.birincil} metin={m.surum} />
+                            <SatirOgesi ikon="check" renk={renkler.birincil} metin={m.telefon} />
+                            <SatirOgesi ikon="check" renk={renkler.birincil} metin={m.kayitlar} />
                             {konumDahil && (
-                                <SatirOgesi ikon="check" renk={renkler.birincil} metin="Yaklaşık konum (şehir)" sonMu />
+                                <SatirOgesi ikon="check" renk={renkler.birincil} metin={m.konumSehir} sonMu />
                             )}
                         </View>
 
                         {/* Gönderilmeyecek bölümü */}
                         <Text className="text-xs font-semibold mb-2" style={{ color: renkler.metinIkincil }}>
-                            Gönderilmeyecek
+                            {m.gonderilmeyecek}
                         </Text>
                         <View
                             className="rounded-xl p-3 mb-3"
                             style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                         >
-                            <SatirOgesi ikon="times" renk={renkler.metinIkincil} metin="Namaz, kaza, puan" />
-                            <SatirOgesi ikon="times" renk={renkler.metinIkincil} metin="Kişisel veriler" />
+                            <SatirOgesi ikon="times" renk={renkler.metinIkincil} metin={m.namazKazaPuan} />
+                            <SatirOgesi ikon="times" renk={renkler.metinIkincil} metin={m.kisisel} />
                             {!konumDahil && (
-                                <SatirOgesi ikon="times" renk={renkler.metinIkincil} metin="Yaklaşık konum" sonMu />
+                                <SatirOgesi ikon="times" renk={renkler.metinIkincil} metin={m.konum} sonMu />
                             )}
                         </View>
 
                         {/* Ne oldu? (isteğe bağlı serbest metin) */}
                         <Text className="text-xs font-semibold mb-2" style={{ color: renkler.metinIkincil }}>
-                            Ne oldu? (isteğe bağlı)
+                            {m.neOldu}
                         </Text>
                         <TextInput
                             value={neOldu}
                             onChangeText={setNeOldu}
-                            placeholder="Kısaca ne yaşadığınızı yazabilirsiniz"
+                            placeholder={m.neOlduYer}
                             placeholderTextColor={renkler.metinIkincil}
                             multiline
                             textAlignVertical="top"
@@ -171,7 +174,7 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                                 color: renkler.metin,
                                 minHeight: 64,
                             }}
-                            accessibilityLabel="Ne oldu? İsteğe bağlı açıklama"
+                            accessibilityLabel={m.neOlduErisim}
                         />
 
                         {/* Konum Switch */}
@@ -180,14 +183,14 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                             style={{ borderTopWidth: 1, borderTopColor: renkler.sinir }}
                         >
                             <Text className="text-sm flex-1 mr-3" style={{ color: renkler.metin }}>
-                                Yaklaşık konumu ekle
+                                {m.konumEkle}
                             </Text>
                             <Anahtar
                                 value={konumDahil}
                                 onValueChange={setKonumDahil}
                                 trackColor={{ true: renkler.birincil, false: renkler.sinir }}
                                 thumbColor={konumDahil ? renkler.birincil : '#f4f3f4'}
-                                accessibilityLabel="Yaklaşık konumu ekle"
+                                accessibilityLabel={m.konumEkle}
                             />
                         </View>
 
@@ -202,7 +205,7 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                                     className="text-xs text-center"
                                     style={{ color: renkler.birincil }}
                                 >
-                                    Tam kaydı görüntüle
+                                    {m.tamKayit}
                                 </Text>
                             </TouchableOpacity>
                         )}
@@ -217,7 +220,7 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                                 accessibilityRole="button"
                             >
                                 <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                                    İptal
+                                    {s.genel.ortak.iptal}
                                 </Text>
                             </TouchableOpacity>
 
@@ -231,7 +234,7 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                             >
                                 <FontAwesome5 name="envelope" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                                 <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                                    E-postayı aç
+                                    {m.epostayiAc}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -243,8 +246,8 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
             <BildirimModali
                 gorunur={basariBildirimi}
                 tip="basari"
-                baslik="Teşekkürler"
-                mesaj="Tanı kaydınız e-posta uygulamanızda hazırlandı; göndererek bize iletebilirsiniz."
+                baslik={m.tesekkurler}
+                mesaj={m.hazirlandi}
                 onKapat={() => setBasariBildirimi(false)}
             />
 
@@ -252,8 +255,8 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
             <BildirimModali
                 gorunur={hataBildirimi}
                 tip="hata"
-                baslik="Gönderilemedi"
-                mesaj="Tanı kaydı gönderilemedi. Birazdan tekrar deneyin; sorun sürerse cihazınızda e-posta veya paylaşım uygulaması olduğundan emin olun."
+                baslik={m.gonderilemedi}
+                mesaj={m.gonderilemediMesaj}
                 onKapat={() => setHataBildirimi(false)}
             />
         </>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kinyarwanda. Terimler JS src/core/dil/sozluk/rw ile aynı (iswala, Ijuma, televiziyo); hitap kibar çoğul (mu-). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">rw</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Ikibaho cy’ibihe by’iswala</string>
+    <string name="ayarlar">Igenamiterere</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Hasigaye %2$s kugeza %1$s</string>
+    <string name="pano_vaktine">Kugeza %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s mu %2$s</string>
+    <string name="pano_kerahat_vakti">Igihe kidakwiye</string>
+    <string name="pano_bitis">kirangira %1$s</string>
+    <string name="pano_kerahat_erisim">Igihe kidakwiye, %1$s, kirangira %2$s. %3$s</string>
+    <string name="pano_cumaya">Ijuma mu %1$s</string>
+    <string name="pano_cikis_geldi">igihe cyo kugenda</string>
+    <string name="pano_cikis">kugenda saa %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Ni igihe cyo kujya ku Ijuma</string>
+    <string name="pano_cuma_cikis_erisim">Mujye ku Ijuma saa %1$s</string>
+    <string name="pano_bugun_cuma">Uyu munsi ni Ijuma</string>
+    <string name="pano_ogle">Adhuhuri %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Uyu munsi ni Ijuma. Iswala ya Ijuma iri mu gihe cya Adhuhuri, %1$s</string>
+    <string name="pano_ayarlar_erisim">Igenamiterere: kongeramo telefoni, aho muherereye, telefoni zihujwe</string>
+    <string name="pano_simdiki_vakit">igihe cy’iswala kiriho</string>
+    <string name="pano_siradaki_vakit">igihe cy’iswala gikurikira</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Kongeramo telefoni yanyu", "Kwandika kode", "Nzihitiramo umujyi", "Kongeramo". -->
+    <string name="kodla_girin">Kwandika kode</string>
+    <string name="ili_kendim_secin">Nzihitiramo umujyi</string>
+    <string name="yeniden_deneyin">Kongera kugerageza</string>
+    <string name="telefon_varsayilan">Telefoni</string>
+    <string name="esleme_ekleniyor">%1$s irongerwamo</string>
+    <string name="esleme_gonderiyor">Telefoni yanyu irohereza aho iherereye n’uko ihagaze…</string>
+    <string name="esleme_tamamlanamadi">Guhuza ntibyashoboye kurangira</string>
+    <string name="esleme_saklanamadi">Iyi televiziyo ntishobora kubika neza urufunguzo rwo guhuza. Mushobora kwandika aho muherereye mukoresheje kode cyangwa guhitamo umujyi wanyu.</string>
+    <string name="telefonunuzu_ekleyin">Kongeramo telefoni yanyu</string>
+    <string name="esleme_alt">Ibihe by’iswala by’aho muherereye; iswala mwasali nazo zigaragara.</string>
+    <string name="esleme_adim1">Mufungure Namaz Akışı kuri telefoni yanyu</string>
+    <string name="esleme_adim2">Igenamiterere › Ibikoresho byanjye › Kongeramo televiziyo</string>
+    <string name="esleme_adim3">Mwerekeze kamera ya telefoni yanyu kuri kode</string>
+    <string name="esleme_ayni_wifi">Telefoni yanyu na televiziyo bigomba kuba kuri Wi-Fi imwe.</string>
+    <string name="esleme_onay_soru">Kongeramo iyi telefoni?</string>
+    <string name="esleme_onay_aciklama">Telefoni yongewemo ishobora koherereza iyi televiziyo aho iherereye n’iswala yemeza.</string>
+    <string name="ekleyin">Kongeramo</string>
+    <string name="hayir">Oya</string>
+    <string name="esleme_eklendi">%1$s yongewemo</string>
+    <string name="konumunuz_geldi">Aho muherereye habonetse</string>
+    <string name="konuma_gore_hesaplanacak">Ibihe by’iswala bizabarwa hakurikijwe aha hantu.</string>
+    <string name="qr_konum_alindi">Aho muherereye habonetse</string>
+    <string name="qr_kodu">Kode yo guhuza musoma na telefoni yanyu</string>
+    <string name="ag_yok">Televiziyo ntiyahujwe na murandasi</string>
+    <string name="ag_yok_aciklama">Mushobora gukomeza mwandika kode y’imibare 7 iri kuri telefoni yanyu cyangwa muhitamo umujyi wanyu.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Mwandike kode iri kuri telefoni yanyu</string>
+    <string name="kod_yol">Kuri telefoni yanyu: Igenamiterere › Ibikoresho byanjye › Kongeramo televiziyo</string>
+    <string name="kod_hatali">Kode ntiyahuye. Murebe imibare 7 iri kuri telefoni yanyu; umubare utari wo muwukosore na «%1$s».</string>
+    <string name="kod_rakamli_kumanda">Niba telekomande yanyu ifite buto z’imibare, mushobora no kuzandikisha.</string>
+    <string name="kod_bos_hane">umwanya w’umubare urimo ubusa</string>
+    <string name="kod_sil">Gusiba</string>
+    <string name="kod_sil_aciklama">Gusiba umubare wa nyuma</string>
+    <string name="kod_geri">Gusubira inyuma</string>
+    <string name="vazgecin">Kureka</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Muhitemo umujyi wanyu</string>
+    <string name="il_merkezine_gore">Ibihe by’iswala bibarwa hakurikijwe hagati mu mujyi.</string>
+    <string name="il_secili">%1$s, yahiswemo</string>
+    <string name="dream_il_yok">Kugira ngo mubone ikibaho cy’ibihe by’iswala, mufungure porogaramu ya Namaz Akışı maze muhitemo umujyi wanyu.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Aho muherereye: %1$s</string>
+    <string name="ayar_konum_yok">Nta ho muherereye hahiswemo</string>
+    <string name="ayar_telefon_ekleyin">Kongeramo telefoni</string>
+    <string name="ayar_konumu_kodla">Kwandika aho muherereye mukoresheje kode</string>
+    <string name="ayar_bagli_telefonlar">Telefoni zihujwe n’iyi televiziyo</string>
+    <string name="ayar_telefon_yok">Nta telefoni iraongerwamo. Mukoreshe «%1$s» iri ibumoso maze musome kode igaragara.</string>
+    <string name="kaldirin">Gukuraho</string>
+    <string name="ayar_ne_gonderir">Telefoni zohereza iki?</string>
+    <string name="ayar_madde_konum">Aho iherereye: ibihe by’iswala birahakurikiza</string>
+    <string name="ayar_madde_namazlar">Iswala zemejwe, ku babihisemo</string>
+    <string name="ayar_madde_sifreli">Byabitswe mu ibanga, kuri murandasi yo mu rugo gusa</string>
+    <string name="son_haber_yok">Nta makuru araboneka</string>
+    <string name="son_haber_az_once">Ubu nyine</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">hashize %1$d min</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">hashize %1$d h</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">hashize iminsi %1$d</item>
+    </plurals>
+    <string name="kaldir_soru">Gukuraho %1$s?</string>
+    <string name="kaldir_aciklama">Iyi telefoni ntizongera kohereza amakuru kuri televiziyo. Kugira ngo muyongeremo, mugomba kongera gusoma kode ya QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Aho telefoni yanyu iherereye</string>
+</resources>

@@ -1,0 +1,58 @@
+// fil — Filipince, Latin (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Filipince terimler: src/core/dil/sozluk/fil.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Susunod na dasal";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Sinasabi ang susunod na dasal at ang oras ng pagpasok nito.";
+"Şu anki vakti kıldım" = "Naidasal ko ang kasalukuyang dasal";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Minamarkahang naidasal na ang kasalukuyang dasal. Idinadagdag ang tala kapag binuksan ninyo ang app.";
+"Onay iste" = "Humingi ng kumpirmasyon";
+"Kıbleyi aç" = "Buksan ang Qiblah";
+"Uygulamayı Kıble pusulasıyla açar." = "Binubuksan ang app gamit ang compass ng Qiblah.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Nagdasal ako";
+"Kıble" = "Qiblah";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Pangalan ng susunod na dasal";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Ibinibigay ang pangalan ng susunod na dasal. Magagamit ninyo ito bilang kondisyon sa Shortcuts.";
+"Sıradaki vakte kalan dakika" = "Minuto bago ang susunod na dasal";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Ibinibigay kung ilang minuto pa bago pumasok ang susunod na dasal. Nagbabalik ng -1 kung walang impormasyon.";
+"Şu anki vakit kılındı mı?" = "Naidasal na ba ang kasalukuyang dasal?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Nagbibigay ng oo kung namarkahang naidasal na ang kasalukuyang dasal. Nagbibigay ng hindi kung walang dasal na mamarkahan.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Katahimikan sa dasal";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Nagbabalik ng true sa mga unang minuto pagkapasok ng oras ng dasal. Ginagamit sa Shortcuts para i-on ang isang Focus.";
+"Süre (dakika)" = "Tagal (minuto)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Ang ${dakika} minuto pagkapasok ng oras ng dasal";
+"Namaz sessizliğinin bitişi" = "Katapusan ng katahimikan sa dasal";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Ibinibigay ang oras ng pagtatapos ng katahimikan. Ibinibigay ang kasalukuyang oras kung walang katahimikan ngayon.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Katapusan ng ${dakika} minuto pagkapasok ng oras ng dasal";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Mga paalala sa dasal";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Habang naka-on ang Focus na ito, dumarating ang mga paalala sa dasal nang walang tunog at hindi umiilaw ang screen.";
+"Hatırlatmaları sessiz ver" = "Tahimik na ihatid ang mga paalala";
+"Hatırlatmalar sessiz gelir" = "Tahimik na dumarating ang mga paalala";
+"Hatırlatmalar her zamanki gibi" = "Mga paalala gaya ng dati";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Minamarkahang naidasal na ang dasal na nasa widget.";
+"Tarih" = "Petsa";
+"Vakit" = "Dasal";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Ihinto ang alarm sa dasal";
+"Namazı kıldım" = "Nagdasal ako";
+"Alarm" = "Alarm";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Larawan ng talata ng araw";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Ibinibigay ang talata ngayon bilang larawang kasinlaki ng inyong screen. Magagamit ninyo ito kasama ng hakbang na Set Wallpaper sa Shortcuts.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Buksan ang app nang isang beses para maihanda ang talata ng araw.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Hindi maihanda ang larawan. Subukang muli maya-maya.";

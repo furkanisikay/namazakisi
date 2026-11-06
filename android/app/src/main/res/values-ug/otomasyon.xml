@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ug — Uygurca (beta). -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Uygurca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: ناماز ئوقۇدۇم</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: ناماز ۋاقتى ھالىتى</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: ناماز ۋاقتى ھادىسىسى</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">بۇ تەڭشەك ئاپتوماتلاشتۇرۇش ئەپىدىن قوشۇلىدۇ</string>
+  <string name="otomasyon_bilgi_tarayici">تور كۆرگۈچلەرگە مەڭگۈلۈك ئىجازەت بېرىلمەيدۇ. Tasker، MacroDroid ياكى Automate غا ئوخشاش ئەپنىڭ قىستۇرما تىزىملىكىدىن قوشۇڭ.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker، MacroDroid ياكى Automate غا ئوخشاش ئەپنىڭ قىستۇرما تىزىملىكىدىن «Namaz Akışı» نى تاللاپ قوشۇڭ.</string>
+  <string name="otomasyon_engelli_baslik">%1$s توسۇلغان</string>
+  <string name="otomasyon_engelli_mesaj">بۇ ئەپنىڭ نامازلىرىڭىزنى بەلگىلىشىنى ئىلگىرى توسقان ئىدىڭىز. Namaz Akışı دىكى تەڭشەكلەر &gt; «ناماز ئوقۇدۇم» نى بەلگىلىيەلەيدىغان ئەپلەر بۆلىكىدىن ئىجازەت بېرەلەيسىز.</string>
+  <string name="otomasyon_izin_baslik">%1$s بىلەن ئىشلىتەمسىز؟</string>
+  <string name="otomasyon_izin_kosul">%1$s ناماز ۋاقتىنىڭ قاچان كىرگەنلىكىنى، قاچان چىقىۋاتقانلىقىنى ۋە مەسچىتتە ئىكەنلىكىڭىزنى بىلىپ، ئاپتوماتلاشتۇرۇشلىرىڭىزنى ئىجرا قىلالايدۇ. قارارىڭىزنى Namaz Akışı دىكى تەڭشەكلەر &gt; «ناماز ئوقۇدۇم» نى بەلگىلىيەلەيدىغان ئەپلەر بۆلىكىدىن ئۆزگەرتەلەيسىز.</string>
+  <string name="otomasyon_izin_kildim">%1$s سىز قۇرغان ئاپتوماتلاشتۇرۇش ئارقىلىق ھازىرقى ۋاقىتنى ئوقۇلدى دەپ بەلگىلىيەلەيدۇ. قارارىڭىزنى Namaz Akışı دىكى تەڭشەكلەر &gt; «ناماز ئوقۇدۇم» نى بەلگىلىيەلەيدىغان ئەپلەر بۆلىكىدىن ئۆزگەرتەلەيسىز.</string>
+  <string name="otomasyon_izin_ver">ئىجازەت بېرىڭ</string>
+  <string name="otomasyon_engelle">توسۇڭ</string>
+  <string name="otomasyon_vazgec">ۋاز كېچىڭ</string>
+  <string name="otomasyon_tamam">بولدى</string>
+  <string name="otomasyon_tur_baslik">قاچان ئىشلىسۇن؟</string>
+  <string name="otomasyon_ileri">كېيىنكى</string>
+  <string name="otomasyon_vakit_baslik">قايسى ۋاقىت؟</string>
+  <string name="otomasyon_herhangi_vakit">ھەرقانداق ناماز ۋاقتى</string>
+  <string name="otomasyon_kaydet">ساقلاڭ</string>
+  <string name="otomasyon_kosul_icinde">ناماز ۋاقتى ئىچىدە بولغاندا</string>
+  <string name="otomasyon_kosul_cikiyor">ناماز ۋاقتى چىقىۋاتقاندا (%1$d مىنۇت قالدى، ناماز قوغدىغۇچى ئوچۇق)</string>
+  <string name="otomasyon_kosul_camide">مەسچىتتە بولغاندا</string>
+  <string name="otomasyon_olay_girdi">ناماز ۋاقتى كىرگەندە</string>
+  <string name="otomasyon_olay_cikiyor">ناماز ۋاقتى چىقىۋاتقاندا (%1$d مىنۇت قالدى، ناماز قوغدىغۇچى ئوچۇق)</string>
+  <string name="otomasyon_olay_camide">مەسچىتتە ئىكەنلىكىڭىز بايقالغاندا</string>
+</resources>

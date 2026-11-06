@@ -18,6 +18,7 @@ import { adimKapaliMi } from './kanalKumesi';
 import { alarmGerekliMi } from './motorAdaptoru';
 import { ozelSesMi, sesGorunenAdi, sesHashi, sesKimliginiNormalize } from './sesKimligi';
 import { VARSAYILAN_SES } from './matrisTipleri';
+import { bicim, metin } from '../dil/aktifDil';
 import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
 
 /** Yük biçim sürümü — Kotlin `MuhafizAlarmKurallari.YUK_SURUMU`. */
@@ -49,7 +50,8 @@ export function alarmKanalIdOlustur(bildirimSesi: string | undefined | null): st
 /** Android bildirim ayarlarında görünen kanal adı (kibar, ayırt edilebilir). */
 export function alarmKanalAdiOlustur(bildirimSesi: string | undefined, sesAdi?: string): string {
     const ses = sesKimliginiNormalize(bildirimSesi);
-    return ses === VARSAYILAN_SES ? 'Namaz alarmı' : `Namaz alarmı · ${sesGorunenAdi(ses, sesAdi)}`;
+    const k = metin().bildirim.kanal;
+    return ses === VARSAYILAN_SES ? k.alarm : bicim(k.alarmSes, { ses: sesGorunenAdi(ses, sesAdi) });
 }
 
 /** Matrisin kullandığı alarm kanalları (çöp toplamada KORUNACAKLAR). */

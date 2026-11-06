@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bs — Boşnakça (beta). Yedek gövdeler ibadete çağrıdır: "Vi" + emir, "!" yok. -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Odbrojavanja uživo</string>
+    <string name="countdown_kanal_canli_aciklama">Odbrojavanja u Now Baru i statusnoj traci</string>
+    <string name="countdown_kanal_genel_ad">Obavještenja s odbrojavanjem</string>
+    <string name="countdown_kanal_genel_aciklama">Kanal za obavještenja s odbrojavanjem</string>
+
+    <string name="countdown_eylem_kildim">Klanjano</string>
+    <string name="countdown_eylem_durdur">Zaustavite</string>
+
+    <string name="countdown_yedek_vakit">Požurite, vakat uskoro ističe.</string>
+    <string name="countdown_yedek_iftar">Iftar se bliži.</string>
+    <string name="countdown_yedek_sahur">Još možete jesti i piti; zora se bliži.</string>
+    <string name="countdown_yedek_seri">Današnji namazi nisu potpuni; ne izgubite svoj niz.</string>
+
+    <string name="countdown_onek_vakit">Do isteka vakta</string>
+    <string name="countdown_onek_vakit_dar">Vakat ističe</string>
+    <string name="countdown_onek_iftar">Do iftara</string>
+    <string name="countdown_onek_iftar_dar">Do iftara</string>
+    <string name="countdown_onek_sahur">Do kraja sehura</string>
+    <string name="countdown_onek_sahur_dar">Sehur ističe</string>
+    <string name="countdown_onek_seri">Da sačuvate niz</string>
+    <string name="countdown_onek_seri_dar">Niz ističe</string>
+</resources>

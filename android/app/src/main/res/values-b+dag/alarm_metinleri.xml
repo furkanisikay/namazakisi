@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Dagbani). "N puhi jiŋli" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Jiŋli alaam</string>
+  <string name="alarm_kildim">N puhi jiŋli</string>
+  <string name="alarm_kapat">Kparimi ya</string>
+  <string name="alarm_kanal_aciklamasi">Alaam din kumdi teebu kpalinsi shɛŋa yi ni piri ni</string>
+</resources>

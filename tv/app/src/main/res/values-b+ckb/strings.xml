@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ckb -->
+<!-- Soranî. Terimler: src/core/dil/sozluk/ckb (vakit.ts baş yorumu). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ckb</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">تابلۆی کاتەکانی نوێژ</string>
+    <string name="ayarlar">ڕێکخستنەکان</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s ماوە تا %1$s</string>
+    <string name="pano_vaktine">تا %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s دوای %2$s</string>
+    <string name="pano_kerahat_vakti">کاتی مەکروھ</string>
+    <string name="pano_bitis">کۆتایی %1$s</string>
+    <string name="pano_kerahat_erisim">کاتی مەکروھ، %1$s، لە %2$s کۆتایی دێت. %3$s</string>
+    <string name="pano_cumaya">ھەینی دوای %1$s</string>
+    <string name="pano_cikis_geldi">کاتی ڕۆیشتنە</string>
+    <string name="pano_cikis">ڕۆیشتن لە %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">کاتی ڕۆیشتنە بۆ نوێژی ھەینی</string>
+    <string name="pano_cuma_cikis_erisim">لە %1$s بۆ نوێژی ھەینی بڕۆن</string>
+    <string name="pano_bugun_cuma">ئەمڕۆ ھەینییە</string>
+    <string name="pano_ogle">نیوەڕۆ %1$s</string>
+    <string name="pano_bugun_cuma_erisim">ئەمڕۆ ھەینییە. نوێژی ھەینی لە کاتی نیوەڕۆدایە، %1$s</string>
+    <string name="pano_ayarlar_erisim">ڕێکخستنەکان: زیادکردنی مۆبایل، شوێن، مۆبایلە پەیوەستەکان</string>
+    <string name="pano_simdiki_vakit">کاتی نوێژی ئێستا</string>
+    <string name="pano_siradaki_vakit">کاتی نوێژی داھاتوو</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: «مۆبایلەکەتان زیاد بکەن», «نووسینی کۆد», «شارەکە خۆم ھەڵدەبژێرم», «زیادکردن». -->
+    <string name="kodla_girin">نووسینی کۆد</string>
+    <string name="ili_kendim_secin">شارەکە خۆم ھەڵدەبژێرم</string>
+    <string name="yeniden_deneyin">دووبارە ھەوڵ بدەنەوە</string>
+    <string name="telefon_varsayilan">مۆبایل</string>
+    <string name="esleme_ekleniyor">%1$s زیاد دەکرێت</string>
+    <string name="esleme_gonderiyor">مۆبایلەکەتان شوێن و دۆخەکەی دەنێرێت…</string>
+    <string name="esleme_tamamlanamadi">جووتکردن تەواو نەبوو</string>
+    <string name="esleme_saklanamadi">ئەم تەلەڤزیۆنە ناتوانێت کلیلی پەیوەستبوون بە سەلامەتی ھەڵبگرێت. دەتوانن شوێنەکەتان بە کۆد بنووسن یان شارەکەتان ھەڵبژێرن.</string>
+    <string name="telefonunuzu_ekleyin">مۆبایلەکەتان زیاد بکەن</string>
+    <string name="esleme_alt">کاتەکانی نوێژ بۆ شوێنەکەتان؛ ئەو نوێژانەی کردووتانەش دەردەکەون.</string>
+    <string name="esleme_adim1">Namaz Akışı لەسەر مۆبایلەکەتان بکەنەوە</string>
+    <string name="esleme_adim2">ڕێکخستنەکان › ئامێرەکانم › تەلەڤزیۆنێک زیاد بکەن</string>
+    <string name="esleme_adim3">کامێرای مۆبایلەکەتان ڕوو لە کۆدەکە بکەن</string>
+    <string name="esleme_ayni_wifi">مۆبایل و تەلەڤزیۆنەکەتان دەبێت لەسەر ھەمان تۆڕی Wi-Fi بن.</string>
+    <string name="esleme_onay_soru">ئەم مۆبایلە زیاد بکرێت؟</string>
+    <string name="esleme_onay_aciklama">مۆبایلی زیادکراو دەتوانێت شوێنەکەی و ئەو نوێژانەی نیشانەیان دەکات بۆ ئەم تەلەڤزیۆنە بنێرێت.</string>
+    <string name="ekleyin">زیادکردن</string>
+    <string name="hayir">نەخێر</string>
+    <string name="esleme_eklendi">%1$s زیاد کرا</string>
+    <string name="konumunuz_geldi">شوێنەکەتان گەیشت</string>
+    <string name="konuma_gore_hesaplanacak">کاتەکانی نوێژ بۆ ئەم شوێنە ھەژمار دەکرێن.</string>
+    <string name="qr_konum_alindi">شوێن وەرگیرا</string>
+    <string name="qr_kodu">کۆدی جووتکردن بۆ خوێندنەوە بە مۆبایلەکەتان</string>
+    <string name="ag_yok">تەلەڤزیۆنەکە بە تۆڕەوە پەیوەست نییە</string>
+    <string name="ag_yok_aciklama">دەتوانن بە نووسینی کۆدە 7 ژمارەییەکەی مۆبایلەکەتان یان ھەڵبژاردنی شارەکەتان بەردەوام بن.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">کۆدەکەی مۆبایلەکەتان بنووسن</string>
+    <string name="kod_yol">لەسەر مۆبایلەکەتان: ڕێکخستنەکان › ئامێرەکانم › تەلەڤزیۆنێک زیاد بکەن</string>
+    <string name="kod_hatali">کۆدەکە ھاوتا نەبوو. 7 ژمارەکەی سەر مۆبایلەکەتان بپشکنن؛ ژمارەی ھەڵە بە «%1$s» ڕاست بکەنەوە.</string>
+    <string name="kod_rakamli_kumanda">ئەگەر ڕیمۆتەکەتان دوگمەی ژمارەی ھەیە، دەتوانن بەوانیش بنووسن.</string>
+    <string name="kod_bos_hane">ژمارەی بەتاڵ</string>
+    <string name="kod_sil">سڕینەوە</string>
+    <string name="kod_sil_aciklama">سڕینەوەی دوا ژمارە</string>
+    <string name="kod_geri">گەڕانەوە</string>
+    <string name="vazgecin">پاشگەزبوونەوە</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">شارەکەتان ھەڵبژێرن</string>
+    <string name="il_merkezine_gore">کاتەکانی نوێژ بۆ ناوەندی شار ھەژمار دەکرێن.</string>
+    <string name="il_secili">%1$s، ھەڵبژێردراو</string>
+    <string name="dream_il_yok">بۆ بینینی تابلۆی کاتەکانی نوێژ، ئەپی Namaz Akışı بکەنەوە و شارەکەتان ھەڵبژێرن.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">شوێن: %1$s</string>
+    <string name="ayar_konum_yok">ھیچ شوێنێک ھەڵنەبژێردراوە</string>
+    <string name="ayar_telefon_ekleyin">زیادکردنی مۆبایل</string>
+    <string name="ayar_konumu_kodla">نووسینی شوێن بە کۆد</string>
+    <string name="ayar_bagli_telefonlar">ئەو مۆبایلانەی بەم تەلەڤزیۆنەوە پەیوەستن</string>
+    <string name="ayar_telefon_yok">ھێشتا ھیچ مۆبایلێک زیاد نەکراوە. «%1$s» لە لای چەپ بەکاربھێنن و ئەو کۆدەی دەردەکەوێت بخوێننەوە.</string>
+    <string name="kaldirin">لابردن</string>
+    <string name="ayar_ne_gonderir">مۆبایلەکان چی دەنێرن؟</string>
+    <string name="ayar_madde_konum">شوێن: کاتەکانی نوێژ شوێنی دەکەون</string>
+    <string name="ayar_madde_namazlar">نوێژە نیشانەکراوەکان، بۆ ئەوانەی ھەڵیدەبژێرن</string>
+    <string name="ayar_madde_sifreli">کۆدکراو، تەنیا لەسەر تۆڕی ماڵەوەتان</string>
+    <string name="son_haber_yok">ھێشتا ھیچ زانیارییەک نییە</string>
+    <string name="son_haber_az_once">ئێستا</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d خولەک لەمەوبەر</item>
+        <item quantity="other">%1$d خولەک لەمەوبەر</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d کاتژمێر لەمەوبەر</item>
+        <item quantity="other">%1$d کاتژمێر لەمەوبەر</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d ڕۆژ لەمەوبەر</item>
+        <item quantity="other">%1$d ڕۆژ لەمەوبەر</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s لابرێت؟</string>
+    <string name="kaldir_aciklama">ئەم مۆبایلە ئیتر ناتوانێت زانیاری بۆ تەلەڤزیۆنەکە بنێرێت. بۆ دووبارە زیادکردنی، پێویستە دووبارە کۆدی QR بخوێننەوە.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">شوێنی مۆبایلەکەتان</string>
+</resources>

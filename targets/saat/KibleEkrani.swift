@@ -65,6 +65,9 @@ struct KibleEkrani: View {
     @Environment(\.isLuminanceReduced) private var sistemSonuk
 
     private var sonuk: Bool { sistemSonuk || SaatSimulatorTohumu.sonuk }
+    /// Cizim anindaki dil (W5, telefondan gelir).
+    private var dil: String { SaatDili.kod }
+    private var m: SaatMetinleri { SaatMetinleri.dil(dil) }
 
     private var kibleAcisi: Double? {
         konum.map { Kible.aci(enlem: $0.lat, boylam: $0.lng) }
@@ -79,13 +82,10 @@ struct KibleEkrani: View {
                     sabitAci(kibleAcisi)
                 }
             } else {
-                BilgiKarti(
-                    ikon: "location.slash",
-                    metin: "Kıble için konum gerekir. iPhone'unuzda Namaz Akışı'nı açıp konumunuzu ayarlayın; saat bir dakika içinde alır."
-                )
+                BilgiKarti(ikon: "location.slash", metin: m.kibleKonumYok)
             }
         }
-        .navigationTitle("Kıble")
+        .navigationTitle(m.kible)
         .containerBackground((hizali ? SaatGorunum.yesil : Color.white).opacity(sonuk ? 0.05 : (hizali ? 0.3 : 0.08)).gradient, for: .tabView)
         .onAppear {
             NSLog("[NamazSaat] Kible acildi (konum: %@, pusula: %@)", konum == nil ? "yok" : "var", pusula.destekleniyor ? "var" : "yok")
@@ -113,7 +113,7 @@ struct KibleEkrani: View {
                 Circle()
                     .stroke(hizali ? SaatGorunum.yesil : Color.secondary.opacity(0.35), lineWidth: hizali ? 4 : 2)
                 // Pusula gulu: 30°'de bir cizgi + kuzey ("K"); saatle birlikte doner (gercek pusula hissi).
-                PusulaGulu(sonuk: sonuk)
+                PusulaGulu(sonuk: sonuk, kuzey: m.kuzeyHarfi)
                     .rotationEffect(.degrees(-(pusula.yon ?? 0)))
                     .opacity(pusula.yon == nil ? 0.3 : 1)
                 // Halkanin tepesinde Kabe isareti: saatin baktigi yon. Ok ona donunce kible.
@@ -132,18 +132,18 @@ struct KibleEkrani: View {
             .accessibilityHidden(true)
 
             if pusula.yon == nil {
-                Text("Pusula hazırlanıyor")
-                    .font(.footnote)
+                Text(m.pusulaHazirlaniyor)
+                    .font(SaatYaziTipi.stil(.footnote))
                     .foregroundStyle(.secondary)
             } else if hizali {
-                Label("Kıble yönündesiniz", systemImage: "checkmark.circle.fill")
-                    .font(.headline)
+                Label(Kible.erisimMetni(0, hizali: true, dil: dil), systemImage: "checkmark.circle.fill")
+                    .font(SaatYaziTipi.stil(.headline))
                     .foregroundStyle(SaatGorunum.yesil)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             } else {
-                Text(Kible.donusMetni(Kible.hedefAcisi(kibleAcisi: kibleAcisi, yon: pusula.yon ?? 0)))
-                    .font(.system(.title3, design: .rounded).weight(.semibold))
+                Text(Kible.donusMetni(Kible.hedefAcisi(kibleAcisi: kibleAcisi, yon: pusula.yon ?? 0), dil: dil))
+                    .font(SaatYaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                     .monospacedDigit()
                     .lineLimit(1)
             }
@@ -151,17 +151,17 @@ struct KibleEkrani: View {
             if let konum, !sonuk {
                 HStack(spacing: 8) {
                     Label("\(Int(kibleAcisi.rounded()))°", systemImage: "safari")
-                    Label(Kible.mesafeMetni(Kible.mesafeKm(enlem: konum.lat, boylam: konum.lng)), systemImage: "location.fill")
+                    Label(Kible.mesafeMetni(Kible.mesafeKm(enlem: konum.lat, boylam: konum.lng), dil: dil), systemImage: "location.fill")
                 }
-                .font(.caption2)
+                .font(SaatYaziTipi.stil(.caption2))
                 .foregroundStyle(.secondary)
                 .labelStyle(.titleAndIcon)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             }
             if pusula.dogrulukDusuk {
-                Label("Saatinizi sekiz çizerek çevirin", systemImage: "arrow.triangle.2.circlepath")
-                    .font(.caption2)
+                Label(m.sekizCizin, systemImage: "arrow.triangle.2.circlepath")
+                    .font(SaatYaziTipi.stil(.caption2))
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
@@ -170,8 +170,8 @@ struct KibleEkrani: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(
-            pusula.yon.map { Kible.erisimMetni(Kible.hedefAcisi(kibleAcisi: kibleAcisi, yon: $0), hizali: hizali) }
-                ?? "Pusula hazırlanıyor"
+            pusula.yon.map { Kible.erisimMetni(Kible.hedefAcisi(kibleAcisi: kibleAcisi, yon: $0), hizali: hizali, dil: dil) }
+                ?? m.pusulaHazirlaniyor
         )
     }
 
@@ -181,8 +181,8 @@ struct KibleEkrani: View {
         VStack(spacing: 4) {
             ZStack {
                 Circle().stroke(Color.secondary.opacity(0.35), lineWidth: 2)
-                Text("K")
-                    .font(.caption2.weight(.bold))
+                Text(m.kuzeyHarfi)
+                    .font(SaatYaziTipi.stil(.caption2).weight(.bold))
                     .foregroundStyle(.secondary)
                     .offset(y: -40)
                 Image(systemName: "location.north.fill")
@@ -193,17 +193,17 @@ struct KibleEkrani: View {
             .frame(width: 96, height: 96)
             .accessibilityHidden(true)
             Text("\(Int(aci.rounded()))°")
-                .font(.system(.title3, design: .rounded).weight(.semibold))
+                .font(SaatYaziTipi.stil(.title3, tasarim: .rounded).weight(.semibold))
                 .monospacedDigit()
-            Text("Saatinizi kuzeye çevirin, oku izleyin")
-                .font(.caption2)
+            Text(m.kuzeyeCevirin)
+                .font(SaatYaziTipi.stil(.caption2))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.7)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Kıble kuzeyden saat yönünde \(Int(aci.rounded())) derece")
+        .accessibilityLabel(m.bicim(m.kuzeydenErisim, ["derece": String(Int(aci.rounded()))]))
     }
 }
 
@@ -219,7 +219,7 @@ struct BilgiKarti: View {
                 .foregroundStyle(SaatGorunum.yesil)
                 .accessibilityHidden(true)
             Text(metin)
-                .font(.footnote)
+                .font(SaatYaziTipi.stil(.footnote))
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.7)
         }
@@ -255,6 +255,8 @@ private struct KabeIsareti: View {
 /// Pusula gulu: 12 cizgi (90°'lerde uzun) + kuzey harfi. Saatin yonuyle ters doner.
 private struct PusulaGulu: View {
     let sonuk: Bool
+    /// Kuzey harfi dilde ("K" / "N").
+    let kuzey: String
 
     var body: some View {
         ZStack {
@@ -265,8 +267,8 @@ private struct PusulaGulu: View {
                     .offset(y: -44)
                     .rotationEffect(.degrees(Double(i) * 30))
             }
-            Text("K")
-                .font(.system(size: 10, weight: .bold, design: .rounded))
+            Text(kuzey)
+                .font(SaatYaziTipi.boy(10, agirlik: .bold, tasarim: .rounded))
                 .foregroundStyle(Color.red.opacity(sonuk ? 0.5 : 0.9))
                 .offset(y: -32)
         }

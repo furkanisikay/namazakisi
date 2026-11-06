@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kurmancî. Terimler: src/core/dil/sozluk/ku. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ku</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Panoya demên nimêjê</string>
+    <string name="ayarlar">Mîheng</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Heta %1$s %2$s ma</string>
+    <string name="pano_vaktine">Heta %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s piştî %2$s</string>
+    <string name="pano_kerahat_vakti">Dema mekrûh</string>
+    <string name="pano_bitis">diqede %1$s</string>
+    <string name="pano_kerahat_erisim">Dema mekrûh, %1$s, di %2$s de diqede. %3$s</string>
+    <string name="pano_cumaya">Înî piştî %1$s</string>
+    <string name="pano_cikis_geldi">dema derketinê ye</string>
+    <string name="pano_cikis">di %1$s de derkevin</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Dema derketina ji bo înê ye</string>
+    <string name="pano_cuma_cikis_erisim">Ji bo înê di %1$s de derkevin</string>
+    <string name="pano_bugun_cuma">Îro roja înê ye</string>
+    <string name="pano_ogle">Nîvro %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Îro roja înê ye. Nimêja înê di dema Nîvro de ye, %1$s</string>
+    <string name="pano_ayarlar_erisim">Mîheng: telefonekê zêde bikin, cih, telefonên girêdayî</string>
+    <string name="pano_simdiki_vakit">dema nimêjê ya niha</string>
+    <string name="pano_siradaki_vakit">dema nimêjê ya din</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Telefona xwe zêde bikin", "Kodê binivîsin", "Ez ê bajêr bi xwe hilbijêrim", "Zêde bikin". -->
+    <string name="kodla_girin">Kodê binivîsin</string>
+    <string name="ili_kendim_secin">Ez ê bajêr bi xwe hilbijêrim</string>
+    <string name="yeniden_deneyin">Dîsa biceribînin</string>
+    <string name="telefon_varsayilan">Telefon</string>
+    <string name="esleme_ekleniyor">%1$s tê zêdekirin</string>
+    <string name="esleme_gonderiyor">Telefona we cih û rewşa xwe dişîne…</string>
+    <string name="esleme_tamamlanamadi">Cotkirin temam nebû</string>
+    <string name="esleme_saklanamadi">Ev TV nikare mifteya girêdanê bi ewlehî biparêze. Hûn dikarin cihê xwe bi kodekê binivîsin an bajarê xwe hilbijêrin.</string>
+    <string name="telefonunuzu_ekleyin">Telefona xwe zêde bikin</string>
+    <string name="esleme_alt">Demên nimêjê ji bo cihê we; nimêjên ku we kirine jî xuya dibin.</string>
+    <string name="esleme_adim1">Namaz Akışı li ser telefona xwe vekin</string>
+    <string name="esleme_adim2">Mîheng › Cîhazên min › TV zêde bikin</string>
+    <string name="esleme_adim3">Kameraya telefona xwe ber bi kodê ve bigirin</string>
+    <string name="esleme_ayni_wifi">Divê telefon û TV ya we li ser heman tora Wi-Fi bin.</string>
+    <string name="esleme_onay_soru">Ev telefon were zêdekirin?</string>
+    <string name="esleme_onay_aciklama">Telefona zêdekirî dikare cihê xwe û nimêjên ku nîşan dike ji vê TV re bişîne.</string>
+    <string name="ekleyin">Zêde bikin</string>
+    <string name="hayir">Na</string>
+    <string name="esleme_eklendi">%1$s hate zêdekirin</string>
+    <string name="konumunuz_geldi">Cihê we gihîşt</string>
+    <string name="konuma_gore_hesaplanacak">Demên nimêjê dê ji bo vî cihî bên hesabkirin.</string>
+    <string name="qr_konum_alindi">Cih hate wergirtin</string>
+    <string name="qr_kodu">Koda cotkirinê ji bo skankirina bi telefona we</string>
+    <string name="ag_yok">TV bi torekê ve ne girêdayî ye</string>
+    <string name="ag_yok_aciklama">Hûn dikarin bi nivîsandina koda 7 reqemî ya ji telefona xwe an bi hilbijartina bajarê xwe bidomînin.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Koda ji telefona xwe binivîsin</string>
+    <string name="kod_yol">Li ser telefona xwe: Mîheng › Cîhazên min › TV zêde bikin</string>
+    <string name="kod_hatali">Kod li hev nehat. 7 reqemên li ser telefona xwe kontrol bikin; reqema şaş bi “%1$s” rast bikin.</string>
+    <string name="kod_rakamli_kumanda">Heke li ser kumandaya we bişkokên reqeman hebin, hûn dikarin bi wan jî binivîsin.</string>
+    <string name="kod_bos_hane">reqema vala</string>
+    <string name="kod_sil">Jê bibin</string>
+    <string name="kod_sil_aciklama">Reqema dawî jê bibin</string>
+    <string name="kod_geri">Paş</string>
+    <string name="vazgecin">Betal bikin</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Bajarê xwe hilbijêrin</string>
+    <string name="il_merkezine_gore">Demên nimêjê ji bo navenda bajêr têne hesabkirin.</string>
+    <string name="il_secili">%1$s, hilbijartî</string>
+    <string name="dream_il_yok">Ji bo dîtina panoya demên nimêjê, sepana Namaz Akışı vekin û bajarê xwe hilbijêrin.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Cih: %1$s</string>
+    <string name="ayar_konum_yok">Tu cih nehatiye hilbijartin</string>
+    <string name="ayar_telefon_ekleyin">Telefonekê zêde bikin</string>
+    <string name="ayar_konumu_kodla">Cih bi kodekê binivîsin</string>
+    <string name="ayar_bagli_telefonlar">Telefonên bi vê TV ve girêdayî</string>
+    <string name="ayar_telefon_yok">Hîn tu telefon nehatiye zêdekirin. “%1$s” ya li milê çepê bi kar bînin û koda ku xuya dibe skan bikin.</string>
+    <string name="kaldirin">Rakin</string>
+    <string name="ayar_ne_gonderir">Telefon çi dişînin?</string>
+    <string name="ayar_madde_konum">Cih: demên nimêjê li dû wê diçin</string>
+    <string name="ayar_madde_namazlar">Nimêjên nîşankirî, ji bo yên ku hildibijêrin</string>
+    <string name="ayar_madde_sifreli">Bi şîfrekirî, tenê li ser tora malê</string>
+    <string name="son_haber_yok">Hîn agahî tune</string>
+    <string name="son_haber_az_once">Niha</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d deq berê</item>
+        <item quantity="other">%1$d deq berê</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d st berê</item>
+        <item quantity="other">%1$d st berê</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d roj berê</item>
+        <item quantity="other">%1$d roj berê</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s were rakirin?</string>
+    <string name="kaldir_aciklama">Ev telefon êdî nikare agahiyan ji TV re bişîne. Ji bo dîsa zêdekirinê, divê hûn koda QR dîsa skan bikin.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Cihê telefona we</string>
+</resources>

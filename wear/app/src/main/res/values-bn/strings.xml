@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bn — Bengalce (beta). -->
+<!-- Bengalce. Terimler: JS src/core/dil/sozluk/bn (ফজর, সূর্যোদয়, যোহর, আসর, মাগরিব, ইশা; "নামাজ পড়েছি" / "পড়া হয়েছে"). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">bn</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">পরবর্তী নামাজ</string>
+    <string name="tile_aciklama">পরবর্তী নামাজ ও তার সময়</string>
+    <string name="komplikasyon_adi">বাকি সময়</string>
+    <string name="cikis_saati_komplikasyon_adi">নামাজ শেষের সময়</string>
+    <string name="siradaki_namaz_komplikasyon_adi">পরবর্তী নামাজ</string>
+    <string name="bugun_tile_adi">আজ</string>
+    <string name="bugun_tile_aciklama">আজকের পাঁচ ওয়াক্ত; পড়া নামাজগুলো দুই ট্যাপে চিহ্নিত করুন</string>
+    <string name="ilerleme_komplikasyon_adi">দৈনিক অগ্রগতি</string>
+    <string name="dagilim_komplikasyon_adi">দিনের সারসংক্ষেপ</string>
+    <string name="kerahat_komplikasyon_adi">মাকরূহ সময়</string>
+    <string name="son_dakikalar_kanal_adi">শেষ মিনিটগুলো</string>
+    <string name="son_dakikalar_kanal_aciklama">না পড়া নামাজের শেষ মিনিটগুলোতে ঘড়ির মুখে কাউন্টডাউন</string>
+    <string name="tesbihat_adi">তাসবিহ</string>
+    <string name="tesbihat_kanal_adi">তাসবিহ</string>
+    <string name="tesbihat_kanal_aciklama">অসমাপ্ত তাসবিহে ফিরে যেতে ঘড়ির মুখে নীরব আইকন</string>
+    <string name="kible_adi">কিবলা</string>
+    <string name="kible_komplikasyon_adi">কিবলা</string>
+    <string name="camideyim_kanal_adi">মসজিদে আছি</string>
+    <string name="camideyim_kanal_aciklama">আপনি মসজিদে আছেন বলে ফোন জানালে ঘড়ির মুখে নীরব আইকন</string>
+    <string name="uyandirma_kanal_adi">নীরব জাগানো</string>
+    <string name="uyandirma_kanal_aciklama">ফজর ও তাহাজ্জুদের জন্য শুধু কম্পন দিয়ে জাগায়</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">নামাজ পড়েছি</string>
+    <string name="kilindi_isareti">✓ পড়া হয়েছে</string>
+    <string name="kapat">বন্ধ করুন</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">নামাজের সময় দেখতে ফোনে Namaz Akışı খুলুন।</string>
+    <string name="yuk_eskidi">নামাজের সময়ের তথ্য পুরোনো হয়ে গেছে। রিফ্রেশ করতে ফোনে Namaz Akışı খুলুন।</string>
+    <string name="guncelleme_gerekli">আপনার ঘড়িতে Namaz Akışı আপডেট করুন।</string>
+    <string name="bildirim_izni">ফোন সাথে না থাকলেও রিমাইন্ডার পেতে ঘড়ির সেটিংসে Namaz Akışı-এর নোটিফিকেশনের অনুমতি দিন।</string>
+    <string name="cami_soru">আপনি কি মসজিদে আছেন?</string>
+    <string name="cami_evet">হ্যাঁ</string>
+    <string name="cami_evet_aciklama">হ্যাঁ, আমি মসজিদে আছি। নামাজ মোড চালু করে</string>
+    <string name="cami_hayir">না</string>
+    <string name="cami_hayir_aciklama">না, আমি মসজিদে নেই</string>
+    <string name="camidesiniz">আপনি মসজিদে আছেন</string>
+    <string name="cami_degil">এটি মসজিদ নয়</string>
+    <string name="cami_degil_aciklama">এটি মসজিদ নয়। এই জায়গা আর মসজিদ গণ্য হবে না</string>
+    <string name="tesbihat_ac">তাসবিহ গণনা খুলুন</string>
+    <string name="kible_ac">কিবলা কম্পাস খুলুন</string>
+    <string name="ses_dene">শব্দ পরীক্ষা করুন</string>
+    <string name="ses_dene_aciklama">ঘড়ির জোরে পড়া পরীক্ষা করুন</string>
+    <string name="telefonda_acin">ফোনে খুলুন</string>
+    <string name="telefonda_ekran_ac">ফোনে %1$s খুলুন</string>
+    <string name="ekran_kaza">কাযা খাতা</string>
+    <string name="ekran_camideyim">মসজিদে আছি</string>
+    <string name="ekran_ayarlar">সেটিংস</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">পড়া হয়েছে, সিঙ্ক হচ্ছে</string>
+    <string name="durum_kilindi">পড়া হয়েছে</string>
+    <string name="durum_girmedi">এখনো ওয়াক্ত হয়নি</string>
+    <string name="durum_simdiki">বর্তমান ওয়াক্ত, চিহ্নিত করতে ট্যাপ করুন</string>
+    <string name="durum_simdiki_kalan">বর্তমান ওয়াক্ত, %1$s, চিহ্নিত করতে ট্যাপ করুন</string>
+    <string name="durum_kilinmadi">পড়া হয়নি, চিহ্নিত করতে ট্যাপ করুন</string>
+    <string name="isaretleyin">পড়া হয়েছে হিসেবে চিহ্নিত করুন</string>
+    <string name="esitleniyor">সিঙ্ক হচ্ছে</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">নামাজ পড়েছি নিশ্চিত করুন</string>
+    <string name="vazgecin">বাতিল করুন</string>
+    <string name="vazgec">বাতিল</string>
+    <string name="kerahat_vaktindesiniz">এখন মাকরূহ সময়।</string>
+    <string name="kilindi_dua">পড়া হয়েছে। %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">নামাজ মোড চালু, শেষ %1$s। বন্ধ করতে ট্যাপ করুন</string>
+    <string name="namaz_modu_ac_aciklama">ফোনে নামাজ মোড চালু করুন</string>
+    <string name="namaz_modu_kapatin">নামাজ মোড বন্ধ করুন</string>
+    <string name="namaz_modu_acin">নামাজ মোড চালু করুন</string>
+    <string name="namaz_modu_acik_bitis">চালু, শেষ %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">দিক খোঁজা হচ্ছে…</string>
+    <string name="kible_yuk_yok">কিবলা খুঁজতে ফোনে Namaz Akışı খুলুন।</string>
+    <string name="kible_konum_yok">কিবলা খুঁজতে ফোনে অবস্থান চালু করুন। Namaz Akışı হালনাগাদ না থাকলে আপডেট করুন।</string>
+    <string name="kible_sensor_yok">এই ঘড়িতে কম্পাস সেন্সর নেই। ফোনে কিবলার দিক দেখতে পারেন।</string>
+    <string name="kible_kuzeyden">কিবলা %1$d° (উত্তর থেকে)</string>
+    <string name="kible_derece">কিবলা %1$d°</string>
+    <string name="kible_telefonda_ac">ফোনে কিবলা খুলুন</string>
+    <string name="kible_erisim">%1$s। উত্তর থেকে কিবলা %2$d°, %3$s</string>
+    <string name="kible_hizali">আপনি কিবলামুখী আছেন</string>
+    <string name="kible_kalibrasyon">ক্যালিব্রেট করতে কবজি বাতাসে 8 আকারে ঘোরান</string>
+    <string name="kible_egim">ঘড়িটি মাটির সমান্তরালে ধরুন</string>
+    <string name="kible_titresim_acik">কম্পনে দিকনির্দেশ চালু। বন্ধ করতে ট্যাপ করুন</string>
+    <string name="kible_titresim_kapali">কম্পনে দিকনির্দেশ বন্ধ। চালু করতে ট্যাপ করুন</string>
+    <string name="kible_harf_kuzey">উ</string>
+    <string name="kible_harf_dogu">পূ</string>
+    <string name="kible_harf_guney">দ</string>
+    <string name="kible_harf_bati">প</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">তাসবিহ সম্পন্ন। %1$s। %2$d / %3$d। %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d। মোট %4$d / %5$d</string>
+    <string name="tesbihat_sayin">গুনুন</string>
+    <string name="tesbihat_bastan_baslayin">শুরু থেকে করুন</string>
+    <string name="tesbihat_bastan_soru">শুরু থেকে করবেন?</string>
+    <string name="tesbihat_sifirlanir">গণনা শূন্য হয়ে যাবে।</string>
+    <string name="tesbihat_geri_al">ফিরিয়ে নিন</string>
+    <string name="tesbihat_geri_al_aciklama">শেষ গণনা ফিরিয়ে নিন</string>
+    <string name="tesbihat_yeniden">আবার শুরু করুন</string>
+    <string name="tesbihat_yeniden_aciklama">তাসবিহ আবার শুরু করুন</string>
+    <string name="tesbihat_suruyor">তাসবিহ চলছে: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">নামাজ পড়েছি। জাগানো বন্ধ করে</string>
+    <string name="uyandirma_kapat_aciklama">জাগানো বন্ধ করুন</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı খুলুন</string>
+    <string name="tile_vakitler_icin">নামাজের সময়ের জন্য ট্যাপ করুন</string>
+    <string name="tile_telefonda_acin">ফোনে অ্যাপ খুলুন</string>
+    <string name="tile_sonra">%1$s পর</string>
+    <string name="tile_siradaki_aciklama">পরবর্তী নামাজ %1$s, শুরু %2$s-এ। অ্যাপ খুলুন</string>
+    <string name="tile_giris">শুরু %1$s</string>
+    <string name="tile_cikis">শেষ %1$s</string>
+    <string name="bugun_bos_satir1">অ্যাপ খুলুন</string>
+    <string name="bugun_bos_satir2">আপনার ফোনে</string>
+    <string name="bugun_acma_aciklamasi">আজ %1$d/%2$d ওয়াক্ত পড়া হয়েছে। অ্যাপ খুলুন</string>
+    <string name="bugun_sayi">আজ %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">মাকরূহ সময় · নিশ্চিত করতে আবার ট্যাপ করুন</string>
+    <string name="bugun_onay_tekrar">নিশ্চিত করতে আবার ট্যাপ করুন</string>
+    <string name="bugun_tamam">আজকের নামাজ পূর্ণ হয়েছে</string>
+    <string name="bugun_kilinmadi">%1$s পড়া হয়নি</string>
+    <string name="bugun_siradaki">পরবর্তী: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">আবার ট্যাপ করুন</string>
+    <string name="bugun_kilindi">%1$s পড়া হয়েছে</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s পড়া হয়েছে, সিঙ্ক হচ্ছে</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">নামাজের সময়ের অপেক্ষায়; ফোনে Namaz Akışı খুলুন</string>
+    <string name="komplikasyon_bekleniyor">সময়ের অপেক্ষায়</string>
+    <string name="komplikasyon_vakit">নামাজ</string>
+    <string name="komplikasyon_cikis">শেষ</string>
+    <string name="komplikasyon_sirada">পরবর্তী</string>
+    <string name="gun_durumu_aciklama">আজ %1$dটির মধ্যে %2$dটি নামাজ পড়া হয়েছে</string>
+    <string name="gun_durumu_kilinmamis">%1$s; পড়া হয়নি: %2$s</string>
+    <string name="komplikasyon_namaz">নামাজ</string>
+    <string name="komplikasyon_kerahat">মাকরূহ</string>
+    <string name="kerahat_icinde_aciklama">এখন মাকরূহ সময়, শেষ %1$s</string>
+    <string name="kerahat_siradaki_aciklama">পরবর্তী মাকরূহ সময় %1$s</string>
+    <string name="kible_komplikasyon">উত্তর থেকে কিবলা %1$d°। কম্পাস খুলুন</string>
+    <string name="kible_komplikasyon_konumlu">উত্তর থেকে কিবলা %1$d°, %2$s। কম্পাস খুলুন</string>
+    <string name="kible_komplikasyon_konum_yok">কিবলা খুঁজতে ফোনে অবস্থান চালু করুন</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">জরুরি রিমাইন্ডার · কম্পন</string>
+    <string name="muhafiz_kanal_acil">জরুরি রিমাইন্ডার</string>
+    <string name="muhafiz_kanal_titresimli">নামাজের রিমাইন্ডার · কম্পন</string>
+    <string name="muhafiz_kanal">নামাজের রিমাইন্ডার</string>
+    <string name="muhafiz_kanal_aciklama">ফোন সাথে না থাকলেও ঘড়িতে দেখানো নামাজের রিমাইন্ডার</string>
+    <string name="son_dakikalar_cikis">শেষ: %1$s</string>
+    <string name="son_dakikalar_bitis">শেষ: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s শেষ হতে বাকি সময়</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s-এর বাকি সময়</string>
+    <string name="cami_namaz_modu_bitis">নামাজ মোড · শেষ %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s। %3$s</string>
+    <string name="telefonda_acildi">ফোনে খোলা হয়েছে</string>
+    <string name="telefona_ulasilamadi">আপনার ফোনে পৌঁছানো যায়নি</string>
+</resources>

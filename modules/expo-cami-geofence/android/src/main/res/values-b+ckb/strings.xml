@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ckb -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">لە مزگەوت</string>
+    <string name="camigeofence_kanal_durum_aciklama">ئاگادارییەکی بێدەنگ کاتێک دەزانرێت لە مزگەوتن</string>
+    <string name="camigeofence_kanal_soru_ad">دوای دەرچوون لە مزگەوت</string>
+    <string name="camigeofence_kanal_soru_aciklama">پرسیارێک بۆ ئەوەی دوای دەرچوون لە مزگەوت نوێژەکەتان نیشانە بکەن</string>
+
+    <string name="camigeofence_govde_mod_sessiz">دۆخی نوێژ چالاکە. بیرخستنەوەکان بە بێدەنگی دێن.</string>
+    <string name="camigeofence_govde_mod">دۆخی نوێژ چالاکە.</string>
+    <string name="camigeofence_govde_sessiz">بیرخستنەوەکان بە بێدەنگی دێن.</string>
+    <string name="camigeofence_govde_normal">بیرخستنەوەکان وەک ھەمیشە دێن.</string>
+    <string name="camigeofence_eylem_modu_kapat">کوژاندنەوەی دۆخ</string>
+    <string name="camigeofence_eylem_cami_degil">مزگەوت نییە</string>
+
+    <string name="camigeofence_soru_baslik">لە مزگەوتن؟</string>
+    <string name="camigeofence_soru_govde">وا دیارە لە نزیک %1$s بن. دڵنیا نین، بۆیە لێتان دەپرسین.</string>
+    <string name="camigeofence_varsayilan_ad">مزگەوت</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">دۆخی نوێژ چالاک بکەن</string>
+    <string name="camigeofence_eylem_evet_camideyim">بەڵێ، لە مزگەوتم</string>
+    <string name="camigeofence_eylem_hayir">نەخێر</string>
+
+    <string name="camigeofence_kildiniz_mi">نوێژی %1$sتان کرد؟</string>
+    <string name="camigeofence_kildiniz_mi_govde">دەتوانن بە یەک دەستلێدان نیشانەی بکەن.</string>
+    <string name="camigeofence_eylem_kildim">نوێژم کرد</string>
+    <string name="camigeofence_namaz_imsak">بەیانی</string>
+    <string name="camigeofence_namaz_ogle">نیوەڕۆ</string>
+    <string name="camigeofence_namaz_ikindi">عەسر</string>
+    <string name="camigeofence_namaz_aksam">ئێوارە</string>
+    <string name="camigeofence_namaz_yatsi">خەوتنان</string>
+    <string name="camigeofence_namaz_cuma">ھەینی</string>
+
+    <string name="camigeofence_mod_kural_adi">نوێژ</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı لە کاتی وتاری ھەینی، لە مزگەوت یان کاتێک کاتی نوێژ دێت چالاکی دەکات</string>
+</resources>

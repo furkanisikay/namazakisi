@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Esika na bino esalelamaka mpɔ na kotanga malamu bangonga ya losambo mpɔ na esika bozali. Esika na bino etikalaka na esaleli na bino.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Esika na bino esalelamaka mpɔ na kotanga malamu bangonga ya losambo mpɔ na esika bozali mpe, soki “Na moskeye” efungwami, mpɔ na kofungola Ndɛngɛ ya losambo ntango bokɔti na moskeye. Esika na bino etikalaka na esaleli na bino.",
+  "NSLocationAlwaysUsageDescription": "Esika na bino esalelamaka mpɔ na kobongola yango mɔkɔ bangonga ya losambo ntango bobongoli engumba mpe, soki “Na moskeye” efungwami, mpɔ na kofungola Ndɛngɛ ya losambo ntango bokɔti na moskeye. Esika na bino etikalaka na esaleli na bino.",
+  "NSCameraUsageDescription": "Kamera na bino esalelamaka mpɔ na kolakisa ngambo ya Qibla likolo ya elilingi ya kamera mpe mpɔ na kotanga code ya bokangani ya TV na bino. Bililingi ebombamaka te mpe ebimaka te na esaleli na bino.",
+  "NSCalendarsUsageDescription": "Nzela ya manaka esalelamaka mpɔ na kobakisa bangonga ya losambo na manaka na bino mpe, soki bofungoli yango, mpɔ na kotala soki makambo ya manaka na bino ekutani na ntango ya losambo. Sango ya manaka na bino etikalaka na esaleli na bino.",
+  "NSCalendarsFullAccessUsageDescription": "Nzela ya manaka esalelamaka mpɔ na kobakisa bangonga ya losambo na manaka na bino mpe, soki bofungoli yango, mpɔ na kotala soki makambo ya manaka na bino ekutani na ntango ya losambo. Sango ya manaka na bino etikalaka na esaleli na bino.",
+  "NSLocalNetworkUsageDescription": "Aplikasiɔ ekanganaka na TV na Wi-Fi ya ndako na bino mpɔ na kotinda bangonga ya losambo mpe losambo oyo botii elembo. Sango ezali na sekrɛ mpe etambolaka kaka kati ya bisaleli mibale.",
+  "NSAlarmKitUsageDescription": "Bitape ya bokundoli oyo boponi “Alarme ya solo” etiamaka lokola alarme, mpɔ ete boyoka yango ata soki telefone na bino ezali na kimia to Focus efungwami.",
+  "\"Vakti kıldım\"": "Nasambeli",
+  "\"Kıble\"": "Qibla"
+}

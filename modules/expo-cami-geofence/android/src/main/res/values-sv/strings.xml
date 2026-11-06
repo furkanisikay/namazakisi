@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">I moskén</string>
+    <string name="camigeofence_kanal_durum_aciklama">Ett diskret meddelande när du upptäcks i en moské</string>
+    <string name="camigeofence_kanal_soru_ad">Efter att du lämnat moskén</string>
+    <string name="camigeofence_kanal_soru_aciklama">En fråga så att du kan markera din bön efter att du har lämnat moskén</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Böneläge är på. Påminnelser kommer tyst.</string>
+    <string name="camigeofence_govde_mod">Böneläge är på.</string>
+    <string name="camigeofence_govde_sessiz">Påminnelser kommer tyst.</string>
+    <string name="camigeofence_govde_normal">Påminnelser kommer som vanligt.</string>
+    <string name="camigeofence_eylem_modu_kapat">Stäng av läget</string>
+    <string name="camigeofence_eylem_cami_degil">Ingen moské</string>
+
+    <string name="camigeofence_soru_baslik">Är du i moskén?</string>
+    <string name="camigeofence_soru_govde">Du är nära %1$s. Vi är inte säkra, så vi frågar dig.</string>
+    <string name="camigeofence_varsayilan_ad">Moské</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Slå på Böneläge</string>
+    <string name="camigeofence_eylem_evet_camideyim">Ja, jag är i moskén</string>
+    <string name="camigeofence_eylem_hayir">Nej</string>
+
+    <string name="camigeofence_kildiniz_mi">Har du bett %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Du kan markera med ett enda tryck.</string>
+    <string name="camigeofence_eylem_kildim">Jag har bett</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">fredagsbönen</string>
+
+    <string name="camigeofence_mod_kural_adi">Bön</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı slår på det under khutban på fredagen, i moskén eller när en bönetid börjar</string>
+</resources>

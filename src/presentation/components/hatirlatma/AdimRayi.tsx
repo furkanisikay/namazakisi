@@ -22,6 +22,7 @@ import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { useYayVurgu } from '../hareket/hareketler';
 import { EGRI } from '../hareket/sureler';
+import { yatayIsaret } from '../common/yon';
 
 /** Kademeli giriş aralığı — satırlar bir cümle gibi sırayla gelir. */
 export const RAY_KADEME_MS = 40;
@@ -111,7 +112,8 @@ export const RaySatiri: React.FC<RaySatiriProps> = ({ ilk, son, renk, acik, giri
         Animated.timing(soluk, { toValue: acik ? 1 : SOLUK, duration: 150, useNativeDriver: true }).start();
     }, [acik, azalt, soluk]);
 
-    const kayma = ilerleme.interpolate({ inputRange: [0, 1], outputRange: cikiyor ? [-20, 0] : [-8, 0] });
+    // Çıkan ray baştan gelir: sağdan solada translateX işareti döner (translateY dönmez).
+    const kayma = ilerleme.interpolate({ inputRange: [0, 1], outputRange: cikiyor ? [-20 * yatayIsaret(), 0] : [-8, 0] });
     const cizgiRengi = renkler.sinir;
 
     return (

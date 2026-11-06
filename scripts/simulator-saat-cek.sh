@@ -139,6 +139,7 @@ GECICI=$(mktemp -d)
 EKSIKLER=""
 
 # Uygulamayi verilen ekranla baslatir (`simctl launch` gecici hatalarina karsi 4 deneme).
+# Arayuz dili `TOHUM_DIL`'den (dil turu; telefonun gonderecegi dil, `SaatSimulatorTohumu`); yoksa Turkce.
 # $1 ekran, $2 "1" ise sonuk (her zaman acik) varyant.
 baslat() {
   local deneme
@@ -149,6 +150,7 @@ baslat() {
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_DIL="${TOHUM_DIL:-tr}" \
       xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1; then
       return 0
     fi
@@ -250,6 +252,7 @@ if [ -n "$VIDEO" ]; then
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_DIL="${TOHUM_DIL:-tr}" \
       xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || echo "UYARI: $AD videosu için uygulama başlatılamadı"
     sleep 24  # soguk acilis ~10 sn + sahne
     kill -INT "$KAYIT" 2>/dev/null || true

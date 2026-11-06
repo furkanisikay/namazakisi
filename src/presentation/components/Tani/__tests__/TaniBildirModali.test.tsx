@@ -19,6 +19,7 @@ jest.mock('../../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: () =
 jest.mock('../TaniOnizleme', () => ({ TaniOnizleme: () => null }));
 
 import { TaniBildirModali } from '../TaniBildirModali';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 describe('TaniBildirModali', () => {
   beforeEach(() => mockDispatch.mockClear());
@@ -32,5 +33,19 @@ describe('TaniBildirModali', () => {
     const { getByText } = render(<TaniBildirModali />);
     fireEvent.press(getByText('Bir daha sorma'));
     expect(mockDispatch).toHaveBeenCalledWith({ type: 'guncelle', payload: false });
+  });
+});
+
+describe('TaniBildirModali — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => geriAl());
+
+  test('soru ve düğmeler İngilizce', () => {
+    const e = render(<TaniBildirModali />);
+    expect(turkceKalanlar(e.toJSON() as never, ['Bildir', 'Onay'])).toEqual([]);
+    expect(e.getByText('Something went wrong')).toBeTruthy();
   });
 });

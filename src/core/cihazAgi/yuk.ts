@@ -16,6 +16,8 @@
  */
 import type { VakitAdi } from '../types';
 import type { GunlukOlayi } from './olayGunlugu';
+import type { TvHesapOzeti } from '../vakit/tvHesapOzeti';
+import type { TvRakamOzeti } from '../dil/rakam';
 
 export const YUK_SURUMU = 2;
 /** Gövde sınırı alıcıda 8 KB; yük bunun çok altında kalmalı (nöbetçi test ≤ 1 KB). */
@@ -37,6 +39,10 @@ export interface DurumAnlikGoruntusu {
     cuma: { aktif: boolean; cikisDk: number | null };
     /** Ramazan: TV büyük iftar/sahur sayacını gösterir. */
     ramazan: boolean;
+    /** Telefonun hesap yöntemi (`core/vakit/tvHesapOzeti`). Yoksa TV Türkiye (Diyanet) yolunu kullanır. */
+    hesap?: TvHesapOzeti;
+    /** Konumun ülkesi ve rakam seçimleri (`core/dil/rakam > tvRakamOzeti`); TV rakamı telefonla aynı kuralla çözer. */
+    rakam?: TvRakamOzeti;
 }
 
 /** Olay günlüğünün tel biçimi (`olayGunlugu.ts`; TV yalnız `kildim`i okur, gerisini atlar). */
@@ -91,6 +97,8 @@ export function yukuYaz(yuk: CihazAgiYuku): string {
               durumumSayilsin: d.durumumSayilsin,
               cuma: { aktif: d.cuma.aktif, cikisDk: d.cuma.cikisDk },
               ramazan: d.ramazan,
+              ...(d.hesap ? { hesap: hesapYaz(d.hesap) } : {}),
+              ...(d.rakam ? { rakam: rakamYaz(d.rakam) } : {}),
           }
         : undefined;
     return JSON.stringify({
@@ -101,6 +109,30 @@ export function yukuYaz(yuk: CihazAgiYuku): string {
         ...(yuk.port ? { port: yuk.port } : {}),
         ...(yuk.bilinen ? { bilinen: Object.fromEntries(Object.keys(yuk.bilinen).sort().map((k) => [k, yuk.bilinen![k]])) } : {}),
     });
+}
+
+/** Hesap özeti sabit anahtar sırasıyla (tekilleştirme düz metinle yapılır). */
+function hesapYaz(h: TvHesapOzeti): TvHesapOzeti {
+    return {
+        y: h.y,
+        f: h.f,
+        i: h.i,
+        ia: h.ia,
+        ...(h.ma ? { ma: h.ma } : {}),
+        a: h.a,
+        k: h.k,
+        o: [h.o[0], h.o[1], h.o[2], h.o[3], h.o[4], h.o[5]],
+        ...(h.r ? { r: h.r } : {}),
+        ...(h.rmz ? { rmz: { b: h.rmz.b, s: h.rmz.s, dk: h.rmz.dk } } : {}),
+    };
+}
+
+/** Rakam özeti sabit anahtar sırasıyla. */
+function rakamYaz(r: TvRakamOzeti): TvRakamOzeti {
+    return {
+        ...(r.u ? { u: r.u } : {}),
+        ...(r.s ? { s: Object.fromEntries(Object.keys(r.s).sort().map((k) => [k, r.s![k]])) } : {}),
+    };
 }
 
 /** ~1 km (0,01°): vakit için fazlasıyla yeterli, ev adresini açık etmez (denetim D-01). */

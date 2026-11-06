@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Aho muherereye hakoreshwa kugira ngo ibihe by’iswala bibarwe neza hakurikijwe aho muri. Aho muherereye hagumana ku gikoresho cyanyu.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Aho muherereye hakoreshwa kugira ngo ibihe by’iswala bibarwe neza hakurikijwe aho muri kandi, niba Ndi ku musigiti ifunguye, Uburyo bw’iswala bufunguke iyo mwinjiye mu musigiti. Aho muherereye hagumana ku gikoresho cyanyu.",
+  "NSLocationAlwaysUsageDescription": "Aho muherereye hakoreshwa kugira ngo ibihe by’iswala bivugururwe byikora iyo muhinduye umujyi kandi, niba Ndi ku musigiti ifunguye, Uburyo bw’iswala bufunguke iyo mwinjiye mu musigiti. Aho muherereye hagumana ku gikoresho cyanyu.",
+  "NSCameraUsageDescription": "Kamera yanyu ikoreshwa kugaragaza icyerekezo cya Qibla hejuru y’ishusho ya kamera no gusoma kode yo guhuza iri kuri televiziyo yanyu. Amashusho ntabikwa kandi ntava na rimwe ku gikoresho cyanyu.",
+  "NSCalendarsUsageDescription": "Kalendari ikoreshwa kongera ibihe by’iswala muri kalendari yanyu kandi, nimubifungura, kureba niba ibikorwa biri muri kalendari yanyu bihura n’igihe cy’iswala. Amakuru ya kalendari yanyu agumana ku gikoresho cyanyu.",
+  "NSCalendarsFullAccessUsageDescription": "Kalendari ikoreshwa kongera ibihe by’iswala muri kalendari yanyu kandi, nimubifungura, kureba niba ibikorwa biri muri kalendari yanyu bihura n’igihe cy’iswala. Amakuru ya kalendari yanyu agumana ku gikoresho cyanyu.",
+  "NSLocalNetworkUsageDescription": "Porogaramu ihuza na televiziyo iri kuri murandasi yanyu yo mu rugo kugira ngo iyoherereze ibihe by’iswala n’iswala mwemeje. Amakuru abikwa mu ibanga kandi agenda hagati y’ibikoresho byombi gusa.",
+  "NSAlarmKitUsageDescription": "Intambwe z’ibyibutsa muhitiyemo «Alarume nyayo» zishyirwaho nka alarume, bityo murazumva n’iyo telefoni yanyu iri ku guceceka cyangwa Focus ifunguye.",
+  "\"Vakti kıldım\"": "Nasali",
+  "\"Kıble\"": "Qibla"
+}

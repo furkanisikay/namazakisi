@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Kirundi). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nasenze</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Uko igihe c’isengesho kimeze</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ivyabaye ku gihe c’isengesho</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Iyi ngingo yongerwamwo biciye muri porogarama y’ibikorwa vyikora</string>
+  <string name="otomasyon_bilgi_tarayici">Mushakisha ntizishobora kuronka uruhusha rw’igihe cose. Muyongere muvuye ku rutonde rwa plugin rwa porogarama nka Tasker, MacroDroid canke Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Muyongere muhitamwo ”Namaz Akışı” ku rutonde rwa plugin rwa porogarama nka Tasker, MacroDroid canke Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s yarabujijwe</string>
+  <string name="otomasyon_engelli_mesaj">Mwari mwabujije iyi porogarama kwemeza amasengesho yanyu. Murashobora kuyemerera muri Namaz Akışı mu Mahitamwo &gt; ”Porogarama zishobora kwemeza amasengesho”.</string>
+  <string name="otomasyon_izin_baslik">Mukoreshe na %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s irashobora kumenya igihe igihe c’isengesho gitangura, igihe kiriko kirarangira n’igihe muri ku musigiti, igakoresha ibikorwa vyanyu vyikora. Murashobora guhindura icemezo canyu muri Namaz Akışı mu Mahitamwo &gt; ”Porogarama zishobora kwemeza amasengesho”.</string>
+  <string name="otomasyon_izin_kildim">%1$s irashobora kwemeza ko isengesho ry’ubu ryasenzwe biciye ku gikorwa cikora mwashizeho. Murashobora guhindura icemezo canyu muri Namaz Akışı mu Mahitamwo &gt; ”Porogarama zishobora kwemeza amasengesho”.</string>
+  <string name="otomasyon_izin_ver">Mwemere</string>
+  <string name="otomasyon_engelle">Mubuze</string>
+  <string name="otomasyon_vazgec">Mureke</string>
+  <string name="otomasyon_tamam">Sawa</string>
+  <string name="otomasyon_tur_baslik">Bikore ryari?</string>
+  <string name="otomasyon_ileri">Ibikurikira</string>
+  <string name="otomasyon_vakit_baslik">Isengesho irihe?</string>
+  <string name="otomasyon_herhangi_vakit">Igihe c’isengesho ico ari co cose</string>
+  <string name="otomasyon_kaydet">Mubike</string>
+  <string name="otomasyon_kosul_icinde">Igihe ari igihe c’isengesho</string>
+  <string name="otomasyon_kosul_cikiyor">Igihe igihe c’isengesho kiriko kirarangira (hasigaye %1$d min, Umurinzi w’isengesho arakora)</string>
+  <string name="otomasyon_kosul_camide">Igihe muri ku musigiti</string>
+  <string name="otomasyon_olay_girdi">Iyo igihe c’isengesho kigeze</string>
+  <string name="otomasyon_olay_cikiyor">Iyo igihe c’isengesho kiriko kirarangira (hasigaye %1$d min, Umurinzi w’isengesho arakora)</string>
+  <string name="otomasyon_olay_camide">Iyo bimenyekanye ko muri ku musigiti</string>
+</resources>

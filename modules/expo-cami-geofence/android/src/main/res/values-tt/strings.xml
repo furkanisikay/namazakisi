@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tt -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Мәчеттәмен</string>
+    <string name="camigeofence_kanal_durum_aciklama">Мәчеттә булуыгыз билгеләнгәч тавышсыз хәбәр</string>
+    <string name="camigeofence_kanal_soru_ad">Мәчеттән чыккач</string>
+    <string name="camigeofence_kanal_soru_aciklama">Мәчеттән чыккач намазыгызны билгеләү өчен сорау</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Намаз режимы кабызылды. Искәртүләр тавышсыз киләчәк.</string>
+    <string name="camigeofence_govde_mod">Намаз режимы кабызылды.</string>
+    <string name="camigeofence_govde_sessiz">Искәртүләр тавышсыз киләчәк.</string>
+    <string name="camigeofence_govde_normal">Искәртүләр гадәттәгечә киләчәк.</string>
+    <string name="camigeofence_eylem_modu_kapat">Режимны сүндерү</string>
+    <string name="camigeofence_eylem_cami_degil">Мәчет түгел</string>
+
+    <string name="camigeofence_soru_baslik">Мәчеттәме сез?</string>
+    <string name="camigeofence_soru_govde">Сез %1$s янында. Ышанычыбыз камил түгел, шуңа сездән сорыйбыз.</string>
+    <string name="camigeofence_varsayilan_ad">Мәчет</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Намаз режимын кабызу</string>
+    <string name="camigeofence_eylem_evet_camideyim">Әйе, мәчеттәмен</string>
+    <string name="camigeofence_eylem_hayir">Юк</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s намазын укыдыгызмы?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Бер басу белән билгели аласыз.</string>
+    <string name="camigeofence_eylem_kildim">Укыдым</string>
+    <string name="camigeofence_namaz_imsak">Иртәнге</string>
+    <string name="camigeofence_namaz_ogle">Өйлә</string>
+    <string name="camigeofence_namaz_ikindi">Икенде</string>
+    <string name="camigeofence_namaz_aksam">Ахшам</string>
+    <string name="camigeofence_namaz_yatsi">Ястү</string>
+    <string name="camigeofence_namaz_cuma">Җомга</string>
+
+    <string name="camigeofence_mod_kural_adi">Намаз</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı аны җомга вәгазендә, мәчеттә яки намаз вакыты кергәч кабыза</string>
+</resources>

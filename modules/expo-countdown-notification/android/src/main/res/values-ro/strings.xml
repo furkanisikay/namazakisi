@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Numărători live</string>
+    <string name="countdown_kanal_canli_aciklama">Numărători în Now Bar și în bara de stare</string>
+    <string name="countdown_kanal_genel_ad">Notificări cu numărătoare</string>
+    <string name="countdown_kanal_genel_aciklama">Canal pentru notificările cu numărătoare inversă</string>
+
+    <string name="countdown_eylem_kildim">M-am rugat</string>
+    <string name="countdown_eylem_durdur">Opriți</string>
+
+    <string name="countdown_yedek_vakit">Grăbiți-vă, timpul rugăciunii este pe sfârșite.</string>
+    <string name="countdown_yedek_iftar">Timpul se scurge.</string>
+    <string name="countdown_yedek_sahur">Încă puteți mânca și bea; postul începe în curând.</string>
+    <string name="countdown_yedek_seri">Rugăciunile de azi nu sunt complete; nu pierdeți seria.</string>
+
+    <string name="countdown_onek_vakit">Până la sfârșitul timpului</string>
+    <string name="countdown_onek_vakit_dar">Timpul se încheie</string>
+    <string name="countdown_onek_iftar">Până la iftar</string>
+    <string name="countdown_onek_iftar_dar">Până la iftar</string>
+    <string name="countdown_onek_sahur">Până la sfârșitul suhurului</string>
+    <string name="countdown_onek_sahur_dar">Suhurul se încheie</string>
+    <string name="countdown_onek_seri">Ca să salvați seria</string>
+    <string name="countdown_onek_seri_dar">Seria se încheie</string>
+</resources>

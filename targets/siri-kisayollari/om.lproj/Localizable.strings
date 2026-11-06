@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Oromo terimler: src/core/dil/sozluk/om + docs/ajan/coklu-dil.md terim sozlugu.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Salaata itti aanu";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Salaata itti aanuufi yeroo inni jalqabu isinitti hima.";
+"Şu anki vakti kıldım" = "Salaata ammaa salaateera";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Salaata ammaa akka salaatameetti mallatteessa. Galmeen yeroo appicha bantan dabalama.";
+"Onay iste" = "Mirkaneessa gaafadhu";
+"Kıbleyi aç" = "Qiblaa bani";
+"Uygulamayı Kıble pusulasıyla açar." = "Appicha kompaasii qiblaatiin bana.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Ani salaateera";
+"Kıble" = "Qiblaa";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Maqaa salaata itti aanu";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Maqaa salaata itti aanu kenna. Shortcuts keessatti akka haalaatti fayyadamuu dandeessu.";
+"Sıradaki vakte kalan dakika" = "Daqiiqaa hanga salaata itti aanuutti hafe";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Hanga salaanni itti aanu jalqabutti daqiiqaa meeqa akka hafe kenna. Yoo odeeffannoon hin jiraanne -1 deebisa.";
+"Şu anki vakit kılındı mı?" = "Salaanni ammaa akka salaatameetti mallattaa'eeraa?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Yoo salaanni ammaa akka salaatameetti mallattaa'e eeyyee kenna. Yoo salaanni mallattaa'u hin jiraanne lakki kenna.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Callisa salaataa";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Erga yeroon salaataa gahee daqiiqaalee jalqabaa keessa yoo jirtan dhugaa deebisa. Shortcuts keessatti Focus banuuf fayyada.";
+"Süre (dakika)" = "Turtii (daqiiqaa)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Erga yeroon salaataa gahee daqiiqaa ${dakika}";
+"Namaz sessizliğinin bitişi" = "Dhuma callisa salaataa";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Yeroo callisni xumuramu kenna. Yoo amma callisni hin jiraanne yeroo ammaa kenna.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Dhuma daqiiqaa ${dakika} erga yeroon salaataa gahee";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Yaadachiisa salaataa";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Yeroo Focus-iin kun banaa ta'e, yaadachiisni salaataa osoo fuula hin ibsinii fi sagalee hin baasin akka dhufu godha.";
+"Hatırlatmaları sessiz ver" = "Yaadachiisa callisaan kenni";
+"Hatırlatmalar sessiz gelir" = "Yaadachiisni callisaan dhufa";
+"Hatırlatmalar her zamanki gibi" = "Yaadachiisni akkuma yeroo hundaa";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Salaata wiijetii irratti mul'atu akka salaatameetti mallatteessa.";
+"Tarih" = "Guyyaa";
+"Vakit" = "Salaata";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Alaarmii salaataa dhaabi";
+"Namazı kıldım" = "Ani salaateera";
+"Alarm" = "Alaarmii";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Suuraa aayata guyyaa";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Aayata har'aa akka suuraa hanga fuula keessaniitti kenna. Shortcuts keessatti tarkaanfii Set Wallpaper wajjin fayyadamuu dandeessu.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Aayata guyyaa qopheessuuf appicha si'a tokko banaa.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Suuraan qophaa'uu hin dandeenye. Xiqqoo booda irra deebi'aa yaalaa.";

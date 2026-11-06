@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Gürcüce). "ვილოცე" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">ლოცვის მაღვიძარა</string>
+  <string name="alarm_kildim">ვილოცე</string>
+  <string name="alarm_kapat">გამორთვა</string>
+  <string name="alarm_kanal_aciklamasi">ნამდვილი მაღვიძარა, რომელიც თქვენ მიერ არჩეულ შეხსენების ნაბიჯებზე რეკავს</string>
+</resources>

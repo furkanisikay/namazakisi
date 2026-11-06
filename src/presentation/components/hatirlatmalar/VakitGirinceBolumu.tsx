@@ -28,7 +28,7 @@ import { useSesDosyasiSecimi } from '../../hooks/useSesDosyasiSecimi';
 import { sesAdiAl, sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import {
-    VAKIT_VARSAYILAN_SES_ADI,
+    vakitVarsayilanSesAdi,
     vakitSesGorunenAdi,
     type VakitSesSecimi,
 } from '../../../core/bildirim/vakitBildirimSesi';
@@ -36,7 +36,9 @@ import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
 
 /** Taban `vakit_bildirim` kanalı sistemin varsayılan bildirim sesini çalar (önizleme bunu çalar). */
 const SISTEM_BILDIRIM_SESI = 'content://settings/system/notification_sound';
-import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
+import { NamazAdi, namazAdiGoster } from '../../../core/constants/UygulamaSabitleri';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { AnahtarSatiri } from '../ortak/AnahtarSatiri';
 import { NotSatiri } from '../ortak/NotSatiri';
 
@@ -52,6 +54,8 @@ const VAKITLER: readonly { anahtar: VakitAnahtari; ad: string; ikon: string }[] 
 
 export const VakitGirinceBolumu: React.FC = () => {
     const renkler = useRenkler();
+    const mh = useMetin().hatirlatma;
+    const mv = mh.vakitGirince;
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const ayarlar = useAppSelector((s) => s.vakitBildirim.ayarlar);
@@ -106,7 +110,7 @@ export const VakitGirinceBolumu: React.FC = () => {
         setSeciciAcikVakit(vakit);
         try {
             const mevcut = sesler[vakit]?.bildirimSesi;
-            const secilen = await sesSec(ozelSesMi(mevcut) ? mevcut! : null, `${ad} vakti sesi`);
+            const secilen = await sesSec(ozelSesMi(mevcut) ? mevcut! : null, bicim(mv.seciciBaslik, { ad: namazAdiGoster(ad) }));
             if (secilen) sesiYaz(vakit, { bildirimSesi: secilen.uri, sesAdi: secilen.ad || undefined });
         } finally {
             setSeciciAcikVakit(null);
@@ -135,7 +139,7 @@ export const VakitGirinceBolumu: React.FC = () => {
                     >
                         <AnahtarSatiri
                             ikon={v.ikon}
-                            baslik={`${v.ad} vakti`}
+                            baslik={bicim(mv.satir, { ad: namazAdiGoster(v.ad) })}
                             deger={ayarlar[v.anahtar] === true}
                             onDegistir={(yeni) => void degistir(v.anahtar, yeni)}
                             testID={`vakit-girince-${v.anahtar}`}
@@ -145,15 +149,15 @@ export const VakitGirinceBolumu: React.FC = () => {
                                 <SesSecimSatiri
                                     kompakt
                                     testID={`vakit-sesi-${v.anahtar}`}
-                                    sesEtiketi={`${v.ad} bildirim sesi`}
+                                    sesEtiketi={bicim(mv.sesEtiketi, { ad: namazAdiGoster(v.ad) })}
                                     bildirimSesi={sesler[v.anahtar]?.bildirimSesi ?? 'varsayilan'}
                                     sesAdi={
                                         bulunamayan.has(sesler[v.anahtar]?.bildirimSesi ?? '')
-                                            ? 'Bulunamadı · telefonun sesi'
+                                            ? mv.bulunamadi
                                             : vakitSesGorunenAdi(sesler[v.anahtar])
                                     }
-                                    varsayilanAdi={VAKIT_VARSAYILAN_SES_ADI}
-                                    varsayilanaDonEtiketi="Telefonun bildirim sesine dön"
+                                    varsayilanAdi={vakitVarsayilanSesAdi()}
+                                    varsayilanaDonEtiketi={mh.vakitSesi.varsayilanaDon}
                                     seciliyor={seciciAcikVakit === v.anahtar}
                                     dosyaAktariliyor={dosyaSecimi.seciliyor}
                                     onSec={() => void sistemdenSec(v.anahtar, v.ad)}
@@ -173,13 +177,13 @@ export const VakitGirinceBolumu: React.FC = () => {
                 ))}
             </View>
             <NotSatiri
-                metin="Vakit girince ayet ya da hadisle haber verilir."
+                metin={mv.nassNotu}
                 style={{ marginTop: 12, paddingHorizontal: 4 }}
             />
             {ozelSesVar ? (
                 <NotSatiri
                     testID="vakit-sesi-uzunluk-notu"
-                    metin="Seçtiğiniz ses sonuna kadar çalar; bildirimi kapatınca susar."
+                    metin={mv.sesNotu}
                     style={{ marginTop: 6, paddingHorizontal: 4 }}
                 />
             ) : null}

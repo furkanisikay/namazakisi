@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İsveççe kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/sv (bön, förrättad, moské, Qibla, qada, Bönevakt). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Den aktuella bönen, när den slutar och Jag har bett med ett tryck</string>
+  <string name="widget_genis_aciklama">Dagens fem böner, en nedräkning och Jag har bett med ett tryck</string>
+  <string name="widget_kapak_adi">Bönetider på yttre skärmen</string>
+  <string name="widget_kapak_aciklama">Dagens bönetider och en nedräkning för yttre skärmen på Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klassisk</string>
+  <string name="widget_klasik_aciklama">Klassiskt grönt utseende: tid kvar till nästa bön</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klassisk bred</string>
+  <string name="widget_klasik_genis_aciklama">Klassiskt grönt utseende: nedräkning och dagens bönetider</string>
+  <string name="widget_ayet_adi">Dagens vers</string>
+  <string name="widget_ayet_aciklama">En vers med översättning, förnyas varje dag vid Fajr</string>
+  <string name="widget_ayar_zemin_palet">Appens färg (ljus ton)</string>
+  <string name="widget_ayar_ayet_icerik">I kvadratisk storlek, visa</string>
+  <string name="widget_ayar_ayet_icerik_meal">Översättning</string>
+  <string name="widget_ayar_ayet_icerik_hat">Arabisk text (kalligrafi)</string>
+  <string name="kutu_kildim_etiket">Jag har bett</string>
+  <string name="kisayol_kildim_kisa">Jag har bett</string>
+  <string name="kisayol_kildim_uzun">Jag har bett den aktuella bönen</string>
+  <string name="kisayol_kible_kisa">Qibla</string>
+  <string name="kisayol_kible_uzun">Visa böneriktningen (Qibla)</string>
+  <string name="kisayol_kaza_kisa">Qada-logg</string>
+  <string name="kisayol_kaza_uzun">Öppna Qada-loggen</string>
+  <string name="kildim_onay_baslik">Markera %1$s som förrättad?</string>
+  <string name="kildim_onay_mesaj">Det är oklart vilken app som skickade begäran. Bekräfta om du har bett.</string>
+  <string name="kildim_onay_evet">Jag har bett</string>
+  <string name="kildim_onay_vazgec">Avbryt</string>
+  <string name="kildim_guven_baslik">Tillåta %1$s att markera dina böner som förrättade?</string>
+  <string name="kildim_guven_mesaj">Bön som markeras nu: %1$s. Du kan ändra ditt beslut senare i Inställningar &gt; Appar som kan markera Jag har bett.</string>
+  <string name="kildim_guven_tarayici_mesaj">Bön som markeras nu: %1$s. Begäran kom från en webbläsare; eftersom vilken webbsida som helst kan öppna länken kan permanent behörighet inte ges.</string>
+  <string name="kildim_guven_her_zaman">Tillåt alltid</string>
+  <string name="kildim_guven_bu_sefer">Bara den här gången</string>
+  <string name="kildim_guven_engelle">Blockera</string>
+  <string name="kildim_guven_engellendi">%1$s kan inte längre markera dina böner. Du kan ändra det i Inställningar.</string>
+  <string name="widget_ayar_baslik">Anpassa widgeten</string>
+  <string name="widget_ayar_zemin">Bakgrund</string>
+  <string name="widget_ayar_zemin_material">Bakgrundsbildens färger</string>
+  <string name="widget_ayar_zemin_sistem">Systemtema</string>
+  <string name="widget_ayar_zemin_acik">Ljus</string>
+  <string name="widget_ayar_zemin_koyu">Mörk</string>
+  <string name="widget_ayar_zemin_seffaf">Genomskinlig</string>
+  <string name="widget_ayar_opaklik">Bakgrundens opacitet</string>
+  <string name="widget_ayar_gosterim">Visa med stor text</string>
+  <string name="widget_ayar_gosterim_kalan">Tid kvar</string>
+  <string name="widget_ayar_gosterim_bitis">Sluttid</string>
+  <string name="widget_ayar_gosterim_not">Sluttiden visas i alla storlekar.</string>
+  <string name="widget_ayar_sonraki">Visa nästa bön</string>
+  <string name="widget_ayar_vazgec">Avbryt</string>
+  <string name="widget_ayar_kaydet">Spara</string>
+  <string name="kildim_onay_kanal_adi">Bekräftelse av Jag har bett</string>
+  <string name="kildim_onay_kanal_aciklama">En diskret bekräftelse som visas i några sekunder när du trycker på ”Jag har bett” i en avisering</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Slutar %1$s</string>
+  <string name="widget_giris">Börjar %1$s</string>
+  <string name="widget_namaz_vakti">Bönetid</string>
+  <string name="widget_uygulamayi_acin">Öppna appen</string>
+  <string name="widget_siradaki">Nästa: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Ingen bön att markera just nu</string>
+  <string name="widget_dugme_kildim">Jag har bett</string>
+  <string name="widget_dugme_isaretleniyor">Markerar</string>
+  <string name="widget_dugme_kilindi">Förrättad</string>
+  <string name="widget_dugme_vakit_girmedi">Inte inne än</string>
+  <string name="widget_klasik_uygulamayi_acin">öppna appen</string>
+  <string name="widget_klasik_erisim_veri_yok">Öppna appen för att se bönetiderna</string>
+  <string name="widget_klasik_erisim_siradaki">Nästa bön: %1$s, börjar klockan %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Dhuhr om</string>
+  <string name="widget_onizleme_klasik_genis">Maghrib om</string>
+  <string name="widget_onizleme_imsak">Fajr</string>
+  <string name="widget_onizleme_gunes">Soluppgång</string>
+  <string name="widget_onizleme_ogle">Dhuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s är markerad som förrättad. Må Allah acceptera det.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s är redan markerad som förrättad.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Det finns ingen bön att markera just nu. Nästa är %1$s, som börjar %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Det finns ingen bön att markera just nu.</string>
+  <string name="kildim_sonuc_veri_yok">Inga bönetider. Öppna appen en gång.</string>
+  <string name="kildim_sonuc_vakit_degisti">Bönetiden ändrades, så inget markerades. Försök igen.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Navigeringsappen kunde inte öppnas.</string>
+  <string name="arac_adsiz_cami">Moské</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Bönetiderna kunde inte läsas.</string>
+  <string name="asistan_isaretleme_yapilamadi">Bönen kunde inte markeras.</string>
+  <string name="asistan_aciklama">Du kan fråga efter bönetider, markera den aktuella bönen som förrättad och öppna Qibla-skärmen.</string>
+</resources>

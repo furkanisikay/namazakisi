@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tg — Tacikçe (beta). Terimler: JS src/core/dil/sozluk/tg (Бомдод, Тулӯъ, Пешин, Аср, Шом, Хуфтан; «Хондам» / «Хонда шуд»; kuzey Ш). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">tg</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Намози навбатӣ</string>
+    <string name="tile_aciklama">Намози навбатӣ ва вақти он</string>
+    <string name="komplikasyon_adi">Вақти боқимонда</string>
+    <string name="cikis_saati_komplikasyon_adi">Вақти анҷоми намоз</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Намози навбатӣ</string>
+    <string name="bugun_tile_adi">Имрӯз</string>
+    <string name="bugun_tile_aciklama">Панҷ вақти имрӯз; хондаҳоро бо ду ламс қайд кунед</string>
+    <string name="ilerleme_komplikasyon_adi">Пешрафти рӯз</string>
+    <string name="dagilim_komplikasyon_adi">Хулосаи рӯз</string>
+    <string name="kerahat_komplikasyon_adi">Вақти макрӯҳ</string>
+    <string name="son_dakikalar_kanal_adi">Дақиқаҳои охир</string>
+    <string name="son_dakikalar_kanal_aciklama">Ҳисоби баръакс дар сафҳаи соат дар дақиқаҳои охири намози нахонда</string>
+    <string name="tesbihat_adi">Тасбеҳот</string>
+    <string name="tesbihat_kanal_adi">Тасбеҳот</string>
+    <string name="tesbihat_kanal_aciklama">Нишонаи бесадо дар сафҳаи соат барои баргаштан ба тасбеҳоти нотамом</string>
+    <string name="kible_adi">Қибла</string>
+    <string name="kible_komplikasyon_adi">Қибла</string>
+    <string name="camideyim_kanal_adi">Дар масҷид</string>
+    <string name="camideyim_kanal_aciklama">Нишонаи бесадо дар сафҳаи соат, вақте ки телефонатон хабар медиҳад, ки Шумо дар масҷид ҳастед</string>
+    <string name="uyandirma_kanal_adi">Бедоркунии бесадо</string>
+    <string name="uyandirma_kanal_aciklama">Барои бомдод ва таҳаҷҷуд танҳо бо ларзиш бедор мекунад</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Хондам</string>
+    <string name="kilindi_isareti">✓ Хонда шуд</string>
+    <string name="kapat">Хомӯш кардан</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Барои дидани вақтҳо дар телефонатон Namaz Akışı-ро кушоед.</string>
+    <string name="yuk_eskidi">Маълумоти вақт кӯҳна шудааст. Барои навсозӣ дар телефонатон Namaz Akışı-ро кушоед.</string>
+    <string name="guncelleme_gerekli">Namaz Akışı-ро дар соататон нав кунед.</string>
+    <string name="bildirim_izni">Барои гирифтани ёдовариҳо ҳатто вақте ки телефон бо Шумо нест, дар танзимоти соат ба огоҳиномаҳои Namaz Akışı иҷозат диҳед.</string>
+    <string name="cami_soru">Шумо дар масҷидед?</string>
+    <string name="cami_evet">Ҳа</string>
+    <string name="cami_evet_aciklama">Ҳа, ман дар масҷид ҳастам. Реҷаи намозро фаъол мекунад</string>
+    <string name="cami_hayir">Не</string>
+    <string name="cami_hayir_aciklama">Не, ман дар масҷид нестам</string>
+    <string name="camidesiniz">Шумо дар масҷид ҳастед</string>
+    <string name="cami_degil">Ин ҷо масҷид нест</string>
+    <string name="cami_degil_aciklama">Ин ҷо масҷид нест. Ин ҷо дигар масҷид ҳисоб намешавад</string>
+    <string name="tesbihat_ac">Ҳисобкунаки тасбеҳотро кушоед</string>
+    <string name="kible_ac">Қутбнамои қибларо кушоед</string>
+    <string name="ses_dene">Садоро санҷед</string>
+    <string name="ses_dene_aciklama">Хониши овозии соатро санҷед</string>
+    <string name="telefonda_acin">Дар телефон кушоед</string>
+    <string name="telefonda_ekran_ac">%1$s-ро дар телефонатон кушоед</string>
+    <string name="ekran_kaza">Дафтари қазо</string>
+    <string name="ekran_camideyim">Дар масҷид</string>
+    <string name="ekran_ayarlar">Танзимот</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">хонда шуд, ҳамоҳанг мешавад</string>
+    <string name="durum_kilindi">хонда шуд</string>
+    <string name="durum_girmedi">ҳанӯз нарасидааст</string>
+    <string name="durum_simdiki">вақти ҷорӣ, барои қайд пахш кунед</string>
+    <string name="durum_simdiki_kalan">вақти ҷорӣ, %1$s, барои қайд пахш кунед</string>
+    <string name="durum_kilinmadi">хонда нашуд, барои қайд пахш кунед</string>
+    <string name="isaretleyin">Ҳамчун хондашуда қайд кунед</string>
+    <string name="esitleniyor">ҳамоҳанг мешавад</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">«Хондам»-ро тасдиқ кунед</string>
+    <string name="vazgecin">Бекор кардан</string>
+    <string name="vazgec">Бекор кардан</string>
+    <string name="kerahat_vaktindesiniz">Ҳозир вақти макрӯҳ аст.</string>
+    <string name="kilindi_dua">Хонда шуд. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Реҷаи намоз фаъол, анҷом %1$s. Барои хомӯш кардан пахш кунед</string>
+    <string name="namaz_modu_ac_aciklama">Реҷаи намозро дар телефонатон фаъол кунед</string>
+    <string name="namaz_modu_kapatin">Реҷаи намозро хомӯш кунед</string>
+    <string name="namaz_modu_acin">Реҷаи намозро фаъол кунед</string>
+    <string name="namaz_modu_acik_bitis">Фаъол, анҷом %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Самт муайян мешавад…</string>
+    <string name="kible_yuk_yok">Барои ёфтани қибла дар телефонатон Namaz Akışı-ро кушоед.</string>
+    <string name="kible_konum_yok">Барои ёфтани қибла маконро дар телефонатон фаъол кунед. Агар Namaz Akışı нав набошад, онро нав кунед.</string>
+    <string name="kible_sensor_yok">Ин соат сенсори қутбнамо надорад. Самти қибларо дар телефонатон дида метавонед.</string>
+    <string name="kible_kuzeyden">Қибла %1$d° (аз шимол)</string>
+    <string name="kible_derece">Қибла %1$d°</string>
+    <string name="kible_telefonda_ac">Қибларо дар телефонатон кушоед</string>
+    <string name="kible_erisim">%1$s. Қибла %2$d° аз шимол, %3$s</string>
+    <string name="kible_hizali">Шумо рӯ ба қибла ҳастед</string>
+    <string name="kible_kalibrasyon">Барои танзим дастатонро дар ҳаво ба шакли рақами 8 ҳаракат диҳед</string>
+    <string name="kible_egim">Соататонро ба замин мувозӣ нигоҳ доред</string>
+    <string name="kible_titresim_acik">Роҳнамоӣ бо ларзиш фаъол. Барои хомӯш кардан пахш кунед</string>
+    <string name="kible_titresim_kapali">Роҳнамоӣ бо ларзиш хомӯш. Барои фаъол кардан пахш кунед</string>
+    <string name="kible_harf_kuzey">Ш</string>
+    <string name="kible_harf_dogu">Қ</string>
+    <string name="kible_harf_guney">Ҷ</string>
+    <string name="kible_harf_bati">Ғ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Тасбеҳот анҷом ёфт. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Ҳамагӣ %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Шумурдан</string>
+    <string name="tesbihat_bastan_baslayin">Аз нав оғоз кунед</string>
+    <string name="tesbihat_bastan_soru">Аз нав оғоз шавад?</string>
+    <string name="tesbihat_sifirlanir">Шумориш ба сифр бармегардад.</string>
+    <string name="tesbihat_geri_al">Бекор кардан</string>
+    <string name="tesbihat_geri_al_aciklama">Шумориши охиринро бекор кунед</string>
+    <string name="tesbihat_yeniden">Аз нав оғоз кунед</string>
+    <string name="tesbihat_yeniden_aciklama">Тасбеҳотро аз нав оғоз кунед</string>
+    <string name="tesbihat_suruyor">Тасбеҳот идома дорад: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Хондам. Бедоркуниро хомӯш мекунад</string>
+    <string name="uyandirma_kapat_aciklama">Бедоркуниро хомӯш кунед</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı-ро кушоед</string>
+    <string name="tile_vakitler_icin">Барои вақтҳо пахш кунед</string>
+    <string name="tile_telefonda_acin">Барномаро дар телефонатон кушоед</string>
+    <string name="tile_sonra">баъд аз %1$s</string>
+    <string name="tile_siradaki_aciklama">Намози навбатӣ %1$s, оғоз соати %2$s. Барномаро кушоед</string>
+    <string name="tile_giris">оғоз %1$s</string>
+    <string name="tile_cikis">анҷом %1$s</string>
+    <string name="bugun_bos_satir1">Барномаро</string>
+    <string name="bugun_bos_satir2">дар телефон кушоед</string>
+    <string name="bugun_acma_aciklamasi">Имрӯз %1$d/%2$d намоз хонда шуд. Барномаро кушоед</string>
+    <string name="bugun_sayi">Имрӯз %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Вақти макрӯҳ · барои тасдиқ боз пахш кунед</string>
+    <string name="bugun_onay_tekrar">Барои тасдиқ боз пахш кунед</string>
+    <string name="bugun_tamam">Намозҳои имрӯз пурраанд</string>
+    <string name="bugun_kilinmadi">%1$s хонда нашуд</string>
+    <string name="bugun_siradaki">Навбатӣ: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Боз пахш кунед</string>
+    <string name="bugun_kilindi">%1$s хонда шуд</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s хонда шуд, ҳамоҳанг мешавад</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Интизори вақтҳо; дар телефонатон Namaz Akışı-ро кушоед</string>
+    <string name="komplikasyon_bekleniyor">Интизори вақтҳо</string>
+    <string name="komplikasyon_vakit">Вақт</string>
+    <string name="komplikasyon_cikis">Анҷом</string>
+    <string name="komplikasyon_sirada">Навбат</string>
+    <string name="gun_durumu_aciklama">Имрӯз аз %1$d намоз %2$d хонда шуд</string>
+    <string name="gun_durumu_kilinmamis">%1$s; нахонда: %2$s</string>
+    <string name="komplikasyon_namaz">Намоз</string>
+    <string name="komplikasyon_kerahat">Макрӯҳ</string>
+    <string name="kerahat_icinde_aciklama">Вақти макрӯҳ аст, анҷом %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Вақти макрӯҳи навбатӣ %1$s</string>
+    <string name="kible_komplikasyon">Қибла %1$d° аз шимол. Қутбнаморо кушоед</string>
+    <string name="kible_komplikasyon_konumlu">Қибла %1$d° аз шимол, %2$s. Қутбнаморо кушоед</string>
+    <string name="kible_komplikasyon_konum_yok">Барои ёфтани қибла маконро дар телефонатон фаъол кунед</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Ёдовари фаврӣ · Бо ларзиш</string>
+    <string name="muhafiz_kanal_acil">Ёдовари фаврӣ</string>
+    <string name="muhafiz_kanal_titresimli">Ёдовари намоз · Бо ларзиш</string>
+    <string name="muhafiz_kanal">Ёдовари намоз</string>
+    <string name="muhafiz_kanal_aciklama">Ёдовариҳои намоз, ки ҳатто вақте ки телефон бо Шумо нест, дар соат нишон дода мешаванд</string>
+    <string name="son_dakikalar_cikis">Анҷом: %1$s</string>
+    <string name="son_dakikalar_bitis">Анҷом: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Вақти боқимонда то анҷоми %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Вақти боқимонда барои %1$s</string>
+    <string name="cami_namaz_modu_bitis">Реҷаи намоз · анҷом %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Дар телефонатон кушода шуд</string>
+    <string name="telefona_ulasilamadi">Ба телефонатон дастрасӣ нашуд</string>
+</resources>

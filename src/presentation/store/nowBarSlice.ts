@@ -8,6 +8,7 @@ import {
   type NowBarOgesi,
 } from '../../core/sayac/nowBar';
 import type { RootState } from './store';
+import { metin } from '../../core/dil/aktifDil';
 
 /**
  * Now Bar ve canlı sayaçlar seçimi (issue #282 ikinci aşama).
@@ -62,7 +63,7 @@ const nowBarSlice = createSlice({
       .addCase(nowBarAyarlariniYukle.rejected, (state, action) => {
         // Okuma reddetmez ama yine de: kapı açılsın, varsayılanla devam edilsin.
         state.yuklendi = true;
-        state.hata = action.error.message || 'Ayarlar yüklenemedi';
+        state.hata = action.error.message || metin().muhafizAyar.hata.yuklenemedi;
       })
       // İyimser: anahtar beklemeden dönsün.
       .addCase(nowBarOgesiniGuncelle.pending, (state, action) => {
@@ -73,7 +74,7 @@ const nowBarSlice = createSlice({
         state.hata = null;
       })
       .addCase(nowBarOgesiniGuncelle.rejected, (state, action) => {
-        state.hata = action.error.message || 'Ayar güncellenemedi';
+        state.hata = action.error.message || metin().muhafizAyar.hata.guncellenemedi;
       });
   },
 });

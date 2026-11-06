@@ -8,6 +8,7 @@ import {
     koordinatGecerliMi,
 } from '../../core/nafile/gunVakitleri';
 import type { NafilePencere } from '../../core/nafile/nafileVakitleri';
+import { useHesapSurumu } from './useHesapSurumu';
 
 /**
  * AKTİF GÜNÜN nafile pencereleri (issue #77).
@@ -25,6 +26,7 @@ export function useNafilePencereleri(aktifGunIso?: string): {
     const koordinatlar = useAppSelector((s) => s.konum.koordinatlar);
     const lat = koordinatlar?.lat;
     const lng = koordinatlar?.lng;
+    const hesapSurumu = useHesapSurumu();
 
     return useMemo(() => {
         const k = lat !== undefined && lng !== undefined ? { lat, lng } : null;
@@ -39,5 +41,7 @@ export function useNafilePencereleri(aktifGunIso?: string): {
         } catch {
             return { aktifGun, pencereler: [] };
         }
-    }, [lat, lng, aktifGunIso]);
+        // hesapSurumu: yöntem değişince pencereler yeniden hesaplanır (değer kapanışta okunmaz).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [lat, lng, aktifGunIso, hesapSurumu]);
 }

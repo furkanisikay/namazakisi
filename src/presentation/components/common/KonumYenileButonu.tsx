@@ -10,6 +10,7 @@ import * as React from 'react';
 import { TouchableOpacity, ActivityIndicator } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { useMetin } from '../../hooks/useMetin';
 
 interface KonumYenileButonuProps {
   onPress: () => void;
@@ -21,6 +22,7 @@ export const KonumYenileButonu: React.FC<KonumYenileButonuProps> = ({
   yenileniyor = false,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().konum.yenile;
 
   return (
     <TouchableOpacity
@@ -30,8 +32,8 @@ export const KonumYenileButonu: React.FC<KonumYenileButonuProps> = ({
       disabled={yenileniyor}
       activeOpacity={0.7}
       accessibilityRole="button"
-      accessibilityLabel="Konumu yenile"
-      accessibilityHint="Şu anki konumunuzu alır ve namaz vakitlerini ona göre günceller"
+      accessibilityLabel={m.buton}
+      accessibilityHint={m.butonIpucu}
       accessibilityState={{ disabled: yenileniyor, busy: yenileniyor }}
     >
       {yenileniyor ? (

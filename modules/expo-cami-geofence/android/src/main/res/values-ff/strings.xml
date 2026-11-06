@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">E juulirde</string>
+    <string name="camigeofence_kanal_durum_aciklama">Tintinal deƴƴungal so on njiytaama e juulirde</string>
+    <string name="camigeofence_kanal_soru_ad">Caggal yaltude juulirde</string>
+    <string name="camigeofence_kanal_soru_aciklama">Naamnal ngam on maandina juulde mon caggal yaltude juulirde</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Mode juulde huɓɓinaama. Siftinooje hino ara e deƴƴere.</string>
+    <string name="camigeofence_govde_mod">Mode juulde huɓɓinaama.</string>
+    <string name="camigeofence_govde_sessiz">Siftinooje hino ara e deƴƴere.</string>
+    <string name="camigeofence_govde_normal">Siftinooje hino ara no woowiraa.</string>
+    <string name="camigeofence_eylem_modu_kapat">Ñifee mode</string>
+    <string name="camigeofence_eylem_cami_degil">Wonaa juulirde</string>
+
+    <string name="camigeofence_soru_baslik">Hiɗon e juulirde?</string>
+    <string name="camigeofence_soru_govde">Hiɗon ɓadii %1$s. Min tiiɗnaaki, ɗum noon min naamnii on.</string>
+    <string name="camigeofence_varsayilan_ad">Juulirde</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Huɓɓinee Mode juulde</string>
+    <string name="camigeofence_eylem_evet_camideyim">Awa, mi e juulirde</string>
+    <string name="camigeofence_eylem_hayir">Aa’a</string>
+
+    <string name="camigeofence_kildiniz_mi">On juulii %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Hiɗon mbaawi maandinde ɗum e dobol gootol.</string>
+    <string name="camigeofence_eylem_kildim">Mi juulii</string>
+    <string name="camigeofence_namaz_imsak">Subaka</string>
+    <string name="camigeofence_namaz_ogle">Fanaa</string>
+    <string name="camigeofence_namaz_ikindi">Alansaraa</string>
+    <string name="camigeofence_namaz_aksam">Futuroo</string>
+    <string name="camigeofence_namaz_yatsi">Geeƴe</string>
+    <string name="camigeofence_namaz_cuma">Juma</string>
+
+    <string name="camigeofence_mod_kural_adi">Juulde</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı hino huɓɓina ɗum e hutba Juma, e juulirde walla so waqutu juulde heewii</string>
+</resources>

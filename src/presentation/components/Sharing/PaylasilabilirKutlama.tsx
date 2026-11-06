@@ -10,6 +10,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { KutlamaBilgisi, KutlamaTipi } from '../../../core/types/SeriTipleri';
+import { metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 interface PaylasilabilirKutlamaProps {
     kutlama: KutlamaBilgisi;
@@ -39,23 +41,11 @@ const gradientAl = (tip: KutlamaTipi): readonly [string, string, ...string[]] =>
 };
 
 /**
- * Kutlama tipine gore ust etiket metni
+ * Kutlama tipine gore ust etiket metni (etkin dilde)
  */
 const etiketMetniAl = (tip: KutlamaTipi): string => {
-    switch (tip) {
-        case 'rozet_kazanildi':
-            return 'YENİ ROZET KAZANDIM!';
-        case 'hedef_tamamlandi':
-            return 'HEDEFE ULASTIM!';
-        case 'seviye_atlandi':
-            return 'SEVIYE ATLADI!';
-        case 'toparlanma_tamamlandi':
-            return 'TOPARLANDIM!';
-        case 'en_uzun_seri':
-            return 'YENİ REKOR!';
-        default:
-            return 'BASARI!';
-    }
+    const etiketler = metin().seri.paylasim.etiketler;
+    return (etiketler as Record<string, string>)[tip] ?? etiketler.varsayilan;
 };
 
 /**
@@ -79,43 +69,19 @@ const ikonAdAl = (tip: KutlamaTipi): string => {
 };
 
 /**
- * Motivasyon mesaj listesi
+ * Motivasyon mesaj listesi (sözlük `seri.paylasim.kutlamaSozleri`, etkin dilde).
+ * Paylaşılan söz kişinin kendi sesidir: övünme değil, dua ve niyet (riya kaygısı).
+ * İbadet bir yarış değildir; "benim/rekor/harika" yerine "Allah daim etsin" kaydı.
  */
-const MOTIVASYON_MESAJLARI: Record<KutlamaTipi, string[]> = {
-    // Paylaşılan söz kişinin kendi sesidir: övünme değil, dua ve niyet (riya kaygısı).
-    // İbadet bir yarış değildir; "benim/rekor/harika" yerine "Allah daim etsin" kaydı.
-    rozet_kazanildi: [
-        'Rabbim daim etsin. 🤲',
-        'Küçük adımlar, büyük huzur getirir. 🍃',
-        'Allah hepimize sebat versin. 🌱',
-    ],
-    hedef_tamamlandi: [
-        'Küçük adımlar, büyük huzur getirir. 🍃',
-        'Allah daim etsin. 🤲',
-        'Her gün bir adım daha. 🌱',
-    ],
-    seviye_atlandi: [
-        'Her gün biraz daha yol alıyorum, Allah kolaylık versin. 🍃',
-        'Allah daim etsin. 🤲',
-        'Yolculuk devam ediyor. 🌱',
-    ],
-    toparlanma_tamamlandi: [
-        'Düşmek değil, kalkmak önemlidir. 🔄',
-        'Allah sebat versin. 🤲',
-        'Sabırla her yol yürünür. 🌱',
-    ],
-    en_uzun_seri: [
-        'Her gün küçük bir adım, kalbimde büyük bir huzur. 🍃',
-        'Allah daim etsin. 🤲',
-        'Rabbim hepimize sebat versin. 🌱',
-    ],
-};
+const motivasyonMesajlari = (): Readonly<Record<KutlamaTipi, readonly string[]>> =>
+    metin().seri.paylasim.kutlamaSozleri;
 
 /**
  * Kutlama tipine gore deterministik motivasyon mesaji
  */
 const motivasyonMesajiAl = (kutlama: KutlamaBilgisi): string => {
-    const mesajlar = MOTIVASYON_MESAJLARI[kutlama.tip] ?? MOTIVASYON_MESAJLARI['hedef_tamamlandi'];
+    const tum = motivasyonMesajlari();
+    const mesajlar = tum[kutlama.tip] ?? tum.hedef_tamamlandi;
     const anahtar = `${kutlama.tip}-${kutlama.baslik}`;
     let hash = 0;
     for (let i = 0; i < anahtar.length; i++) {
@@ -129,6 +95,8 @@ const motivasyonMesajiAl = (kutlama: KutlamaBilgisi): string => {
  * Tum kutlama tiplerini destekler; sosyal medyaya ozel story format tasarimi.
  */
 export const PaylasilabilirKutlama: React.FC<PaylasilabilirKutlamaProps> = ({ kutlama }) => {
+    // Dil değişince yeniden çizilsin (etiket ve söz etkin dilden okunur).
+    const m = useMetin().seri.paylasim;
     const gradientRenkleri = gradientAl(kutlama.tip);
     const [anaRenk] = gradientRenkleri;
     const etiket = etiketMetniAl(kutlama.tip);
@@ -319,7 +287,7 @@ export const PaylasilabilirKutlama: React.FC<PaylasilabilirKutlamaProps> = ({ ku
                         fontSize: 11,
                     }}
                 >
-                    Namaz Akısı
+                    {m.marka}
                 </Text>
             </View>
         </LinearGradient>

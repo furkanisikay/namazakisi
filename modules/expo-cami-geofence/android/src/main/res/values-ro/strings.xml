@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">La moschee</string>
+    <string name="camigeofence_kanal_durum_aciklama">Un anunț discret când se detectează că sunteți la o moschee</string>
+    <string name="camigeofence_kanal_soru_ad">După plecarea de la moschee</string>
+    <string name="camigeofence_kanal_soru_aciklama">O întrebare ca să puteți marca rugăciunea după ce plecați de la moschee</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Modul rugăciune este activat. Mementourile vor sosi silențios.</string>
+    <string name="camigeofence_govde_mod">Modul rugăciune este activat.</string>
+    <string name="camigeofence_govde_sessiz">Mementourile vor sosi silențios.</string>
+    <string name="camigeofence_govde_normal">Mementourile vor sosi ca de obicei.</string>
+    <string name="camigeofence_eylem_modu_kapat">Opriți modul</string>
+    <string name="camigeofence_eylem_cami_degil">Nu e moschee</string>
+
+    <string name="camigeofence_soru_baslik">Sunteți la moschee?</string>
+    <string name="camigeofence_soru_govde">Sunteți lângă %1$s. Nu suntem siguri, așa că vă întrebăm.</string>
+    <string name="camigeofence_varsayilan_ad">Moschee</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Activați Modul rugăciune</string>
+    <string name="camigeofence_eylem_evet_camideyim">Da, sunt la moschee</string>
+    <string name="camigeofence_eylem_hayir">Nu</string>
+
+    <string name="camigeofence_kildiniz_mi">Ați efectuat %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">O puteți marca cu o singură atingere.</string>
+    <string name="camigeofence_eylem_kildim">M-am rugat</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Ișa</string>
+    <string name="camigeofence_namaz_cuma">Jumu’ah</string>
+
+    <string name="camigeofence_mod_kural_adi">Rugăciune</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı îl activează în timpul predicii de vineri, la moschee sau când începe timpul unei rugăciuni</string>
+</resources>

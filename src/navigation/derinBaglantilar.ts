@@ -39,6 +39,7 @@ type AyarlarDerinParamList = {
     AyarlarAna: undefined;
     CamideyimAyarlari: undefined;
     TelevizyonAyarlari: undefined;
+    GununAyeti: undefined;
 };
 
 /** Derin bağlantının ihtiyaç duyduğu kök yığın şekli (`RootStackParamList` ile uyumlu). */
@@ -55,6 +56,8 @@ const AYARLAR_YOLLARI: PathConfig<AyarlarDerinParamList> = {
         CamideyimAyarlari: 'camideyim',
         // TV QR'ı (iPhone kamerası): sorgu alanları sayfa parametresi olur, sayfa doğrular.
         TelevizyonAyarlari: 'tv',
+        // Günün ayeti widget'ına dokunma (Android ve iOS widget'ı aynı adresi açar).
+        GununAyeti: 'gunun-ayeti',
     },
 };
 

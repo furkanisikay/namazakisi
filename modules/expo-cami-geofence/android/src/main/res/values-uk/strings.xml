@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Я в мечеті</string>
+    <string name="camigeofence_kanal_durum_aciklama">Тихе повідомлення, коли визначено, що ви в мечеті</string>
+    <string name="camigeofence_kanal_soru_ad">Після виходу з мечеті</string>
+    <string name="camigeofence_kanal_soru_aciklama">Запитання, щоб ви могли позначити молитву після виходу з мечеті</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Режим молитви ввімкнено. Нагадування надходитимуть беззвучно.</string>
+    <string name="camigeofence_govde_mod">Режим молитви ввімкнено.</string>
+    <string name="camigeofence_govde_sessiz">Нагадування надходитимуть беззвучно.</string>
+    <string name="camigeofence_govde_normal">Нагадування надходитимуть як завжди.</string>
+    <string name="camigeofence_eylem_modu_kapat">Вимкнути режим</string>
+    <string name="camigeofence_eylem_cami_degil">Не мечеть</string>
+
+    <string name="camigeofence_soru_baslik">Ви в мечеті?</string>
+    <string name="camigeofence_soru_govde">Ви поруч із: %1$s. Ми не впевнені, тому запитуємо вас.</string>
+    <string name="camigeofence_varsayilan_ad">Мечеть</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Увімкнути Режим молитви</string>
+    <string name="camigeofence_eylem_evet_camideyim">Так, я в мечеті</string>
+    <string name="camigeofence_eylem_hayir">Ні</string>
+
+    <string name="camigeofence_kildiniz_mi">Ви здійснили молитву %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Позначити можна одним дотиком.</string>
+    <string name="camigeofence_eylem_kildim">Молитву здійснено</string>
+    <string name="camigeofence_namaz_imsak">Фаджр</string>
+    <string name="camigeofence_namaz_ogle">Зугр</string>
+    <string name="camigeofence_namaz_ikindi">Аср</string>
+    <string name="camigeofence_namaz_aksam">Магріб</string>
+    <string name="camigeofence_namaz_yatsi">Іша</string>
+    <string name="camigeofence_namaz_cuma">Джума</string>
+
+    <string name="camigeofence_mod_kural_adi">Молитва</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı вмикає його під час хутби Джума, у мечеті або коли настає час молитви</string>
+</resources>

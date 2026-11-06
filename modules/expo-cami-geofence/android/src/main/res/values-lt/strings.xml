@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Esu mečetėje</string>
+    <string name="camigeofence_kanal_durum_aciklama">Tylus pranešimas, kai nustatoma, kad esate mečetėje</string>
+    <string name="camigeofence_kanal_soru_ad">Išėjus iš mečetės</string>
+    <string name="camigeofence_kanal_soru_aciklama">Klausimas, kad išėję iš mečetės galėtumėte pažymėti maldą</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Maldos režimas įjungtas. Priminimai ateis tyliai.</string>
+    <string name="camigeofence_govde_mod">Maldos režimas įjungtas.</string>
+    <string name="camigeofence_govde_sessiz">Priminimai ateis tyliai.</string>
+    <string name="camigeofence_govde_normal">Priminimai ateis kaip įprasta.</string>
+    <string name="camigeofence_eylem_modu_kapat">Išjungti režimą</string>
+    <string name="camigeofence_eylem_cami_degil">Ne mečetė</string>
+
+    <string name="camigeofence_soru_baslik">Ar esate mečetėje?</string>
+    <string name="camigeofence_soru_govde">Esate netoli %1$s. Nesame tikri, todėl klausiame jūsų.</string>
+    <string name="camigeofence_varsayilan_ad">Mečetė</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Įjungti Maldos režimą</string>
+    <string name="camigeofence_eylem_evet_camideyim">Taip, esu mečetėje</string>
+    <string name="camigeofence_eylem_hayir">Ne</string>
+
+    <string name="camigeofence_kildiniz_mi">Ar atlikote %1$s maldą?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Galite pažymėti vienu palietimu.</string>
+    <string name="camigeofence_eylem_kildim">Atlikau maldą</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Džumua</string>
+
+    <string name="camigeofence_mod_kural_adi">Malda</string>
+    <string name="camigeofence_mod_tetik_aciklama">„Namaz Akışı“ jį įjungia per Džumua pamokslą, mečetėje arba prasidėjus maldos laikui</string>
+</resources>

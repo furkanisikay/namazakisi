@@ -4,6 +4,7 @@
  * olarak alınır (`AGENTS.md`: core saf kalmalı).
  */
 
+import { metin } from '../dil/aktifDil';
 import { SistemDurumu, arkaPlanKisitlanmisMi } from '../sistem/sistemDurumu';
 
 const GUN_MS = 24 * 60 * 60 * 1000;
@@ -74,6 +75,7 @@ const SEVIYE_SIRASI: Record<SorunSeviyesi, number> = {
 
 export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
   const sorunlar: Sorun[] = [];
+  const m = metin().ayarlar.saglik;
 
   // NÖBETÇİ: yalnız 'reddedildi' tetikler. 'belirsiz' henüz sorulmamış demektir
   // — yanlış alarm vermemek uyarıyı hiç göstermemekten daha kötüdür.
@@ -81,9 +83,9 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
     sorunlar.push({
       id: 'bildirimIzni',
       seviye: 'kritik',
-      baslik: 'Bildirim izni kapalı',
-      aciklama: 'Uygulama bildirimleri size ulaşamıyor.',
-      eylemEtiketi: 'İzni açın',
+      baslik: m.bildirimIzni.baslik,
+      aciklama: m.bildirimIzni.aciklama,
+      eylemEtiketi: m.bildirimIzni.eylem,
       eylem: { tip: 'sistemAyarlari' },
     });
   }
@@ -92,9 +94,9 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
     sorunlar.push({
       id: 'konumAlinamadi',
       seviye: 'kritik',
-      baslik: 'Konumunuz alınamadı',
-      aciklama: 'Vakitler varsayılan konuma göre hesaplanıyor.',
-      eylemEtiketi: 'Konumu ayarlayın',
+      baslik: m.konumAlinamadi.baslik,
+      aciklama: m.konumAlinamadi.aciklama,
+      eylemEtiketi: m.konumAlinamadi.eylem,
       eylem: { tip: 'sayfa', sayfa: 'KonumAyarlari' },
     });
   }
@@ -107,9 +109,9 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
     sorunlar.push({
       id: 'tamAlarm',
       seviye: 'kritik',
-      baslik: 'Tam zamanlı hatırlatma izni kapalı',
-      aciklama: 'Hatırlatmalar birkaç dakika geç gelebilir; vaktin son dakikalarında bu önemli.',
-      eylemEtiketi: 'İzni açın',
+      baslik: m.tamAlarm.baslik,
+      aciklama: m.tamAlarm.aciklama,
+      eylemEtiketi: m.tamAlarm.eylem,
       eylem: { tip: 'alarmIzni' },
       ikon: 'clock',
     });
@@ -119,9 +121,9 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
     sorunlar.push({
       id: 'hatirlatmaYok',
       seviye: 'uyari',
-      baslik: 'Vakit hatırlatmaları kapalı',
-      aciklama: 'Vakit girince de çıkmadan da hatırlatma yok.',
-      eylemEtiketi: 'Hatırlatmaları açın',
+      baslik: m.hatirlatmaYok.baslik,
+      aciklama: m.hatirlatmaYok.aciklama,
+      eylemEtiketi: m.hatirlatmaYok.eylem,
       eylem: { tip: 'sayfa', sayfa: 'Hatirlatmalar' },
     });
   }
@@ -134,9 +136,9 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
     sorunlar.push({
       id: 'arkaPlanKisiti',
       seviye: 'uyari',
-      baslik: 'Android uygulamayı kısıtlamış',
-      aciklama: 'Hatırlatmalar gecikebilir ya da hiç gelmeyebilir. Pil kullanımını "Kısıtlanmamış" yapın.',
-      eylemEtiketi: 'Pil ayarlarını açın',
+      baslik: m.arkaPlanKisiti.baslik,
+      aciklama: m.arkaPlanKisiti.aciklama,
+      eylemEtiketi: m.arkaPlanKisiti.eylem,
       eylem: { tip: 'pilAyarlari' },
       ikon: 'ban',
     });
@@ -154,9 +156,9 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
     sorunlar.push({
       id: 'arkaPlanYenileme',
       seviye: 'bilgi',
-      baslik: 'Arka planda yenileme kapalı',
-      aciklama: 'Kurulu hatırlatmalar gelir; yeni günün planı için uygulamayı günde bir açın.',
-      eylemEtiketi: 'Ayarları açın',
+      baslik: m.arkaPlanYenileme.baslik,
+      aciklama: m.arkaPlanYenileme.aciklama,
+      eylemEtiketi: m.arkaPlanYenileme.eylem,
       eylem: { tip: 'sistemAyarlari' },
       ikon: 'sync-alt',
     });
@@ -168,19 +170,18 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
         ? {
             id: 'pilKisiti',
             seviye: 'uyari',
-            baslik: 'Hatırlatmalarınız uyutulabilir',
-            aciklama:
-              'Samsung telefonlar birkaç gün açılmayan uygulamaları uyutur. O zaman muhafız ve vakit hatırlatmaları gecikir ya da hiç gelmez.',
-            eylemEtiketi: 'Uyutulmasın',
+            baslik: m.pilSamsung.baslik,
+            aciklama: m.pilSamsung.aciklama,
+            eylemEtiketi: m.pilSamsung.eylem,
             eylem: { tip: 'pilAyarlari' },
             ikon: 'moon',
           }
         : {
             id: 'pilKisiti',
             seviye: 'uyari',
-            baslik: 'Pil tasarrufu hatırlatmaları geciktirebilir',
-            aciklama: 'Telefonunuz uygulamayı arka planda kısıtlıyor. Muhafız ve vakit hatırlatmaları gecikebilir.',
-            eylemEtiketi: 'Pil ayarlarını açın',
+            baslik: m.pilKisiti.baslik,
+            aciklama: m.pilKisiti.aciklama,
+            eylemEtiketi: m.pilKisiti.eylem,
             eylem: { tip: 'pilAyarlari' },
             ikon: 'battery-quarter',
           }
@@ -199,12 +200,12 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
       sorunlar.push({
         id: 'konumBayat',
         seviye: 'bilgi',
-        baslik: 'Arka plan güncellemesi durmuş görünüyor',
-        aciklama: 'Konumunuz 7 gündür yenilenmedi; pil ayarları uygulamayı kısıtlıyor olabilir.',
+        baslik: m.konumBayat.baslik,
+        aciklama: m.konumBayat.aciklama,
         // "Konumu yenileyin" semptomu GİZLERDİ: elle sabitleme damgayı tazeler,
         // uyarı kaybolur ama arka plan görevi hâlâ ölüdür (AGENTS.md). Asıl
         // sebep pil kısıtı → oraya götür.
-        eylemEtiketi: 'Pil ayarlarını açın',
+        eylemEtiketi: m.konumBayat.eylem,
         eylem: { tip: 'pilAyarlari' },
       });
     }
@@ -214,7 +215,7 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
   // (aynı rehbere giden iki uyarı olmasın; Ayarlar çipi bu durumda çizilmez).
   if (g.kosullar?.gucTasarrufu === true) {
     const pilSorunu = sorunlar.find((x) => x.id === 'pilKisiti' || x.id === 'arkaPlanKisiti');
-    if (pilSorunu) pilSorunu.aciklama = `${pilSorunu.aciklama} Güç tasarrufu da açık.`;
+    if (pilSorunu) pilSorunu.aciklama = `${pilSorunu.aciklama} ${m.gucTasarrufuDaAcik}`;
   }
 
   return sorunlar.sort((a, b) => SEVIYE_SIRASI[a.seviye] - SEVIYE_SIRASI[b.seviye]);

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- si — Sinhala (beta). -->
+<!-- Sinhala. Terimler: src/core/dil/sozluk/si. TV düğmeleri kısa. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">si</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">සලාත් වේලා පුවරුව</string>
+    <string name="ayarlar">සැකසීම්</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s දක්වා %2$s ඉතිරියි</string>
+    <string name="pano_vaktine">%1$s දක්වා</string>
+    <string name="pano_vaktine_kalan">%1$s · තව %2$s</string>
+    <string name="pano_kerahat_vakti">තහනම් වේලාව</string>
+    <string name="pano_bitis">%1$sට අවසන්</string>
+    <string name="pano_kerahat_erisim">තහනම් වේලාව, %1$s, %2$sට අවසන්. %3$s</string>
+    <string name="pano_cumaya">ජුමුආට තව %1$s</string>
+    <string name="pano_cikis_geldi">පිටත් වීමට වේලාවයි</string>
+    <string name="pano_cikis">%1$sට පිටත් වන්න</string>
+    <string name="pano_cuma_cikis_geldi_erisim">ජුමුආ සඳහා පිටත් වීමට වේලාවයි</string>
+    <string name="pano_cuma_cikis_erisim">ජුමුආ සඳහා %1$sට පිටත් වන්න</string>
+    <string name="pano_bugun_cuma">අද ජුමුආ</string>
+    <string name="pano_ogle">ලුහර් %1$s</string>
+    <string name="pano_bugun_cuma_erisim">අද ජුමුආ. ජුමුආ සලාතය ලුහර් වේලාවේ, %1$s</string>
+    <string name="pano_ayarlar_erisim">සැකසීම්: දුරකථනයක් එක් කරන්න, ස්ථානය, සම්බන්ධ දුරකථන</string>
+    <string name="pano_simdiki_vakit">වත්මන් සලාත් වේලාව</string>
+    <string name="pano_siradaki_vakit">ඊළඟ සලාත් වේලාව</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "ඔබගේ දුරකථනය එක් කරන්න", "කේතය ඇතුළත් කරන්න", "මම නගරය තෝරමි", "එක් කරන්න". -->
+    <string name="kodla_girin">කේතය ඇතුළත් කරන්න</string>
+    <string name="ili_kendim_secin">මම නගරය තෝරමි</string>
+    <string name="yeniden_deneyin">නැවත උත්සාහ කරන්න</string>
+    <string name="telefon_varsayilan">දුරකථනය</string>
+    <string name="esleme_ekleniyor">%1$s එක් කරමින්</string>
+    <string name="esleme_gonderiyor">ඔබගේ දුරකථනය එහි ස්ථානය සහ තත්ත්වය යවමින්…</string>
+    <string name="esleme_tamamlanamadi">යුගල කිරීම සම්පූර්ණ කළ නොහැකි විය</string>
+    <string name="esleme_saklanamadi">මෙම TV එකට සම්බන්ධතා යතුර ආරක්ෂිතව ගබඩා කළ නොහැක. කේතයකින් ඔබගේ ස්ථානය ඇතුළත් කිරීමට හෝ ඔබගේ නගරය තෝරා ගැනීමට හැක.</string>
+    <string name="telefonunuzu_ekleyin">ඔබගේ දුරකථනය එක් කරන්න</string>
+    <string name="esleme_alt">ඔබගේ ස්ථානයට සලාත් වේලාවන්; ඔබ ඉටු කළ සලාත් ද දිස් වේ.</string>
+    <string name="esleme_adim1">ඔබගේ දුරකථනයේ Namaz Akışı විවෘත කරන්න</string>
+    <string name="esleme_adim2">සැකසීම් › මගේ උපාංග › TV එකක් එක් කරන්න</string>
+    <string name="esleme_adim3">ඔබගේ දුරකථනයේ කැමරාව කේතය දෙසට යොමු කරන්න</string>
+    <string name="esleme_ayni_wifi">ඔබගේ දුරකථනය සහ TV එක එකම Wi-Fi ජාලයේ තිබිය යුතුය.</string>
+    <string name="esleme_onay_soru">මෙම දුරකථනය එක් කරන්නද?</string>
+    <string name="esleme_onay_aciklama">එක් කළ දුරකථනයට එහි ස්ථානය සහ එය සලකුණු කරන සලාත් මෙම TV එකට යැවිය හැක.</string>
+    <string name="ekleyin">එක් කරන්න</string>
+    <string name="hayir">නැත</string>
+    <string name="esleme_eklendi">%1$s එක් කළා</string>
+    <string name="konumunuz_geldi">ඔබගේ ස්ථානය ලැබුණා</string>
+    <string name="konuma_gore_hesaplanacak">සලාත් වේලාවන් මෙම ස්ථානය සඳහා ගණනය කෙරේ.</string>
+    <string name="qr_konum_alindi">ස්ථානය ලැබුණා</string>
+    <string name="qr_kodu">ඔබගේ දුරකථනයෙන් පරිලෝකනය කළ යුතු යුගල කේතය</string>
+    <string name="ag_yok">TV එක ජාලයකට සම්බන්ධ නැත</string>
+    <string name="ag_yok_aciklama">ඔබගේ දුරකථනයේ ඉලක්කම් 7 කේතය ඇතුළත් කිරීමෙන් හෝ ඔබගේ නගරය තෝරා ගැනීමෙන් ඉදිරියට යා හැක.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">ඔබගේ දුරකථනයේ කේතය ඇතුළත් කරන්න</string>
+    <string name="kod_yol">ඔබගේ දුරකථනයේ: සැකසීම් › මගේ උපාංග › TV එකක් එක් කරන්න</string>
+    <string name="kod_hatali">කේතය නොගැළපුණි. ඔබගේ දුරකථනයේ ඉලක්කම් 7 පරීක්ෂා කරන්න; වැරදි ඉලක්කමක් “%1$s” මගින් නිවැරදි කරන්න.</string>
+    <string name="kod_rakamli_kumanda">ඔබගේ දුරස්ථ පාලකයේ ඉලක්කම් යතුරු ඇත්නම්, ඒවායින් ද ටයිප් කළ හැක.</string>
+    <string name="kod_bos_hane">හිස් ඉලක්කම</string>
+    <string name="kod_sil">මකන්න</string>
+    <string name="kod_sil_aciklama">අවසන් ඉලක්කම මකන්න</string>
+    <string name="kod_geri">ආපසු</string>
+    <string name="vazgecin">අවලංගු කරන්න</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">ඔබගේ නගරය තෝරන්න</string>
+    <string name="il_merkezine_gore">සලාත් වේලාවන් නගර මධ්‍යය සඳහා ගණනය කෙරේ.</string>
+    <string name="il_secili">%1$s, තෝරා ඇත</string>
+    <string name="dream_il_yok">සලාත් වේලා පුවරුව බැලීමට, Namaz Akışı යෙදුම විවෘත කර ඔබගේ නගරය තෝරන්න.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">ස්ථානය: %1$s</string>
+    <string name="ayar_konum_yok">ස්ථානයක් තෝරා නැත</string>
+    <string name="ayar_telefon_ekleyin">දුරකථනයක් එක් කරන්න</string>
+    <string name="ayar_konumu_kodla">කේතයකින් ස්ථානය ඇතුළත් කරන්න</string>
+    <string name="ayar_bagli_telefonlar">මෙම TV එකට සම්බන්ධ දුරකථන</string>
+    <string name="ayar_telefon_yok">තවම දුරකථනයක් එක් කර නැත. වම් පසින් “%1$s” භාවිත කර දිස් වන කේතය පරිලෝකනය කරන්න.</string>
+    <string name="kaldirin">ඉවත් කරන්න</string>
+    <string name="ayar_ne_gonderir">දුරකථන යවන්නේ කුමක්ද?</string>
+    <string name="ayar_madde_konum">ස්ථානය: සලාත් වේලාවන් එය අනුගමනය කරයි</string>
+    <string name="ayar_madde_namazlar">සලකුණු කළ සලාත්, එය තෝරා ගන්නා අය සඳහා</string>
+    <string name="ayar_madde_sifreli">සංකේතනය කර, ඔබගේ නිවසේ ජාලයේ පමණක්</string>
+    <string name="son_haber_yok">තවම තොරතුරු නැත</string>
+    <string name="son_haber_az_once">දැන්</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">මිනි %1$dකට පෙර</item>
+        <item quantity="other">මිනි %1$dකට පෙර</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">පැය %1$dකට පෙර</item>
+        <item quantity="other">පැය %1$dකට පෙර</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">දින %1$dකට පෙර</item>
+        <item quantity="other">දින %1$dකට පෙර</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s ඉවත් කරන්නද?</string>
+    <string name="kaldir_aciklama">මෙම දුරකථනයට තවදුරටත් TV එකට තොරතුරු යැවිය නොහැක. නැවත එක් කිරීමට, QR කේතය නැවත පරිලෝකනය කළ යුතුය.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">ඔබගේ දුරකථනයේ ස්ථානය</string>
+</resources>

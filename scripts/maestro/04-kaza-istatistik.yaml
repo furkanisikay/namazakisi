@@ -7,35 +7,37 @@ appId: com.furkanisikay.namazakisi
 # Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"; toparlanmada "Toparlanma modu: …"). Kıble Dalga 4'ten
 # beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "(Seri|Toparlanma modu): .*"
+    visible: "(Seri|Toparlanma modu|Streak|Recovery mode): .*"
     timeout: 90000
 - repeat:
     while:
-      visible: "Devam Et"
+      visible:
+        id: "kutlama-devam"
     commands:
-      - tapOn: "Devam Et"
+      - tapOn:
+          id: "kutlama-devam"
 
-- tapOn: "Kaza"
+- tapOn: "(Kaza|Qada)"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: kareler/07-kaza
 
-- tapOn: "İlerleme"
+- tapOn: "(İlerleme|Progress)"
 # AYLIK: haftalik gorunum icinde bulunulan haftayi gosterir ve hafta basinda
 # yalnizca bugun dolu kaliyor. Kilma orani bolumu seri panelinin ALTINDA →
 # once secici ortalanir (gok paneli parlamasi durulmaz: settle zaman asimi sart).
 - scrollUntilVisible:
     element:
-      text: "Aylık"
+      text: "(Aylık|Monthly)"
     direction: DOWN
     centerElement: true
     timeout: 120000
     waitToSettleTimeoutMs: 1500
-- tapOn: "Aylık"
+- tapOn: "(Aylık|Monthly)"
 # Aylik icerik secicinin ALTINDA: "Vakit vakit" kartini ortala (sabit metin; ay adi degisken).
 - scrollUntilVisible:
     element:
-      text: "Vakit vakit"
+      text: "(Vakit vakit|By prayer)"
     direction: DOWN
     centerElement: true
     timeout: 120000

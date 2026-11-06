@@ -35,6 +35,7 @@ import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { DUZEY_ADLARI } from '../../core/hatirlatma/duzeyOzeti';
+import { bicim, metin } from '../../core/dil/aktifDil';
 import { useFeedback } from '../../core/feedback';
 import { useGenelRiza } from './useGenelRiza';
 import { useTurkceTtsDestegi } from './useTurkceTtsDestegi';
@@ -145,7 +146,7 @@ export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
             planla();
             if (once.yogunluk === 'ozel') {
                 geriAlBandiGoster({
-                    mesaj: `${DUZEY_ADLARI[yogunluk]} düzeye geçildi`,
+                    mesaj: bicim(metin().muhafizAyar.kanca.duzeyeGecildi, { ad: DUZEY_ADLARI[yogunluk] }),
                     ikon: 'sliders-h',
                     geriAl: () => geriYukle(once),
                 });

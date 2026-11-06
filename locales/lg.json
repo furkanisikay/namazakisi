@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Ekifo kyo kikozesebwa okubala obulungi ebiseera by’esswala eby’ekifo w’oli. Ekifo kyo kisigala ku kyuma kyo.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ekifo kyo kikozesebwa okubala obulungi ebiseera by’esswala eby’ekifo w’oli, era, “Ndi ku muzikiti” bw’eba eri ku, okuteekako Engeri y’esswala bw’oyingira omuzikiti. Ekifo kyo kisigala ku kyuma kyo.",
+  "NSLocationAlwaysUsageDescription": "Ekifo kyo kikozesebwa okuzza obuggya ebiseera by’esswala byokka bw’okyusa ekibuga, era, “Ndi ku muzikiti” bw’eba eri ku, okuteekako Engeri y’esswala bw’oyingira omuzikiti. Ekifo kyo kisigala ku kyuma kyo.",
+  "NSCameraUsageDescription": "Kamera yo ekozesebwa okulaga oluuyi lwa Kibula ku kifaananyi kya kamera n’okusoma koodi y’okugatta eri ku TV yo. Ebifaananyi tebiterekebwa era tebiva ku kyuma kyo.",
+  "NSCalendarsUsageDescription": "Olukusa lwa kalenda lukozesebwa okugatta ebiseera by’esswala ku kalenda yo, era, bw’okiteekako, okukebera oba emikolo mu kalenda yo gibikka ekiseera ky’esswala. Ebikwata ku kalenda yo bisigala ku kyuma kyo.",
+  "NSCalendarsFullAccessUsageDescription": "Olukusa lwa kalenda lukozesebwa okugatta ebiseera by’esswala ku kalenda yo, era, bw’okiteekako, okukebera oba emikolo mu kalenda yo gibikka ekiseera ky’esswala. Ebikwata ku kalenda yo bisigala ku kyuma kyo.",
+  "NSLocalNetworkUsageDescription": "App eyunga ku TV eri ku mukutu gwo ogw’omu kitundu okugisindikira ebiseera byo eby’esswala n’esswala z’oteeseeko akabonero. Ebikwatako bikuumiddwa n’ekyama era bitambula wakati w’ebyuma ebyo byombi byokka.",
+  "NSAlarmKitUsageDescription": "Emitendera gy’ebijjukizo gy’olondera “Alaamu entuufu” giteekebwawo nga alaamu, n’olwekyo ogiwulira ne bw’oba nga essimu yo esirisiddwa oba nga Focus eri ku.",
+  "\"Vakti kıldım\"": "Nsaaze",
+  "\"Kıble\"": "Kibula"
+}

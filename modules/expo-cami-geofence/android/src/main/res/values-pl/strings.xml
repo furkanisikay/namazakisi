@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">W meczecie</string>
+    <string name="camigeofence_kanal_durum_aciklama">Cicha informacja po wykryciu obecności w meczecie</string>
+    <string name="camigeofence_kanal_soru_ad">Po wyjściu z meczetu</string>
+    <string name="camigeofence_kanal_soru_aciklama">Pytanie, aby po wyjściu z meczetu oznaczyć modlitwę</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Tryb modlitwy jest włączony. Przypomnienia będą przychodzić po cichu.</string>
+    <string name="camigeofence_govde_mod">Tryb modlitwy jest włączony.</string>
+    <string name="camigeofence_govde_sessiz">Przypomnienia będą przychodzić po cichu.</string>
+    <string name="camigeofence_govde_normal">Przypomnienia będą przychodzić normalnie.</string>
+    <string name="camigeofence_eylem_modu_kapat">Wyłącz tryb</string>
+    <string name="camigeofence_eylem_cami_degil">To nie meczet</string>
+
+    <string name="camigeofence_soru_baslik">Czy jesteś w meczecie?</string>
+    <string name="camigeofence_soru_govde">Jesteś w pobliżu: %1$s. Nie mamy pewności, więc pytamy.</string>
+    <string name="camigeofence_varsayilan_ad">Meczet</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Włącz Tryb modlitwy</string>
+    <string name="camigeofence_eylem_evet_camideyim">Tak, jestem w meczecie</string>
+    <string name="camigeofence_eylem_hayir">Nie</string>
+
+    <string name="camigeofence_kildiniz_mi">Czy modlitwa %1$s jest odprawiona?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Możesz ją oznaczyć jednym dotknięciem.</string>
+    <string name="camigeofence_eylem_kildim">Odprawiono</string>
+    <string name="camigeofence_namaz_imsak">Fadżr</string>
+    <string name="camigeofence_namaz_ogle">Zuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isza</string>
+    <string name="camigeofence_namaz_cuma">Dżumu’a</string>
+
+    <string name="camigeofence_mod_kural_adi">Modlitwa</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı włącza go podczas chutby piątkowej, w meczecie lub na początku czasu modlitwy</string>
+</resources>

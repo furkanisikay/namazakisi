@@ -12,7 +12,7 @@
  * Jest `Platform.OS` varsayılanı 'ios' — tanımlar yetenekleri AÇIKÇA alır (Android).
  */
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
@@ -58,6 +58,7 @@ import { VARSAYILAN_SES } from '../../../../core/muhafiz/matrisTipleri';
 import { kanallarNormalize } from '../../../../core/hatirlatma/adimDizisi';
 import { ANDROID_YETENEKLERI } from '../../../../core/muhafiz/ios/platformYetenekleri';
 import { varsayilanAnonsMetni } from '../../../../core/muhafiz/anonsMetni';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 const adim = (kanallar: UyariKanallari, ek: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
     kademe: 'nazik',
@@ -408,5 +409,34 @@ describe('Opus incelemesi — ekran nöbetçileri', () => {
         const secici = ekran.UNSAFE_getAllByType(SayisalSecici).find((x) => x.props.deger === 60)!;
         expect(secici.props.min).toBe(15);
         expect(secici.props.max).toBe(105);
+    });
+});
+
+describe('AdimDetayModal — İngilizce', () => {
+    // Türkçe harfsiz ama Türkçe sözcükler (bu ekranda geçebilecek).
+    const YASAKLI = ['Kapat', 'Tekrarla', 'Her\\b', 'dk\\b', 'kala', 'sonra', 'Nazik', 'Sert\\b', 'Acil', 'Bildirim', 'Vakit', 'vakit', 'NASIL', 'Sertlik', 'Tamam', 'Uygula', 'Dinle\\b', 'Ekleyin', 'Otomatik'];
+    let geriAl: () => void;
+    beforeEach(() => {
+        geriAl = ingilizceyeGec();
+    });
+    afterEach(() => act(() => geriAl()));
+
+    test('muhafız adımı: zaman, tekrar, kanal kartları ve gelişmiş (sertlik) İngilizce', () => {
+        // Tanım dil değiştikten SONRA kurulur (başlıklar etkin dilde okunur).
+        const tanim = vakitPencereTanimi('ikindi', 'cikisaDogru', 180, ANDROID_YETENEKLERI);
+        const seviye = adim({ bildirim: true, titresim: true }, { kademe: 'uyari', siklik: { herDk: 5 }, esikDk: 25 });
+        const { ekran } = kur(tanim, seviye);
+        // Değiştirilmiş adımda "Gelişmiş" açık başlar; kapalıysa açılır.
+        if (!ekran.queryByTestId('adim-gelismis-icerik')) fireEvent.press(ekran.getByTestId('adim-gelismis'));
+        expect(turkceKalanlar(ekran.toJSON() as never, YASAKLI)).toEqual([]);
+        expect(ekran.getByText('Repeat')).toBeTruthy();
+        expect(ekran.getByText('INTENSITY')).toBeTruthy();
+        expect(ekran.getByText('25 min before end')).toBeTruthy();
+    });
+
+    test('kapalı adım ve ek yüzey (cuma) İngilizce', () => {
+        const kapali = kur(vakitPencereTanimi('ogle', 'girisindenItibaren', 180, ANDROID_YETENEKLERI), adim({}));
+        expect(turkceKalanlar(kapali.ekran.toJSON() as never, YASAKLI)).toEqual([]);
+        expect(kapali.ekran.getByText('Turn on')).toBeTruthy();
     });
 });

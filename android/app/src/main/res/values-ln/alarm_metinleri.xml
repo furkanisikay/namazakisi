@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Alarme ya solo (Lingala). "Nasambeli" bouton ya liyebisi ndɛngɛ moko. -->
+<resources>
+  <string name="alarm_baslik">Alarme ya losambo</string>
+  <string name="alarm_kildim">Nasambeli</string>
+  <string name="alarm_kapat">Bokanga</string>
+  <string name="alarm_kanal_aciklamasi">Alarme ya solo oyo ebɛtaka na bitape ya bokundoli oyo boponi</string>
+</resources>

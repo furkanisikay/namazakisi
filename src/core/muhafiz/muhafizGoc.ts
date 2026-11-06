@@ -3,7 +3,7 @@ import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTi
 import { KAPALI_KANALLAR, adimKapaliMi, modKanallaraCevir } from './kanalKumesi';
 import { esikSiralamasiGecerliMi, esiklerTekilMi, kronolojikSirala } from './aktifSeviye';
 import { girisZamanlamasiniSec } from './girisZamanlamasi';
-import { anonsSablonlari } from './anonsMetni';
+import { sablonKonumu } from '../hatirlatma/anonsSablonlari';
 import { sesKimliginiNormalize } from './sesKimligi';
 import { MUHAFIZ_MIN_ADIM } from './matrisTipleri';
 import { vakitSayacEsigiHesapla } from '../utils/vakitSayacYardimcisi';
@@ -84,8 +84,11 @@ export function eskiAlarmSesiniGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
   return degisti ? sonuc : matris;
 }
 
-/** Hazır şablon havuzu (iki yön) — kullanıcının yazmadığı anons metni. */
-const SABLON_HAVUZU = new Set<string>([...anonsSablonlari('cikisaDogru'), ...anonsSablonlari('girisindenItibaren')]);
+/** Hazır şablon (herhangi bir dilde, iki yön) — kullanıcının yazmadığı anons metni. */
+const hazirMuhafizSablonuMu = (metin: string): boolean => {
+  const k = sablonKonumu(metin);
+  return k !== null && (k.liste === 'muhafizCikis' || k.liste === 'muhafizGiris');
+};
 
 /**
  * Kapalı adım VARSAYILAN mı — kullanıcının emeği taşımıyor mu? Hepsi gerekir:
@@ -96,7 +99,7 @@ const SABLON_HAVUZU = new Set<string>([...anonsSablonlari('cikisaDogru'), ...ano
 export function kapaliVarsayilanAdimMi(s: SeviyeAyari): boolean {
   if (!s || !adimKapaliMi(s.kanallar)) return false;
   const metin = s.anonsMetni ?? '';
-  if (metin.length > 0 && !SABLON_HAVUZU.has(metin)) return false;
+  if (metin.length > 0 && !hazirMuhafizSablonuMu(metin)) return false;
   if (sesKimliginiNormalize(s.bildirimSesi) !== VARSAYILAN_SES) return false;
   if (s.alarmKapsami !== undefined) return false;
   const h = s.oncekiKanallar;

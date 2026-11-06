@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { TaniOnizleme } from '../TaniOnizleme';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 jest.mock('../../../../core/theme', () => ({ useRenkler: () => ({
   arkaplan: '#FAFAFA', kartArkaplan: '#FFF', metin: '#000', metinIkincil: '#777',
@@ -51,5 +52,19 @@ describe('TaniOnizleme', () => {
     fireEvent.press(getByText('E-postayı aç'));
     await waitFor(() => expect(getByText('Gönderilemedi')).toBeTruthy());
     expect(onKapat).not.toHaveBeenCalled();
+  });
+});
+
+describe('TaniOnizleme — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => geriAl());
+
+  it('önizleme İngilizce', () => {
+    const e = render(<TaniOnizleme gorunur baglam="x" onKapat={() => {}} onLoglariGor={() => {}} />);
+    expect(turkceKalanlar(e.toJSON() as never, ['Kapat', 'Konum', 'Namaz'])).toEqual([]);
+    expect(e.getByText('What is sent?')).toBeTruthy();
   });
 });

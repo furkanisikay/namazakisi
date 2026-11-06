@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Günün ayeti 4×1 şeridi (#380): en çok iki satır meal + künye, başlık ve Arapça YOK (meali
+  olmayan dilde tek satır Arapça). Sığmazsa `widget_ayet_dokunun_serit`. Ölçüler ve metin
+  kodda (`GununAyetiCizici`).
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ayet_kok"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ayet_zemin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_zemin" />
+
+    <LinearLayout
+        android:id="@+id/ayet_icerik"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:importantForAccessibility="noHideDescendants"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ayet_arapca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/ayet_meal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:breakStrategy="high_quality"
+            android:hyphenationFrequency="none"
+            android:fontFamily="sans-serif"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/ayet_kunye"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:fontFamily="sans-serif"
+            android:textSize="11sp" />
+    </LinearLayout>
+</FrameLayout>

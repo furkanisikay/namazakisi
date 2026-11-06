@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Na mesquita</string>
+    <string name="camigeofence_kanal_durum_aciklama">Um aviso discreto quando é detetada a sua presença numa mesquita</string>
+    <string name="camigeofence_kanal_soru_ad">Depois de sair da mesquita</string>
+    <string name="camigeofence_kanal_soru_aciklama">Uma pergunta para poder marcar a oração depois de sair da mesquita</string>
+
+    <string name="camigeofence_govde_mod_sessiz">O Modo oração está ativado. Os lembretes vão chegar em silêncio.</string>
+    <string name="camigeofence_govde_mod">O Modo oração está ativado.</string>
+    <string name="camigeofence_govde_sessiz">Os lembretes vão chegar em silêncio.</string>
+    <string name="camigeofence_govde_normal">Os lembretes vão chegar como habitualmente.</string>
+    <string name="camigeofence_eylem_modu_kapat">Desativar o modo</string>
+    <string name="camigeofence_eylem_cami_degil">Não é mesquita</string>
+
+    <string name="camigeofence_soru_baslik">Está na mesquita?</string>
+    <string name="camigeofence_soru_govde">Está perto de %1$s. Não temos a certeza, por isso perguntamos.</string>
+    <string name="camigeofence_varsayilan_ad">Mesquita</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Ativar o Modo oração</string>
+    <string name="camigeofence_eylem_evet_camideyim">Sim, estou na mesquita</string>
+    <string name="camigeofence_eylem_hayir">Não</string>
+
+    <string name="camigeofence_kildiniz_mi">Já rezou a oração de %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Pode marcá-la com um só toque.</string>
+    <string name="camigeofence_eylem_kildim">Rezei</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Zuhr</string>
+    <string name="camigeofence_namaz_ikindi">Assr</string>
+    <string name="camigeofence_namaz_aksam">Magrib</string>
+    <string name="camigeofence_namaz_yatsi">Ishá</string>
+    <string name="camigeofence_namaz_cuma">Jumu’ah</string>
+
+    <string name="camigeofence_mod_kural_adi">Oração</string>
+    <string name="camigeofence_mod_tetik_aciklama">O Namaz Akışı ativa-o durante o sermão de Jumu’ah, na mesquita ou quando começa a hora de uma oração</string>
+</resources>

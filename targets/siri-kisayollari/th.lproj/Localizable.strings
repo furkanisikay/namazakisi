@@ -1,0 +1,57 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Tayca terimler: src/core/dil/sozluk/th (vakit.ts basi).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "เวลาละหมาดถัดไป";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "บอกเวลาละหมาดถัดไปและเวลาที่เริ่ม";
+"Şu anki vakti kıldım" = "ฉันละหมาดเวลาปัจจุบันแล้ว";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "ทำเครื่องหมายว่าละหมาดเวลาปัจจุบันแล้ว บันทึกจะถูกเพิ่มเมื่อคุณเปิดแอป";
+"Onay iste" = "ขอการยืนยัน";
+"Kıbleyi aç" = "เปิดกิบลัต";
+"Uygulamayı Kıble pusulasıyla açar." = "เปิดแอปพร้อมเข็มทิศกิบลัต";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "ละหมาดแล้ว";
+"Kıble" = "กิบลัต";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "ชื่อเวลาละหมาดถัดไป";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "ให้ชื่อของเวลาละหมาดถัดไป คุณใช้เป็นเงื่อนไขในคำสั่งลัดได้";
+"Sıradaki vakte kalan dakika" = "นาทีที่เหลือก่อนเวลาละหมาดถัดไป";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "ให้จำนวนนาทีที่เหลือก่อนเข้าเวลาละหมาดถัดไป หากไม่มีข้อมูลจะให้ค่า -1";
+"Şu anki vakit kılındı mı?" = "ละหมาดเวลาปัจจุบันแล้วหรือยัง";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "ให้ค่าใช่หากเวลาละหมาดปัจจุบันถูกทำเครื่องหมายว่าละหมาดแล้ว ให้ค่าไม่ใช่หากไม่มีเวลาละหมาดที่จะทำเครื่องหมาย";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "ความเงียบขณะละหมาด";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "ให้ค่าจริงในช่วงนาทีแรกหลังเข้าเวลาละหมาด ใช้ในคำสั่งลัดเพื่อเปิดโฟกัส";
+"Süre (dakika)" = "ระยะเวลา (นาที)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} นาทีหลังเข้าเวลาละหมาด";
+"Namaz sessizliğinin bitişi" = "สิ้นสุดความเงียบขณะละหมาด";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "ให้เวลาที่ความเงียบจะสิ้นสุด หากขณะนี้ไม่มีความเงียบจะให้เวลาปัจจุบัน";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "สิ้นสุด ${dakika} นาทีหลังเข้าเวลาละหมาด";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "การเตือนละหมาด";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "ขณะที่โฟกัสนี้เปิดอยู่ การเตือนละหมาดจะมาโดยไม่มีเสียงและไม่ทำให้หน้าจอสว่าง";
+"Hatırlatmaları sessiz ver" = "ส่งการเตือนแบบเงียบ";
+"Hatırlatmalar sessiz gelir" = "การเตือนมาแบบเงียบ";
+"Hatırlatmalar her zamanki gibi" = "การเตือนตามปกติ";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "ทำเครื่องหมายว่าละหมาดเวลาที่แสดงในวิดเจ็ตแล้ว";
+"Tarih" = "วันที่";
+"Vakit" = "เวลาละหมาด";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "หยุดนาฬิกาปลุกละหมาด";
+"Namazı kıldım" = "ละหมาดแล้ว";
+"Alarm" = "นาฬิกาปลุก";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "รูปภาพอายะฮ์ประจำวัน";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "ให้อายะฮ์ของวันนี้เป็นรูปภาพขนาดเท่าหน้าจอของคุณ คุณใช้ร่วมกับขั้นตอนตั้งค่าวอลเปเปอร์ในคำสั่งลัดได้";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "โปรดเปิดแอปหนึ่งครั้งเพื่อเตรียมอายะฮ์ประจำวัน";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "เตรียมรูปภาพไม่สำเร็จ โปรดลองอีกครั้งในอีกสักครู่";

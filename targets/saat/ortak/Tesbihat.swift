@@ -13,19 +13,29 @@ public enum Tesbihat {
     public static let toplamHedef = 100
     /// Son dokunustan bu kadar sonra acilan oturum eskimistir → sifirdan baslar (Wear ile ayni).
     public static let eskimeMs: Int64 = 90 * 60 * 1000
-    public static let tehlilMetni =
-        "Lâ ilâhe illallâhü vahdehû lâ şerîke leh, lehü'l-mülkü ve lehü'l-hamdü ve hüve alâ külli şey'in kadîr"
-    public static let kaynak = "Müslim, Mesâcid 146"
+    /// Zikir adlari, tehlil metni ve kunye CEVIRI DEGIL, o dilin Musluman toplulugunun yaygin
+    /// yazimidir (sahip karari 2026-10-25): en "Subhanallah", ru "Субханаллах". Tablo
+    /// `SaatMetinleri` bloklarinda; bilinmeyen dil Turkceye duser (`ArayuzDili.coz`).
+    /// Varsayilan dil Turkce (eski `tehlilMetni` / `kaynak` sabitlerinin degeri).
+    public static func tehlilMetni(dil: String = ArayuzDili.varsayilan) -> String {
+        return SaatMetinleri.dil(dil).tehlilMetni
+    }
+
+    public static func kaynak(dil: String = ArayuzDili.varsayilan) -> String {
+        return SaatMetinleri.dil(dil).tesbihatKaynagi
+    }
 
     public enum Faz: Int, CaseIterable, Equatable {
         case subhanallah, elhamdulillah, allahuEkber, tehlil
 
-        public var ad: String {
+        /// Zikrin o dildeki yaygin okunusu ("Sübhânallah" / "Subhanallah"); bilinmeyen dil Turkce.
+        public func ad(dil: String = ArayuzDili.varsayilan) -> String {
+            let m = SaatMetinleri.dil(dil)
             switch self {
-            case .subhanallah: return "Sübhânallah"
-            case .elhamdulillah: return "Elhamdülillâh"
-            case .allahuEkber: return "Allâhü ekber"
-            case .tehlil: return "Lâ ilâhe illallâh"
+            case .subhanallah: return m.zikirSubhanallah
+            case .elhamdulillah: return m.zikirElhamdulillah
+            case .allahuEkber: return m.zikirAllahuEkber
+            case .tehlil: return m.zikirTehlil
             }
         }
 
@@ -71,9 +81,9 @@ public enum Tesbihat {
         return Durum(toplam: toplam)
     }
 
-    /// Ekran okuyucu / kisa durum: "Elhamdülillâh, 12/33" (noktali ayrac yok).
-    public static func kisaMetin(_ d: Durum) -> String {
-        return "\(d.faz.ad), \(d.fazSayisi)/\(d.faz.hedef)"
+    /// Ekran okuyucu / kisa durum: "Elhamdülillâh, 12/33" (en "Alhamdulillah, 12/33"; noktali ayrac yok).
+    public static func kisaMetin(_ d: Durum, dil: String = ArayuzDili.varsayilan) -> String {
+        return "\(d.faz.ad(dil: dil)), \(d.fazSayisi)/\(d.faz.hedef)"
     }
 }
 

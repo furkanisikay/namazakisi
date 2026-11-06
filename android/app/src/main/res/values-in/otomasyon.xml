@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- id — Endonezce (beta). Tasker / MacroDroid / Automate eklentisi. Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Sudah salat</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Status waktu salat</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Peristiwa waktu salat</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — "Anda". -->
+  <string name="otomasyon_bilgi_baslik">Pengaturan ini ditambahkan dari aplikasi otomatisasi</string>
+  <string name="otomasyon_bilgi_tarayici">Browser tidak dapat memperoleh izin permanen. Tambahkan dari daftar plugin aplikasi seperti Tasker, MacroDroid, atau Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Tambahkan dengan memilih \"Namaz Akışı\" dari daftar plugin aplikasi seperti Tasker, MacroDroid, atau Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s diblokir</string>
+  <string name="otomasyon_engelli_mesaj">Sebelumnya Anda memblokir aplikasi ini agar tidak menandai salat Anda. Anda dapat mengizinkannya di Namaz Akışı melalui Pengaturan &gt; \"Aplikasi yang menandai Sudah salat\".</string>
+  <string name="otomasyon_izin_baslik">Gunakan dengan %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s dapat mengetahui kapan waktu salat tiba, kapan akan berakhir, dan kapan Anda di masjid, lalu menjalankan otomatisasi Anda. Anda dapat mengubah keputusan ini di Namaz Akışı melalui Pengaturan &gt; \"Aplikasi yang menandai Sudah salat\".</string>
+  <string name="otomasyon_izin_kildim">%1$s dapat menandai waktu salat saat ini sudah ditunaikan melalui otomatisasi yang Anda buat. Anda dapat mengubah keputusan ini di Namaz Akışı melalui Pengaturan &gt; \"Aplikasi yang menandai Sudah salat\".</string>
+  <string name="otomasyon_izin_ver">Izinkan</string>
+  <string name="otomasyon_engelle">Blokir</string>
+  <string name="otomasyon_vazgec">Batal</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Kapan dijalankan?</string>
+  <string name="otomasyon_ileri">Lanjut</string>
+  <string name="otomasyon_vakit_baslik">Waktu salat yang mana?</string>
+  <string name="otomasyon_herhangi_vakit">Waktu salat mana pun</string>
+  <string name="otomasyon_kaydet">Simpan</string>
+  <string name="otomasyon_kosul_icinde">Selama waktu salat</string>
+  <string name="otomasyon_kosul_cikiyor">Selagi waktu salat hampir berakhir (%1$d mnt lagi, Penjaga Salat aktif)</string>
+  <string name="otomasyon_kosul_camide">Saat di masjid</string>
+  <string name="otomasyon_olay_girdi">Saat waktu salat tiba</string>
+  <string name="otomasyon_olay_cikiyor">Saat waktu salat akan berakhir (%1$d mnt lagi, Penjaga Salat aktif)</string>
+  <string name="otomasyon_olay_camide">Saat Anda terdeteksi di masjid</string>
+</resources>

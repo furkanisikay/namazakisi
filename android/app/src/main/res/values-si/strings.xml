@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- si — Sinhala (beta). -->
+<!-- Sinhala kaynakları (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/si. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">වත්මන් සලාතය, එය අවසන් වන වේලාව සහ එක් තට්ටුවකින් ඉටු කළෙමි</string>
+  <string name="widget_genis_aciklama">අද සලාත් පහ, ගණන් කිරීමක් සහ එක් තට්ටුවකින් ඉටු කළෙමි</string>
+  <string name="widget_kapak_adi">ආවරණ තිරයේ සලාත් වේලාවන්</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip ආවරණ තිරය සඳහා අද සලාත් වේලාවන් සහ ගණන් කිරීමක්</string>
+  <string name="widget_klasik_adi">Namaz Akışı — සම්භාව්‍ය</string>
+  <string name="widget_klasik_aciklama">සම්භාව්‍ය කොළ පෙනුම: ඊළඟ සලාතයට ඉතිරි කාලය</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — සම්භාව්‍ය පුළුල්</string>
+  <string name="widget_klasik_genis_aciklama">සම්භාව්‍ය කොළ පෙනුම: ගණන් කිරීම සහ අද සලාත් වේලාවන්</string>
+  <string name="widget_ayet_adi">දවසේ ආයතය</string>
+  <string name="widget_ayet_aciklama">ආයතයක් සහ එහි පරිවර්තනය, දිනපතා ෆජ්ර් වේලාවේ අලුත් වේ</string>
+  <string name="widget_ayar_zemin_palet">යෙදුමේ වර්ණය (ලා පැහැය)</string>
+  <string name="widget_ayar_ayet_icerik">සමචතුරස්‍ර ප්‍රමාණයේදී පෙන්වන්න</string>
+  <string name="widget_ayar_ayet_icerik_meal">පරිවර්තනය</string>
+  <string name="widget_ayar_ayet_icerik_hat">අරාබි පාඨය (අක්ෂර කලාව)</string>
+  <string name="kutu_kildim_etiket">ඉටු කළෙමි</string>
+  <string name="kisayol_kildim_kisa">ඉටු කළෙමි</string>
+  <string name="kisayol_kildim_uzun">වත්මන් සලාතය ඉටු කළෙමි</string>
+  <string name="kisayol_kible_kisa">කිබ්ලාව</string>
+  <string name="kisayol_kible_uzun">කිබ්ලා දිශාව පෙන්වන්න</string>
+  <string name="kisayol_kaza_kisa">අතපසු සලාත්</string>
+  <string name="kisayol_kaza_uzun">අතපසු සලාත් ලේඛනය විවෘත කරන්න</string>
+  <string name="kildim_onay_baslik">%1$s ඉටු කළ බව සලකුණු කරන්නද?</string>
+  <string name="kildim_onay_mesaj">මෙම ඉල්ලීම යැවූයේ කුමන යෙදුමදැයි පැහැදිලි නැත. ඔබ ඉටු කළා නම් තහවුරු කරන්න.</string>
+  <string name="kildim_onay_evet">ඉටු කළෙමි</string>
+  <string name="kildim_onay_vazgec">අවලංගු කරන්න</string>
+  <string name="kildim_guven_baslik">ඔබගේ සලාත් ඉටු කළ බව සලකුණු කිරීමට %1$s හට ඉඩ දෙන්නද?</string>
+  <string name="kildim_guven_mesaj">දැන් සලකුණු කරන සලාතය: %1$s. ඔබගේ තීරණය පසුව සැකසීම් &gt; ඉටු කළෙමි සලකුණු කරන යෙදුම් තුළ වෙනස් කළ හැක.</string>
+  <string name="kildim_guven_tarayici_mesaj">දැන් සලකුණු කරන සලාතය: %1$s. මෙම ඉල්ලීම බ්‍රවුසරයකින් පැමිණියේය; ඕනෑම වෙබ් පිටුවකට මෙම සබැඳිය විවෘත කළ හැකි බැවින් ස්ථිර අවසරයක් දිය නොහැක.</string>
+  <string name="kildim_guven_her_zaman">සැමවිටම ඉඩ දෙන්න</string>
+  <string name="kildim_guven_bu_sefer">මෙවර පමණක්</string>
+  <string name="kildim_guven_engelle">අවහිර කරන්න</string>
+  <string name="kildim_guven_engellendi">%1$s හට තවදුරටත් ඔබගේ සලාත් සලකුණු කළ නොහැක. මෙය සැකසීම් තුළ වෙනස් කළ හැක.</string>
+  <string name="widget_ayar_baslik">විජට් එක අභිරුචිකරණය කරන්න</string>
+  <string name="widget_ayar_zemin">පසුබිම</string>
+  <string name="widget_ayar_zemin_material">බිතුපත් වර්ණ</string>
+  <string name="widget_ayar_zemin_sistem">පද්ධති තේමාව</string>
+  <string name="widget_ayar_zemin_acik">ආලෝකය</string>
+  <string name="widget_ayar_zemin_koyu">අඳුරු</string>
+  <string name="widget_ayar_zemin_seffaf">විනිවිද පෙනෙන</string>
+  <string name="widget_ayar_opaklik">පසුබිමේ පාරාන්ධතාව</string>
+  <string name="widget_ayar_gosterim">විශාල අකුරින් පෙන්වන්න</string>
+  <string name="widget_ayar_gosterim_kalan">ඉතිරි කාලය</string>
+  <string name="widget_ayar_gosterim_bitis">අවසන් වේලාව</string>
+  <string name="widget_ayar_gosterim_not">අවසන් වේලාව සෑම ප්‍රමාණයකම පෙන්වයි.</string>
+  <string name="widget_ayar_sonraki">ඊළඟ සලාතය පෙන්වන්න</string>
+  <string name="widget_ayar_vazgec">අවලංගු කරන්න</string>
+  <string name="widget_ayar_kaydet">සුරකින්න</string>
+  <string name="kildim_onay_kanal_adi">ඉටු කළෙමි තහවුරු කිරීම</string>
+  <string name="kildim_onay_kanal_aciklama">දැනුම්දීමක “ඉටු කළෙමි” තට්ටු කළ විට තත්පර කිහිපයක් පෙන්වන නිහඬ තහවුරු කිරීමක්</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">%1$sට අවසන්</string>
+  <string name="widget_giris">%1$sට ආරම්භ</string>
+  <string name="widget_namaz_vakti">සලාත් වේලාව</string>
+  <string name="widget_uygulamayi_acin">යෙදුම විවෘත කරන්න</string>
+  <string name="widget_siradaki">ඊළඟ: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">දැනට සලකුණු කිරීමට සලාතයක් නැත</string>
+  <string name="widget_dugme_kildim">ඉටු කළෙමි</string>
+  <string name="widget_dugme_isaretleniyor">සලකුණු කරමින්</string>
+  <string name="widget_dugme_kilindi">ඉටු කළා</string>
+  <string name="widget_dugme_vakit_girmedi">තවම වේලාව නැත</string>
+  <string name="widget_klasik_uygulamayi_acin">යෙදුම විවෘත කරන්න</string>
+  <string name="widget_klasik_erisim_veri_yok">සලාත් වේලාවන් බැලීමට යෙදුම විවෘත කරන්න</string>
+  <string name="widget_klasik_erisim_siradaki">ඊළඟ සලාතය: %1$s, %2$sට ආරම්භ වේ</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ලුහර්ට තව</string>
+  <string name="widget_onizleme_klasik_genis">මග්රිබ්ට තව</string>
+  <string name="widget_onizleme_imsak">ෆජ්ර්</string>
+  <string name="widget_onizleme_gunes">හිරු උදාව</string>
+  <string name="widget_onizleme_ogle">ලුහර්</string>
+  <string name="widget_onizleme_ikindi">අසර්</string>
+  <string name="widget_onizleme_aksam">මග්රිබ්</string>
+  <string name="widget_onizleme_yatsi">ඉෂා</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s ඉටු කළ බව සලකුණු කළා. අල්ලාහ් පිළිගනු මැනව.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s දැනටමත් ඉටු කළ බව සලකුණු කර ඇත.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">දැනට සලකුණු කිරීමට සලාතයක් නැත. ඊළඟට %1$s, %2$sට ආරම්භ වේ.</string>
+  <string name="kildim_sonuc_vakit_yok">දැනට සලකුණු කිරීමට සලාතයක් නැත.</string>
+  <string name="kildim_sonuc_veri_yok">සලාත් වේලා දත්ත නැත. යෙදුම එක් වරක් විවෘත කරන්න.</string>
+  <string name="kildim_sonuc_vakit_degisti">සලාත් වේලාව වෙනස් වූ බැවින් කිසිවක් සලකුණු කළේ නැත. නැවත උත්සාහ කරන්න.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">සංචාලන යෙදුම විවෘත කළ නොහැකි විය.</string>
+  <string name="arac_adsiz_cami">මස්ජිදය</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">සලාත් වේලා දත්ත කියවිය නොහැකි විය.</string>
+  <string name="asistan_isaretleme_yapilamadi">සලාතය සලකුණු කළ නොහැකි විය.</string>
+  <string name="asistan_aciklama">ඔබට සලාත් වේලාවන් විමසීමට, වත්මන් සලාතය ඉටු කළ බව සලකුණු කිරීමට සහ කිබ්ලා තිරය විවෘත කිරීමට හැක.</string>
+</resources>

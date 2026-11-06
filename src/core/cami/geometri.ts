@@ -13,8 +13,18 @@ import {
     type IzlenenYer,
     type LatLng,
 } from './camiTipleri';
+import { metin } from '../dil/aktifDil';
 
 export const DUNYA_YARICAPI_M = 6_371_008.8;
+
+/**
+ * Mesafe yazısı: "850 m", "1,5 km" (ondalık ayırıcı etkin dilden; Intl'e bağlı değil).
+ * `metre` 1 km altındaki yuvarlamayı seçer (iOS rehberi 10 m'ye yuvarlar).
+ */
+export function mesafeKmYaz(m: number, metre: (m: number) => number = Math.round): string {
+    if (m < 1000) return `${metre(m)} m`;
+    return `${(m / 1000).toFixed(1).replace('.', metin().cami.ondalik)} km`;
+}
 
 const rad = (d: number): number => (d * Math.PI) / 180;
 

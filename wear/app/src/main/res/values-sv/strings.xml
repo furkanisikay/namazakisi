@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İsveççe. Terimler: src/core/dil/sozluk/sv. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">sv</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Nästa bön</string>
+    <string name="tile_aciklama">Nästa bön och dess tid</string>
+    <string name="komplikasyon_adi">Tid kvar</string>
+    <string name="cikis_saati_komplikasyon_adi">Bönetidens slut</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Nästa bön</string>
+    <string name="bugun_tile_adi">I dag</string>
+    <string name="bugun_tile_aciklama">Dagens fem böner; markera dem du har bett med två tryck</string>
+    <string name="ilerleme_komplikasyon_adi">Dagens framsteg</string>
+    <string name="dagilim_komplikasyon_adi">Dagsöversikt</string>
+    <string name="kerahat_komplikasyon_adi">Makruh-tid</string>
+    <string name="son_dakikalar_kanal_adi">Sista minuterna</string>
+    <string name="son_dakikalar_kanal_aciklama">Nedräkning på urtavlan under de sista minuterna av en bön du inte har bett</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Diskret ikon på urtavlan för att återvända till en ofullbordad tasbih</string>
+    <string name="kible_adi">Qibla</string>
+    <string name="kible_komplikasyon_adi">Qibla</string>
+    <string name="camideyim_kanal_adi">I moskén</string>
+    <string name="camideyim_kanal_aciklama">Diskret ikon på urtavlan när telefonen meddelar att du är i moskén</string>
+    <string name="uyandirma_kanal_adi">Tyst väckning</string>
+    <string name="uyandirma_kanal_aciklama">Väcker dig bara med vibration, för Fajr och Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Jag har bett</string>
+    <string name="kilindi_isareti">✓ Förrättad</string>
+    <string name="kapat">Stäng</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Öppna Namaz Akışı på telefonen för att se bönetiderna.</string>
+    <string name="yuk_eskidi">Bönetiderna är inaktuella. Öppna Namaz Akışı på telefonen för att uppdatera dem.</string>
+    <string name="guncelleme_gerekli">Uppdatera Namaz Akışı på klockan.</string>
+    <string name="bildirim_izni">För att få påminnelser även när telefonen inte är med dig, tillåt aviseringar från Namaz Akışı i klockans inställningar.</string>
+    <string name="cami_soru">Är du i moskén?</string>
+    <string name="cami_evet">Ja</string>
+    <string name="cami_evet_aciklama">Ja, jag är i moskén. Slår på Böneläge</string>
+    <string name="cami_hayir">Nej</string>
+    <string name="cami_hayir_aciklama">Nej, jag är inte i moskén</string>
+    <string name="camidesiniz">Du är i moskén</string>
+    <string name="cami_degil">Det här är ingen moské</string>
+    <string name="cami_degil_aciklama">Det här är ingen moské. Platsen räknas inte som moské igen</string>
+    <string name="tesbihat_ac">Öppna tasbih-räknaren</string>
+    <string name="kible_ac">Öppna Qibla-kompassen</string>
+    <string name="ses_dene">Testa ljudet</string>
+    <string name="ses_dene_aciklama">Testa klockans uppläsning</string>
+    <string name="telefonda_acin">Öppna på telefonen</string>
+    <string name="telefonda_ekran_ac">Öppna %1$s på telefonen</string>
+    <string name="ekran_kaza">Qada-logg</string>
+    <string name="ekran_camideyim">I moskén</string>
+    <string name="ekran_ayarlar">Inställningar</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">förrättad, synkas</string>
+    <string name="durum_kilindi">förrättad</string>
+    <string name="durum_girmedi">inte inne än</string>
+    <string name="durum_simdiki">aktuell bönetid, tryck för att markera</string>
+    <string name="durum_simdiki_kalan">aktuell bönetid, %1$s, tryck för att markera</string>
+    <string name="durum_kilinmadi">inte förrättad, tryck för att markera</string>
+    <string name="isaretleyin">Markera som förrättad</string>
+    <string name="esitleniyor">synkas</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Bekräfta Jag har bett</string>
+    <string name="vazgecin">Avbryt</string>
+    <string name="vazgec">Avbryt</string>
+    <string name="kerahat_vaktindesiniz">Det är makruh-tid nu.</string>
+    <string name="kilindi_dua">Förrättad. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Böneläge på, slutar %1$s. Tryck för att stänga av</string>
+    <string name="namaz_modu_ac_aciklama">Slå på Böneläge på telefonen</string>
+    <string name="namaz_modu_kapatin">Stäng av Böneläge</string>
+    <string name="namaz_modu_acin">Slå på Böneläge</string>
+    <string name="namaz_modu_acik_bitis">På, slutar %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Hittar riktningen…</string>
+    <string name="kible_yuk_yok">Öppna Namaz Akışı på telefonen för att hitta Qibla.</string>
+    <string name="kible_konum_yok">Slå på platsen på telefonen för att hitta Qibla. Om Namaz Akışı inte är uppdaterad, uppdatera den.</string>
+    <string name="kible_sensor_yok">Den här klockan har ingen kompassensor. Du kan se böneriktningen på telefonen.</string>
+    <string name="kible_kuzeyden">Qibla %1$d° (från norr)</string>
+    <string name="kible_derece">Qibla %1$d°</string>
+    <string name="kible_telefonda_ac">Öppna Qibla på telefonen</string>
+    <string name="kible_erisim">%1$s. Qibla är %2$d° från norr, %3$s</string>
+    <string name="kible_hizali">Du är vänd mot Qibla</string>
+    <string name="kible_kalibrasyon">Kalibrera genom att röra handleden i en åtta i luften</string>
+    <string name="kible_egim">Håll klockan parallellt med marken</string>
+    <string name="kible_titresim_acik">Vägledning med vibration på. Tryck för att stänga av</string>
+    <string name="kible_titresim_kapali">Vägledning med vibration av. Tryck för att slå på</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">Ö</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">V</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbih fullbordad. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Totalt %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Räkna</string>
+    <string name="tesbihat_bastan_baslayin">Börja om från början</string>
+    <string name="tesbihat_bastan_soru">Börja om från början?</string>
+    <string name="tesbihat_sifirlanir">Räkningen nollställs.</string>
+    <string name="tesbihat_geri_al">Ångra</string>
+    <string name="tesbihat_geri_al_aciklama">Ångra den senaste räkningen</string>
+    <string name="tesbihat_yeniden">Börja om</string>
+    <string name="tesbihat_yeniden_aciklama">Börja om tasbihen</string>
+    <string name="tesbihat_suruyor">Tasbih pågår: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Jag har bett. Stänger av väckningen</string>
+    <string name="uyandirma_kapat_aciklama">Stäng av väckningen</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Öppna Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Tryck för bönetider</string>
+    <string name="tile_telefonda_acin">Öppna appen på telefonen</string>
+    <string name="tile_sonra">om %1$s</string>
+    <string name="tile_siradaki_aciklama">Nästa bön %1$s, börjar klockan %2$s. Öppna appen</string>
+    <string name="tile_giris">börjar %1$s</string>
+    <string name="tile_cikis">slutar %1$s</string>
+    <string name="bugun_bos_satir1">Öppna appen</string>
+    <string name="bugun_bos_satir2">på telefonen</string>
+    <string name="bugun_acma_aciklamasi">I dag %1$d/%2$d böner förrättade. Öppna appen</string>
+    <string name="bugun_sayi">I dag %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Makruh-tid · tryck igen för att bekräfta</string>
+    <string name="bugun_onay_tekrar">Tryck igen för att bekräfta</string>
+    <string name="bugun_tamam">Dagens böner är fullbordade</string>
+    <string name="bugun_kilinmadi">%1$s inte förrättad</string>
+    <string name="bugun_siradaki">Nästa: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Tryck igen</string>
+    <string name="bugun_kilindi">%1$s förrättad</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s förrättad, synkas</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Väntar på bönetiderna; öppna Namaz Akışı på telefonen</string>
+    <string name="komplikasyon_bekleniyor">Väntar på tider</string>
+    <string name="komplikasyon_vakit">Bön</string>
+    <string name="komplikasyon_cikis">Slutar</string>
+    <string name="komplikasyon_sirada">Nästa</string>
+    <string name="gun_durumu_aciklama">I dag %2$d av %1$d böner förrättade</string>
+    <string name="gun_durumu_kilinmamis">%1$s; inte förrättade: %2$s</string>
+    <string name="komplikasyon_namaz">Böner</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">Det är makruh-tid, slutar %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Nästa makruh-tid %1$s</string>
+    <string name="kible_komplikasyon">Qibla är %1$d° från norr. Öppna kompassen</string>
+    <string name="kible_komplikasyon_konumlu">Qibla är %1$d° från norr, %2$s. Öppna kompassen</string>
+    <string name="kible_komplikasyon_konum_yok">Slå på platsen på telefonen för att hitta Qibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Brådskande påminnelse · Vibration</string>
+    <string name="muhafiz_kanal_acil">Brådskande påminnelse</string>
+    <string name="muhafiz_kanal_titresimli">Bönepåminnelse · Vibration</string>
+    <string name="muhafiz_kanal">Bönepåminnelse</string>
+    <string name="muhafiz_kanal_aciklama">Bönepåminnelser som visas på klockan även när telefonen inte är med dig</string>
+    <string name="son_dakikalar_cikis">Slutar: %1$s</string>
+    <string name="son_dakikalar_bitis">Slutar: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Tid kvar tills %1$s slutar</string>
+    <string name="son_dakikalar_kalan_erisim">Tid kvar för %1$s</string>
+    <string name="cami_namaz_modu_bitis">Böneläge · slutar %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Öppnades på telefonen</string>
+    <string name="telefona_ulasilamadi">Telefonen kan inte nås</string>
+</resources>

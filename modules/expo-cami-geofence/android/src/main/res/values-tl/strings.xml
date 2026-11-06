@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Nasa masjid</string>
+    <string name="camigeofence_kanal_durum_aciklama">Tahimik na paunawa kapag natukoy na nasa masjid kayo</string>
+    <string name="camigeofence_kanal_soru_ad">Pag-alis sa masjid</string>
+    <string name="camigeofence_kanal_soru_aciklama">Isang tanong para mamarkahan ninyo ang dasal pagkaalis ninyo sa masjid</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Naka-on ang Mode ng dasal. Tahimik na darating ang mga paalala.</string>
+    <string name="camigeofence_govde_mod">Naka-on ang Mode ng dasal.</string>
+    <string name="camigeofence_govde_sessiz">Tahimik na darating ang mga paalala.</string>
+    <string name="camigeofence_govde_normal">Darating ang mga paalala gaya ng dati.</string>
+    <string name="camigeofence_eylem_modu_kapat">I-off ang mode</string>
+    <string name="camigeofence_eylem_cami_degil">Hindi masjid</string>
+
+    <string name="camigeofence_soru_baslik">Nasa masjid ba kayo?</string>
+    <string name="camigeofence_soru_govde">Malapit kayo sa %1$s. Hindi kami sigurado, kaya nagtatanong kami.</string>
+    <string name="camigeofence_varsayilan_ad">Masjid</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">I-on ang Mode ng dasal</string>
+    <string name="camigeofence_eylem_evet_camideyim">Oo, nasa masjid ako</string>
+    <string name="camigeofence_eylem_hayir">Hindi</string>
+
+    <string name="camigeofence_kildiniz_mi">Naidasal na ba ninyo ang %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Mamarkahan ninyo ito sa isang tap.</string>
+    <string name="camigeofence_eylem_kildim">Nagdasal ako</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+
+    <string name="camigeofence_mod_kural_adi">Dasal</string>
+    <string name="camigeofence_mod_tetik_aciklama">Ino-on ito ng Namaz Akışı habang may sermon ng Jumu\'ah, sa masjid o kapag pumasok ang oras ng dasal</string>
+</resources>

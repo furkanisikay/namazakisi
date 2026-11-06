@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { RozetDetay, RozetSeviyesi } from '../../../core/types/SeriTipleri';
+import { RozetDetay, RozetSeviyesi, rozetMetni } from '../../../core/types/SeriTipleri';
+import { useMetin } from '../../hooks/useMetin';
 
 interface PaylasilabilirRozetProps {
     rozet: RozetDetay;
@@ -12,6 +13,9 @@ const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85; // Story formatına uygun genişlik (yaklaşık)
 
 export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet }) => {
+    const m = useMetin().seri.paylasim;
+    // Ad kimlikten, etkin dilde (slice'taki kopya dil değişince bayatlar).
+    const rozetAdi = rozetMetni(rozet.id)?.ad ?? rozet.ad;
 
     // Rozet seviyesine göre renk belirleme
     const seviyeRengiAl = (seviye: RozetSeviyesi): readonly [string, string, ...string[]] => {
@@ -28,13 +32,7 @@ export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet 
 
     // Motivasyon mesajları (Ben Dili) - Aynı rozet için deterministik mesaj
     const getMotivationMessage = () => {
-        const messages = [
-            "Bugün kendim için harika bir adım attım! 🌟",
-            "Azimle devam ediyorum, bu rozet benim! 💪",
-            "Sabahın bereketini yakaladım! 🌅",
-            "Ruhuma iyi gelen bu akışta ben de varım! ✨",
-            "Küçük adımlar, büyük huzur getirir. 🍃"
-        ];
+        const messages = m.rozetSozleri;
         
         // Rozet ID'sine göre deterministik bir indeks hesapla
         const key = String(rozet.id);
@@ -83,7 +81,7 @@ export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet 
                         style={{ marginRight: 6 }}
                     />
                     <Text className="text-xs font-bold uppercase tracking-wider" style={{ color: gradientColors[0] }}>
-                        YENİ BİR ROZET KAZANDIM!
+                        {m.rozetYeni}
                     </Text>
                 </View>
             </View>
@@ -128,7 +126,7 @@ export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet 
                 {/* Başlık ve Seviye */}
                 <View className="flex-row items-center justify-center mb-3 flex-wrap">
                     <Text className="text-white text-2xl font-bold text-center shadow-sm mr-2">
-                        {rozet.ad}
+                        {rozetAdi}
                     </Text>
                 </View>
 
@@ -157,7 +155,7 @@ export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet 
             {/* Alt Logo */}
             <View className="absolute bottom-8 flex-row items-center opacity-90">
                 <FontAwesome5 name="mosque" size={16} color="white" style={{ marginRight: 8 }} />
-                <Text className="text-white font-bold tracking-widest uppercase text-xs">Namaz Akışı</Text>
+                <Text className="text-white font-bold tracking-widest uppercase text-xs">{m.marka}</Text>
             </View>
 
         </LinearGradient>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korece (beta). Terimler: src/core/dil/sozluk/ko (예배, 새벽/일출/정오/오후/저녁/밤, 금요예배, 예배를 삼가는 시간). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ko</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">예배 시간 게시판</string>
+    <string name="ayarlar">설정</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s 예배까지 %2$s 남음</string>
+    <string name="pano_vaktine">%1$s 예배까지</string>
+    <string name="pano_vaktine_kalan">%2$s 후 %1$s 예배</string>
+    <string name="pano_kerahat_vakti">예배를 삼가는 시간</string>
+    <string name="pano_bitis">%1$s 종료</string>
+    <string name="pano_kerahat_erisim">예배를 삼가는 시간, %1$s, %2$s 종료. %3$s</string>
+    <string name="pano_cumaya">%1$s 후 금요예배</string>
+    <string name="pano_cikis_geldi">출발할 시간</string>
+    <string name="pano_cikis">%1$s 출발</string>
+    <string name="pano_cuma_cikis_geldi_erisim">금요예배에 출발할 시간입니다</string>
+    <string name="pano_cuma_cikis_erisim">%1$s에 금요예배로 출발</string>
+    <string name="pano_bugun_cuma">오늘은 금요예배가 있습니다</string>
+    <string name="pano_ogle">정오 %1$s</string>
+    <string name="pano_bugun_cuma_erisim">오늘은 금요예배가 있습니다. 금요예배는 정오 예배 시간인 %1$s입니다</string>
+    <string name="pano_ayarlar_erisim">설정: 휴대전화 추가, 위치, 연결된 휴대전화</string>
+    <string name="pano_simdiki_vakit">현재 예배 시간</string>
+    <string name="pano_siradaki_vakit">다음 예배 시간</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "휴대전화 추가", "코드 입력", "도시를 직접 선택", "추가". -->
+    <string name="kodla_girin">코드 입력</string>
+    <string name="ili_kendim_secin">도시를 직접 선택</string>
+    <string name="yeniden_deneyin">다시 시도</string>
+    <string name="telefon_varsayilan">휴대전화</string>
+    <string name="esleme_ekleniyor">%1$s 추가하는 중</string>
+    <string name="esleme_gonderiyor">휴대전화가 위치와 상태를 보내는 중…</string>
+    <string name="esleme_tamamlanamadi">페어링을 마칠 수 없습니다</string>
+    <string name="esleme_saklanamadi">이 TV는 연결 키를 안전하게 저장할 수 없습니다. 코드로 위치를 입력하거나 도시를 선택할 수 있습니다.</string>
+    <string name="telefonunuzu_ekleyin">휴대전화 추가</string>
+    <string name="esleme_alt">현재 위치의 예배 시간과 드린 예배도 함께 표시됩니다.</string>
+    <string name="esleme_adim1">휴대전화에서 Namaz Akışı를 여세요</string>
+    <string name="esleme_adim2">설정 › 내 기기 › TV 추가</string>
+    <string name="esleme_adim3">휴대전화 카메라를 코드에 비추세요</string>
+    <string name="esleme_ayni_wifi">휴대전화와 TV가 같은 Wi-Fi 네트워크에 있어야 합니다.</string>
+    <string name="esleme_onay_soru">이 휴대전화를 추가할까요?</string>
+    <string name="esleme_onay_aciklama">추가한 휴대전화는 위치와 표시한 예배를 이 TV로 보낼 수 있습니다.</string>
+    <string name="ekleyin">추가</string>
+    <string name="hayir">아니요</string>
+    <string name="esleme_eklendi">%1$s 추가됨</string>
+    <string name="konumunuz_geldi">위치를 받았습니다</string>
+    <string name="konuma_gore_hesaplanacak">예배 시간은 이 위치를 기준으로 계산됩니다.</string>
+    <string name="qr_konum_alindi">위치를 받음</string>
+    <string name="qr_kodu">휴대전화로 스캔할 페어링 코드</string>
+    <string name="ag_yok">TV가 네트워크에 연결되어 있지 않습니다</string>
+    <string name="ag_yok_aciklama">휴대전화의 7자리 코드를 입력하거나 도시를 선택해 계속할 수 있습니다.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">휴대전화의 코드를 입력하세요</string>
+    <string name="kod_yol">휴대전화에서: 설정 › 내 기기 › TV 추가</string>
+    <string name="kod_hatali">코드가 일치하지 않습니다. 휴대전화의 7자리 숫자를 확인하고, 잘못된 숫자는 “%1$s”로 고치세요.</string>
+    <string name="kod_rakamli_kumanda">리모컨에 숫자 버튼이 있다면 그것으로 입력할 수도 있습니다.</string>
+    <string name="kod_bos_hane">빈 자리</string>
+    <string name="kod_sil">지우기</string>
+    <string name="kod_sil_aciklama">마지막 숫자 지우기</string>
+    <string name="kod_geri">뒤로</string>
+    <string name="vazgecin">취소</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">도시를 선택하세요</string>
+    <string name="il_merkezine_gore">예배 시간은 도시 중심을 기준으로 계산됩니다.</string>
+    <string name="il_secili">%1$s, 선택됨</string>
+    <string name="dream_il_yok">예배 시간 게시판을 보려면 Namaz Akışı 앱을 열고 도시를 선택하세요.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">위치: %1$s</string>
+    <string name="ayar_konum_yok">선택한 위치 없음</string>
+    <string name="ayar_telefon_ekleyin">휴대전화 추가</string>
+    <string name="ayar_konumu_kodla">코드로 위치 입력</string>
+    <string name="ayar_bagli_telefonlar">이 TV에 연결된 휴대전화</string>
+    <string name="ayar_telefon_yok">아직 추가한 휴대전화가 없습니다. 왼쪽의 “%1$s”를 사용해 나타나는 코드를 스캔하세요.</string>
+    <string name="kaldirin">삭제</string>
+    <string name="ayar_ne_gonderir">휴대전화는 무엇을 보내나요?</string>
+    <string name="ayar_madde_konum">위치: 예배 시간이 이를 따릅니다</string>
+    <string name="ayar_madde_namazlar">표시한 예배(선택한 경우)</string>
+    <string name="ayar_madde_sifreli">암호화, 집의 네트워크에서만</string>
+    <string name="son_haber_yok">아직 정보 없음</string>
+    <string name="son_haber_az_once">방금</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">%1$d분 전</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">%1$d시간 전</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">%1$d일 전</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s 휴대전화를 삭제할까요?</string>
+    <string name="kaldir_aciklama">이 휴대전화는 더 이상 TV로 정보를 보낼 수 없습니다. 다시 추가하려면 QR 코드를 다시 스캔해야 합니다.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">휴대전화의 위치</string>
+</resources>

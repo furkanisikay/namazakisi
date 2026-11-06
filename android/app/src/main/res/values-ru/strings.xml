@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ru -->
+<!-- Rusça kaynaklar (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ru (hitap "вы"; "Kıldım" = «Намаз совершён»). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Текущий намаз, время его окончания и «Намаз совершён» одним нажатием</string>
+  <string name="widget_genis_aciklama">Пять намазов на сегодня, отсчёт и «Намаз совершён» одним нажатием</string>
+  <string name="widget_kapak_adi">Время намазов на внешнем экране</string>
+  <string name="widget_kapak_aciklama">Время намазов на сегодня и отсчёт для внешнего экрана Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Классический</string>
+  <string name="widget_klasik_aciklama">Классический зелёный вид: сколько осталось до следующего намаза</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Классический широкий</string>
+  <string name="widget_klasik_genis_aciklama">Классический зелёный вид: отсчёт и время намазов на сегодня</string>
+  <string name="widget_ayet_adi">Аят дня</string>
+  <string name="widget_ayet_aciklama">Аят и перевод его смыслов, обновляется каждый день в имсак</string>
+  <string name="widget_ayar_zemin_palet">Цвет приложения (светлый тон)</string>
+  <string name="widget_ayar_ayet_icerik">В квадратном размере показывать</string>
+  <string name="widget_ayar_ayet_icerik_meal">Перевод смыслов</string>
+  <string name="widget_ayar_ayet_icerik_hat">Арабский текст (каллиграфия)</string>
+  <string name="kutu_kildim_etiket">Намаз совершён</string>
+  <string name="kisayol_kildim_kisa">Совершён</string>
+  <string name="kisayol_kildim_uzun">Текущий намаз совершён</string>
+  <string name="kisayol_kible_kisa">Кибла</string>
+  <string name="kisayol_kible_uzun">Показать направление киблы</string>
+  <string name="kisayol_kaza_kisa">Журнал каза</string>
+  <string name="kisayol_kaza_uzun">Открыть журнал каза</string>
+  <string name="kildim_onay_baslik">Отметить намаз %1$s как совершённый?</string>
+  <string name="kildim_onay_mesaj">Не удалось определить, какое приложение отправило этот запрос. Подтвердите, если вы совершили намаз.</string>
+  <string name="kildim_onay_evet">Намаз совершён</string>
+  <string name="kildim_onay_vazgec">Отмена</string>
+  <string name="kildim_guven_baslik">Разрешить приложению «%1$s» отмечать ваши намазы как совершённые?</string>
+  <string name="kildim_guven_mesaj">Намаз, который будет отмечен сейчас: %1$s. Решение можно изменить позже в Настройки &gt; Использование с автоматизациями &gt; Приложения, отмечающие намазы.</string>
+  <string name="kildim_guven_tarayici_mesaj">Намаз, который будет отмечен сейчас: %1$s. Запрос пришёл из браузера; так как эту ссылку может открыть любая веб-страница, постоянное разрешение дать нельзя.</string>
+  <string name="kildim_guven_her_zaman">Всегда разрешать</string>
+  <string name="kildim_guven_bu_sefer">Только сейчас</string>
+  <string name="kildim_guven_engelle">Запретить</string>
+  <string name="kildim_guven_engellendi">Приложение «%1$s» больше не может отмечать ваши намазы. Это можно изменить в настройках.</string>
+  <string name="widget_ayar_baslik">Настройка виджета</string>
+  <string name="widget_ayar_zemin">Фон</string>
+  <string name="widget_ayar_zemin_material">Цвета обоев</string>
+  <string name="widget_ayar_zemin_sistem">Системная тема</string>
+  <string name="widget_ayar_zemin_acik">Светлый</string>
+  <string name="widget_ayar_zemin_koyu">Тёмный</string>
+  <string name="widget_ayar_zemin_seffaf">Прозрачный</string>
+  <string name="widget_ayar_opaklik">Непрозрачность фона</string>
+  <string name="widget_ayar_gosterim">Крупным шрифтом показывать</string>
+  <string name="widget_ayar_gosterim_kalan">Оставшееся время</string>
+  <string name="widget_ayar_gosterim_bitis">Время окончания</string>
+  <string name="widget_ayar_gosterim_not">Время окончания показывается при любом размере.</string>
+  <string name="widget_ayar_sonraki">Показывать следующий намаз</string>
+  <string name="widget_ayar_vazgec">Отмена</string>
+  <string name="widget_ayar_kaydet">Сохранить</string>
+  <string name="kildim_onay_kanal_adi">Подтверждение «Намаз совершён»</string>
+  <string name="kildim_onay_kanal_aciklama">Тихое подтверждение на несколько секунд, когда вы нажимаете «Намаз совершён» в уведомлении</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Конец %1$s</string>
+  <string name="widget_giris">Начало %1$s</string>
+  <string name="widget_namaz_vakti">Время намаза</string>
+  <string name="widget_uygulamayi_acin">Откройте приложение</string>
+  <string name="widget_siradaki">Следующий: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Сейчас нет намаза для отметки</string>
+  <string name="widget_dugme_kildim">Намаз совершён</string>
+  <string name="widget_dugme_isaretleniyor">Отмечается</string>
+  <string name="widget_dugme_kilindi">Совершён</string>
+  <string name="widget_dugme_vakit_girmedi">Ещё не время</string>
+  <string name="widget_klasik_uygulamayi_acin">откройте приложение</string>
+  <string name="widget_klasik_erisim_veri_yok">Откройте приложение, чтобы увидеть время намазов</string>
+  <string name="widget_klasik_erisim_siradaki">Следующий намаз: %1$s, начало в %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Зухр через</string>
+  <string name="widget_onizleme_klasik_genis">Магриб через</string>
+  <string name="widget_onizleme_imsak">Фаджр</string>
+  <string name="widget_onizleme_gunes">Восход</string>
+  <string name="widget_onizleme_ogle">Зухр</string>
+  <string name="widget_onizleme_ikindi">Аср</string>
+  <string name="widget_onizleme_aksam">Магриб</string>
+  <string name="widget_onizleme_yatsi">Иша</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">Намаз %1$s отмечен как совершённый. Да примет Аллах.</string>
+  <string name="kildim_sonuc_zaten_kilindi">Намаз %1$s уже отмечен как совершённый.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Сейчас нет намаза для отметки. Следующий — %1$s, начало в %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Сейчас нет намаза для отметки.</string>
+  <string name="kildim_sonuc_veri_yok">Нет данных о времени намазов. Откройте приложение один раз.</string>
+  <string name="kildim_sonuc_vakit_degisti">Время намаза сменилось, отметка не сделана. Повторите попытку.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Не удалось открыть навигатор.</string>
+  <string name="arac_adsiz_cami">Мечеть</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Не удалось прочитать данные о времени намазов.</string>
+  <string name="asistan_isaretleme_yapilamadi">Не удалось отметить намаз.</string>
+  <string name="asistan_aciklama">Можно узнать время намазов, отметить текущий намаз как совершённый и открыть экран киблы.</string>
+</resources>

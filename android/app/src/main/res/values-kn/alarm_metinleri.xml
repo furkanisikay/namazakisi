@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Kannada). "ನಮಾಝ್ ಮಾಡಿದೆ" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">ನಮಾಝ್ ಅಲಾರಂ</string>
+  <string name="alarm_kildim">ನಮಾಝ್ ಮಾಡಿದೆ</string>
+  <string name="alarm_kapat">ಆಫ್ ಮಾಡಿ</string>
+  <string name="alarm_kanal_aciklamasi">ನೀವು ಆಯ್ಕೆಮಾಡಿದ ಜ್ಞಾಪನೆ ಹಂತಗಳಲ್ಲಿ ರಿಂಗ್ ಆಗುವ ನಿಜವಾದ ಅಲಾರಂ</string>
+</resources>

@@ -26,7 +26,9 @@ import {
     etkinKademe,
     sesliAnonsGerekliMi,
 } from '../../../core/muhafiz/motorAdaptoru';
-import { adimPencereyeSigarMi, pencereSuresiMetni } from '../../../core/muhafiz/pencereUzunlugu';
+import { adimPencereyeSigarMi } from '../../../core/muhafiz/pencereUzunlugu';
+import { bicim, metin as sozlukMetni } from '../../../core/dil/aktifDil';
+import { dakikaKisa } from '../../../core/dil/sure';
 import { adimEtkinSikligi } from '../../../core/muhafiz/planButcesi';
 import {
     ANDROID_YETENEKLERI,
@@ -78,14 +80,13 @@ export function adimNotlariniOlustur(
 
     const { pencereAdi, pencereUzunluguDk } = secenekler;
     const yon = secenekler.yon ?? VARSAYILAN_PENCERE_YONU;
+    const n = sozlukMetni().hatirlatma.notlar;
 
     if (!adimPencereyeSigarMi(seviye.esikDk, pencereUzunluguDk)) {
         return [
             {
                 tip: 'uyari',
-                metin: `Bu adım bugün çalışmayacak — ${pencereAdi} bugün ${pencereSuresiMetni(
-                    pencereUzunluguDk as number
-                )}`,
+                metin: bicim(n.calismayacak, { ad: pencereAdi, sure: dakikaKisa(pencereUzunluguDk as number) }),
             },
         ];
     }
@@ -102,9 +103,7 @@ export function adimNotlariniOlustur(
         notlar.push({
             tip: 'bilgi',
             metin:
-                yon === 'girisindenItibaren'
-                    ? 'Vakit girer girmez çalışan adımlar Rahatsız Etmeyin’i delmez'
-                    : `Bu adım vaktin son ${ACIL_TON_UST_DK} dakikası dışında olduğu için Rahatsız Etmeyin’i delmez`,
+                yon === 'girisindenItibaren' ? n.girisDndDelmez : bicim(n.cikisDndDelmez, { dk: ACIL_TON_UST_DK }),
         });
     }
 
@@ -119,7 +118,7 @@ export function adimNotlariniOlustur(
     ) {
         notlar.push({
             tip: 'bilgi',
-            metin: 'iPhone’da sesli okuma bildirim sesi olarak çalar; sessiz moddayken duyulmaz',
+            metin: n.iosSesli,
         });
     }
     if (!yetenekler.sessizligiDelebilir && seviye.acilKanal === true) {
@@ -127,9 +126,7 @@ export function adimNotlariniOlustur(
         const ilkiAlarm = yetenekler.gercekAlarm && seviye.kanallar.alarm === true;
         notlar.push({
             tip: 'uyari',
-            metin: ilkiAlarm
-                ? 'İlk hatırlatma iPhone’da alarm olarak çalar; tekrarlar sessiz moddayken duyulmaz'
-                : 'Bu adım iPhone’da sessiz moddayken duyulmaz; bildirim olarak gelir',
+            metin: ilkiAlarm ? n.iosIlkAlarm : n.iosSessiz,
         });
     }
 
@@ -139,7 +136,7 @@ export function adimNotlariniOlustur(
     if (etkin !== siklik && etkin !== 'birkez') {
         notlar.push({
             tip: 'bilgi',
-            metin: `Çok sık uyarmamak için ${etkin.herDk} dakikada bir hatırlatılır`,
+            metin: bicim(n.seyrek, { dk: etkin.herDk }),
         });
     }
 
@@ -148,9 +145,8 @@ export function adimNotlariniOlustur(
 
 /** Acil ton kisitina takilan adimin bilgi satiri (kibar "siz" dili). */
 export function acilKisitNotu(yon: PencereYonu): string {
-    return yon === 'girisindenItibaren'
-        ? 'Vakit girer girmez çalışan adımlar “Acil” olamaz; bu adım “Sert” olarak çalışır ve Rahatsız Etmeyin’i delmez'
-        : `Bu adım vaktin son ${ACIL_TON_UST_DK} dakikası dışında olduğu için “Sert” olarak çalışır; Rahatsız Etmeyin’i delmez`;
+    const n = sozlukMetni().hatirlatma.notlar;
+    return yon === 'girisindenItibaren' ? n.acilGiris : bicim(n.acilCikis, { dk: ACIL_TON_UST_DK });
 }
 
 /**

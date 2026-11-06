@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lehçe kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/pl. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Bieżąca modlitwa, jej koniec i „Odprawiono” jednym dotknięciem</string>
+  <string name="widget_genis_aciklama">Dzisiejsze pięć modlitw, odliczanie i „Odprawiono” jednym dotknięciem</string>
+  <string name="widget_kapak_adi">Czasy modlitw na ekranie zewnętrznym</string>
+  <string name="widget_kapak_aciklama">Dzisiejsze czasy modlitw i odliczanie na ekran zewnętrzny Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klasyczny</string>
+  <string name="widget_klasik_aciklama">Klasyczny zielony wygląd: czas do następnej modlitwy</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klasyczny szeroki</string>
+  <string name="widget_klasik_genis_aciklama">Klasyczny zielony wygląd: odliczanie i dzisiejsze czasy modlitw</string>
+  <string name="widget_ayet_adi">Werset dnia</string>
+  <string name="widget_ayet_aciklama">Werset po arabsku, odnawiany codziennie o Fadżr</string>
+  <string name="widget_ayar_zemin_palet">Kolor aplikacji (jasny odcień)</string>
+  <string name="widget_ayar_ayet_icerik">W rozmiarze kwadratowym pokazuj</string>
+  <string name="widget_ayar_ayet_icerik_meal">Przekład</string>
+  <string name="widget_ayar_ayet_icerik_hat">Tekst arabski (kaligrafia)</string>
+  <string name="kutu_kildim_etiket">Odprawiono</string>
+  <string name="kisayol_kildim_kisa">Odprawiono</string>
+  <string name="kisayol_kildim_uzun">Bieżąca modlitwa odprawiona</string>
+  <string name="kisayol_kible_kisa">Kibla</string>
+  <string name="kisayol_kible_uzun">Pokaż kierunek kibli</string>
+  <string name="kisayol_kaza_kisa">Zaległe</string>
+  <string name="kisayol_kaza_uzun">Otwórz rejestr zaległych modlitw</string>
+  <string name="kildim_onay_baslik">Oznaczyć modlitwę %1$s jako odprawioną?</string>
+  <string name="kildim_onay_mesaj">Nie wiadomo, która aplikacja wysłała tę prośbę. Potwierdź, jeśli modlitwa jest odprawiona.</string>
+  <string name="kildim_onay_evet">Odprawiono</string>
+  <string name="kildim_onay_vazgec">Anuluj</string>
+  <string name="kildim_guven_baslik">Zezwolić aplikacji %1$s na oznaczanie modlitw jako odprawione?</string>
+  <string name="kildim_guven_mesaj">Teraz zostanie oznaczona modlitwa: %1$s. Decyzję możesz później zmienić w Ustawienia &gt; Aplikacje, które mogą oznaczać modlitwy.</string>
+  <string name="kildim_guven_tarayici_mesaj">Teraz zostanie oznaczona modlitwa: %1$s. Ta prośba przyszła z przeglądarki; ponieważ każda strona internetowa może otworzyć ten link, nie można udzielić stałej zgody.</string>
+  <string name="kildim_guven_her_zaman">Zawsze zezwalaj</string>
+  <string name="kildim_guven_bu_sefer">Tylko tym razem</string>
+  <string name="kildim_guven_engelle">Zablokuj</string>
+  <string name="kildim_guven_engellendi">Aplikacja %1$s nie może już oznaczać modlitw. Możesz to zmienić w Ustawieniach.</string>
+  <string name="widget_ayar_baslik">Dostosuj widżet</string>
+  <string name="widget_ayar_zemin">Tło</string>
+  <string name="widget_ayar_zemin_material">Kolory tapety</string>
+  <string name="widget_ayar_zemin_sistem">Motyw systemowy</string>
+  <string name="widget_ayar_zemin_acik">Jasne</string>
+  <string name="widget_ayar_zemin_koyu">Ciemne</string>
+  <string name="widget_ayar_zemin_seffaf">Przezroczyste</string>
+  <string name="widget_ayar_opaklik">Krycie tła</string>
+  <string name="widget_ayar_gosterim">Pokazuj dużym tekstem</string>
+  <string name="widget_ayar_gosterim_kalan">Pozostały czas</string>
+  <string name="widget_ayar_gosterim_bitis">Godzina końca</string>
+  <string name="widget_ayar_gosterim_not">Godzina końca jest pokazywana w każdym rozmiarze.</string>
+  <string name="widget_ayar_sonraki">Pokazuj następną modlitwę</string>
+  <string name="widget_ayar_vazgec">Anuluj</string>
+  <string name="widget_ayar_kaydet">Zapisz</string>
+  <string name="kildim_onay_kanal_adi">Potwierdzenie „Odprawiono”</string>
+  <string name="kildim_onay_kanal_aciklama">Ciche potwierdzenie widoczne przez kilka sekund po dotknięciu „Odprawiono” w powiadomieniu</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Koniec %1$s</string>
+  <string name="widget_giris">Początek %1$s</string>
+  <string name="widget_namaz_vakti">Czas modlitwy</string>
+  <string name="widget_uygulamayi_acin">Otwórz aplikację</string>
+  <string name="widget_siradaki">Następna: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Teraz nie ma modlitwy do oznaczenia</string>
+  <string name="widget_dugme_kildim">Odprawiono</string>
+  <string name="widget_dugme_isaretleniyor">Oznaczanie</string>
+  <string name="widget_dugme_kilindi">Odprawiona</string>
+  <string name="widget_dugme_vakit_girmedi">Jeszcze nie czas</string>
+  <string name="widget_klasik_uygulamayi_acin">otwórz aplikację</string>
+  <string name="widget_klasik_erisim_veri_yok">Otwórz aplikację, aby zobaczyć czasy modlitw</string>
+  <string name="widget_klasik_erisim_siradaki">Następna modlitwa: %1$s, początek o %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Do Zuhr</string>
+  <string name="widget_onizleme_klasik_genis">Do Maghrib</string>
+  <string name="widget_onizleme_imsak">Fadżr</string>
+  <string name="widget_onizleme_gunes">Wschód słońca</string>
+  <string name="widget_onizleme_ogle">Zuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isza</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">Modlitwa %1$s oznaczona jako odprawiona. Niech Allah przyjmie.</string>
+  <string name="kildim_sonuc_zaten_kilindi">Modlitwa %1$s jest już oznaczona jako odprawiona.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Teraz nie ma modlitwy do oznaczenia. Następna jest modlitwa %1$s, od %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Teraz nie ma modlitwy do oznaczenia.</string>
+  <string name="kildim_sonuc_veri_yok">Brak danych o czasach modlitw. Otwórz aplikację raz.</string>
+  <string name="kildim_sonuc_vakit_degisti">Czas modlitwy się zmienił, więc nic nie oznaczono. Spróbuj ponownie.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Nie udało się otworzyć aplikacji nawigacji.</string>
+  <string name="arac_adsiz_cami">Meczet</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Nie udało się odczytać danych o czasach modlitw.</string>
+  <string name="asistan_isaretleme_yapilamadi">Nie udało się oznaczyć modlitwy.</string>
+  <string name="asistan_aciklama">Możesz zapytać o czasy modlitw, oznaczyć bieżącą modlitwę jako odprawioną i otworzyć ekran kibli.</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Diggah le alarm (Afar). "Salat abe" warsal tan butun luk inki migaq. -->
+<resources>
+  <string name="alarm_baslik">Salat alarm</string>
+  <string name="alarm_kildim">Salat abe</string>
+  <string name="alarm_kapat">Alifa</string>
+  <string name="alarm_kanal_aciklamasi">Dooritteen kassisiyya gurral yaqqa diggah le alarm</string>
+</resources>

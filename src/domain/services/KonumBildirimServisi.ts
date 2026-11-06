@@ -17,6 +17,7 @@ import {
     konumDegisimBildirimMetni,
 } from '../../core/konum/konumDegisimBildirimi';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 
 const KANAL_ID = BILDIRIM_SABITLERI.KANALLAR.KONUM;
 
@@ -30,8 +31,8 @@ async function kanaliGarantile(): Promise<void> {
     const mevcut = await Notifications.getNotificationChannelAsync(KANAL_ID);
     if (mevcut) return;
     await Notifications.setNotificationChannelAsync(KANAL_ID, {
-        name: 'Konum Değişikliği',
-        description: 'Konumunuz otomatik güncellenince bilgi verir',
+        name: metin().konum.bildirim.kanalAdi,
+        description: metin().konum.bildirim.kanalAciklamasi,
         // LOW: ses ve titreşim yok, ekrana düşmez; bildirim gölgeliğinde durur.
         importance: Notifications.AndroidImportance.LOW,
     });

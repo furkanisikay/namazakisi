@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Τοποθετήστε τον κωδικό QR της οθόνης της τηλεόρασης μέσα στο πλαίσιο</string>
+    <string name="tvesleme_qr_vazgec">Άκυρο</string>
+    <string name="tvesleme_qr_vazgec_erisim">Ακύρωση σάρωσης</string>
+    <string name="tvesleme_qr_yabanci">Αυτός ο κωδικός QR δεν ανήκει στο Namaz Akışı TV. Σαρώστε τον κωδικό της τηλεόρασης.</string>
+    <string name="tvesleme_qr_okundu">Ο κωδικός σαρώθηκε</string>
+</resources>

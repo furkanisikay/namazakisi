@@ -19,6 +19,8 @@ import java.util.TimeZone
  *
  * Metinler ARAYÜZ kaydındadır (kibar "siz"): asistan cevabı ibadete çağrı değil,
  * kullanıcının sorduğu soruya verilen bilgidir. Saate hal eki EKLENMEZ ("saat 15:42").
+ * Dil son parametre `dil` (varsayılan Türkçe — fikstür Türkçeyi kilitler); İngilizce
+ * karşılıklar JS `genel.kildim.sonuc` / `sade` sözlüğüyle aynı kalıptadır ([MetinDili]).
  *
  * Bu dosya Android'e dokunmaz (JVM testi `android/app/src/test`).
  */
@@ -29,6 +31,12 @@ object AsistanKarari {
 
     /** Çizelge tükenmişken (uygulama ~bir haftadır açılmamış). Swift `veriEskiMetni` ikizi. */
     const val VERI_ESKI_METNI = "Vakit bilgisi eskimiş. Güncellemek için uygulamayı bir kez açın."
+
+    /** [KONUM_YOK_METNI]'nin arayüz dilindeki hâli. */
+    fun konumYokMetni(dil: String = MetinDili.TR): String = MetinDili.metinler(dil).konumYok
+
+    /** [VERI_ESKI_METNI]'nin arayüz dilindeki hâli. */
+    fun veriEskiMetni(dil: String = MetinDili.TR): String = MetinDili.metinler(dil).veriEski
 
     /** "Kıldım" kararı — iOS `SiriKildimKarari` ikizi. */
     sealed class KildimKarari {
@@ -48,13 +56,13 @@ object AsistanKarari {
      * @param kildim [KildimDurumKarari.hesapla] sonucu — KILINDI ve BEKLIYOR ikisi de
      *   "zaten kılındı" sayılır (kuyrukta bekleyen işaretleme ikinci kez sorulmaz).
      */
-    fun kildimKarari(durum: VakitDurumu, kildim: KildimDurumu): KildimKarari {
+    fun kildimKarari(durum: VakitDurumu, kildim: KildimDurumu, dil: String = MetinDili.TR): KildimKarari {
         val aktif = durum.aktif
         val kayitVakti = aktif?.let { VakitKodlari.kuyrukVakti(it.kod) }
         if (aktif == null || durum.bitisMs == null || kayitVakti == null) {
             return KildimKarari.VakitYok(durum.sonraki)
         }
-        val ad = VakitKodlari.gorunenAd(aktif.kod)
+        val ad = VakitKodlari.gorunenAd(aktif.kod, dil)
         return when (kildim) {
             KildimDurumu.KILINDI, KildimDurumu.BEKLIYOR -> KildimKarari.ZatenKilindi(ad)
             else -> KildimKarari.Aday(aktif, kayitVakti, ad)
@@ -79,17 +87,20 @@ object AsistanKarari {
         data class Bilgi(val karar: KildimKarari) : KildimAdimi()
     }
 
-    fun kildimAdimi(karar: KildimKarari, onayKimligi: String?): KildimAdimi = when (karar) {
+    fun kildimAdimi(karar: KildimKarari, onayKimligi: String?, dil: String = MetinDili.TR): KildimAdimi = when (karar) {
         is KildimKarari.Aday -> when {
-            onayKimligi.isNullOrBlank() -> KildimAdimi.OnayIste(karar, onayMetni(karar.ad))
+            onayKimligi.isNullOrBlank() -> KildimAdimi.OnayIste(karar, onayMetni(karar.ad, dil))
             onayKimligi == karar.onayKimligi -> KildimAdimi.Isaretle(karar)
             else -> KildimAdimi.VakitDegisti
         }
         else -> KildimAdimi.Bilgi(karar)
     }
 
-    private fun girisMetni(v: VakitAni, bugun: String, saat: (Long) -> String): String =
-        "${if (v.tarih > bugun) "yarın " else ""}saat ${saat(v.ms)}"
+    /** "saat 15:42" / "yarın saat 05:12" — İngilizcede "at 15:42" / "tomorrow at 05:12". */
+    private fun girisMetni(v: VakitAni, bugun: String, saat: (Long) -> String, dil: String): String {
+        val m = MetinDili.metinler(dil)
+        return MetinDili.bicim(if (v.tarih > bugun) m.girisYarin else m.girisBugun, "saat" to saat(v.ms))
+    }
 
     /**
      * "Sıradaki namaz ne zaman?" cevabı. İçinde bulunulan vakit henüz kılınmadıysa
@@ -103,35 +114,48 @@ object AsistanKarari {
         kildim: KildimDurumu,
         bugun: String,
         saat: (Long) -> String,
+        dil: String = MetinDili.TR,
     ): String {
+        val m = MetinDili.metinler(dil)
         val parcalar = mutableListOf<String>()
         val aktif = durum.aktif
         val bitis = durum.bitisMs
         if (aktif != null && bitis != null && kildim == KildimDurumu.KILINABILIR) {
-            val ad = VakitKodlari.gorunenAd(aktif.kod)
+            val ad = VakitKodlari.gorunenAd(aktif.kod, dil)
             // Çıkış sıradaki namazın girişiyle aynıysa (öğle→ikindi) saat iki kez okunmaz.
-            parcalar += if (durum.sonraki?.ms == bitis) "Şu an $ad vakti."
-            else "Şu an $ad vakti, çıkışı saat ${saat(bitis)}."
+            parcalar += if (durum.sonraki?.ms == bitis) MetinDili.bicim(m.suAnVakti, "ad" to ad)
+            else MetinDili.bicim(m.suAnVaktiCikis, "ad" to ad, "saat" to saat(bitis))
         }
         durum.sonraki?.let { s ->
-            parcalar += "Sıradaki namaz ${VakitKodlari.gorunenAd(s.kod)}, ${girisMetni(s, bugun, saat)}."
+            val ad = VakitKodlari.gorunenAd(s.kod, dil)
+            val giris = girisMetni(s, bugun, saat, dil)
+            parcalar += MetinDili.bicim(m.siradakiNamaz, "ad" to ad, "giris" to giris)
         }
-        return if (parcalar.isEmpty()) VERI_ESKI_METNI else parcalar.joinToString(" ")
+        return if (parcalar.isEmpty()) veriEskiMetni(dil) else parcalar.joinToString(" ")
     }
 
     /** "Kıldım" sonucu metni — iOS `siriKildimMetni` / `KildimIslemleri.sonucMetni` ile aynı dil. */
-    fun kildimMetni(karar: KildimKarari, bugun: String, saat: (Long) -> String): String = when (karar) {
-        is KildimKarari.Aday -> "${karar.ad} namazınız kılındı olarak işaretlendi. Allah kabul etsin."
-        is KildimKarari.ZatenKilindi -> "${karar.ad} namazı zaten kılındı olarak işaretli."
-        is KildimKarari.VakitYok -> karar.siradaki?.let {
-            "Şu an kılınacak vakit yok. Sıradaki ${VakitKodlari.gorunenAd(it.kod)}, ${girisMetni(it, bugun, saat)}."
-        } ?: "Şu an kılınacak vakit yok."
+    fun kildimMetni(karar: KildimKarari, bugun: String, saat: (Long) -> String, dil: String = MetinDili.TR): String {
+        val m = MetinDili.metinler(dil)
+        return when (karar) {
+            is KildimKarari.Aday -> MetinDili.bicim(m.isaretlendi, "ad" to karar.ad)
+            is KildimKarari.ZatenKilindi -> MetinDili.bicim(m.zatenKilindi, "ad" to karar.ad)
+            is KildimKarari.VakitYok -> karar.siradaki?.let {
+                val ad = VakitKodlari.gorunenAd(it.kod, dil)
+                val giris = girisMetni(it, bugun, saat, dil)
+                MetinDili.bicim(m.vakitYokSiradaki, "ad" to ad, "giris" to giris)
+            } ?: m.vakitYok
+        }
     }
 
     /** Onay sorusu — iOS `siriKildimOnayMetni` ikizi. */
-    fun onayMetni(ad: String): String = "$ad namazı kılındı olarak işaretlensin mi?"
+    fun onayMetni(ad: String, dil: String = MetinDili.TR): String =
+        MetinDili.bicim(MetinDili.metinler(dil).onay, "ad" to ad)
 
     const val VAKIT_DEGISTI_METNI = "Vakit değişti, işaretleme yapılmadı. Lütfen yeniden deneyin."
+
+    /** [VAKIT_DEGISTI_METNI]'nin arayüz dilindeki hâli. */
+    fun vakitDegistiMetni(dil: String = MetinDili.TR): String = MetinDili.metinler(dil).vakitDegisti
 
     /**
      * Vaktin çıkışına kalan tam dakika — YUKARI yuvarlanır (sade görünümle aynı:

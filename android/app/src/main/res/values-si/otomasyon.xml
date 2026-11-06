@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- si — Sinhala (beta). -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Sinhala). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: ඉටු කළෙමි</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: සලාත් වේලා තත්ත්වය</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: සලාත් වේලා සිදුවීම</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">මෙම සැකසීම ස්වයංක්‍රියකරණ යෙදුමකින් එක් කෙරේ</string>
+  <string name="otomasyon_bilgi_tarayici">බ්‍රවුසරවලට ස්ථිර අවසරයක් ලබා ගත නොහැක. එය Tasker, MacroDroid හෝ Automate වැනි යෙදුමක ප්ලගින ලැයිස්තුවෙන් එක් කරන්න.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid හෝ Automate වැනි යෙදුමක ප්ලගින ලැයිස්තුවෙන් “Namaz Akışı” තෝරා එය එක් කරන්න.</string>
+  <string name="otomasyon_engelli_baslik">%1$s අවහිර කර ඇත</string>
+  <string name="otomasyon_engelli_mesaj">ඔබගේ සලාත් සලකුණු කිරීමෙන් ඔබ මෙම යෙදුම කලින් අවහිර කළා. Namaz Akışı හි සැකසීම් &gt; “ඉටු කළෙමි සලකුණු කරන යෙදුම්” යටතේ එයට ඉඩ දිය හැක.</string>
+  <string name="otomasyon_izin_baslik">%1$s සමඟ භාවිත කරන්නද?</string>
+  <string name="otomasyon_izin_kosul">සලාත් වේලාවක් ආරම්භ වන විට, එය අවසන් වෙමින් ඇති විට සහ ඔබ මස්ජිදයක සිටින විට %1$s හට දැනගෙන ඔබගේ ස්වයංක්‍රියකරණ ක්‍රියාත්මක කළ හැක. Namaz Akışı හි සැකසීම් &gt; “ඉටු කළෙමි සලකුණු කරන යෙදුම්” යටතේ ඔබගේ තීරණය වෙනස් කළ හැක.</string>
+  <string name="otomasyon_izin_kildim">ඔබ සකසන ස්වයංක්‍රියකරණය මගින් %1$s හට වත්මන් සලාතය ඉටු කළ බව සලකුණු කළ හැක. Namaz Akışı හි සැකසීම් &gt; “ඉටු කළෙමි සලකුණු කරන යෙදුම්” යටතේ ඔබගේ තීරණය වෙනස් කළ හැක.</string>
+  <string name="otomasyon_izin_ver">ඉඩ දෙන්න</string>
+  <string name="otomasyon_engelle">අවහිර කරන්න</string>
+  <string name="otomasyon_vazgec">අවලංගු කරන්න</string>
+  <string name="otomasyon_tamam">හරි</string>
+  <string name="otomasyon_tur_baslik">එය ක්‍රියාත්මක විය යුත්තේ කවදාද?</string>
+  <string name="otomasyon_ileri">ඊළඟ</string>
+  <string name="otomasyon_vakit_baslik">කුමන සලාතයද?</string>
+  <string name="otomasyon_herhangi_vakit">ඕනෑම සලාත් වේලාවක්</string>
+  <string name="otomasyon_kaydet">සුරකින්න</string>
+  <string name="otomasyon_kosul_icinde">සලාත් වේලාවක් පවතින අතරතුර</string>
+  <string name="otomasyon_kosul_cikiyor">සලාත් වේලාවක් අවසන් වෙමින් ඇති අතරතුර (මිනිත්තු %1$d ඉතිරි, සලාත් ආරක්ෂකයා ක්‍රියාත්මකයි)</string>
+  <string name="otomasyon_kosul_camide">මස්ජිදයක සිටින අතරතුර</string>
+  <string name="otomasyon_olay_girdi">සලාත් වේලාවක් ආරම්භ වන විට</string>
+  <string name="otomasyon_olay_cikiyor">සලාත් වේලාවක් අවසන් වෙමින් ඇති විට (මිනිත්තු %1$d ඉතිරි, සලාත් ආරක්ෂකයා ක්‍රියාත්මකයි)</string>
+  <string name="otomasyon_olay_camide">ඔබ මස්ජිදයක සිටින බව හඳුනාගත් විට</string>
+</resources>

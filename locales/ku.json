@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Cihê we ji bo hesabkirina rast a demên nimêjê li cihê ku hûn lê ne tê bikaranîn. Cihê we li ser cîhaza we dimîne.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Cihê we ji bo hesabkirina rast a demên nimêjê li cihê ku hûn lê ne û, heke Li mizgeftê vekirî be, ji bo vekirina moda nimêjê gava hûn dikevin mizgeftê tê bikaranîn. Cihê we li ser cîhaza we dimîne.",
+  "NSLocationAlwaysUsageDescription": "Cihê we ji bo nûkirina otomatîk a demên nimêjê gava hûn bajêr diguherînin û, heke Li mizgeftê vekirî be, ji bo vekirina moda nimêjê gava hûn dikevin mizgeftê tê bikaranîn. Cihê we li ser cîhaza we dimîne.",
+  "NSCameraUsageDescription": "Kameraya we ji bo nîşandana aliyê Qibleyê li ser dîmena kamerayê û ji bo skankirina koda cotkirinê ya li ser TV tê bikaranîn. Wêne nayên tomarkirin û qet ji cîhaza we dernakevin.",
+  "NSCalendarsUsageDescription": "Gihîştina salnameyê ji bo zêdekirina demên nimêjê li salnameya we û, heke hûn vekin, ji bo kontrolkirina ka bûyerên di salnameya we de bi dema nimêjê re li hev dikevin tê bikaranîn. Daneyên salnameya we li ser cîhaza we dimînin.",
+  "NSCalendarsFullAccessUsageDescription": "Gihîştina salnameyê ji bo zêdekirina demên nimêjê li salnameya we û, heke hûn vekin, ji bo kontrolkirina ka bûyerên di salnameya we de bi dema nimêjê re li hev dikevin tê bikaranîn. Daneyên salnameya we li ser cîhaza we dimînin.",
+  "NSLocalNetworkUsageDescription": "Sepan bi TV ya li ser tora we ya herêmî ve girê dide da ku demên nimêjê û nimêjên ku we nîşan kirine jê re bişîne. Dane bi şîfrekirî ne û tenê di navbera herdu cîhazan de diçin.",
+  "NSAlarmKitUsageDescription": "Gavên bîranînê yên ku hûn tê de “Alarma rastîn” hilbijêrin wekî alarm têne sazkirin, da ku hûn wan dema telefona we bêdeng be an Focus vekirî be jî bibihîzin.",
+  "\"Vakti kıldım\"": "Min nimêj kir",
+  "\"Kıble\"": "Qible"
+}

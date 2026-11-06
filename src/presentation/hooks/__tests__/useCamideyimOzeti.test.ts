@@ -1,4 +1,5 @@
 import { camideyimOzetiOlustur } from '../useCamideyimOzeti';
+import { aktifDiliKur, aktifDilSifirla } from '../../../core/dil/aktifDil';
 
 const mod = (etkin: boolean, ek: object = {}) => ({
     destek: 'kural' as const,
@@ -22,7 +23,7 @@ const durum = (ek: object = {}) => ({
 
 describe('camideyimOzetiOlustur', () => {
     it('kapalı / açık / izin eksik / camide', () => {
-        expect(camideyimOzetiOlustur(null, null)).toEqual({ cami: 'Kapalı', namazModu: 'Kapalı' });
+        expect(camideyimOzetiOlustur(null, null)).toEqual({ cami: 'Kapalı', namazModu: 'Kapalı', camiKapali: true, namazModuKapali: true });
         expect(camideyimOzetiOlustur({ aktif: true, beklemeDk: 4 }, durum()).cami).toBe('Camide 4 dk kalınca');
         expect(camideyimOzetiOlustur({ aktif: true }, durum({ izin: 'arkaPlanYok' })).cami).toBe('Konum izni gerekiyor');
         expect(
@@ -36,5 +37,18 @@ describe('camideyimOzetiOlustur', () => {
         );
         expect(camideyimOzetiOlustur({ aktif: true }, durum({ namazModu: mod(true) })).namazModu).toBe('Cuma hutbesi, camide');
         expect(camideyimOzetiOlustur({}, durum({ namazModu: mod(true, { aktif: true }) })).namazModu).toBe('Şu an açık');
+    });
+});
+
+describe('camideyimOzetiOlustur — İngilizce', () => {
+    beforeEach(() => aktifDiliKur('en'));
+    afterEach(() => aktifDilSifirla());
+
+    it('özetler İngilizce', () => {
+        expect(camideyimOzetiOlustur(null, null)).toEqual({ cami: 'Off', namazModu: 'Off', camiKapali: true, namazModuKapali: true });
+        expect(camideyimOzetiOlustur({ aktif: true, beklemeDk: 4 }, durum()).cami).toBe('After 4 min at the mosque');
+        expect(camideyimOzetiOlustur({ aktif: true }, durum({ izin: 'arkaPlanYok' })).cami).toBe('Location permission needed');
+        expect(camideyimOzetiOlustur({}, durum({ namazModu: mod(true, { erisim: false }) })).namazModu).toBe('Do Not Disturb access needed');
+        expect(camideyimOzetiOlustur({ aktif: true }, durum({ namazModu: mod(true) })).namazModu).toBe("Jumu'ah sermon, at the mosque");
     });
 });

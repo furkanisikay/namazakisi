@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Anaa sa masjid</string>
+    <string name="camigeofence_kanal_durum_aciklama">Hilom nga pahibalo kon makita nga anaa kamo sa masjid</string>
+    <string name="camigeofence_kanal_soru_ad">Human mobiya sa masjid</string>
+    <string name="camigeofence_kanal_soru_aciklama">Pangutana aron mamarkahan ninyo ang inyong Salah human mobiya sa masjid</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Naka-on ang Mode sa Salah. Hilom nga moabot ang mga pahinumdom.</string>
+    <string name="camigeofence_govde_mod">Naka-on ang Mode sa Salah.</string>
+    <string name="camigeofence_govde_sessiz">Hilom nga moabot ang mga pahinumdom.</string>
+    <string name="camigeofence_govde_normal">Moabot ang mga pahinumdom sama sa naandan.</string>
+    <string name="camigeofence_eylem_modu_kapat">I-off ang mode</string>
+    <string name="camigeofence_eylem_cami_degil">Dili masjid</string>
+
+    <string name="camigeofence_soru_baslik">Anaa ba kamo sa masjid?</string>
+    <string name="camigeofence_soru_govde">Duol kamo sa %1$s. Dili kami sigurado, busa nangutana kami.</string>
+    <string name="camigeofence_varsayilan_ad">Masjid</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">I-on ang Mode sa Salah</string>
+    <string name="camigeofence_eylem_evet_camideyim">Oo, anaa ko sa masjid</string>
+    <string name="camigeofence_eylem_hayir">Dili</string>
+
+    <string name="camigeofence_kildiniz_mi">Nakaampo na ba kamo sa %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Mamarkahan ninyo kini sa usa ka tap.</string>
+    <string name="camigeofence_eylem_kildim">Nag-ampo ko</string>
+    <string name="camigeofence_namaz_imsak">Fajr</string>
+    <string name="camigeofence_namaz_ogle">Dhuhr</string>
+    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_aksam">Maghrib</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Jum\'ah</string>
+
+    <string name="camigeofence_mod_kural_adi">Salah</string>
+    <string name="camigeofence_mod_tetik_aciklama">Gi-on kini sa Namaz Akışı samtang khutbah sa Jum\'ah, sa masjid o inig sugod sa oras sa Salah</string>
+</resources>

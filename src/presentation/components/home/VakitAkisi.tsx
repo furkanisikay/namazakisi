@@ -8,15 +8,9 @@ import { Namaz } from '../../../core/types';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
-import { NAMAZ_DURUMLARI, namazDurumuSec, type NamazDurumu } from '../../../core/vakit/durumSozlugu';
-
-/** Ekran okuyucu etiketinde cümle içi küçük harf (`toLowerCase` Türkçe İ tuzağı → sabit harita). */
-const DURUM_KUCUK: Record<NamazDurumu, string> = {
-    kilindi: 'kılındı',
-    vaktiGeldi: 'vakti geldi',
-    girmedi: 'henüz girmedi',
-    gecti: 'kılınmadı',
-};
+import { NAMAZ_DURUMLARI, NAMAZ_DURUMLARI_KUCUK, namazDurumuSec } from '../../../core/vakit/durumSozlugu';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { vakitGectiMi } from '../../../core/utils/gunNavigasyonYardimcisi';
 import { ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
 import type { NafileZincirSatiri as NafileSatiri } from '../../../core/nafile/nafileZinciri';
@@ -77,6 +71,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
     nafileSatirlari
 }) => {
     const renkler = useRenkler();
+    const m = useMetin().anaEkran.akis;
     // Yerel tarih (UTC degil) — `new Date('YYYY-MM-DD')` kullanma (AGENTS.md).
     const gunTarihi = React.useMemo(() => ISOTarihiDateNesnesiNeCevir(gunTarihiIso), [gunTarihiIso]);
 
@@ -99,11 +94,11 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
             {/* Başlık ve İlerleme */}
             <View className="flex-row items-center justify-between mb-4 px-2">
                 <Text className="font-bold text-lg" style={{ color: renkler.metin }}>
-                    Günlük Akış
+                    {m.baslik}
                 </Text>
                 <View className="px-2 py-1 rounded" style={{ backgroundColor: renkler.arkaplan }}>
                     <Text className="text-xs font-bold" style={{ color: renkler.metinIkincil }}>
-                        {tamamlananSayisi} / {toplamSayi} kılındı
+                        {bicim(m.ilerleme, { kilinan: tamamlananSayisi, toplam: toplamSayi })}
                     </Text>
                 </View>
             </View>
@@ -148,7 +143,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     const vaktiCikti = !aktifMi && (aktifGunMu ? gecmisMi : true);
                     const durum = namazDurumuSec(tamamlandi, !pasifMi, vaktiCikti);
                     const durumMetni = NAMAZ_DURUMLARI[durum].etiket;
-                    const durumEtiketi = DURUM_KUCUK[durum];
+                    const durumEtiketi = NAMAZ_DURUMLARI_KUCUK[durum];
 
                     return (
                         <React.Fragment key={namaz.namazAdi}>
@@ -158,7 +153,11 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                                 onPress={() => onVakitTikla(namaz.namazAdi, !namaz.tamamlandi)}
                                 disabled={pasifMi}
                                 accessibilityRole="button"
-                                accessibilityLabel={`${gorunenAd} vakti${namaz.saat ? `, ${namaz.saat}` : ''}, ${durumEtiketi}`}
+                                accessibilityLabel={
+                                    namaz.saat
+                                        ? bicim(m.vakitSaatErisim, { ad: gorunenAd, saat: namaz.saat, durum: durumEtiketi })
+                                        : bicim(m.vakitErisim, { ad: gorunenAd, durum: durumEtiketi })
+                                }
                             >
                                 {/* Giriş saati — sağa hizalı, eşit genişlikli rakam: iki nokta alt alta durur */}
                                 <View className="w-12 justify-center items-end" style={{ opacity }}>
@@ -280,7 +279,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     {/* Samimiyet: kupa/ünlem yerine dua; puan bilgisi sakin bir ek olarak kalır. */}
                     <Text className="text-sm font-bold" style={{ color: renkler.durum.basarili }}>
                         {TAM_GUN_METNI.ana}
-                        <Text className="font-medium">{` · beş vakit tamam · +${PUAN_DEGERLERI.tam_gun} puan`}</Text>
+                        <Text className="font-medium">{` · ${sayili(m.tamGunEki, PUAN_DEGERLERI.tam_gun)}`}</Text>
                     </Text>
                 </View>
             ) : null}

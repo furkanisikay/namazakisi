@@ -81,6 +81,11 @@ enum SaatSimulatorTohumu {
         if let yuk = ortam["NAMAZ_SAAT_TOHUM_YUK"], !yuk.isEmpty {
             depo.yeniYukuIsle(yuk, simdiMs: simdi)
         }
+        // Dil basina kare turu (W5): telefonun gonderecegi arayuz dili. Verilmezse kayitli
+        // dil kalir (ilk kurulumda Turkce).
+        if let dil = ortam["NAMAZ_SAAT_TOHUM_DIL"], !dil.isEmpty {
+            depo.diliYaz(dil)
+        }
         if let ham = ortam["NAMAZ_SAAT_TOHUM_TESBIHAT"], let toplam = Int(ham) {
             depo.tesbihatYaz(Tesbihat.Durum(toplam: toplam), simdiMs: simdi)
         }

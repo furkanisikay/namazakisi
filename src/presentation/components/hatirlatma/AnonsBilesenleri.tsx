@@ -12,6 +12,9 @@ import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafi
 import { BOS_CIHAZ_DURUMU, durumNotu } from '../../../core/cihaz/durumNotlari';
 import { surumuOku } from '../../../domain/services/CihazDurumOkuyucu';
 import { DurumSatiri } from '../ortak/DurumSatiri';
+import { useMetin } from '../../hooks/useMetin';
+import { aktifDil } from '../../../core/dil/aktifDil';
+import { sesliOkumaSesiYok } from '../../../core/dil/sesliOkuma';
 
 /**
  * Cihazda Turkce konusma paketi yoksa gosterilen kibar bilgilendirme.
@@ -25,8 +28,12 @@ import { DurumSatiri } from '../ortak/DurumSatiri';
  * eylem tek kaynaktan: `core/cihaz/durumNotlari` ('turkceTts').
  */
 export const TurkceTtsUyarisi: React.FC<{ destekli: boolean | null }> = ({ destekli }) => {
-    if (destekli !== false) return null;
-    const not = durumNotu('turkceTts', { ...BOS_CIHAZ_DURUMU, surum: surumuOku(), turkceTts: destekli });
+    // Cihaz sesi bildiriyorsa (`true`) bant yok: listeye yanlış giren dil zarar vermez
+    // (`core/dil/sesliOkuma`). Cihaz bilmiyorsa (`null`, iPhone) telefonlarda sesi olmayan
+    // dilde bant yine çizilir; yoksa sesli okuma sessizce atlanırdı.
+    const sesYok = sesliOkumaSesiYok(aktifDil());
+    if (destekli === true || (destekli === null && !sesYok)) return null;
+    const not = durumNotu('turkceTts', { ...BOS_CIHAZ_DURUMU, surum: surumuOku(), turkceTts: false });
     if (!not) return null;
     return (
         <View className="mt-1" accessibilityRole="alert">
@@ -67,6 +74,7 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
     erisimEtiketi,
 }) => {
     const renkler = useRenkler();
+    const dinle = useMetin().hatirlatma.akis.dinle;
 
     const anonsCalinacak = sesliAnonsGerekliMi(kanallar) && cozulmusMetin.trim().length > 0;
     const bildirimCalinacak = bildirimSesiGerekliMi(kanallar);
@@ -91,7 +99,7 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
         >
             <FontAwesome5 name={ikon} size={11} color={renkler.birincil} solid style={{ marginRight: 7 }} />
             <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
-                Dinle
+                {dinle}
             </Text>
         </TouchableOpacity>
     );

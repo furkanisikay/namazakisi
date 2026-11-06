@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mdh -->
+<!-- Maguindanao. Terimler: src/core/dil/sozluk/mdh. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">mdh</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Kasunud a sambayang</string>
+    <string name="tile_aciklama">Su kasunud a sambayang endu su oras nin</string>
+    <string name="komplikasyon_adi">Nasama a timpu</string>
+    <string name="cikis_saati_komplikasyon_adi">Oras nu kalipus nu sambayang</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Kasunud a sambayang</string>
+    <string name="bugun_tile_adi">Saguna</string>
+    <string name="bugun_tile_aciklama">Su lima a sambayang saguna a gay; tandaan su nasambayang nu sa dua a tap</string>
+    <string name="ilerleme_komplikasyon_adi">Kauswag sa gay</string>
+    <string name="dagilim_komplikasyon_adi">Kailay sa gay</string>
+    <string name="kerahat_komplikasyon_adi">Waktu a makruh</string>
+    <string name="son_dakikalar_kanal_adi">Ulyanan a minutu</string>
+    <string name="son_dakikalar_kanal_aciklama">Countdown sa watch face sa ulyanan a manga minutu nu sambayang a da pan nasambayang nu</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Icon a da suara sa watch face para makambalingan sa tasbih a da pan nasampay</string>
+    <string name="kible_adi">Qiblat</string>
+    <string name="kible_komplikasyon_adi">Qiblat</string>
+    <string name="camideyim_kanal_adi">Sa masjid ako</string>
+    <string name="camideyim_kanal_aciklama">Icon a da suara sa watch face amayka pidtalu nu telepono nu i lu kanu sa masjid</string>
+    <string name="uyandirma_kanal_adi">Kapabangun a da suara</string>
+    <string name="uyandirma_kanal_aciklama">Pabangunen kanu sa kurug bu, para sa Subuh endu Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Midsambayang ako</string>
+    <string name="kilindi_isareti">✓ Midsambayang</string>
+    <string name="kapat">Takepen</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Bukatan su Namaz Akışı sa telepono nu para mailay su manga waktu nu sambayang.</string>
+    <string name="yuk_eskidi">Daan su datos nu waktu nu sambayang. Bukatan su Namaz Akışı sa telepono nu para mabagwin.</string>
+    <string name="guncelleme_gerekli">I-update su Namaz Akışı sa relo nu.</string>
+    <string name="bildirim_izni">Para makakwa kanu sa manga patadem apiya da sa lekanu su telepono nu, inggay su permiso sa notification nu Namaz Akışı sa manga setting nu relo.</string>
+    <string name="cami_soru">Lu kanu ba sa masjid?</string>
+    <string name="cami_evet">Uway</string>
+    <string name="cami_evet_aciklama">Uway, lu ako sa masjid. Pedonen su Mode a sambayang</string>
+    <string name="cami_hayir">Di</string>
+    <string name="cami_hayir_aciklama">Di, da ako sa masjid</string>
+    <string name="camidesiniz">Lu kanu sa masjid</string>
+    <string name="cami_degil">Kena masjid ini</string>
+    <string name="cami_degil_aciklama">Kena masjid ini. Di den maisap a masjid su lugar ini</string>
+    <string name="tesbihat_ac">Bukatan su kapagisap sa tasbih</string>
+    <string name="kible_ac">Bukatan su kompas nu Qiblat</string>
+    <string name="ses_dene">Test su suara</string>
+    <string name="ses_dene_aciklama">Test su kabatya nu relo</string>
+    <string name="telefonda_acin">Bukatan sa telepono</string>
+    <string name="telefonda_ekran_ac">Bukatan su %1$s sa telepono nu</string>
+    <string name="ekran_kaza">Listahan nu qada</string>
+    <string name="ekran_camideyim">Sa masjid ako</string>
+    <string name="ekran_ayarlar">Manga setting</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">midsambayang, ped-sync</string>
+    <string name="durum_kilindi">midsambayang</string>
+    <string name="durum_girmedi">da pan waktu</string>
+    <string name="durum_simdiki">waktu nu sambayang saguna, i-tap para tandaan</string>
+    <string name="durum_simdiki_kalan">waktu nu sambayang saguna, %1$s, i-tap para tandaan</string>
+    <string name="durum_kilinmadi">da makasambayang, i-tap para tandaan</string>
+    <string name="isaretleyin">Tandaan a midsambayang</string>
+    <string name="esitleniyor">ped-sync</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Benalen su Midsambayang ako</string>
+    <string name="vazgecin">Ibatal</string>
+    <string name="vazgec">Ibatal</string>
+    <string name="kerahat_vaktindesiniz">Waktu a makruh saguna.</string>
+    <string name="kilindi_dua">Midsambayang. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Naka-on su Mode a sambayang, malipus %1$s. I-tap para i-off</string>
+    <string name="namaz_modu_ac_aciklama">I-on su Mode a sambayang sa telepono nu</string>
+    <string name="namaz_modu_kapatin">I-off su Mode a sambayang</string>
+    <string name="namaz_modu_acin">I-on su Mode a sambayang</string>
+    <string name="namaz_modu_acik_bitis">Naka-on, malipus %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Pedtuntayen su tampal…</string>
+    <string name="kible_yuk_yok">Bukatan su Namaz Akışı sa telepono nu para matuntay su Qiblat.</string>
+    <string name="kible_konum_yok">I-on su lokasyun sa telepono nu para matuntay su Qiblat. Amayka di bagu su Namaz Akışı, i-update.</string>
+    <string name="kible_sensor_yok">Da compass sensor su relo ini. Mailay nu su tampal nu Qiblat sa telepono nu.</string>
+    <string name="kible_kuzeyden">Qiblat %1$d° (pabpun sa utara)</string>
+    <string name="kible_derece">Qiblat %1$d°</string>
+    <string name="kible_telefonda_ac">Bukatan su Qiblat sa telepono nu</string>
+    <string name="kible_erisim">%1$s. Su Qiblat na %2$d° pabpun sa utara, %3$s</string>
+    <string name="kible_hizali">Pedsangul kanu sa Qiblat</string>
+    <string name="kible_kalibrasyon">Para ma-calibrate, ilibut su lima nu sa hangin sa bentuk a 8</string>
+    <string name="kible_egim">Pakadtapata su relo nu sa lupa</string>
+    <string name="kible_titresim_acik">Naka-on su giya sa kurug. I-tap para i-off</string>
+    <string name="kible_titresim_kapali">Naka-off su giya sa kurug. I-tap para i-on</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">W</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Nasampay su tasbih. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Langun %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Isapen</string>
+    <string name="tesbihat_bastan_baslayin">Pamula manem</string>
+    <string name="tesbihat_bastan_soru">Pamula manem?</string>
+    <string name="tesbihat_sifirlanir">Ma-reset su isap.</string>
+    <string name="tesbihat_geri_al">Ibatal</string>
+    <string name="tesbihat_geri_al_aciklama">Batalen su ulyanan a isap</string>
+    <string name="tesbihat_yeniden">Pamula manem</string>
+    <string name="tesbihat_yeniden_aciklama">Pamula manem su tasbih</string>
+    <string name="tesbihat_suruyor">Pedtuluy su tasbih: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Midsambayang ako. Pedtakepen su kapabangun</string>
+    <string name="uyandirma_kapat_aciklama">Takepen su kapabangun</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Bukatan su Namaz Akışı</string>
+    <string name="tile_vakitler_icin">I-tap para sa manga waktu nu sambayang</string>
+    <string name="tile_telefonda_acin">Bukatan su app sa telepono nu</string>
+    <string name="tile_sonra">sa %1$s</string>
+    <string name="tile_siradaki_aciklama">Kasunud a sambayang %1$s, makawma sa %2$s. Bukatan su app</string>
+    <string name="tile_giris">makawma %1$s</string>
+    <string name="tile_cikis">malipus %1$s</string>
+    <string name="bugun_bos_satir1">Bukatan su app</string>
+    <string name="bugun_bos_satir2">sa telepono nu</string>
+    <string name="bugun_acma_aciklamasi">Saguna %1$d/%2$d a sambayang i nasambayang. Bukatan su app</string>
+    <string name="bugun_sayi">Saguna %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Waktu a makruh · i-tap manem para benalen</string>
+    <string name="bugun_onay_tekrar">I-tap manem para benalen</string>
+    <string name="bugun_tamam">Nasampay su manga sambayang saguna a gay</string>
+    <string name="bugun_kilinmadi">Da makasambayang sa %1$s</string>
+    <string name="bugun_siradaki">Kasunud: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">I-tap manem</string>
+    <string name="bugun_kilindi">Midsambayang sa %1$s</string>
+    <string name="bugun_kilindi_esitleniyor">Midsambayang sa %1$s, ped-sync</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Pedtagad su manga waktu nu sambayang; bukatan su Namaz Akışı sa telepono nu</string>
+    <string name="komplikasyon_bekleniyor">Pedtagad</string>
+    <string name="komplikasyon_vakit">Waktu</string>
+    <string name="komplikasyon_cikis">Malipus</string>
+    <string name="komplikasyon_sirada">Kasunud</string>
+    <string name="gun_durumu_aciklama">Saguna %2$d kanu %1$d a sambayang i nasambayang</string>
+    <string name="gun_durumu_kilinmamis">%1$s; da makasambayang: %2$s</string>
+    <string name="komplikasyon_namaz">Sambayang</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">Waktu a makruh, malipus %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Kasunud a waktu a makruh %1$s</string>
+    <string name="kible_komplikasyon">Su Qiblat na %1$d° pabpun sa utara. Bukatan su kompas</string>
+    <string name="kible_komplikasyon_konumlu">Su Qiblat na %1$d° pabpun sa utara, %2$s. Bukatan su kompas</string>
+    <string name="kible_komplikasyon_konum_yok">I-on su lokasyun sa telepono nu para matuntay su Qiblat</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Patadem a madalian · Vibrate</string>
+    <string name="muhafiz_kanal_acil">Patadem a madalian</string>
+    <string name="muhafiz_kanal_titresimli">Patadem sa sambayang · Vibrate</string>
+    <string name="muhafiz_kanal">Patadem sa sambayang</string>
+    <string name="muhafiz_kanal_aciklama">Manga patadem sa sambayang a mailay sa relo nu apiya da sa lekanu su telepono nu</string>
+    <string name="son_dakikalar_cikis">Malipus: %1$s</string>
+    <string name="son_dakikalar_bitis">Malipus: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Nasama a timpu taman sa kalipus nu %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Nasama a timpu para sa %1$s</string>
+    <string name="cami_namaz_modu_bitis">Mode a sambayang · malipus %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Nabukatan sa telepono nu</string>
+    <string name="telefona_ulasilamadi">Di masampay su telepono nu</string>
+</resources>

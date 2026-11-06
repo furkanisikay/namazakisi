@@ -83,4 +83,9 @@ describe('gokErisimEtiketi', () => {
       'Temmuz 2026. 1 gün hedef tutuldu, 2 günde beş vakit tamamlandı, 0 gün dondurulmuş. Mevcut seri 3 gün.'
     );
   });
+
+  test('noktayla biten ay basligi (hr/sr "Studeni 2026.") noktayi ikilemez', () => {
+    const etiket = gokErisimEtiketi([], 'Temmuz 2026.', 0, 5);
+    expect(etiket.startsWith('Temmuz 2026. 0 gün')).toBe(true);
+  });
 });

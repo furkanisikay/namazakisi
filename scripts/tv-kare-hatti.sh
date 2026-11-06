@@ -19,12 +19,20 @@ APK=$(find tv/app/build/outputs/apk/debug -name '*.apk' | head -1)
 [ -z "$APK" ] && { echo "TV debug APK bulunamadi"; exit 1; }
 
 adb wait-for-device
+bash scripts/emulator-hazir-bekle.sh
 adb shell getprop ro.build.version.release
 adb shell wm size
 adb shell settings put system time_12_24 24 || true
 adb shell settings put global hide_error_dialogs 1 || true
 adb shell svc power stayon true || true
 adb install -r "$APK"
+# TV imajinda kok yok: sistem dili degismediyse uygulamaya ozel dil (Android 13+). Pano
+# metinleri kaynak sisteminden (`values-<dil>`) gelir; aksi halde varsayilan Ingilizce cizer.
+HEDEF_DIL=$(cat "${RUNNER_TEMP:-/tmp}/kare-hedef-dil" 2>/dev/null || echo tr-TR)
+if [ "$(adb shell getprop persist.sys.locale | tr -d '\r')" != "$HEDEF_DIL" ]; then
+  adb shell cmd locale set-app-locales "$PAKET" --locales "$HEDEF_DIL" \
+    && echo "uygulama dili: $HEDEF_DIL" || echo "UYARI: uygulama dili kurulamadi ($HEDEF_DIL)"
+fi
 
 # Saat DEGISTIRILEMEZ (android-tv imaji production build: adb root yok, olculdu). Sessiz bant
 # karesi yalniz Kadikoy'de bir vaktin son 30 dakikasindaysak cikar: hat o pencerede calistirilir.

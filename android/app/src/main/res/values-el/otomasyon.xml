@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Yunanca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Προσευχήθηκα</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Κατάσταση ώρας προσευχής</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Συμβάν ώρας προσευχής</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Αυτή η ρύθμιση προστίθεται από εφαρμογή αυτοματισμού</string>
+  <string name="otomasyon_bilgi_tarayici">Τα προγράμματα περιήγησης δεν μπορούν να πάρουν μόνιμη άδεια. Προσθέστε τη από τη λίστα πρόσθετων μιας εφαρμογής όπως το Tasker, το MacroDroid ή το Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Προσθέστε τη επιλέγοντας «Namaz Akışı» από τη λίστα πρόσθετων μιας εφαρμογής όπως το Tasker, το MacroDroid ή το Automate.</string>
+  <string name="otomasyon_engelli_baslik">Η εφαρμογή %1$s είναι αποκλεισμένη</string>
+  <string name="otomasyon_engelli_mesaj">Έχετε αποκλείσει αυτή την εφαρμογή από τη σήμανση των προσευχών σας. Μπορείτε να την επιτρέψετε στο Namaz Akışı, στις Ρυθμίσεις &gt; «Εφαρμογές που σημειώνουν Προσευχήθηκα».</string>
+  <string name="otomasyon_izin_baslik">Χρήση με την εφαρμογή %1$s;</string>
+  <string name="otomasyon_izin_kosul">Η εφαρμογή %1$s μπορεί να μαθαίνει πότε αρχίζει μια ώρα προσευχής, πότε λήγει και πότε βρίσκεστε σε τζαμί, και να εκτελεί τους αυτοματισμούς σας. Μπορείτε να αλλάξετε την απόφασή σας στο Namaz Akışı, στις Ρυθμίσεις &gt; «Εφαρμογές που σημειώνουν Προσευχήθηκα».</string>
+  <string name="otomasyon_izin_kildim">Η εφαρμογή %1$s μπορεί να σημειώνει την τρέχουσα προσευχή ως τελεσμένη με τον αυτοματισμό που ορίσατε. Μπορείτε να αλλάξετε την απόφασή σας στο Namaz Akışı, στις Ρυθμίσεις &gt; «Εφαρμογές που σημειώνουν Προσευχήθηκα».</string>
+  <string name="otomasyon_izin_ver">Να επιτρέπεται</string>
+  <string name="otomasyon_engelle">Αποκλεισμός</string>
+  <string name="otomasyon_vazgec">Άκυρο</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Πότε να εκτελείται;</string>
+  <string name="otomasyon_ileri">Επόμενο</string>
+  <string name="otomasyon_vakit_baslik">Ποια προσευχή;</string>
+  <string name="otomasyon_herhangi_vakit">Οποιαδήποτε ώρα προσευχής</string>
+  <string name="otomasyon_kaydet">Αποθήκευση</string>
+  <string name="otomasyon_kosul_icinde">Όσο είναι ώρα προσευχής</string>
+  <string name="otomasyon_kosul_cikiyor">Όσο λήγει μια ώρα προσευχής (απομένουν %1$d λ., Φύλακας προσευχής ενεργός)</string>
+  <string name="otomasyon_kosul_camide">Όσο βρίσκεστε σε τζαμί</string>
+  <string name="otomasyon_olay_girdi">Όταν αρχίζει μια ώρα προσευχής</string>
+  <string name="otomasyon_olay_cikiyor">Όταν λήγει μια ώρα προσευχής (απομένουν %1$d λ., Φύλακας προσευχής ενεργός)</string>
+  <string name="otomasyon_olay_camide">Όταν εντοπίζεται ότι βρίσκεστε σε τζαμί</string>
+</resources>

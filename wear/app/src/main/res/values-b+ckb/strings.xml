@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ckb -->
+<!-- Soranî. Terimler: src/core/dil/sozluk/ckb (vakit.ts baş yorumu). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ckb</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">نوێژی داھاتوو</string>
+    <string name="tile_aciklama">نوێژی داھاتوو و کاتەکەی</string>
+    <string name="komplikasyon_adi">کاتی ماوە</string>
+    <string name="cikis_saati_komplikasyon_adi">کاتی دەرچوونی نوێژ</string>
+    <string name="siradaki_namaz_komplikasyon_adi">نوێژی داھاتوو</string>
+    <string name="bugun_tile_adi">ئەمڕۆ</string>
+    <string name="bugun_tile_aciklama">پێنج نوێژی ئەمڕۆ؛ ئەوانەی کردووتانە بە دوو دەستلێدان نیشانە بکەن</string>
+    <string name="ilerleme_komplikasyon_adi">پێشکەوتنی ڕۆژانە</string>
+    <string name="dagilim_komplikasyon_adi">پوختەی ڕۆژ</string>
+    <string name="kerahat_komplikasyon_adi">کاتی مەکروھ</string>
+    <string name="son_dakikalar_kanal_adi">دوا خولەکەکان</string>
+    <string name="son_dakikalar_kanal_aciklama">ژماردنی پێچەوانە لەسەر ڕووی کاتژمێر لە دوا خولەکەکانی نوێژێکدا کە نەتانکردووە</string>
+    <string name="tesbihat_adi">تەسبیحات</string>
+    <string name="tesbihat_kanal_adi">تەسبیحات</string>
+    <string name="tesbihat_kanal_aciklama">ئایکۆنێکی بێدەنگ لەسەر ڕووی کاتژمێر بۆ گەڕانەوە بۆ تەسبیحاتێکی تەواونەکراو</string>
+    <string name="kible_adi">قیبلە</string>
+    <string name="kible_komplikasyon_adi">قیبلە</string>
+    <string name="camideyim_kanal_adi">لە مزگەوت</string>
+    <string name="camideyim_kanal_aciklama">ئایکۆنێکی بێدەنگ لەسەر ڕووی کاتژمێر کاتێک مۆبایلەکەتان ڕایدەگەیەنێت لە مزگەوتن</string>
+    <string name="uyandirma_kanal_adi">ھەستاندنی بێدەنگ</string>
+    <string name="uyandirma_kanal_aciklama">تەنیا بە لەرینەوە ھەڵتاندەستێنێت، بۆ بەیانی و تەھەجود</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">نوێژم کرد</string>
+    <string name="kilindi_isareti">✓ کرا</string>
+    <string name="kapat">داخستن</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">بۆ بینینی کاتەکانی نوێژ Namaz Akışı لەسەر مۆبایلەکەتان بکەنەوە.</string>
+    <string name="yuk_eskidi">زانیاریی کاتی نوێژ کۆن بووە. بۆ نوێکردنەوەی Namaz Akışı لەسەر مۆبایلەکەتان بکەنەوە.</string>
+    <string name="guncelleme_gerekli">Namaz Akışı لەسەر کاتژمێرەکەتان نوێ بکەنەوە.</string>
+    <string name="bildirim_izni">بۆ وەرگرتنی بیرخستنەوە تەنانەت کاتێک مۆبایلەکەتان لەگەڵتان نییە، لە ڕێکخستنەکانی کاتژمێرەکەدا ڕێگە بە ئاگادارکردنەوەکانی Namaz Akışı بدەن.</string>
+    <string name="cami_soru">لە مزگەوتن؟</string>
+    <string name="cami_evet">بەڵێ</string>
+    <string name="cami_evet_aciklama">بەڵێ، لە مزگەوتم. دۆخی نوێژ چالاک دەکات</string>
+    <string name="cami_hayir">نەخێر</string>
+    <string name="cami_hayir_aciklama">نەخێر، لە مزگەوت نیم</string>
+    <string name="camidesiniz">لە مزگەوتن</string>
+    <string name="cami_degil">ئێرە مزگەوت نییە</string>
+    <string name="cami_degil_aciklama">ئێرە مزگەوت نییە. ئەم شوێنە دووبارە وەک مزگەوت حیساب ناکرێتەوە</string>
+    <string name="tesbihat_ac">کردنەوەی ژمێرەری تەسبیحات</string>
+    <string name="kible_ac">کردنەوەی قیبلەنما</string>
+    <string name="ses_dene">تاقیکردنەوەی دەنگ</string>
+    <string name="ses_dene_aciklama">تاقیکردنەوەی خوێندنەوەی دەنگیی کاتژمێر</string>
+    <string name="telefonda_acin">کردنەوە لە مۆبایل</string>
+    <string name="telefonda_ekran_ac">%1$s لەسەر مۆبایلەکەتان بکەنەوە</string>
+    <string name="ekran_kaza">دەفتەری قەزا</string>
+    <string name="ekran_camideyim">لە مزگەوتم</string>
+    <string name="ekran_ayarlar">ڕێکخستنەکان</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">کرا، ھاوکات دەکرێت</string>
+    <string name="durum_kilindi">کرا</string>
+    <string name="durum_girmedi">ھێشتا کاتی نەھاتووە</string>
+    <string name="durum_simdiki">کاتی نوێژی ئێستا، بۆ نیشانەکردن دەستی لێ بدەن</string>
+    <string name="durum_simdiki_kalan">کاتی نوێژی ئێستا، %1$s، بۆ نیشانەکردن دەستی لێ بدەن</string>
+    <string name="durum_kilinmadi">نەکرا، بۆ نیشانەکردن دەستی لێ بدەن</string>
+    <string name="isaretleyin">وەک کراو نیشانە بکەن</string>
+    <string name="esitleniyor">ھاوکات دەکرێت</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">پشتڕاستکردنەوەی «نوێژم کرد»</string>
+    <string name="vazgecin">پاشگەزبوونەوە</string>
+    <string name="vazgec">پاشگەزبوونەوە</string>
+    <string name="kerahat_vaktindesiniz">ئێستا کاتی مەکروھە.</string>
+    <string name="kilindi_dua">کرا. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">دۆخی نوێژ چالاکە، لە %1$s کۆتایی دێت. بۆ کوژاندنەوە دەستی لێ بدەن</string>
+    <string name="namaz_modu_ac_aciklama">دۆخی نوێژ لەسەر مۆبایلەکەتان چالاک بکەن</string>
+    <string name="namaz_modu_kapatin">دۆخی نوێژ بکوژێننەوە</string>
+    <string name="namaz_modu_acin">دۆخی نوێژ چالاک بکەن</string>
+    <string name="namaz_modu_acik_bitis">چالاکە، کۆتایی %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">ئاراستە دەدۆزرێتەوە…</string>
+    <string name="kible_yuk_yok">بۆ دۆزینەوەی قیبلە Namaz Akışı لەسەر مۆبایلەکەتان بکەنەوە.</string>
+    <string name="kible_konum_yok">بۆ دۆزینەوەی قیبلە شوێن لەسەر مۆبایلەکەتان چالاک بکەن. ئەگەر Namaz Akışı نوێ نییە، نوێی بکەنەوە.</string>
+    <string name="kible_sensor_yok">ئەم کاتژمێرە ھەستەوەری قیبلەنمای نییە. دەتوانن ئاراستەی قیبلە لەسەر مۆبایلەکەتان ببینن.</string>
+    <string name="kible_kuzeyden">قیبلە %1$d° (لە باکوورەوە)</string>
+    <string name="kible_derece">قیبلە %1$d°</string>
+    <string name="kible_telefonda_ac">قیبلە لەسەر مۆبایلەکەتان بکەنەوە</string>
+    <string name="kible_erisim">%1$s. قیبلە %2$d° لە باکوورەوەیە، %3$s</string>
+    <string name="kible_hizali">ڕووتان لە قیبلەیە</string>
+    <string name="kible_kalibrasyon">بۆ ڕێکخستن، مەچەکتان لە ھەوادا بە شێوەی ژمارە 8 بجووڵێنن</string>
+    <string name="kible_egim">کاتژمێرەکەتان تەریب لەگەڵ زەوی ڕابگرن</string>
+    <string name="kible_titresim_acik">ڕێنمایی بە لەرینەوە چالاکە. بۆ کوژاندنەوە دەستی لێ بدەن</string>
+    <string name="kible_titresim_kapali">ڕێنمایی بە لەرینەوە ناچالاکە. بۆ چالاککردن دەستی لێ بدەن</string>
+    <string name="kible_harf_kuzey">باک</string>
+    <string name="kible_harf_dogu">ڕھ</string>
+    <string name="kible_harf_guney">باش</string>
+    <string name="kible_harf_bati">ڕئ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">تەسبیحات تەواو بوو. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s، %2$d / %3$d. کۆی گشتی %4$d / %5$d</string>
+    <string name="tesbihat_sayin">ژماردن</string>
+    <string name="tesbihat_bastan_baslayin">لە سەرەتاوە دەست پێبکەنەوە</string>
+    <string name="tesbihat_bastan_soru">لە سەرەتاوە دەست پێبکرێتەوە؟</string>
+    <string name="tesbihat_sifirlanir">ژمارەکە سفر دەکرێتەوە.</string>
+    <string name="tesbihat_geri_al">گەڕاندنەوە</string>
+    <string name="tesbihat_geri_al_aciklama">گەڕاندنەوەی دوا ژماردن</string>
+    <string name="tesbihat_yeniden">سەرلەنوێ</string>
+    <string name="tesbihat_yeniden_aciklama">دووبارە دەستپێکردنەوەی تەسبیحات</string>
+    <string name="tesbihat_suruyor">تەسبیحات بەردەوامە: %1$s، %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">نوێژم کرد. ھەستاندنەکە دادەخات</string>
+    <string name="uyandirma_kapat_aciklama">داخستنی ھەستاندن</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı بکەنەوە</string>
+    <string name="tile_vakitler_icin">بۆ کاتەکانی نوێژ دەستی لێ بدەن</string>
+    <string name="tile_telefonda_acin">ئەپەکە لەسەر مۆبایلەکەتان بکەنەوە</string>
+    <string name="tile_sonra">دوای %1$s</string>
+    <string name="tile_siradaki_aciklama">نوێژی داھاتوو %1$s، کاتژمێر %2$s دەست پێدەکات. ئەپەکە بکەنەوە</string>
+    <string name="tile_giris">دەستپێک %1$s</string>
+    <string name="tile_cikis">کۆتایی %1$s</string>
+    <string name="bugun_bos_satir1">ئەپەکە</string>
+    <string name="bugun_bos_satir2">لەسەر مۆبایل بکەنەوە</string>
+    <string name="bugun_acma_aciklamasi">ئەمڕۆ %1$d/%2$d نوێژ کراوە. ئەپەکە بکەنەوە</string>
+    <string name="bugun_sayi">ئەمڕۆ %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">کاتی مەکروھ · بۆ پشتڕاستکردنەوە دووبارە دەستی لێ بدەن</string>
+    <string name="bugun_onay_tekrar">بۆ پشتڕاستکردنەوە دووبارە دەستی لێ بدەن</string>
+    <string name="bugun_tamam">نوێژەکانی ئەمڕۆ تەواون</string>
+    <string name="bugun_kilinmadi">%1$s نەکرا</string>
+    <string name="bugun_siradaki">داھاتوو: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">دووبارە دەستی لێ بدەن</string>
+    <string name="bugun_kilindi">%1$s کرا</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s کرا، ھاوکات دەکرێت</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">چاوەڕێی کاتەکانی نوێژ؛ Namaz Akışı لەسەر مۆبایلەکەتان بکەنەوە</string>
+    <string name="komplikasyon_bekleniyor">چاوەڕێی کاتەکان</string>
+    <string name="komplikasyon_vakit">نوێژ</string>
+    <string name="komplikasyon_cikis">کۆتایی</string>
+    <string name="komplikasyon_sirada">داھاتوو</string>
+    <string name="gun_durumu_aciklama">ئەمڕۆ %2$d لە %1$d نوێژ کراوە</string>
+    <string name="gun_durumu_kilinmamis">%1$s؛ نەکراو: %2$s</string>
+    <string name="komplikasyon_namaz">نوێژەکان</string>
+    <string name="komplikasyon_kerahat">مەکروھ</string>
+    <string name="kerahat_icinde_aciklama">کاتی مەکروھە، لە %1$s کۆتایی دێت</string>
+    <string name="kerahat_siradaki_aciklama">کاتی مەکروھی داھاتوو %1$s</string>
+    <string name="kible_komplikasyon">قیبلە %1$d° لە باکوورەوەیە. قیبلەنما بکەنەوە</string>
+    <string name="kible_komplikasyon_konumlu">قیبلە %1$d° لە باکوورەوەیە، %2$s. قیبلەنما بکەنەوە</string>
+    <string name="kible_komplikasyon_konum_yok">بۆ دۆزینەوەی قیبلە شوێن لەسەر مۆبایلەکەتان چالاک بکەن</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">بیرخستنەوەی بەپەلە · بە لەرینەوە</string>
+    <string name="muhafiz_kanal_acil">بیرخستنەوەی بەپەلە</string>
+    <string name="muhafiz_kanal_titresimli">بیرخستنەوەی نوێژ · بە لەرینەوە</string>
+    <string name="muhafiz_kanal">بیرخستنەوەی نوێژ</string>
+    <string name="muhafiz_kanal_aciklama">بیرخستنەوەکانی نوێژ کە لەسەر کاتژمێرەکەتان پیشان دەدرێن تەنانەت کاتێک مۆبایلەکەتان لەگەڵتان نییە</string>
+    <string name="son_dakikalar_cikis">کۆتایی: %1$s</string>
+    <string name="son_dakikalar_bitis">کۆتایی: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">کاتی ماوە تا دەرچوونی %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">کاتی ماوە بۆ %1$s</string>
+    <string name="cami_namaz_modu_bitis">دۆخی نوێژ · کۆتایی %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">لەسەر مۆبایلەکەتان کرایەوە</string>
+    <string name="telefona_ulasilamadi">ناتوانرێت بگاتە مۆبایلەکەتان</string>
+</resources>

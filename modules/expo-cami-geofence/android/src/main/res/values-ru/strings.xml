@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ru -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Я в мечети</string>
+    <string name="camigeofence_kanal_durum_aciklama">Тихое сообщение, когда определено, что вы в мечети</string>
+    <string name="camigeofence_kanal_soru_ad">После выхода из мечети</string>
+    <string name="camigeofence_kanal_soru_aciklama">Вопрос, чтобы вы отметили намаз после выхода из мечети</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Режим намаза включён. Напоминания будут приходить беззвучно.</string>
+    <string name="camigeofence_govde_mod">Режим намаза включён.</string>
+    <string name="camigeofence_govde_sessiz">Напоминания будут приходить беззвучно.</string>
+    <string name="camigeofence_govde_normal">Напоминания будут приходить как обычно.</string>
+    <string name="camigeofence_eylem_modu_kapat">Выключить режим</string>
+    <string name="camigeofence_eylem_cami_degil">Это не мечеть</string>
+
+    <string name="camigeofence_soru_baslik">Вы в мечети?</string>
+    <string name="camigeofence_soru_govde">Рядом с вами — %1$s. Мы не уверены, поэтому спрашиваем вас.</string>
+    <string name="camigeofence_varsayilan_ad">Мечеть</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Включить режим намаза</string>
+    <string name="camigeofence_eylem_evet_camideyim">Да, я в мечети</string>
+    <string name="camigeofence_eylem_hayir">Нет</string>
+
+    <string name="camigeofence_kildiniz_mi">Вы совершили %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Отметить можно одним нажатием.</string>
+    <string name="camigeofence_eylem_kildim">Намаз совершён</string>
+    <string name="camigeofence_namaz_imsak">намаз Фаджр</string>
+    <string name="camigeofence_namaz_ogle">намаз Зухр</string>
+    <string name="camigeofence_namaz_ikindi">намаз Аср</string>
+    <string name="camigeofence_namaz_aksam">намаз Магриб</string>
+    <string name="camigeofence_namaz_yatsi">намаз Иша</string>
+    <string name="camigeofence_namaz_cuma">Джума-намаз</string>
+
+    <string name="camigeofence_mod_kural_adi">Намаз</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı включает его во время хутбы Джума, в мечети или с наступлением времени намаза</string>
+</resources>

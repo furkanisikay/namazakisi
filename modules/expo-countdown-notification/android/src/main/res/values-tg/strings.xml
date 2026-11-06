@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tg — Tacikçe (beta). Terimler JS src/core/dil/sozluk/tg (sayac.*, nowBar.*, «Хондам»); yedek gövde ibadete çağrı: "ту" + emir. -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Ҳисобкунакҳои зинда</string>
+    <string name="countdown_kanal_canli_aciklama">Ҳисоби баръакс дар Now Bar ва сатри ҳолат</string>
+    <string name="countdown_kanal_genel_ad">Огоҳиномаҳои ҳисоби баръакс</string>
+    <string name="countdown_kanal_genel_aciklama">Канал барои огоҳиномаҳои ҳисоби баръакс</string>
+
+    <string name="countdown_eylem_kildim">Хондам</string>
+    <string name="countdown_eylem_durdur">Қатъ кардан</string>
+
+    <string name="countdown_yedek_vakit">Шитоб кун, вақти намоз ба охир мерасад.</string>
+    <string name="countdown_yedek_iftar">Вақт танг мешавад.</string>
+    <string name="countdown_yedek_sahur">Ҳанӯз метавонӣ бихӯрӣ ва бинӯшӣ; рӯза ба наздикӣ оғоз мешавад.</string>
+    <string name="countdown_yedek_seri">Намозҳои имрӯзат пурра нестанд; силсилаатро гум накун.</string>
+
+    <string name="countdown_onek_vakit">То анҷоми вақт</string>
+    <string name="countdown_onek_vakit_dar">Вақт мегузарад</string>
+    <string name="countdown_onek_iftar">То ифтор</string>
+    <string name="countdown_onek_iftar_dar">То ифтор</string>
+    <string name="countdown_onek_sahur">То анҷоми саҳарӣ</string>
+    <string name="countdown_onek_sahur_dar">Саҳарӣ тамом мешавад</string>
+    <string name="countdown_onek_seri">Барои нигоҳ доштани силсила</string>
+    <string name="countdown_onek_seri_dar">Силсила тамом мешавад</string>
+</resources>

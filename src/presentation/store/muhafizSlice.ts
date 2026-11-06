@@ -8,6 +8,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import {
     eskiAlarmSesiniGoc,
@@ -138,11 +139,14 @@ export interface HatirlatmaPreseti {
 }
 
 const presetOlustur = (
-    aciklama: string,
+    duzey: Exclude<HatirlatmaYogunlugu, 'ozel'>,
     ikon: string,
     seviyeler: PresetSeviyeleri
 ): HatirlatmaPreseti => ({
-    aciklama,
+    // Görünen açıklama etkin dilde (okunduğu an).
+    get aciklama() {
+        return metin().muhafizAyar.preset[duzey];
+    },
     ikon,
     seviyeler,
     esikler: eskiEsikler(seviyeler),
@@ -153,9 +157,9 @@ const presetOlustur = (
  * Preset ayarlari - kullanici basitce secsin
  */
 export const HATIRLATMA_PRESETLERI: Record<Exclude<HatirlatmaYogunlugu, 'ozel'>, HatirlatmaPreseti> = {
-    hafif: presetOlustur('Tek hatırlatma', '🔔', HAFIF_SEVIYELERI),
-    normal: presetOlustur('Dengeli', '🔔🔔', NORMAL_SEVIYELERI),
-    yogun: presetOlustur('Israrcı', '🔔🔔🔔', YOGUN_SEVIYELERI),
+    hafif: presetOlustur('hafif', '🔔', HAFIF_SEVIYELERI),
+    normal: presetOlustur('normal', '🔔🔔', NORMAL_SEVIYELERI),
+    yogun: presetOlustur('yogun', '🔔🔔🔔', YOGUN_SEVIYELERI),
 };
 
 /**
@@ -267,7 +271,7 @@ function presetGocunuUygula(
     if (!presetliYogunlukMu(yogunluk)) return {};
 
     // DONDURULMUS v1 tablo: varsayilanlar sonradan degisti; eski kaydin plani degismemeli.
-    const preset = presetOlustur('', '', ESKI_PRESET_SEVIYELERI[yogunluk]);
+    const preset = presetOlustur(yogunluk, '', ESKI_PRESET_SEVIYELERI[yogunluk]);
     return {
         esikler: preset.esikler,
         sikliklar: preset.sikliklar,

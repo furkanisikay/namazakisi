@@ -8,33 +8,24 @@
  * ve bileklikler (issue #287) basligin sonunu kirpar; sure sonda olursa kaybolur.
  */
 import type { VakitAdi } from '../types';
+import { bicim, canli, metin } from '../dil/aktifDil';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from '../muhafiz/pencereTipleri';
 
 export type MuhafizSeviye = 1 | 2 | 3 | 4;
 
-export const VAKIT_ADLARI: Record<VakitAdi, string> = {
-  imsak: 'Sabah',
-  gunes: 'Güneş',
-  ogle: 'Öğle',
-  ikindi: 'İkindi',
-  aksam: 'Akşam',
-  yatsi: 'Yatsı',
-};
+/** Etkin dilde vakit adı (canlı görünüm: dil değişince yeni değeri okur). */
+export const VAKIT_ADLARI: Readonly<Record<VakitAdi, string>> = canli((s) => s.vakit.adlar);
 
 /**
  * DIKKAT: toUpperCase() KULLANMA.
  * 'İkindi'.toUpperCase() -> 'İKINDI' (noktali İ kaybolur, i -> I).
  * toLocaleUpperCase('tr-TR') dogru sonuc verir ama Hermes'te Intl/ICU
- * varligina baglidir -> sabit harita motordan bagimsiz ve kesindir.
+ * varligina baglidir -> sabit harita (sozluk `vakit.buyuk`) motordan bagimsiz ve kesindir.
  */
-export const VAKIT_ADLARI_BUYUK: Record<VakitAdi, string> = {
-  imsak: 'SABAH',
-  gunes: 'GÜNEŞ',
-  ogle: 'ÖĞLE',
-  ikindi: 'İKİNDİ',
-  aksam: 'AKŞAM',
-  yatsi: 'YATSI',
-};
+export const VAKIT_ADLARI_BUYUK: Readonly<Record<VakitAdi, string>> = canli((s) => s.vakit.buyuk);
+
+/** Cumle icinde gecen kucuk harfli vakit adlari (sabit harita; `toLowerCase` YAZMA). */
+export const VAKIT_ADLARI_KUCUK: Readonly<Record<VakitAdi, string>> = canli((s) => s.vakit.kucuk);
 
 /**
  * METIN = (TON, OLCU) — issue #274.
@@ -87,33 +78,33 @@ export function basligiOlustur(
 ): string {
   const ad = VAKIT_ADLARI[vakit];
   const buyukAd = VAKIT_ADLARI_BUYUK[vakit];
+  const b = metin().muhafiz.baslik;
+  const yaz = (sablon: string, buyuk = false) => bicim(sablon, { ad: buyuk ? buyukAd : ad, dk: olcuDk });
   if (yon === 'girisindenItibaren') {
     switch (seviye) {
       case 1:
-        return `${ad} · ${olcuDk} dk oldu · vakit girdi ⏰`;
+        return yaz(b.giris1);
       case 2:
-        return `${ad} · ${olcuDk} dk oldu · namazını geciktirme ⚠️`;
+        return yaz(b.giris2);
       case 3:
-        return `${ad} · ${olcuDk} dk oldu · namazı seni bekliyor 🔥`;
+        return yaz(b.giris3);
       case 4:
-        return `${buyukAd} · ${olcuDk} dk oldu · NAMAZINA DUR 🚨`;
+        return yaz(b.giris4, true);
     }
   }
   if (!sonDakikaDiliMi(seviye, olcuDk)) {
     // Erken sert/acil: vakit daralmadi — notr ama yine "sen" kaydinda.
-    return seviye === 4
-      ? `${buyukAd} · ${olcuDk} dk kaldı · NAMAZINA DUR 🚨`
-      : `${ad} · ${olcuDk} dk kaldı · namazı seni bekliyor 🔥`;
+    return seviye === 4 ? yaz(b.erken4, true) : yaz(b.erken3);
   }
   switch (seviye) {
     case 1:
-      return `${ad} · ${olcuDk} dk kaldı ⏰`;
+      return yaz(b.cikis1);
     case 2:
-      return `${ad} · ${olcuDk} dk · vakit daralıyor ⚠️`;
+      return yaz(b.cikis2);
     case 3:
-      return `${ad} · ${olcuDk} dk · vakit kaçıyor 🔥`;
+      return yaz(b.cikis3);
     case 4:
-      return `${buyukAd} · ${olcuDk} dk · VAKİT ÇIKIYOR 🚨`;
+      return yaz(b.cikis4, true);
   }
 }
 
@@ -129,25 +120,12 @@ export function basligiOlustur(
  * "geciktirme / namaza dur" ekseninde kalir; terk/kufur nassi bu kisiye yanlis
  * hedeftir. "Secdeye kapan" da YAZILMAZ (secde namazin icindeki rukun).
  */
-export const GIRIS_ICERIK_HAVUZU: Record<MuhafizSeviye, string[]> = {
-  1: [
-    'Namaz vakti girdi; fırsat varken kıl.',
-    'Vakit senin lehine işlerken kıl, sonraya kalmasın.',
-  ],
-  2: [
-    'Erteledikçe ağırlaşır; namazı sona bırakma.',
-    'Vakit ilerliyor — namazını şimdi kıl.',
-  ],
-  3: [
-    'Namazı geciktirdikçe kaçırmaya yaklaşırsın; hemen kıl.',
-    '"Sonra kılarım" deme; şimdi kılabilirsin.',
-    'Birkaç dakika sonra "keşke" demek yerine şimdi kalk.',
-  ],
-  4: [
-    'Namazı daha fazla geciktirme — hemen namaza dur.',
-    'Bırak elindekini, namaza dur.',
-  ],
-};
+export const GIRIS_ICERIK_HAVUZU: Readonly<Record<MuhafizSeviye, readonly string[]>> = canli((s) => ({
+  1: s.muhafiz.girisHavuzu.s1,
+  2: s.muhafiz.girisHavuzu.s2,
+  3: s.muhafiz.girisHavuzu.s3,
+  4: s.muhafiz.girisHavuzu.s4,
+}));
 
 /**
  * Bildirim govdesi. Vakit adi ve kalan sure ALMAZ - ikisi de baslikta.
@@ -172,15 +150,16 @@ export function bildirimGovdesiOlustur(
   if (yon === 'girisindenItibaren' || !sonDakikaDiliMi(seviye, olcuDk)) {
     return GIRIS_ICERIK_HAVUZU[seviye][0];
   }
+  const g = metin().muhafiz.govde;
   switch (seviye) {
     case 1:
-      return 'Vakit daralmaya başladı, fırsat varken kıl.';
+      return g.s1;
     case 2:
-      return 'Namazı sona bırakma; şimdi kılmak için vakit uygun.';
+      return g.s2;
     case 3:
-      return 'Vakit bitmek üzere; şimdi kılabilirsin.';
+      return g.s3;
     case 4:
-      return "Kıldıysan 'Kıldım'a bas; kılmadıysan hemen namaza dur.";
+      return g.s4;
   }
 }
 
@@ -194,13 +173,13 @@ export function bildirimGovdesiOlustur(
  * `geceSessizligi.test.ts > ÇAPALI METİN`.
  */
 export function geceCapasiBasligi(vakit: VakitAdi): string {
-    return `${VAKIT_ADLARI[vakit]} · uyumadan önce kıl ⏰`;
+    return bicim(metin().muhafiz.geceCapasi.baslik, { ad: VAKIT_ADLARI[vakit] });
 }
 
 /** Gövde — `kalanDk` sessizliğin başlangıcına kalan dakikadır (vaktin çıkışına DEĞİL). */
 export function geceCapasiGovdesi(kalanDk: number): string {
-    return `Gece sessizliğine ${kalanDk} dk var; yatmadan yatsını kıl.`;
+    return bicim(metin().muhafiz.geceCapasi.govde, { dk: kalanDk });
 }
 
-/** Sesli okuma şablonu ({vakit}, {süre} yer tutucuları `anonsMetniniCoz` ile çözülür). */
-export const GECE_CAPASI_ANONS_SABLONU = 'Gece sessizliğine {süre} dakika var. Yatmadan {vakit} namazını kıl.';
+/** Sesli okuma şablonu ({vakit}, {süre} yer tutucuları `anonsMetniniCoz` ile çözülür), etkin dilde. */
+export const geceCapasiAnonsSablonu = (): string => metin().anons.otomatik.geceCapasi;

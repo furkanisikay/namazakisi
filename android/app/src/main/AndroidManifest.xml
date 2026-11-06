@@ -32,6 +32,9 @@
   <!-- Android Auto POI şablonu (PlaceListMapTemplate) için Car App Library izni. Normal
        izindir, kullanıcıya sorulmaz; host dışında kimse kullanmaz (arac/NamazAracServisi). -->
   <uses-permission android:name="androidx.car.app.MAP_TEMPLATES"/>
+  <!-- Günün ayeti duvar kâğıdı (#381): WallpaperManager.setBitmap. Normal izindir, kurulumda
+       sorulmaz; yalnız kullanıcı "Her gün değiştirin"i açınca kullanılır. -->
+  <uses-permission android:name="android.permission.SET_WALLPAPER"/>
 
   <!-- Kütüphaneler merge sırasında bu izinleri geri ekleyebilir; aşağıdakiler bunu engeller -->
   <uses-permission android:name="android.permission.RECORD_AUDIO"
@@ -73,11 +76,11 @@
       <category android:name="android.intent.category.HOME"/>
     </intent>
   </queries>
-  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:theme="@style/AppTheme" android:supportsRtl="true" android:enableOnBackInvokedCallback="false">
+  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:theme="@style/AppTheme" android:supportsRtl="true" android:localeConfig="@xml/locales_config" android:enableOnBackInvokedCallback="false">
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
-    <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|density|uiMode|assetsPaths" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
+    <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|density|uiMode|assetsPaths|locale|layoutDirection" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -161,6 +164,23 @@
           android:name="android.appwidget.provider"
           android:resource="@xml/widget_klasik_genis_bilgisi" />
     </receiver>
+
+    <!-- Günün ayeti widget'ı (#380): AYRI sağlayıcı ve AYRI çizici/alarm (GununAyetiGuncelleyici);
+         namaz widget'larının sağlayıcı listesine girmez. -->
+    <receiver
+        android:name=".widget.GununAyetiWidget"
+        android:label="@string/widget_ayet_adi"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+          android:name="android.appwidget.provider"
+          android:resource="@xml/gunun_ayeti_widget_info" />
+    </receiver>
+    <!-- Günün ayeti sınır alarmı (planın bir sonraki imsakı) ve NamazWidgetAlarmAlici'nin
+         ilettiği sistem olayları; duvar kâğıdı burada goAsync ile yazılır. Yalnız açık niyet. -->
+    <receiver android:name=".widget.GununAyetiAlarmAlici" android:exported="false"/>
 
     <!-- Widget yeniden hesaplama alıcısı (issue #275): vakit sınırı alarmı (dakikalık alarm
          YOK), açılış, güncelleme, saat / saat dilimi / tarih değişimi. -->

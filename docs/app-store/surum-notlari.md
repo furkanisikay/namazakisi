@@ -2,7 +2,8 @@
 
 Mağazadaki "Bu sürümdeki yenilikler" metninin **tek doğru kaynağı**. Play'e
 `gh workflow run play-magaza.yml -f mod=uretime-al -f surum=X.Y.Z` bu dosyadaki
-`#### X.Y.Z` bloğunu yazar. Mağazaya elle yazılan not repoda iz bırakmaz ve bir
+`#### X.Y.Z` bloğunu yazar; saat (Wear OS) sürümü iç testteyse `#### X.Y.Z (saat)` bloğuyla
+aynı edit'te `wear:production`'a alınır. Mağazaya elle yazılan not repoda iz bırakmaz ve bir
 sonraki sürümde üslup kayar.
 
 **Kurallar**
@@ -16,6 +17,32 @@ sonraki sürümde üslup kayar.
   kalıbı yok, dolgu zarf yok.
 
 ## Google Play
+
+#### 0.70.1
+
+Üretimdeki önceki sürüm 0.45.0 (telefon, TV ve saat); not 0.46.0 ile 0.70.1 arasını kapsar. TV paketi telefon sürümünün içindedir, aynı notu taşır. Android Auto Play'de açık olmadığı için girmedi; iOS'a özgü düzeltmeler girmez.
+
+```
+- "Kıldım" dediğinizde dua; cuma, kandil, bayram ve Ramazan'da günün selamı.
+- Hatırlatmalar sadeleşti: vakit başına Hafif, Normal ya da Yoğun; gece sessiz saatler. "Ertele" kaldırıldı.
+- Kıble: gecikmesiz pusula, 3B kadran ve kamerada yere çizilen Kâbe yolu.
+- Bildirim sesi olarak kendi ses dosyanızı seçin.
+- Tablet ve katlanabilir ekranlar için geniş düzen.
+- Telefon ile tablet arasında "Kıldım" eşitlemesi; TV'ye kare kodla konum gönderin.
+- Pil ve veri tasarrufuna uyumlu eşitleme.
+```
+
+#### 0.70.1 (saat)
+
+Wear OS kanalı (`wear:production`) için; `uretime-al` aynı edit'te yazar.
+
+```
+- Kalan süre saat ve dakikayla yazılıyor; yeni Bugün kutucuğu.
+- Kıble pusulası yumuşak dönüyor ve yönü bir bakışta söylüyor.
+- Tesbihat yuvarlak ve kare ekranlarda taşmıyor; taç ters çevrilince sayım geri alınır.
+- Sessiz uyandırmada yalnız "Kıldım" ve "Kapat" var.
+- "Kıldım" dediğinizde dua.
+```
 
 #### 0.45.0
 

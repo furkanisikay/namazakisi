@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">لائيو ڳڻپون</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar ۽ اسٽيٽس بار ۾ ڳڻپون</string>
+    <string name="countdown_kanal_genel_ad">ڳڻپ وارا اطلاع</string>
+    <string name="countdown_kanal_genel_aciklama">ڳڻپ وارن اطلاعن جو چينل</string>
+
+    <string name="countdown_eylem_kildim">نماز پڙهي ورتي</string>
+    <string name="countdown_eylem_durdur">روڪيو</string>
+
+    <string name="countdown_yedek_vakit">جلدي ڪريو، نماز جو وقت ختم ٿيڻ وارو آهي.</string>
+    <string name="countdown_yedek_iftar">وقت ختم ٿي رهيو آهي.</string>
+    <string name="countdown_yedek_sahur">اڃا کائي پي سگهو ٿا؛ روزو جلد شروع ٿيندو.</string>
+    <string name="countdown_yedek_seri">اڄ جون نمازون پوريون ناهن؛ پنهنجو تسلسل نه وڃايو.</string>
+
+    <string name="countdown_onek_vakit">وقت ختم ٿيڻ تائين</string>
+    <string name="countdown_onek_vakit_dar">وقت ختم ٿي رهيو آهي</string>
+    <string name="countdown_onek_iftar">افطاري تائين</string>
+    <string name="countdown_onek_iftar_dar">افطاري تائين</string>
+    <string name="countdown_onek_sahur">سحري ختم ٿيڻ تائين</string>
+    <string name="countdown_onek_sahur_dar">سحري ختم ٿي رهي آهي</string>
+    <string name="countdown_onek_seri">تسلسل بچائڻ لاءِ</string>
+    <string name="countdown_onek_seri_dar">تسلسل ختم ٿي رهيو آهي</string>
+</resources>

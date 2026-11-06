@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">লাইভ কাউণ্টডাউন</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar আৰু স্থিতি দণ্ডত কাউণ্টডাউন</string>
+    <string name="countdown_kanal_genel_ad">কাউণ্টডাউন জাননী</string>
+    <string name="countdown_kanal_genel_aciklama">কাউণ্টডাউন জাননীৰ চেনেল</string>
+
+    <string name="countdown_eylem_kildim">নামাজ পঢ়িছোঁ</string>
+    <string name="countdown_eylem_durdur">বন্ধ কৰক</string>
+
+    <string name="countdown_yedek_vakit">সোনকালে কৰক, নামাজৰ সময় শেষ হ’বলৈ ওলাইছে।</string>
+    <string name="countdown_yedek_iftar">সময় কমি আহিছে।</string>
+    <string name="countdown_yedek_sahur">এতিয়াও খাব-পিব পাৰে; ৰোজা সোনকালে আৰম্ভ হ’ব।</string>
+    <string name="countdown_yedek_seri">আজিৰ নামাজ সম্পূৰ্ণ হোৱা নাই; আপোনাৰ ধাৰাবাহিকতা নেহেৰুৱাব।</string>
+
+    <string name="countdown_onek_vakit">সময় শেষ হোৱালৈ</string>
+    <string name="countdown_onek_vakit_dar">সময় শেষ হৈছে</string>
+    <string name="countdown_onek_iftar">ইফতাৰলৈ</string>
+    <string name="countdown_onek_iftar_dar">ইফতাৰলৈ</string>
+    <string name="countdown_onek_sahur">ছাহৰী শেষ হোৱালৈ</string>
+    <string name="countdown_onek_sahur_dar">ছাহৰী শেষ হৈছে</string>
+    <string name="countdown_onek_seri">ধাৰাবাহিকতা ৰাখিবলৈ</string>
+    <string name="countdown_onek_seri_dar">ধাৰাবাহিকতা শেষ হৈছে</string>
+</resources>

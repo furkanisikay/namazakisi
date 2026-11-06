@@ -1,0 +1,58 @@
+// uk
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Ukraynaca terimler: src/core/dil/sozluk/uk.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Наступна молитва";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Називає наступну молитву і час її початку.";
+"Şu anki vakti kıldım" = "Поточну молитву здійснено";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Позначає поточну молитву як здійснену. Запис додається, коли ви відкриваєте застосунок.";
+"Onay iste" = "Запитувати підтвердження";
+"Kıbleyi aç" = "Відкрити Киблу";
+"Uygulamayı Kıble pusulasıyla açar." = "Відкриває застосунок із компасом Кибли.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Здійснено";
+"Kıble" = "Кибла";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Назва наступної молитви";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Повертає назву наступної молитви. Її можна використовувати як умову у «Швидких командах».";
+"Sıradaki vakte kalan dakika" = "Хвилин до наступної молитви";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Повертає, скільки хвилин лишилося до початку наступної молитви. Якщо даних немає, повертає -1.";
+"Şu anki vakit kılındı mı?" = "Поточну молитву позначено як здійснену?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Повертає «так», якщо поточну молитву позначено як здійснену. Повертає «ні», якщо немає молитви для позначення.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Тиша молитви";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Повертає «істина» в перші хвилини після настання часу молитви. Використовується у «Швидких командах», щоб увімкнути фокусування.";
+"Süre (dakika)" = "Тривалість (хвилини)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} хвилин після настання часу молитви";
+"Namaz sessizliğinin bitişi" = "Кінець тиші молитви";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Повертає час, коли тиша закінчиться. Якщо зараз тиші немає, повертає поточний час.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Кінець ${dakika} хвилин після настання часу молитви";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Нагадування про молитву";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Поки ввімкнено це фокусування, нагадування про молитву надходять без звуку і не вмикають екран.";
+"Hatırlatmaları sessiz ver" = "Доставляти нагадування тихо";
+"Hatırlatmalar sessiz gelir" = "Нагадування надходять тихо";
+"Hatırlatmalar her zamanki gibi" = "Нагадування як завжди";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Позначає молитву, показану у віджеті, як здійснену.";
+"Tarih" = "Дата";
+"Vakit" = "Молитва";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Зупинити будильник молитви";
+"Namazı kıldım" = "Молитву здійснено";
+"Alarm" = "Будильник";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Зображення аяту дня";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Повертає сьогоднішній аят як зображення розміром з ваш екран. Його можна використати з кроком «Встановити шпалери» у «Швидких командах».";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Відкрийте застосунок один раз, щоб підготувати аят дня.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Не вдалося підготувати зображення. Спробуйте трохи згодом.";

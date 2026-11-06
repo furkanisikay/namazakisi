@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">टीव्हीच्या स्क्रीनवरील QR कोड चौकटीत बसवा</string>
+    <string name="tvesleme_qr_vazgec">रद्द करा</string>
+    <string name="tvesleme_qr_vazgec_erisim">स्कॅन करणे रद्द करा</string>
+    <string name="tvesleme_qr_yabanci">हा QR कोड Namaz Akışı TV चा नाही. टीव्हीवरील कोड स्कॅन करा.</string>
+    <string name="tvesleme_qr_okundu">कोड स्कॅन झाला</string>
+</resources>

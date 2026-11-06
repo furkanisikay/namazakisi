@@ -1,6 +1,8 @@
 # Magaza kareleri (Android): ana ekran + seri.
 # Etiketler RN accessibilityLabel'dir (Android'de content-desc); Maestro `text`
 # secicisi onlari da eslestirir ve DUZENLI IFADE olarak TAM eslesme arar.
+# Iki dilli: metin secicileri "(TR|EN)" alternasyonudur (dil=tr|en); TR/EN degerleri
+# sozlukte (src/core/dil/sozluk/{tr,en}) AYNI anahtardan alinir. Kararli testID varsa `id:`.
 appId: com.furkanisikay.namazakisi
 ---
 - launchApp:
@@ -8,19 +10,21 @@ appId: com.furkanisikay.namazakisi
 # Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"; toparlanmada "Toparlanma modu: …"). Kıble Dalga 4'ten
 # beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "(Seri|Toparlanma modu): .*"
+    visible: "(Seri|Toparlanma modu|Streak|Recovery mode): .*"
     timeout: 90000
 # Acilista kutlama/duyuru modali cikarsa kapat (tohum bunu onlemeli; guvenlik agi).
 - repeat:
     while:
-      visible: "Devam Et"
+      visible:
+        id: "kutlama-devam"
     commands:
-      - tapOn: "Devam Et"
+      - tapOn:
+          id: "kutlama-devam"
 - takeScreenshot: kareler/01-ana-ekran
 
 # Ilerleme sekmesi: seri gok paneli sayfanin en ustunde (Dalga 4: Rozetler +
 # Istatistik + Seri tek sekme).
-- tapOn: "İlerleme"
+- tapOn: "(İlerleme|Progress)"
 # Gok panelindeki yildizlar sirayla belirir; erken cekilen kare haritayi yarim
 # gosterir (iOS'ta yasandi). Parilti animasyonu surekli oldugu icin bu adim
 # zaman asimiyla biter; amac beklemek.

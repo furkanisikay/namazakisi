@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -41,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -68,6 +72,7 @@ import com.furkanisikay.namazakisi.tv.cekirdek.PanoDurumu
 import com.furkanisikay.namazakisi.tv.cekirdek.PanoHesabi
 import com.furkanisikay.namazakisi.tv.cekirdek.Vakit
 import com.furkanisikay.namazakisi.tv.cekirdek.VakitHesabi
+import com.furkanisikay.namazakisi.tv.cekirdek.tvDili
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.ZoneId
@@ -89,7 +94,7 @@ private class VakitOnbellegi(private val il: Il) {
     fun al(tarih: LocalDate): GunlukVakitler {
         harita[tarih]?.let { return it }
         if (harita.size > 3) harita.clear()
-        return VakitHesabi.hesapla(il.lat, il.lng, tarih).also { harita[tarih] = it }
+        return VakitHesabi.hesapla(il.lat, il.lng, tarih, il.hesap).also { harita[tarih] = it }
     }
 }
 
@@ -186,8 +191,10 @@ private fun SolSutun(
     onbellek: VakitOnbellegi,
     modifier: Modifier,
 ) {
+    // Çekirdek metinlerinin dili: kaynak sisteminin seçtiği values-xx (TV cihaz dili).
+    val dil = stringResource(R.string.dil_kodu)
     // Ev ekranı katmanı (tasarım §4.6): yalnız eşleşik üyelerden gelen durumla; boşta hesap ucuz.
-    val bant = EvDurumu.bant(durum, uyeler, simdi)
+    val bant = EvDurumu.bant(durum, uyeler, simdi, dil)
     // Bant görünürken durumu sayılan herkes kıldıysa bant kısa süre "Allah kabul etsin"e
     // döner (kişi/sayı yok), sonra pano sakin hâline döner. Geçiş yalnız GÖRÜLEN bir banttan.
     val hepsiKildi = EvDurumu.hepsiKildi(durum, uyeler, simdi)
@@ -200,41 +207,45 @@ private fun SolSutun(
         oncekiBant = bant
     }
     val kabul = bant == null && simdi < kabulBitis
-    val selam = if (bant == null && !kabul) EvDurumu.selam(durum, uyeler, simdi) else null
+    val selam = if (bant == null && !kabul) EvDurumu.selam(durum, uyeler, simdi, dil) else null
     val cumaCikis = EvDurumu.cumaCikisMs(durum, uyeler, simdi)
     val ramazanSayaci = if (EvDurumu.ramazan(uyeler, simdi)) {
         val bugun = java.time.Instant.ofEpochMilli(simdi).atZone(bolge).toLocalDate()
-        EvDurumu.ramazanSayaci(onbellek.al(bugun), onbellek.al(bugun.plusDays(1)).imsak, simdi)
+        val gun = onbellek.al(bugun)
+        EvDurumu.ramazanSayaci(gun, onbellek.al(bugun.plusDays(1)).imsak, simdi, dil) to EvDurumu.ramazanSayacTuru(gun, simdi)
     } else {
         null
     }
     Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
         Column {
             Text(il.ad, color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
-            Text(Bicim.tarih(durum.tarih), color = Renkler.metinIkincil, fontSize = 24.sp)
+            Text(Bicim.tarih(durum.tarih, dil).yerelRakam(), color = Renkler.metinIkincil, fontSize = 24.sp)
             if (bant != null) {
                 Spacer(Modifier.height(10.dp))
                 SessizBant(bant)
             } else if (kabul) {
                 Spacer(Modifier.height(10.dp))
-                SessizBant(EvDurumu.KABUL_DUASI, Renkler.birincil)
+                SessizBant(EvDurumu.kabulDuasi(dil), Renkler.birincil)
             } else if (selam != null) {
                 Text(selam, color = Renkler.birincil, fontSize = 24.sp, fontWeight = FontWeight.Medium)
             }
         }
 
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(
-                Bicim.saat(simdi, bolge),
-                style = RAKAM,
-                color = Renkler.metin,
-                // Bant görünürken saat küçülür: sütun taşıp "Ayarlar" düğmesi ekrandan çıkmasın.
-                fontSize = if (bant != null || kabul) 96.sp else 120.sp,
-                fontWeight = FontWeight.Light,
-                lineHeight = if (bant != null || kabul) 96.sp else 120.sp,
+        // Saat sütunun ESNEK öğesidir: öteki öğeler (başlık, sayaç, çipler, "Ayarlar") önce
+        // ölçülür, saat kalan yüksekliğe sığana dek küçülür. Uzun dilde (Hausa, Amharca) çip ya da
+        // sayaç başlığı büyüyünce "Ayarlar" düğmesi ekranın altından kesiliyordu (2026-10-30).
+        val saatBoyu = if (bant != null || kabul) 96.sp else 120.sp
+        Row(Modifier.weight(1f, fill = false), verticalAlignment = Alignment.Bottom) {
+            BasicText(
+                Bicim.saat(simdi, bolge).yerelRakam(),
+                style = RAKAM.copy(fontSize = saatBoyu, fontWeight = FontWeight.Light),
+                color = { Renkler.metin },
+                maxLines = 1,
+                softWrap = false,
+                autoSize = TextAutoSize.StepBased(minFontSize = 56.sp, maxFontSize = saatBoyu, stepSize = 4.sp),
             )
             Text(
-                Bicim.saniye(simdi, bolge),
+                Bicim.saniye(simdi, bolge).yerelRakam(),
                 style = RAKAM,
                 color = Renkler.metinIkincil,
                 fontSize = 40.sp,
@@ -242,7 +253,11 @@ private fun SolSutun(
             )
         }
 
-        if (ramazanSayaci != null) RamazanBlogu(ramazanSayaci, durum, simdi) else KalanBlogu(durum, simdi, azalt)
+        if (ramazanSayaci != null) {
+            RamazanBlogu(ramazanSayaci.first, ramazanSayaci.second, durum, simdi)
+        } else {
+            KalanBlogu(durum, simdi, azalt)
+        }
 
         BilgiCipleri(durum, bolge, cumaCikis, simdi)
 
@@ -256,24 +271,26 @@ private fun SolSutun(
  */
 @Composable
 private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
-    val ad = durum.gorunenAd(durum.siradaki)
+    val dil = stringResource(R.string.dil_kodu)
+    val ad = durum.gorunenAd(durum.siradaki, dil)
+    val aciklama = stringResource(R.string.pano_kalan_erisim, ad, Bicim.kalanSesli(durum.kalanMs, dil))
     Column(
-        Modifier.clearAndSetSemantics {
-            contentDescription = "$ad vaktine ${Bicim.kalanSesli(durum.kalanMs)} kaldı"
-        },
+        Modifier.clearAndSetSemantics { contentDescription = aciklama },
     ) {
         Crossfade(targetState = durum.siradaki, animationSpec = tween(if (azalt) 0 else 400), label = "siradaki") { v ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Simge(vakitSimgesi(v), Renkler.birincil, 30.dp)
                 Spacer(Modifier.width(12.dp))
-                Text("${durum.gorunenAd(v)} vaktine", color = Renkler.metinIkincil, fontSize = 28.sp)
+                TekSatirEtiket(stringResource(R.string.pano_vaktine, durum.gorunenAd(v, dil)))
             }
         }
+        // Boşluksuz dilde (Çince) parça ve birim arası görsel boşluk çizilmez.
+        val bosluk = tvDili(dil)
         Row(verticalAlignment = Alignment.Bottom) {
-            Bicim.kalanParcalari(durum.kalanMs).forEachIndexed { i, p ->
-                if (i > 0) Spacer(Modifier.width(18.dp))
+            Bicim.kalanParcalari(durum.kalanMs, dil).forEachIndexed { i, p ->
+                if (i > 0 && bosluk.parcaAyirici.isNotEmpty()) Spacer(Modifier.width(18.dp))
                 Text(
-                    p.sayi,
+                    p.sayi.yerelRakam(),
                     style = RAKAM,
                     color = Renkler.metin,
                     fontSize = 76.sp,
@@ -284,7 +301,7 @@ private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
                     p.birim,
                     color = Renkler.metinIkincil,
                     fontSize = 32.sp,
-                    modifier = Modifier.padding(start = 6.dp, bottom = 12.dp),
+                    modifier = Modifier.padding(start = if (bosluk.birimAyirici.isNotEmpty()) 6.dp else 0.dp, bottom = 12.dp),
                 )
             }
         }
@@ -310,35 +327,46 @@ private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
 /** Kerahat ve cuma: simge + iki-üç kelime. Amber yalnız simgede; metin daima tema metni. */
 @Composable
 private fun BilgiCipleri(durum: PanoDurumu, bolge: ZoneId, cumaCikis: Long?, simdi: Long) {
+    val dil = stringResource(R.string.dil_kodu)
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         val kerahat = durum.kerahat
         if (kerahat != null) {
             // Saate hal eki EKLENMEZ ("18:23'e" okunuşa göre değişir).
+            val bitis = Bicim.saat(kerahat.bitis, bolge)
             BilgiCipi(
                 simge = kerahatSimgesi(kerahat.tur),
                 simgeRengi = Renkler.uyari,
-                baslik = "Kerahat vakti",
-                ek = "bitiş ${Bicim.saat(kerahat.bitis, bolge)}",
-                aciklama = "Kerahat vakti, ${kerahat.tur.ad}, bitiş ${Bicim.saat(kerahat.bitis, bolge)}. ${kerahat.tur.aciklama}",
+                baslik = stringResource(R.string.pano_kerahat_vakti),
+                ek = stringResource(R.string.pano_bitis, bitis),
+                aciklama = stringResource(
+                    R.string.pano_kerahat_erisim,
+                    kerahat.tur.ad(dil), bitis, kerahat.tur.aciklama(dil),
+                ),
             )
         }
         if (cumaCikis != null) {
             // Cuma kartı: telefonun yürüme + hazırlık süresinden; saate hal eki EKLENMEZ.
             val gecti = simdi >= cumaCikis
+            val cikis = Bicim.saat(cumaCikis, bolge)
             BilgiCipi(
                 simge = R.drawable.ic_cami,
                 simgeRengi = Renkler.birincil,
-                baslik = "Cumaya ${Bicim.kalanKisa(durum.vakitler.ogle - simdi)}",
-                ek = if (gecti) "çıkış vakti geldi" else "çıkış ${Bicim.saat(cumaCikis, bolge)}",
-                aciklama = if (gecti) "Cuma için çıkış vakti geldi" else "Cuma için çıkış ${Bicim.saat(cumaCikis, bolge)}",
+                baslik = stringResource(R.string.pano_cumaya, Bicim.kalanKisa(durum.vakitler.ogle - simdi, dil)),
+                ek = if (gecti) stringResource(R.string.pano_cikis_geldi) else stringResource(R.string.pano_cikis, cikis),
+                aciklama = if (gecti) {
+                    stringResource(R.string.pano_cuma_cikis_geldi_erisim)
+                } else {
+                    stringResource(R.string.pano_cuma_cikis_erisim, cikis)
+                },
             )
         } else if (durum.cuma) {
+            val ogle = Bicim.saat(durum.vakitler.ogle, bolge)
             BilgiCipi(
                 simge = R.drawable.ic_cami,
                 simgeRengi = Renkler.birincil,
-                baslik = "Bugün cuma",
-                ek = "öğle ${Bicim.saat(durum.vakitler.ogle, bolge)}",
-                aciklama = "Bugün cuma. Cuma namazı öğle vaktinde, ${Bicim.saat(durum.vakitler.ogle, bolge)}",
+                baslik = stringResource(R.string.pano_bugun_cuma),
+                ek = stringResource(R.string.pano_ogle, ogle),
+                aciklama = stringResource(R.string.pano_bugun_cuma_erisim, ogle),
             )
         }
     }
@@ -358,9 +386,19 @@ private fun BilgiCipi(simge: Int, simgeRengi: Color, baslik: String, ek: String,
             modifier = Modifier.size(40.dp).background(simgeRengi.copy(alpha = 0.18f), CircleShape),
         ) { Simge(simge, simgeRengi, 24.dp) }
         Spacer(Modifier.width(14.dp))
-        Text(baslik, color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+        // Tek satır: uzun dilde ek ("Azahar 12:53") alt satıra düşüp çipi büyütüyor, "Ayarlar"
+        // düğmesini ekrandan itiyordu (Hausa, 2026-10-30). Başlık sığana dek küçülür; ek (saat) bölünmez.
+        BasicText(
+            baslik.yerelRakam(),
+            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.SemiBold),
+            color = { Renkler.metin },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = 24.sp),
+            modifier = Modifier.weight(1f, fill = false),
+        )
         Spacer(Modifier.width(12.dp))
-        Text(ek, style = RAKAM, color = Renkler.metinIkincil, fontSize = 24.sp)
+        Text(ek.yerelRakam(), style = RAKAM, color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, softWrap = false)
     }
 }
 
@@ -370,6 +408,7 @@ private fun BilgiCipi(simge: Int, simgeRengi: Color, baslik: String, ek: String,
  */
 @Composable
 private fun AyarlarDugmesi(onAyarlar: () -> Unit) {
+    val aciklama = stringResource(R.string.pano_ayarlar_erisim)
     Surface(
         onClick = onAyarlar,
         shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(28.dp)),
@@ -383,7 +422,7 @@ private fun AyarlarDugmesi(onAyarlar: () -> Unit) {
             focusedBorder = Border(BorderStroke(3.dp, Renkler.birincil), inset = (-4).dp),
         ),
         scale = ClickableSurfaceDefaults.scale(focusedScale = 1.06f),
-        modifier = Modifier.semantics { contentDescription = "Ayarlar: telefon ekleme, konum, bağlı telefonlar" },
+        modifier = Modifier.semantics { contentDescription = aciklama },
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -397,13 +436,16 @@ private fun AyarlarDugmesi(onAyarlar: () -> Unit) {
                 modifier = Modifier.size(24.dp),
             )
             Spacer(Modifier.width(10.dp))
-            Text("Ayarlar", fontSize = 22.sp)
+            Text(stringResource(R.string.ayarlar), fontSize = 22.sp)
         }
     }
 }
 
 @Composable
 private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: Boolean, modifier: Modifier) {
+    val dil = stringResource(R.string.dil_kodu)
+    val simdikiEtiket = stringResource(R.string.pano_simdiki_vakit)
+    val siradakiEtiket = stringResource(R.string.pano_siradaki_vakit)
     Column(
         modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
@@ -429,10 +471,10 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
                     .padding(horizontal = 24.dp)
                     .clearAndSetSemantics {
                         contentDescription = buildString {
-                            append(durum.gorunenAd(vakit)).append(' ')
+                            append(durum.gorunenAd(vakit, dil)).append(' ')
                             append(Bicim.saat(durum.vakitler.saat(vakit), bolge))
-                            if (aktif) append(", şu anki vakit")
-                            if (siradaki) append(", sıradaki vakit")
+                            if (aktif) append(", ").append(simdikiEtiket)
+                            if (siradaki) append(", ").append(siradakiEtiket)
                         }
                     },
                 verticalAlignment = Alignment.CenterVertically,
@@ -447,19 +489,25 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
                     32.dp,
                 )
                 Spacer(Modifier.width(20.dp))
-                Text(
-                    durum.gorunenAd(vakit),
-                    color = metinRengi,
-                    fontSize = 32.sp,
-                    fontWeight = if (aktif) FontWeight.Bold else FontWeight.Normal,
+                // Uzun ad ("Sonnenaufgang", "Восход солнца") kesilmez, sütuna sığana dek küçülür.
+                // Alt sınır panonun ikincil metinleriyle aynı 16 sp: 18 harflik "Pagsubang sa adlaw",
+                // "Kasebang nu senang" 20 sp'de kesiliyordu (dalga 13).
+                BasicText(
+                    durum.gorunenAd(vakit, dil),
+                    style = TextStyle(fontSize = 32.sp, fontWeight = if (aktif) FontWeight.Bold else FontWeight.Normal),
+                    color = { metinRengi },
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = 32.sp),
                     modifier = Modifier.weight(1f),
                 )
+                // Ad ile saat arası en az 28 dp: kalın uzun ad ("Mặt trời mọc") sütunu doldurunca
+                // 16 dp'de saate bitişik görünüyordu; ad autoSize ile bu payı bırakarak küçülür.
+                Spacer(Modifier.width(28.dp))
                 // "şimdi" çipi BİLİNÇLİ YOK: dar sütunda "Akşam"ı "Akşa…"ya kesiyordu (kare
                 // turunda görüldü); dolu yeşil zemin + soldaki geri sayım anlamı zaten taşıyor.
                 Text(
-                    Bicim.saat(durum.vakitler.saat(vakit), bolge),
+                    Bicim.saat(durum.vakitler.saat(vakit), bolge).yerelRakam(),
                     style = RAKAM,
                     color = metinRengi,
                     fontSize = 36.sp,
@@ -468,6 +516,20 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
             }
         }
     }
+}
+
+/** Sayaç başlığı: tek satır, sığmazsa küçülür (sütunun yüksekliği dile göre değişmesin). */
+@Composable
+private fun RowScope.TekSatirEtiket(metin: String) {
+    BasicText(
+        metin,
+        style = TextStyle(fontSize = 28.sp),
+        color = { Renkler.metinIkincil },
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        autoSize = TextAutoSize.StepBased(minFontSize = 18.sp, maxFontSize = 28.sp),
+        modifier = Modifier.weight(1f, fill = false),
+    )
 }
 
 @Composable
@@ -485,20 +547,25 @@ private fun Simge(kaynak: Int, renk: Color, boyut: Dp) {
  * "vaktine kalan" altta tek satır kalır.
  */
 @Composable
-private fun RamazanBlogu(sayac: EvDurumu.Sayac, durum: PanoDurumu, simdi: Long) {
+private fun RamazanBlogu(sayac: EvDurumu.Sayac, tur: EvDurumu.SayacTuru, durum: PanoDurumu, simdi: Long) {
+    val dil = stringResource(R.string.dil_kodu)
     val kalan = (sayac.hedefMs - simdi).coerceAtLeast(0)
-    val simge = if (sayac.baslik.startsWith("İftar")) R.drawable.ic_vakit_aksam else R.drawable.ic_vakit_imsak
-    Column(Modifier.clearAndSetSemantics { contentDescription = "${sayac.baslik} ${Bicim.kalanSesli(kalan)}" }) {
+    // Simge metinden DEĞİL sayacın kimliğinden (metin dile göre değişir).
+    val simge = if (tur == EvDurumu.SayacTuru.IFTAR) R.drawable.ic_vakit_aksam else R.drawable.ic_vakit_imsak
+    val aciklama = "${sayac.baslik} ${Bicim.kalanSesli(kalan, dil)}"
+    Column(Modifier.clearAndSetSemantics { contentDescription = aciklama }) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Simge(simge, Renkler.birincil, 30.dp)
             Spacer(Modifier.width(12.dp))
-            Text(sayac.baslik, color = Renkler.metinIkincil, fontSize = 28.sp)
+            // "Lokacin da ya rage zuwa buɗa baki" (Hausa) iki satıra kırılıp sütunu taşırıyordu.
+            TekSatirEtiket(sayac.baslik)
         }
+        val bosluk = tvDili(dil)
         Row(verticalAlignment = Alignment.Bottom) {
-            Bicim.kalanParcalari(kalan).forEachIndexed { i, p ->
-                if (i > 0) Spacer(Modifier.width(18.dp))
-                Text(p.sayi, style = RAKAM, color = Renkler.metin, fontSize = 76.sp, fontWeight = FontWeight.SemiBold, lineHeight = 80.sp)
-                Text(p.birim, color = Renkler.metinIkincil, fontSize = 32.sp, modifier = Modifier.padding(start = 6.dp, bottom = 12.dp))
+            Bicim.kalanParcalari(kalan, dil).forEachIndexed { i, p ->
+                if (i > 0 && bosluk.parcaAyirici.isNotEmpty()) Spacer(Modifier.width(18.dp))
+                Text(p.sayi.yerelRakam(), style = RAKAM, color = Renkler.metin, fontSize = 76.sp, fontWeight = FontWeight.SemiBold, lineHeight = 80.sp)
+                Text(p.birim, color = Renkler.metinIkincil, fontSize = 32.sp, modifier = Modifier.padding(start = if (bosluk.birimAyirici.isNotEmpty()) 6.dp else 0.dp, bottom = 12.dp))
             }
         }
         // Sıradaki vakit sayacın hedefiyse (sahur = imsak, iftar = akşam) alt satır aynı bilgiyi
@@ -506,7 +573,11 @@ private fun RamazanBlogu(sayac: EvDurumu.Sayac, durum: PanoDurumu, simdi: Long) 
         if (durum.siradakiMs != sayac.hedefMs) {
             Spacer(Modifier.height(6.dp))
             Text(
-                "${durum.gorunenAd(durum.siradaki)} vaktine ${Bicim.kalanKisa(durum.kalanMs)}",
+                stringResource(
+                    R.string.pano_vaktine_kalan,
+                    durum.gorunenAd(durum.siradaki, dil),
+                    Bicim.kalanKisa(durum.kalanMs, dil),
+                ).yerelRakam(),
                 style = RAKAM,
                 color = Renkler.metinIkincil,
                 fontSize = 24.sp,
@@ -531,6 +602,16 @@ private fun SessizBant(metin: String, vurgu: Color = Renkler.uyari) {
     ) {
         Box(Modifier.size(12.dp).background(vurgu, CircleShape))
         Spacer(Modifier.width(14.dp))
-        Text(metin, color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.Medium)
+        // Tek satır: uzun dilde ("De tijd voor Asr wordt krap · 30 min") sayı alt satıra düşüyordu
+        // (kare turu); metin bandın sığdığı kadar küçülür, `fill = false` bandı içerik kadar tutar.
+        BasicText(
+            metin.yerelRakam(),
+            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Medium),
+            color = { Renkler.metin },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = 24.sp),
+            modifier = Modifier.weight(1f, fill = false),
+        )
     }
 }

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sindhçe (beta, Arap harfli, sağdan sola). Terimler: src/core/dil/sozluk/sd. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">sd</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">نماز جي وقتن جو بورڊ</string>
+    <string name="ayarlar">سيٽنگون</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s تائين %2$s باقي</string>
+    <string name="pano_vaktine">%1$s تائين</string>
+    <string name="pano_vaktine_kalan">%1$s %2$s ۾</string>
+    <string name="pano_kerahat_vakti">مڪروه وقت</string>
+    <string name="pano_bitis">پڄاڻي %1$s</string>
+    <string name="pano_kerahat_erisim">مڪروه وقت، %1$s، پڄاڻي %2$s. %3$s</string>
+    <string name="pano_cumaya">جمعو %1$s ۾</string>
+    <string name="pano_cikis_geldi">نڪرڻ جو وقت</string>
+    <string name="pano_cikis">%1$s تي نڪرو</string>
+    <string name="pano_cuma_cikis_geldi_erisim">جمعي لاءِ نڪرڻ جو وقت آهي</string>
+    <string name="pano_cuma_cikis_erisim">جمعي لاءِ %1$s تي نڪرو</string>
+    <string name="pano_bugun_cuma">اڄ جمعو آهي</string>
+    <string name="pano_ogle">ظهر %1$s</string>
+    <string name="pano_bugun_cuma_erisim">اڄ جمعو آهي. جمعي جي نماز ظهر جي وقت، %1$s تي آهي</string>
+    <string name="pano_ayarlar_erisim">سيٽنگون: فون شامل ڪريو، جڳهه، ڳنڍيل فون</string>
+    <string name="pano_simdiki_vakit">موجوده نماز جو وقت</string>
+    <string name="pano_siradaki_vakit">ايندڙ نماز جو وقت</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir. -->
+    <string name="kodla_girin">ڪوڊ داخل ڪريو</string>
+    <string name="ili_kendim_secin">شهر پاڻ چونڊيو</string>
+    <string name="yeniden_deneyin">ٻيهر ڪوشش ڪريو</string>
+    <string name="telefon_varsayilan">فون</string>
+    <string name="esleme_ekleniyor">%1$s شامل ٿي رهيو آهي</string>
+    <string name="esleme_gonderiyor">اوهان جو فون پنهنجي جڳهه ۽ حالت موڪلي رهيو آهي…</string>
+    <string name="esleme_tamamlanamadi">ڳنڍڻ پورو نه ٿي سگهيو</string>
+    <string name="esleme_saklanamadi">هي ٽي وي رابطي جي ڪنجي محفوظ طريقي سان نٿو رکي سگهي. ڪوڊ سان جڳهه داخل ڪري سگهو ٿا يا شهر چونڊي سگهو ٿا.</string>
+    <string name="telefonunuzu_ekleyin">پنهنجو فون شامل ڪريو</string>
+    <string name="esleme_alt">اوهان جي جڳهه جا نماز جا وقت؛ پڙهيل نمازون به ظاهر ٿين ٿيون.</string>
+    <string name="esleme_adim1">فون تي Namaz Akışı کوليو</string>
+    <string name="esleme_adim2">سيٽنگون › منهنجون ڊوائيسون › ٽي وي شامل ڪريو</string>
+    <string name="esleme_adim3">فون جو ڪئميرا ڪوڊ ڏانهن ڪريو</string>
+    <string name="esleme_ayni_wifi">فون ۽ ٽي وي ساڳي Wi-Fi نيٽ ورڪ تي هجڻ گهرجن.</string>
+    <string name="esleme_onay_soru">هي فون شامل ڪريو؟</string>
+    <string name="esleme_onay_aciklama">شامل ٿيل فون پنهنجي جڳهه ۽ نشان لڳايل نمازون هن ٽي وي ڏانهن موڪلي سگهي ٿو.</string>
+    <string name="ekleyin">شامل ڪريو</string>
+    <string name="hayir">نه</string>
+    <string name="esleme_eklendi">%1$s شامل ٿي ويو</string>
+    <string name="konumunuz_geldi">اوهان جي جڳهه پهچي وئي</string>
+    <string name="konuma_gore_hesaplanacak">نماز جا وقت هن جڳهه لاءِ ڳڻيا ويندا.</string>
+    <string name="qr_konum_alindi">جڳهه ملي وئي</string>
+    <string name="qr_kodu">فون سان اسڪين ڪرڻ لاءِ ڳنڍڻ جو ڪوڊ</string>
+    <string name="ag_yok">ٽي وي ڪنهن نيٽ ورڪ سان ڳنڍيل ناهي</string>
+    <string name="ag_yok_aciklama">فون مان 7 انگن وارو ڪوڊ داخل ڪري يا شهر چونڊي جاري رکي سگهو ٿا.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">فون وارو ڪوڊ داخل ڪريو</string>
+    <string name="kod_yol">فون تي: سيٽنگون › منهنجون ڊوائيسون › ٽي وي شامل ڪريو</string>
+    <string name="kod_hatali">ڪوڊ نه مليو. فون تي 7 انگ جانچيو؛ غلط انگ “%1$s” سان درست ڪريو.</string>
+    <string name="kod_rakamli_kumanda">جيڪڏهن ريموٽ ۾ انگن وارا بٽڻ آهن ته انهن سان به لکي سگهو ٿا.</string>
+    <string name="kod_bos_hane">خالي انگ</string>
+    <string name="kod_sil">ختم ڪريو</string>
+    <string name="kod_sil_aciklama">آخري انگ ختم ڪريو</string>
+    <string name="kod_geri">واپس</string>
+    <string name="vazgecin">منسوخ ڪريو</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">پنهنجو شهر چونڊيو</string>
+    <string name="il_merkezine_gore">نماز جا وقت شهر جي مرڪز لاءِ ڳڻيا وڃن ٿا.</string>
+    <string name="il_secili">%1$s، چونڊيل</string>
+    <string name="dream_il_yok">نماز جي وقتن جو بورڊ ڏسڻ لاءِ Namaz Akışı ايپ کوليو ۽ پنهنجو شهر چونڊيو.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">جڳهه: %1$s</string>
+    <string name="ayar_konum_yok">ڪا جڳهه نه چونڊي وئي</string>
+    <string name="ayar_telefon_ekleyin">فون شامل ڪريو</string>
+    <string name="ayar_konumu_kodla">ڪوڊ سان جڳهه داخل ڪريو</string>
+    <string name="ayar_bagli_telefonlar">هن ٽي وي سان ڳنڍيل فون</string>
+    <string name="ayar_telefon_yok">اڃا ڪو فون شامل ناهي. کاٻي پاسي “%1$s” استعمال ڪريو ۽ ظاهر ٿيندڙ ڪوڊ اسڪين ڪريو.</string>
+    <string name="kaldirin">هٽايو</string>
+    <string name="ayar_ne_gonderir">فون ڇا موڪلين ٿا؟</string>
+    <string name="ayar_madde_konum">جڳهه: نماز جا وقت ان موجب ٿين ٿا</string>
+    <string name="ayar_madde_namazlar">نشان لڳايل نمازون، جيڪي چونڊين انهن لاءِ</string>
+    <string name="ayar_madde_sifreli">انڪرپٽ ٿيل، صرف گهر جي نيٽ ورڪ تي</string>
+    <string name="son_haber_yok">اڃا ڪا معلومات ناهي</string>
+    <string name="son_haber_az_once">هاڻي</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d منٽ اڳ</item>
+        <item quantity="other">%1$d منٽ اڳ</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d ڪلاڪ اڳ</item>
+        <item quantity="other">%1$d ڪلاڪ اڳ</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d ڏينهن اڳ</item>
+        <item quantity="other">%1$d ڏينهن اڳ</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s هٽايو؟</string>
+    <string name="kaldir_aciklama">هي فون ٽي وي ڏانهن معلومات نه موڪلي سگهندو. ٻيهر شامل ڪرڻ لاءِ QR ڪوڊ ٻيهر اسڪين ڪرڻو پوندو.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">اوهان جي فون جي جڳهه</string>
+</resources>

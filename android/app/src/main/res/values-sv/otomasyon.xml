@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (İsveççe). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Jag har bett</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Status för bönetid</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Händelse för bönetid</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Den här inställningen läggs till från en automationsapp</string>
+  <string name="otomasyon_bilgi_tarayici">Webbläsare kan inte få permanent behörighet. Lägg till den från pluginlistan i en app som Tasker, MacroDroid eller Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Lägg till den genom att välja ”Namaz Akışı” i pluginlistan i en app som Tasker, MacroDroid eller Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s är blockerad</string>
+  <string name="otomasyon_engelli_mesaj">Du har tidigare blockerat den här appen från att markera dina böner. Du kan tillåta den i Namaz Akışı under Inställningar &gt; ”Appar som kan markera Jag har bett”.</string>
+  <string name="otomasyon_izin_baslik">Använda med %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s kan få veta när en bönetid börjar, när den håller på att ta slut och när du är i en moské, och köra dina automationer. Du kan ändra ditt beslut i Namaz Akışı under Inställningar &gt; ”Appar som kan markera Jag har bett”.</string>
+  <string name="otomasyon_izin_kildim">%1$s kan markera den aktuella bönen som förrättad med automationen du har ställt in. Du kan ändra ditt beslut i Namaz Akışı under Inställningar &gt; ”Appar som kan markera Jag har bett”.</string>
+  <string name="otomasyon_izin_ver">Tillåt</string>
+  <string name="otomasyon_engelle">Blockera</string>
+  <string name="otomasyon_vazgec">Avbryt</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">När ska den köras?</string>
+  <string name="otomasyon_ileri">Nästa</string>
+  <string name="otomasyon_vakit_baslik">Vilken bön?</string>
+  <string name="otomasyon_herhangi_vakit">Vilken bönetid som helst</string>
+  <string name="otomasyon_kaydet">Spara</string>
+  <string name="otomasyon_kosul_icinde">Medan det är bönetid</string>
+  <string name="otomasyon_kosul_cikiyor">Medan en bönetid håller på att ta slut (%1$d min kvar, Bönevakt på)</string>
+  <string name="otomasyon_kosul_camide">Medan du är i en moské</string>
+  <string name="otomasyon_olay_girdi">När en bönetid börjar</string>
+  <string name="otomasyon_olay_cikiyor">När en bönetid håller på att ta slut (%1$d min kvar, Bönevakt på)</string>
+  <string name="otomasyon_olay_camide">När du upptäcks i en moské</string>
+</resources>

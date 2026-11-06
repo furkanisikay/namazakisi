@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Azerice). "Qıldım" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Namaz siqnalı</string>
+  <string name="alarm_kildim">Qıldım</string>
+  <string name="alarm_kapat">Söndür</string>
+  <string name="alarm_kanal_aciklamasi">Seçdiyiniz xatırlatma addımlarında çalan həqiqi siqnal</string>
+</resources>

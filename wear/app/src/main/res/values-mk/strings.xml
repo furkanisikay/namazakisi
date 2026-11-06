@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Makedonca (Kiril). Terimler: src/core/dil/sozluk/mk. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">mk</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Следен намаз</string>
+    <string name="tile_aciklama">Следниот намаз и неговото време</string>
+    <string name="komplikasyon_adi">Преостанато време</string>
+    <string name="cikis_saati_komplikasyon_adi">Време на истек на намазот</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Следен намаз</string>
+    <string name="bugun_tile_adi">Денес</string>
+    <string name="bugun_tile_aciklama">Денешните пет намази; означете ги клањаните со два допира</string>
+    <string name="ilerleme_komplikasyon_adi">Дневен напредок</string>
+    <string name="dagilim_komplikasyon_adi">Преглед на денот</string>
+    <string name="kerahat_komplikasyon_adi">Мекрух време</string>
+    <string name="son_dakikalar_kanal_adi">Последни минути</string>
+    <string name="son_dakikalar_kanal_aciklama">Одбројување на бројчаникот во последните минути од намаз што не сте го клањале</string>
+    <string name="tesbihat_adi">Тесбих</string>
+    <string name="tesbihat_kanal_adi">Тесбих</string>
+    <string name="tesbihat_kanal_aciklama">Тивка икона на бројчаникот за враќање на незавршен тесбих</string>
+    <string name="kible_adi">Кибла</string>
+    <string name="kible_komplikasyon_adi">Кибла</string>
+    <string name="camideyim_kanal_adi">Во џамија</string>
+    <string name="camideyim_kanal_aciklama">Тивка икона на бројчаникот кога телефонот ќе јави дека сте во џамија</string>
+    <string name="uyandirma_kanal_adi">Тивко будење</string>
+    <string name="uyandirma_kanal_aciklama">Ве буди само со вибрација, за сабах и ноќен намаз</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Клањав</string>
+    <string name="kilindi_isareti">✓ Клањано</string>
+    <string name="kapat">Исклучете</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Отворете го Namaz Akışı на телефонот за да ги видите времињата за намаз.</string>
+    <string name="yuk_eskidi">Податоците за времињата се застарени. Отворете го Namaz Akışı на телефонот за да ги освежите.</string>
+    <string name="guncelleme_gerekli">Ажурирајте го Namaz Akışı на часовникот.</string>
+    <string name="bildirim_izni">За да добивате потсетници и кога телефонот не е кај вас, дозволете известувања од Namaz Akışı во поставките на часовникот.</string>
+    <string name="cami_soru">Дали сте во џамија?</string>
+    <string name="cami_evet">Да</string>
+    <string name="cami_evet_aciklama">Да, во џамија сум. Го вклучува Режимот за намаз</string>
+    <string name="cami_hayir">Не</string>
+    <string name="cami_hayir_aciklama">Не, не сум во џамија</string>
+    <string name="camidesiniz">Во џамија сте</string>
+    <string name="cami_degil">Ова не е џамија</string>
+    <string name="cami_degil_aciklama">Ова не е џамија. Ова место повеќе нема да се смета за џамија</string>
+    <string name="tesbihat_ac">Отворете го бројачот за тесбих</string>
+    <string name="kible_ac">Отворете го компасот за кибла</string>
+    <string name="ses_dene">Испробајте го звукот</string>
+    <string name="ses_dene_aciklama">Испробајте го читањето на глас на часовникот</string>
+    <string name="telefonda_acin">Отворете на телефонот</string>
+    <string name="telefonda_ekran_ac">Отворете %1$s на телефонот</string>
+    <string name="ekran_kaza">Пропуштени намази</string>
+    <string name="ekran_camideyim">Во џамија</string>
+    <string name="ekran_ayarlar">Поставки</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">клањано, се синхронизира</string>
+    <string name="durum_kilindi">клањано</string>
+    <string name="durum_girmedi">уште не е време</string>
+    <string name="durum_simdiki">тековно време за намаз, допрете за означување</string>
+    <string name="durum_simdiki_kalan">тековно време за намаз, %1$s, допрете за означување</string>
+    <string name="durum_kilinmadi">не е клањано, допрете за означување</string>
+    <string name="isaretleyin">Означете како клањано</string>
+    <string name="esitleniyor">се синхронизира</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Потврдете Клањав</string>
+    <string name="vazgecin">Откажете</string>
+    <string name="vazgec">Откажете</string>
+    <string name="kerahat_vaktindesiniz">Сега е мекрух време.</string>
+    <string name="kilindi_dua">Клањано. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Режимот за намаз е вклучен, до %1$s. Допрете за да го исклучите</string>
+    <string name="namaz_modu_ac_aciklama">Вклучете го Режимот за намаз на телефонот</string>
+    <string name="namaz_modu_kapatin">Исклучете го Режимот за намаз</string>
+    <string name="namaz_modu_acin">Вклучете го Режимот за намаз</string>
+    <string name="namaz_modu_acik_bitis">Вклучено, до %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Се одредува насоката…</string>
+    <string name="kible_yuk_yok">Отворете го Namaz Akışı на телефонот за да ја најдете киблата.</string>
+    <string name="kible_konum_yok">Вклучете ја локацијата на телефонот за да ја најдете киблата. Ако Namaz Akışı не е ажуриран, ажурирајте го.</string>
+    <string name="kible_sensor_yok">Овој часовник нема сензор за компас. Насоката на киблата можете да ја видите на телефонот.</string>
+    <string name="kible_kuzeyden">Кибла %1$d° (од север)</string>
+    <string name="kible_derece">Кибла %1$d°</string>
+    <string name="kible_telefonda_ac">Отворете ја киблата на телефонот</string>
+    <string name="kible_erisim">%1$s. Киблата е %2$d° од север, %3$s</string>
+    <string name="kible_hizali">Свртени сте кон киблата</string>
+    <string name="kible_kalibrasyon">За калибрирање, движете го зглобот во воздух како да цртате осмица</string>
+    <string name="kible_egim">Држете го часовникот паралелно со земјата</string>
+    <string name="kible_titresim_acik">Насочувањето со вибрација е вклучено. Допрете за да го исклучите</string>
+    <string name="kible_titresim_kapali">Насочувањето со вибрација е исклучено. Допрете за да го вклучите</string>
+    <string name="kible_harf_kuzey">С</string>
+    <string name="kible_harf_dogu">И</string>
+    <string name="kible_harf_guney">Ј</string>
+    <string name="kible_harf_bati">З</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Тесбихот е завршен. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Вкупно %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Бројте</string>
+    <string name="tesbihat_bastan_baslayin">Почнете одново</string>
+    <string name="tesbihat_bastan_soru">Да се почне одново?</string>
+    <string name="tesbihat_sifirlanir">Броењето се ресетира.</string>
+    <string name="tesbihat_geri_al">Поништете</string>
+    <string name="tesbihat_geri_al_aciklama">Поништете го последното броење</string>
+    <string name="tesbihat_yeniden">Почнете одново</string>
+    <string name="tesbihat_yeniden_aciklama">Почнете го тесбихот одново</string>
+    <string name="tesbihat_suruyor">Тесбихот е во тек: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Клањав. Го исклучува будењето</string>
+    <string name="uyandirma_kapat_aciklama">Исклучете го будењето</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Отворете го Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Допрете за времињата за намаз</string>
+    <string name="tile_telefonda_acin">Отворете ја апликацијата на телефонот</string>
+    <string name="tile_sonra">за %1$s</string>
+    <string name="tile_siradaki_aciklama">Следен намаз %1$s, настапува во %2$s. Отворете ја апликацијата</string>
+    <string name="tile_giris">настапува %1$s</string>
+    <string name="tile_cikis">истекува %1$s</string>
+    <string name="bugun_bos_satir1">Отворете ја апликацијата</string>
+    <string name="bugun_bos_satir2">на телефонот</string>
+    <string name="bugun_acma_aciklamasi">Денес клањани %1$d/%2$d намази. Отворете ја апликацијата</string>
+    <string name="bugun_sayi">Денес %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Мекрух време · допрете повторно за потврда</string>
+    <string name="bugun_onay_tekrar">Допрете повторно за потврда</string>
+    <string name="bugun_tamam">Денешните намази се целосни</string>
+    <string name="bugun_kilinmadi">%1$s: не е клањано</string>
+    <string name="bugun_siradaki">Следен: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Допрете повторно</string>
+    <string name="bugun_kilindi">%1$s: клањано</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s: клањано, се синхронизира</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Се чекаат времињата за намаз; отворете го Namaz Akışı на телефонот</string>
+    <string name="komplikasyon_bekleniyor">Се чекаат времињата</string>
+    <string name="komplikasyon_vakit">Намаз</string>
+    <string name="komplikasyon_cikis">Истек</string>
+    <string name="komplikasyon_sirada">Следен</string>
+    <string name="gun_durumu_aciklama">Денес клањани %2$d од %1$d намази</string>
+    <string name="gun_durumu_kilinmamis">%1$s; не е клањано: %2$s</string>
+    <string name="komplikasyon_namaz">Намази</string>
+    <string name="komplikasyon_kerahat">Мекрух</string>
+    <string name="kerahat_icinde_aciklama">Мекрух време е, истекува %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Следно мекрух време %1$s</string>
+    <string name="kible_komplikasyon">Киблата е %1$d° од север. Отворете го компасот</string>
+    <string name="kible_komplikasyon_konumlu">Киблата е %1$d° од север, %2$s. Отворете го компасот</string>
+    <string name="kible_komplikasyon_konum_yok">Вклучете ја локацијата на телефонот за да ја најдете киблата</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Итен потсетник · Со вибрација</string>
+    <string name="muhafiz_kanal_acil">Итен потсетник</string>
+    <string name="muhafiz_kanal_titresimli">Потсетник за намаз · Со вибрација</string>
+    <string name="muhafiz_kanal">Потсетник за намаз</string>
+    <string name="muhafiz_kanal_aciklama">Потсетници за намаз прикажани на часовникот и кога телефонот не е кај вас</string>
+    <string name="son_dakikalar_cikis">Истекува: %1$s</string>
+    <string name="son_dakikalar_bitis">Крај: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Преостанато време до истекот: %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Преостанато време за %1$s</string>
+    <string name="cami_namaz_modu_bitis">Режим за намаз · до %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Отворено на телефонот</string>
+    <string name="telefona_ulasilamadi">Вашиот телефон не е достапен</string>
+</resources>

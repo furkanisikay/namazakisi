@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Luganda. Terimler: src/core/dil/sozluk/lg. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">lg</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Esswala eddako</string>
+    <string name="tile_aciklama">Esswala eddako n’essaawa yaayo</string>
+    <string name="komplikasyon_adi">Ekiseera ekisigadde</string>
+    <string name="cikis_saati_komplikasyon_adi">Essaawa esswala w’eggwaako</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Esswala eddako</string>
+    <string name="bugun_tile_adi">Leero</string>
+    <string name="bugun_tile_aciklama">Esswala ettaano eza leero; teeka akabonero ku z’osaaze ng’onyiga emirundi ebiri</string>
+    <string name="ilerleme_komplikasyon_adi">Enkulaakulana ya leero</string>
+    <string name="dagilim_komplikasyon_adi">Olunaku mu bufunze</string>
+    <string name="kerahat_komplikasyon_adi">Ekiseera ekikyayibwa</string>
+    <string name="son_dakikalar_kanal_adi">Eddakiika ezisembayo</string>
+    <string name="son_dakikalar_kanal_aciklama">Okubala ekiseera ku ssaawa mu ddakiika ezisembayo ez’esswala gy’otannasaala</string>
+    <string name="tesbihat_adi">Tasbiih</string>
+    <string name="tesbihat_kanal_adi">Tasbiih</string>
+    <string name="tesbihat_kanal_aciklama">Akabonero akasirifu ku ssaawa okudda ku tasbiih etaggwa</string>
+    <string name="kible_adi">Kibula</string>
+    <string name="kible_komplikasyon_adi">Kibula</string>
+    <string name="camideyim_kanal_adi">Ku muzikiti</string>
+    <string name="camideyim_kanal_aciklama">Akabonero akasirifu ku ssaawa essimu yo bw’etegeeza nti oli ku muzikiti</string>
+    <string name="uyandirma_kanal_adi">Okuzuukusa okusirifu</string>
+    <string name="uyandirma_kanal_aciklama">Kikuzuukusa na kukankana kwokka, ku Subuhi ne Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Nsaaze</string>
+    <string name="kilindi_isareti">✓ Esaaliddwa</string>
+    <string name="kapat">Ggyako</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Ggulawo Namaz Akışı ku ssimu yo olabe ebiseera by’esswala.</string>
+    <string name="yuk_eskidi">Ebiseera by’esswala bikaddiye. Ggulawo Namaz Akışı ku ssimu yo obizze obuggya.</string>
+    <string name="guncelleme_gerekli">Longoosa Namaz Akışı ku ssaawa yo.</string>
+    <string name="bildirim_izni">Okufuna ebijjukizo ne bw’oba nga essimu yo teriiwo, kkiriza obubaka bwa Namaz Akışı mu ntegeka z’essaawa.</string>
+    <string name="cami_soru">Oli ku muzikiti?</string>
+    <string name="cami_evet">Yee</string>
+    <string name="cami_evet_aciklama">Yee, ndi ku muzikiti. Kiteekako Engeri y’esswala</string>
+    <string name="cami_hayir">Nedda</string>
+    <string name="cami_hayir_aciklama">Nedda, siri ku muzikiti</string>
+    <string name="camidesiniz">Oli ku muzikiti</string>
+    <string name="cami_degil">Kino si muzikiti</string>
+    <string name="cami_degil_aciklama">Kino si muzikiti. Ekifo kino tekijja kuddamu kubalibwa ng’omuzikiti</string>
+    <string name="tesbihat_ac">Ggulawo ekibalirizo kya tasbiih</string>
+    <string name="kible_ac">Ggulawo kampasi ya Kibula</string>
+    <string name="ses_dene">Gezesa eddoboozi</string>
+    <string name="ses_dene_aciklama">Gezesa okusoma mu ddoboozi okw’essaawa</string>
+    <string name="telefonda_acin">Ggulawo ku ssimu</string>
+    <string name="telefonda_ekran_ac">Ggulawo %1$s ku ssimu yo</string>
+    <string name="ekran_kaza">Olukalala lwa Qadha</string>
+    <string name="ekran_camideyim">Ndi ku muzikiti</string>
+    <string name="ekran_ayarlar">Entegeka</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">esaaliddwa, ekwataganyizibwa</string>
+    <string name="durum_kilindi">esaaliddwa</string>
+    <string name="durum_girmedi">tekinnatuuka</string>
+    <string name="durum_simdiki">ekiseera ky’esswala ekiriwo, nyiga oteekeko akabonero</string>
+    <string name="durum_simdiki_kalan">ekiseera ky’esswala ekiriwo, %1$s, nyiga oteekeko akabonero</string>
+    <string name="durum_kilinmadi">tesaaliddwa, nyiga oteekeko akabonero</string>
+    <string name="isaretleyin">Teeka akabonero nti esaaliddwa</string>
+    <string name="esitleniyor">ekwataganyizibwa</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Kakasa Nsaaze</string>
+    <string name="vazgecin">Sazaamu</string>
+    <string name="vazgec">Sazaamu</string>
+    <string name="kerahat_vaktindesiniz">Kati kiseera ekikyayibwa.</string>
+    <string name="kilindi_dua">Esaaliddwa. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Engeri y’esswala eri ku, eggwaako %1$s. Nyiga ogiggyeko</string>
+    <string name="namaz_modu_ac_aciklama">Teekako Engeri y’esswala ku ssimu yo</string>
+    <string name="namaz_modu_kapatin">Ggyako Engeri y’esswala</string>
+    <string name="namaz_modu_acin">Teekako Engeri y’esswala</string>
+    <string name="namaz_modu_acik_bitis">Eri ku, eggwaako %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Oluuyi luzuulibwa…</string>
+    <string name="kible_yuk_yok">Ggulawo Namaz Akışı ku ssimu yo ozuule Kibula.</string>
+    <string name="kible_konum_yok">Teekako ekifo ku ssimu yo ozuule Kibula. Namaz Akışı bw’eba terongooseddwa, girongoose.</string>
+    <string name="kible_sensor_yok">Essaawa eno terina kyuma kya kampasi. Osobola okulaba oluuyi lwa Kibula ku ssimu yo.</string>
+    <string name="kible_kuzeyden">Kibula %1$d° (okuva ku Bukiikakkono)</string>
+    <string name="kible_derece">Kibula %1$d°</string>
+    <string name="kible_telefonda_ac">Ggulawo Kibula ku ssimu yo</string>
+    <string name="kible_erisim">%1$s. Kibula eri %2$d° okuva ku Bukiikakkono, %3$s</string>
+    <string name="kible_hizali">Otunuulidde Kibula</string>
+    <string name="kible_kalibrasyon">Okuteekateeka, tambuza omukono gwo mu bbanga ng’ewandiika 8</string>
+    <string name="kible_egim">Kwata essaawa yo nga yenkanankana n’ettaka</string>
+    <string name="kible_titresim_acik">Okulungamya n’okukankana kuli ku. Nyiga okukuggyako</string>
+    <string name="kible_titresim_kapali">Okulungamya n’okukankana kuggyiddwako. Nyiga okukuteekako</string>
+    <string name="kible_harf_kuzey">BK</string>
+    <string name="kible_harf_dogu">BV</string>
+    <string name="kible_harf_guney">BD</string>
+    <string name="kible_harf_bati">BG</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbiih ewedde. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Byonna %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Bala</string>
+    <string name="tesbihat_bastan_baslayin">Tandika buto</string>
+    <string name="tesbihat_bastan_soru">Tandika buto?</string>
+    <string name="tesbihat_sifirlanir">Okubala kuddayo ku zeero.</string>
+    <string name="tesbihat_geri_al">Komyawo</string>
+    <string name="tesbihat_geri_al_aciklama">Komyawo okubala okusembayo</string>
+    <string name="tesbihat_yeniden">Ddamu otandike</string>
+    <string name="tesbihat_yeniden_aciklama">Ddamu otandike tasbiih</string>
+    <string name="tesbihat_suruyor">Tasbiih egenda mu maaso: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Nsaaze. Kiggyako okuzuukusa</string>
+    <string name="uyandirma_kapat_aciklama">Ggyako okuzuukusa</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Ggulawo Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Nyiga olabe ebiseera by’esswala</string>
+    <string name="tile_telefonda_acin">Ggulawo app ku ssimu yo</string>
+    <string name="tile_sonra">mu %1$s</string>
+    <string name="tile_siradaki_aciklama">Esswala eddako %1$s, etandika %2$s. Ggulawo app</string>
+    <string name="tile_giris">etandika %1$s</string>
+    <string name="tile_cikis">eggwaako %1$s</string>
+    <string name="bugun_bos_satir1">Ggulawo app</string>
+    <string name="bugun_bos_satir2">ku ssimu yo</string>
+    <string name="bugun_acma_aciklamasi">Leero esswala %1$d/%2$d zisaaliddwa. Ggulawo app</string>
+    <string name="bugun_sayi">Leero %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Kikyayibwa · nyiga nate okukakasa</string>
+    <string name="bugun_onay_tekrar">Nyiga nate okukakasa</string>
+    <string name="bugun_tamam">Esswala za leero ziwedde</string>
+    <string name="bugun_kilinmadi">%1$s tesaaliddwa</string>
+    <string name="bugun_siradaki">Eddako: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Nyiga nate</string>
+    <string name="bugun_kilindi">%1$s esaaliddwa</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s esaaliddwa, ekwataganyizibwa</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Tulindirira ebiseera by’esswala; ggulawo Namaz Akışı ku ssimu yo</string>
+    <string name="komplikasyon_bekleniyor">Tulindirira</string>
+    <string name="komplikasyon_vakit">Esswala</string>
+    <string name="komplikasyon_cikis">Eggwa</string>
+    <string name="komplikasyon_sirada">Eddako</string>
+    <string name="gun_durumu_aciklama">Leero esswala %2$d ku %1$d zisaaliddwa</string>
+    <string name="gun_durumu_kilinmamis">%1$s; tezisaaliddwa: %2$s</string>
+    <string name="komplikasyon_namaz">Esswala</string>
+    <string name="komplikasyon_kerahat">Kikyayibwa</string>
+    <string name="kerahat_icinde_aciklama">Kiseera ekikyayibwa, kiggwaako %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Ekiseera ekikyayibwa ekiddako %1$s</string>
+    <string name="kible_komplikasyon">Kibula eri %1$d° okuva ku Bukiikakkono. Ggulawo kampasi</string>
+    <string name="kible_komplikasyon_konumlu">Kibula eri %1$d° okuva ku Bukiikakkono, %2$s. Ggulawo kampasi</string>
+    <string name="kible_komplikasyon_konum_yok">Teekako ekifo ku ssimu yo ozuule Kibula</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Ekijjukizo eky’amangu · Okukankana</string>
+    <string name="muhafiz_kanal_acil">Ekijjukizo eky’amangu</string>
+    <string name="muhafiz_kanal_titresimli">Ekijjukizo ky’esswala · Okukankana</string>
+    <string name="muhafiz_kanal">Ekijjukizo ky’esswala</string>
+    <string name="muhafiz_kanal_aciklama">Ebijjukizo by’esswala ebirabika ku ssaawa yo ne bw’oba nga essimu yo teriiwo</string>
+    <string name="son_dakikalar_cikis">Eggwaako: %1$s</string>
+    <string name="son_dakikalar_bitis">Eggwaako: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Ekiseera ekisigadde %1$s okuggwaako</string>
+    <string name="son_dakikalar_kalan_erisim">Ekiseera ekisigadde ku %1$s</string>
+    <string name="cami_namaz_modu_bitis">Engeri y’esswala · eggwaako %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Egguddwa ku ssimu yo</string>
+    <string name="telefona_ulasilamadi">Essimu yo tetuukika</string>
+</resources>

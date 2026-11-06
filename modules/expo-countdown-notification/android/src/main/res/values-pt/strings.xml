@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Contagens em direto</string>
+    <string name="countdown_kanal_canli_aciklama">Contagens decrescentes na Now Bar e na barra de estado</string>
+    <string name="countdown_kanal_genel_ad">Notificações de contagem decrescente</string>
+    <string name="countdown_kanal_genel_aciklama">Canal das notificações de contagem decrescente</string>
+
+    <string name="countdown_eylem_kildim">Rezei</string>
+    <string name="countdown_eylem_durdur">Parar</string>
+
+    <string name="countdown_yedek_vakit">Apresse-se, a hora da oração está a terminar.</string>
+    <string name="countdown_yedek_iftar">O tempo está a acabar.</string>
+    <string name="countdown_yedek_sahur">Ainda pode comer e beber; o jejum começa em breve.</string>
+    <string name="countdown_yedek_seri">As orações de hoje estão incompletas; não perca a sua sequência.</string>
+
+    <string name="countdown_onek_vakit">Até ao fim da hora</string>
+    <string name="countdown_onek_vakit_dar">A hora termina</string>
+    <string name="countdown_onek_iftar">Até ao iftar</string>
+    <string name="countdown_onek_iftar_dar">Até ao iftar</string>
+    <string name="countdown_onek_sahur">Até ao fim do suhur</string>
+    <string name="countdown_onek_sahur_dar">Fim do suhur</string>
+    <string name="countdown_onek_seri">Para salvar a sequência</string>
+    <string name="countdown_onek_seri_dar">Fim da sequência</string>
+</resources>

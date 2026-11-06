@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Khmerce kaynaklar (dalga 12). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/km. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">សឡាតបច្ចុប្បន្ន ពេលវាផុត និង បានសឡាតហើយ ដោយប៉ះតែម្ដង</string>
+  <string name="widget_genis_aciklama">សឡាតប្រាំពេលថ្ងៃនេះ ការរាប់ថយក្រោយ និង បានសឡាតហើយ ដោយប៉ះតែម្ដង</string>
+  <string name="widget_kapak_adi">ពេលសឡាតលើអេក្រង់គម្រប</string>
+  <string name="widget_kapak_aciklama">ពេលសឡាតថ្ងៃនេះ និងការរាប់ថយក្រោយសម្រាប់អេក្រង់គម្រប Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — បុរាណ</string>
+  <string name="widget_klasik_aciklama">រូបរាងបៃតងបុរាណ៖ ពេលនៅសល់ដល់សឡាតបន្ទាប់</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — បុរាណធំ</string>
+  <string name="widget_klasik_genis_aciklama">រូបរាងបៃតងបុរាណ៖ ការរាប់ថយក្រោយ និងពេលសឡាតថ្ងៃនេះ</string>
+  <string name="widget_ayet_adi">អាយ៉ាត់ប្រចាំថ្ងៃ</string>
+  <string name="widget_ayet_aciklama">អាយ៉ាត់មួយ និងការបកប្រែរបស់វា ធ្វើឲ្យថ្មីរាល់ថ្ងៃនៅពេលស៊ូពុស</string>
+  <string name="widget_ayar_zemin_palet">ពណ៌កម្មវិធី (ពណ៌ស្រាល)</string>
+  <string name="widget_ayar_ayet_icerik">នៅទំហំការ៉េ បង្ហាញ</string>
+  <string name="widget_ayar_ayet_icerik_meal">ការបកប្រែ</string>
+  <string name="widget_ayar_ayet_icerik_hat">អត្ថបទអារ៉ាប់ (អក្សរផ្ចង់)</string>
+  <string name="kutu_kildim_etiket">បានសឡាតហើយ</string>
+  <string name="kisayol_kildim_kisa">បានសឡាតហើយ</string>
+  <string name="kisayol_kildim_uzun">បានសឡាតពេលបច្ចុប្បន្នហើយ</string>
+  <string name="kisayol_kible_kisa">គិបឡាត់</string>
+  <string name="kisayol_kible_uzun">បង្ហាញទិសគិបឡាត់</string>
+  <string name="kisayol_kaza_kisa">បញ្ជីសងវិញ</string>
+  <string name="kisayol_kaza_uzun">បើកបញ្ជីសឡាតសងវិញ</string>
+  <string name="kildim_onay_baslik">សម្គាល់%1$sថាបានសឡាតឬ?</string>
+  <string name="kildim_onay_mesaj">មិនច្បាស់ថាកម្មវិធីណាបានផ្ញើសំណើនេះទេ។ សូមបញ្ជាក់ បើអ្នកបានសឡាតហើយ។</string>
+  <string name="kildim_onay_evet">បានសឡាតហើយ</string>
+  <string name="kildim_onay_vazgec">បោះបង់</string>
+  <string name="kildim_guven_baslik">អនុញ្ញាតឲ្យ %1$s សម្គាល់សឡាតរបស់អ្នកថាបានសឡាតឬ?</string>
+  <string name="kildim_guven_mesaj">សឡាតដែលនឹងត្រូវសម្គាល់ឥឡូវ៖ %1$s។ អ្នកអាចប្ដូរការសម្រេចចិត្តរបស់អ្នកនៅពេលក្រោយក្នុង ការកំណត់ &gt; កម្មវិធីដែលសម្គាល់ បានសឡាតហើយ។</string>
+  <string name="kildim_guven_tarayici_mesaj">សឡាតដែលនឹងត្រូវសម្គាល់ឥឡូវ៖ %1$s។ សំណើនេះមកពីកម្មវិធីរុករក ដោយសារទំព័របណ្ដាញណាក៏អាចបើកតំណនេះបាន ការអនុញ្ញាតអចិន្ត្រៃយ៍មិនអាចផ្ដល់បានទេ។</string>
+  <string name="kildim_guven_her_zaman">អនុញ្ញាតជានិច្ច</string>
+  <string name="kildim_guven_bu_sefer">តែលើកនេះ</string>
+  <string name="kildim_guven_engelle">រារាំង</string>
+  <string name="kildim_guven_engellendi">%1$s លែងអាចសម្គាល់សឡាតរបស់អ្នកបានទៀតហើយ។ អ្នកអាចប្ដូរវានៅក្នុងការកំណត់។</string>
+  <string name="widget_ayar_baslik">ប្ដូរធាតុក្រាហ្វិកតាមចិត្ត</string>
+  <string name="widget_ayar_zemin">ផ្ទៃខាងក្រោយ</string>
+  <string name="widget_ayar_zemin_material">ពណ៌ផ្ទាំងរូបភាព</string>
+  <string name="widget_ayar_zemin_sistem">រចនាប័ទ្មប្រព័ន្ធ</string>
+  <string name="widget_ayar_zemin_acik">ភ្លឺ</string>
+  <string name="widget_ayar_zemin_koyu">ងងឹត</string>
+  <string name="widget_ayar_zemin_seffaf">ថ្លា</string>
+  <string name="widget_ayar_opaklik">ភាពស្រអាប់ផ្ទៃខាងក្រោយ</string>
+  <string name="widget_ayar_gosterim">បង្ហាញជាអក្សរធំ</string>
+  <string name="widget_ayar_gosterim_kalan">ពេលនៅសល់</string>
+  <string name="widget_ayar_gosterim_bitis">ម៉ោងបញ្ចប់</string>
+  <string name="widget_ayar_gosterim_not">ម៉ោងបញ្ចប់ត្រូវបានបង្ហាញនៅគ្រប់ទំហំ។</string>
+  <string name="widget_ayar_sonraki">បង្ហាញសឡាតបន្ទាប់</string>
+  <string name="widget_ayar_vazgec">បោះបង់</string>
+  <string name="widget_ayar_kaydet">រក្សាទុក</string>
+  <string name="kildim_onay_kanal_adi">ការបញ្ជាក់ បានសឡាតហើយ</string>
+  <string name="kildim_onay_kanal_aciklama">ការបញ្ជាក់ស្ងាត់ដែលបង្ហាញពីរបីវិនាទី នៅពេលអ្នកប៉ះ «បានសឡាតហើយ» ក្នុងការជូនដំណឹង</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">ផុត %1$s</string>
+  <string name="widget_giris">ចូល %1$s</string>
+  <string name="widget_namaz_vakti">ពេលសឡាត</string>
+  <string name="widget_uygulamayi_acin">បើកកម្មវិធី</string>
+  <string name="widget_siradaki">បន្ទាប់៖ %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">ឥឡូវគ្មានសឡាតដែលត្រូវសម្គាល់</string>
+  <string name="widget_dugme_kildim">បានសឡាតហើយ</string>
+  <string name="widget_dugme_isaretleniyor">កំពុងសម្គាល់</string>
+  <string name="widget_dugme_kilindi">បានសឡាត</string>
+  <string name="widget_dugme_vakit_girmedi">មិនទាន់ដល់ពេល</string>
+  <string name="widget_klasik_uygulamayi_acin">បើកកម្មវិធី</string>
+  <string name="widget_klasik_erisim_veri_yok">បើកកម្មវិធីដើម្បីមើលពេលសឡាត</string>
+  <string name="widget_klasik_erisim_siradaki">សឡាតបន្ទាប់៖ %1$s ចាប់ផ្ដើមនៅ %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ដល់ហ្ស៊ូហូរ</string>
+  <string name="widget_onizleme_klasik_genis">ដល់ម៉ាហ្គ្រិប</string>
+  <string name="widget_onizleme_imsak">ស៊ូពុស</string>
+  <string name="widget_onizleme_gunes">ថ្ងៃរះ</string>
+  <string name="widget_onizleme_ogle">ហ្ស៊ូហូរ</string>
+  <string name="widget_onizleme_ikindi">អាសើរ</string>
+  <string name="widget_onizleme_aksam">ម៉ាហ្គ្រិប</string>
+  <string name="widget_onizleme_yatsi">អ៊ីស្ហា</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s ត្រូវបានសម្គាល់ថាបានសឡាត។ សូមអល់ឡោះទទួលយក។</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s ត្រូវបានសម្គាល់ថាបានសឡាតរួចហើយ។</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">ឥឡូវគ្មានសឡាតដែលត្រូវសម្គាល់ទេ។ បន្ទាប់គឺ%1$s ចាប់ផ្ដើមនៅ %2$s។</string>
+  <string name="kildim_sonuc_vakit_yok">ឥឡូវគ្មានសឡាតដែលត្រូវសម្គាល់ទេ។</string>
+  <string name="kildim_sonuc_veri_yok">គ្មានទិន្នន័យពេលសឡាត។ សូមបើកកម្មវិធីម្ដង។</string>
+  <string name="kildim_sonuc_vakit_degisti">ពេលសឡាតបានផ្លាស់ប្ដូរ ដូច្នេះគ្មានអ្វីត្រូវបានសម្គាល់ទេ។ ព្យាយាមម្ដងទៀត។</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">មិនអាចបើកកម្មវិធីរុករកផ្លូវបានទេ។</string>
+  <string name="arac_adsiz_cami">ម៉ាស្ជិត</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">មិនអាចអានទិន្នន័យពេលសឡាតបានទេ។</string>
+  <string name="asistan_isaretleme_yapilamadi">មិនអាចសម្គាល់សឡាតបានទេ។</string>
+  <string name="asistan_aciklama">អ្នកអាចសួរពេលសឡាត សម្គាល់សឡាតបច្ចុប្បន្នថាបានសឡាត និងបើកអេក្រង់គិបឡាត់។</string>
+</resources>

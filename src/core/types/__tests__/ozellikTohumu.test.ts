@@ -81,8 +81,21 @@ describe('ozellik turu tohumu', () => {
         expect(cuma).toEqual(ham(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI));
         expect(cuma.aktif).toBe(true);
 
-        expect(await LocalKazaOneriServisi.ayarlariGetir()).toEqual({ farzSonrasiOner: varyant !== 'kildim' });
+        expect(await LocalKazaOneriServisi.ayarlariGetir()).toEqual({
+            farzSonrasiOner: !['kildim', 'dunya', 'jakim', 'baku'].includes(varyant),
+        });
         expect((await LocalSadeGorunumServisi.getAyarlar()).aktif).toBe(varyant === 'sade');
+    });
+
+    it('ses varyanti: sabah sesinin adi kare dilinde (her dilde ayri ad; bilinmeyen dil Turkce)', () => {
+        const { SABAH_SESI_ADLARI, sabahSesiAdi } = require('../../../../scripts/ozellik-tohum-verisi');
+        const { DILLER } = require('../../dil/diller');
+        expect(Object.keys(SABAH_SESI_ADLARI).sort()).toEqual(DILLER.map((d: { kod: string }) => d.kod).sort());
+        for (const d of DILLER as { kod: string }[]) {
+            if (d.kod !== 'tr') expect([d.kod, SABAH_SESI_ADLARI[d.kod]]).not.toEqual([d.kod, SABAH_SESI_ADLARI.tr]);
+        }
+        expect(sabahSesiAdi('ko')).toBe('새벽 아잔');
+        expect(sabahSesiAdi('xx')).toBe('Sabah ezanı');
     });
 
     it('ses varyanti: vakit bildirimi acik + sabah sesi uygulamanin okuma yolundan DEGISMEDEN gecer', async () => {
@@ -96,6 +109,41 @@ describe('ozellik turu tohumu', () => {
         expect(await LocalVakitBildirimServisi.getSesler()).toEqual(
             JSON.parse(depo[DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_SESLERI])
         );
+    });
+
+    it.each(['dunya', 'jakim'])('%s varyanti: dünya şehri ve hesap ayarı uygulamanın okuma yolundan geçer', async (varyant) => {
+        const { localKonumAyarlariniGetir } = require('../../../data/local/LocalKonumServisi');
+        const { HesapAyariServisi } = require('../../../domain/services/HesapAyariServisi');
+        const { kayitliUlkeKodu } = require('../../konum/ulkeTespiti');
+        const { bolgeOnerisi } = require('../../vakit/ulkeProfilleri');
+        const depo = ozellikTohumVerisi({ varyant });
+        await yaz(depo);
+        const konum = (await localKonumAyarlariniGetir()).veri;
+        expect(konum).toMatchObject(JSON.parse(depo[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI]));
+        expect(kayitliUlkeKodu(konum)).toBe('MY');
+        const ayar = await HesapAyariServisi.yukle(true);
+        if (varyant === 'dunya') {
+            expect(depo[DEPOLAMA_ANAHTARLARI.HESAP_AYARI]).toBeUndefined();
+            // Kart açılır: Diyanet'ten JAKIM'e öneri.
+            expect(bolgeOnerisi('MY', ayar)).toMatchObject({ profil: 'jakim' });
+        } else {
+            expect(ayar).toEqual(JSON.parse(depo[DEPOLAMA_ANAHTARLARI.HESAP_AYARI]));
+            expect(bolgeOnerisi('MY', ayar)).toBeNull();
+        }
+    });
+
+    it('baku varyanti: Azerbaycan konumu okunur, hesap ayarı yok → kart iki takvimi eşit sorar', async () => {
+        const { localKonumAyarlariniGetir } = require('../../../data/local/LocalKonumServisi');
+        const { HesapAyariServisi } = require('../../../domain/services/HesapAyariServisi');
+        const { kayitliUlkeKodu } = require('../../konum/ulkeTespiti');
+        const { bolgeOnerisi } = require('../../vakit/ulkeProfilleri');
+        const depo = ozellikTohumVerisi({ varyant: 'baku' });
+        await yaz(depo);
+        const konum = (await localKonumAyarlariniGetir()).veri;
+        expect(konum).toMatchObject(JSON.parse(depo[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI]));
+        expect(kayitliUlkeKodu(konum)).toBe('AZ');
+        expect(depo[DEPOLAMA_ANAHTARLARI.HESAP_AYARI]).toBeUndefined();
+        expect(bolgeOnerisi('AZ', await HesapAyariServisi.yukle(true))).toMatchObject({ profil: 'mwl', alternatif: 'qmi' });
     });
 
     it('esitleme varyanti: durum ve tercihler uygulamanin normalize yolundan DEGISMEDEN gecer', () => {

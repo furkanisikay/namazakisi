@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Yunanca kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/el (vakit adları QuranEnc greek_rwwad; ‘ ’ tipografik, kaçış gerekmez). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Η τρέχουσα προσευχή, πότε λήγει και το «Προσευχήθηκα» με ένα πάτημα</string>
+  <string name="widget_genis_aciklama">Οι πέντε προσευχές της ημέρας, αντίστροφη μέτρηση και το «Προσευχήθηκα» με ένα πάτημα</string>
+  <string name="widget_kapak_adi">Ώρες προσευχής εξωτερικής οθόνης</string>
+  <string name="widget_kapak_aciklama">Οι σημερινές ώρες προσευχής και αντίστροφη μέτρηση για την εξωτερική οθόνη του Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Κλασικό</string>
+  <string name="widget_klasik_aciklama">Κλασική πράσινη εμφάνιση: χρόνος έως την επόμενη προσευχή</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Κλασικό φαρδύ</string>
+  <string name="widget_klasik_genis_aciklama">Κλασική πράσινη εμφάνιση: αντίστροφη μέτρηση και οι σημερινές ώρες προσευχής</string>
+  <string name="widget_ayet_adi">Εδάφιο της ημέρας</string>
+  <string name="widget_ayet_aciklama">Ένα εδάφιο με τη μετάφρασή του, που ανανεώνεται κάθε μέρα στη Φατζρ</string>
+  <string name="widget_ayar_zemin_palet">Χρώμα εφαρμογής (ανοιχτός τόνος)</string>
+  <string name="widget_ayar_ayet_icerik">Σε τετράγωνο μέγεθος, εμφάνιση</string>
+  <string name="widget_ayar_ayet_icerik_meal">Μετάφραση</string>
+  <string name="widget_ayar_ayet_icerik_hat">Αραβικό κείμενο (καλλιγραφία)</string>
+  <string name="kutu_kildim_etiket">Προσευχήθηκα</string>
+  <string name="kisayol_kildim_kisa">Προσευχήθηκα</string>
+  <string name="kisayol_kildim_uzun">Τέλεσα την τρέχουσα προσευχή</string>
+  <string name="kisayol_kible_kisa">Κίμπλα</string>
+  <string name="kisayol_kible_uzun">Εμφάνιση της κατεύθυνσης της Κίμπλα</string>
+  <string name="kisayol_kaza_kisa">Αναπληρώσεις</string>
+  <string name="kisayol_kaza_uzun">Άνοιγμα αρχείου αναπληρώσεων</string>
+  <string name="kildim_onay_baslik">Σήμανση της προσευχής %1$s ως τελεσμένης;</string>
+  <string name="kildim_onay_mesaj">Δεν είναι σαφές ποια εφαρμογή έστειλε αυτό το αίτημα. Επιβεβαιώστε αν έχετε προσευχηθεί.</string>
+  <string name="kildim_onay_evet">Προσευχήθηκα</string>
+  <string name="kildim_onay_vazgec">Άκυρο</string>
+  <string name="kildim_guven_baslik">Να επιτρέπεται στην εφαρμογή %1$s να σημειώνει τις προσευχές σας ως τελεσμένες;</string>
+  <string name="kildim_guven_mesaj">Προσευχή που θα σημειωθεί τώρα: %1$s. Μπορείτε να αλλάξετε την απόφασή σας αργότερα στις Ρυθμίσεις &gt; Εφαρμογές που σημειώνουν «Προσευχήθηκα».</string>
+  <string name="kildim_guven_tarayici_mesaj">Προσευχή που θα σημειωθεί τώρα: %1$s. Το αίτημα ήρθε από πρόγραμμα περιήγησης· επειδή οποιαδήποτε ιστοσελίδα μπορεί να ανοίξει αυτόν τον σύνδεσμο, δεν μπορεί να δοθεί μόνιμη άδεια.</string>
+  <string name="kildim_guven_her_zaman">Πάντα</string>
+  <string name="kildim_guven_bu_sefer">Μόνο αυτή τη φορά</string>
+  <string name="kildim_guven_engelle">Αποκλεισμός</string>
+  <string name="kildim_guven_engellendi">Η εφαρμογή %1$s δεν μπορεί πλέον να σημειώνει τις προσευχές σας. Μπορείτε να το αλλάξετε στις Ρυθμίσεις.</string>
+  <string name="widget_ayar_baslik">Προσαρμογή του widget</string>
+  <string name="widget_ayar_zemin">Φόντο</string>
+  <string name="widget_ayar_zemin_material">Χρώματα ταπετσαρίας</string>
+  <string name="widget_ayar_zemin_sistem">Θέμα συστήματος</string>
+  <string name="widget_ayar_zemin_acik">Φωτεινό</string>
+  <string name="widget_ayar_zemin_koyu">Σκούρο</string>
+  <string name="widget_ayar_zemin_seffaf">Διαφανές</string>
+  <string name="widget_ayar_opaklik">Αδιαφάνεια φόντου</string>
+  <string name="widget_ayar_gosterim">Εμφάνιση με μεγάλα γράμματα</string>
+  <string name="widget_ayar_gosterim_kalan">Χρόνος που απομένει</string>
+  <string name="widget_ayar_gosterim_bitis">Ώρα λήξης</string>
+  <string name="widget_ayar_gosterim_not">Η ώρα λήξης εμφανίζεται σε κάθε μέγεθος.</string>
+  <string name="widget_ayar_sonraki">Εμφάνιση της επόμενης προσευχής</string>
+  <string name="widget_ayar_vazgec">Άκυρο</string>
+  <string name="widget_ayar_kaydet">Αποθήκευση</string>
+  <string name="kildim_onay_kanal_adi">Επιβεβαίωση «Προσευχήθηκα»</string>
+  <string name="kildim_onay_kanal_aciklama">Μια διακριτική επιβεβαίωση που εμφανίζεται για λίγα δευτερόλεπτα όταν πατάτε «Προσευχήθηκα» σε ειδοποίηση</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Λήγει %1$s</string>
+  <string name="widget_giris">Αρχίζει %1$s</string>
+  <string name="widget_namaz_vakti">Ώρα προσευχής</string>
+  <string name="widget_uygulamayi_acin">Άνοιγμα εφαρμογής</string>
+  <string name="widget_siradaki">Επόμενη: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Καμία προσευχή για σήμανση τώρα</string>
+  <string name="widget_dugme_kildim">Προσευχήθηκα</string>
+  <string name="widget_dugme_isaretleniyor">Σήμανση</string>
+  <string name="widget_dugme_kilindi">Τελέστηκε</string>
+  <string name="widget_dugme_vakit_girmedi">Όχι ακόμη</string>
+  <string name="widget_klasik_uygulamayi_acin">ανοίξτε την εφαρμογή</string>
+  <string name="widget_klasik_erisim_veri_yok">Ανοίξτε την εφαρμογή για να δείτε τις ώρες προσευχής</string>
+  <string name="widget_klasik_erisim_siradaki">Επόμενη προσευχή: %1$s, αρχίζει στις %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Δουχρ σε</string>
+  <string name="widget_onizleme_klasik_genis">Μάγριμπ σε</string>
+  <string name="widget_onizleme_imsak">Φατζρ</string>
+  <string name="widget_onizleme_gunes">Ανατολή ηλίου</string>
+  <string name="widget_onizleme_ogle">Δουχρ</string>
+  <string name="widget_onizleme_ikindi">‘Ασρ</string>
+  <string name="widget_onizleme_aksam">Μάγριμπ</string>
+  <string name="widget_onizleme_yatsi">‘Ισά’</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">Η προσευχή %1$s σημειώθηκε ως τελεσμένη. Ας τη δεχτεί ο Αλλάχ.</string>
+  <string name="kildim_sonuc_zaten_kilindi">Η προσευχή %1$s έχει ήδη σημειωθεί ως τελεσμένη.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Δεν υπάρχει προσευχή για σήμανση αυτή τη στιγμή. Ακολουθεί: %1$s, στις %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Δεν υπάρχει προσευχή για σήμανση αυτή τη στιγμή.</string>
+  <string name="kildim_sonuc_veri_yok">Δεν υπάρχουν ώρες προσευχής. Ανοίξτε την εφαρμογή μία φορά.</string>
+  <string name="kildim_sonuc_vakit_degisti">Η ώρα προσευχής άλλαξε, οπότε δεν σημειώθηκε τίποτα. Δοκιμάστε ξανά.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Δεν ήταν δυνατό το άνοιγμα της εφαρμογής πλοήγησης.</string>
+  <string name="arac_adsiz_cami">Τζαμί</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Δεν ήταν δυνατή η ανάγνωση των ωρών προσευχής.</string>
+  <string name="asistan_isaretleme_yapilamadi">Δεν ήταν δυνατή η σήμανση της προσευχής.</string>
+  <string name="asistan_aciklama">Μπορείτε να ζητήσετε τις ώρες προσευχής, να σημειώσετε την τρέχουσα προσευχή ως τελεσμένη και να ανοίξετε την οθόνη Κίμπλα.</string>
+</resources>

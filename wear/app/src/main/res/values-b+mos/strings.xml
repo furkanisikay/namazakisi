@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mooré. Terimler: src/core/dil/sozluk/mos. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">mos</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Pʋʋsg sẽn pʋgdẽ</string>
+    <string name="tile_aciklama">Pʋʋsg sẽn pʋgdẽ la a wakato</string>
+    <string name="komplikasyon_adi">Wakat sẽn kell</string>
+    <string name="cikis_saati_komplikasyon_adi">Pʋʋsg baasg wakato</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Pʋʋsg sẽn pʋgdẽ</string>
+    <string name="bugun_tile_adi">Rũndã</string>
+    <string name="bugun_tile_aciklama">Rũndã pʋʋs-rãmbã a nu; gʋls-y y sẽn pʋʋs nins ne digr a yiibu</string>
+    <string name="ilerleme_komplikasyon_adi">Raarã taoor-kẽnde</string>
+    <string name="dagilim_komplikasyon_adi">Raarã ges-zãnga</string>
+    <string name="kerahat_komplikasyon_adi">Gɩdg wakato</string>
+    <string name="son_dakikalar_kanal_adi">Minit nins sẽn kõnsã</string>
+    <string name="son_dakikalar_kanal_aciklama">Sõdg nug-lɛɛrã ekraanẽ pʋʋsg y sẽn pa pʋʋs minit nins sẽn kõnsã pʋgẽ</string>
+    <string name="tesbihat_adi">Tasbiiha</string>
+    <string name="tesbihat_kanal_adi">Tasbiiha</string>
+    <string name="tesbihat_kanal_aciklama">Wilgr bilf nug-lɛɛrã ekraanẽ n leb tasbiih sẽn pa pid ye</string>
+    <string name="kible_adi">Kiblã</string>
+    <string name="kible_komplikasyon_adi">Kiblã</string>
+    <string name="camideyim_kanal_adi">M be miisrẽ</string>
+    <string name="camideyim_kanal_aciklama">Wilgr bilf nug-lɛɛrã ekraanẽ y telefõnã sã n togs tɩ y bee miisrẽ</string>
+    <string name="uyandirma_kanal_adi">Yikr sẽn ka koɛɛg</string>
+    <string name="uyandirma_kanal_aciklama">A yikda-y ne yẽgsg bala, Fagir la Tahajjud yĩnga</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">M pʋʋsa</string>
+    <string name="kilindi_isareti">✓ Pʋʋsa</string>
+    <string name="kapat">Pag-y</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Pak-y Namaz Akışı y telefõnã zugu n ges pʋʋsg wakatã.</string>
+    <string name="yuk_eskidi">Pʋʋsg wakat kibarã yaa kʋdre. Pak-y Namaz Akışı y telefõnã zugu n teeg-a.</string>
+    <string name="guncelleme_gerekli">Teeg-y Namaz Akışı y nug-lɛɛrã zugu.</string>
+    <string name="bildirim_izni">Tɩ y paam tẽegr baa y telefõnã sã n ka be ne yãmb ye, kõ-y Namaz Akışı kibar sore nug-lɛɛrã seglgã pʋgẽ.</string>
+    <string name="cami_soru">Y bee miisrẽ?</string>
+    <string name="cami_evet">Ẽye</string>
+    <string name="cami_evet_aciklama">Ẽye, m bee miisrẽ. A pakda Pʋʋsg mood</string>
+    <string name="cami_hayir">Ayo</string>
+    <string name="cami_hayir_aciklama">Ayo, m pa be miisrẽ ye</string>
+    <string name="camidesiniz">Y bee miisrẽ</string>
+    <string name="cami_degil">Ka-kãng pa miisr ye</string>
+    <string name="cami_degil_aciklama">Ka-kãng pa miisr ye. B pa le na n sõd zĩig-kãngã wala miisr ye</string>
+    <string name="tesbihat_ac">Pak-y tasbiih sõdgã</string>
+    <string name="kible_ac">Pak-y Kiblã busolã</string>
+    <string name="ses_dene">Mak-y koɛɛgã</string>
+    <string name="ses_dene_aciklama">Mak-y nug-lɛɛrã karengo ne koɛɛg</string>
+    <string name="telefonda_acin">Pak-y telefõnã zugu</string>
+    <string name="telefonda_ekran_ac">Pak-y %1$s y telefõnã zugu</string>
+    <string name="ekran_kaza">Rolb sebre</string>
+    <string name="ekran_camideyim">M be miisrẽ</string>
+    <string name="ekran_ayarlar">Seglgo</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">pʋʋsa, d lagemda</string>
+    <string name="durum_kilindi">pʋʋsa</string>
+    <string name="durum_girmedi">wakatã nan ka ta ye</string>
+    <string name="durum_simdiki">pʋʋsg wakat sẽn be masã, dig-y n gʋls</string>
+    <string name="durum_simdiki_kalan">pʋʋsg wakat sẽn be masã, %1$s, dig-y n gʋls</string>
+    <string name="durum_kilinmadi">ka pʋʋs ye, dig-y n gʋls</string>
+    <string name="isaretleyin">Gʋls-y tɩ pʋʋsa</string>
+    <string name="esitleniyor">d lagemda</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Sak-y M pʋʋsa</string>
+    <string name="vazgecin">Bas-y</string>
+    <string name="vazgec">Bas-y</string>
+    <string name="kerahat_vaktindesiniz">Masã yaa gɩdg wakato.</string>
+    <string name="kilindi_dua">Pʋʋsa. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Pʋʋsg mood pakame, a saada %1$s. Dig-y n pag-a</string>
+    <string name="namaz_modu_ac_aciklama">Pak-y Pʋʋsg mood y telefõnã zugu</string>
+    <string name="namaz_modu_kapatin">Pag-y Pʋʋsg mood</string>
+    <string name="namaz_modu_acin">Pak-y Pʋʋsg mood</string>
+    <string name="namaz_modu_acik_bitis">Pakame, a saada %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">D baoda wɛɛngã…</string>
+    <string name="kible_yuk_yok">Pak-y Namaz Akışı y telefõnã zugu n bao Kiblã.</string>
+    <string name="kible_konum_yok">Pak-y zĩigã y telefõnã zugu n bao Kiblã. Namaz Akışı sã n pa paalg ye, teeg-y-a.</string>
+    <string name="kible_sensor_yok">Nug-lɛɛr-kãngã pa tar busol sɛnsoor ye. Y tõe n ges Kiblã wɛɛngã y telefõnã zugu.</string>
+    <string name="kible_kuzeyden">Kiblã %1$d° (N n yi)</string>
+    <string name="kible_derece">Kiblã %1$d°</string>
+    <string name="kible_telefonda_ac">Pak-y Kiblã y telefõnã zugu</string>
+    <string name="kible_erisim">%1$s. Kiblã bee %2$d° n yi N, %3$s</string>
+    <string name="kible_hizali">Y toglgame Kiblã wɛɛngẽ</string>
+    <string name="kible_kalibrasyon">Y sẽn na n segl-a, gilg-y y nugã saasẽ wala 8</string>
+    <string name="kible_egim">Yõk-y y nug-lɛɛrã tɩ a gãe wala tẽngã</string>
+    <string name="kible_titresim_acik">Yẽgsg kãndgr pakame. Dig-y n pag-a</string>
+    <string name="kible_titresim_kapali">Yẽgsg kãndgr pagame. Dig-y n pak-a</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">O</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbiihã pida. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Fãa %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Sõd-y</string>
+    <string name="tesbihat_bastan_baslayin">Leb-y n sɩng</string>
+    <string name="tesbihat_bastan_soru">Leb n sɩng?</string>
+    <string name="tesbihat_sifirlanir">Sõdgã leb n sɩngda.</string>
+    <string name="tesbihat_geri_al">Lebs-y</string>
+    <string name="tesbihat_geri_al_aciklama">Lebs-y sõdg sẽn kõnsã</string>
+    <string name="tesbihat_yeniden">Leb-y n sɩng</string>
+    <string name="tesbihat_yeniden_aciklama">Leb-y n sɩng tasbiihã</string>
+    <string name="tesbihat_suruyor">Tasbiihã kẽnda taoore: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">M pʋʋsa. A pagda yikrã</string>
+    <string name="uyandirma_kapat_aciklama">Pag-y yikrã</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Pak-y Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Dig-y n ges pʋʋsg wakatã</string>
+    <string name="tile_telefonda_acin">Pak-y aplikaasõ wã y telefõnã zugu</string>
+    <string name="tile_sonra">%1$s poorẽ</string>
+    <string name="tile_siradaki_aciklama">Pʋʋsg sẽn pʋgdẽ %1$s, a sɩngda %2$s. Pak-y aplikaasõ wã</string>
+    <string name="tile_giris">sɩngda %1$s</string>
+    <string name="tile_cikis">saada %1$s</string>
+    <string name="bugun_bos_satir1">Pak-y aplikaasõ wã</string>
+    <string name="bugun_bos_satir2">y telefõnã zugu</string>
+    <string name="bugun_acma_aciklamasi">Rũndã pʋʋsg %1$d/%2$d pʋʋsa. Pak-y aplikaasõ wã</string>
+    <string name="bugun_sayi">Rũndã %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Gɩdg wakato · leb-y n dig n sak</string>
+    <string name="bugun_onay_tekrar">Leb-y n dig n sak</string>
+    <string name="bugun_tamam">Rũndã pʋʋs-rãmbã pida</string>
+    <string name="bugun_kilinmadi">%1$s: ka pʋʋs ye</string>
+    <string name="bugun_siradaki">Sẽn pʋgdẽ: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Leb-y n dig</string>
+    <string name="bugun_kilindi">%1$s: pʋʋsa</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s: pʋʋsa, d lagemda</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">D gũuda pʋʋsg wakatã; pak-y Namaz Akışı y telefõnã zugu</string>
+    <string name="komplikasyon_bekleniyor">D gũuda wakatã</string>
+    <string name="komplikasyon_vakit">Pʋʋsgo</string>
+    <string name="komplikasyon_cikis">Baasgo</string>
+    <string name="komplikasyon_sirada">Pʋgdẽ</string>
+    <string name="gun_durumu_aciklama">Rũndã pʋʋsg %2$d %1$d pʋgẽ pʋʋsa</string>
+    <string name="gun_durumu_kilinmamis">%1$s; ka pʋʋs ye: %2$s</string>
+    <string name="komplikasyon_namaz">Pʋʋsgo</string>
+    <string name="komplikasyon_kerahat">Gɩdg</string>
+    <string name="kerahat_icinde_aciklama">Yaa gɩdg wakato, a saada %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Gɩdg wakat sẽn pʋgdẽ %1$s</string>
+    <string name="kible_komplikasyon">Kiblã bee %1$d° n yi N. Pak-y busolã</string>
+    <string name="kible_komplikasyon_konumlu">Kiblã bee %1$d° n yi N, %2$s. Pak-y busolã</string>
+    <string name="kible_komplikasyon_konum_yok">Pak-y zĩigã y telefõnã zugu n bao Kiblã</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Tẽeg-yãgre · Yẽgsgo</string>
+    <string name="muhafiz_kanal_acil">Tẽeg-yãgre</string>
+    <string name="muhafiz_kanal_titresimli">Pʋʋsg tẽegre · Yẽgsgo</string>
+    <string name="muhafiz_kanal">Pʋʋsg tẽegre</string>
+    <string name="muhafiz_kanal_aciklama">Pʋʋsg tẽegr sẽn pukd y nug-lɛɛrã zugu baa y telefõnã sã n ka be ne yãmb ye</string>
+    <string name="son_dakikalar_cikis">Baasgo: %1$s</string>
+    <string name="son_dakikalar_bitis">Baasgo: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Wakat sẽn kell tɩ %1$s sa</string>
+    <string name="son_dakikalar_kalan_erisim">Wakat sẽn kell %1$s yĩnga</string>
+    <string name="cami_namaz_modu_bitis">Pʋʋsg mood · a saada %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">B paka-a y telefõnã zugu</string>
+    <string name="telefona_ulasilamadi">B pa tõe n paam y telefõnã ye</string>
+</resources>

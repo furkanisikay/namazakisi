@@ -9,9 +9,11 @@
 import * as React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { sistemCipi } from '../../../core/sistem/sistemDurumu';
 import { useSistemKosullari } from '../../hooks/useSistemKosullari';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface SistemDurumuCipiProps {
   /** Android pil optimizasyonu muafiyeti (`null`/yok = bilinmiyor). */
@@ -28,6 +30,8 @@ export const SistemDurumuCipi: React.FC<SistemDurumuCipiProps> = ({
   pilUyarisiGosteriliyor = false,
 }) => {
   const renkler = useRenkler();
+  // Dile abone: çip metni `metin()`'den üretilir.
+  const m = useMetin().ayarlar.ana;
   const kosullar = useSistemKosullari();
   const cip = sistemCipi(kosullar, pilMuaf ?? null, pilUyarisiGosteriliyor);
   if (!cip) return null;
@@ -44,7 +48,7 @@ export const SistemDurumuCipi: React.FC<SistemDurumuCipiProps> = ({
       <Text className="text-sm flex-1" style={{ color: renkler.metin }}>
         {cip.metin}
       </Text>
-      {cip.pilRehberi ? <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} /> : null}
+      {cip.pilRehberi ? <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} /> : null}
     </>
   );
 
@@ -64,7 +68,7 @@ export const SistemDurumuCipi: React.FC<SistemDurumuCipiProps> = ({
         onPress={onPilRehberi}
         accessibilityRole="button"
         accessibilityLabel={cip.metin}
-        accessibilityHint="Pil ayarlarını nasıl değiştireceğinizi gösterir"
+        accessibilityHint={m.pilRehberIpucu}
       >
         {icerik}
       </TouchableOpacity>

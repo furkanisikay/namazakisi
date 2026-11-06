@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Umieść kod QR z ekranu telewizora w ramce</string>
+    <string name="tvesleme_qr_vazgec">Anuluj</string>
+    <string name="tvesleme_qr_vazgec_erisim">Anuluj skanowanie</string>
+    <string name="tvesleme_qr_yabanci">Ten kod QR nie należy do Namaz Akışı TV. Zeskanuj kod z telewizora.</string>
+    <string name="tvesleme_qr_okundu">Kod zeskanowany</string>
+</resources>

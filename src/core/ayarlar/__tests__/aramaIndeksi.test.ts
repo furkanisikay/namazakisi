@@ -38,4 +38,18 @@ describe('AYAR_INDEKSI', () => {
     expect(basliklar).not.toContain('Titreşim');
     expect(basliklar).not.toContain('Ses efektleri');
   });
+
+  it('dil sayfası yalnız seçicide birden çok dil varken indekste', () => {
+    const kur = (gorunur: boolean) => {
+      let ids: string[] = [];
+      jest.isolateModules(() => {
+        jest.doMock('../../dil/diller', () => ({ ...jest.requireActual('../../dil/diller'), dilSeciciGorunur: () => gorunur }));
+        ids = (require('../aramaIndeksi') as typeof import('../aramaIndeksi')).AYAR_INDEKSI.map((k) => k.id);
+      });
+      jest.dontMock('../../dil/diller');
+      return ids;
+    };
+    expect(kur(false)).not.toContain('sayfa-dil');
+    expect(kur(true)).toContain('sayfa-dil');
+  });
 });

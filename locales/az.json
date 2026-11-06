@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Məkanınız olduğunuz yer üçün namaz vaxtlarını dəqiq hesablamaq üçün istifadə olunur. Məkanınız cihazınızda qalır.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Məkanınız olduğunuz yer üçün namaz vaxtlarını dəqiq hesablamaq və “Məsciddəyəm” açıqdırsa, məscidə girəndə Namaz rejimini açmaq üçün istifadə olunur. Məkanınız cihazınızda qalır.",
+  "NSLocationAlwaysUsageDescription": "Məkanınız şəhəri dəyişdikdə namaz vaxtlarını avtomatik yeniləmək və “Məsciddəyəm” açıqdırsa, məscidə girəndə Namaz rejimini açmaq üçün istifadə olunur. Məkanınız cihazınızda qalır.",
+  "NSCameraUsageDescription": "Kamera qiblə istiqamətini kamera görüntüsü üzərində göstərmək və televizorunuzdakı cütləşdirmə kodunu oxumaq üçün istifadə olunur. Görüntülər saxlanılmır və heç vaxt cihazınızdan çıxmır.",
+  "NSCalendarsUsageDescription": "Təqvimə giriş namaz vaxtlarını təqviminizə əlavə etmək və açsanız, təqviminizdəki tədbirlərin namaz vaxtı ilə üst-üstə düşüb-düşmədiyini yoxlamaq üçün istifadə olunur. Təqvim məlumatlarınız cihazınızda qalır.",
+  "NSCalendarsFullAccessUsageDescription": "Təqvimə giriş namaz vaxtlarını təqviminizə əlavə etmək və açsanız, təqviminizdəki tədbirlərin namaz vaxtı ilə üst-üstə düşüb-düşmədiyini yoxlamaq üçün istifadə olunur. Təqvim məlumatlarınız cihazınızda qalır.",
+  "NSLocalNetworkUsageDescription": "Tətbiq namaz vaxtlarınızı və qeyd etdiyiniz namazları göndərmək üçün yerli şəbəkənizdəki televizora qoşulur. Məlumatlar şifrələnir və yalnız iki cihaz arasında ötürülür.",
+  "NSAlarmKitUsageDescription": "“Həqiqi siqnal” seçdiyiniz xatırlatma addımları siqnal kimi qurulur ki, telefonunuz səssiz rejimdə olanda və ya Fokus açıq olanda da onları eşidəsiniz.",
+  "\"Vakti kıldım\"": "Vaxtı qıldım",
+  "\"Kıble\"": "Qiblə"
+}

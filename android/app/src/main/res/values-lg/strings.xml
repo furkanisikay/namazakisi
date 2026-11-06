@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Luganda kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/lg. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Esswala eriwo, lw’eggwaako, ne Nsaaze mu kunyiga kumu</string>
+  <string name="widget_genis_aciklama">Esswala ettaano eza leero, okubala ekiseera, ne Nsaaze mu kunyiga kumu</string>
+  <string name="widget_kapak_adi">Ebiseera by’esswala ku lutimbe olw’ebweru</string>
+  <string name="widget_kapak_aciklama">Ebiseera by’esswala bya leero n’okubala ekiseera ku lutimbe olw’ebweru olwa Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Ey’edda</string>
+  <string name="widget_klasik_aciklama">Endabika ya kiragala ey’edda: ekiseera ekisigadde okutuusa esswala eddako</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Ey’edda engazi</string>
+  <string name="widget_klasik_genis_aciklama">Endabika ya kiragala ey’edda: okubala ekiseera n’ebiseera by’esswala bya leero</string>
+  <string name="widget_ayet_adi">Aaya y’olwaleero</string>
+  <string name="widget_ayet_aciklama">Aaya n’enkyusa yaayo, empya buli lunaku ku Subuhi</string>
+  <string name="widget_ayar_zemin_palet">Langi ya app (ekitangaala)</string>
+  <string name="widget_ayar_ayet_icerik">Ku bunene obwenkanankana, laga</string>
+  <string name="widget_ayar_ayet_icerik_meal">Enkyusa</string>
+  <string name="widget_ayar_ayet_icerik_hat">Ekiwandiiko ky’Oluwarabu (hati)</string>
+  <string name="kutu_kildim_etiket">Nsaaze</string>
+  <string name="kisayol_kildim_kisa">Nsaaze</string>
+  <string name="kisayol_kildim_uzun">Nsaaze esswala eriwo</string>
+  <string name="kisayol_kible_kisa">Kibula</string>
+  <string name="kisayol_kible_uzun">Laga oluuyi lwa Kibula</string>
+  <string name="kisayol_kaza_kisa">Qadha</string>
+  <string name="kisayol_kaza_uzun">Ggulawo olukalala lwa Qadha</string>
+  <string name="kildim_onay_baslik">Teeka akabonero ku %1$s nti esaaliddwa?</string>
+  <string name="kildim_onay_mesaj">Tekimanyiddwa app ki eyasindise okusaba kuno. Kakasa bw’oba osaaze.</string>
+  <string name="kildim_onay_evet">Nsaaze</string>
+  <string name="kildim_onay_vazgec">Sazaamu</string>
+  <string name="kildim_guven_baslik">Kkiriza %1$s okuteeka akabonero ku sswala zo nti zisaaliddwa?</string>
+  <string name="kildim_guven_mesaj">Esswala egenda okuteekebwako akabonero kati: %1$s. Osobola okukyusa ky’osazeewo oluvannyuma mu Ntegeka &gt; App ezisobola okuteeka akabonero ku sswala.</string>
+  <string name="kildim_guven_tarayici_mesaj">Esswala egenda okuteekebwako akabonero kati: %1$s. Okusaba kuno kuvudde mu browser; okuva olupapula lwonna olw’oku mukutu bwe lusobola okuggulawo enkolagana eno, olukusa olw’olubeerera teruyinza kuweebwa.</string>
+  <string name="kildim_guven_her_zaman">Kkiriza bulijjo</string>
+  <string name="kildim_guven_bu_sefer">Omulundi guno gwokka</string>
+  <string name="kildim_guven_engelle">Gaana</string>
+  <string name="kildim_guven_engellendi">%1$s tekyasobola kuteeka kabonero ku sswala zo. Osobola okukikyusa mu Ntegeka.</string>
+  <string name="widget_ayar_baslik">Tegeka wijeti</string>
+  <string name="widget_ayar_zemin">Emabega</string>
+  <string name="widget_ayar_zemin_material">Langi z’ekifaananyi ky’emabega</string>
+  <string name="widget_ayar_zemin_sistem">Endabika ya sisitemu</string>
+  <string name="widget_ayar_zemin_acik">Ekitangaala</string>
+  <string name="widget_ayar_zemin_koyu">Ekizikiza</string>
+  <string name="widget_ayar_zemin_seffaf">Ekitangaavu</string>
+  <string name="widget_ayar_opaklik">Obukwafu bw’emabega</string>
+  <string name="widget_ayar_gosterim">Laga mu nnukuta ennene</string>
+  <string name="widget_ayar_gosterim_kalan">Ekiseera ekisigadde</string>
+  <string name="widget_ayar_gosterim_bitis">Essaawa y’okuggwaako</string>
+  <string name="widget_ayar_gosterim_not">Essaawa y’okuggwaako erabika ku bunene bwonna.</string>
+  <string name="widget_ayar_sonraki">Laga esswala eddako</string>
+  <string name="widget_ayar_vazgec">Sazaamu</string>
+  <string name="widget_ayar_kaydet">Tereka</string>
+  <string name="kildim_onay_kanal_adi">Okukakasa Nsaaze</string>
+  <string name="kildim_onay_kanal_aciklama">Okukakasa okusirifu okulabika okumala obutikitiki butono bw’onyiga “Nsaaze” mu bubaka</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Kiggwaako %1$s</string>
+  <string name="widget_giris">Kitandika %1$s</string>
+  <string name="widget_namaz_vakti">Ekiseera ky’esswala</string>
+  <string name="widget_uygulamayi_acin">Ggulawo app</string>
+  <string name="widget_siradaki">Eddako: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Tewali sswala ya kuteekako kabonero kati</string>
+  <string name="widget_dugme_kildim">Nsaaze</string>
+  <string name="widget_dugme_isaretleniyor">Kiteekebwako</string>
+  <string name="widget_dugme_kilindi">Esaaliddwa</string>
+  <string name="widget_dugme_vakit_girmedi">Tekinnatuuka</string>
+  <string name="widget_klasik_uygulamayi_acin">ggulawo app</string>
+  <string name="widget_klasik_erisim_veri_yok">Ggulawo app olabe ebiseera by’esswala</string>
+  <string name="widget_klasik_erisim_siradaki">Esswala eddako: %1$s, etandika ku ssaawa %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Okutuusa Dhuhur</string>
+  <string name="widget_onizleme_klasik_genis">Okutuusa Magaribi</string>
+  <string name="widget_onizleme_imsak">Subuhi</string>
+  <string name="widget_onizleme_gunes">Enjuba okuvaayo</string>
+  <string name="widget_onizleme_ogle">Dhuhur</string>
+  <string name="widget_onizleme_ikindi">Aswiri</string>
+  <string name="widget_onizleme_aksam">Magaribi</string>
+  <string name="widget_onizleme_yatsi">Ishai</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s eteereddwako akabonero nti esaaliddwa. Allah akkirize.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s yamaze dda okuteekebwako akabonero nti esaaliddwa.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Tewali sswala ya kuteekako kabonero kati. Eddako ye %1$s, etandika ku ssaawa %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Tewali sswala ya kuteekako kabonero kati.</string>
+  <string name="kildim_sonuc_veri_yok">Tewali biseera by’esswala. Ggulawo app omulundi gumu.</string>
+  <string name="kildim_sonuc_vakit_degisti">Ekiseera ky’esswala kikyuse, n’olwekyo tewali kiteereddwako kabonero. Ddamu ogezeeko.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">App y’okulaga ekkubo tesobodde kugguka.</string>
+  <string name="arac_adsiz_cami">Omuzikiti</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Ebiseera by’esswala tebisobodde kusomebwa.</string>
+  <string name="asistan_isaretleme_yapilamadi">Esswala tesobodde kuteekebwako kabonero.</string>
+  <string name="asistan_aciklama">Osobola okubuuza ebiseera by’esswala, okuteeka akabonero ku sswala eriwo nti esaaliddwa, n’okuggulawo olupapula lwa Kibula.</string>
+</resources>

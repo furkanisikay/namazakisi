@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Português europeu (pt-PT). Termos: src/core/dil/sozluk/pt. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">pt</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Próxima oração</string>
+    <string name="tile_aciklama">A próxima oração e a sua hora</string>
+    <string name="komplikasyon_adi">Tempo restante</string>
+    <string name="cikis_saati_komplikasyon_adi">Hora de fim da oração</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Próxima oração</string>
+    <string name="bugun_tile_adi">Hoje</string>
+    <string name="bugun_tile_aciklama">As cinco orações de hoje; marque as que rezou com dois toques</string>
+    <string name="ilerleme_komplikasyon_adi">Progresso do dia</string>
+    <string name="dagilim_komplikasyon_adi">Resumo do dia</string>
+    <string name="kerahat_komplikasyon_adi">Horário proibido</string>
+    <string name="son_dakikalar_kanal_adi">Últimos minutos</string>
+    <string name="son_dakikalar_kanal_aciklama">Contagem decrescente no mostrador nos últimos minutos de uma oração que ainda não rezou</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Ícone discreto no mostrador para voltar a um tasbih por terminar</string>
+    <string name="kible_adi">Quibla</string>
+    <string name="kible_komplikasyon_adi">Quibla</string>
+    <string name="camideyim_kanal_adi">Na mesquita</string>
+    <string name="camideyim_kanal_aciklama">Ícone discreto no mostrador quando o telemóvel indica que está na mesquita</string>
+    <string name="uyandirma_kanal_adi">Despertar silencioso</string>
+    <string name="uyandirma_kanal_aciklama">Desperta só com vibração, para o Fajr e o Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Rezei</string>
+    <string name="kilindi_isareti">✓ Rezada</string>
+    <string name="kapat">Fechar</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Abra o Namaz Akışı no telemóvel para ver os horários das orações.</string>
+    <string name="yuk_eskidi">Os horários estão desatualizados. Abra o Namaz Akışı no telemóvel para os atualizar.</string>
+    <string name="guncelleme_gerekli">Atualize o Namaz Akışı no relógio.</string>
+    <string name="bildirim_izni">Para receber lembretes mesmo sem o telemóvel por perto, permita as notificações do Namaz Akışı nas definições do relógio.</string>
+    <string name="cami_soru">Está na mesquita?</string>
+    <string name="cami_evet">Sim</string>
+    <string name="cami_evet_aciklama">Sim, estou na mesquita. Ativa o Modo oração</string>
+    <string name="cami_hayir">Não</string>
+    <string name="cami_hayir_aciklama">Não, não estou na mesquita</string>
+    <string name="camidesiniz">Está na mesquita</string>
+    <string name="cami_degil">Isto não é uma mesquita</string>
+    <string name="cami_degil_aciklama">Isto não é uma mesquita. Este local deixa de contar como mesquita</string>
+    <string name="tesbihat_ac">Abrir o contador de tasbih</string>
+    <string name="kible_ac">Abrir a bússola da Quibla</string>
+    <string name="ses_dene">Testar o som</string>
+    <string name="ses_dene_aciklama">Testar a leitura em voz alta do relógio</string>
+    <string name="telefonda_acin">Abrir no telemóvel</string>
+    <string name="telefonda_ekran_ac">Abrir %1$s no telemóvel</string>
+    <string name="ekran_kaza">Registo de reposições</string>
+    <string name="ekran_camideyim">Na mesquita</string>
+    <string name="ekran_ayarlar">Definições</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">rezada, a sincronizar</string>
+    <string name="durum_kilindi">rezada</string>
+    <string name="durum_girmedi">ainda não é a hora</string>
+    <string name="durum_simdiki">hora da oração atual, toque para marcar</string>
+    <string name="durum_simdiki_kalan">hora da oração atual, %1$s, toque para marcar</string>
+    <string name="durum_kilinmadi">não rezada, toque para marcar</string>
+    <string name="isaretleyin">Marcar como rezada</string>
+    <string name="esitleniyor">a sincronizar</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Confirmar Rezei</string>
+    <string name="vazgecin">Cancelar</string>
+    <string name="vazgec">Cancelar</string>
+    <string name="kerahat_vaktindesiniz">Agora é horário proibido.</string>
+    <string name="kilindi_dua">Rezada. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Modo oração ativado, termina às %1$s. Toque para o desativar</string>
+    <string name="namaz_modu_ac_aciklama">Ativar o Modo oração no telemóvel</string>
+    <string name="namaz_modu_kapatin">Desativar o Modo oração</string>
+    <string name="namaz_modu_acin">Ativar o Modo oração</string>
+    <string name="namaz_modu_acik_bitis">Ativado, termina às %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">A calcular a direção…</string>
+    <string name="kible_yuk_yok">Abra o Namaz Akışı no telemóvel para encontrar a Quibla.</string>
+    <string name="kible_konum_yok">Ative a localização no telemóvel para encontrar a Quibla. Se o Namaz Akışı não estiver atualizado, atualize-o.</string>
+    <string name="kible_sensor_yok">Este relógio não tem sensor de bússola. Pode ver a direção da Quibla no telemóvel.</string>
+    <string name="kible_kuzeyden">Quibla %1$d° (a partir do norte)</string>
+    <string name="kible_derece">Quibla %1$d°</string>
+    <string name="kible_telefonda_ac">Abrir a Quibla no telemóvel</string>
+    <string name="kible_erisim">%1$s. A Quibla está a %2$d° do norte, %3$s</string>
+    <string name="kible_hizali">A Quibla está à sua frente</string>
+    <string name="kible_kalibrasyon">Para calibrar, mova o pulso no ar desenhando um 8</string>
+    <string name="kible_egim">Segure o relógio paralelo ao chão</string>
+    <string name="kible_titresim_acik">Orientação por vibração ativada. Toque para a desativar</string>
+    <string name="kible_titresim_kapali">Orientação por vibração desativada. Toque para a ativar</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">O</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbih concluído. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Total %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Contar</string>
+    <string name="tesbihat_bastan_baslayin">Recomeçar</string>
+    <string name="tesbihat_bastan_soru">Recomeçar?</string>
+    <string name="tesbihat_sifirlanir">A contagem volta a zero.</string>
+    <string name="tesbihat_geri_al">Anular</string>
+    <string name="tesbihat_geri_al_aciklama">Anular a última contagem</string>
+    <string name="tesbihat_yeniden">Começar de novo</string>
+    <string name="tesbihat_yeniden_aciklama">Começar o tasbih de novo</string>
+    <string name="tesbihat_suruyor">Tasbih em curso: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Rezei. Fecha o despertar</string>
+    <string name="uyandirma_kapat_aciklama">Fechar o despertar</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Abrir o Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Toque para ver os horários</string>
+    <string name="tile_telefonda_acin">Abra a aplicação no telemóvel</string>
+    <string name="tile_sonra">dentro de %1$s</string>
+    <string name="tile_siradaki_aciklama">Próxima oração %1$s, começa às %2$s. Abrir a aplicação</string>
+    <string name="tile_giris">começa %1$s</string>
+    <string name="tile_cikis">termina %1$s</string>
+    <string name="bugun_bos_satir1">Abra a aplicação</string>
+    <string name="bugun_bos_satir2">no telemóvel</string>
+    <string name="bugun_acma_aciklamasi">Hoje %1$d/%2$d orações rezadas. Abrir a aplicação</string>
+    <string name="bugun_sayi">Hoje %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Horário proibido · toque de novo para confirmar</string>
+    <string name="bugun_onay_tekrar">Toque de novo para confirmar</string>
+    <string name="bugun_tamam">As orações de hoje estão completas</string>
+    <string name="bugun_kilinmadi">%1$s não rezada</string>
+    <string name="bugun_siradaki">A seguir: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Toque de novo</string>
+    <string name="bugun_kilindi">%1$s rezada</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s rezada, a sincronizar</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">À espera dos horários; abra o Namaz Akışı no telemóvel</string>
+    <string name="komplikasyon_bekleniyor">À espera</string>
+    <string name="komplikasyon_vakit">Oração</string>
+    <string name="komplikasyon_cikis">Fim</string>
+    <string name="komplikasyon_sirada">Próxima</string>
+    <string name="gun_durumu_aciklama">Hoje %2$d de %1$d orações rezadas</string>
+    <string name="gun_durumu_kilinmamis">%1$s; não rezadas: %2$s</string>
+    <string name="komplikasyon_namaz">Orações</string>
+    <string name="komplikasyon_kerahat">Proibido</string>
+    <string name="kerahat_icinde_aciklama">É horário proibido, termina às %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Próximo horário proibido %1$s</string>
+    <string name="kible_komplikasyon">A Quibla está a %1$d° do norte. Abrir a bússola</string>
+    <string name="kible_komplikasyon_konumlu">A Quibla está a %1$d° do norte, %2$s. Abrir a bússola</string>
+    <string name="kible_komplikasyon_konum_yok">Ative a localização no telemóvel para encontrar a Quibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Lembrete urgente · Com vibração</string>
+    <string name="muhafiz_kanal_acil">Lembrete urgente</string>
+    <string name="muhafiz_kanal_titresimli">Lembrete da oração · Com vibração</string>
+    <string name="muhafiz_kanal">Lembrete da oração</string>
+    <string name="muhafiz_kanal_aciklama">Lembretes das orações mostrados no relógio mesmo sem o telemóvel por perto</string>
+    <string name="son_dakikalar_cikis">Termina: %1$s</string>
+    <string name="son_dakikalar_bitis">Termina: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Tempo até ao fim de %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Tempo restante para %1$s</string>
+    <string name="cami_namaz_modu_bitis">Modo oração · termina às %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Aberto no telemóvel</string>
+    <string name="telefona_ulasilamadi">Não é possível contactar o telemóvel</string>
+</resources>

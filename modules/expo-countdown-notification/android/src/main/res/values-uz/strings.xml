@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- uz — Özbekçe (beta, LATİN). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Jonli teskari sanoqlar</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar va holat satridagi teskari sanoqlar</string>
+    <string name="countdown_kanal_genel_ad">Teskari sanoq bildirishnomalari</string>
+    <string name="countdown_kanal_genel_aciklama">Teskari sanoq bildirishnomalari uchun kanal</string>
+
+    <string name="countdown_eylem_kildim">Oʻqidim</string>
+    <string name="countdown_eylem_durdur">Toʻxtatish</string>
+
+    <string name="countdown_yedek_vakit">Shoshiling, namoz vaqti tugayapti.</string>
+    <string name="countdown_yedek_iftar">Vaqt oz qoldi.</string>
+    <string name="countdown_yedek_sahur">Hali yeb-ichishingiz mumkin; roʻza tez orada boshlanadi.</string>
+    <string name="countdown_yedek_seri">Bugungi namozlar toʻliq emas; ketma-ketligingizni yoʻqotmang.</string>
+
+    <string name="countdown_onek_vakit">Vaqt tugashigacha</string>
+    <string name="countdown_onek_vakit_dar">Vaqt tugayapti</string>
+    <string name="countdown_onek_iftar">Iftorgacha</string>
+    <string name="countdown_onek_iftar_dar">Iftorgacha</string>
+    <string name="countdown_onek_sahur">Saharlik tugashigacha</string>
+    <string name="countdown_onek_sahur_dar">Saharlik tugayapti</string>
+    <string name="countdown_onek_seri">Ketma-ketlikni saqlash uchun</string>
+    <string name="countdown_onek_seri_dar">Ketma-ketlik tugayapti</string>
+</resources>

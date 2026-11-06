@@ -8,6 +8,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Logger } from '../../../core/utils/Logger';
 import { TemaContext } from '../../../core/theme/TemaContext';
+import { metin } from '../../../core/dil/aktifDil';
 
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -73,9 +74,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             return (
                 <TemaContext.Consumer>
                     {({ tema }) => (
+                        // Sınıf bileşeni: metin çizim anında etkin dilden okunur.
                         <View style={[styles.container, { backgroundColor: tema.renkler.arkaplan }]}>
                             <ScrollView contentContainerStyle={styles.scroll}>
-                                <Text style={[styles.title, { color: tema.renkler.durum.hata }]}>Bir hata oluştu</Text>
+                                <Text style={[styles.title, { color: tema.renkler.durum.hata }]}>{metin().genel.hataEkrani.baslik}</Text>
                                 <Text style={[styles.errorMessage, { color: tema.renkler.metin }]}>
                                     {this.state.error?.message}
                                 </Text>
@@ -103,9 +105,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
                                     style={[styles.retryButton, { backgroundColor: tema.renkler.durum.hata }]}
                                     onPress={this.handleRetry}
                                     accessibilityRole="button"
-                                    accessibilityLabel="Tekrar Dene"
+                                    accessibilityLabel={metin().genel.hataEkrani.tekrarDene}
                                 >
-                                    <Text style={styles.retryText}>Tekrar Dene</Text>
+                                    <Text style={styles.retryText}>{metin().genel.hataEkrani.tekrarDene}</Text>
                                 </TouchableOpacity>
                             </ScrollView>
                         </View>

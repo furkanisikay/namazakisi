@@ -12,22 +12,22 @@ appId: com.furkanisikay.namazakisi
 - takeScreenshot: ozk/50-ayarlar-guc-tasarrufu-cipi
 - scrollUntilVisible:
     element:
-      text: "Yedek ve eşitleme\\..*"
+      text: "(Yedek ve eşitleme|Backup and sync)\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Yedek ve eşitleme\\..*"
+    text: "(Yedek ve eşitleme|Backup and sync)\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - scrollUntilVisible:
     element:
-      text: "Cihazlar arası eşitleme.*"
+      text: "(Cihazlar arası eşitleme|Sync across devices).*"
     direction: DOWN
     timeout: 120000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Cihazlar arası eşitleme.*"
+    text: "(Cihazlar arası eşitleme|Sync across devices).*"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/51-esitleme-durum

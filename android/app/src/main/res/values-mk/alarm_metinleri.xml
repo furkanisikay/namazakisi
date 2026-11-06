@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Makedonca, Kiril). "Клањав" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Аларм за намаз</string>
+  <string name="alarm_kildim">Клањав</string>
+  <string name="alarm_kapat">Исклучете</string>
+  <string name="alarm_kanal_aciklamasi">Вистински аларм што ѕвони во чекорите на потсетниците што ќе ги изберете</string>
+</resources>

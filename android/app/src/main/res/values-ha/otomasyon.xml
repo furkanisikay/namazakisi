@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Hausa). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Na yi salla</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Halin lokacin salla</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Abin lokacin salla</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar 2. çoğul "ku". -->
+  <string name="otomasyon_bilgi_baslik">Ana ƙara wannan saiti daga manhajar ayyukan atomatik</string>
+  <string name="otomasyon_bilgi_tarayici">Burauzoji ba za su iya samun izini na dindindin ba. Ku ƙara shi daga jerin plugins na manhaja kamar Tasker, MacroDroid ko Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Ku ƙara shi ta zaɓar \"Namaz Akışı\" daga jerin plugins na manhaja kamar Tasker, MacroDroid ko Automate.</string>
+  <string name="otomasyon_engelli_baslik">An toshe %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Kun toshe wannan manhaja daga yin alamar sallolinku a baya. Kuna iya ba ta izini a Namaz Akışı a Saituna &gt; \"Manhajojin da ke yin alamar Na yi salla\".</string>
+  <string name="otomasyon_izin_baslik">A yi amfani da %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s na iya sanin lokacin da lokacin salla ya yi, lokacin da yake ƙarewa da lokacin da kuke masallaci, kuma ta gudanar da ayyukan atomatik ɗinku. Kuna iya canja shawararku a Namaz Akışı a Saituna &gt; \"Manhajojin da ke yin alamar Na yi salla\".</string>
+  <string name="otomasyon_izin_kildim">%1$s na iya yin alamar an yi sallar yanzu da aikin atomatik da kuka saita. Kuna iya canja shawararku a Namaz Akışı a Saituna &gt; \"Manhajojin da ke yin alamar Na yi salla\".</string>
+  <string name="otomasyon_izin_ver">Ba da izini</string>
+  <string name="otomasyon_engelle">Toshe</string>
+  <string name="otomasyon_vazgec">Soke</string>
+  <string name="otomasyon_tamam">To</string>
+  <string name="otomasyon_tur_baslik">Yaushe zai gudana?</string>
+  <string name="otomasyon_ileri">Gaba</string>
+  <string name="otomasyon_vakit_baslik">Wace salla?</string>
+  <string name="otomasyon_herhangi_vakit">Kowane lokacin salla</string>
+  <string name="otomasyon_kaydet">Ajiye</string>
+  <string name="otomasyon_kosul_icinde">Yayin da ake cikin lokacin salla</string>
+  <string name="otomasyon_kosul_cikiyor">Yayin da lokacin salla ke ƙarewa (saura minti %1$d, Mai Tsaron Salla a kunne)</string>
+  <string name="otomasyon_kosul_camide">Yayin da ake masallaci</string>
+  <string name="otomasyon_olay_girdi">Idan lokacin salla ya yi</string>
+  <string name="otomasyon_olay_cikiyor">Idan lokacin salla yana ƙarewa (saura minti %1$d, Mai Tsaron Salla a kunne)</string>
+  <string name="otomasyon_olay_camide">Idan aka gano kuna masallaci</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Zalimi ya QR kood din be TV yaɣili zuɣu gilli maa puuni</string>
+    <string name="tvesleme_qr_vazgec">Nyahimi ya</string>
+    <string name="tvesleme_qr_vazgec_erisim">Nyahimi ya karimbu</string>
+    <string name="tvesleme_qr_yabanci">QR kood ŋɔ pa Namaz Akışı TV dini. Karimmi ya kood din be TV zuɣu.</string>
+    <string name="tvesleme_qr_okundu">Bɛ karim kood maa</string>
+</resources>

@@ -22,6 +22,12 @@ object Kerahat {
         SURUK("suruk", "Güneş doğuşu", "Güneş iyice yükselene kadar namaz kılınması mekruhtur."),
         ISTIVA("istiva", "İstiva", "Güneş tam tepedeyken namaz kılınması mekruhtur."),
         GURUB("gurub", "Güneş batışı", "Güneş batarken namaz kılınması mekruhtur."),
+        ;
+
+        /** [dil]deki ad ve açıklama (`TvDili`); [ad]/[aciklama] Türkçedir. */
+        fun ad(dil: String): String = tvDili(dil).kerahatAdi(this)
+
+        fun aciklama(dil: String): String = tvDili(dil).kerahatAciklamasi(this)
     }
 
     data class Pencere(val tur: Tur, val baslangic: Long, val bitis: Long) {

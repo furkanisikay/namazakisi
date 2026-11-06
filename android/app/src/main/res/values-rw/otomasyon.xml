@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Kinyarwanda). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür; src/core/otomasyon/nativeEtiketler.ts rw bloğuyla birebir. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nasali</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Uko igihe cy’iswala gihagaze</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ikibaye ku gihe cy’iswala</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Iri genamiterere ryongerwa muhereye kuri porogaramu y’ibikorwa byikora</string>
+  <string name="otomasyon_bilgi_tarayici">Mushakisha ntizishobora guhabwa uruhushya ruhoraho. Mubyongere muhereye ku rutonde rw’inyongera rwa porogaramu nka Tasker, MacroDroid cyangwa Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Mubyongere muhitamo «Namaz Akışı» ku rutonde rw’inyongera rwa porogaramu nka Tasker, MacroDroid cyangwa Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s irabujijwe</string>
+  <string name="otomasyon_engelli_mesaj">Mwari mwarabujije iyi porogaramu kwemeza iswala zanyu. Mushobora kuyemerera muri Namaz Akışı muri Igenamiterere &gt; «Porogaramu zemeza Nasali».</string>
+  <string name="otomasyon_izin_baslik">Gukoresha na %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s ishobora kumenya igihe cy’iswala gitangiye, igihe kigiye kurangira n’igihe muri ku musigiti, maze igakoresha ibikorwa byanyu byikora. Mushobora guhindura icyemezo cyanyu muri Namaz Akışı muri Igenamiterere &gt; «Porogaramu zemeza Nasali».</string>
+  <string name="otomasyon_izin_kildim">%1$s ishobora kwemeza ko iswala y’iki gihe yasaliwe ikoresheje igikorwa cyikora mwashyizeho. Mushobora guhindura icyemezo cyanyu muri Namaz Akışı muri Igenamiterere &gt; «Porogaramu zemeza Nasali».</string>
+  <string name="otomasyon_izin_ver">Kwemera</string>
+  <string name="otomasyon_engelle">Kubuza</string>
+  <string name="otomasyon_vazgec">Kureka</string>
+  <string name="otomasyon_tamam">Sawa</string>
+  <string name="otomasyon_tur_baslik">Gikore ryari?</string>
+  <string name="otomasyon_ileri">Gukomeza</string>
+  <string name="otomasyon_vakit_baslik">Iswala iyihe?</string>
+  <string name="otomasyon_herhangi_vakit">Igihe icyo ari cyo cyose cy’iswala</string>
+  <string name="otomasyon_kaydet">Kubika</string>
+  <string name="otomasyon_kosul_icinde">Mu gihe cy’iswala</string>
+  <string name="otomasyon_kosul_cikiyor">Igihe cy’iswala kigiye kurangira (hasigaye %1$d min, Umurinzi w’iswala afunguye)</string>
+  <string name="otomasyon_kosul_camide">Mu gihe muri ku musigiti</string>
+  <string name="otomasyon_olay_girdi">Igihe cy’iswala nikigera</string>
+  <string name="otomasyon_olay_cikiyor">Igihe cy’iswala nikigiye kurangira (hasigaye %1$d min, Umurinzi w’iswala afunguye)</string>
+  <string name="otomasyon_olay_camide">Iyo mumenyekanye ku musigiti</string>
+</resources>

@@ -1,0 +1,19 @@
+// te — Telugu (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+// Marka jetonuna ek yapistirilmaz ("${applicationName}లో" degil): ayri sozcuk "యాప్‌లో" / "తో".
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "${applicationName} యాప్‌లో తదుపరి నమాజ్ ఎప్పుడు";
+"${applicationName} sıradaki namaz" = "${applicationName} తదుపరి నమాజ్";
+"${applicationName} ile sıradaki namazı söyle" = "${applicationName} యాప్‌తో తదుపరి నమాజ్ చెప్పండి";
+"${applicationName} namaz vakti" = "${applicationName} నమాజ్ సమయం";
+"${applicationName} şu anki vakti kıldım" = "${applicationName} యాప్‌లో ప్రస్తుత నమాజ్ ఆచరించాను";
+"${applicationName} namazımı kıldım" = "${applicationName} యాప్‌లో నమాజ్ ఆచరించాను";
+"${applicationName} ile vakti kıldım olarak işaretle" = "${applicationName} యాప్‌తో ప్రస్తుత నమాజ్‌ను ఆచరించినట్లు గుర్తించండి";
+"${applicationName} kıbleyi aç" = "${applicationName} యాప్‌లో ఖిబ్లాను తెరవండి";
+"${applicationName} ile kıbleyi göster" = "${applicationName} యాప్‌తో ఖిబ్లాను చూపండి";
+"${applicationName} günün ayeti görseli" = "${applicationName} ఈ రోజు ఆయత్ చిత్రం";
+"${applicationName} ile günün ayeti görselini hazırla" = "${applicationName} యాప్‌తో ఈ రోజు ఆయత్ చిత్రాన్ని సిద్ధం చేయండి";

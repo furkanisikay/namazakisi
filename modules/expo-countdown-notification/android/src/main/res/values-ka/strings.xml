@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">ცოცხალი უკუთვლები</string>
+    <string name="countdown_kanal_canli_aciklama">უკუთვლები Now Bar-სა და სტატუსის ზოლში</string>
+    <string name="countdown_kanal_genel_ad">უკუთვლის შეტყობინებები</string>
+    <string name="countdown_kanal_genel_aciklama">არხი უკუთვლის შეტყობინებებისთვის</string>
+
+    <string name="countdown_eylem_kildim">ვილოცე</string>
+    <string name="countdown_eylem_durdur">შეჩერება</string>
+
+    <string name="countdown_yedek_vakit">იჩქარეთ, ლოცვის დრო სრულდება.</string>
+    <string name="countdown_yedek_iftar">დრო იწურება.</string>
+    <string name="countdown_yedek_sahur">ჯერ კიდევ შეგიძლიათ ჭამა და სმა; მარხვა მალე იწყება.</string>
+    <string name="countdown_yedek_seri">დღევანდელი ლოცვები არასრულია; ნუ დაკარგავთ სერიას.</string>
+
+    <string name="countdown_onek_vakit">დროის დასრულებამდე</string>
+    <string name="countdown_onek_vakit_dar">დრო სრულდება</string>
+    <string name="countdown_onek_iftar">იფთარამდე</string>
+    <string name="countdown_onek_iftar_dar">იფთარამდე</string>
+    <string name="countdown_onek_sahur">სუჰურის დასრულებამდე</string>
+    <string name="countdown_onek_sahur_dar">სუჰური სრულდება</string>
+    <string name="countdown_onek_seri">სერიის შესანარჩუნებლად</string>
+    <string name="countdown_onek_seri_dar">სერია სრულდება</string>
+</resources>

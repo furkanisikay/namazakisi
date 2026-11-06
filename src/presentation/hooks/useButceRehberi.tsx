@@ -23,6 +23,7 @@ import { degisiklikSimuleEt, type ButceOnerisi } from '../../core/bildirim/butce
 import type { BildirimButcesi, DefterDegisikligi } from './useBildirimButcesi';
 import { BildirimSiniriSayfasi } from '../components/bildirim/BildirimSiniriSayfasi';
 import { GeriAlBildirimi } from '../components/bildirim/GeriAlBildirimi';
+import { metin, sayili } from '../../core/dil/aktifDil';
 
 export interface RehberYazicilari<Y> {
     /** Hedef girdideki değişikliği kaydet (yalnız değişen alanlar). */
@@ -74,7 +75,7 @@ export function useButceRehberi<Y>(
             if (degisiklikSimuleEt(onceGirdi, sonraGirdi).sigar) return true;
             setSayfa({
                 tur: 'ekleme',
-                baslik: secenek?.baslik ?? 'Bu hatırlatma sığmıyor',
+                baslik: secenek?.baslik ?? metin().muhafizAyar.kanca.sigmiyor,
                 once: onceGirdi,
                 sonra: sonraGirdi,
             });
@@ -107,14 +108,14 @@ export function useButceRehberi<Y>(
                 setSayfa(null);
                 setGeriAl({
                     yedek,
-                    metin: `Yer açıldı, değişikliğiniz uygulandı · ${defterOzetiHesapla(o.girdi).toplam} bildirim`,
+                    metin: sayili(metin().muhafizAyar.kanca.yerAcildi, defterOzetiHesapla(o.girdi).toplam),
                 });
                 return;
             }
             const yedek = yazicilar.yedekAl();
             yazicilar.yaz(o.girdi);
             setSayfa(null);
-            setGeriAl({ yedek, metin: `${o.baslik} · ${o.sonrakiToplam} bildirim` });
+            setGeriAl({ yedek, metin: sayili(metin().muhafizAyar.kanca.oneriUygulandi, o.sonrakiToplam, { baslik: o.baslik }) });
         },
         [sayfa, yazicilar]
     );

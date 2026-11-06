@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Sebuano). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nag-ampo ko</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Kahimtang sa oras sa Salah</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Panghitabo sa oras sa Salah</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Kining setting gidugang gikan sa automation app</string>
+  <string name="otomasyon_bilgi_tarayici">Dili makakuha og permanenteng pagtugot ang mga browser. Idugang kini gikan sa listahan sa plugin sa app sama sa Tasker, MacroDroid o Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Idugang kini pinaagi sa pagpili sa \"Namaz Akışı\" gikan sa listahan sa plugin sa app sama sa Tasker, MacroDroid o Automate.</string>
+  <string name="otomasyon_engelli_baslik">Gibabagan ang %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Gibabagan ninyo kaniadto kining app sa pagmarka sa inyong mga Salah. Matugotan ninyo kini sa Namaz Akışı ubos sa Mga setting &gt; \"Mga app nga makamarka sa Nag-ampo ko\".</string>
+  <string name="otomasyon_izin_baslik">Gamiton uban sa %1$s?</string>
+  <string name="otomasyon_izin_kosul">Mahibaloan sa %1$s kanus-a magsugod ang oras sa Salah, kanus-a kini hapit matapos ug kanus-a kamo anaa sa masjid, ug mapadagan ang inyong mga automation. Mausab ninyo ang inyong desisyon sa Namaz Akışı ubos sa Mga setting &gt; \"Mga app nga makamarka sa Nag-ampo ko\".</string>
+  <string name="otomasyon_izin_kildim">Mamarkahan sa %1$s ang karon nga Salah nga nakaampo na pinaagi sa automation nga inyong gi-set up. Mausab ninyo ang inyong desisyon sa Namaz Akışı ubos sa Mga setting &gt; \"Mga app nga makamarka sa Nag-ampo ko\".</string>
+  <string name="otomasyon_izin_ver">Tugoti</string>
+  <string name="otomasyon_engelle">Babagi</string>
+  <string name="otomasyon_vazgec">Kanselaha</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Kanus-a kini modagan?</string>
+  <string name="otomasyon_ileri">Sunod</string>
+  <string name="otomasyon_vakit_baslik">Unsang Salah?</string>
+  <string name="otomasyon_herhangi_vakit">Bisan unsang oras sa Salah</string>
+  <string name="otomasyon_kaydet">I-save</string>
+  <string name="otomasyon_kosul_icinde">Samtang oras sa Salah</string>
+  <string name="otomasyon_kosul_cikiyor">Samtang hapit matapos ang oras sa Salah (%1$d min pa, naka-on ang Bantay sa Salah)</string>
+  <string name="otomasyon_kosul_camide">Samtang anaa sa masjid</string>
+  <string name="otomasyon_olay_girdi">Inig sugod sa oras sa Salah</string>
+  <string name="otomasyon_olay_cikiyor">Kon hapit matapos ang oras sa Salah (%1$d min pa, naka-on ang Bantay sa Salah)</string>
+  <string name="otomasyon_olay_camide">Kon makita nga anaa kamo sa masjid</string>
+</resources>

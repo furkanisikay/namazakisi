@@ -13,6 +13,7 @@ import { ActivityIndicator, Text, TouchableOpacity, View, type StyleProp, type V
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { IkonCipi } from './IkonCipi';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface BosDurumProps {
     ikon: string;
@@ -70,6 +71,7 @@ export interface YukleniyorProps {
 
 export const Yukleniyor: React.FC<YukleniyorProps> = ({ metin, gecikmeMs = YUKLENIYOR_GECIKMESI_MS, style }) => {
     const renkler = useRenkler();
+    const varsayilanMetin = useMetin().genel.ortak.yukleniyor;
     const [gorunur, setGorunur] = React.useState(gecikmeMs <= 0);
     React.useEffect(() => {
         if (gecikmeMs <= 0) return;
@@ -81,7 +83,7 @@ export const Yukleniyor: React.FC<YukleniyorProps> = ({ metin, gecikmeMs = YUKLE
         <View
             accessible
             accessibilityRole="progressbar"
-            accessibilityLabel={metin ?? 'Yükleniyor'}
+            accessibilityLabel={metin ?? varsayilanMetin}
             accessibilityState={{ busy: true }}
             style={[{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 24 }, style]}
         >

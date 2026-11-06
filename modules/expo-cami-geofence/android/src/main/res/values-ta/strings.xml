@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">பள்ளிவாசலில்</string>
+    <string name="camigeofence_kanal_durum_aciklama">நீங்கள் பள்ளிவாசலில் இருப்பது கண்டறியப்படும்போது அமைதியான அறிவிப்பு</string>
+    <string name="camigeofence_kanal_soru_ad">பள்ளிவாசலை விட்டு வெளியேறிய பின்</string>
+    <string name="camigeofence_kanal_soru_aciklama">பள்ளிவாசலை விட்டு வெளியேறிய பின் உங்கள் தொழுகையைக் குறிக்க ஒரு கேள்வி</string>
+
+    <string name="camigeofence_govde_mod_sessiz">தொழுகைப் பயன்முறை இயக்கத்தில் உள்ளது. நினைவூட்டல்கள் ஒலியின்றி வரும்.</string>
+    <string name="camigeofence_govde_mod">தொழுகைப் பயன்முறை இயக்கத்தில் உள்ளது.</string>
+    <string name="camigeofence_govde_sessiz">நினைவூட்டல்கள் ஒலியின்றி வரும்.</string>
+    <string name="camigeofence_govde_normal">நினைவூட்டல்கள் வழக்கம்போல் வரும்.</string>
+    <string name="camigeofence_eylem_modu_kapat">பயன்முறையை முடக்கு</string>
+    <string name="camigeofence_eylem_cami_degil">பள்ளிவாசல் அல்ல</string>
+
+    <string name="camigeofence_soru_baslik">பள்ளிவாசலில் இருக்கிறீர்களா?</string>
+    <string name="camigeofence_soru_govde">நீங்கள் %1$s அருகில் உள்ளீர்கள். உறுதியாகத் தெரியாததால் உங்களிடம் கேட்கிறோம்.</string>
+    <string name="camigeofence_varsayilan_ad">பள்ளிவாசல்</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">தொழுகைப் பயன்முறையை இயக்கு</string>
+    <string name="camigeofence_eylem_evet_camideyim">ஆம், பள்ளிவாசலில் உள்ளேன்</string>
+    <string name="camigeofence_eylem_hayir">இல்லை</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s தொழுதீர்களா?</string>
+    <string name="camigeofence_kildiniz_mi_govde">ஒரே தட்டலில் குறிக்கலாம்.</string>
+    <string name="camigeofence_eylem_kildim">தொழுதேன்</string>
+    <string name="camigeofence_namaz_imsak">ஃபஜ்ர்</string>
+    <string name="camigeofence_namaz_ogle">லுஹர்</string>
+    <string name="camigeofence_namaz_ikindi">அஸர்</string>
+    <string name="camigeofence_namaz_aksam">மஃரிப்</string>
+    <string name="camigeofence_namaz_yatsi">இஷா</string>
+    <string name="camigeofence_namaz_cuma">ஜுமுஆ</string>
+
+    <string name="camigeofence_mod_kural_adi">தொழுகை</string>
+    <string name="camigeofence_mod_tetik_aciklama">ஜுமுஆ குத்பாவின்போதும், பள்ளிவாசலிலும், தொழுகை நேரம் தொடங்கும்போதும் Namaz Akışı இதை இயக்கும்</string>
+</resources>

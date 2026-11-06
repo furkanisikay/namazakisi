@@ -2,6 +2,7 @@ import { createListenerMiddleware, isRejected } from '@reduxjs/toolkit';
 import { Logger } from '../../core/utils/Logger';
 import { kazaVerileriniYukle } from './kazaSlice';
 import { sorunBildirildi } from './taniSlice';
+import { metin } from '../../core/dil/aktifDil';
 
 export const taniListenerMiddleware = createListenerMiddleware();
 
@@ -13,6 +14,6 @@ taniListenerMiddleware.startListening({
     Logger.warn('taniListener', 'Kaza yükleme reddi tanı tetikledi', {
       hata: (action as { error?: { message?: string } }).error?.message,
     });
-    api.dispatch(sorunBildirildi('Kaza sayfası yüklenemedi'));
+    api.dispatch(sorunBildirildi(metin().genel.tani.kazaYuklenemedi));
   },
 });

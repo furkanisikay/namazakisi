@@ -11,6 +11,8 @@
  * SAF: store'a, native'e ve `new Date()`'e bagimli DEGIL (`simdi` enjekte).
  */
 import { SERI_SOZU } from '../data/SeriSozu';
+import { metin } from '../dil/aktifDil';
+import { hadisGosterilir } from '../icerik/nassDili';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import type { ImsakSaglayici } from './seriGunSonu';
 import { gunTamMi } from './gunTamMi';
@@ -65,8 +67,13 @@ export interface GunSonuTetigi {
  * ayar satirinin adiyla ("Günü tamamlamadıysam") eslesmiyordu. Kibar "siz":
  * bu bir isaretleme hatirlatmasidir, ibadete cagri degil.
  */
-export const GUN_SONU_BASLIK = 'Günü tamamlamadınız · seri';
-export const GUN_SONU_GOVDE = `Kıldığınız namazları gün bitmeden işaretlerseniz seriniz sürer.\n\n«${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})`;
+export const gunSonuBasligi = (): string => metin().bildirim.gunSonu.baslik;
+
+/** Gövde; seri sözü (hadis) yalnız `HADIS_DILLERI`'nde eklenir. */
+export const gunSonuGovdesi = (): string => {
+  const govde = metin().bildirim.gunSonu.govde;
+  return hadisGosterilir() ? `${govde}\n\n«${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})` : govde;
+};
 
 const gecerliTarihMi = (t: unknown): t is Date =>
   t instanceof Date && Number.isFinite(t.getTime());

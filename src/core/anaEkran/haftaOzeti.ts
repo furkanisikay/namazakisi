@@ -5,9 +5,11 @@
  * hesaplanır: gelecek günler paydaya girseydi Pazartesi sabahı oran %3 görünürdü.
  * Gün NAMAZ günüdür (çağıran `gunTarihiIso`'yu aktif günden verir).
  */
+import { metin } from '../dil/aktifDil';
 import { gunEkle, ISOTarihiDateNesnesiNeCevir } from '../utils/TarihYardimcisi';
 
-export const HAFTA_GUN_HARFLERI = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'] as const;
+/** Pazartesi'den başlayan gün harfleri, etkin dilde. */
+export const haftaGunHarfleri = (): readonly string[] => metin().tarih.haftaHarfleri;
 export const GUNLUK_FARZ = 5;
 
 export interface HaftaGunu {
@@ -41,7 +43,7 @@ export function haftaBasi(gunTarihiIso: string): string {
  */
 export function haftaOzetiHesapla(gunTarihiIso: string, kilinanlar: Record<string, number>): HaftaOzeti {
     const bas = haftaBasi(gunTarihiIso);
-    const gunler: HaftaGunu[] = HAFTA_GUN_HARFLERI.map((harf, i) => {
+    const gunler: HaftaGunu[] = haftaGunHarfleri().map((harf, i) => {
         const tarih = gunEkle(bas, i);
         const gelecekMi = tarih > gunTarihiIso;
         const ham = gelecekMi ? 0 : kilinanlar[tarih] ?? 0;

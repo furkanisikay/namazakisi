@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Сместите QR код са екрана ТВ-а унутар оквира</string>
+    <string name="tvesleme_qr_vazgec">Одустаните</string>
+    <string name="tvesleme_qr_vazgec_erisim">Откажите скенирање</string>
+    <string name="tvesleme_qr_yabanci">Овај QR код не припада апликацији Namaz Akışı за ТВ. Скенирајте код на ТВ-у.</string>
+    <string name="tvesleme_qr_okundu">Код је скениран</string>
+</resources>

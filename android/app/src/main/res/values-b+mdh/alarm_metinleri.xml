@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mdh -->
+<!-- Gerçek alarm (Maguindanao). "Midsambayang ako" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alarm nu sambayang</string>
+  <string name="alarm_kildim">Midsambayang ako</string>
+  <string name="alarm_kapat">I-off</string>
+  <string name="alarm_kanal_aciklamasi">Benal a alarm a pedtunog sa manga hakbang nu patadem a napili nu</string>
+</resources>

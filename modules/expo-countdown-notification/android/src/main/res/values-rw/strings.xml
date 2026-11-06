@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kinyarwanda. Terimler JS sozluk/rw sayac ile aynı (daku, gusiburuka, uruhererekane). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Igihe gisigaye kizima</string>
+    <string name="countdown_kanal_canli_aciklama">Kubara igihe gisigaye muri Now Bar no mu mwanya w’imimerere</string>
+    <string name="countdown_kanal_genel_ad">Amamenyesha yo kubara igihe gisigaye</string>
+    <string name="countdown_kanal_genel_aciklama">Umuyoboro w’amamenyesha yo kubara igihe gisigaye</string>
+
+    <string name="countdown_eylem_kildim">Nasali</string>
+    <string name="countdown_eylem_durdur">Guhagarika</string>
+
+    <!-- JS gövde vermediğinde temaya göre yedek gövde (ibadete çağrı: tekil emir, JS sozluk/rw muhafiz/sayac ikizi) -->
+    <string name="countdown_yedek_vakit">Ihute, igihe cy’iswala kigiye kurangira.</string>
+    <string name="countdown_yedek_iftar">Igihe kiragenda gishira.</string>
+    <string name="countdown_yedek_sahur">Muracyashobora kurya no kunywa; igisibo gitangira vuba.</string>
+    <string name="countdown_yedek_seri">Iswala z’uyu munsi ntiziruzura; ntutakaze uruhererekane rwawe.</string>
+
+    <string name="countdown_onek_vakit">Kugeza igihe kirangiye</string>
+    <string name="countdown_onek_vakit_dar">Igihe kirarangira</string>
+    <string name="countdown_onek_iftar">Kugeza gusiburuka</string>
+    <string name="countdown_onek_iftar_dar">Kugeza gusiburuka</string>
+    <string name="countdown_onek_sahur">Kugeza daku irangiye</string>
+    <string name="countdown_onek_sahur_dar">Daku irarangira</string>
+    <string name="countdown_onek_seri">Kugira ngo murinde uruhererekane</string>
+    <string name="countdown_onek_seri_dar">Uruhererekane rurarangira</string>
+</resources>

@@ -53,9 +53,9 @@ describe('yön-uygun şablon havuzu', () => {
   });
 
   test('anonsSablonlari yöne göre havuz döner; varsayılan çıkıştır', () => {
-    expect(anonsSablonlari('cikisaDogru')).toBe(ANONS_SABLONLARI);
-    expect(anonsSablonlari('girisindenItibaren')).toBe(ANONS_SABLONLARI_GIRIS);
-    expect(anonsSablonlari()).toBe(ANONS_SABLONLARI);
+    expect(anonsSablonlari('cikisaDogru')).toEqual(ANONS_SABLONLARI);
+    expect(anonsSablonlari('girisindenItibaren')).toEqual(ANONS_SABLONLARI_GIRIS);
+    expect(anonsSablonlari()).toEqual(ANONS_SABLONLARI);
   });
 
   test('varsayilanAnonsMetni boş kutuyu dolduran ilk şablondur', () => {

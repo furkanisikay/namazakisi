@@ -5,10 +5,12 @@
 
 import * as Calendar from 'expo-calendar/legacy';
 import { Platform } from 'react-native';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { Logger } from '../../core/utils/Logger';
 import { UYGULAMA_TAKVIM_NOTU } from '../../core/takvimCakisma/takvimCakismaAyarlari';
+import { aktifDil, bicim, sozluk } from '../../core/dil/aktifDil';
+import type { DilKodu } from '../../core/dil/diller';
 
 // Domain-local tipler — presentation/store'a bağımlılık olmadan yapısal uyum sağlar
 type TakvimVakitAdi = 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
@@ -30,13 +32,11 @@ interface TakvimAyarlari {
 // Tek kaynak: çakışma taraması (issue #291) bu nottaki etkinlikleri HARİÇ tutar.
 const OLUSTURULDU_NOTU = UYGULAMA_TAKVIM_NOTU;
 
-const VAKIT_ISIMLERI: Record<TakvimVakitAdi, string> = {
-    imsak:  'Sabah',
-    ogle:   'Öğle',
-    ikindi: 'İkindi',
-    aksam:  'Akşam',
-    yatsi:  'Yatsı',
-};
+/** Etkinlik başlığı (etkin dilde ya da verilen dilde): "Öğle Namazı" / "Dhuhr prayer". */
+export function takvimEtkinlikBasligi(vakit: TakvimVakitAdi, kod: DilKodu = aktifDil()): string {
+    const s = sozluk(kod);
+    return bicim(s.takvim.etkinlikBasligi, { ad: s.vakit.adlar[vakit] });
+}
 
 export class TakvimServisi {
     private static instance: TakvimServisi;
@@ -193,7 +193,6 @@ export class TakvimServisi {
         await this.eskiOlaylariTemizle(ayarlar.takvimId, ayarlar.kaciGunIlerisi);
 
         const coordinates = new Coordinates(koordinatlar.lat, koordinatlar.lng);
-        const params = turkiyeHesapParametreleri();
         let toplamOlusturulan = 0;
 
         // IANA timezone: 'local' gecersiz, cihazin gercek timezone'unu al
@@ -207,11 +206,11 @@ export class TakvimServisi {
             tarih.setDate(tarih.getDate() + g);
             tarih.setHours(0, 0, 0, 0);
 
-            const pt = new PrayerTimes(coordinates, tarih, params);
+            const pt = aktifPrayerTimes(coordinates, tarih);
 
             const yarinTarih = new Date(tarih);
             yarinTarih.setDate(yarinTarih.getDate() + 1);
-            const ptYarin = new PrayerTimes(coordinates, yarinTarih, params);
+            const ptYarin = aktifPrayerTimes(coordinates, yarinTarih);
 
             const girisSaatleri: Record<TakvimVakitAdi, Date> = {
                 imsak:  pt.fajr,
@@ -245,7 +244,7 @@ export class TakvimServisi {
 
                 try {
                     await Calendar.createEventAsync(ayarlar.takvimId!, {
-                        title: `${VAKIT_ISIMLERI[vakit]} Namazı`,
+                        title: takvimEtkinlikBasligi(vakit),
                         startDate,
                         endDate,
                         notes: OLUSTURULDU_NOTU,

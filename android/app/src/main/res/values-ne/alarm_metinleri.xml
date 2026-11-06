@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Nepalce). "नमाज पढें" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">नमाज अलार्म</string>
+  <string name="alarm_kildim">नमाज पढें</string>
+  <string name="alarm_kapat">बन्द गर्नुहोस्</string>
+  <string name="alarm_kanal_aciklamasi">तपाईंले छानेका रिमाइन्डर चरणमा बज्ने वास्तविक अलार्म</string>
+</resources>

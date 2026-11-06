@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Yunanca. "Now Bar" Samsung ürün adıdır. Övgü ve "!" yok. -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Ζωντανή αντίστροφη μέτρηση</string>
+    <string name="countdown_kanal_canli_aciklama">Αντίστροφες μετρήσεις στο Now Bar και στη γραμμή κατάστασης</string>
+    <string name="countdown_kanal_genel_ad">Ειδοποιήσεις αντίστροφης μέτρησης</string>
+    <string name="countdown_kanal_genel_aciklama">Κανάλι για ειδοποιήσεις αντίστροφης μέτρησης</string>
+
+    <string name="countdown_eylem_kildim">Προσευχήθηκα</string>
+    <string name="countdown_eylem_durdur">Διακοπή</string>
+
+    <string name="countdown_yedek_vakit">Βιαστείτε, η ώρα προσευχής λήγει σε λίγο.</string>
+    <string name="countdown_yedek_iftar">Ο χρόνος τελειώνει.</string>
+    <string name="countdown_yedek_sahur">Μπορείτε ακόμη να φάτε και να πιείτε· η νηστεία αρχίζει σύντομα.</string>
+    <string name="countdown_yedek_seri">Οι σημερινές προσευχές δεν ολοκληρώθηκαν· μη χάσετε το σερί σας.</string>
+
+    <string name="countdown_onek_vakit">Έως τη λήξη της ώρας</string>
+    <string name="countdown_onek_vakit_dar">Η ώρα λήγει</string>
+    <string name="countdown_onek_iftar">Έως το ιφτάρ</string>
+    <string name="countdown_onek_iftar_dar">Έως το ιφτάρ</string>
+    <string name="countdown_onek_sahur">Έως το τέλος του σαχούρ</string>
+    <string name="countdown_onek_sahur_dar">Το σαχούρ λήγει</string>
+    <string name="countdown_onek_seri">Για να σωθεί το σερί σας</string>
+    <string name="countdown_onek_seri_dar">Το σερί λήγει</string>
+</resources>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sebuano. Terimler: src/core/dil/sozluk/ceb. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ceb</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Sunod nga Salah</string>
+    <string name="tile_aciklama">Ang sunod nga Salah ug ang oras niini</string>
+    <string name="komplikasyon_adi">Nahabilin nga oras</string>
+    <string name="cikis_saati_komplikasyon_adi">Oras sa pagtapos sa Salah</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Sunod nga Salah</string>
+    <string name="bugun_tile_adi">Karon</string>
+    <string name="bugun_tile_aciklama">Ang lima ka Salah karon; markahi ang inyong nahimo sa duha ka tap</string>
+    <string name="ilerleme_komplikasyon_adi">Adlaw-adlaw nga pag-uswag</string>
+    <string name="dagilim_komplikasyon_adi">Kinatibuk-an sa adlaw</string>
+    <string name="kerahat_komplikasyon_adi">Makruh nga oras</string>
+    <string name="son_dakikalar_kanal_adi">Katapusang minuto</string>
+    <string name="son_dakikalar_kanal_aciklama">Countdown sa watch face sa katapusang mga minuto sa Salah nga wala pa ninyo mahimo</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Hilom nga icon sa watch face aron mobalik sa wala mahuman nga tasbih</string>
+    <string name="kible_adi">Qibla</string>
+    <string name="kible_komplikasyon_adi">Qibla</string>
+    <string name="camideyim_kanal_adi">Anaa sa masjid</string>
+    <string name="camideyim_kanal_aciklama">Hilom nga icon sa watch face kon ang telepono mosulti nga anaa kamo sa masjid</string>
+    <string name="uyandirma_kanal_adi">Hilom nga pagmata</string>
+    <string name="uyandirma_kanal_aciklama">Pukawon kamo pinaagi lang sa kurog, alang sa Fajr ug Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Nag-ampo ko</string>
+    <string name="kilindi_isareti">✓ Nakaampo na</string>
+    <string name="kapat">Isira</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Ablihi ang Namaz Akışı sa inyong telepono aron makita ang mga oras sa Salah.</string>
+    <string name="yuk_eskidi">Karaan na ang datos sa oras sa Salah. Ablihi ang Namaz Akışı sa inyong telepono aron ma-refresh.</string>
+    <string name="guncelleme_gerekli">I-update ang Namaz Akışı sa inyong relo.</string>
+    <string name="bildirim_izni">Aron makadawat og pahinumdom bisan wala ninyo dala ang telepono, tugoti ang mga pahibalo sa Namaz Akışı sa mga setting sa relo.</string>
+    <string name="cami_soru">Anaa ba kamo sa masjid?</string>
+    <string name="cami_evet">Oo</string>
+    <string name="cami_evet_aciklama">Oo, anaa ko sa masjid. I-on ang Mode sa Salah</string>
+    <string name="cami_hayir">Dili</string>
+    <string name="cami_hayir_aciklama">Dili, wala ko sa masjid</string>
+    <string name="camidesiniz">Anaa kamo sa masjid</string>
+    <string name="cami_degil">Dili kini masjid</string>
+    <string name="cami_degil_aciklama">Dili kini masjid. Dili na isipon nga masjid kining dapit</string>
+    <string name="tesbihat_ac">Ablihi ang tigihap sa tasbih</string>
+    <string name="kible_ac">Ablihi ang kompas sa Qibla</string>
+    <string name="ses_dene">Sulayi ang tingog</string>
+    <string name="ses_dene_aciklama">Sulayi ang pagbasa og kusog sa relo</string>
+    <string name="telefonda_acin">Ablihi sa telepono</string>
+    <string name="telefonda_ekran_ac">Ablihi ang %1$s sa inyong telepono</string>
+    <string name="ekran_kaza">Listahan sa qada</string>
+    <string name="ekran_camideyim">Anaa sa masjid</string>
+    <string name="ekran_ayarlar">Mga setting</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">nakaampo na, gi-sync</string>
+    <string name="durum_kilindi">nakaampo na</string>
+    <string name="durum_girmedi">dili pa oras</string>
+    <string name="durum_simdiki">karon nga oras sa Salah, i-tap aron markahan</string>
+    <string name="durum_simdiki_kalan">karon nga oras sa Salah, %1$s, i-tap aron markahan</string>
+    <string name="durum_kilinmadi">wala makaampo, i-tap aron markahan</string>
+    <string name="isaretleyin">Markahi nga nakaampo na</string>
+    <string name="esitleniyor">gi-sync</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Kumpirmaha ang Nag-ampo ko</string>
+    <string name="vazgecin">Kanselaha</string>
+    <string name="vazgec">Kanselaha</string>
+    <string name="kerahat_vaktindesiniz">Makruh nga oras karon.</string>
+    <string name="kilindi_dua">Nakaampo na. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Naka-on ang Mode sa Salah, matapos %1$s. I-tap aron i-off</string>
+    <string name="namaz_modu_ac_aciklama">I-on ang Mode sa Salah sa inyong telepono</string>
+    <string name="namaz_modu_kapatin">I-off ang Mode sa Salah</string>
+    <string name="namaz_modu_acin">I-on ang Mode sa Salah</string>
+    <string name="namaz_modu_acik_bitis">Naka-on, matapos %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Gipangita ang direksyon…</string>
+    <string name="kible_yuk_yok">Ablihi ang Namaz Akışı sa inyong telepono aron makit-an ang Qibla.</string>
+    <string name="kible_konum_yok">I-on ang lokasyon sa inyong telepono aron makit-an ang Qibla. Kon dili updated ang Namaz Akışı, i-update kini.</string>
+    <string name="kible_sensor_yok">Walay compass sensor kining relo. Makita ninyo ang direksyon sa Qibla sa inyong telepono.</string>
+    <string name="kible_kuzeyden">Qibla %1$d° (gikan sa amihanan)</string>
+    <string name="kible_derece">Qibla %1$d°</string>
+    <string name="kible_telefonda_ac">Ablihi ang Qibla sa inyong telepono</string>
+    <string name="kible_erisim">%1$s. Ang Qibla %2$d° gikan sa amihanan, %3$s</string>
+    <string name="kible_hizali">Nag-atubang kamo sa Qibla</string>
+    <string name="kible_kalibrasyon">Aron ma-calibrate, ilihok ang pulso sama sa numero 8 sa hangin</string>
+    <string name="kible_egim">Ipahiluna ang relo nga parehas sa yuta</string>
+    <string name="kible_titresim_acik">Naka-on ang giya sa kurog. I-tap aron i-off</string>
+    <string name="kible_titresim_kapali">Naka-off ang giya sa kurog. I-tap aron i-on</string>
+    <string name="kible_harf_kuzey">A</string>
+    <string name="kible_harf_dogu">S</string>
+    <string name="kible_harf_guney">H</string>
+    <string name="kible_harf_bati">K</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Nahuman ang tasbih. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Kinatibuk-an %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Ihapa</string>
+    <string name="tesbihat_bastan_baslayin">Sugdi gikan sa sinugdanan</string>
+    <string name="tesbihat_bastan_soru">Sugdan gikan sa sinugdanan?</string>
+    <string name="tesbihat_sifirlanir">Ma-reset ang ihap.</string>
+    <string name="tesbihat_geri_al">I-undo</string>
+    <string name="tesbihat_geri_al_aciklama">I-undo ang katapusang ihap</string>
+    <string name="tesbihat_yeniden">Sugdi pag-usab</string>
+    <string name="tesbihat_yeniden_aciklama">Sugdi pag-usab ang tasbih</string>
+    <string name="tesbihat_suruyor">Nagpadayon ang tasbih: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Nag-ampo ko. Isira ang pagmata</string>
+    <string name="uyandirma_kapat_aciklama">Isira ang pagmata</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Ablihi ang Namaz Akışı</string>
+    <string name="tile_vakitler_icin">I-tap alang sa mga oras sa Salah</string>
+    <string name="tile_telefonda_acin">Ablihi ang app sa inyong telepono</string>
+    <string name="tile_sonra">sulod sa %1$s</string>
+    <string name="tile_siradaki_aciklama">Sunod nga Salah %1$s, magsugod sa %2$s. Ablihi ang app</string>
+    <string name="tile_giris">magsugod %1$s</string>
+    <string name="tile_cikis">matapos %1$s</string>
+    <string name="bugun_bos_satir1">Ablihi ang app</string>
+    <string name="bugun_bos_satir2">sa inyong telepono</string>
+    <string name="bugun_acma_aciklamasi">Karon %1$d/%2$d ka Salah ang nahimo. Ablihi ang app</string>
+    <string name="bugun_sayi">Karon %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Makruh nga oras · i-tap pag-usab aron mokumpirma</string>
+    <string name="bugun_onay_tekrar">I-tap pag-usab aron mokumpirma</string>
+    <string name="bugun_tamam">Kompleto na ang mga Salah karon</string>
+    <string name="bugun_kilinmadi">%1$s: wala makaampo</string>
+    <string name="bugun_siradaki">Sunod: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">I-tap pag-usab</string>
+    <string name="bugun_kilindi">%1$s: nakaampo na</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s: nakaampo na, gi-sync</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Naghulat sa mga oras sa Salah; ablihi ang Namaz Akışı sa inyong telepono</string>
+    <string name="komplikasyon_bekleniyor">Naghulat sa oras</string>
+    <string name="komplikasyon_vakit">Salah</string>
+    <string name="komplikasyon_cikis">Matapos</string>
+    <string name="komplikasyon_sirada">Sunod</string>
+    <string name="gun_durumu_aciklama">Karon %2$d sa %1$d ka Salah ang nahimo</string>
+    <string name="gun_durumu_kilinmamis">%1$s; wala mahimo: %2$s</string>
+    <string name="komplikasyon_namaz">Salah</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">Makruh nga oras karon, matapos %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Sunod nga makruh nga oras %1$s</string>
+    <string name="kible_komplikasyon">Ang Qibla %1$d° gikan sa amihanan. Ablihi ang kompas</string>
+    <string name="kible_komplikasyon_konumlu">Ang Qibla %1$d° gikan sa amihanan, %2$s. Ablihi ang kompas</string>
+    <string name="kible_komplikasyon_konum_yok">I-on ang lokasyon sa inyong telepono aron makit-an ang Qibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Dinalian nga pahinumdom · Nagkurog</string>
+    <string name="muhafiz_kanal_acil">Dinalian nga pahinumdom</string>
+    <string name="muhafiz_kanal_titresimli">Pahinumdom sa Salah · Nagkurog</string>
+    <string name="muhafiz_kanal">Pahinumdom sa Salah</string>
+    <string name="muhafiz_kanal_aciklama">Mga pahinumdom sa Salah nga makita sa inyong relo bisan wala ninyo dala ang telepono</string>
+    <string name="son_dakikalar_cikis">Matapos: %1$s</string>
+    <string name="son_dakikalar_bitis">Matapos: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Nahabilin hangtod matapos ang %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Nahabilin nga oras sa %1$s</string>
+    <string name="cami_namaz_modu_bitis">Mode sa Salah · matapos %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Naablihan sa inyong telepono</string>
+    <string name="telefona_ulasilamadi">Dili maabot ang inyong telepono</string>
+</resources>

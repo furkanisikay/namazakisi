@@ -1,0 +1,18 @@
+// ha — Hausa (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "Yaushe ne salla ta gaba a ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} salla ta gaba";
+"${applicationName} ile sıradaki namazı söyle" = "Faɗa mini salla ta gaba da ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} lokacin salla";
+"${applicationName} şu anki vakti kıldım" = "Na yi sallar yanzu a ${applicationName}";
+"${applicationName} namazımı kıldım" = "Na yi sallata a ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Yi alama an yi sallar yanzu a ${applicationName}";
+"${applicationName} kıbleyi aç" = "Buɗe Alƙibla a ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Nuna Alƙibla da ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} hoton ayar yau";
+"${applicationName} ile günün ayeti görselini hazırla" = "Shirya hoton ayar yau da ${applicationName}";

@@ -13,6 +13,7 @@ import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { taniModaliKapat, hatirlatmayiGuncelle } from '../../store/taniSlice';
 import { TaniOnizleme } from './TaniOnizleme';
+import { useMetin } from '../../hooks/useMetin';
 
 /**
  * Otomatik tanı/sorun bildirme uyarı modalı.
@@ -30,6 +31,7 @@ export const TaniBildirModali: React.FC = () => {
     const dispatch = useAppDispatch();
     const { sorunAlgilandi, hatirlatmaAcik, baglam } = useAppSelector(s => s.tani);
     const renkler = useRenkler();
+    const m = useMetin().genel.tani.bildir;
     const [onizleme, setOnizleme] = useState(false);
 
     const gorunur = sorunAlgilandi && hatirlatmaAcik;
@@ -101,10 +103,10 @@ export const TaniBildirModali: React.FC = () => {
                             </View>
                             <View style={{ flex: 1 }}>
                                 <Text style={{ fontSize: 16, fontWeight: 'bold', color: renkler.metin }}>
-                                    Bir sorun oluştu
+                                    {m.baslik}
                                 </Text>
                                 <Text style={{ fontSize: 13, marginTop: 2, color: renkler.metinIkincil }}>
-                                    Bize bildirmek ister misiniz?
+                                    {m.soru}
                                 </Text>
                             </View>
                         </View>
@@ -125,7 +127,7 @@ export const TaniBildirModali: React.FC = () => {
                             >
                                 <FontAwesome5 name="lock" size={12} color={renkler.birincil} />
                                 <Text style={{ fontSize: 11, color: renkler.birincil, flex: 1 }}>
-                                    Otomatik gönderilmez
+                                    {m.otomatikDegil}
                                 </Text>
                             </View>
                             <View
@@ -142,7 +144,7 @@ export const TaniBildirModali: React.FC = () => {
                             >
                                 <FontAwesome5 name="check-circle" size={12} color={renkler.birincil} />
                                 <Text style={{ fontSize: 11, color: renkler.birincil, flex: 1 }}>
-                                    Onay sizde
+                                    {m.onaySizde}
                                 </Text>
                             </View>
                         </View>
@@ -164,7 +166,7 @@ export const TaniBildirModali: React.FC = () => {
                         >
                             <FontAwesome5 name="paper-plane" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                             <Text style={{ fontSize: 15, fontWeight: 'bold', color: renkler.birincilMetin }}>
-                                Bildir
+                                {m.bildir}
                             </Text>
                         </TouchableOpacity>
 
@@ -176,7 +178,7 @@ export const TaniBildirModali: React.FC = () => {
                                 style={{ paddingVertical: 8, paddingHorizontal: 12 }}
                             >
                                 <Text style={{ fontSize: 13, color: renkler.metinIkincil }}>
-                                    Şimdi değil
+                                    {m.simdiDegil}
                                 </Text>
                             </TouchableOpacity>
                             <Text style={{ fontSize: 13, color: renkler.metinIkincil, paddingVertical: 8 }}>
@@ -188,7 +190,7 @@ export const TaniBildirModali: React.FC = () => {
                                 style={{ paddingVertical: 8, paddingHorizontal: 12 }}
                             >
                                 <Text style={{ fontSize: 13, color: renkler.metinIkincil }}>
-                                    Bir daha sorma
+                                    {m.birDahaSorma}
                                 </Text>
                             </TouchableOpacity>
                         </View>

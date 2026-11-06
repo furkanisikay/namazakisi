@@ -6,6 +6,7 @@ import {
     type VakitBildirimSesleri,
     type VakitSesSecimi,
 } from '../../core/bildirim/vakitBildirimSesi';
+import { metin } from '../../core/dil/aktifDil';
 
 interface VakitBildirimState {
     ayarlar: VakitBildirimAyarlari;
@@ -118,7 +119,7 @@ const vakitBildirimSlice = createSlice({
         });
         builder.addCase(vakitBildirimAyarlariniYukle.rejected, (state, action) => {
             state.yukleniyor = false;
-            state.hata = action.error.message || 'Ayarlar yüklenemedi';
+            state.hata = action.error.message || metin().muhafizAyar.hata.yuklenemedi;
         });
 
         builder.addCase(vakitBildirimSesleriniYukle.fulfilled, (state, action) => {

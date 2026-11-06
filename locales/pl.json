@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Lokalizacja służy do dokładnego obliczania czasów modlitw dla miejsca, w którym jesteś. Lokalizacja zostaje na urządzeniu.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Lokalizacja służy do dokładnego obliczania czasów modlitw dla miejsca, w którym jesteś, a gdy funkcja W meczecie jest włączona, do włączania Trybu modlitwy po wejściu do meczetu. Lokalizacja zostaje na urządzeniu.",
+  "NSLocationAlwaysUsageDescription": "Lokalizacja służy do automatycznej aktualizacji czasów modlitw po zmianie miasta, a gdy funkcja W meczecie jest włączona, do włączania Trybu modlitwy po wejściu do meczetu. Lokalizacja zostaje na urządzeniu.",
+  "NSCameraUsageDescription": "Aparat służy do pokazywania kierunku kibli na obrazie z aparatu i do skanowania kodu parowania z telewizora. Obrazy nie są zapisywane i nie opuszczają urządzenia.",
+  "NSCalendarsUsageDescription": "Dostęp do kalendarza służy do dodawania czasów modlitw do kalendarza, a jeśli to włączysz, do sprawdzania, czy wydarzenia w kalendarzu kolidują z czasem modlitwy. Dane kalendarza zostają na urządzeniu.",
+  "NSCalendarsFullAccessUsageDescription": "Dostęp do kalendarza służy do dodawania czasów modlitw do kalendarza, a jeśli to włączysz, do sprawdzania, czy wydarzenia w kalendarzu kolidują z czasem modlitwy. Dane kalendarza zostają na urządzeniu.",
+  "NSLocalNetworkUsageDescription": "Aplikacja łączy się z telewizorem w sieci lokalnej, aby wysłać na niego czasy modlitw i oznaczone modlitwy. Dane są zaszyfrowane i przesyłane tylko między tymi dwoma urządzeniami.",
+  "NSAlarmKitUsageDescription": "Kroki przypomnień, dla których wybrano „Prawdziwy alarm”, są ustawiane jako alarmy, więc słychać je nawet przy wyciszonym telefonie lub włączonym Skupieniu.",
+  "\"Vakti kıldım\"": "Odprawiono",
+  "\"Kıble\"": "Kibla"
+}

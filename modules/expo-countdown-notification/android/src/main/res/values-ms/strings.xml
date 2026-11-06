@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ms — Malayca (beta). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Kiraan detik langsung</string>
+    <string name="countdown_kanal_canli_aciklama">Kiraan detik dalam Now Bar dan bar status</string>
+    <string name="countdown_kanal_genel_ad">Pemberitahuan kiraan detik</string>
+    <string name="countdown_kanal_genel_aciklama">Saluran untuk pemberitahuan kiraan detik</string>
+
+    <string name="countdown_eylem_kildim">Sudah solat</string>
+    <string name="countdown_eylem_durdur">Hentikan</string>
+
+    <string name="countdown_yedek_vakit">Segera, waktu solat hampir tamat.</string>
+    <string name="countdown_yedek_iftar">Masa semakin suntuk.</string>
+    <string name="countdown_yedek_sahur">Anda masih boleh makan dan minum; Subuh semakin hampir.</string>
+    <string name="countdown_yedek_seri">Solat hari ini belum lengkap; jangan putuskan rentetan anda.</string>
+
+    <string name="countdown_onek_vakit">Sehingga waktu tamat</string>
+    <string name="countdown_onek_vakit_dar">Waktu hampir tamat</string>
+    <string name="countdown_onek_iftar">Sehingga berbuka</string>
+    <string name="countdown_onek_iftar_dar">Sehingga berbuka</string>
+    <string name="countdown_onek_sahur">Sehingga sahur tamat</string>
+    <string name="countdown_onek_sahur_dar">Sahur hampir tamat</string>
+    <string name="countdown_onek_seri">Untuk menyelamatkan rentetan</string>
+    <string name="countdown_onek_seri_dar">Rentetan hampir tamat</string>
+</resources>

@@ -36,9 +36,9 @@ import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/constants/UygulamaSab
 import { gunEkle, tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import type { VakitAdi } from '../../core/types';
 import {
-  GUN_SONU_BASLIK,
+  gunSonuBasligi,
   GUN_SONU_ESKI_ID,
-  GUN_SONU_GOVDE,
+  gunSonuGovdesi,
   GUN_SONU_PLAN_GUN_SAYISI,
   gunSonuKimligindenGun,
   gunTamYuklemi,
@@ -185,8 +185,8 @@ async function tetikPlanla(tetik: GunSonuTetigi): Promise<void> {
     await Notifications.scheduleNotificationAsync({
       identifier: tetik.kimlik,
       content: {
-        title: GUN_SONU_BASLIK,
-        body: GUN_SONU_GOVDE,
+        title: gunSonuBasligi(),
+        body: gunSonuGovdesi(),
         sound: true,
       },
       trigger: {

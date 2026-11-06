@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tayca. -->
+<resources>
+    <string name="tvesleme_qr_ipucu">จัดคิวอาร์โค้ดบนหน้าจอทีวีให้อยู่ในกรอบ</string>
+    <string name="tvesleme_qr_vazgec">ยกเลิก</string>
+    <string name="tvesleme_qr_vazgec_erisim">ยกเลิกการสแกน</string>
+    <string name="tvesleme_qr_yabanci">คิวอาร์โค้ดนี้ไม่ใช่ของ Namaz Akışı TV โปรดสแกนรหัสบนทีวี</string>
+    <string name="tvesleme_qr_okundu">สแกนรหัสแล้ว</string>
+</resources>

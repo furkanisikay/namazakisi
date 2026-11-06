@@ -1,0 +1,58 @@
+// tk — Türkmence (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Turkmence terimler: src/core/dil/sozluk/tk.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Indiki namaz";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Indiki namazy we onuň girýän wagtyny aýdýar.";
+"Şu anki vakti kıldım" = "Häzirki namazy okadym";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Häzirki namazy okaldy diýip belleýär. Ýazgy programmany açanyňyzda goşulýar.";
+"Onay iste" = "Tassyklama sora";
+"Kıbleyi aç" = "Kyblany aç";
+"Uygulamayı Kıble pusulasıyla açar." = "Programmany Kybla kompasy bilen açýar.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Okadym";
+"Kıble" = "Kybla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Indiki namazyň ady";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Indiki namazyň adyny berýär. Ony gysga ýollarda şert hökmünde ulanyp bilersiňiz.";
+"Sıradaki vakte kalan dakika" = "Indiki namaza galan minut";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Indiki namaz wagtynyň girmegine näçe minut galandygyny berýär. Maglumat ýok bolsa -1 berýär.";
+"Şu anki vakit kılındı mı?" = "Häzirki namaz okaldymy?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Häzirki namaz okaldy diýip bellenen bolsa hawa berýär. Belläp boljak namaz ýok bolsa ýok berýär.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Namaz sessizligi";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Namaz wagty girenden soňky ilkinji minutlarda bolsaňyz dogry berýär. Gysga ýollarda Fokusy açmak üçin ulanylýar.";
+"Süre (dakika)" = "Dowamlylyk (minut)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Namaz wagty girenden soňky ${dakika} minut";
+"Namaz sessizliğinin bitişi" = "Namaz sessizliginiň soňy";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Sessizligiň gutarjak wagtyny berýär. Häzir sessizlik ýok bolsa häzirki wagty berýär.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Namaz wagty girenden soňky ${dakika} minudyň soňy";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Namaz ýatlatmalary";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Bu Fokus açyk wagty namaz ýatlatmalarynyň ekrany ýagtyltman we ses çykarman gelmegini üpjün edýär.";
+"Hatırlatmaları sessiz ver" = "Ýatlatmalary sessiz ýetir";
+"Hatırlatmalar sessiz gelir" = "Ýatlatmalar sessiz gelýär";
+"Hatırlatmalar her zamanki gibi" = "Ýatlatmalar adatdakysy ýaly";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Widjetdäki namazy okaldy diýip belleýär.";
+"Tarih" = "Sene";
+"Vakit" = "Namaz";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Namaz budilnigini sakla";
+"Namazı kıldım" = "Okadym";
+"Alarm" = "Budilnik";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Günüň aýatynyň suraty";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Şu günki aýaty ekranyňyzyň ölçeginde surat hökmünde berýär. Ony gysga ýollarda Set Wallpaper ädimi bilen ulanyp bilersiňiz.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Günüň aýatyny taýýarlamak üçin programmany bir gezek açyň.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Surat taýýarlanmady. Birazdan gaýtadan synanyşyň.";

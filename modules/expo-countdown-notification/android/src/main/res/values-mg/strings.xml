@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Fanisana mihemotra mivantana</string>
+    <string name="countdown_kanal_canli_aciklama">Fanisana mihemotra ao amin\'ny Now Bar sy ny tsipika fampahalalana</string>
+    <string name="countdown_kanal_genel_ad">Fampandrenesana fanisana mihemotra</string>
+    <string name="countdown_kanal_genel_aciklama">Fantsona ho an\'ny fampandrenesana fanisana mihemotra</string>
+
+    <string name="countdown_eylem_kildim">Nivavaka aho</string>
+    <string name="countdown_eylem_durdur">Ajanony</string>
+
+    <string name="countdown_yedek_vakit">Faingana, efa ho tapitra ny fotoanan\'ny soalat.</string>
+    <string name="countdown_yedek_iftar">Efa ho lany ny fotoana.</string>
+    <string name="countdown_yedek_sahur">Mbola afaka mihinana sy misotro ianao; efa ho manomboka ny fifadian-kanina.</string>
+    <string name="countdown_yedek_seri">Tsy mbola feno ny soalat anio; aza very ny tohinao.</string>
+
+    <string name="countdown_onek_vakit">Mandra-pifaranan\'ny fotoana</string>
+    <string name="countdown_onek_vakit_dar">Efa ho tapitra ny fotoana</string>
+    <string name="countdown_onek_iftar">Mankany amin\'ny iftar</string>
+    <string name="countdown_onek_iftar_dar">Mankany amin\'ny iftar</string>
+    <string name="countdown_onek_sahur">Mandra-pifaranan\'ny Sohor</string>
+    <string name="countdown_onek_sahur_dar">Efa ho tapitra ny Sohor</string>
+    <string name="countdown_onek_seri">Mba hamonjena ny tohinao</string>
+    <string name="countdown_onek_seri_dar">Efa ho tapitra ny tohy</string>
+</resources>

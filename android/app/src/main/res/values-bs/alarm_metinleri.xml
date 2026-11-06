@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bs — Boşnakça (beta). -->
+<!-- Gerçek alarm (Boşnakça). "Klanjano" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alarm za namaz</string>
+  <string name="alarm_kildim">Klanjano</string>
+  <string name="alarm_kapat">Ugasite</string>
+  <string name="alarm_kanal_aciklamasi">Pravi alarm koji zvoni u koracima podsjetnika koje odaberete</string>
+</resources>

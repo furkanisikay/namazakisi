@@ -15,6 +15,7 @@
  */
 import { Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 import {
     benzersizVakitSesleri,
     cozulemeyenVakitSesleriniDusur,
@@ -25,7 +26,6 @@ import {
 
 type Kopru = typeof import('../../../modules/expo-countdown-notification/src');
 
-const ACIKLAMA = 'Vakit girdiğinde gönderilen hatırlatmalar';
 
 /**
  * Son uygulanan GC kümesi: küme değişmediyse native toplama ATLANIR (cihazın TÜM
@@ -66,7 +66,7 @@ export async function vakitKanallariniHazirla(sesler: VakitBildirimSesleri): Pro
             const kuruldu = await vakitKanaliniGarantile(
                 vakitBildirimKanalId(s.bildirimSesi),
                 vakitKanalAdi(s),
-                ACIKLAMA,
+                metin().bildirim.kanal.vakitAciklama,
                 s.bildirimSesi
             );
             if (!kuruldu) kurulamayan.add(s.bildirimSesi);

@@ -190,4 +190,14 @@ public enum CanliEtkinlikKoprusu {
         }
         #endif
     }
+
+    /// Yalniz gunun ayeti widget'ini tazeler (vakit widget'i ve kontrol bu yuku okumaz;
+    /// `reloadAllTimelines` onlarin WidgetKit butcesini bosuna harcardi).
+    public static func gununAyetiWidgetiniTazele() {
+        #if canImport(WidgetKit)
+        if #available(iOS 14.0, *) {
+            WidgetCenter.shared.reloadTimelines(ofKind: GununAyetiKarari.widgetTuru)
+        }
+        #endif
+    }
 }

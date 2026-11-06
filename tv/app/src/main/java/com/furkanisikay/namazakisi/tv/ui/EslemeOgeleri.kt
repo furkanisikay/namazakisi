@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
@@ -184,7 +185,10 @@ fun EslemeDugmesi(
                 ikon()
                 androidx.compose.foundation.layout.Spacer(Modifier.padding(start = 10.dp))
             }
-            Text(metin, fontSize = if (buyuk) 30.sp else 24.sp, fontWeight = FontWeight.Medium)
+            // İki satıra kırılan etiket sıkı satır aralığıyla (1,15 em; temanın `Mode.Minimum`'u
+            // yazı tipinin kendi satır boyunun altına inmez → Ge'ez/Yoruba işaretleri kesilmez):
+            // temanın 1,3 em'i düğmeyi uzatıp eşleme ekranında adım listesini kesiyordu (Somalice).
+            Text(metin, fontSize = if (buyuk) 30.sp else 24.sp, fontWeight = FontWeight.Medium, lineHeight = 1.15.em)
         }
     }
 }

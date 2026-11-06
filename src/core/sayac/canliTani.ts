@@ -13,6 +13,7 @@
  *
  * Kişisel veri YOK (kimlik, sayı, bayrak, zaman) → tanı raporu loguna yazılabilir.
  */
+import { bicim, metin } from '../dil/aktifDil';
 
 /** Köprünün `CanliDurum`'u ile yapısal olarak aynı (çekirdek köprüye bağımlı olmasın). */
 export type CanliDurum = 'desteklenmiyor' | 'kapali' | 'acik';
@@ -156,12 +157,10 @@ export interface CanliTeshis {
 }
 
 /** Samsung One UI 8 için ekranda gösterilen yönlendirme (ikincil kaynaklara dayanır). */
-export const SAMSUNG_CANLI_BILDIRIM_IPUCU =
-  'Samsung, One UI 8\'de başka uygulamaların canlı bildirimlerini Now Bar\'a almayı Geliştirici seçenekleri\'ndeki "Live notifications for all apps" (tüm uygulamalar için canlı bildirimler) ayarına bağlayabiliyor. Bu ayarı açıp bir sonraki geri sayımda yeniden bakabilirsiniz. Geliştirici seçenekleri, Ayarlar > Telefon hakkında > Yazılım bilgileri\'nde "Yapım numarası"na yedi kez dokunarak açılır.';
+export const samsungCanliBildirimIpucu = (): string => metin().nowBar.tani.samsungIpucu;
 
 /** `yedekGosterilsinMi` "hayır" ölçümünde yedeği durdurur — kart bunu söyler (sessiz sapma yok). */
-export const YEDEK_DURDU_NOTU =
-  'Namaz Muhafızı\'nın uyardığı vakitlerin geri sayımı bu yüzden gösterilmiyor; ayarı değiştirip uygulamaya döndüğünüzde bir kez daha denenir.';
+export const yedekDurduNotu = (): string => metin().nowBar.tani.yedekDurdu;
 
 const saatMetni = (ms: number): string => {
   const d = new Date(ms);
@@ -173,52 +172,47 @@ const saatMetni = (ms: number): string => {
  * sistemin bayrağı (asıl gerçek).
  */
 export function canliTeshisi(durum: CanliDurum, tani: CanliTani | null): CanliTeshis {
-  const yok = (tip: CanliTeshisTipi, metin: string): CanliTeshis => ({ tip, metin, samsungIpucu: false });
+  const yok = (tip: CanliTeshisTipi, cumle: string): CanliTeshis => ({ tip, metin: cumle, samsungIpucu: false });
+  const t = metin().nowBar.tani;
   if (durum === 'desteklenmiyor' || !tani) {
-    return yok('desteklenmiyor', 'Bu telefon ya da uygulama sürümü canlı güncellemeleri desteklemiyor.');
+    return yok('desteklenmiyor', t.desteklenmiyor);
   }
   if (durum === 'kapali') {
-    return yok('izinKapali', 'Telefonunuzun ayarlarında bu uygulama için canlı güncellemeler kapalı.');
+    return yok('izinKapali', t.izinKapali);
   }
   if (tani.izinVar === false) {
-    return yok('manifestIzniYok', 'Uygulamanın öne çıkarma izni eksik; lütfen sorunu bize bildirin.');
+    return yok('manifestIzniYok', t.manifestIzniYok);
   }
   const son = tani.sonGosterim;
   // Görünen bir sayaç varsa onun CANLI bayrağı son kayıttan önce gelir.
   const canli = tani.aktifBildirimler.find((a) => a.oneCikarildi !== null);
   if (canli?.oneCikarildi === true) {
-    return yok('oneCikti', 'Sistem geri sayımı öne çıkardı; durum çubuğunda görünüyor olmalı.');
+    return yok('oneCikti', t.oneCikti);
   }
   if (son?.hata) {
-    return yok('hata', `Geri sayım öne çıkarılırken bir hata oluştu (${son.hata}); lütfen sorunu bize bildirin.`);
+    return yok('hata', bicim(t.hata, { hata: son.hata }));
   }
   if (son && (!son.oneCikarilabilir || son.kanalOnemi === ONEM_MIN)) {
-    return yok('sartEksik', 'Geri sayım bildirimi öne çıkarma şartlarını karşılamadı; lütfen sorunu bize bildirin.');
+    return yok('sartEksik', t.sartEksik);
   }
   const olculen = canli?.oneCikarildi ?? tani.sonOlcum?.deger ?? son?.oneCikarildi ?? null;
   if (olculen === false) {
     return {
       tip: 'ureticiEngeli',
-      metin: `${
-        tani.samsung
-          ? 'Uygulama geri sayımı öne çıkarmayı istedi ve şartlar tamam, ancak telefonunuz onu Now Bar\'a almadı.'
-          : 'Uygulama geri sayımı öne çıkarmayı istedi ve şartlar tamam, ancak telefonunuz onu öne çıkarmadı.'
-      } ${YEDEK_DURDU_NOTU}`,
+      metin: `${tani.samsung ? t.ureticiSamsung : t.uretici} ${t.yedekDurdu}`,
       samsungIpucu: tani.samsung,
     };
   }
   if (tani.planOlaySayisi === 0) {
-    return yok('planBos', 'Şu an planlanmış bir canlı sayaç yok: açtığınız öğelerin zamanı henüz gelmedi.');
+    return yok('planBos', t.planBos);
   }
   if (!son) {
     return yok(
       'henuzGosterilmedi',
-      tani.sonrakiAlarmMs !== null
-        ? `Canlı sayaç planlandı; ilk geri sayım ${saatMetni(tani.sonrakiAlarmMs)} civarında başlar.`
-        : 'Canlı sayaç planlandı ama henüz gösterilmedi.'
+      tani.sonrakiAlarmMs !== null ? bicim(t.planlandiSaat, { saat: saatMetni(tani.sonrakiAlarmMs) }) : t.planlandi
     );
   }
-  return yok('olculemedi', 'Şu an görünen bir geri sayım yok; bir sonraki geri sayımda yeniden bakabilirsiniz.');
+  return yok('olculemedi', t.olculemedi);
 }
 
 /**
@@ -226,34 +220,45 @@ export function canliTeshisi(durum: CanliDurum, tani: CanliTani | null): CanliTe
  * yazılır; tarih yazılmaz (gün bilgisi tanıda gereksiz).
  */
 export function canliTaniSatirlari(durum: CanliDurum, tani: CanliTani | null): string[] {
-  if (!tani) return [`Durum: ${durum}`, 'Tanı okunamadı'];
-  const evetHayir = (v: boolean | null): string => (v === null ? 'bilinmiyor' : v ? 'evet' : 'hayır');
+  const m = metin().nowBar.taniSatir;
+  if (!tani) return [bicim(m.durum, { durum }), m.okunamadi];
+  const evetHayir = (v: boolean | null): string => (v === null ? m.bilinmiyor : v ? m.evet : m.hayir);
   const satirlar = [
-    `Durum: ${durum}`,
-    `Android API: ${tani.sdkTam ?? tani.sdkInt}${tani.samsung ? ` · Samsung${tani.oneUi ? ` One UI ${tani.oneUi}` : ''}` : ''}`,
-    `Öne çıkarma izni (manifest): ${evetHayir(tani.izinVar)}`,
-    `Bayrak okunabilir: ${evetHayir(tani.bayrakOkunabilir)} · son ölçüm: ${
-      tani.sonOlcum ? `${evetHayir(tani.sonOlcum.deger)} (${saatMetni(tani.sonOlcum.olcumMs)})` : 'yok'
-    }`,
-    `Plan: ${tani.planOlaySayisi} olay${tani.sonrakiAlarmMs !== null ? ` · sıradaki ${saatMetni(tani.sonrakiAlarmMs)}` : ''}${
-      tani.sonPlanMs !== null ? ` · son uygulama ${saatMetni(tani.sonPlanMs)}` : ''
-    }`,
+    bicim(m.durum, { durum }),
+    bicim(m.api, {
+      api: `${tani.sdkTam ?? tani.sdkInt}${tani.samsung ? ` · Samsung${tani.oneUi ? ` One UI ${tani.oneUi}` : ''}` : ''}`,
+    }),
+    bicim(m.izin, { deger: evetHayir(tani.izinVar) }),
+    bicim(m.bayrak, {
+      deger: evetHayir(tani.bayrakOkunabilir),
+      olcum: tani.sonOlcum ? `${evetHayir(tani.sonOlcum.deger)} (${saatMetni(tani.sonOlcum.olcumMs)})` : m.yok,
+    }),
+    `${bicim(m.plan, { n: tani.planOlaySayisi })}${
+      tani.sonrakiAlarmMs !== null ? bicim(m.siradaki, { saat: saatMetni(tani.sonrakiAlarmMs) }) : ''
+    }${tani.sonPlanMs !== null ? bicim(m.sonUygulama, { saat: saatMetni(tani.sonPlanMs) }) : ''}`,
   ];
   const s = tani.sonGosterim;
   if (s) {
     satirlar.push(
-      `Son gösterim: ${saatMetni(s.zamanMs)} · ${s.tema || '-'} · kanal ${s.kanalId || '-'} (önem ${s.kanalOnemi ?? '?'})`,
-      `Şartlar uygun: ${evetHayir(s.oneCikarilabilir)} · sistem öne çıkardı: ${evetHayir(s.oneCikarildi)}${s.hata ? ` · hata ${s.hata}` : ''}`
+      bicim(m.sonGosterim, {
+        saat: saatMetni(s.zamanMs),
+        tema: s.tema || '-',
+        kanal: s.kanalId || '-',
+        onem: s.kanalOnemi ?? '?',
+      }),
+      `${bicim(m.sartlar, { uygun: evetHayir(s.oneCikarilabilir), cikti: evetHayir(s.oneCikarildi) })}${
+        s.hata ? bicim(m.hata, { hata: s.hata }) : ''
+      }`
     );
   } else {
-    satirlar.push('Son gösterim: yok');
+    satirlar.push(m.sonGosterimYok);
   }
   satirlar.push(
-    `Görünen sayaçlar: ${
-      tani.aktifBildirimler.length
+    bicim(m.gorunenler, {
+      liste: tani.aktifBildirimler.length
         ? tani.aktifBildirimler.map((a) => `${a.id} (${evetHayir(a.oneCikarildi)})`).join(', ')
-        : 'yok'
-    }`
+        : m.yok,
+    })
   );
   return satirlar;
 }

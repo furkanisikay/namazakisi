@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Mushire kode QR iri kuri ecran ya televiziyo mu kazitiro</string>
+    <string name="tvesleme_qr_vazgec">Mureke</string>
+    <string name="tvesleme_qr_vazgec_erisim">Muhagarike ugusoma kode</string>
+    <string name="tvesleme_qr_yabanci">Iyi kode QR si iya Namaz Akışı TV. Musome kode iri kuri televiziyo.</string>
+    <string name="tvesleme_qr_okundu">Kode yasomwe</string>
+</resources>

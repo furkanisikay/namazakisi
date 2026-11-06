@@ -184,20 +184,23 @@ object CanliPlan {
     /**
      * Now Bar'a özel adayların kanalı YOKSA kurulur (arka planda uygulama hiç
      * açılmadan da gelebilir). Önem DEFAULT: öne çıkarma MIN önemli kanalda olmaz;
-     * ses/titreşim yok (sayaç bir uyarı değil, gösterge).
+     * ses/titreşim yok (sayaç bir uyarı değil, gösterge). Kanal varsa yalnız adı ve
+     * açıklaması arayüz diline çekilir ([kanaliGarantileVeAdlandir]).
      */
     private fun kanaliGarantile(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (nm.getNotificationChannel(KANAL) != null) return
-        nm.createNotificationChannel(
-            NotificationChannel(KANAL, "Canlı sayaçlar", NotificationManager.IMPORTANCE_DEFAULT).apply {
-                description = "Now Bar ve durum çubuğundaki geri sayımlar"
+        val m = context.dildeBaglam()
+        val ad = m.getString(R.string.countdown_kanal_canli_ad)
+        val aciklama = m.getString(R.string.countdown_kanal_canli_aciklama)
+        nm.kanaliGarantileVeAdlandir(KANAL, ad, aciklama) {
+            NotificationChannel(KANAL, ad, NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = aciklama
                 setSound(null, null)
                 enableVibration(false)
                 setShowBadge(false)
             }
-        )
+        }
     }
 
     private fun alarmIstegi(context: Context): PendingIntent = PendingIntent.getBroadcast(

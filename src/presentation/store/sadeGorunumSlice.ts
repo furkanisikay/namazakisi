@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { metin } from '../../core/dil/aktifDil';
 import { LocalSadeGorunumServisi } from '../../data/local/LocalSadeGorunumServisi';
 import {
   VARSAYILAN_SADE_GORUNUM_AYARLARI,
@@ -87,7 +88,7 @@ const sadeGorunumSlice = createSlice({
         // Okuma reddetmez ama yine de: kapı açılsın, varsayılanla (kapalı) devam edilsin.
         state.yuklendi = true;
         state.yukleniyor = false;
-        state.hata = action.error.message || 'Ayar yüklenemedi';
+        state.hata = action.error.message || metin().genel.hata.ayarYuklenemedi;
       })
       // İyimser: anahtar beklemeden dönsün.
       .addCase(sadeGorunumuAyarla.pending, (state, action) => {
@@ -101,7 +102,7 @@ const sadeGorunumSlice = createSlice({
       })
       .addCase(sadeGorunumuAyarla.rejected, (state, action) => {
         state.ayarlar = { aktif: !action.meta.arg };
-        state.hata = action.error.message || 'Ayar güncellenemedi';
+        state.hata = action.error.message || metin().genel.hata.ayarGuncellenemedi;
       });
   },
 });

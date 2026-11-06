@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Li mizgeftê</string>
+    <string name="camigeofence_kanal_durum_aciklama">Agahiyeke bêdeng gava hûn li mizgeftê bên naskirin</string>
+    <string name="camigeofence_kanal_soru_ad">Piştî derketina ji mizgeftê</string>
+    <string name="camigeofence_kanal_soru_aciklama">Pirsek da ku hûn piştî derketina ji mizgeftê nimêja xwe nîşan bikin</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Moda nimêjê vekirî ye. Bîranîn dê bêdeng bên.</string>
+    <string name="camigeofence_govde_mod">Moda nimêjê vekirî ye.</string>
+    <string name="camigeofence_govde_sessiz">Bîranîn dê bêdeng bên.</string>
+    <string name="camigeofence_govde_normal">Bîranîn dê wekî her carê bên.</string>
+    <string name="camigeofence_eylem_modu_kapat">Modê bigirin</string>
+    <string name="camigeofence_eylem_cami_degil">Ne mizgeft e</string>
+
+    <string name="camigeofence_soru_baslik">Hûn li mizgeftê ne?</string>
+    <string name="camigeofence_soru_govde">Hûn nêzîkî %1$s ne. Em ne piştrast in, ji ber vê em ji we dipirsin.</string>
+    <string name="camigeofence_varsayilan_ad">Mizgeft</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Moda nimêjê vekin</string>
+    <string name="camigeofence_eylem_evet_camideyim">Erê, ez li mizgeftê me</string>
+    <string name="camigeofence_eylem_hayir">Na</string>
+
+    <string name="camigeofence_kildiniz_mi">We nimêja %1$s kir?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Hûn dikarin bi tikandinekê nîşan bikin.</string>
+    <string name="camigeofence_eylem_kildim">Min nimêj kir</string>
+    <string name="camigeofence_namaz_imsak">Sibe</string>
+    <string name="camigeofence_namaz_ogle">Nîvro</string>
+    <string name="camigeofence_namaz_ikindi">Esir</string>
+    <string name="camigeofence_namaz_aksam">Êvar</string>
+    <string name="camigeofence_namaz_yatsi">Eşa</string>
+    <string name="camigeofence_namaz_cuma">Înî</string>
+
+    <string name="camigeofence_mod_kural_adi">Nimêj</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı wê di xutbeya înê de, li mizgeftê an gava dema nimêjê dest pê dike vedike</string>
+</resources>

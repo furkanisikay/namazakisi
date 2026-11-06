@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Në xhami</string>
+    <string name="camigeofence_kanal_durum_aciklama">Një njoftim i qetë kur zbulohet se jeni në xhami</string>
+    <string name="camigeofence_kanal_soru_ad">Pas daljes nga xhamia</string>
+    <string name="camigeofence_kanal_soru_aciklama">Një pyetje që ta shënoni namazin pasi të dilni nga xhamia</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Modaliteti i namazit është aktiv. Kujtesat do të vijnë në heshtje.</string>
+    <string name="camigeofence_govde_mod">Modaliteti i namazit është aktiv.</string>
+    <string name="camigeofence_govde_sessiz">Kujtesat do të vijnë në heshtje.</string>
+    <string name="camigeofence_govde_normal">Kujtesat do të vijnë si zakonisht.</string>
+    <string name="camigeofence_eylem_modu_kapat">Çaktivizoni modalitetin</string>
+    <string name="camigeofence_eylem_cami_degil">Jo xhami</string>
+
+    <string name="camigeofence_soru_baslik">A jeni në xhami?</string>
+    <string name="camigeofence_soru_govde">Jeni afër: %1$s. Nuk jemi të sigurt, prandaj ju pyesim.</string>
+    <string name="camigeofence_varsayilan_ad">Xhami</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Aktivizoni Modalitetin e namazit</string>
+    <string name="camigeofence_eylem_evet_camideyim">Po, jam në xhami</string>
+    <string name="camigeofence_eylem_hayir">Jo</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s: e falët?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Mund ta shënoni me një prekje.</string>
+    <string name="camigeofence_eylem_kildim">E fala</string>
+    <string name="camigeofence_namaz_imsak">Sabahu</string>
+    <string name="camigeofence_namaz_ogle">Dreka</string>
+    <string name="camigeofence_namaz_ikindi">Ikindia</string>
+    <string name="camigeofence_namaz_aksam">Akshami</string>
+    <string name="camigeofence_namaz_yatsi">Jacia</string>
+    <string name="camigeofence_namaz_cuma">Xhumaja</string>
+
+    <string name="camigeofence_mod_kural_adi">Namaz</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı e aktivizon gjatë hutbes së xhumasë, në xhami ose kur hyn koha e namazit</string>
+</resources>

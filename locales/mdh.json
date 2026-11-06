@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Pedgamiten su lokasyun nu para matidtu su kakwenta sa manga waktu nu sambayang sa lugar nu. Matagak sa device nu su lokasyun nu.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Pedgamiten su lokasyun nu para matidtu su kakwenta sa manga waktu nu sambayang sa lugar nu endu, amayka naka-on su Sa masjid ako, para ma-on su Mode a sambayang amayka lumudep kanu sa masjid. Matagak sa device nu su lokasyun nu.",
+  "NSLocationAlwaysUsageDescription": "Pedgamiten su lokasyun nu para mailisan sa sarili su manga waktu nu sambayang amayka lumipat kanu sa salakaw a inged endu, amayka naka-on su Sa masjid ako, para ma-on su Mode a sambayang amayka lumudep kanu sa masjid. Matagak sa device nu su lokasyun nu.",
+  "NSCameraUsageDescription": "Pedgamiten su kamera nu para mailay su tampal nu Qiblat sa ilay nu kamera endu para ilayn su code nu kapagkonekta sa TV nu. Di pedtaguen su manga ladawan endu di pedlyu sa device nu.",
+  "NSCalendarsUsageDescription": "Pedgamiten su kaludep sa kalendaryo para isama su manga waktu nu sambayang sa kalendaryo nu endu, amayka i-on nu, para ilayn u aden event a pedsugat sa waktu nu sambayang. Matagak sa device nu su datos nu kalendaryo nu.",
+  "NSCalendarsFullAccessUsageDescription": "Pedgamiten su kaludep sa kalendaryo para isama su manga waktu nu sambayang sa kalendaryo nu endu, amayka i-on nu, para ilayn u aden event a pedsugat sa waktu nu sambayang. Matagak sa device nu su datos nu kalendaryo nu.",
+  "NSLocalNetworkUsageDescription": "Pedkonekta su app sa TV sa local network nu para ipedsugu su manga waktu nu sambayang endu su manga sambayang a natandaan nu. Naka-encrypt su datos endu pedlakaw bu sa pageletan nu dua a device.",
+  "NSAlarmKitUsageDescription": "Su manga hakbang nu patadem a pinamili nu sa “Benal a alarm” na pedbetaden lagid nu alarm, para makineg nu apiya naka-silent su telepono nu atawka naka-on su Focus.",
+  "\"Vakti kıldım\"": "Midsambayang ako",
+  "\"Kıble\"": "Qiblat"
+}

@@ -43,6 +43,8 @@ class MainApplication : Application(), ReactApplication {
     clearStaleNativeStateOnUpgrade()
     loadReactNative(this)
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
+    // Arayüz dili değişince widget/kutu yeni dilde yeniden çizilsin (W5).
+    com.furkanisikay.namazakisi.widget.ArayuzDiliIzleyici.kur(this)
   }
 
   /**

@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Vendndodhja juaj përdoret për të llogaritur saktë kohët e namazit për vendin ku ndodheni. Vendndodhja mbetet në pajisjen tuaj.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Vendndodhja juaj përdoret për të llogaritur saktë kohët e namazit për vendin ku ndodheni dhe, nëse “Në xhami” është aktiv, për të aktivizuar Modalitetin e namazit kur hyni në xhami. Vendndodhja mbetet në pajisjen tuaj.",
+  "NSLocationAlwaysUsageDescription": "Vendndodhja juaj përdoret për të përditësuar automatikisht kohët e namazit kur ndërroni qytet dhe, nëse “Në xhami” është aktiv, për të aktivizuar Modalitetin e namazit kur hyni në xhami. Vendndodhja mbetet në pajisjen tuaj.",
+  "NSCameraUsageDescription": "Kamera përdoret për të treguar drejtimin e kibles mbi pamjen e kamerës dhe për të skanuar kodin e çiftimit në televizorin tuaj. Pamjet nuk ruhen dhe nuk dalin kurrë nga pajisja juaj.",
+  "NSCalendarsUsageDescription": "Qasja në kalendar përdoret për të shtuar kohët e namazit në kalendarin tuaj dhe, nëse e aktivizoni, për të kontrolluar nëse ngjarjet në kalendar përplasen me kohën e një namazi. Të dhënat e kalendarit mbeten në pajisjen tuaj.",
+  "NSCalendarsFullAccessUsageDescription": "Qasja në kalendar përdoret për të shtuar kohët e namazit në kalendarin tuaj dhe, nëse e aktivizoni, për të kontrolluar nëse ngjarjet në kalendar përplasen me kohën e një namazi. Të dhënat e kalendarit mbeten në pajisjen tuaj.",
+  "NSLocalNetworkUsageDescription": "Aplikacioni lidhet me televizorin në rrjetin tuaj lokal për t’i dërguar kohët e namazit dhe namazet që keni shënuar. Të dhënat janë të enkriptuara dhe udhëtojnë vetëm ndërmjet dy pajisjeve.",
+  "NSAlarmKitUsageDescription": "Hapat e kujtesës për të cilët zgjidhni “Alarm i vërtetë” vendosen si alarme, që t’i dëgjoni edhe kur telefoni është në heshtje ose kur një Focus është aktiv.",
+  "\"Vakti kıldım\"": "E fala",
+  "\"Kıble\"": "Kibla"
+}

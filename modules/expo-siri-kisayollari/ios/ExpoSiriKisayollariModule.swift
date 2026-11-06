@@ -87,6 +87,13 @@ public class ExpoSiriKisayollariModule: Module {
             CanliEtkinlikKoprusu.widgetlariTazele()
         }
 
+        /// Gunun ayeti yuku v1 (`docs/ajan/gunun-ayeti.md`; Android `WidgetVeri.gununAyetiKaydet` ikizi).
+        /// Yalniz ayet widget'inin zaman cizelgesi tazelenir.
+        AsyncFunction("gununAyetiKaydet") { (json: String) in
+            SiriDeposu.varsayilan.gununAyetiYaz(json)
+            CanliEtkinlikKoprusu.gununAyetiWidgetiniTazele()
+        }
+
         AsyncFunction("bekleyenleriAl") { () -> String in
             return SiriDeposu.varsayilan.bekleyenleriJson()
         }
@@ -109,6 +116,60 @@ public class ExpoSiriKisayollariModule: Module {
         /// Odak filtresinin son durumu (`{"sessiz":Bool,"ms":Int}`); hic calismadiysa nil.
         AsyncFunction("odakDurumuAl") { () -> String? in
             return SiriDeposu.varsayilan.odakJson()
+        }
+
+        /// Arayuz dili (App Group): widget ve saat koprusu metinleri bu dilde kurar.
+        Function("arayuzDiliniAyarla") { (kod: String) -> Void in
+            SiriDeposu.varsayilan.arayuzDiliniYaz(kod)
+        }
+
+        /// Cihazin GENEL dili: genel tercih alanindaki `AppleLanguages`'in ilki. `UserDefaults.standard`
+        /// once uygulama alanini okur; uygulama dili yazilinca "cihaz dili" secenegi yanilirdi.
+        /// Okunamazsa nil (JS eski yola duser). Cihazda DOGRULANMADI.
+        AsyncFunction("cihazDiliniOku") { () -> String? in
+            if let alan = UserDefaults.standard.persistentDomain(forName: UserDefaults.globalDomain),
+               let diller = alan["AppleLanguages"] as? [String], let ilk = diller.first {
+                return ilk
+            }
+            return nil
+        }
+
+        /// Ayarlar > Namaz Akisi > Dil'deki UYGULAMAYA OZEL dil: uygulamanin kendi tercih alanindaki
+        /// `AppleLanguages`'in ilki; secilmemisse nil (cihaz dili izlenir). Cihaz genel dili DEGIL
+        /// (`UserDefaults.standard` genel alani da birlestirir, burada yalniz uygulama alani okunur).
+        /// JS degisip degismedigini izler (`DilServisi.sistemDiliDegisimi`). Cihazda DOGRULANMADI.
+        AsyncFunction("uygulamaDiliniOku") { () -> String? in
+            guard let kimlik = Bundle.main.bundleIdentifier,
+                  let alan = UserDefaults.standard.persistentDomain(forName: kimlik),
+                  let diller = alan["AppleLanguages"] as? [String] else { return nil }
+            return diller.first
+        }
+
+        /// Uygulama icinde secilen dili Ayarlar'daki uygulama diline de yazar (nil = cihaz dili).
+        /// iOS bunu bir sonraki acilista sistem metinlerine uygular; arayuz zaten JS'ten anlik degisir.
+        AsyncFunction("uygulamaDiliniYaz") { (etiket: String?) -> Bool in
+            if let e = etiket, !e.isEmpty {
+                UserDefaults.standard.set([e], forKey: "AppleLanguages")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+            }
+            return true
+        }
+
+        /// Kullanicinin vakit adi takimi (JSON) ya da nil (anahtar silinir, dil tablosu).
+        /// `arayuzDiliniAyarla` gibi yalniz yazar; widget/saat cizimi bir sonraki okumada alir.
+        Function("vakitAdlariniAyarla") { (json: String?) -> Void in
+            SiriDeposu.varsayilan.vakitAdlariniYaz(json)
+        }
+
+        /// Arayuzun rakam sistemi ("arab" Dogu Arap, "beng" Bengalce) ya da nil (anahtar silinir, Bati).
+        /// Widget, canli etkinlik ve Siri cevabi CIZIM aninda okur (`RakamSistemi`). Deger
+        /// degistiyse widget'lar tazelenir (yuk ayni kaldigi icin JS yeniden yazmaz, D-21);
+        /// WidgetCenter XPC'si JS thread'ini bekletmesin diye arka planda.
+        Function("rakamSisteminiAyarla") { (kod: String?) -> Void in
+            if SiriDeposu.varsayilan.rakamSisteminiYaz(kod) {
+                DispatchQueue.global(qos: .utility).async { CanliEtkinlikKoprusu.widgetlariTazele() }
+            }
         }
 
         /// Canli etkinlik (Live Activity, #295) bu build'de var mi? (Widget uzantisi bayragi.)

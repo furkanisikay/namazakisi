@@ -46,6 +46,9 @@ import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
 import { useButceRehberi } from '../../hooks/useButceRehberi';
 import { TakvimCakismaRizaModal } from './TakvimCakismaRizaModal';
+import { bicim, metin, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
+import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import {
     TAKVIM_CAKISMA_ADIM_KISITLARI,
     TAKVIM_CAKISMA_ONCE_ADIM_DK,
@@ -81,7 +84,7 @@ const YAZMA_GECIKMESI_MS = 1200;
 export const RIZA_KAPANIS_BEKLEMESI_MS = Platform.OS === 'ios' ? 1000 : 400;
 
 /** Yön sabit gerekçesi (plan §3.3) — kartta seçici yerine yazılır. */
-export const TAKVIM_CAKISMA_YON_GEREKCESI = 'Uyarı etkinliğinizden önce gelir; yön, etkinliğin saatine bağlıdır.';
+export const takvimCakismaYonGerekcesi = (): string => metin().takvim.cakisma.yonGerekce;
 
 /** İzin reddinde gösterilecek yol: diyalog yeniden açılabiliyorsa tekrar dene, değilse ayarlar. */
 type IzinHatasi = null | 'tekrar' | 'ayarlar';
@@ -125,6 +128,8 @@ export interface TakvimCakismaBolumuProps {
 
 export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilistaAc = false }) => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const mt = sozluk.takvim.cakisma;
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const kayitli = useAppSelector((s) => s.takvimCakisma.ayarlar);
@@ -202,7 +207,7 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: sozluk.hatirlatma.ek.ekYol, onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -321,12 +326,13 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
             ekHatirlatmaPencereTanimi({
                 kaynak: 'takvimCakisma',
                 yuzey: 'takvim',
-                anonsVakitAdi: 'Öğle',
-                baslik: 'Takvim çakışması',
-                baslikKucuk: 'takvim çakışması',
+                // Planlayıcıyla aynı ad (`takvimCakismaPlani`: `VAKIT_ADLARI[vakit]`).
+                anonsVakitAdi: VAKIT_ADLARI[ornek.vakit],
+                baslik: metin().takvim.cakisma.baslik,
+                baslikKucuk: metin().takvim.cakisma.baslikKucuk,
                 ikon: 'calendar-times',
                 vakit: ornek.vakit,
-                yonSabitGerekcesi: TAKVIM_CAKISMA_YON_GEREKCESI,
+                yonSabitGerekcesi: takvimCakismaYonGerekcesi(),
                 adimSayisi: ayarlar.adimlar.length,
                 maksAdim: TAKVIM_CAKISMA_ADIM_KISITLARI.maksAdim,
                 esikSinirlari: { min: TAKVIM_CAKISMA_ONCE_MIN_DK, max: TAKVIM_CAKISMA_ONCE_MAX_DK },
@@ -334,10 +340,10 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                 tekrarMinDk: TAKVIM_CAKISMA_TEKRAR_MIN_DK,
                 tekrarMaxDk: TAKVIM_CAKISMA_TEKRAR_MAX_DK,
                 varsayilanTekrarDk: TAKVIM_CAKISMA_VARSAYILAN_TEKRAR_DK,
-                esikBasligi: 'NE KADAR ÖNCE',
-                esikAciklamasi: 'Etkinlik başlamadan',
-                esikErisimAdi: 'Etkinlikten kaç dk önce',
-                esikBirimi: 'dk önce',
+                esikBasligi: metin().hatirlatma.ek.neKadarOnce,
+                esikAciklamasi: metin().takvim.cakisma.esikAciklamasi,
+                esikErisimAdi: metin().takvim.cakisma.esikErisimAdi,
+                esikBirimi: metin().takvim.cakisma.esikBirimi,
                 yetenekler,
                 // Anons ADSIZDIR — ayar ne olursa olsun (gizlilik).
                 otomatikAnons: () => ornekAnons,
@@ -347,10 +353,11 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                 }),
                 // `{süre}` planlayıcıyla AYNI kuraldan (örnek çakışma üzerinde).
                 anonsSuresiDk: (kalanDk) => takvimCakismaTetigi(ornek, kalanDk).sureDk,
-                onizlemeOzeti: (adet) =>
-                    `Bir etkinlik vaktin sonunu kapladığında ${adet} uyarı alırsınız (örnek: öğle vakti)`,
+                onizlemeOzeti: (adet) => sayili(metin().takvim.cakisma.onizlemeOzeti, adet),
             }),
-        [ayarlar.adimlar.length, ornek, ornekAnons, yetenekler]
+        // Dil değişince tanım (başlık, eşik metinleri) yeniden kurulur.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [ayarlar.adimlar.length, ornek, ornekAnons, yetenekler, sozluk]
     );
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
@@ -378,10 +385,10 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                     </View>
                     <View className="flex-1">
                         <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                            Takvim çakışması uyarısı
+                            {mt.uyari}
                         </Text>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            Bir etkinlik vaktin sonunu kaplıyorsa önceden haber verelim
+                            {mt.altBaslik}
                         </Text>
                     </View>
                     <Anahtar
@@ -389,7 +396,7 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                         onValueChange={anaAnahtar}
                         trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                         thumbColor={ayarlar.aktif ? renkler.birincil : '#f4f3f4'}
-                        accessibilityLabel="Takvim çakışması uyarısı"
+                        accessibilityLabel={mt.uyari}
                     />
                 </View>
 
@@ -408,14 +415,14 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                                 />
                                 <View className="flex-1">
                                     <Text className="text-sm" style={{ color: renkler.metin }}>
-                                        Takvim izni kapalı olduğu için uyarı gönderilemiyor.
+                                        {mt.izinKapali}
                                     </Text>
                                     <TouchableOpacity
                                         onPress={izinVer}
                                         className="flex-row items-center self-start mt-2 px-3 rounded-xl"
                                         style={{ minHeight: 44, backgroundColor: renkler.birincil }}
                                         accessibilityRole="button"
-                                        accessibilityLabel="Takvim iznini verin"
+                                        accessibilityLabel={mt.izinVerinEtiketi}
                                     >
                                         <FontAwesome5
                                             name="unlock"
@@ -424,7 +431,7 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                                             style={{ marginRight: 8 }}
                                         />
                                         <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
-                                            İzin verin
+                                            {mt.izinVerin}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
@@ -434,12 +441,10 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                         <View className="flex-row items-center justify-between mt-4">
                             <View className="flex-1 mr-3">
                                 <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                    Etkinlik adını gösterin
+                                    {mt.adGoster}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    Kapalıyken "Takvimindeki bir etkinlik" yazar. Açarsanız ad, kilit ekranında ve
-                                    bildirimleri aynalayan saat ya da bileklik uygulamalarında da görünebilir. Sesli
-                                    okumada ve gerçek alarm ekranında ad hiçbir zaman yer almaz.
+                                    {bicim(mt.adGosterAciklama, { etkinlik: sozluk.bildirim.takvim.etkinlikBir })}
                                 </Text>
                             </View>
                             <Anahtar
@@ -447,7 +452,7 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                                 onValueChange={baslikAnahtari}
                                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                                 thumbColor={ayarlar.baslikGoster ? renkler.birincil : '#f4f3f4'}
-                                accessibilityLabel="Etkinlik adını bildirimde gösterin"
+                                accessibilityLabel={mt.adGosterEtiketi}
                             />
                         </View>
 
@@ -462,8 +467,8 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                                 sesliOnayiVar={genelRiza.sesli}
                                 alarmOnayiVar={genelRiza.alarm}
                                 sesliOnayMetinleri={{
-                                    altBaslik: 'Takvim çakışması uyarısında sesli okuma',
-                                    kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                                    altBaslik: mt.sesliAltBaslik,
+                                    kapatmaNotu: sozluk.hatirlatma.adim.sesliKapatmaNotu,
                                 }}
                                 silinebilirMi={(a) => a.adimlar.length > 1}
                                 // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
@@ -475,12 +480,7 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                         <View className="flex-row items-start mt-5 gap-2">
                             <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
                             <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-                                Bir etkinlik bittiğinde vaktin çıkmasına {KILMA_PAYI_DK} dakikadan az kalıyorsa, ilk uyarı
-                                etkinlikten {enErkenDk} dk önce gelir (vakit o sırada henüz girmediyse vakit girince).
-                                Tekrarlar aynı uyarıyı etkinliğe kadar yeniden gönderir; namazı kıldığınızda kalanlar
-                                iptal edilir. Tüm gün etkinlikleri, "meşgul değil" ya da "belki" işaretliler ve
-                                uygulamanın eklediği namaz etkinlikleri sayılmaz. Takviminiz yalnızca bu cihazda okunur;
-                                hiçbir yere gönderilmez.
+                                {bicim(mt.not, { pay: KILMA_PAYI_DK, dk: enErkenDk })}
                             </Text>
                         </View>
                     </View>
@@ -496,13 +496,13 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
             <BildirimModali
                 gorunur={izinHatasi !== null}
                 tip="bilgi"
-                baslik="Takvim izni verilmedi"
+                baslik={mt.izinYokBaslik}
                 mesaj={
                     izinHatasi === 'tekrar'
-                        ? 'Uyarının çalışması için takvim izni gerekiyor. İzin penceresinde "İzin ver"i seçebilirsiniz.'
-                        : 'Uyarının çalışması için takvim izni gerekiyor. İzni uygulama ayarlarından, İzinler > Takvim bölümünden verebilirsiniz.'
+                        ? mt.izinYokTekrar
+                        : mt.izinYokAyarlar
                 }
-                birincilEtiket={izinHatasi === 'tekrar' ? 'Tekrar deneyin' : 'Ayarları açın'}
+                birincilEtiket={izinHatasi === 'tekrar' ? sozluk.ortak.tekrarDeneyin : sozluk.ortak.ayarlariAcin}
                 birincilIkon={izinHatasi === 'tekrar' ? 'redo' : 'cog'}
                 onBirincil={() => {
                     const tekrar = izinHatasi === 'tekrar';

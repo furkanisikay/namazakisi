@@ -23,6 +23,7 @@ import { etkinKademe } from '../muhafiz/motorAdaptoru';
 import { seviyeyiKapat } from '../muhafiz/seviyeAcKapa';
 import { nafileHatirlatmaAcikMi } from '../nafile/nafileTipleri';
 import { defterOzetiHesapla, type DefterGirdisi, type DefterOzeti } from './bildirimDefteri';
+import { bicim, metin } from '../dil/aktifDil';
 
 /**
  * Seyrekleştirmenin tekrar tavanı — ekrandaki tekrar stepper'ının tavanıyla
@@ -136,7 +137,7 @@ function kademeliDene(
 }
 
 const tonMetni = (tonlar: readonly SeviyeKademe[]): string =>
-    tonlar.length > 1 ? 'Nazik ve uyarı düzeyindeki' : 'Nazik';
+    tonlar.length > 1 ? metin().hatirlatma.butceOneri.tonIkisi : metin().hatirlatma.butceOneri.tonNazik;
 
 /**
  * Önerileri üret (sabit sıra). Yalnız sayıyı GERÇEKTEN düşürenler döner.
@@ -146,6 +147,7 @@ const tonMetni = (tonlar: readonly SeviyeKademe[]): string =>
 export function butceOnerileriOlustur(g: DefterGirdisi): ButceOnerisi[] {
     const once = defterOzetiHesapla(g);
     const oneriler: ButceOnerisi[] = [];
+    const m = metin().hatirlatma.butceOneri;
     const ekle = (o: Omit<ButceOnerisi, 'oncekiToplam' | 'sonrakiToplam' | 'sinirAltinaIner'>, ozet: DefterOzeti) => {
         if (ozet.toplam >= once.toplam) return;
         oneriler.push({
@@ -163,8 +165,8 @@ export function butceOnerileriOlustur(g: DefterGirdisi): ButceOnerisi[] {
             {
                 tur: 'seyreklestir',
                 ikon: 'compress-alt',
-                baslik: 'Tekrarları seyrekleştirin',
-                aciklama: `${tonMetni(seyrek.tonlar)} tekrarlı hatırlatmaların aralığı iki katına çıkar (en fazla ${ONERI_TEKRAR_UST_DK} dk). Sert ve acil hatırlatmalar aynen kalır.`,
+                baslik: m.seyrekBaslik,
+                aciklama: bicim(m.seyrekAciklama, { ton: tonMetni(seyrek.tonlar), dk: ONERI_TEKRAR_UST_DK }),
                 girdi: muhafizlaGirdi(g, seyrek.matris),
             },
             seyrek.ozet
@@ -180,8 +182,8 @@ export function butceOnerileriOlustur(g: DefterGirdisi): ButceOnerisi[] {
                 {
                     tur: 'tekKez',
                     ikon: 'dot-circle',
-                    baslik: 'Nazik hatırlatmalar bir kez çalsın',
-                    aciklama: 'Nazik hatırlatmalar tekrarlamaz; sonraki hatırlatmalar aynen kalır.',
+                    baslik: m.tekKezBaslik,
+                    aciklama: m.tekKezAciklama,
                     girdi,
                 },
                 defterOzetiHesapla(girdi)
@@ -196,9 +198,8 @@ export function butceOnerileriOlustur(g: DefterGirdisi): ButceOnerisi[] {
             {
                 tur: 'nafileGunuGunune',
                 ikon: 'calendar-day',
-                baslik: 'Nafile hatırlatmalarını günü gününe kurun',
-                aciklama:
-                    'Şu an birkaç gün önceden kuruluyor; bundan sonra her gün yalnız o günün hatırlatmaları kurulur. Uygulamayı birkaç gün hiç açmazsanız nafile hatırlatması gelmeyebilir.',
+                baslik: m.nafileBaslik,
+                aciklama: m.nafileAciklama,
                 girdi,
             },
             defterOzetiHesapla(girdi)
@@ -212,8 +213,8 @@ export function butceOnerileriOlustur(g: DefterGirdisi): ButceOnerisi[] {
             {
                 tur: 'adimKapat',
                 ikon: 'bell-slash',
-                baslik: kapat.tonlar.length > 1 ? 'Nazik ve uyarı hatırlatmalarını kapatın' : 'Nazik hatırlatmaları kapatın',
-                aciklama: `${tonMetni(kapat.tonlar)} hatırlatmalar kapanır; istediğinizde yeniden açabilirsiniz. Her vakitte en az bir hatırlatma açık kalır, sert ve acil hatırlatmalar aynen kalır.`,
+                baslik: kapat.tonlar.length > 1 ? m.kapatBaslikIkisi : m.kapatBaslikNazik,
+                aciklama: bicim(m.kapatAciklama, { ton: tonMetni(kapat.tonlar) }),
                 girdi: muhafizlaGirdi(g, kapat.matris),
             },
             kapat.ozet

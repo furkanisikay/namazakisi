@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ελληνικά. Terimler: src/core/dil/sozluk/el (vakit adları QuranEnc greek_rwwad; ‘ ’ tipografik, kaçış gerekmez). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">el</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Επόμενη προσευχή</string>
+    <string name="tile_aciklama">Η επόμενη προσευχή και η ώρα της</string>
+    <string name="komplikasyon_adi">Χρόνος που απομένει</string>
+    <string name="cikis_saati_komplikasyon_adi">Ώρα λήξης προσευχής</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Επόμενη προσευχή</string>
+    <string name="bugun_tile_adi">Σήμερα</string>
+    <string name="bugun_tile_aciklama">Οι πέντε προσευχές της ημέρας· σημειώστε όσες τελέσατε με δύο πατήματα</string>
+    <string name="ilerleme_komplikasyon_adi">Ημερήσια πρόοδος</string>
+    <string name="dagilim_komplikasyon_adi">Επισκόπηση ημέρας</string>
+    <string name="kerahat_komplikasyon_adi">Αποδοκιμαστέα ώρα</string>
+    <string name="son_dakikalar_kanal_adi">Τελευταία λεπτά</string>
+    <string name="son_dakikalar_kanal_aciklama">Αντίστροφη μέτρηση στην πρόσοψη του ρολογιού στα τελευταία λεπτά μιας προσευχής που δεν τελέσατε</string>
+    <string name="tesbihat_adi">Τασμπίχ</string>
+    <string name="tesbihat_kanal_adi">Τασμπίχ</string>
+    <string name="tesbihat_kanal_aciklama">Διακριτικό εικονίδιο στην πρόσοψη για επιστροφή σε ημιτελές τασμπίχ</string>
+    <string name="kible_adi">Κίμπλα</string>
+    <string name="kible_komplikasyon_adi">Κίμπλα</string>
+    <string name="camideyim_kanal_adi">Στο τζαμί</string>
+    <string name="camideyim_kanal_aciklama">Διακριτικό εικονίδιο στην πρόσοψη όταν το τηλέφωνο αναφέρει ότι είστε στο τζαμί</string>
+    <string name="uyandirma_kanal_adi">Αθόρυβη αφύπνιση</string>
+    <string name="uyandirma_kanal_aciklama">Σας ξυπνά μόνο με δόνηση, για τη Φατζρ και την Ταχατζούντ</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Προσευχήθηκα</string>
+    <string name="kilindi_isareti">✓ Τελέστηκε</string>
+    <string name="kapat">Κλείσιμο</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Ανοίξτε το Namaz Akışı στο τηλέφωνο για να δείτε τις ώρες προσευχής.</string>
+    <string name="yuk_eskidi">Οι ώρες προσευχής δεν είναι ενημερωμένες. Ανοίξτε το Namaz Akışı στο τηλέφωνο για ανανέωση.</string>
+    <string name="guncelleme_gerekli">Ενημερώστε το Namaz Akışı στο ρολόι σας.</string>
+    <string name="bildirim_izni">Για να λαμβάνετε υπενθυμίσεις ακόμη και όταν το τηλέφωνο δεν είναι μαζί σας, επιτρέψτε τις ειδοποιήσεις του Namaz Akışı στις ρυθμίσεις του ρολογιού.</string>
+    <string name="cami_soru">Είστε στο τζαμί;</string>
+    <string name="cami_evet">Ναι</string>
+    <string name="cami_evet_aciklama">Ναι, είμαι στο τζαμί. Ενεργοποιεί τη Λειτουργία προσευχής</string>
+    <string name="cami_hayir">Όχι</string>
+    <string name="cami_hayir_aciklama">Όχι, δεν είμαι στο τζαμί</string>
+    <string name="camidesiniz">Είστε στο τζαμί</string>
+    <string name="cami_degil">Δεν είναι τζαμί</string>
+    <string name="cami_degil_aciklama">Δεν είναι τζαμί. Αυτό το μέρος δεν θα θεωρείται πλέον τζαμί</string>
+    <string name="tesbihat_ac">Άνοιγμα μετρητή τασμπίχ</string>
+    <string name="kible_ac">Άνοιγμα πυξίδας Κίμπλα</string>
+    <string name="ses_dene">Δοκιμή ήχου</string>
+    <string name="ses_dene_aciklama">Δοκιμή της εκφώνησης του ρολογιού</string>
+    <string name="telefonda_acin">Άνοιγμα στο τηλέφωνο</string>
+    <string name="telefonda_ekran_ac">Άνοιγμα: %1$s στο τηλέφωνο</string>
+    <string name="ekran_kaza">Αρχείο αναπληρώσεων</string>
+    <string name="ekran_camideyim">Στο τζαμί</string>
+    <string name="ekran_ayarlar">Ρυθμίσεις</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">τελέστηκε, συγχρονισμός</string>
+    <string name="durum_kilindi">τελέστηκε</string>
+    <string name="durum_girmedi">όχι ακόμη</string>
+    <string name="durum_simdiki">τρέχουσα ώρα προσευχής, πατήστε για σήμανση</string>
+    <string name="durum_simdiki_kalan">τρέχουσα ώρα προσευχής, %1$s, πατήστε για σήμανση</string>
+    <string name="durum_kilinmadi">δεν τελέστηκε, πατήστε για σήμανση</string>
+    <string name="isaretleyin">Σήμανση ως τελεσμένη</string>
+    <string name="esitleniyor">συγχρονισμός</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Επιβεβαίωση «Προσευχήθηκα»</string>
+    <string name="vazgecin">Άκυρο</string>
+    <string name="vazgec">Άκυρο</string>
+    <string name="kerahat_vaktindesiniz">Είναι αποδοκιμαστέα ώρα.</string>
+    <string name="kilindi_dua">Τελέστηκε. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Λειτουργία προσευχής ενεργή, λήγει %1$s. Πατήστε για απενεργοποίηση</string>
+    <string name="namaz_modu_ac_aciklama">Ενεργοποίηση της Λειτουργίας προσευχής στο τηλέφωνο</string>
+    <string name="namaz_modu_kapatin">Απενεργοποίηση Λειτουργίας προσευχής</string>
+    <string name="namaz_modu_acin">Ενεργοποίηση Λειτουργίας προσευχής</string>
+    <string name="namaz_modu_acik_bitis">Ενεργή, λήγει %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Εύρεση κατεύθυνσης…</string>
+    <string name="kible_yuk_yok">Ανοίξτε το Namaz Akışı στο τηλέφωνο για να βρείτε την Κίμπλα.</string>
+    <string name="kible_konum_yok">Ενεργοποιήστε την τοποθεσία στο τηλέφωνο για να βρείτε την Κίμπλα. Αν το Namaz Akışı δεν είναι ενημερωμένο, ενημερώστε το.</string>
+    <string name="kible_sensor_yok">Αυτό το ρολόι δεν έχει αισθητήρα πυξίδας. Μπορείτε να δείτε την κατεύθυνση της Κίμπλα στο τηλέφωνο.</string>
+    <string name="kible_kuzeyden">Κίμπλα %1$d° (από τον βορρά)</string>
+    <string name="kible_derece">Κίμπλα %1$d°</string>
+    <string name="kible_telefonda_ac">Άνοιγμα της Κίμπλα στο τηλέφωνο</string>
+    <string name="kible_erisim">%1$s. Η Κίμπλα είναι %2$d° από τον βορρά, %3$s</string>
+    <string name="kible_hizali">Είστε στραμμένοι προς την Κίμπλα</string>
+    <string name="kible_kalibrasyon">Για βαθμονόμηση, κινήστε τον καρπό στον αέρα σχηματίζοντας ένα 8</string>
+    <string name="kible_egim">Κρατήστε το ρολόι παράλληλα με το έδαφος</string>
+    <string name="kible_titresim_acik">Καθοδήγηση με δόνηση ενεργή. Πατήστε για απενεργοποίηση</string>
+    <string name="kible_titresim_kapali">Καθοδήγηση με δόνηση ανενεργή. Πατήστε για ενεργοποίηση</string>
+    <string name="kible_harf_kuzey">Β</string>
+    <string name="kible_harf_dogu">Α</string>
+    <string name="kible_harf_guney">Ν</string>
+    <string name="kible_harf_bati">Δ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Το τασμπίχ ολοκληρώθηκε. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Σύνολο %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Μέτρηση</string>
+    <string name="tesbihat_bastan_baslayin">Από την αρχή</string>
+    <string name="tesbihat_bastan_soru">Από την αρχή;</string>
+    <string name="tesbihat_sifirlanir">Η μέτρηση μηδενίζεται.</string>
+    <string name="tesbihat_geri_al">Αναίρεση</string>
+    <string name="tesbihat_geri_al_aciklama">Αναίρεση της τελευταίας μέτρησης</string>
+    <string name="tesbihat_yeniden">Ξανά</string>
+    <string name="tesbihat_yeniden_aciklama">Έναρξη του τασμπίχ ξανά</string>
+    <string name="tesbihat_suruyor">Τασμπίχ σε εξέλιξη: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Προσευχήθηκα. Απενεργοποιεί την αφύπνιση</string>
+    <string name="uyandirma_kapat_aciklama">Απενεργοποίηση της αφύπνισης</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Άνοιγμα Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Πατήστε για τις ώρες προσευχής</string>
+    <string name="tile_telefonda_acin">Ανοίξτε την εφαρμογή στο τηλέφωνο</string>
+    <string name="tile_sonra">σε %1$s</string>
+    <string name="tile_siradaki_aciklama">Επόμενη προσευχή %1$s, αρχίζει στις %2$s. Ανοίξτε την εφαρμογή</string>
+    <string name="tile_giris">αρχίζει %1$s</string>
+    <string name="tile_cikis">λήγει %1$s</string>
+    <string name="bugun_bos_satir1">Ανοίξτε την εφαρμογή</string>
+    <string name="bugun_bos_satir2">στο τηλέφωνο</string>
+    <string name="bugun_acma_aciklamasi">Σήμερα τελέστηκαν %1$d/%2$d προσευχές. Ανοίξτε την εφαρμογή</string>
+    <string name="bugun_sayi">Σήμερα %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Αποδοκιμαστέα ώρα · πατήστε ξανά για επιβεβαίωση</string>
+    <string name="bugun_onay_tekrar">Πατήστε ξανά για επιβεβαίωση</string>
+    <string name="bugun_tamam">Οι σημερινές προσευχές ολοκληρώθηκαν</string>
+    <string name="bugun_kilinmadi">%1$s: δεν τελέστηκε</string>
+    <string name="bugun_siradaki">Επόμενη: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Πατήστε ξανά</string>
+    <string name="bugun_kilindi">%1$s: τελέστηκε</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s: τελέστηκε, συγχρονισμός</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Αναμονή για τις ώρες προσευχής· ανοίξτε το Namaz Akışı στο τηλέφωνο</string>
+    <string name="komplikasyon_bekleniyor">Αναμονή ωρών</string>
+    <string name="komplikasyon_vakit">Ώρα</string>
+    <string name="komplikasyon_cikis">Λήξη</string>
+    <string name="komplikasyon_sirada">Επόμ.</string>
+    <string name="gun_durumu_aciklama">Σήμερα τελέστηκαν %2$d από %1$d προσευχές</string>
+    <string name="gun_durumu_kilinmamis">%1$s· δεν τελέστηκαν: %2$s</string>
+    <string name="komplikasyon_namaz">Προσευχ.</string>
+    <string name="komplikasyon_kerahat">Αποδοκ.</string>
+    <string name="kerahat_icinde_aciklama">Είναι αποδοκιμαστέα ώρα, λήγει %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Επόμενη αποδοκιμαστέα ώρα %1$s</string>
+    <string name="kible_komplikasyon">Η Κίμπλα είναι %1$d° από τον βορρά. Άνοιγμα πυξίδας</string>
+    <string name="kible_komplikasyon_konumlu">Η Κίμπλα είναι %1$d° από τον βορρά, %2$s. Άνοιγμα πυξίδας</string>
+    <string name="kible_komplikasyon_konum_yok">Ενεργοποιήστε την τοποθεσία στο τηλέφωνο για να βρείτε την Κίμπλα</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Επείγουσα υπενθύμιση · Δόνηση</string>
+    <string name="muhafiz_kanal_acil">Επείγουσα υπενθύμιση</string>
+    <string name="muhafiz_kanal_titresimli">Υπενθύμιση προσευχής · Δόνηση</string>
+    <string name="muhafiz_kanal">Υπενθύμιση προσευχής</string>
+    <string name="muhafiz_kanal_aciklama">Υπενθυμίσεις προσευχής που εμφανίζονται στο ρολόι ακόμη και όταν το τηλέφωνο δεν είναι μαζί σας</string>
+    <string name="son_dakikalar_cikis">Λήγει: %1$s</string>
+    <string name="son_dakikalar_bitis">Λήγει: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Χρόνος έως τη λήξη της %1$s</string>
+    <string name="son_dakikalar_kalan_erisim">Χρόνος που απομένει για την %1$s</string>
+    <string name="cami_namaz_modu_bitis">Λειτουργία προσευχής · λήγει %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Άνοιξε στο τηλέφωνο</string>
+    <string name="telefona_ulasilamadi">Το τηλέφωνό σας δεν είναι προσβάσιμο</string>
+</resources>

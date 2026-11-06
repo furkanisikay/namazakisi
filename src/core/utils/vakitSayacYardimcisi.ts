@@ -18,6 +18,7 @@ import type { MuhafizMatrisi, MuhafizVakti, VakitMuhafizAyari } from '../muhafiz
 import { MUHAFIZ_MAKS_ADIM, MUHAFIZ_VAKITLERI } from '../muhafiz/matrisTipleri';
 import { kronolojikSirala } from '../muhafiz/aktifSeviye';
 import { adimKapaliMi } from '../muhafiz/kanalKumesi';
+import { bicim, metin as sozlukMetni } from '../dil/aktifDil';
 
 /**
  * Hatirlatma no (1..6) -> kronolojik indeks (0..5).
@@ -131,12 +132,13 @@ export const sayacBaslangicSecenekleriOlustur = (
     );
     const enAz = Math.min(...esikler);
     const enCok = Math.max(...esikler);
+    const s = sozlukMetni().hatirlatma.sayacBaslangic;
     const metin =
       esikler.length === 0
-        ? `${seviye}. hatırlatmadan itibaren`
+        ? bicim(s.adimdan, { n: seviye })
         : enAz === enCok
-          ? `Son ${enAz} Dakika`
-          : `Son ${enAz}–${enCok} Dakika (vakte göre)`;
+          ? bicim(s.son, { dk: enAz })
+          : bicim(s.aralik, { az: enAz, cok: enCok });
     return { seviye, metin };
   });
 };

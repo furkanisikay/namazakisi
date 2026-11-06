@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kannada kaynakları. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/kn (ನಮಾಝ್, ಖಝಾ ದಾಖಲೆ, ಕಿಬ್ಲಾ). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">ಪ್ರಸ್ತುತ ನಮಾಝ್, ಅದು ಮುಗಿಯುವ ಸಮಯ ಮತ್ತು ಒಂದೇ ಟ್ಯಾಪ್‌ನಲ್ಲಿ "ನಮಾಝ್ ಮಾಡಿದೆ"</string>
+  <string name="widget_genis_aciklama">ಇಂದಿನ ಐದು ನಮಾಝ್‌ಗಳು, ಕೌಂಟ್‌ಡೌನ್ ಮತ್ತು ಒಂದೇ ಟ್ಯಾಪ್‌ನಲ್ಲಿ "ನಮಾಝ್ ಮಾಡಿದೆ"</string>
+  <string name="widget_kapak_adi">ಕವರ್ ಸ್ಕ್ರೀನ್ ನಮಾಝ್ ಸಮಯಗಳು</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip ಕವರ್ ಸ್ಕ್ರೀನ್‌ಗಾಗಿ ಇಂದಿನ ನಮಾಝ್ ಸಮಯಗಳು ಮತ್ತು ಕೌಂಟ್‌ಡೌನ್</string>
+  <string name="widget_klasik_adi">Namaz Akışı — ಕ್ಲಾಸಿಕ್</string>
+  <string name="widget_klasik_aciklama">ಕ್ಲಾಸಿಕ್ ಹಸಿರು ನೋಟ: ಮುಂದಿನ ನಮಾಝಿಗೆ ಉಳಿದ ಸಮಯ</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — ಕ್ಲಾಸಿಕ್ ಅಗಲ</string>
+  <string name="widget_klasik_genis_aciklama">ಕ್ಲಾಸಿಕ್ ಹಸಿರು ನೋಟ: ಕೌಂಟ್‌ಡೌನ್ ಮತ್ತು ಇಂದಿನ ನಮಾಝ್ ಸಮಯಗಳು</string>
+  <string name="widget_ayet_adi">ದಿನದ ವಚನ</string>
+  <string name="widget_ayet_aciklama">ಒಂದು ವಚನ ಮತ್ತು ಅದರ ಅರ್ಥಾನುವಾದ, ಪ್ರತಿದಿನ ಫಜ್ರ್ ಸಮಯದಲ್ಲಿ ನವೀಕರಣ</string>
+  <string name="widget_ayar_zemin_palet">ಆ್ಯಪ್ ಬಣ್ಣ (ತಿಳಿ ಛಾಯೆ)</string>
+  <string name="widget_ayar_ayet_icerik">ಚೌಕ ಗಾತ್ರದಲ್ಲಿ ತೋರಿಸಿ</string>
+  <string name="widget_ayar_ayet_icerik_meal">ಅರ್ಥಾನುವಾದ</string>
+  <string name="widget_ayar_ayet_icerik_hat">ಅರೇಬಿಕ್ ಪಠ್ಯ (ಕ್ಯಾಲಿಗ್ರಫಿ)</string>
+  <string name="kutu_kildim_etiket">ನಮಾಝ್ ಮಾಡಿದೆ</string>
+  <string name="kisayol_kildim_kisa">ನಮಾಝ್ ಮಾಡಿದೆ</string>
+  <string name="kisayol_kildim_uzun">ಪ್ರಸ್ತುತ ನಮಾಝ್ ಮಾಡಿದೆ</string>
+  <string name="kisayol_kible_kisa">ಕಿಬ್ಲಾ</string>
+  <string name="kisayol_kible_uzun">ಕಿಬ್ಲಾ ದಿಕ್ಕು ತೋರಿಸಿ</string>
+  <string name="kisayol_kaza_kisa">ಖಝಾ ದಾಖಲೆ</string>
+  <string name="kisayol_kaza_uzun">ಖಝಾ ದಾಖಲೆ ತೆರೆಯಿರಿ</string>
+  <string name="kildim_onay_baslik">%1$s ನಮಾಝನ್ನು ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಬೇಕೆ?</string>
+  <string name="kildim_onay_mesaj">ಈ ವಿನಂತಿಯನ್ನು ಯಾವ ಆ್ಯಪ್ ಕಳುಹಿಸಿದೆ ಎಂದು ಸ್ಪಷ್ಟವಾಗಿಲ್ಲ. ನಮಾಝ್ ನಿರ್ವಹಿಸಿದ್ದರೆ ದೃಢೀಕರಿಸಿ.</string>
+  <string name="kildim_onay_evet">ನಮಾಝ್ ಮಾಡಿದೆ</string>
+  <string name="kildim_onay_vazgec">ರದ್ದುಮಾಡಿ</string>
+  <string name="kildim_guven_baslik">%1$s ನಿಮ್ಮ ನಮಾಝ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲು ಅನುಮತಿಸಬೇಕೆ?</string>
+  <string name="kildim_guven_mesaj">ಈಗ ಗುರುತಿಸಲಾಗುವ ನಮಾಝ್: %1$s. ನಿಮ್ಮ ನಿರ್ಧಾರವನ್ನು ನಂತರ ಸೆಟ್ಟಿಂಗ್‌ಗಳು &gt; ನಮಾಝ್ ಗುರುತಿಸಬಲ್ಲ ಆ್ಯಪ್‌ಗಳು ಇಲ್ಲಿ ಬದಲಾಯಿಸಬಹುದು.</string>
+  <string name="kildim_guven_tarayici_mesaj">ಈಗ ಗುರುತಿಸಲಾಗುವ ನಮಾಝ್: %1$s. ಈ ವಿನಂತಿ ಬ್ರೌಸರ್‌ನಿಂದ ಬಂದಿದೆ; ಯಾವುದೇ ವೆಬ್ ಪುಟ ಈ ಲಿಂಕ್ ತೆರೆಯಬಹುದಾದ್ದರಿಂದ ಶಾಶ್ವತ ಅನುಮತಿ ನೀಡಲಾಗುವುದಿಲ್ಲ.</string>
+  <string name="kildim_guven_her_zaman">ಯಾವಾಗಲೂ ಅನುಮತಿಸಿ</string>
+  <string name="kildim_guven_bu_sefer">ಈ ಬಾರಿ ಮಾತ್ರ</string>
+  <string name="kildim_guven_engelle">ನಿರ್ಬಂಧಿಸಿ</string>
+  <string name="kildim_guven_engellendi">%1$s ಇನ್ನು ನಿಮ್ಮ ನಮಾಝ್‌ಗಳನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ. ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಬದಲಾಯಿಸಬಹುದು.</string>
+  <string name="widget_ayar_baslik">ವಿಜೆಟ್ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ</string>
+  <string name="widget_ayar_zemin">ಹಿನ್ನೆಲೆ</string>
+  <string name="widget_ayar_zemin_material">ವಾಲ್‌ಪೇಪರ್ ಬಣ್ಣಗಳು</string>
+  <string name="widget_ayar_zemin_sistem">ಸಿಸ್ಟಮ್ ಥೀಮ್</string>
+  <string name="widget_ayar_zemin_acik">ಲೈಟ್</string>
+  <string name="widget_ayar_zemin_koyu">ಡಾರ್ಕ್</string>
+  <string name="widget_ayar_zemin_seffaf">ಪಾರದರ್ಶಕ</string>
+  <string name="widget_ayar_opaklik">ಹಿನ್ನೆಲೆಯ ಅಪಾರದರ್ಶಕತೆ</string>
+  <string name="widget_ayar_gosterim">ದೊಡ್ಡ ಅಕ್ಷರದಲ್ಲಿ ತೋರಿಸಿ</string>
+  <string name="widget_ayar_gosterim_kalan">ಉಳಿದ ಸಮಯ</string>
+  <string name="widget_ayar_gosterim_bitis">ಮುಕ್ತಾಯ ಸಮಯ</string>
+  <string name="widget_ayar_gosterim_not">ಮುಕ್ತಾಯ ಸಮಯವನ್ನು ಎಲ್ಲಾ ಗಾತ್ರಗಳಲ್ಲೂ ತೋರಿಸಲಾಗುತ್ತದೆ.</string>
+  <string name="widget_ayar_sonraki">ಮುಂದಿನ ನಮಾಝ್ ತೋರಿಸಿ</string>
+  <string name="widget_ayar_vazgec">ರದ್ದುಮಾಡಿ</string>
+  <string name="widget_ayar_kaydet">ಉಳಿಸಿ</string>
+  <string name="kildim_onay_kanal_adi">"ನಮಾಝ್ ಮಾಡಿದೆ" ದೃಢೀಕರಣ</string>
+  <string name="kildim_onay_kanal_aciklama">ಅಧಿಸೂಚನೆಯಲ್ಲಿ "ನಮಾಝ್ ಮಾಡಿದೆ" ಟ್ಯಾಪ್ ಮಾಡಿದಾಗ ಕೆಲವು ಸೆಕೆಂಡು ಕಾಣಿಸುವ ನಿಶ್ಶಬ್ದ ದೃಢೀಕರಣ</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">ಮುಕ್ತಾಯ %1$s</string>
+  <string name="widget_giris">ಆರಂಭ %1$s</string>
+  <string name="widget_namaz_vakti">ನಮಾಝ್ ಸಮಯ</string>
+  <string name="widget_uygulamayi_acin">ಆ್ಯಪ್ ತೆರೆಯಿರಿ</string>
+  <string name="widget_siradaki">ಮುಂದಿನದು: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">ಸದ್ಯ ಗುರುತಿಸಬೇಕಾದ ನಮಾಝ್ ಇಲ್ಲ</string>
+  <string name="widget_dugme_kildim">ನಮಾಝ್ ಮಾಡಿದೆ</string>
+  <string name="widget_dugme_isaretleniyor">ಗುರುತಿಸಲಾಗುತ್ತಿದೆ</string>
+  <string name="widget_dugme_kilindi">ನಿರ್ವಹಿಸಲಾಗಿದೆ</string>
+  <string name="widget_dugme_vakit_girmedi">ಇನ್ನೂ ಸಮಯವಾಗಿಲ್ಲ</string>
+  <string name="widget_klasik_uygulamayi_acin">ಆ್ಯಪ್ ತೆರೆಯಿರಿ</string>
+  <string name="widget_klasik_erisim_veri_yok">ನಮಾಝ್ ಸಮಯಗಳನ್ನು ನೋಡಲು ಆ್ಯಪ್ ತೆರೆಯಿರಿ</string>
+  <string name="widget_klasik_erisim_siradaki">ಮುಂದಿನ ನಮಾಝ್: %1$s, ಆರಂಭ %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ಝುಹರ್‌ಗೆ</string>
+  <string name="widget_onizleme_klasik_genis">ಮಗ್ರಿಬ್‌ಗೆ</string>
+  <string name="widget_onizleme_imsak">ಫಜ್ರ್</string>
+  <string name="widget_onizleme_gunes">ಸೂರ್ಯೋದಯ</string>
+  <string name="widget_onizleme_ogle">ಝುಹರ್</string>
+  <string name="widget_onizleme_ikindi">ಅಸರ್</string>
+  <string name="widget_onizleme_aksam">ಮಗ್ರಿಬ್</string>
+  <string name="widget_onizleme_yatsi">ಇಶಾ</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s ನಮಾಝನ್ನು ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ. ಅಲ್ಲಾಹು ಸ್ವೀಕರಿಸಲಿ.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s ನಮಾಝ್ ಈಗಾಗಲೇ ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">ಸದ್ಯ ನಿರ್ವಹಿಸಬೇಕಾದ ನಮಾಝ್ ಇಲ್ಲ. ಮುಂದಿನದು %1$s, ಆರಂಭ %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">ಸದ್ಯ ನಿರ್ವಹಿಸಬೇಕಾದ ನಮಾಝ್ ಇಲ್ಲ.</string>
+  <string name="kildim_sonuc_veri_yok">ನಮಾಝ್ ಸಮಯದ ಮಾಹಿತಿ ಇಲ್ಲ. ಆ್ಯಪ್ ಅನ್ನು ಒಮ್ಮೆ ತೆರೆಯಿರಿ.</string>
+  <string name="kildim_sonuc_vakit_degisti">ನಮಾಝ್ ಸಮಯ ಬದಲಾಗಿದೆ, ಏನೂ ಗುರುತಿಸಲಾಗಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">ನ್ಯಾವಿಗೇಷನ್ ಆ್ಯಪ್ ತೆರೆಯಲಾಗಲಿಲ್ಲ.</string>
+  <string name="arac_adsiz_cami">ಮಸೀದಿ</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">ನಮಾಝ್ ಸಮಯದ ಮಾಹಿತಿ ಓದಲಾಗಲಿಲ್ಲ.</string>
+  <string name="asistan_isaretleme_yapilamadi">ನಮಾಝ್ ಗುರುತಿಸಲಾಗಲಿಲ್ಲ.</string>
+  <string name="asistan_aciklama">ನಮಾಝ್ ಸಮಯಗಳನ್ನು ಕೇಳಬಹುದು, ಪ್ರಸ್ತುತ ನಮಾಝನ್ನು ನಿರ್ವಹಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಬಹುದು ಮತ್ತು ಕಿಬ್ಲಾ ಪರದೆ ತೆರೆಯಬಹುದು.</string>
+</resources>

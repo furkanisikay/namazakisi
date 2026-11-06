@@ -13,9 +13,13 @@ import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
+import { SOLDAN_SAGA } from '../common/yon';
 import { useRenkler } from '../../../core/theme';
 import { HARITA_CAMI_SAYISI, ONIZLEME_SAYIM_M, onizlemeYerlesimi, yakinCamiSayisi } from '../../../core/cami/haritaVerisi';
 import * as kopru from '../../../../modules/expo-cami-geofence/src';
+import { bicim, sayili, sayiYaz } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 interface Props {
     merkez: { lat: number; lng: number } | null;
@@ -28,6 +32,7 @@ const KONUM = 12;
 
 export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
     const renkler = useRenkler();
+    const m = useMetin().cami.onizleme;
     const [camiler, setCamiler] = useState<kopru.YakinCami[] | null>(null);
     const [genislik, setGenislik] = useState(0);
     const lat = merkez?.lat;
@@ -53,8 +58,8 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
     );
     if (!merkez || camiler == null || camiler.length === 0) return null;
     const sayi = yakinCamiSayisi(camiler);
-    const baslik = sayi > 0 ? `Yakınınızda ${sayi} cami` : 'Yakındaki camiler';
-    const alt = `${ONIZLEME_SAYIM_M / 1000} km içinde`;
+    const baslik = sayi > 0 ? sayili(m.yakininizda, sayi) : m.yakindakiler;
+    const alt = bicim(m.kmIcinde, { km: sayiYaz(ONIZLEME_SAYIM_M / 1000) });
 
     return (
         <TouchableOpacity
@@ -62,11 +67,12 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
             onPress={onAc}
             activeOpacity={0.8}
             accessibilityRole="button"
-            accessibilityLabel={`${baslik}, ${alt}. Haritayı açın.`}
+            accessibilityLabel={bicim(m.erisim, { baslik, alt })}
             style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, marginTop: 12, overflow: 'hidden' }}
         >
             <View
-                style={{ height: ALAN_YUKSEKLIGI, backgroundColor: `${renkler.birincil}10` }}
+                // Coğrafi önizleme: doğu her dilde sağda.
+                style={[SOLDAN_SAGA, { height: ALAN_YUKSEKLIGI, backgroundColor: `${renkler.birincil}10` }]}
                 onLayout={(e) => setGenislik(e.nativeEvent.layout.width)}
                 importantForAccessibility="no-hide-descendants"
                 accessibilityElementsHidden
@@ -137,7 +143,7 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
                     <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>{baslik}</Text>
                     <Text style={{ fontSize: 13, marginTop: 2, color: renkler.metinIkincil }}>{alt}</Text>
                 </View>
-                <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} />
+                <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} />
             </View>
         </TouchableOpacity>
     );

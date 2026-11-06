@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ru -->
+<!-- Русский (beta). Terimler: src/core/dil/sozluk/ru (hitap "вы"; "il" = провинция, JS cihaz.ts ile aynı). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ru</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Табло времени намазов</string>
+    <string name="ayarlar">Настройки</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s через %2$s</string>
+    <string name="pano_vaktine">%1$s через</string>
+    <string name="pano_vaktine_kalan">%1$s через %2$s</string>
+    <string name="pano_kerahat_vakti">Время макрух</string>
+    <string name="pano_bitis">до %1$s</string>
+    <string name="pano_kerahat_erisim">Время макрух, %1$s, до %2$s. %3$s</string>
+    <string name="pano_cumaya">Джума через %1$s</string>
+    <string name="pano_cikis_geldi">пора выходить</string>
+    <string name="pano_cikis">выход в %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Пора выходить на Джуму</string>
+    <string name="pano_cuma_cikis_erisim">Выход на Джуму в %1$s</string>
+    <string name="pano_bugun_cuma">Сегодня Джума</string>
+    <string name="pano_ogle">Зухр %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Сегодня Джума. Джума-намаз совершается во время Зухр, %1$s</string>
+    <string name="pano_ayarlar_erisim">Настройки: добавление телефона, местоположение, подключённые телефоны</string>
+    <string name="pano_simdiki_vakit">текущее время намаза</string>
+    <string name="pano_siradaki_vakit">следующее время намаза</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: «Добавьте телефон», «Ввести код», «Выбрать провинцию самостоятельно», «Добавить». -->
+    <string name="kodla_girin">Ввести код</string>
+    <string name="ili_kendim_secin">Выбрать провинцию самостоятельно</string>
+    <string name="yeniden_deneyin">Повторить</string>
+    <string name="telefon_varsayilan">Телефон</string>
+    <string name="esleme_ekleniyor">Добавляется %1$s</string>
+    <string name="esleme_gonderiyor">Телефон отправляет своё местоположение и состояние…</string>
+    <string name="esleme_tamamlanamadi">Не удалось завершить подключение</string>
+    <string name="esleme_saklanamadi">Этот телевизор не может надёжно хранить ключ подключения. Местоположение можно ввести кодом или выбрать провинцию.</string>
+    <string name="telefonunuzu_ekleyin">Добавьте телефон</string>
+    <string name="esleme_alt">Время намазов для вашего местоположения; совершённые намазы тоже будут видны.</string>
+    <string name="esleme_adim1">Откройте Namaz Akışı на телефоне</string>
+    <string name="esleme_adim2">Настройки › Мои устройства › Добавить телевизор</string>
+    <string name="esleme_adim3">Наведите камеру телефона на код</string>
+    <string name="esleme_ayni_wifi">Телефон и телевизор должны быть в одной сети Wi-Fi.</string>
+    <string name="esleme_onay_soru">Добавить этот телефон?</string>
+    <string name="esleme_onay_aciklama">Добавленный телефон сможет передавать на этот телевизор своё местоположение и отмеченные намазы.</string>
+    <string name="ekleyin">Добавить</string>
+    <string name="hayir">Нет</string>
+    <string name="esleme_eklendi">%1$s добавлен</string>
+    <string name="konumunuz_geldi">Местоположение получено</string>
+    <string name="konuma_gore_hesaplanacak">Время намазов будет рассчитано для этого местоположения.</string>
+    <string name="qr_konum_alindi">Местоположение получено</string>
+    <string name="qr_kodu">Код подключения для сканирования телефоном</string>
+    <string name="ag_yok">Телевизор не подключён к сети</string>
+    <string name="ag_yok_aciklama">Можно продолжить, введя 7-значный код с телефона или выбрав провинцию.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Введите код с телефона</string>
+    <string name="kod_yol">На телефоне: Настройки › Мои устройства › Добавить телевизор</string>
+    <string name="kod_hatali">Код не подошёл. Проверьте 7 цифр на телефоне; неверную цифру исправьте кнопкой «%1$s».</string>
+    <string name="kod_rakamli_kumanda">Если на пульте есть цифровые кнопки, можно вводить и ими.</string>
+    <string name="kod_bos_hane">пустая цифра</string>
+    <string name="kod_sil">Удалить</string>
+    <string name="kod_sil_aciklama">Удалить последнюю цифру</string>
+    <string name="kod_geri">Назад</string>
+    <string name="vazgecin">Отмена</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Выберите свою провинцию</string>
+    <string name="il_merkezine_gore">Время намазов рассчитывается для центра провинции.</string>
+    <string name="il_secili">%1$s, выбрано</string>
+    <string name="dream_il_yok">Чтобы видеть табло времени намазов, откройте приложение Namaz Akışı и выберите провинцию.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Местоположение: %1$s</string>
+    <string name="ayar_konum_yok">Местоположение не выбрано</string>
+    <string name="ayar_telefon_ekleyin">Добавить телефон</string>
+    <string name="ayar_konumu_kodla">Ввести местоположение кодом</string>
+    <string name="ayar_bagli_telefonlar">Телефоны, подключённые к этому телевизору</string>
+    <string name="ayar_telefon_yok">Телефоны ещё не добавлены. Нажмите «%1$s» слева и отсканируйте появившийся код.</string>
+    <string name="kaldirin">Удалить</string>
+    <string name="ayar_ne_gonderir">Что передают телефоны?</string>
+    <string name="ayar_madde_konum">Местоположение: по нему рассчитывается время намазов</string>
+    <string name="ayar_madde_namazlar">Отмеченные намазы, если владелец телефона этого хочет</string>
+    <string name="ayar_madde_sifreli">В зашифрованном виде, только по домашней сети</string>
+    <string name="son_haber_yok">Данных пока нет</string>
+    <string name="son_haber_az_once">Только что</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d мин назад</item>
+        <item quantity="few">%1$d мин назад</item>
+        <item quantity="many">%1$d мин назад</item>
+        <item quantity="other">%1$d мин назад</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d ч назад</item>
+        <item quantity="few">%1$d ч назад</item>
+        <item quantity="many">%1$d ч назад</item>
+        <item quantity="other">%1$d ч назад</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d день назад</item>
+        <item quantity="few">%1$d дня назад</item>
+        <item quantity="many">%1$d дней назад</item>
+        <item quantity="other">%1$d дня назад</item>
+    </plurals>
+    <string name="kaldir_soru">Удалить %1$s?</string>
+    <string name="kaldir_aciklama">Этот телефон больше не сможет передавать данные на телевизор. Чтобы добавить его снова, нужно ещё раз отсканировать QR-код.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Местоположение вашего телефона</string>
+</resources>

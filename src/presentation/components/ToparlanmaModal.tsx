@@ -8,6 +8,7 @@ import { ToparlanmaKarti } from './ToparlanmaKarti';
 import type { ToparlanmaDurumu } from '../../core/types/SeriTipleri';
 import { useRenkler } from '../../core/theme';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
+import { useMetin } from '../hooks/useMetin';
 
 interface ToparlanmaModalProps {
   gorunur: boolean;
@@ -23,6 +24,7 @@ export const ToparlanmaModal: React.FC<ToparlanmaModalProps> = ({
   oncekiSeri,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().seri.toparlanma;
   useDonanimGeriTusu(gorunur, onKapat);
 
   return (
@@ -51,10 +53,10 @@ export const ToparlanmaModal: React.FC<ToparlanmaModalProps> = ({
           <TouchableOpacity
             style={[styles.anladimButon, { backgroundColor: renkler.birincil }]}
             onPress={onKapat}
-            accessibilityLabel="Toparlanma modalını kapat"
+            accessibilityLabel={m.kapatErisim}
             accessibilityRole="button"
           >
-            <Text style={styles.anladimMetin}>Anladım</Text>
+            <Text style={styles.anladimMetin}>{m.anladim}</Text>
           </TouchableOpacity>
         </View>
       </View>

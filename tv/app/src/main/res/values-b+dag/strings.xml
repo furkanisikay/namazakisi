@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dagbani. Terimler: src/core/dil/sozluk/dag. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">dag</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Jiŋli saha gbaŋ</string>
+    <string name="ayarlar">Malizali</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s n-kpalim pɔi ka %1$s paai</string>
+    <string name="pano_vaktine">Pɔi ka %1$s paai</string>
+    <string name="pano_vaktine_kalan">%1$s %2$s puuni</string>
+    <string name="pano_kerahat_vakti">Makruhi saha</string>
+    <string name="pano_bitis">di naai %1$s</string>
+    <string name="pano_kerahat_erisim">Makruhi saha, %1$s, di naai %2$s. %3$s</string>
+    <string name="pano_cumaya">Alizumma %1$s puuni</string>
+    <string name="pano_cikis_geldi">yibu saha paaya</string>
+    <string name="pano_cikis">yimi ya %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Alizumma chaŋbu saha paaya</string>
+    <string name="pano_cuma_cikis_erisim">Yimi ya n-chaŋ Alizumma %1$s</string>
+    <string name="pano_bugun_cuma">Zuŋɔ nyɛla Alizumma</string>
+    <string name="pano_ogle">Azafari %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Zuŋɔ nyɛla Alizumma. Alizumma jiŋli nyɛla Azafari saha, %1$s</string>
+    <string name="pano_ayarlar_erisim">Malizali: pahimi ya tilifoŋ, luɣili, tilifoŋ shɛŋa din laɣim</string>
+    <string name="pano_simdiki_vakit">pumpɔŋɔ jiŋli saha</string>
+    <string name="pano_siradaki_vakit">jiŋli saha din doli</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Pahimi ya yi tilifoŋ", "Kpɛhimi ya kood", "N ni piri tiŋa n maŋ", "Pahimi ya". -->
+    <string name="kodla_girin">Kpɛhimi ya kood</string>
+    <string name="ili_kendim_secin">N ni piri tiŋa n maŋ</string>
+    <string name="yeniden_deneyin">Lahi niŋmi ya</string>
+    <string name="telefon_varsayilan">Tilifoŋ</string>
+    <string name="esleme_ekleniyor">%1$s pahibu</string>
+    <string name="esleme_gonderiyor">Yi tilifoŋ tumdi di luɣili mini di yɛla…</string>
+    <string name="esleme_tamamlanamadi">Laɣimbu maa bi tooi naai</string>
+    <string name="esleme_saklanamadi">TV ŋɔ ku tooi gu laɣimbu kpeeni ni suhudoo. Yi ni tooi kpɛhi yi luɣili ni kood bee ka piri yi tiŋa.</string>
+    <string name="telefonunuzu_ekleyin">Pahimi ya yi tilifoŋ</string>
+    <string name="esleme_alt">Jiŋli saha yi luɣili zuɣu; jiŋa shɛŋa yi ni puhi gba yiri.</string>
+    <string name="esleme_adim1">Yoomi ya Namaz Akışı yi tilifoŋ zuɣu</string>
+    <string name="esleme_adim2">Malizali › N kpatuɣa › Pahimi ya TV</string>
+    <string name="esleme_adim3">Zaŋmi ya yi tilifoŋ kamera kpa kood maa</string>
+    <string name="esleme_ayni_wifi">Yi tilifoŋ mini TV tu ni bɛ be Wi-Fi yini ni.</string>
+    <string name="esleme_onay_soru">Yi pahi tilifoŋ ŋɔ?</string>
+    <string name="esleme_onay_aciklama">Tilifoŋ shɛli bɛ ni pahi ni tooi tum di luɣili mini jiŋa shɛŋa di ni dalim TV ŋɔ zuɣu.</string>
+    <string name="ekleyin">Pahimi ya</string>
+    <string name="hayir">Aayi</string>
+    <string name="esleme_eklendi">Bɛ pahi %1$s</string>
+    <string name="konumunuz_geldi">Yi luɣili paaya</string>
+    <string name="konuma_gore_hesaplanacak">Bɛ ni kali jiŋli saha luɣili ŋɔ zuɣu.</string>
+    <string name="qr_konum_alindi">Bɛ deei luɣili</string>
+    <string name="qr_kodu">Laɣimbu kood n-ti karim ni yi tilifoŋ</string>
+    <string name="ag_yok">TV maa bi laɣim ni intanɛt</string>
+    <string name="ag_yok_aciklama">Yi ni tooi chaŋ tooni ni yi ni kpɛhi kood din mali kalinli 7 n-yi yi tilifoŋ ni bee ka piri yi tiŋa.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Kpɛhimi ya kood din yi yi tilifoŋ ni</string>
+    <string name="kod_yol">Yi tilifoŋ zuɣu: Malizali › N kpatuɣa › Pahimi ya TV</string>
+    <string name="kod_hatali">Kood maa bi saɣi. Lihimi ya kalinli 7 din be yi tilifoŋ zuɣu; malimi ya kalinli din bi tabili ni “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Yi rimɔt yi mali kalinli buttin nima, yi ni tooi sabi ni ba gba.</string>
+    <string name="kod_bos_hane">kalinli din kani</string>
+    <string name="kod_sil">Yihimi ya</string>
+    <string name="kod_sil_aciklama">Yihimi ya kalinli din bahi</string>
+    <string name="kod_geri">Labimi ya</string>
+    <string name="vazgecin">Nyahimi ya</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Piimi ya yi tiŋa</string>
+    <string name="il_merkezine_gore">Bɛ kalindi jiŋli saha tiŋa maa sunsuuni zuɣu.</string>
+    <string name="il_secili">%1$s, bɛ piri li</string>
+    <string name="dream_il_yok">Yi yi bɔri ni yi nya jiŋli saha gbaŋ, yoomi ya Namaz Akışı app ka piri yi tiŋa.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Luɣili: %1$s</string>
+    <string name="ayar_konum_yok">Bɛ bi piri luɣili</string>
+    <string name="ayar_telefon_ekleyin">Pahimi ya tilifoŋ</string>
+    <string name="ayar_konumu_kodla">Kpɛhimi ya luɣili ni kood</string>
+    <string name="ayar_bagli_telefonlar">Tilifoŋ shɛŋa laɣim ni TV ŋɔ</string>
+    <string name="ayar_telefon_yok">Bɛ na bi pahi tilifoŋ. Zaŋmi ya “%1$s” din be nuzaa polo ka karim kood shɛli din yi.</string>
+    <string name="kaldirin">Yihimi ya</string>
+    <string name="ayar_ne_gonderir">Tilifoŋ nima tumdi bo?</string>
+    <string name="ayar_madde_konum">Luɣili: jiŋli saha doli li</string>
+    <string name="ayar_madde_namazlar">Jiŋa shɛŋa bɛ ni dalim, ban piri lala zuɣu</string>
+    <string name="ayar_madde_sifreli">Di sɔɣi, yi yiŋa intanɛt ni koŋko</string>
+    <string name="son_haber_yok">Lahabali kani pumpɔŋɔ</string>
+    <string name="son_haber_az_once">Pumpɔŋɔ</string>
+    <plurals name="son_haber_dk">
+        <item quantity="other">minti %1$d n-gari</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="other">hawa %1$d n-gari</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="other">dabsa %1$d n-gari</item>
+    </plurals>
+    <string name="kaldir_soru">Yi yihi %1$s?</string>
+    <string name="kaldir_aciklama">Tilifoŋ ŋɔ ku lahi tooi tum lahabali TV maa ni. Yi yi bɔri ni yi lahi pahi li, yi tu ni yi lahi karim QR kood maa.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Yi tilifoŋ luɣili</string>
+</resources>

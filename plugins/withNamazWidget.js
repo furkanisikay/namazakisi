@@ -4,6 +4,9 @@
  * TEK WidgetKit uzantisi (`NamazWidget`, paket kimligi `<ana>.widget`):
  *   - vakit widget'i: kilit ekrani aksesuarlari (dairesel / dikdortgen / satir ici),
  *     StandBy ve ana ekran (kucuk / orta),
+ *   - gunun ayeti widget'i (#380): kucuk / orta / buyuk + kilit ekrani dikdortgen; Arapca
+ *     fontu (Amiri Quran) `targets/widget/fontlar/`'dan Resources + `UIAppFonts` (N'Ko yazi
+ *     tipi de ayni yoldan, `assets/fonts/`'tan; bkz. `FONT_KAYNAKLARI`),
  *   - canli etkinlik (Live Activity): Dinamik Ada + kilit ekrani geri sayimi.
  * Kaynak: `targets/widget/` (yalniz bu uzanti) + `targets/widget/ortak/` (uzanti VE ana
  * hedef: "Kildim" dugmesinin `LiveActivityIntent`'i) + pod'dan kopyalanan saf dosyalar
@@ -55,6 +58,20 @@ const POD_KOPYALARI = ['VakitKarari.swift', 'SiriDeposu.swift', 'WidgetKarari.sw
 const ALARMKIT_KAYNAGI = path.join(KOK, 'targets', 'muhafiz-alarmkit');
 const ALARMKIT_KOPYALARI = ['NamazAlarmVerisi.swift'];
 /**
+ * Uzantinin paketledigi yazi tipleri (ad → kaynak dosya). Resources fazina girer ve Info.plist
+ * `UIAppFonts` ile kaydedilir; ana uygulamaya EKLENMEZ.
+ *   - Amiri Quran (OFL 1.1; lisans `targets/widget/fontlar/OFL.txt`): gunun ayeti widget'inin
+ *     Arapcasi. "Gunun ayeti gorseli" intent'i Arapca cizmez (iOS duvar kagidinda Arapca yok).
+ *   - Noto Sans NKo (OFL 1.1; lisans `assets/fonts/OFL.txt`): iOS'ta sistem N'Ko yazi tipi YOK ve
+ *     kaydedilen yazi tipi sistemin yedek listesine girmez → N'Ko arayuzde metin `YaziTipi`
+ *     kapisindan bu yazi tipiyle cizilir. Tek kaynak ana uygulamanin dosyasi (kopya tutulmaz).
+ */
+const FONT_KAYNAKLARI = {
+  'AmiriQuran-Regular.ttf': path.join(UZANTI_KAYNAGI, 'fontlar', 'AmiriQuran-Regular.ttf'),
+  'NotoSansNKo-Regular.ttf': path.join(KOK, 'assets', 'fonts', 'NotoSansNKo-Regular.ttf'),
+};
+const UZANTI_FONTLARI = Object.keys(FONT_KAYNAKLARI);
+/**
  * Bu uzantinin canli etkinlik CIZDIGINI soyleyen Info.plist anahtari. `NSSupportsLiveActivities`
  * artik sinyal degil: AlarmKit icin uzantidan bagimsiz yazilir (`withMuhafizAlarmKit`).
  * Okuyan: `CanliEtkinlikKoprusu.destekleniyor` (Swift).
@@ -91,7 +108,8 @@ function xmlKacir(s) {
 }
 
 /** Uzantinin Info.plist'i. Surum ana uygulamayla AYNI olmali (App Store dogrulamasi). */
-function infoPlistIcerigi(surum, derleme) {
+function infoPlistIcerigi(surum, derleme, fontlar = UZANTI_FONTLARI) {
+  const fontSatirlari = fontlar.map((ad) => `    <string>${xmlKacir(ad)}</string>`).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -119,6 +137,10 @@ function infoPlistIcerigi(surum, derleme) {
     <key>NSExtensionPointIdentifier</key>
     <string>com.apple.widgetkit-extension</string>
   </dict>
+  <key>UIAppFonts</key>
+  <array>
+${fontSatirlari}
+  </array>
 </dict>
 </plist>
 `;
@@ -189,7 +211,7 @@ function anaAyar(proje, anaHedef, anahtar) {
  * derleme ayarlari, urun (.appex), ana hedefe BAGIMLILIK ve "Embed Foundation Extensions"
  * gomme fazi. Hedef zaten varsa (yeniden prebuild) hicbir sey eklenmez.
  */
-function uzantiHedefiniEkle(proje, { anaHedefUuid, kimlik, kaynaklar }) {
+function uzantiHedefiniEkle(proje, { anaHedefUuid, kimlik, kaynaklar, paketKaynaklari = [] }) {
   if (proje.pbxTargetByName(HEDEF_ADI) || proje.pbxTargetByName(tirnak(HEDEF_ADI))) return;
   const nesneler = proje.hash.project.objects;
   const anaHedef = nesneler.PBXNativeTarget[anaHedefUuid];
@@ -214,6 +236,14 @@ function uzantiHedefiniEkle(proje, { anaHedefUuid, kimlik, kaynaklar }) {
     const yapi = proje.generateUuid();
     nesneEkle(proje, 'PBXBuildFile', yapi, { isa: 'PBXBuildFile', fileRef: ref, fileRef_comment: ad }, `${ad} in Sources`);
     kaynakDosyalari.push({ value: yapi, comment: `${ad} in Sources` });
+  }
+  // Paket kaynaklari (font): Resources fazina.
+  const kaynakFaziDosyalari = [];
+  for (const ad of paketKaynaklari) {
+    const ref = dosyaRefEkle(ad, 'file');
+    const yapi = proje.generateUuid();
+    nesneEkle(proje, 'PBXBuildFile', yapi, { isa: 'PBXBuildFile', fileRef: ref, fileRef_comment: ad }, `${ad} in Resources`);
+    kaynakFaziDosyalari.push({ value: yapi, comment: `${ad} in Resources` });
   }
   dosyaRefEkle('Info.plist', 'text.plist.xml');
   dosyaRefEkle(`${HEDEF_ADI}.entitlements`, 'text.plist.entitlements');
@@ -309,7 +339,7 @@ function uzantiHedefiniEkle(proje, { anaHedefUuid, kimlik, kaynaklar }) {
       buildPhases: [
         fazEkle(proje, 'PBXSourcesBuildPhase', 'Sources', kaynakDosyalari),
         fazEkle(proje, 'PBXFrameworksBuildPhase', 'Frameworks', []),
-        fazEkle(proje, 'PBXResourcesBuildPhase', 'Resources', []),
+        fazEkle(proje, 'PBXResourcesBuildPhase', 'Resources', kaynakFaziDosyalari),
       ],
       buildRules: [],
       dependencies: [],
@@ -403,6 +433,8 @@ function uzantiDosyalariniYaz(platformKoku, surum, derleme) {
   for (const ad of swiftDosyalari(ORTAK_KAYNAK)) kopyala(ORTAK_KAYNAK, ad);
   for (const ad of POD_KOPYALARI) kopyala(POD_KAYNAGI, ad);
   for (const ad of ALARMKIT_KOPYALARI) kopyala(ALARMKIT_KAYNAGI, ad);
+  // Fontlar kaynak (Swift degil): kopyalanir ama `adlar`'a (Sources) girmez.
+  for (const ad of UZANTI_FONTLARI) fs.copyFileSync(FONT_KAYNAKLARI[ad], path.join(hedefDizin, ad));
   fs.writeFileSync(path.join(hedefDizin, 'Info.plist'), infoPlistIcerigi(surum, derleme));
   fs.writeFileSync(path.join(hedefDizin, `${HEDEF_ADI}.entitlements`), entitlementsIcerigi());
   // Ayni ad iki kaynakta olmamali (sessizce ezilirdi).
@@ -457,7 +489,7 @@ function withNamazWidget(config, secenekler) {
     });
     // ActivityKit iOS 16.1'de; ana hedefin dagitim hedefi 15.1 → ZAYIF bag (AppIntents deseni).
     sonuc.addFramework('ActivityKit.framework', { weak: true, target: anaHedefUuid });
-    uzantiHedefiniEkle(sonuc, { anaHedefUuid, kimlik, kaynaklar });
+    uzantiHedefiniEkle(sonuc, { anaHedefUuid, kimlik, kaynaklar, paketKaynaklari: UZANTI_FONTLARI });
     mod.modResults = sonuc;
     return mod;
   });
@@ -473,4 +505,5 @@ module.exports.HEDEF_ADI = HEDEF_ADI;
 module.exports.APP_GROUP = APP_GROUP;
 module.exports.CANLI_ETKINLIK_ANAHTARI = CANLI_ETKINLIK_ANAHTARI;
 module.exports.ALARMKIT_KOPYALARI = ALARMKIT_KOPYALARI;
+module.exports.UZANTI_FONTLARI = UZANTI_FONTLARI;
 module.exports.uzantiDosyalariniYaz = uzantiDosyalariniYaz;

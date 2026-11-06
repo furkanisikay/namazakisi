@@ -1,0 +1,58 @@
+// ku
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Kurmanci terimler: src/core/dil/sozluk/ku.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Nimêja din";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Nimêja din û dema destpêka wê dibêje.";
+"Şu anki vakti kıldım" = "Min nimêja niha kir";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Nimêja niha wekî kirî nîşan dike. Gava hûn sepanê vekin tomar tê zêdekirin.";
+"Onay iste" = "Pejirandinê bixwaze";
+"Kıbleyi aç" = "Qibleyê veke";
+"Uygulamayı Kıble pusulasıyla açar." = "Sepanê bi qiblenimayê vedike.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Min nimêj kir";
+"Kıble" = "Qible";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Navê nimêja din";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Navê nimêja din dide. Hûn dikarin wê di Shortcuts de wekî şert bi kar bînin.";
+"Sıradaki vakte kalan dakika" = "Deqîqeyên heta nimêja din";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Dide ka heta destpêka nimêja din çend deqîqe mane. Heke agahî tune be -1 vedigerîne.";
+"Şu anki vakit kılındı mı?" = "Nimêja niha wekî kirî hatiye nîşankirin?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Heke nimêja niha wekî kirî hatibe nîşankirin erê dide. Heke nimêjeke ku bê nîşankirin tune be na dide.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Bêdengiya nimêjê";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Di deqîqeyên yekem ên piştî destpêka dema nimêjê de rast vedigerîne. Di Shortcuts de ji bo vekirina Focus tê bikaranîn.";
+"Süre (dakika)" = "Dem (deqîqe)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} deqîqeyên piştî destpêka dema nimêjê";
+"Namaz sessizliğinin bitişi" = "Dawiya bêdengiya nimêjê";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Dema ku bêdengî diqede dide. Heke niha bêdengî tune be dema niha dide.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Dawiya ${dakika} deqîqeyên piştî destpêka dema nimêjê";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Bîranînên nimêjê";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Dema ev Focus vekirî be, bîranînên nimêjê bê deng û bê ronîkirina dîmenê tên.";
+"Hatırlatmaları sessiz ver" = "Bîranînan bêdeng bigihînin";
+"Hatırlatmalar sessiz gelir" = "Bîranîn bêdeng tên";
+"Hatırlatmalar her zamanki gibi" = "Bîranîn wekî her carê";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Nimêja ku di wîdcetê de xuya dibe wekî kirî nîşan dike.";
+"Tarih" = "Dîrok";
+"Vakit" = "Nimêj";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Alarma nimêjê rawestîne";
+"Namazı kıldım" = "Min nimêj kir";
+"Alarm" = "Alarm";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Wêneyê ayeta rojê";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Ayeta îro wekî wêneyekî bi mezinahiya dîmena we dide. Hûn dikarin wê di Shortcuts de bi gava Set Wallpaper bi kar bînin.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Ji bo amadekirina ayeta rojê sepanê carekê vekin.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Wêne nehate amadekirin. Piştî demeke kurt dîsa biceribînin.";

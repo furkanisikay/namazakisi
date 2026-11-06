@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Alarme verdadeiro (português europeu). "Rezei" é o mesmo nome do botão da notificação. -->
+<resources>
+  <string name="alarm_baslik">Alarme da oração</string>
+  <string name="alarm_kildim">Rezei</string>
+  <string name="alarm_kapat">Desligar</string>
+  <string name="alarm_kanal_aciklamasi">Um alarme verdadeiro que toca nos passos de lembrete que escolher</string>
+</resources>

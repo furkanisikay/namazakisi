@@ -20,6 +20,7 @@
 const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { m, sablon } = require('./sozlukKaliplari');
 const { idbOlustur } = require('./simulator-idb');
 
 const cikis = process.argv[2];
@@ -41,14 +42,20 @@ const { agac, dokun, getir, kaydirarakDokun, asagiKaydir, bul, bekle, cek } = s;
 
 
 const KAPATILACAK =
-    /^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
+    new RegExp(
+        `^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Continue|Close|Got it|OK|${m('Devam edin', 'Kapat', 'Tamam', 'Anladım')})$`,
+        'i',
+    );
 /**
  * Ana ekran capasi — Maestro akislariyla AYNI: header'daki seri dugmesi ("Seri: N gün";
  * toparlanma modunda "Toparlanma modu: …"). Kible Dalga 4'ten beri sekmedir.
  */
-const ANA_EKRAN_CAPASI = /^(Seri|Toparlanma modu): /i;
+const ANA_EKRAN_CAPASI = new RegExp(
+    `^(?:${sablon('Seri: {n} gün')}|${sablon('Toparlanma modu: {tamamlanan}/{hedef} gün tamamlandı')})`,
+    'i',
+);
 
-const SEKME = (ad) => new RegExp(`^${ad}(,|$)`, 'i');
+const SEKME = (ad) => new RegExp(`^${m(ad)}(,|$)`, 'i');
 
 /** Uygulamayi kapat → tohumu yaz → ac → acilis katmanlarini kapat. */
 async function temizAcilis(varyant) {
@@ -84,7 +91,7 @@ async function ayarlaraGit() {
 /** Ayarlar > Hatirlatmalar (tek hatirlatma sayfasi). */
 async function hatirlatmalaraGit(etiket) {
     if (!(await ayarlaraGit())) return false;
-    return kaydirarakDokun(/^Hatırlatmalar\./i, 'hatirlatmalar satiri', etiket, { bekle: 3000 });
+    return kaydirarakDokun(new RegExp(`^${m('Hatırlatmalar')}\\.`, 'i'), 'hatirlatmalar satiri', etiket, { bekle: 3000 });
 }
 
 /** Temiz acilis + Hatirlatmalar + bir satirin ayrinti sayfasi (testID). */
@@ -121,8 +128,8 @@ async function bolum(ad, fn) {
         // Dua gorunur gorunmez kare: kaza onerisi 1,6 sn sonra acilir.
         cek('19-kabul-sonra');
         const sonra = await agac('kabul-sonra');
-        if (bul(sonra, /^Yine de işaretleyin$/)) {
-            await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 900 });
+        if (bul(sonra, new RegExp(`^${m('Yine de işaretleyin')}$`))) {
+            await dokun(sonra, new RegExp(`^${m('Yine de işaretleyin')}$`), 'kerahat onayi', { bekle: 900 });
             cek('19-kabul-sonra');
         }
         await bekle(1500);
@@ -140,14 +147,14 @@ async function bolum(ad, fn) {
         if (!(await ayarlaraGit())) return;
         cek('04-ayarlar');
         // Ayarlar koku artik kisa; "alt" karesi Yardim sayfasidir.
-        if (!(await kaydirarakDokun(/^Yardım\./i, 'yardim satiri', 'yardim', { bekle: 3000 }))) return;
+        if (!(await kaydirarakDokun(new RegExp(`^${m('Yardım')}\\.`, 'i'), 'yardim satiri', 'yardim', { bekle: 3000 }))) return;
         cek('05-ayarlar-alt');
     });
 
     await bolum('muhafiz', async () => {
         await temizAcilis('ozellik');
         if (!(await hatirlatmalaraGit('muhafiz-hub'))) return;
-        if (!(await kaydirarakDokun(/^Vakit çıkmadan\./i, 'vakit cikmadan satiri', 'muhafiz-satiri', { bekle: 3000 }))) return;
+        if (!(await kaydirarakDokun(new RegExp(`^${m('Vakit çıkmadan')}\\.`, 'i'), 'vakit cikmadan satiri', 'muhafiz-satiri', { bekle: 3000 }))) return;
         cek('06-muhafiz');
         // Sabah'in "Ozel" parcasi "Kendim ayarlayayim" katini ve Sabah kartini BIRLIKTE acar.
         // (Sayfanin dibindeki "Kendim ayarlayayim" satiri getir bandinin [0.12, 0.8] altinda
@@ -157,18 +164,18 @@ async function bolum(ad, fn) {
             if (!(await kaydirarakDokun(/kendim-ayarlayayim|^Kendim ayarlayayım/i, 'kendim ayarlayayim', 'kendim', { bekle: 2000 }))) return;
             if (!(await dokun(await agac('muhafiz'), /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 }))) return;
         }
-        if (await getir(/ilk hatırlatma/i, 'serit', { ust: 0.3, alt: 0.55 })) cek('07-muhafiz-zaman-seridi');
-        if (!(await kaydirarakDokun(/1\. hatırlatma.*düzenleyin/i, 'ilk adim', 'ilk-adim', { bekle: 3000 }))) return;
+        if (await getir(/^zaman-seridi(-cumle)?$|ilk hatırlatma/i, 'serit', { ust: 0.3, alt: 0.55 })) cek('07-muhafiz-zaman-seridi');
+        if (!(await kaydirarakDokun(/^adim-duzenle-0$|1\. hatırlatma.*düzenleyin/i, 'ilk adim', 'ilk-adim', { bekle: 3000 }))) return;
         cek('08-adim-detay');
         // Gercek alarm "Nasıl" izgarasindaki karodur (Gelişmiş'i acmak gerekmez).
         const anahtar = await getir(/adim-alarm-anahtari/, 'alarm-anahtari', { ust: 0.3, alt: 0.75 });
         cek('09-adim-detay-anahtarlar');
         // "Tekrarla" AÇIK: aralık seçicisi + canlı cümle; sonra şeritte tekrar tikleri.
-        const tekrar = await getir(/adim-tekrar-anahtari|^Tekrarla$/, 'tekrar-anahtari', { ust: 0.25, alt: 0.6 });
+        const tekrar = await getir(new RegExp(`adim-tekrar-anahtari|^${m('Tekrarla')}$`), 'tekrar-anahtari', { ust: 0.25, alt: 0.6 });
         if (tekrar) {
-            await dokun(tekrar.ogeler, /adim-tekrar-anahtari|^Tekrarla$/, 'tekrar anahtari', { bekle: 1500 });
-            if (!bul(await agac('tekrar-acik-1'), /Tekrar aralığı artır/)) {
-                const guncel = bul(await agac('tekrar-anahtari-tekrar'), /adim-tekrar-anahtari|^Tekrarla$/);
+            await dokun(tekrar.ogeler, new RegExp(`adim-tekrar-anahtari|^${m('Tekrarla')}$`), 'tekrar anahtari', { bekle: 1500 });
+            if (!bul(await agac('tekrar-acik-1'), new RegExp(sablon('{ad} artır', { ad: m('Tekrar aralığı') })))) {
+                const guncel = bul(await agac('tekrar-anahtari-tekrar'), new RegExp(`adim-tekrar-anahtari|^${m('Tekrarla')}$`));
                 if (guncel) await s.anahtariSurukle(guncel);
             }
             await agac('tekrar-acik');
@@ -177,21 +184,21 @@ async function bolum(ad, fn) {
         if (!anahtar) return;
         // `idb ui tap` UISwitch'i toggle ETMEZ: once dokun, olmazsa surukle.
         await dokun(anahtar.ogeler, /adim-alarm-anahtari/, 'alarm anahtari', { bekle: 2000 });
-        let onay = bul(await agac('alarm-onay-1'), /^Alarmı açın$/);
+        let onay = bul(await agac('alarm-onay-1'), new RegExp(`^${m('Alarmı açın')}$`));
         if (!onay) {
             const guncel = bul(await agac('alarm-anahtari-tekrar'), /adim-alarm-anahtari/);
             if (guncel) await s.anahtariSurukle(guncel);
-            onay = bul(await agac('alarm-onay-2'), /^Alarmı açın$/);
+            onay = bul(await agac('alarm-onay-2'), new RegExp(`^${m('Alarmı açın')}$`));
         }
         if (onay) {
             cek('10-alarm-onay');
-            await dokun(await agac('alarm-onay-kapat'), /^Vazgeç$/, 'vazgec');
+            await dokun(await agac('alarm-onay-kapat'), new RegExp(`^${m('Vazgeç')}$`), 'vazgec');
         } else {
             console.error('  alarm onay modali acilamadi (UISwitch idb ile degismedi)');
         }
         // Detayı kapat: şeritte tekrar tikleri (tekrar yukarıda açıldıysa).
-        if (tekrar && (await dokun(await agac('adim-kapat'), /^Kapat$/, 'detay kapat', { bekle: 2000 }))) {
-            if (await getir(/ilk hatırlatma/i, 'serit-tekrar', { ust: 0.3, alt: 0.55 })) cek('45-zaman-seridi-tekrar');
+        if (tekrar && (await dokun(await agac('adim-kapat'), new RegExp(`^${m('Kapat')}$`), 'detay kapat', { bekle: 2000 }))) {
+            if (await getir(/^zaman-seridi(-cumle)?$|ilk hatırlatma/i, 'serit-tekrar', { ust: 0.3, alt: 0.55 })) cek('45-zaman-seridi-tekrar');
         }
     });
 
@@ -220,9 +227,9 @@ async function bolum(ad, fn) {
     await bolum('nafile', async () => {
         await temizAcilis('ozellik');
         if (!(await hatirlatmalaraGit('nafile-hub'))) return;
-        if (!(await kaydirarakDokun(/^Nafile namazlar\./i, 'nafile satiri', 'nafile', { bekle: 3000 }))) return;
+        if (!(await kaydirarakDokun(new RegExp(`^${m('Nafile namazlar')}\\.`, 'i'), 'nafile satiri', 'nafile', { bekle: 3000 }))) return;
         cek('17-nafile');
-        if (await getir(/nafile-kart-teheccud|^Teheccüd hatırlatması(?: \||$)/i, 'teheccud', { ust: 0.15, alt: 0.45 })) {
+        if (await getir(new RegExp(`nafile-kart-teheccud|^${sablon('{ad} hatırlatması', { ad: m('Teheccüd') })}(?: \\||$)`, 'i'), 'teheccud', { ust: 0.15, alt: 0.45 })) {
             cek('18-nafile-teheccud');
         }
     });
@@ -233,24 +240,24 @@ async function bolum(ad, fn) {
         if (!(await dokun(a, SEKME('Kaza'), 'kaza sekmesi', { bekle: 3000 }))) return;
         cek('19-kaza');
         // "Her farzla bir kaza" Dalga 4'ten beri kokte degil: Diger > Kaza ayarlari.
-        if (!(await dokun(await agac('kaza-diger'), /^Diğer: hedef/i, 'kaza diger menusu', { bekle: 2000 }))) return;
-        if (!(await dokun(await agac('kaza-diger-acik'), /^Kaza ayarları/i, 'kaza ayarlari', { bekle: 3000 }))) return;
-        if (await getir(/^Her farzdan sonra kaza önerin(?: \||$)/i, 'her-farzla', { ust: 0.3, alt: 0.65 })) cek('20-kaza-her-farzla');
+        if (!(await dokun(await agac('kaza-diger'), new RegExp(`^${sablon('Diğer: hedef, geçmiş, ayarlar')}`, 'i'), 'kaza diger menusu', { bekle: 2000 }))) return;
+        if (!(await dokun(await agac('kaza-diger-acik'), new RegExp(`^${m('Kaza ayarları')}`, 'i'), 'kaza ayarlari', { bekle: 3000 }))) return;
+        if (await getir(new RegExp(`^${m('Her farzdan sonra kaza önerin')}(?: \\||$)`, 'i'), 'her-farzla', { ust: 0.3, alt: 0.65 })) cek('20-kaza-her-farzla');
     });
 
     await bolum('neler yeni', async () => {
         await temizAcilis('ozellik');
         if (!(await ayarlaraGit())) return;
-        if (!(await kaydirarakDokun(/^Yardım\./i, 'yardim satiri', 'yardim', { bekle: 3000 }))) return;
-        if (!(await kaydirarakDokun(/^Neler yeni\./i, 'neler yeni satiri', 'neler-yeni', { bekle: 3000 }))) return;
+        if (!(await kaydirarakDokun(new RegExp(`^${m('Yardım')}\\.`, 'i'), 'yardim satiri', 'yardim', { bekle: 3000 }))) return;
+        if (!(await kaydirarakDokun(new RegExp(`^${m('Neler yeni')}\\.`, 'i'), 'neler yeni satiri', 'neler-yeni', { bekle: 3000 }))) return;
         cek('21-neler-yeni');
     });
 
     await bolum('seferilik', async () => {
         await temizAcilis('ozellik');
         if (!(await ayarlaraGit())) return;
-        if (!(await kaydirarakDokun(/^Namaz vakitleri\./i, 'namaz vakitleri satiri', 'namaz-vakitleri', { bekle: 3000 }))) return;
-        if (!(await kaydirarakDokun(/^Yolculuk bilgisi\./i, 'yolculuk satiri', 'seferilik', { bekle: 3000 }))) return;
+        if (!(await kaydirarakDokun(new RegExp(`^${m('Namaz vakitleri')}\\.`, 'i'), 'namaz vakitleri satiri', 'namaz-vakitleri', { bekle: 3000 }))) return;
+        if (!(await kaydirarakDokun(new RegExp(`^${m('Yolculuk bilgisi')}\\.`, 'i'), 'yolculuk satiri', 'seferilik', { bekle: 3000 }))) return;
         cek('22-seferilik');
     });
 
@@ -258,7 +265,7 @@ async function bolum(ad, fn) {
         // iPhone: Odak + Kisayollar kurulum rehberi (Android'deki Camideyim'in karsiligi).
         await temizAcilis('ozellik');
         if (!(await ayarlaraGit())) return;
-        if (!(await kaydirarakDokun(/^Namazda sessiz\./i, 'namazda sessiz satiri', 'namazda-sessiz', { bekle: 4000 }))) return;
+        if (!(await kaydirarakDokun(new RegExp(`^${m('Namazda sessiz')}\\.`, 'i'), 'namazda sessiz satiri', 'namazda-sessiz', { bekle: 4000 }))) return;
         cek('23-namazda-sessiz');
         const tamam = await getir(/adim-odak-tamam|Namaz odağını oluşturun: tamamladım/i, 'odak-tamam', { ust: 0.3, alt: 0.8 });
         if (tamam) {

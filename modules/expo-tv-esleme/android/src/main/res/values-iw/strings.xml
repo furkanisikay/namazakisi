@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">מקמו את קוד ה-QR שעל מסך הטלוויזיה בתוך המסגרת</string>
+    <string name="tvesleme_qr_vazgec">ביטול</string>
+    <string name="tvesleme_qr_vazgec_erisim">ביטול הסריקה</string>
+    <string name="tvesleme_qr_yabanci">קוד ה-QR הזה לא שייך ל-Namaz Akışı TV. סרקו את הקוד שבטלוויזיה.</string>
+    <string name="tvesleme_qr_okundu">הקוד נסרק</string>
+</resources>

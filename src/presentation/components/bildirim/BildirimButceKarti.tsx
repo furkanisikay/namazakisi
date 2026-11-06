@@ -12,6 +12,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import type { ButceDurumu, DefterOzeti } from '../../../core/bildirim/bildirimDefteri';
 import type { BildirimPlatformu } from '../../../core/bildirim/butceSabitleri';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export const cihazAdi = (platform: BildirimPlatformu): string => (platform === 'ios' ? 'iPhone' : 'Android');
 
@@ -23,20 +25,21 @@ export const butceRengi = (
 
 export const butceBasligi = (durum: ButceDurumu): string =>
     durum === 'asim'
-        ? 'Bazı hatırlatmalar gelmeyecek'
+        ? metin().hatirlatma.butce.asim
         : durum === 'yakin'
-            ? 'Bildirim sınırına yaklaştınız'
-            : 'Bekleyen bildirimleriniz';
+            ? metin().hatirlatma.butce.yakin
+            : metin().hatirlatma.butce.normal;
 
 export const butceAciklamasi = (ozet: DefterOzeti): string => {
     const cihaz = cihazAdi(ozet.platform);
+    const b = metin().hatirlatma.butce;
     if (ozet.durum === 'asim') {
-        return `${cihaz} en fazla ${ozet.sinir} bildirim bekletir; en geç kurulan ${ozet.gelmeyecek} bildirim gelmeyecek. Düzeltmek için dokunun.`;
+        return bicim(b.asimAciklama, { cihaz, sinir: ozet.sinir, gelmeyecek: ozet.gelmeyecek });
     }
     if (ozet.durum === 'yakin') {
-        return `${cihaz} en fazla ${ozet.sinir} bildirim bekletir. Yer açmanın yolları için dokunun.`;
+        return bicim(b.yakinAciklama, { cihaz, sinir: ozet.sinir });
     }
-    return `${cihaz} sınırı ${ozet.sinir}. Ayrıntı için dokunun.`;
+    return bicim(b.normalAciklama, { cihaz, sinir: ozet.sinir });
 };
 
 interface Props {
@@ -46,6 +49,7 @@ interface Props {
 
 export const BildirimButceKarti: React.FC<Props> = ({ ozet, onPress }) => {
     const renkler = useRenkler();
+    const kartEtiketi = useMetin().hatirlatma.butce.kartEtiketi;
     if (!ozet || !ozet.kartGorunur) return null;
 
     const renk = butceRengi(ozet.durum, renkler);
@@ -58,7 +62,7 @@ export const BildirimButceKarti: React.FC<Props> = ({ ozet, onPress }) => {
             onPress={onPress}
             activeOpacity={0.75}
             accessibilityRole="button"
-            accessibilityLabel={`${baslik}: ${ozet.toplam} / ${ozet.sinir}. ${butceAciklamasi(ozet)}`}
+            accessibilityLabel={bicim(kartEtiketi, { baslik, toplam: ozet.toplam, sinir: ozet.sinir, aciklama: butceAciklamasi(ozet) })}
             className="rounded-2xl border p-4 mb-4"
             style={{
                 backgroundColor: renkler.kartArkaplan,

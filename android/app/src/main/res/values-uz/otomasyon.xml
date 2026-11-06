@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- uz -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Özbekçe, LATİN). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Oʻqidim</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Namoz vaqti holati</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Namoz vaqti hodisasi</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Bu sozlama avtomatlashtirish ilovasidan qoʻshiladi</string>
+  <string name="otomasyon_bilgi_tarayici">Brauzerlar doimiy ruxsat ola olmaydi. Uni Tasker, MacroDroid yoki Automate kabi ilovaning plaginlar roʻyxatidan qoʻshing.</string>
+  <string name="otomasyon_bilgi_eklenti">Uni Tasker, MacroDroid yoki Automate kabi ilovaning plaginlar roʻyxatidan «Namaz Akışı»ni tanlab qoʻshing.</string>
+  <string name="otomasyon_engelli_baslik">%1$s bloklangan</string>
+  <string name="otomasyon_engelli_mesaj">Bu ilovaga namozlaringizni belgilashni oldin bloklagan edingiz. Unga Namaz Akışı ilovasidagi Sozlamalar &gt; «“Oʻqidim” belgilay oladigan ilovalar» boʻlimida ruxsat berishingiz mumkin.</string>
+  <string name="otomasyon_izin_baslik">%1$s bilan ishlatilsinmi?</string>
+  <string name="otomasyon_izin_kosul">%1$s namoz vaqti qachon kirishini, qachon tugayotganini va qachon masjidda ekanligingizni bilib, avtomatlashtirishlaringizni ishga tushira oladi. Qaroringizni Namaz Akışı ilovasidagi Sozlamalar &gt; «“Oʻqidim” belgilay oladigan ilovalar» boʻlimida oʻzgartirishingiz mumkin.</string>
+  <string name="otomasyon_izin_kildim">%1$s siz sozlagan avtomatlashtirish orqali joriy namozni oʻqildi deb belgilay oladi. Qaroringizni Namaz Akışı ilovasidagi Sozlamalar &gt; «“Oʻqidim” belgilay oladigan ilovalar» boʻlimida oʻzgartirishingiz mumkin.</string>
+  <string name="otomasyon_izin_ver">Ruxsat berish</string>
+  <string name="otomasyon_engelle">Bloklash</string>
+  <string name="otomasyon_vazgec">Bekor qilish</string>
+  <string name="otomasyon_tamam">Xoʻp</string>
+  <string name="otomasyon_tur_baslik">Qachon ishga tushsin?</string>
+  <string name="otomasyon_ileri">Keyingi</string>
+  <string name="otomasyon_vakit_baslik">Qaysi namoz?</string>
+  <string name="otomasyon_herhangi_vakit">Istalgan namoz vaqti</string>
+  <string name="otomasyon_kaydet">Saqlash</string>
+  <string name="otomasyon_kosul_icinde">Namoz vaqti davomida</string>
+  <string name="otomasyon_kosul_cikiyor">Namoz vaqti tugayotganda (%1$d daq qolganda, Namoz muhofizi yoniq)</string>
+  <string name="otomasyon_kosul_camide">Masjidda boʻlganda</string>
+  <string name="otomasyon_olay_girdi">Namoz vaqti kirganda</string>
+  <string name="otomasyon_olay_cikiyor">Namoz vaqti tugayotganda (%1$d daq qolganda, Namoz muhofizi yoniq)</string>
+  <string name="otomasyon_olay_camide">Masjidda ekanligingiz aniqlanganda</string>
+</resources>

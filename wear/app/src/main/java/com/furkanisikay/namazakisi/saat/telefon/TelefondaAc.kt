@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import androidx.wear.widget.ConfirmationOverlay
+import com.furkanisikay.namazakisi.saat.R
 import java.util.concurrent.Executors
 
 /**
@@ -49,7 +50,8 @@ object TelefondaAc {
     }
 
     private fun goster(activity: Activity, tamam: Boolean) {
-        onay(activity, tamam, if (tamam) "Telefonunuzda açıldı" else "Telefonunuza ulaşılamadı", telefonda = tamam)
+        val mesaj = activity.getString(if (tamam) R.string.telefonda_acildi else R.string.telefona_ulasilamadi)
+        onay(activity, tamam, mesaj, telefonda = tamam)
     }
 
     /** Sistem onay animasyonu (saat komutlarının sonucu da bununla gösterilir). */

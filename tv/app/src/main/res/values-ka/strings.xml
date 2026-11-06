@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gürcüce. Terimler: src/core/dil/sozluk/ka. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ka</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">ლოცვის დროების დაფა</string>
+    <string name="ayarlar">პარამეტრები</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s: დარჩა %2$s</string>
+    <string name="pano_vaktine">%1$s: დადგომამდე</string>
+    <string name="pano_vaktine_kalan">%1$s %2$s-ში</string>
+    <string name="pano_kerahat_vakti">აკრძალული დრო</string>
+    <string name="pano_bitis">სრულდება %1$s</string>
+    <string name="pano_kerahat_erisim">აკრძალული დრო, %1$s, სრულდება %2$s-ზე. %3$s</string>
+    <string name="pano_cumaya">პარასკევის ლოცვა %1$s-ში</string>
+    <string name="pano_cikis_geldi">გასვლის დროა</string>
+    <string name="pano_cikis">გასვლა %1$s-ზე</string>
+    <string name="pano_cuma_cikis_geldi_erisim">პარასკევის ლოცვაზე გასვლის დროა</string>
+    <string name="pano_cuma_cikis_erisim">პარასკევის ლოცვაზე გასვლა %1$s-ზე</string>
+    <string name="pano_bugun_cuma">დღეს პარასკევია</string>
+    <string name="pano_ogle">ზუჰრი %1$s</string>
+    <string name="pano_bugun_cuma_erisim">დღეს პარასკევია. პარასკევის ლოცვა ზუჰრის დროსაა, %1$s</string>
+    <string name="pano_ayarlar_erisim">პარამეტრები: ტელეფონის დამატება, მდებარეობა, დაკავშირებული ტელეფონები</string>
+    <string name="pano_simdiki_vakit">მიმდინარე ლოცვის დრო</string>
+    <string name="pano_siradaki_vakit">შემდეგი ლოცვის დრო</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "ტელეფონის დამატება", "კოდის შეყვანა", "ქალაქს თავად ავირჩევ", "დამატება". -->
+    <string name="kodla_girin">კოდის შეყვანა</string>
+    <string name="ili_kendim_secin">ქალაქს თავად ავირჩევ</string>
+    <string name="yeniden_deneyin">ხელახლა ცდა</string>
+    <string name="telefon_varsayilan">ტელეფონი</string>
+    <string name="esleme_ekleniyor">ემატება: %1$s</string>
+    <string name="esleme_gonderiyor">ტელეფონი აგზავნის მდებარეობასა და მდგომარეობას…</string>
+    <string name="esleme_tamamlanamadi">დაწყვილება ვერ დასრულდა</string>
+    <string name="esleme_saklanamadi">ეს ტელევიზორი კავშირის გასაღებს უსაფრთხოდ ვერ ინახავს. მდებარეობა შეგიძლიათ კოდით შეიყვანოთ ან ქალაქი აირჩიოთ.</string>
+    <string name="telefonunuzu_ekleyin">ტელეფონის დამატება</string>
+    <string name="esleme_alt">ლოცვის დროები თქვენი მდებარეობისთვის; შესრულებული ლოცვებიც გამოჩნდება.</string>
+    <string name="esleme_adim1">გახსენით Namaz Akışı ტელეფონზე</string>
+    <string name="esleme_adim2">პარამეტრები › ჩემი მოწყობილობები › ტელევიზორის დამატება</string>
+    <string name="esleme_adim3">მიმართეთ ტელეფონის კამერა კოდისკენ</string>
+    <string name="esleme_ayni_wifi">ტელეფონი და ტელევიზორი ერთსა და იმავე Wi-Fi ქსელში უნდა იყოს.</string>
+    <string name="esleme_onay_soru">დაემატოს ეს ტელეფონი?</string>
+    <string name="esleme_onay_aciklama">დამატებულ ტელეფონს შეეძლება ამ ტელევიზორზე მდებარეობისა და მონიშნული ლოცვების გაგზავნა.</string>
+    <string name="ekleyin">დამატება</string>
+    <string name="hayir">არა</string>
+    <string name="esleme_eklendi">დაემატა: %1$s</string>
+    <string name="konumunuz_geldi">მდებარეობა მიღებულია</string>
+    <string name="konuma_gore_hesaplanacak">ლოცვის დროები ამ მდებარეობისთვის გამოითვლება.</string>
+    <string name="qr_konum_alindi">მდებარეობა მიღებულია</string>
+    <string name="qr_kodu">დაწყვილების კოდი ტელეფონით დასასკანერებლად</string>
+    <string name="ag_yok">ტელევიზორი ქსელთან დაკავშირებული არ არის</string>
+    <string name="ag_yok_aciklama">გაგრძელება შეგიძლიათ ტელეფონიდან 7-ნიშნა კოდის შეყვანით ან ქალაქის არჩევით.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">შეიყვანეთ კოდი ტელეფონიდან</string>
+    <string name="kod_yol">ტელეფონზე: პარამეტრები › ჩემი მოწყობილობები › ტელევიზორის დამატება</string>
+    <string name="kod_hatali">კოდი არ ემთხვევა. შეამოწმეთ 7 ციფრი ტელეფონზე; არასწორი ციფრი გაასწორეთ ღილაკით „%1$s“.</string>
+    <string name="kod_rakamli_kumanda">თუ პულტს ციფრული ღილაკები აქვს, მათითაც შეგიძლიათ აკრეფა.</string>
+    <string name="kod_bos_hane">ცარიელი ციფრი</string>
+    <string name="kod_sil">წაშლა</string>
+    <string name="kod_sil_aciklama">ბოლო ციფრის წაშლა</string>
+    <string name="kod_geri">უკან</string>
+    <string name="vazgecin">გაუქმება</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">აირჩიეთ ქალაქი</string>
+    <string name="il_merkezine_gore">ლოცვის დროები ქალაქის ცენტრისთვის გამოითვლება.</string>
+    <string name="il_secili">%1$s, არჩეულია</string>
+    <string name="dream_il_yok">ლოცვის დროების დაფის სანახავად გახსენით Namaz Akışı და აირჩიეთ ქალაქი.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">მდებარეობა: %1$s</string>
+    <string name="ayar_konum_yok">მდებარეობა არჩეული არ არის</string>
+    <string name="ayar_telefon_ekleyin">ტელეფონის დამატება</string>
+    <string name="ayar_konumu_kodla">მდებარეობის კოდით შეყვანა</string>
+    <string name="ayar_bagli_telefonlar">ამ ტელევიზორთან დაკავშირებული ტელეფონები</string>
+    <string name="ayar_telefon_yok">ტელეფონი ჯერ არ დამატებულა. გამოიყენეთ „%1$s“ მარცხნივ და დაასკანერეთ გამოჩენილი კოდი.</string>
+    <string name="kaldirin">წაშლა</string>
+    <string name="ayar_ne_gonderir">რას აგზავნიან ტელეფონები?</string>
+    <string name="ayar_madde_konum">მდებარეობა: ლოცვის დროები მას მიჰყვება</string>
+    <string name="ayar_madde_namazlar">მონიშნული ლოცვები, ვინც ამას აირჩევს</string>
+    <string name="ayar_madde_sifreli">დაშიფრული, მხოლოდ სახლის ქსელში</string>
+    <string name="son_haber_yok">ინფორმაცია ჯერ არ არის</string>
+    <string name="son_haber_az_once">ახლახან</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d წთ-ის წინ</item>
+        <item quantity="other">%1$d წთ-ის წინ</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d სთ-ის წინ</item>
+        <item quantity="other">%1$d სთ-ის წინ</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d დღის წინ</item>
+        <item quantity="other">%1$d დღის წინ</item>
+    </plurals>
+    <string name="kaldir_soru">წაიშალოს %1$s?</string>
+    <string name="kaldir_aciklama">ეს ტელეფონი ტელევიზორზე ინფორმაციას ვეღარ გაგზავნის. ხელახლა დასამატებლად QR კოდის ხელახლა დასკანერება დაგჭირდებათ.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">ტელეფონის მდებარეობა</string>
+</resources>

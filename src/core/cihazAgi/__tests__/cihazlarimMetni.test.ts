@@ -1,4 +1,5 @@
-import { esitlemeVaadi, gorecelZaman, uyelikDurumMetni } from '../cihazlarimMetni';
+import { esitlemeVaadi, gorecelZaman, haritaRozeti, saatDurumMetni, uyelikDurumMetni } from '../cihazlarimMetni';
+import { aktifDiliKur, aktifDilSifirla } from '../../dil/aktifDil';
 
 const SIMDI = Date.UTC(2026, 9, 21, 12, 0, 0);
 const dk = (n: number) => SIMDI - n * 60000;
@@ -46,5 +47,28 @@ describe('esitlemeVaadi', () => {
 
     it('metin kibar dilde ve "sen" içermez', () => {
         for (const p of ['android', 'ios']) expect(esitlemeVaadi(p)).not.toMatch(/\b(sen|senin)\b/i);
+    });
+});
+
+describe('Cihazlarım metinleri — İngilizce', () => {
+    const TR = /[çğıöşüÇĞİÖŞÜ]/;
+    beforeEach(() => aktifDiliKur('en'));
+    afterEach(() => aktifDilSifirla());
+
+    it('göreli zaman, durum, rozet, vaat ve saat metni İngilizce', () => {
+        expect([dk(0), dk(1), dk(12), dk(60), dk(60 * 3), dk(60 * 24), dk(60 * 24 * 4)].map((t) => gorecelZaman(t, SIMDI))).toEqual([
+            'just now', '1 min ago', '12 min ago', '1 h ago', '3 h ago', 'yesterday', '4 days ago',
+        ]);
+        const metinler: string[] = [];
+        for (const d of ['tamam', 'ulasilamadi', 'reddedildi'] as const) {
+            for (const t of [0, dk(5)]) {
+                const m = uyelikDurumMetni(d, t, SIMDI);
+                metinler.push(m.cip, m.aciklama ?? '', haritaRozeti(d, t, SIMDI));
+            }
+        }
+        for (const p of ['android', 'ios']) metinler.push(esitlemeVaadi(p));
+        for (const s of ['esli', 'esliDegil', null] as const) metinler.push(saatDurumMetni(s).baslik, saatDurumMetni(s).aciklama);
+        for (const m of metinler) expect(m).not.toMatch(TR);
+        expect(haritaRozeti('tamam', dk(5), SIMDI)).toBe('connected · 5 min ago');
     });
 });

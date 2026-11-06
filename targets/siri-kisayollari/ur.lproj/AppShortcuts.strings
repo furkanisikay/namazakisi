@@ -1,0 +1,18 @@
+// ur — Urduca (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "${applicationName} میں اگلی نماز کب ہے";
+"${applicationName} sıradaki namaz" = "${applicationName} اگلی نماز";
+"${applicationName} ile sıradaki namazı söyle" = "${applicationName} سے اگلی نماز بتائیں";
+"${applicationName} namaz vakti" = "${applicationName} نماز کا وقت";
+"${applicationName} şu anki vakti kıldım" = "${applicationName} میں موجودہ نماز پڑھ لی";
+"${applicationName} namazımı kıldım" = "${applicationName} میں نماز پڑھ لی";
+"${applicationName} ile vakti kıldım olarak işaretle" = "${applicationName} میں موجودہ نماز پر ادا شدہ کا نشان لگائیں";
+"${applicationName} kıbleyi aç" = "${applicationName} میں قبلہ کھولیں";
+"${applicationName} ile kıbleyi göster" = "${applicationName} سے قبلہ دکھائیں";
+"${applicationName} günün ayeti görseli" = "${applicationName} آج کی آیت کی تصویر";
+"${applicationName} ile günün ayeti görselini hazırla" = "${applicationName} سے آج کی آیت کی تصویر تیار کریں";

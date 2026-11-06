@@ -19,6 +19,8 @@ import {
 } from '../../core/cami/camideyimAyarlari';
 import { KULLANICI_YERI_ALAN_M, type YerKaydi } from '../../core/cami/camiTipleri';
 import { zamanCizelgesiOlustur, type OlaySatiri } from '../../core/cami/olayMetinleri';
+import { bicim, metin } from '../../core/dil/aktifDil';
+import { useMetin } from './useMetin';
 import { CamideyimServisi } from '../../domain/services/CamideyimServisi';
 import * as kopru from '../../../modules/expo-cami-geofence/src';
 
@@ -54,7 +56,11 @@ export function useCamideyim(): CamideyimDurumu {
     const [ayarlar, setAyarlar] = useState<CamideyimAyarlari>(VARSAYILAN_CAMIDEYIM_AYARLARI);
     const [durum, setDurum] = useState<kopru.CamiNativeDurumu | null>(null);
     const [yakinlar, setYakinlar] = useState<kopru.YakinCami[]>([]);
-    const [olaylar, setOlaylar] = useState<OlaySatiri[]>([]);
+    const [hamOlaylar, setHamOlaylar] = useState<Parameters<typeof zamanCizelgesiOlustur>[0]>([]);
+    // Satırlar etkin dilde çizilsin: ham günlük saklanır, metin dil değişince yeniden kurulur.
+    const sozluk = useMetin();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const olaylar = useMemo<OlaySatiri[]>(() => zamanCizelgesiOlustur(hamOlaylar), [hamOlaylar, sozluk]);
     const [yuklendi, setYuklendi] = useState(false);
     const ayarlarRef = useRef(ayarlar);
     ayarlarRef.current = ayarlar;
@@ -72,7 +78,7 @@ export function useCamideyim(): CamideyimDurumu {
         const [ham, d, g] = await Promise.all([kopru.ayarlariAl(), kopru.durumAl(), kopru.gunlukAl()]);
         setAyarlar(camideyimAyarlariniNormalize(ham));
         setDurum(d);
-        setOlaylar(zamanCizelgesiOlustur(g));
+        setHamOlaylar(g);
         if (merkez) setYakinlar(await kopru.yakinCamiler(merkez.lat, merkez.lng, LISTE_CAMI_SAYISI));
         setYuklendi(true);
     }, [kullanilabilir, merkez]);
@@ -155,7 +161,7 @@ export function useCamideyim(): CamideyimDurumu {
             const id = kullaniciYeriKimligi(Date.now());
             await yaz((a) => {
                 const sayi = Object.values(a.yerler).filter((y) => y.kendi).length + 1;
-                const ad = yer.ad?.trim() || (sayi === 1 ? 'Eklediğim yer' : `Eklediğim yer ${sayi}`);
+                const ad = yer.ad?.trim() || (sayi === 1 ? metin().cami.eklenenYer : bicim(metin().cami.eklenenYerSirali, { n: sayi }));
                 return {
                     ...a,
                     yerler: {
@@ -195,7 +201,7 @@ export function useCamideyim(): CamideyimDurumu {
 
     const gunluguTemizle = useCallback(async () => {
         await kopru.gunluguTemizle();
-        setOlaylar([]);
+        setHamOlaylar([]);
     }, []);
 
     return {

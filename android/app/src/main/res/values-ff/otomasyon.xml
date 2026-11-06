@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Pular). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Mi juulii</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Ngonka waqutu juulde</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Huunde waqutu juulde</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar çoğul. -->
+  <string name="otomasyon_bilgi_baslik">Ndee teelte hino ɓeydee iwrude e jaaɓngal golle hoore-mum</string>
+  <string name="otomasyon_bilgi_tarayici">Wanngorɗe keɓataa jamirol duumiingol. Ɓeydee ɗum iwrude e doggol plugin jaaɓngal wa Tasker, MacroDroid walla Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Ɓeydee ɗum e suɓude “Namaz Akışı” e doggol plugin jaaɓngal wa Tasker, MacroDroid walla Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s haɗaama</string>
+  <string name="otomasyon_engelli_mesaj">On haɗiino ngal jaaɓngal maandinde juulɗe mon. Hiɗon mbaawi jamirde ngal e Namaz Akışı e Teelte &gt; “Jaaɓe maandinooje Mi juulii”.</string>
+  <string name="otomasyon_izin_baslik">Huutoree e %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s hino waawi anndude tuma waqutu juulde heewi, tuma hino gasa e tuma hiɗon e juulirde, gollinde golle hoore-mum mon. Hiɗon mbaawi waylude ñaawoore mon e Namaz Akışı e Teelte &gt; “Jaaɓe maandinooje Mi juulii”.</string>
+  <string name="otomasyon_izin_kildim">%1$s hino waawi maandinde juulde jooni ndee ko juulaama e golle hoore-mum ɗe on teelti. Hiɗon mbaawi waylude ñaawoore mon e Namaz Akışı e Teelte &gt; “Jaaɓe maandinooje Mi juulii”.</string>
+  <string name="otomasyon_izin_ver">Jamiree</string>
+  <string name="otomasyon_engelle">Haɗee</string>
+  <string name="otomasyon_vazgec">Haaytee</string>
+  <string name="otomasyon_tamam">Awa</string>
+  <string name="otomasyon_tur_baslik">Tuma ɗum gollata?</string>
+  <string name="otomasyon_ileri">Yeeso</string>
+  <string name="otomasyon_vakit_baslik">Juulde honnde?</string>
+  <string name="otomasyon_herhangi_vakit">Waqutu juulde kala</string>
+  <string name="otomasyon_kaydet">Mooftee</string>
+  <string name="otomasyon_kosul_icinde">Tuma ko waqutu juulde</string>
+  <string name="otomasyon_kosul_cikiyor">Tuma waqutu juulde hino gasa (%1$d hj heddii, Ndeenoowo Juulde huɓɓinaa)</string>
+  <string name="otomasyon_kosul_camide">Tuma hiɗon e juulirde</string>
+  <string name="otomasyon_olay_girdi">So waqutu juulde heewii</string>
+  <string name="otomasyon_olay_cikiyor">So waqutu juulde hino gasa (%1$d hj heddii, Ndeenoowo Juulde huɓɓinaa)</string>
+  <string name="otomasyon_olay_camide">So on njiytaama e juulirde</string>
+</resources>
