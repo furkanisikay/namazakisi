@@ -82,9 +82,8 @@ let yukleme: Promise<DilKodu> | null = null;
 const kayitNesnesi = (m: DilAyari | null): DilAyari =>
   m && typeof m === 'object' && !Array.isArray(m) ? { ...m } : {};
 
-/** Cihazın yerel ayar kimliği ("en_US"); okunamazsa null. Native modül yoksa (jest) sessiz. */
 /** Cihazın genel dili (native, uygulamaya özel dilden bağımsız); `undefined` = okunamadı. */
-let cihazDiliOnbellegi: string | null | undefined;
+let cihazDiliOnbellegi: string | undefined;
 
 interface UygulamaDiliKoprusu {
   uygulamaDiliniOku(): Promise<string | null | undefined>;
@@ -112,7 +111,8 @@ function uygulamaDiliKoprusu(): UygulamaDiliKoprusu | null {
 
 async function cihazDiliniTazele(): Promise<void> {
   const d = await uygulamaDiliKoprusu()?.cihazDiliniOku().catch(() => undefined);
-  if (d !== undefined) cihazDiliOnbellegi = d;
+  // Yalnız okunan etiket saklanır: `null` (native okuyamadı) eski yola (Settings/I18nManager) düşer.
+  if (typeof d === 'string' && d) cihazDiliOnbellegi = d;
 }
 
 interface UygulamaDiliIzi {
@@ -132,6 +132,7 @@ async function sistemeYaz(kod: DilKodu | null): Promise<void> {
   }
 }
 
+/** Cihazın yerel ayar kimliği ("en_US"); okunamazsa null. Native modül yoksa (jest) sessiz. */
 export function cihazYerelAyari(): string | null {
   // Native genel dil önce: uygulamaya özel dil sisteme yazılınca `I18nManager`/`AppleLanguages`
   // uygulamanın dilini döndürür ve "cihaz dili" seçeneği yanılırdı.

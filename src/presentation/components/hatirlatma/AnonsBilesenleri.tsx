@@ -28,10 +28,11 @@ import { sesliOkumaSesiYok } from '../../../core/dil/sesliOkuma';
  * eylem tek kaynaktan: `core/cihaz/durumNotlari` ('turkceTts').
  */
 export const TurkceTtsUyarisi: React.FC<{ destekli: boolean | null }> = ({ destekli }) => {
-    // Telefonlarda sesi hiç olmayan dilde cihaza sormaya gerek yok: iPhone'da sorgu `null`
-    // döner, bant hiç çizilmezdi ve sesli okuma sessizce atlanırdı.
+    // Cihaz sesi bildiriyorsa (`true`) bant yok: listeye yanlış giren dil zarar vermez
+    // (`core/dil/sesliOkuma`). Cihaz bilmiyorsa (`null`, iPhone) telefonlarda sesi olmayan
+    // dilde bant yine çizilir; yoksa sesli okuma sessizce atlanırdı.
     const sesYok = sesliOkumaSesiYok(aktifDil());
-    if (destekli !== false && !sesYok) return null;
+    if (destekli === true || (destekli === null && !sesYok)) return null;
     const not = durumNotu('turkceTts', { ...BOS_CIHAZ_DURUMU, surum: surumuOku(), turkceTts: false });
     if (!not) return null;
     return (

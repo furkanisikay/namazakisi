@@ -36,6 +36,18 @@ function hamSozluk(kod) {
   return s;
 }
 
+/** Dizinde artık üretilmeyen `.ts` paketlerini siler (kaldırılan dil ya da meal); silinen sayısı. */
+function artiklariSil(dizin, beklenen) {
+  let n = 0;
+  for (const ad of fs.readdirSync(dizin)) {
+    if (ad.endsWith('.ts') && !beklenen.has(ad)) {
+      fs.unlinkSync(path.join(dizin, ad));
+      n++;
+    }
+  }
+  return n;
+}
+
 function yaz(dosya, icerik, dizin = CIKTI) {
   const yol = path.join(dizin, dosya);
   const eski = fs.existsSync(yol) ? fs.readFileSync(yol, 'utf8') : null;
@@ -71,6 +83,7 @@ ${satirlar.join('\n')}
 export const dillerArasiPaketi = (): string => require('./dillerArasi').veri;
 `;
 if (yaz('index.ts', index)) degisen++;
+degisen += artiklariSil(CIKTI, new Set([...kodlar.map((k) => `${k}.ts`), 'dillerArasi.ts', 'index.ts']));
 
 // Günün ayeti havuzu: çekirdek (referans + Arapça + künyeler) ve dil başına meal haritası (ref → meal).
 // Kaynak üretilmiş `gununAyetiHavuzu.ts` (`scripts/icerik/gunun-ayeti-uret.js`); uygulama onu içe AKTARMAZ.
@@ -103,5 +116,6 @@ ${mealSatirlari.join('\n')}
 };
 `;
 if (yaz('index.ts', ayetIndex, AYET)) degisen++;
+degisen += artiklariSil(AYET, new Set([...mealDilleri.map((d) => `${d}.ts`), 'temel.ts', 'index.ts']));
 
 console.log(`${kodlar.length} dil ve ${mealDilleri.length} meal paketlendi, ${degisen} dosya değişti, toplam ${(toplam / 1e6).toFixed(2)} MB base64`);

@@ -213,10 +213,17 @@ let planlamaDevamEdiyor = false;
  * Telefon ayarlarındaki uygulamaya özel dil değiştiyse uygulama içi seçimle AYNI yoldan uygular
  * (`diliKaydet`: planlar yeni dilde, yazı yönü değişirse yeniden başlatma). Asla fırlatmaz.
  */
+let sistemDiliEsitleniyor: Promise<unknown> | null = null;
 const sistemDiliniEsitle = (): void => {
-  DilServisi.sistemDiliDegisimi()
+  // Ön plana gelişte iki yoldan (doğrudan + planlama) çağrılır: tek uçuş, yoksa ikisi de eski izi
+  // okuyup aynı dili iki kez `diliKaydet` ederdi.
+  if (sistemDiliEsitleniyor) return;
+  sistemDiliEsitleniyor = DilServisi.sistemDiliDegisimi()
     .then((hedef) => (hedef ? store.dispatch(diliKaydet(hedef)) : undefined))
-    .catch(() => {});
+    .catch(() => {})
+    .finally(() => {
+      sistemDiliEsitleniyor = null;
+    });
 };
 
 const PLANLAMA_TIMEOUT_MS = 30_000;

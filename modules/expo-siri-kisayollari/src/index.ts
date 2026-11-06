@@ -63,14 +63,6 @@ const ExpoSiriKisayollari = requireOptionalNativeModule<SiriNativeModule>('ExpoS
 const modul = (): SiriNativeModule | null =>
     Platform.OS === 'ios' && ExpoSiriKisayollari ? ExpoSiriKisayollari : null;
 
-/**
- * Arayüz dilini App Group'a yazar (iOS widget, saat köprüsü ve Siri metinleri okur).
- * Modül/fonksiyon yoksa (Android, eski ikili) sessizce atlanır. Asla fırlatmaz.
- */
-/**
- * Ayarlar > Uygulama > Dil'deki uygulamaya özel dil (BCP-47) ya da `null` (seçilmemiş, cihaz dili).
- * `undefined` = köprü yok (Android, eski ikili): karşılaştırma yapılmaz. Asla reddetmez.
- */
 /** Cihazın GENEL dili (uygulamaya özel dilden bağımsız) ya da `null`; `undefined` = köprü yok. Asla reddetmez. */
 export async function cihazDiliniOku(): Promise<string | null | undefined> {
     const m = modul();
@@ -82,6 +74,10 @@ export async function cihazDiliniOku(): Promise<string | null | undefined> {
     }
 }
 
+/**
+ * Ayarlar > Uygulama > Dil'deki uygulamaya özel dil (BCP-47) ya da `null` (seçilmemiş, cihaz dili).
+ * `undefined` = köprü yok (Android, eski ikili): karşılaştırma yapılmaz. Asla reddetmez.
+ */
 export async function uygulamaDiliniOku(): Promise<string | null | undefined> {
     const m = modul();
     if (!m || typeof m.uygulamaDiliniOku !== 'function') return undefined;
@@ -103,6 +99,10 @@ export async function uygulamaDiliniYaz(etiket: string | null): Promise<boolean>
     }
 }
 
+/**
+ * Arayüz dilini App Group'a yazar (iOS widget, saat köprüsü ve Siri metinleri okur).
+ * Modül/fonksiyon yoksa (Android, eski ikili) sessizce atlanır. Asla fırlatmaz.
+ */
 export function arayuzDiliniAyarla(kod: string): void {
     const m = modul();
     if (!m || typeof m.arayuzDiliniAyarla !== 'function') return;

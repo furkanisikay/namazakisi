@@ -463,14 +463,6 @@ export async function alarmSesiAcikMi(): Promise<boolean | null> {
     }
 }
 
-/**
- * Arayüz dili ("tr", "en"): Android widget, bildirim ve alarm metinleri bunu okur. Native
- * eski ise sessizce atlanır (Türkçe kalır). Asla fırlatmaz.
- */
-/**
- * Ayarlar > Uygulamalar > Dil'deki uygulamaya özel dil (Android 13+; BCP-47) ya da `null` (sistem
- * varsayılanı). `undefined` = köprü yok (iOS, eski ikili): karşılaştırma yapılmaz. Asla reddetmez.
- */
 /** Cihazın GENEL dili (uygulamaya özel dilden bağımsız) ya da `null`; `undefined` = köprü yok. Asla reddetmez. */
 export async function cihazDiliniOku(): Promise<string | null | undefined> {
     if (Platform.OS !== 'android' || typeof ExpoCountdownNotification?.cihazDiliniOku !== 'function') return undefined;
@@ -481,6 +473,10 @@ export async function cihazDiliniOku(): Promise<string | null | undefined> {
     }
 }
 
+/**
+ * Ayarlar > Uygulamalar > Dil'deki uygulamaya özel dil (Android 13+; BCP-47) ya da `null` (sistem
+ * varsayılanı). `undefined` = köprü yok (iOS, eski ikili): karşılaştırma yapılmaz. Asla reddetmez.
+ */
 export async function uygulamaDiliniOku(): Promise<string | null | undefined> {
     if (Platform.OS !== 'android' || typeof ExpoCountdownNotification?.uygulamaDiliniOku !== 'function') return undefined;
     try {
@@ -500,6 +496,10 @@ export async function uygulamaDiliniYaz(etiket: string | null): Promise<boolean>
     }
 }
 
+/**
+ * Arayüz dili ("tr", "en"): Android widget, bildirim ve alarm metinleri bunu okur. Native
+ * eski ise sessizce atlanır (Türkçe kalır). Asla fırlatmaz.
+ */
 export function arayuzDiliniAyarla(kod: string): void {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification?.arayuzDiliniAyarla) return;
     try {

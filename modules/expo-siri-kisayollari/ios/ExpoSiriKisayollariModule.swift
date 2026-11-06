@@ -123,10 +123,6 @@ public class ExpoSiriKisayollariModule: Module {
             SiriDeposu.varsayilan.arayuzDiliniYaz(kod)
         }
 
-        /// Ayarlar > Namaz Akisi > Dil'deki UYGULAMAYA OZEL dil: uygulamanin kendi tercih alanindaki
-        /// `AppleLanguages`'in ilki; secilmemisse nil (cihaz dili izlenir). Cihaz genel dili DEGIL
-        /// (`UserDefaults.standard` genel alani da birlestirir, burada yalniz uygulama alani okunur).
-        /// JS degisip degismedigini izler (`DilServisi.sistemDiliniEsitle`). Cihazda DOGRULANMADI.
         /// Cihazin GENEL dili: genel tercih alanindaki `AppleLanguages`'in ilki. `UserDefaults.standard`
         /// once uygulama alanini okur; uygulama dili yazilinca "cihaz dili" secenegi yanilirdi.
         /// Okunamazsa nil (JS eski yola duser). Cihazda DOGRULANMADI.
@@ -138,6 +134,10 @@ public class ExpoSiriKisayollariModule: Module {
             return nil
         }
 
+        /// Ayarlar > Namaz Akisi > Dil'deki UYGULAMAYA OZEL dil: uygulamanin kendi tercih alanindaki
+        /// `AppleLanguages`'in ilki; secilmemisse nil (cihaz dili izlenir). Cihaz genel dili DEGIL
+        /// (`UserDefaults.standard` genel alani da birlestirir, burada yalniz uygulama alani okunur).
+        /// JS degisip degismedigini izler (`DilServisi.sistemDiliDegisimi`). Cihazda DOGRULANMADI.
         AsyncFunction("uygulamaDiliniOku") { () -> String? in
             guard let kimlik = Bundle.main.bundleIdentifier,
                   let alan = UserDefaults.standard.persistentDomain(forName: kimlik),

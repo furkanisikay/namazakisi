@@ -35,6 +35,12 @@ describe('TurkceTtsUyarisi', () => {
         expect(getByText(sozluk('nqo').cihaz.durum.ttsDilYok)).toBeTruthy();
     });
 
+    it('listedeki dilde cihaz ses bildiriyorsa (üçüncü taraf motor) bant çizilmez', () => {
+        aktifDiliKur('ka');
+        const { toJSON } = render(<TurkceTtsUyarisi destekli={true} />);
+        expect(toJSON()).toBeNull();
+    });
+
     it('sesi olan dilde cihaz "yok" derse bant çizilir', () => {
         aktifDiliKur('en');
         const { toJSON } = render(<TurkceTtsUyarisi destekli={false} />);

@@ -186,11 +186,6 @@ class ExpoCountdownNotificationModule : Module() {
         }
 
         /**
-         * Telefon ayarlarındaki UYGULAMAYA ÖZEL dil (Android 13+, Ayarlar > Uygulamalar > Dil):
-         * BCP-47 etiketi ya da `null` (sistem varsayılanı ya da Android 12 ve öncesi). Cihaz genel
-         * dili DEĞİL. JS bu değerin değişip değişmediğini izler (`DilServisi.sistemDiliniEsitle`).
-         */
-        /**
          * Cihazın GENEL dili (BCP-47): `Resources.getSystem()` uygulamaya özel dilden etkilenmez.
          * `I18nManager.localeIdentifier` uygulamanın bağlamından okur; uygulama dili sisteme
          * yazılınca o da uygulama dilini döndürür ve "cihaz dili" seçeneği yanılırdı.
@@ -200,6 +195,11 @@ class ExpoCountdownNotificationModule : Module() {
             if (yerel.isEmpty) null else yerel[0].toLanguageTag()
         }
 
+        /**
+         * Telefon ayarlarındaki UYGULAMAYA ÖZEL dil (Android 13+, Ayarlar > Uygulamalar > Dil):
+         * BCP-47 etiketi ya da `null` (sistem varsayılanı ya da Android 12 ve öncesi). Cihaz genel
+         * dili DEĞİL. JS bu değerin değişip değişmediğini izler (`DilServisi.sistemDiliDegisimi`).
+         */
         AsyncFunction("uygulamaDiliniOku") {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@AsyncFunction null
             val context = appContext.reactContext ?: return@AsyncFunction null
