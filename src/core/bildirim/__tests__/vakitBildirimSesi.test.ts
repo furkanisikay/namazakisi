@@ -79,9 +79,18 @@ describe('vakitBildirimSesi — iPhone (paket:/dosya:)', () => {
         expect(vakitSesiniAyarla({}, 'yatsi', { bildirimSesi: PAKET })).toEqual({ yatsi: { bildirimSesi: PAKET } });
     });
 
-    it('görünen ad: paket sözlükten, dosya kullanıcının adı', () => {
-        expect(vakitSesGorunenAdi({ bildirimSesi: PAKET })).toBe('Sabah');
-        expect(vakitSesGorunenAdi({ bildirimSesi: DOSYA, sesAdi: 'Ezan' })).toBe('Ezan');
+    it('görünen ad (iPhone): paket sözlükten, dosya kullanıcının adı; silinmiş dosya telefonun sesi', () => {
+        const { sesPlatformunuAyarla, eklenmisSesleriAyarla } = require('../../muhafiz/sesKimligi');
+        sesPlatformunuAyarla('ios');
+        try {
+            expect(vakitSesGorunenAdi({ bildirimSesi: PAKET })).toBe('Sabah');
+            expect(vakitSesGorunenAdi({ bildirimSesi: DOSYA, sesAdi: 'Ezan' })).toBe('Ezan');
+            eklenmisSesleriAyarla([]);
+            expect(vakitSesGorunenAdi({ bildirimSesi: DOSYA, sesAdi: 'Ezan' })).toBe('Telefonun bildirim sesi');
+        } finally {
+            sesPlatformunuAyarla('android');
+            eklenmisSesleriAyarla(null);
+        }
     });
 
     it('vakitIosSesi: bildirimin ses dosyası; seçilmemiş/Android sesi null (sound: true kalır)', () => {

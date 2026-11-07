@@ -180,7 +180,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Mati',
     nowBarAcik: cogul({ other: '{n} item dihidupkan' }),
     sesDosyasi: {
-      bicim: 'Fail ini tidak dapat dibuka sebagai audio. Anda boleh memilih fail MP3, M4A atau WAV.',
+      bicim: 'Fail ini tidak dapat dibuka sebagai audio. Anda boleh memilih fail MP3, M4A, OGG atau WAV.',
+      bicimIos: 'Fail ini tidak dapat dibuka sebagai audio. Anda boleh memilih fail MP3, M4A atau WAV.',
       boyut: 'Fail terlalu besar. Anda boleh memilih sehingga 20 MB.',
       sure: 'Rakaman terlalu panjang. Anda boleh memilih bunyi sehingga 8 minit.',
       erisim: 'Fail tidak dapat diakses. Cuba pilih fail dalam telefon anda.',

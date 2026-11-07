@@ -39,6 +39,11 @@ enum SesIceAktarici {
     /// `[["dosya": ..., "ad": ...]]` — eklenme sirasiyla.
     private static let adlarAnahtari = "namazakisi_ice_aktarilan_sesler"
 
+    /// Ad listesinin TEK kilidi: `adiKaydet` ice aktarma sirasinda, `liste`/`sil` modulun
+    /// varsayilan kuyrugunda kosar; kilitsiz okuma-degistir-yaz birinin kaydini dusururdu.
+    /// Kilitli bolumde yalniz `UserDefaults` + `fileExists` vardir (donusum disarida).
+    private static let adlarKilidi = NSLock()
+
     /// `kullanici_ses_<8 kucuk onaltilik>.caf` — yol enjeksiyonuna karsi TEK kapi.
     static func adGecerli(_ ad: String) -> Bool {
         guard ad.hasPrefix(onek), ad.hasSuffix(".caf") else { return false }
@@ -116,6 +121,8 @@ enum SesIceAktarici {
     static func liste() -> [[String: String]] {
         guard let dizin = seslerDizini() else { return [] }
         let fm = FileManager.default
+        adlarKilidi.lock()
+        defer { adlarKilidi.unlock() }
         let mevcut = kayitlar()
         let canli = mevcut.filter { kayit in
             guard let dosya = kayit["dosya"], adGecerli(dosya) else { return false }
@@ -131,6 +138,8 @@ enum SesIceAktarici {
     static func sil(_ dosya: String) -> Bool {
         guard adGecerli(dosya), let dizin = seslerDizini() else { return false }
         let url = dizin.appendingPathComponent(dosya)
+        adlarKilidi.lock()
+        defer { adlarKilidi.unlock() }
         try? FileManager.default.removeItem(at: url)
         UserDefaults.standard.set(kayitlar().filter { $0["dosya"] != dosya }, forKey: adlarAnahtari)
         return !FileManager.default.fileExists(atPath: url.path)
@@ -252,11 +261,14 @@ enum SesIceAktarici {
         return ozetleyici.finalize().prefix(4).map { String(format: "%02x", $0) }.joined()
     }
 
+    /// YALNIZ `adlarKilidi` altinda cagrilir.
     private static func kayitlar() -> [[String: String]] {
         (UserDefaults.standard.array(forKey: adlarAnahtari) as? [[String: String]]) ?? []
     }
 
     private static func adiKaydet(dosya: String, ad: String) {
+        adlarKilidi.lock()
+        defer { adlarKilidi.unlock() }
         var liste = kayitlar().filter { $0["dosya"] != dosya }
         liste.append(["dosya": dosya, "ad": ad])
         UserDefaults.standard.set(liste, forKey: adlarAnahtari)

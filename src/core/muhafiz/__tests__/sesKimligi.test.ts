@@ -8,6 +8,9 @@ import {
   secilmisSesMi,
   platformdaCalinirMi,
   sesGorunenAdi,
+  sesPlatformunuAyarla,
+  eklenmisSesleriAyarla,
+  cihazdaCalinirMi,
 } from '../sesKimligi';
 import { VARSAYILAN_SES } from '../matrisTipleri';
 import { alarmKanalIdOlustur } from '../alarmYuku';
@@ -233,11 +236,52 @@ describe('iPhone ses kimlikleri (paket:/dosya:) — ANDROID KANAL KIMLIGI DEGISM
     expect(platformdaCalinirMi(SES_A, 'ios')).toBe(false);
   });
 
-  it('paket sesinin adi SOZLUKTEN (kayitli ad yok sayilir); dosyanin adi kullanicinin dosya adi', () => {
-    expect(sesGorunenAdi(PAKET, 'eski ad')).toBe('Sakin zil');
-    expect(sesGorunenAdi('paket:sabah')).toBe('Sabah');
-    expect(sesGorunenAdi(DOSYA, 'Ezan')).toBe('Ezan');
-    expect(sesGorunenAdi(DOSYA)).toBe('Seçtiğiniz ses');
-    expect(sesGorunenAdi(VARSAYILAN_SES)).toBe('Uygulama sesi');
+  describe('ad üreticisi CİHAZA göre (çalan sesin adı)', () => {
+    afterEach(() => {
+      sesPlatformunuAyarla('android');
+      eklenmisSesleriAyarla(null);
+    });
+
+    it('iPhone: paket sesinin adı SÖZLÜKTEN (kayıtlı ad yok sayılır); dosyanın adı kullanıcının dosya adı', () => {
+      sesPlatformunuAyarla('ios');
+      expect(sesGorunenAdi(PAKET, 'eski ad')).toBe('Sakin zil');
+      expect(sesGorunenAdi('paket:sabah')).toBe('Sabah');
+      expect(sesGorunenAdi(DOSYA, 'Ezan')).toBe('Ezan');
+      expect(sesGorunenAdi(DOSYA)).toBe('Seçtiğiniz ses');
+      expect(sesGorunenAdi(VARSAYILAN_SES)).toBe('Uygulama sesi');
+    });
+
+    it('Android: iPhone yedeğinden gelen paket/dosya sesi VARSAYILANIN adını alır (çalan odur)', () => {
+      sesPlatformunuAyarla('android');
+      expect(sesGorunenAdi(PAKET)).toBe('Uygulama sesi');
+      expect(sesGorunenAdi(DOSYA, 'Ezan')).toBe('Uygulama sesi');
+      expect(sesGorunenAdi(PAKET, undefined, 'Telefonun bildirim sesi')).toBe('Telefonun bildirim sesi');
+      // Android'in kendi sesi BİREBİR (kanal adları da buradan beslenir).
+      expect(sesGorunenAdi(SES_A, 'Melodi')).toBe('Melodi');
+      expect(sesGorunenAdi(SES_A)).toBe('Seçtiğiniz ses');
+    });
+
+    it('iPhone: content:// sesi varsayılan adını alır', () => {
+      sesPlatformunuAyarla('ios');
+      expect(sesGorunenAdi(SES_A, 'Melodi')).toBe('Uygulama sesi');
+      expect(sesGorunenAdi(SES_A, 'Melodi', 'Telefonun bildirim sesi')).toBe('Telefonun bildirim sesi');
+    });
+
+    it('iPhone: eklenen dosyalar LİSTESİNDE olmayan dosya (silinmiş) varsayılan sayılır; liste okunmadıysa çalınır kabul', () => {
+      sesPlatformunuAyarla('ios');
+      expect(cihazdaCalinirMi(DOSYA)).toBe(true);
+      eklenmisSesleriAyarla(['kullanici_ses_ffffffff.caf']);
+      expect(cihazdaCalinirMi(DOSYA)).toBe(false);
+      expect(sesGorunenAdi(DOSYA, 'Ezan')).toBe('Uygulama sesi');
+      eklenmisSesleriAyarla(['kullanici_ses_0123abcd.caf']);
+      expect(cihazdaCalinirMi(DOSYA)).toBe(true);
+      expect(sesGorunenAdi(DOSYA, 'Ezan')).toBe('Ezan');
+      expect(cihazdaCalinirMi(PAKET)).toBe(true);
+    });
+
+    it('varsayılan ses yüzeyin varsayılan adını alır (kayıtlı ad yoksa)', () => {
+      expect(sesGorunenAdi(VARSAYILAN_SES, undefined, 'Telefonun bildirim sesi')).toBe('Telefonun bildirim sesi');
+      expect(sesGorunenAdi(VARSAYILAN_SES)).toBe('Uygulama sesi');
+    });
   });
 });

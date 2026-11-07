@@ -62,7 +62,8 @@ export function vakitBildirimKanalId(ses: string | undefined | null): string {
 /** Görünen ad: ham URI asla gösterilmez. */
 export function vakitSesGorunenAdi(secim: VakitSesSecimi | undefined): string {
     if (!secim || !secilmisSesMi(secim.bildirimSesi)) return vakitVarsayilanSesAdi();
-    return sesGorunenAdi(secim.bildirimSesi, secim.sesAdi);
+    // Bu cihazda çalınmayan seçim (silinmiş dosya) telefonun sesini çalar → adı da o.
+    return sesGorunenAdi(secim.bildirimSesi, secim.sesAdi, vakitVarsayilanSesAdi());
 }
 
 /**

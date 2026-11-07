@@ -180,7 +180,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'A kashe',
     nowBarAcik: cogul({ one: 'Abu {n} a kunne', other: 'Abubuwa {n} a kunne' }),
     sesDosyasi: {
-      bicim: 'Ba a iya buɗe wannan fayil a matsayin sauti ba. Kuna iya zaɓar fayil na MP3, M4A ko WAV.',
+      bicim: 'Ba a iya buɗe wannan fayil a matsayin sauti ba. Kuna iya zaɓar fayil na MP3, M4A, OGG ko WAV.',
+      bicimIos: 'Ba a iya buɗe wannan fayil a matsayin sauti ba. Kuna iya zaɓar fayil na MP3, M4A ko WAV.',
       boyut: 'Fayil ɗin ya yi girma da yawa. Kuna iya zaɓar har zuwa MB 20.',
       sure: 'Naɗin ya yi tsayi da yawa. Kuna iya zaɓar sautin da bai wuce minti 8 ba.',
       erisim: 'Ba a iya samun fayil ɗin ba. Ku gwada zaɓar fayil da ke wayarku.',

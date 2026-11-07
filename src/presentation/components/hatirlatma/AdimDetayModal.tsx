@@ -41,7 +41,7 @@ import { SayisalSecici } from '../common/SayisalSecici';
 import type { AlarmKapsami, SeviyeAyari, SeviyeKademe } from '../../../core/muhafiz/matrisTipleri';
 import { SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { adimKapaliMi, kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
-import { ozelSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
+import { cihazdaCalinirMi, ozelSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
 import { sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { SesSecimSatiri } from './SesSecimSatiri';
@@ -89,6 +89,7 @@ import {
     esikAciklamasiOlustur,
     esikErisimAdiOlustur,
     esikBirimiOlustur,
+    varsayilanSesGorunumu,
     type AnaKanal,
     type PencereTanimi,
 } from './pencereTanimi';
@@ -498,7 +499,13 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
 
     const gelismisOzeti = gelismisOzetiOlustur(seviye, tanim, seviyeler);
     const gelismisVerisi = gelismisOzetiVerisi(seviye, tanim, seviyeler);
-    const ozet = adimOzetiOlustur(seviye, tanim.yon, { kardesler: seviyeler, pencereUzunluguDk: tanim.pencereUzunluguDk });
+    // Varsayılan ses bu yüzeyde ne çalar (iPhone ek yüzeyleri: telefonun sesi — dinletilemez).
+    const varsayilanSes = varsayilanSesGorunumu(tanim);
+    const ozet = adimOzetiOlustur(seviye, tanim.yon, {
+        kardesler: seviyeler,
+        pencereUzunluguDk: tanim.pencereUzunluguDk,
+        varsayilanSesAdi: varsayilanSes.adi,
+    });
     // Canlı önizleme: adımın ilk tetiği motorun planından, metin yüzeyin üreticisinden.
     const ornek = adimOrnekTetigi(tanim, seviyeler, indeks);
     const onizleme = adimOnizlemeIcerigi(tanim, ornek.tetik);
@@ -697,13 +704,15 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                 {tanim.sesSecimiVar ? (
                                                     <SesSecimSatiri
                                                         bildirimSesi={seviye.bildirimSesi}
-                                                        platform={tanim.yetenekler.platform}
+                                                        varsayilanAdi={varsayilanSes.adi}
+                                                        dinlenebilir={varsayilanSes.dinlenir || cihazdaCalinirMi(seviye.bildirimSesi)}
                                                         secimListesi={
                                                             tanim.yetenekler.sistemSesSecici ? undefined : (
                                                                 <IosSesListesi
                                                                     testID="adim-ses-listesi"
                                                                     secili={seviye.bildirimSesi}
-                                                                    varsayilanAdi={sesGorunenAdi(VARSAYILAN_SES)}
+                                                                    varsayilanAdi={varsayilanSes.adi ?? sesGorunenAdi(VARSAYILAN_SES)}
+                                                                    varsayilanDinlenir={varsayilanSes.dinlenir}
                                                                     onSec={(kimlik, ad) =>
                                                                         onDegistir({
                                                                             ...seviye,

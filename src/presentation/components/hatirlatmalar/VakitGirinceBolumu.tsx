@@ -39,7 +39,7 @@ import {
     vakitSesGorunenAdi,
     type VakitSesSecimi,
 } from '../../../core/bildirim/vakitBildirimSesi';
-import { ozelSesMi, platformdaCalinirMi } from '../../../core/muhafiz/sesKimligi';
+import { cihazdaCalinirMi, ozelSesMi } from '../../../core/muhafiz/sesKimligi';
 
 /** Taban `vakit_bildirim` kanalı sistemin varsayılan bildirim sesini çalar (önizleme bunu çalar). */
 const SISTEM_BILDIRIM_SESI = 'content://settings/system/notification_sound';
@@ -167,7 +167,6 @@ export const VakitGirinceBolumu: React.FC = () => {
                             <View style={{ marginLeft: 54, marginTop: -6, marginBottom: 6 }}>
                                 <SesSecimSatiri
                                     kompakt
-                                    platform={yetenekler.platform}
                                     secimListesi={
                                         sistemSecici ? undefined : (
                                             <IosSesListesi
@@ -209,7 +208,7 @@ export const VakitGirinceBolumu: React.FC = () => {
                                         )
                                     }
                                     // iPhone: telefonun sesi uygulama içinde dinletilemez (ölü düğme yok).
-                                    dinlenebilir={sistemSecici || platformdaCalinirMi(sesler[v.anahtar]?.bildirimSesi, 'ios')}
+                                    dinlenebilir={sistemSecici || cihazdaCalinirMi(sesler[v.anahtar]?.bildirimSesi)}
                                 />
                             </View>
                         ) : null}

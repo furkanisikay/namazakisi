@@ -59,6 +59,7 @@ import { kanallarNormalize } from '../../../../core/hatirlatma/adimDizisi';
 import { ANDROID_YETENEKLERI, iosYetenekleri } from '../../../../core/muhafiz/ios/platformYetenekleri';
 import { OnizlemeSesServisi } from '../../../../domain/services/OnizlemeSesServisi';
 import { sesSec } from '../../../../../modules/expo-countdown-notification/src';
+import { eklenmisSesleriAyarla, sesPlatformunuAyarla } from '../../../../core/muhafiz/sesKimligi';
 import { varsayilanAnonsMetni } from '../../../../core/muhafiz/anonsMetni';
 import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
@@ -226,7 +227,14 @@ describe('AdimDetayModal — iPhone bildirim sesi (liste satırın altında, mod
 
     beforeEach(() => {
         jest.clearAllMocks();
+        // Uygulama girişi (`index.ts`) her bağlamda yazar; testte iPhone bağlamı kurulur.
+        sesPlatformunuAyarla('ios');
         anons.iceAktarilanSesler.mockResolvedValue([{ dosya: 'kullanici_ses_0123abcd.caf', ad: 'Ezan' }]);
+    });
+
+    afterEach(() => {
+        sesPlatformunuAyarla('android');
+        eklenmisSesleriAyarla(null);
     });
 
     it('ses satırı iPhone\'da da var; dokununca uygulamanın listesi AÇILIR, sistem seçicisi çağrılmaz', async () => {
@@ -274,7 +282,64 @@ describe('AdimDetayModal — iPhone bildirim sesi (liste satırın altında, mod
         expect(ekran.queryByText('Android sesi')).toBeNull();
     });
 
+    it('silinmiş dosya (eklenenler listesinde yok) VARSAYILAN görünür ve varsayılan seçilidir', async () => {
+        anons.iceAktarilanSesler.mockResolvedValue([]);
+        const { ekran } = kur(
+            IOS,
+            adim({ bildirim: true }, { bildirimSesi: 'dosya:kullanici_ses_0123abcd.caf', sesAdi: 'Ezan' })
+        );
+        await act(async () => {
+            fireEvent.press(ekran.getByLabelText(/^Bildirim sesi:/));
+        });
+        expect(ekran.getByLabelText(/^Bildirim sesi: Uygulama sesi/)).toBeTruthy();
+        expect(ekran.getByLabelText('Uygulama sesi').props.accessibilityState).toMatchObject({ checked: true });
+        expect(ekran.queryByText('Ezan')).toBeNull();
+    });
+
+    it('ek yüzey (cuma): varsayılan TELEFONUN sesi diye adlandırılır ve uygulama içinde DİNLETİLMEZ', async () => {
+        const IOS_CUMA = ekHatirlatmaPencereTanimi({
+            kaynak: 'cuma',
+            yuzey: 'cuma',
+            anonsVakitAdi: 'Cuma',
+            baslik: 'Cuma namazı',
+            baslikKucuk: 'cuma namazı',
+            ikon: 'mosque',
+            vakit: 'ogle',
+            yonSabitGerekcesi: 'Öğleden önce.',
+            adimSayisi: 1,
+            maksAdim: 3,
+            esikSinirlari: { min: 15, max: 180 },
+            esikAdimDk: 15,
+            tekrarMinDk: 5,
+            tekrarMaxDk: 60,
+            varsayilanTekrarDk: 15,
+            yetenekler: iosYetenekleri(false),
+            otomatikAnons: () => 'Cuma.',
+        });
+        const { ekran } = kur(IOS_CUMA, adim({ bildirim: true }));
+        expect(ekran.getByLabelText(/^Bildirim sesi: Telefonun bildirim sesi/)).toBeTruthy();
+        // Önizleme `bildirim.mp3` çalardı, bildirim telefonun sesini çalar → düğme yok.
+        expect(ekran.queryByLabelText('Seçili bildirim sesini dinleyin')).toBeNull();
+        await act(async () => {
+            fireEvent.press(ekran.getByLabelText(/^Bildirim sesi:/));
+        });
+        expect(ekran.getByLabelText('Telefonun bildirim sesi').props.accessibilityState).toMatchObject({ checked: true });
+        expect(ekran.queryByLabelText('Telefonun bildirim sesi: dinleyin')).toBeNull();
+        expect(ekran.queryByLabelText('Uygulama sesi')).toBeNull();
+        // Paket sesi seçiliyken dinle düğmesi döner.
+        fireEvent.press(ekran.getByLabelText('Sakin zil'));
+        expect(ekran.getByLabelText('Sakin zil: dinleyin')).toBeTruthy();
+    });
+
+    it('Android ek yüzeyi: varsayılan adı ve "dinle" BİREBİR (Uygulama sesi)', () => {
+        sesPlatformunuAyarla('android');
+        const { ekran } = kur(CUMA, adim({ bildirim: true }));
+        expect(ekran.getByLabelText(/^Bildirim sesi: Uygulama sesi/)).toBeTruthy();
+        expect(ekran.getByLabelText('Seçili bildirim sesini dinleyin')).toBeTruthy();
+    });
+
     it('Android\'de liste YOK: satır sistem seçicisini açar (davranış birebir)', async () => {
+        sesPlatformunuAyarla('android');
         const { ekran } = kur(MUHAFIZ, adim({ bildirim: true }));
         await act(async () => {
             fireEvent.press(ekran.getByLabelText(/^Bildirim sesi: Uygulama sesi/));
