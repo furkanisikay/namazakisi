@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Ohùn tí ẹ yàn',
     dokunarak: 'Ẹ tẹ̀ ẹ́ láti yí i padà',
     seciliDinle: 'Tẹ́tí sí ohùn ìfitónilétí tí a yàn',
+    paket: {
+      zil: 'Agogo jẹ́jẹ́',
+      ikiton: 'Ohùn méjì',
+      damla: 'Ìkán omi',
+      sabah: 'Òwúrọ̀',
+    },
+    silErisim: 'Pa ohùn {ad} rẹ́',
+    ornekDinleErisim: 'Tẹ́tí sí: {ad}',
+    uzunlukNotu: 'Ohùn ìfitónilétí máa ń dún fún ìṣẹ́jú-àáyá 30 péré; nínú fáìlì tó gùn jù, ìṣẹ́jú-àáyá 30 àkọ́kọ́ ni a ń lò.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

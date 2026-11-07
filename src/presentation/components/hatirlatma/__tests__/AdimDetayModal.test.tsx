@@ -56,7 +56,9 @@ import {
 import type { SeviyeAyari, UyariKanallari } from '../../../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../../../../core/muhafiz/matrisTipleri';
 import { kanallarNormalize } from '../../../../core/hatirlatma/adimDizisi';
-import { ANDROID_YETENEKLERI } from '../../../../core/muhafiz/ios/platformYetenekleri';
+import { ANDROID_YETENEKLERI, iosYetenekleri } from '../../../../core/muhafiz/ios/platformYetenekleri';
+import { OnizlemeSesServisi } from '../../../../domain/services/OnizlemeSesServisi';
+import { sesSec } from '../../../../../modules/expo-countdown-notification/src';
 import { varsayilanAnonsMetni } from '../../../../core/muhafiz/anonsMetni';
 import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
@@ -215,6 +217,71 @@ describe('AdimDetayModal — NASIL (iki anahtar)', () => {
         const { ekran, onDegistir } = kur(CUMA, adim({}, { oncekiKanallar: { sesli: true } }));
         fireEvent.press(ekran.getByTestId('adim-ac-dugmesi'));
         expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { sesli: true }, anonsMetni: '' }));
+    });
+});
+
+describe('AdimDetayModal — iPhone bildirim sesi (liste satırın altında, modal DEĞİL)', () => {
+    const IOS = vakitPencereTanimi('ikindi', 'cikisaDogru', 180, iosYetenekleri(false));
+    const anons = require('../../../../../modules/expo-muhafiz-anons/src') as Record<string, jest.Mock>;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        anons.iceAktarilanSesler.mockResolvedValue([{ dosya: 'kullanici_ses_0123abcd.caf', ad: 'Ezan' }]);
+    });
+
+    it('ses satırı iPhone\'da da var; dokununca uygulamanın listesi AÇILIR, sistem seçicisi çağrılmaz', async () => {
+        const { ekran, onDegistir } = kur(IOS, adim({ bildirim: true }));
+        expect(ekran.queryByTestId('adim-ses-listesi')).toBeNull();
+        await act(async () => {
+            fireEvent.press(ekran.getByLabelText(/^Bildirim sesi: Uygulama sesi/));
+        });
+        expect(ekran.getByTestId('adim-ses-listesi')).toBeTruthy();
+        expect(sesSec).not.toHaveBeenCalled();
+        // Varsayılan seçili; uygulamanın sesleri ve eklenen dosya listelenir.
+        expect(ekran.getByLabelText('Uygulama sesi').props.accessibilityState).toMatchObject({ checked: true });
+        expect(ekran.getByLabelText('Sakin zil')).toBeTruthy();
+        expect(ekran.getByLabelText('Ezan')).toBeTruthy();
+
+        fireEvent.press(ekran.getByLabelText('İki ton'));
+        expect(onDegistir).toHaveBeenLastCalledWith(
+            expect.objectContaining({ bildirimSesi: 'paket:ikiton', sesAdi: undefined })
+        );
+        fireEvent.press(ekran.getByLabelText('Ezan'));
+        expect(onDegistir).toHaveBeenLastCalledWith(
+            expect.objectContaining({ bildirimSesi: 'dosya:kullanici_ses_0123abcd.caf', sesAdi: 'Ezan' })
+        );
+        fireEvent.press(ekran.getByLabelText('Sabah: dinleyin'));
+        expect(OnizlemeSesServisi.bildirimSesiniCal).toHaveBeenCalledWith('paket:sabah');
+    });
+
+    it('seçili paket sesi adıyla görünür; titreşim anahtarı iPhone\'da YOK', async () => {
+        const { ekran, onDegistir } = kur(IOS, adim({ bildirim: true }, { bildirimSesi: 'paket:damla' }));
+        expect(ekran.getByLabelText(/^Bildirim sesi: Damla/)).toBeTruthy();
+        expect(ekran.queryByTestId('adim-titresim-anahtari')).toBeNull();
+        await act(async () => {
+            fireEvent.press(ekran.getByLabelText(/^Bildirim sesi:/));
+        });
+        expect(ekran.getByLabelText('Damla').props.accessibilityState).toMatchObject({ checked: true });
+        fireEvent.press(ekran.getByLabelText('Uygulama sesi'));
+        expect(onDegistir).toHaveBeenLastCalledWith(
+            expect.objectContaining({ bildirimSesi: VARSAYILAN_SES, sesAdi: undefined })
+        );
+    });
+
+    it('Android yedeğinden gelen content:// sesi iPhone\'da VARSAYILAN görünür (çalınan budur)', () => {
+        const { ekran } = kur(IOS, adim({ bildirim: true }, { bildirimSesi: 'content://media/1', sesAdi: 'Android sesi' }));
+        expect(ekran.getByLabelText(/^Bildirim sesi: Uygulama sesi/)).toBeTruthy();
+        expect(ekran.queryByText('Android sesi')).toBeNull();
+    });
+
+    it('Android\'de liste YOK: satır sistem seçicisini açar (davranış birebir)', async () => {
+        const { ekran } = kur(MUHAFIZ, adim({ bildirim: true }));
+        await act(async () => {
+            fireEvent.press(ekran.getByLabelText(/^Bildirim sesi: Uygulama sesi/));
+        });
+        expect(sesSec).toHaveBeenCalled();
+        expect(ekran.queryByTestId('adim-ses-listesi')).toBeNull();
+        expect(anons.iceAktarilanSesler).not.toHaveBeenCalled();
     });
 });
 

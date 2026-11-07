@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Nnyegyeeɛ a woapaw',
     dokunarak: 'Mia so na sesa',
     seciliDinle: 'Tie amaneɛbɔ nnyegyeeɛ a woapaw no',
+    paket: {
+      zil: 'Dɔn a ɛyɛ dɛ',
+      ikiton: 'Nnyegyeeɛ mmienu',
+      damla: 'Nsuo ntetewa',
+      sabah: 'Anɔpa',
+    },
+    silErisim: 'Popa nnyegyeeɛ {ad}',
+    ornekDinleErisim: 'Tie: {ad}',
+    uzunlukNotu: 'Amaneɛbɔ nnyegyeeɛ bɔ sɛkɛnd 30 pɛ; fael a ɛware no, wɔde ne sɛkɛnd 30 a edi kan no na ɛdi dwuma.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

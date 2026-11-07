@@ -322,6 +322,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Ήχος της επιλογής σας',
     dokunarak: 'Πατήστε για αλλαγή',
     seciliDinle: 'Ακρόαση του επιλεγμένου ήχου ειδοποίησης',
+    paket: {
+      zil: 'Απαλό κουδούνι',
+      ikiton: 'Δύο τόνοι',
+      damla: 'Σταγόνες',
+      sabah: 'Πρωί',
+    },
+    silErisim: 'Διαγραφή του ήχου {ad}',
+    ornekDinleErisim: 'Ακρόαση: {ad}',
+    uzunlukNotu: 'Ο ήχος ειδοποίησης παίζει έως 30 δευτερόλεπτα· από ένα μεγαλύτερο αρχείο χρησιμοποιούνται τα πρώτα 30 δευτερόλεπτα.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

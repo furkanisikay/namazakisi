@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'សំឡេងដែលអ្នកបានជ្រើស',
     dokunarak: 'ប៉ះដើម្បីប្ដូរ',
     seciliDinle: 'ស្ដាប់សំឡេងជូនដំណឹងដែលបានជ្រើស',
+    paket: {
+      zil: 'កណ្ដឹងទន់ភ្លន់',
+      ikiton: 'សំឡេងពីរ',
+      damla: 'តំណក់ទឹក',
+      sabah: 'ពេលព្រឹក',
+    },
+    silErisim: 'លុបសំឡេង {ad}',
+    ornekDinleErisim: 'ស្ដាប់៖ {ad}',
+    uzunlukNotu: 'សំឡេងជូនដំណឹងបន្លឺយូរបំផុត 30 វិនាទី; សម្រាប់ឯកសារវែងជាងនេះ គេប្រើ 30 វិនាទីដំបូង។',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}៖ {duzey}',

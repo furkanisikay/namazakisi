@@ -317,6 +317,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'เสียงที่คุณเลือก',
     dokunarak: 'แตะเพื่อเปลี่ยน',
     seciliDinle: 'ฟังเสียงแจ้งเตือนที่เลือก',
+    paket: {
+      zil: 'ระฆังนุ่มนวล',
+      ikiton: 'สองโทน',
+      damla: 'หยดน้ำ',
+      sabah: 'ยามเช้า',
+    },
+    silErisim: 'ลบเสียง {ad}',
+    ornekDinleErisim: 'ฟัง: {ad}',
+    uzunlukNotu: 'เสียงแจ้งเตือนดังได้นานสุด 30 วินาที สำหรับไฟล์ที่ยาวกว่านั้นจะใช้ 30 วินาทีแรก',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

@@ -42,6 +42,13 @@ const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
     (
       require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src')
     ).sesDosyasiDestekleniyor(),
+  // iPhone'da kendi ses dosyanız (AVFoundation dönüşümü) yalnız onu taşıyan native ikilide.
+  // TEMBEL: aynı gerekçe (köprü yalnız iOS'ta native modül yükler).
+  iosSesDosyasi: () =>
+    Platform.OS === 'ios' &&
+    (
+      require('../../../modules/expo-muhafiz-anons/src') as typeof import('../../../modules/expo-muhafiz-anons/src')
+    ).sesIceAktarmaDestekleniyor(),
 };
 
 export function yeniOzellikGorunurMu(ozellik: YeniOzellik): boolean {

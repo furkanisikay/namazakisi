@@ -30,7 +30,7 @@
  */
 import type { DilKodu } from '../dil/diller';
 
-export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi' | 'sesDosyasi';
+export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi' | 'sesDosyasi' | 'iosSesDosyasi';
 
 /** Duyurunun görüneceği platformlar. */
 export type YeniOzellikPlatformu = 'android' | 'ios';
@@ -85,6 +85,48 @@ export interface YeniOzellik {
 export type YeniOzellikCevirisi = Pick<YeniOzellik, 'baslik' | 'aciklama' | 'detayAciklama' | 'ctaEtiketi' | 'detaylar'>;
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // iPhone'da bildirim sesi seçimi. Android'in öğeleri ('muhafiz-bildirim-sesi-secimi',
+    // 'vakit-girdi-sesi-ve-kendi-dosyaniz') sistem ses seçicisini, titreşimi ve sonuna kadar
+    // çalan sesi anlatır — iPhone'da üçü de yok; yol farklı olduğundan iki öğe (günün ayeti
+    // öğeleriyle aynı gerekçe). Yetenek: kendi dosyanızı ekleyen native ikili.
+    {
+        id: 'ios-bildirim-sesi-secimi',
+        platformlar: ['ios'],
+        surum: '0.72.0',
+        tarih: '2026-11-07',
+        baslik: 'Hatırlatma sesini siz seçin',
+        aciklama:
+            'Namaz Muhafızı adımları ve vakit bildirimleri için uygulamanın seslerinden birini seçebilir ya da kendi ses dosyanızı ekleyebilirsiniz.',
+        detayAciklama:
+            'Bir hatırlatma adımının ayarlarında ya da Hatırlatmalar > Vakit girince sayfasında ses satırına dokunduğunuzda liste açılır: uygulamanın sesi, dört yeni ses ve eklediğiniz dosyalar. Her sesi seçmeden önce dinleyebilirsiniz. "Kendi dosyanızdan seçin" ile telefonunuzdaki bir ses dosyasını, örneğin bir ezan kaydını ekleyebilirsiniz; bildirim sesi en çok 30 saniye çaldığı için daha uzun bir dosyanın ilk 30 saniyesi kullanılır. Eklediğiniz sesleri listeden silebilirsiniz.',
+        ikon: 'music',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Sesinizi seçin',
+        kartGoster: true,
+        yetenek: 'iosSesDosyasi',
+        detaylar: [
+            'Her hatırlatma adımı ve her vakit için ayrı ses',
+            'Dört yeni ses: Sakin zil, İki ton, Damla ve Sabah',
+            'Kendi ses dosyanız: MP3, M4A ya da WAV',
+            'Seçmeden önce dinleyin; dilediğinizde varsayılana dönün',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Choose your reminder sound',
+                aciklama:
+                    'Pick one of the app’s sounds for Prayer Guardian steps and prayer time notifications, or add your own sound file.',
+                detayAciklama:
+                    'Tap the sound row in a reminder step’s settings or on Reminders > At prayer time to open the list: the app sound, four new sounds and the files you added. You can listen to each sound before choosing it. With "Choose your own file" you can add a sound file from your phone, such as an adhan recording; a notification sound plays for up to 30 seconds, so the first 30 seconds of a longer file are used. You can delete the sounds you added from the list.',
+                ctaEtiketi: 'Choose your sound',
+                detaylar: [
+                    'A separate sound for each reminder step and each prayer',
+                    'Four new sounds: Soft chime, Two tones, Droplets and Morning',
+                    'Your own sound file: MP3, M4A or WAV',
+                    'Listen before choosing; go back to the default whenever you like',
+                ],
+            },
+        },
+    },
     // Günün ayeti (#380 widget, #381 duvar kâğıdı). Duvar kâğıdı platforma göre farklı
     // olduğundan iki öğe: Android'de uygulama değiştirir, iPhone'da Kısayollar rehberi.
     {
@@ -11184,7 +11226,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Gün sonu hatırlatması kapalıysa çıkmaz',
         ],
     },
-    // Hatırlatma sesi seçimi (0.24) + titreşim (0.25) — yalnız Android (iOS'ta ses ve titreşim
+    // Hatırlatma sesi seçimi (0.24) + titreşim (0.25) — yalnız Android (sistem ses seçicisi ve titreşim;
     // seçimi yok; platform yeteneği kuralı).
     {
         id: 'muhafiz-bildirim-sesi-secimi',

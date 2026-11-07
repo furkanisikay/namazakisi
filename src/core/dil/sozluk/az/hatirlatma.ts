@@ -322,6 +322,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Özünüzün seçdiyi səs',
     dokunarak: 'Toxunaraq dəyişin',
     seciliDinle: 'Seçilmiş bildiriş səsinə qulaq asın',
+    paket: {
+      zil: 'Yumşaq zəng',
+      ikiton: 'İki ton',
+      damla: 'Damcılar',
+      sabah: 'Səhər',
+    },
+    silErisim: '{ad} səsini silin',
+    ornekDinleErisim: 'Qulaq asın: {ad}',
+    uzunlukNotu: 'Bildiriş səsi ən çox 30 saniyə çalır; daha uzun faylın ilk 30 saniyəsi istifadə olunur.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

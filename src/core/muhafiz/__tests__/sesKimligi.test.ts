@@ -5,8 +5,12 @@ import {
   muhafizKanalIdOlustur,
   muhafizKanaliMi,
   silinebilirMuhafizKanaliMi,
+  secilmisSesMi,
+  platformdaCalinirMi,
+  sesGorunenAdi,
 } from '../sesKimligi';
 import { VARSAYILAN_SES } from '../matrisTipleri';
+import { alarmKanalIdOlustur } from '../alarmYuku';
 
 const SES_A = 'content://media/internal/audio/media/42';
 const SES_B = 'content://media/external/audio/media/1337';
@@ -192,5 +196,48 @@ describe('muhafizKanaliMi / silinebilirMuhafizKanaliMi', () => {
   it('hash li kanallar silinebilir', () => {
     expect(silinebilirMuhafizKanaliMi(muhafizKanalIdOlustur(SES_A, false))).toBe(true);
     expect(silinebilirMuhafizKanaliMi(muhafizKanalIdOlustur(SES_A, true))).toBe(true);
+  });
+});
+
+describe('iPhone ses kimlikleri (paket:/dosya:) — ANDROID KANAL KIMLIGI DEGISMEZ', () => {
+  const PAKET = 'paket:zil';
+  const DOSYA = 'dosya:kullanici_ses_0123abcd.caf';
+
+  it('NOBETCI: iPhone kimligi Android kanal kimligine GIRMEZ (yedek Android\'e tasininca taban kanal)', () => {
+    for (const k of [PAKET, DOSYA]) {
+      expect(ozelSesMi(k)).toBe(false);
+      expect(sesKimliginiNormalize(k)).toBe(VARSAYILAN_SES);
+      expect(muhafizKanalIdOlustur(k, false, false)).toBe('muhafiz');
+      expect(muhafizKanalIdOlustur(k, true, false)).toBe('muhafiz_acil');
+      expect(muhafizKanalIdOlustur(k, false, true)).toBe(muhafizKanalIdOlustur(VARSAYILAN_SES, false, true));
+      expect(alarmKanalIdOlustur(k)).toBe('namaz_alarm');
+    }
+  });
+
+  it('secilmisSesMi iki platformun secimini de tanir; varsayilan ve bozuk kimlik secim degildir', () => {
+    expect(secilmisSesMi(SES_A)).toBe(true);
+    expect(secilmisSesMi(PAKET)).toBe(true);
+    expect(secilmisSesMi(DOSYA)).toBe(true);
+    expect(secilmisSesMi(VARSAYILAN_SES)).toBe(false);
+    expect(secilmisSesMi('paket:yok')).toBe(false);
+    expect(secilmisSesMi('dosya:../x.caf')).toBe(false);
+    expect(secilmisSesMi(undefined)).toBe(false);
+  });
+
+  it('platformdaCalinirMi: baska platformun kimligi burada varsayilan calar', () => {
+    expect(platformdaCalinirMi(SES_A, 'android')).toBe(true);
+    expect(platformdaCalinirMi(PAKET, 'android')).toBe(false);
+    expect(platformdaCalinirMi(DOSYA, 'android')).toBe(false);
+    expect(platformdaCalinirMi(PAKET, 'ios')).toBe(true);
+    expect(platformdaCalinirMi(DOSYA, 'ios')).toBe(true);
+    expect(platformdaCalinirMi(SES_A, 'ios')).toBe(false);
+  });
+
+  it('paket sesinin adi SOZLUKTEN (kayitli ad yok sayilir); dosyanin adi kullanicinin dosya adi', () => {
+    expect(sesGorunenAdi(PAKET, 'eski ad')).toBe('Sakin zil');
+    expect(sesGorunenAdi('paket:sabah')).toBe('Sabah');
+    expect(sesGorunenAdi(DOSYA, 'Ezan')).toBe('Ezan');
+    expect(sesGorunenAdi(DOSYA)).toBe('Seçtiğiniz ses');
+    expect(sesGorunenAdi(VARSAYILAN_SES)).toBe('Uygulama sesi');
   });
 });

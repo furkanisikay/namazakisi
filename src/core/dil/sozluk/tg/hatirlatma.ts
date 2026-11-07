@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Садои интихобкардаи худатон',
     dokunarak: 'Барои иваз кардан пахш кунед',
     seciliDinle: 'Садои интихобшудаи огоҳиномаро гӯш кунед',
+    paket: {
+      zil: 'Занги нарм',
+      ikiton: 'Ду оҳанг',
+      damla: 'Қатраҳо',
+      sabah: 'Субҳ',
+    },
+    silErisim: 'Садои {ad}-ро нест кунед',
+    ornekDinleErisim: 'Гӯш кунед: {ad}',
+    uzunlukNotu: 'Садои огоҳинома на зиёда аз 30 сония садо медиҳад; аз файли дарозтар 30 сонияи аввал истифода мешавад.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

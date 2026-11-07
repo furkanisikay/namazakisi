@@ -94,7 +94,7 @@ Geçmiyorsa iş **bitmemiştir** — düzelt, çözemiyorsan açıkça raporla. 
 ## Reçete — Yeni özellik duyurusu ("Neler Yeni")
 Tek yer `src/core/constants/YeniOzellikler.ts`; rozet, tanıtım kartı ve "Neler Yeni" sayfası kendiliğinden beslenir. README'nin "Son eklenenler" listesi de oradan üretilir.
 - **Bir özellik = bir öğe.** Özellik henüz mağazaya (production) çıkmadıysa ya da sonradan değiştiyse **YENİ öğe ekleme**: mevcut öğenin metnini bugünkü hâle getir, `surum`/`tarih`'i son değişikliğin değeriyle güncelle. Görülme `<id>@<surum>` anahtarıyla tutulur (`core/utils/yeniOzellikGorulme.ts`) → yükseltilen `surum` duyuruyu yeniden "yeni" gösterir. Öğe birleştirirken en eski `id`'yi koru, diğerlerini `oncekiIdler`'e yaz; `id` asla değişmez.
-- **`platformlar` ZORUNLU** (`['android']` / `['ios']` / ikisi). Bir madde yalnız bazı cihazlarda geçerliyse maddeyi çıkar ya da öğeyi `yetenek` ile süz (`presentation/hooks/yeniOzellikYetenegi.ts`; ölçülemiyorsa gösterme). `PlatformYetenekleri`'ne bağlı özellik (iOS'ta ses seçici/titreşim yok) iki platforma işaretlenmez.
+- **`platformlar` ZORUNLU** (`['android']` / `['ios']` / ikisi). Bir madde yalnız bazı cihazlarda geçerliyse maddeyi çıkar ya da öğeyi `yetenek` ile süz (`presentation/hooks/yeniOzellikYetenegi.ts`; ölçülemiyorsa gösterme). `PlatformYetenekleri`'ne bağlı özellik (iOS'ta titreşim seçimi ve sistem ses seçicisi yok) iki platforma işaretlenmez.
 - **Metin:** kibar "siz", özelliğin bugünkü hâli (tarihçe yok), teknik terim yok (kanal/TTS/API → "sesli okuma", "bildirim"), **işletim sistemi sürümü ve izin şartı yok** (nöbetçi: `yeniOzellikYetenegi.test.ts`).
 
 ## 🚧 Sınırlar
@@ -120,7 +120,7 @@ Setup: `npm ci` (Node 20; `postinstall: patch-package` atlanmamalı) · Doğrula
 | Belge | Ne zaman oku |
 |---|---|
 | [muhafiz-motoru](docs/ajan/muhafiz-motoru.md) | Namaz Muhafızı motoru, matris/adım/ton/yön, preset'ler, göçler, muhafız ayar ekranı, vakit sayacı bastırma |
-| [muhafiz-ses-ve-kanal](docs/ajan/muhafiz-ses-ve-kanal.md) | Bildirim kanalı/ses/titreşim, ses seçici, sesli okuma (TTS) planlama, önizleme, kanal teşhisi, emülatör reçeteleri |
+| [muhafiz-ses-ve-kanal](docs/ajan/muhafiz-ses-ve-kanal.md) | Bildirim kanalı/ses/titreşim, ses seçici (Android sistem seçicisi, iPhone ses listesi + kendi dosyası), sesli okuma (TTS) planlama, önizleme, kanal teşhisi, emülatör reçeteleri |
 | [hatirlatma-yuzeyleri](docs/ajan/hatirlatma-yuzeyleri.md) | Ortak hatırlatma modülü (`components/hatirlatma`), cuma, camiye gitme, yatış/muhasebe, takvim çakışması, nafile, özel gün susturma, gün sonu, bildirim sınırı rehberi |
 | [gercek-alarm](docs/ajan/gercek-alarm.md) | Gerçek alarm kanalı (Android tam ekran alarm, iOS AlarmKit), yarının imsağı |
 | [kaza-seri-puan](docs/ajan/kaza-seri-puan.md) | Puanlama, seri/toparlanma, Kaza Defteri 2.0, depolama göçü, Seri sekmesi/SVG, seri sayacı |

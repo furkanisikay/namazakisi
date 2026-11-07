@@ -7,8 +7,11 @@
  *
  * SES (Android): açık her vaktin altında kompakt ses satırı — telefonun sesleri (sistem
  * seçicisi) ya da kendi dosyanız (ör. ezan kaydı; Android 10+). Ses kanalın özelliğidir;
- * seçilmeyen vakit bugünkü `vakit_bildirim` kanalında kalır. iOS'ta ses seçici yok
- * (`sesSecici: false`) → satır çizilmez.
+ * seçilmeyen vakit bugünkü `vakit_bildirim` kanalında kalır.
+ *
+ * SES (iPhone, `sistemSesSecici: false`): aynı kompakt satıra dokununca uygulamanın ses
+ * listesi açılır (`IosSesListesi`: telefonun sesi, uygulamanın sesleri, eklenen dosyalar).
+ * Ses bildirimin `sound` alanıdır; seçilmeyen vakit bugünkü gibi telefonun sesini çalar.
  */
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -25,7 +28,11 @@ import {
 import { SesSecimSatiri } from '../hatirlatma/SesSecimSatiri';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useSesDosyasiSecimi } from '../../hooks/useSesDosyasiSecimi';
+import { useIosSesSecimi } from '../../hooks/useIosSesSecimi';
+import { IosSesListesi } from '../hatirlatma/IosSesListesi';
 import { sesAdiAl, sesSec } from '../../../../modules/expo-countdown-notification/src';
+import { klipVarMi } from '../../../../modules/expo-muhafiz-anons/src';
+import { kullaniciSesDosyasi } from '../../../core/muhafiz/ios/paketSesleri';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import {
     vakitVarsayilanSesAdi,
@@ -60,8 +67,11 @@ export const VakitGirinceBolumu: React.FC = () => {
     const { butonTiklandiFeedback } = useFeedback();
     const ayarlar = useAppSelector((s) => s.vakitBildirim.ayarlar);
     const sesler = useAppSelector((s) => s.vakitBildirim.sesler) ?? {};
-    const sesSecilebilir = usePlatformYetenekleri().sesSecici;
+    const yetenekler = usePlatformYetenekleri();
+    const sesSecilebilir = yetenekler.sesSecici;
+    const sistemSecici = yetenekler.sistemSesSecici;
     const dosyaSecimi = useSesDosyasiSecimi();
+    const iosSesSecimi = useIosSesSecimi(sesSecilebilir && !sistemSecici);
     const [seciciAcikVakit, setSeciciAcikVakit] = React.useState<VakitAnahtari | null>(null);
 
     useEffect(() => {
@@ -84,14 +94,21 @@ export const VakitGirinceBolumu: React.FC = () => {
     useEffect(() => {
         if (!sesSecilebilir || typeof sesAdiAl !== 'function') return;
         let iptal = false;
-        const uriler = [...new Set(sesAnahtari.split('|').filter(ozelSesMi))];
+        // Android: sistem/MediaStore sesi `sesAdiAl` ile; iPhone: eklenen dosya diskte mi.
+        const kimlikler = [
+            ...new Set(sesAnahtari.split('|').filter(sistemSecici ? ozelSesMi : (k) => kullaniciSesDosyasi(k) !== null)),
+        ];
         void (async () => {
             const yok = new Set<string>();
-            for (const uri of uriler) {
+            for (const kimlik of kimlikler) {
                 try {
-                    if (!(await sesAdiAl(uri))) yok.add(uri);
+                    if (sistemSecici) {
+                        if (!(await sesAdiAl(kimlik))) yok.add(kimlik);
+                    } else if (!(await klipVarMi(kullaniciSesDosyasi(kimlik)!))) {
+                        yok.add(kimlik);
+                    }
                 } catch {
-                    yok.add(uri);
+                    yok.add(kimlik);
                 }
             }
             if (!iptal) setBulunamayan(yok);
@@ -99,7 +116,7 @@ export const VakitGirinceBolumu: React.FC = () => {
         return () => {
             iptal = true;
         };
-    }, [sesAnahtari, sesSecilebilir]);
+    }, [sesAnahtari, sesSecilebilir, sistemSecici, iosSesSecimi.dosyalar]);
 
     const sesiYaz = (vakit: VakitAnahtari, secim: VakitSesSecimi | null) => {
         dispatch(vakitBildirimSesiniGuncelle({ vakit, secim }));
@@ -122,7 +139,9 @@ export const VakitGirinceBolumu: React.FC = () => {
         if (secilen) sesiYaz(vakit, { bildirimSesi: secilen.uri, sesAdi: secilen.ad || undefined });
     };
 
-    const ozelSesVar = sesSecilebilir && VAKITLER.some((v) => ayarlar[v.anahtar] === true && sesler[v.anahtar]);
+    // "Sonuna kadar çalar" yalnız Android'de doğru (iPhone bildirim sesi en çok 30 sn; liste söyler).
+    const ozelSesVar =
+        sesSecilebilir && sistemSecici && VAKITLER.some((v) => ayarlar[v.anahtar] === true && sesler[v.anahtar]);
 
     const degistir = async (vakit: VakitAnahtari, aktif: boolean) => {
         await butonTiklandiFeedback();
@@ -148,6 +167,25 @@ export const VakitGirinceBolumu: React.FC = () => {
                             <View style={{ marginLeft: 54, marginTop: -6, marginBottom: 6 }}>
                                 <SesSecimSatiri
                                     kompakt
+                                    platform={yetenekler.platform}
+                                    secimListesi={
+                                        sistemSecici ? undefined : (
+                                            <IosSesListesi
+                                                testID={`vakit-ses-listesi-${v.anahtar}`}
+                                                secili={sesler[v.anahtar]?.bildirimSesi}
+                                                varsayilanAdi={vakitVarsayilanSesAdi()}
+                                                // Telefonun sesi uygulama içinde dinletilemez.
+                                                varsayilanDinlenir={false}
+                                                onSec={(kimlik, ad) =>
+                                                    sesiYaz(v.anahtar, kimlik ? { bildirimSesi: kimlik, sesAdi: ad || undefined } : null)
+                                                }
+                                                onDinle={(kimlik) => {
+                                                    if (kimlik) void OnizlemeSesServisi.bildirimSesiniCal(kimlik);
+                                                }}
+                                                secim={iosSesSecimi}
+                                            />
+                                        )
+                                    }
                                     testID={`vakit-sesi-${v.anahtar}`}
                                     sesEtiketi={bicim(mv.sesEtiketi, { ad: namazAdiGoster(v.ad) })}
                                     bildirimSesi={sesler[v.anahtar]?.bildirimSesi ?? 'varsayilan'}

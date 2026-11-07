@@ -6,15 +6,20 @@
  * (`vakit_bildirim_<hash8>`, `sesKimligi.sesHashi`). Ses seçilmemiş vakit bugünkü
  * TABAN `vakit_bildirim` kanalında kalır → mevcut kullanıcının bildirimi birebir aynı.
  *
- * Kayıt `{ [vakit]: { bildirimSesi, sesAdi? } }`; yalnız `content://` sesler saklanır
- * (varsayılan = kayıt yok). Kayıt CİHAZA ÖZGÜDÜR ve yedeklenmez (bkz. sabit yorumu).
+ * iPhone'da kanal yoktur: ses bildirimin `sound` alanıdır (`vakitIosSesi`) —
+ * uygulamanın sesi (`paket:<ad>`) ya da eklenen dosya (`dosya:<ad>`).
+ *
+ * Kayıt `{ [vakit]: { bildirimSesi, sesAdi? } }`; yalnız SEÇİLMİŞ sesler saklanır
+ * (Android `content://`, iPhone `paket:`/`dosya:`; varsayılan = kayıt yok). Kayıt
+ * CİHAZA ÖZGÜDÜR ve yedeklenmez (bkz. sabit yorumu).
  */
 import type { VakitBildirimVakti } from './vakitBildirimPlani';
-import { ozelSesMi, sesHashi } from '../muhafiz/sesKimligi';
+import { ozelSesMi, secilmisSesMi, sesGorunenAdi, sesHashi } from '../muhafiz/sesKimligi';
+import { iosSesDosyasi } from '../muhafiz/ios/paketSesleri';
 import { metin } from '../dil/aktifDil';
 
 export interface VakitSesSecimi {
-    /** `content://…` (sistem sesi ya da kullanıcının içe aktardığı dosya) */
+    /** Android `content://…` (sistem sesi ya da içe aktarılan dosya); iPhone `paket:`/`dosya:` */
     bildirimSesi: string;
     /** Görünen ad (yoksa kibar yedek metin) */
     sesAdi?: string;
@@ -38,7 +43,7 @@ export function vakitSesleriniNormalize(ham: unknown): VakitBildirimSesleri {
         const g = (ham as Record<string, unknown>)[vakit];
         if (!g || typeof g !== 'object') continue;
         const ses = (g as { bildirimSesi?: unknown }).bildirimSesi;
-        if (typeof ses !== 'string' || !ozelSesMi(ses.trim())) continue;
+        if (typeof ses !== 'string' || !secilmisSesMi(ses.trim())) continue;
         const ad = (g as { sesAdi?: unknown }).sesAdi;
         sonuc[vakit] = {
             bildirimSesi: ses.trim(),
@@ -48,7 +53,7 @@ export function vakitSesleriniNormalize(ham: unknown): VakitBildirimSesleri {
     return sonuc;
 }
 
-/** Ses → kanal id. Varsayılan (ya da geçersiz) ses TABAN kanaldır. */
+/** Ses → kanal id (ANDROID). Varsayılan, geçersiz ya da iPhone sesi TABAN kanaldır. */
 export function vakitBildirimKanalId(ses: string | undefined | null): string {
     if (typeof ses !== 'string' || !ozelSesMi(ses)) return VAKIT_BILDIRIM_TABAN_KANAL;
     return `${VAKIT_BILDIRIM_KANAL_ONEKI}${sesHashi(ses)}`;
@@ -56,8 +61,16 @@ export function vakitBildirimKanalId(ses: string | undefined | null): string {
 
 /** Görünen ad: ham URI asla gösterilmez. */
 export function vakitSesGorunenAdi(secim: VakitSesSecimi | undefined): string {
-    if (!secim || !ozelSesMi(secim.bildirimSesi)) return vakitVarsayilanSesAdi();
-    return secim.sesAdi?.trim() || metin().bildirim.kanal.seciliSes;
+    if (!secim || !secilmisSesMi(secim.bildirimSesi)) return vakitVarsayilanSesAdi();
+    return sesGorunenAdi(secim.bildirimSesi, secim.sesAdi);
+}
+
+/**
+ * iPhone: vaktin bildirim sesinin DOSYA ADI; seçilmemişse (ya da iPhone'da çalınamazsa)
+ * `null` → bildirim bugünkü gibi `sound: true` (telefonun sesi) kalır.
+ */
+export function vakitIosSesi(secim: VakitSesSecimi | undefined): string | null {
+    return secim ? iosSesDosyasi(secim.bildirimSesi) : null;
 }
 
 /** Android bildirim ayarlarında görünen kanal adı (taban: "Vakit Bildirimleri"). */
@@ -72,12 +85,12 @@ export function vakitSesiniAyarla(
     secim: VakitSesSecimi | null
 ): VakitBildirimSesleri {
     const yeni: VakitBildirimSesleri = { ...sesler };
-    if (!secim || !ozelSesMi(secim.bildirimSesi)) delete yeni[vakit];
+    if (!secim || !secilmisSesMi(secim.bildirimSesi)) delete yeni[vakit];
     else yeni[vakit] = secim.sesAdi ? { bildirimSesi: secim.bildirimSesi, sesAdi: secim.sesAdi } : { bildirimSesi: secim.bildirimSesi };
     return yeni;
 }
 
-/** Bu kayıttaki benzersiz özel sesler (kanal hazırlığı ve doğrulama için). */
+/** Bu kayıttaki benzersiz Android özel sesleri (kanal hazırlığı ve doğrulama için). */
 export function benzersizVakitSesleri(sesler: VakitBildirimSesleri): VakitSesSecimi[] {
     const gorulen = new Map<string, VakitSesSecimi>();
     for (const vakit of VAKITLER) {

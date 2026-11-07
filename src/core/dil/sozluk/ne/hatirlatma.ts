@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'तपाईंले छानेको ध्वनि',
     dokunarak: 'बदल्न ट्याप गर्नुहोस्',
     seciliDinle: 'छानिएको सूचना ध्वनि सुन्नुहोस्',
+    paket: {
+      zil: 'कोमल घण्टी',
+      ikiton: 'दुई स्वर',
+      damla: 'थोपाहरू',
+      sabah: 'बिहान',
+    },
+    silErisim: '{ad} ध्वनि मेटाउनुहोस्',
+    ornekDinleErisim: 'सुन्नुहोस्: {ad}',
+    uzunlukNotu: 'सूचना ध्वनि बढीमा 30 सेकेन्ड बज्छ; लामो फाइलको पहिलो 30 सेकेन्ड प्रयोग हुन्छ।',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

@@ -57,8 +57,9 @@ describe('iOS kapilari', () => {
     const iosTanim = (): PencereTanimi =>
         vakitPencereTanimi('yatsi', 'cikisaDogru', 120, iosYetenekleri(false));
 
-    test('ses secimi KAPALI — iOS`ta sistem ses secicisi yok', () => {
-        expect(iosTanim().sesSecimiVar).toBe(false);
+    test('ses secimi ACIK — sistem secici yok, uygulamanin listesi satirin altinda acilir', () => {
+        expect(iosTanim().sesSecimiVar).toBe(true);
+        expect(iosTanim().yetenekler.sistemSesSecici).toBe(false);
     });
 
     test('anons metni DUZENLENEBILIR — metin planlamada ses dosyasina cevrilir (Faz 2)', () => {
@@ -83,8 +84,9 @@ describe('iOS kapilari', () => {
         const tanim = vakitPencereTanimi('yatsi', 'cikisaDogru', 120, iosYetenekleri(true));
         expect(tanim.yetenekler.gercekAlarm).toBe(true);
         expect(tanim.yetenekler.sessizligiDelebilir).toBe(false);
-        // Diger kapilar AlarmKit'ten bagimsiz — acilmamali.
-        expect(tanim.sesSecimiVar).toBe(false);
+        // Diger kapilar AlarmKit'ten bagimsiz.
+        expect(tanim.sesSecimiVar).toBe(true);
+        expect(tanim.titresimSecilebilir).toBe(false);
         expect(tanim.anonsMetniDuzenlenebilir).toBe(true);
     });
 });

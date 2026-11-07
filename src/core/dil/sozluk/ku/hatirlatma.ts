@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Dengekî ku we hilbijart',
     dokunarak: 'Ji bo guhertinê bitikînin',
     seciliDinle: 'Guh bidin dengê agahdariyê yê hilbijartî',
+    paket: {
+      zil: 'Zengila nerm',
+      ikiton: 'Du awaz',
+      damla: 'Dilop',
+      sabah: 'Sibeh',
+    },
+    silErisim: 'Dengê {ad} jê bibin',
+    ornekDinleErisim: 'Guh bidin: {ad}',
+    uzunlukNotu: 'Dengê agahdariyê herî zêde 30 çirke lê dide; ji pelekî dirêjtir 30 çirkeyên pêşîn tên bikaranîn.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

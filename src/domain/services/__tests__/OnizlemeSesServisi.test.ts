@@ -27,15 +27,17 @@ const tazeKur = () => {
     createAudioPlayer: jest.Mock;
     setAudioModeAsync: jest.Mock;
   };
+  let anons!: Record<string, jest.Mock>;
   jest.isolateModules(() => {
     audio = require('expo-audio');
+    anons = require('../../../../modules/expo-muhafiz-anons/src');
     servis = require('../OnizlemeSesServisi').OnizlemeSesServisi;
   });
 
   /** En son olusturulan sahte calar. */
   const sonCalar = () => audio.createAudioPlayer.mock.results.at(-1)!.value;
 
-  return { servis, audio, sonCalar };
+  return { servis, audio, sonCalar, anons };
 };
 
 describe('OnizlemeSesServisi', () => {
@@ -113,6 +115,38 @@ describe('OnizlemeSesServisi', () => {
     const { servis, sonCalar } = tazeKur();
 
     await expect(servis.bildirimSesiniCal('boyle-bir-ses-yok')).resolves.toBeUndefined();
+    expect(sonCalar().play).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('OnizlemeSesServisi — iPhone sesleri', () => {
+  const { Platform } = require('react-native');
+
+  beforeEach(() => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+  });
+
+  it('eklenen dosya (dosya:) Library/Sounds adresinden calinir', async () => {
+    const { servis, audio, sonCalar, anons } = tazeKur();
+    anons.sesDosyasiUri.mockResolvedValueOnce('file:///Library/Sounds/kullanici_ses_0123abcd.caf');
+    await servis.bildirimSesiniCal('dosya:kullanici_ses_0123abcd.caf');
+    expect(anons.sesDosyasiUri).toHaveBeenCalledWith('kullanici_ses_0123abcd.caf');
+    expect(audio.createAudioPlayer).toHaveBeenCalledWith({ uri: 'file:///Library/Sounds/kullanici_ses_0123abcd.caf' });
+    expect(sonCalar().play).toHaveBeenCalledTimes(1);
+  });
+
+  it('dosya yoksa varsayilan sesi calar (sessiz kalmaz)', async () => {
+    const { servis, audio, anons } = tazeKur();
+    anons.sesDosyasiUri.mockResolvedValueOnce(null);
+    await servis.bildirimSesiniCal('dosya:kullanici_ses_0123abcd.caf');
+    expect(audio.createAudioPlayer).toHaveBeenCalledWith(expect.any(Number));
+  });
+
+  it('uygulamanin sesi (paket:) metro varligindan calinir; native kopruye gidilmez', async () => {
+    const { servis, audio, sonCalar, anons } = tazeKur();
+    await servis.bildirimSesiniCal('paket:zil');
+    expect(audio.createAudioPlayer).toHaveBeenCalledWith(expect.any(Number));
+    expect(anons.sesDosyasiUri).not.toHaveBeenCalled();
     expect(sonCalar().play).toHaveBeenCalledTimes(1);
   });
 });

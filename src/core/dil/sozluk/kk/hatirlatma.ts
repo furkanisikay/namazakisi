@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Өзіңіз таңдаған дыбыс',
     dokunarak: 'Түртіп өзгертіңіз',
     seciliDinle: 'Таңдалған хабарландыру дыбысын тыңдау',
+    paket: {
+      zil: 'Жұмсақ қоңырау',
+      ikiton: 'Екі үн',
+      damla: 'Тамшылар',
+      sabah: 'Таң',
+    },
+    silErisim: '{ad} дыбысын жою',
+    ornekDinleErisim: 'Тыңдау: {ad}',
+    uzunlukNotu: 'Хабарландыру дыбысы ең көбі 30 секунд ойнайды; ұзынырақ файлдың алғашқы 30 секунды қолданылады.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',
