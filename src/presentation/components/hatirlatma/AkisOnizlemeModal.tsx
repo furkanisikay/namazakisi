@@ -55,8 +55,10 @@ import {
     girisSesliGecikmeNotu,
     TON_ETIKETLERI,
     alarmOnizlemeEtiketi,
+    varsayilanSesGorunumu,
     type PencereTanimi,
 } from './pencereTanimi';
+import { onizlemedeCalinirMi } from '../../../core/muhafiz/sesKimligi';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -263,7 +265,12 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                           ? anonsMetniniCoz(adim.anonsMetni, tanim.vakit, adim.olcuDk, tanim.yon)
                                           : null;
                                     // Duyulacak bir sey var mi? (metinsiz 'sesli' adim sessiz kalir)
-                                    const dinlenebilir = bildirimSesiGerekliMi(adim.kanallar) || !!anonsMetni;
+                                    // iPhone ek yüzeyinde varsayılan ses telefonun sesidir → dinletilmez.
+                                    const varsayilanSesDinlenir = varsayilanSesGorunumu(tanim).dinlenir;
+                                    const dinlenebilir =
+                                        (bildirimSesiGerekliMi(adim.kanallar) &&
+                                            onizlemedeCalinirMi(adim.bildirimSesi, varsayilanSesDinlenir)) ||
+                                        !!anonsMetni;
                                     // GERCEK ALARM (issue #74): planin isaretledigi tetik (ilk ya da
                                     // "her uyarida"). Motorla ayni alan → onizleme gercegi soyler.
                                     const alarmSaati = tanim.pencere
@@ -369,6 +376,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                     <DinleButonu
                                                         kanallar={adim.kanallar}
                                                         bildirimSesi={adim.bildirimSesi}
+                                                        varsayilanSesDinlenir={varsayilanSesDinlenir}
                                                         cozulmusMetin={anonsMetni ?? ''}
                                                         erisimEtiketi={bicim(girisYonu ? mk.dinleGiris : mk.dinleCikis, { dk: adim.olcuDk })}
                                                     />

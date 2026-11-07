@@ -7,6 +7,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { adimiOnizle } from '../../../domain/services/AnonsOnizlemeServisi';
+import { onizlemedeCalinirMi } from '../../../core/muhafiz/sesKimligi';
 import type { UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { BOS_CIHAZ_DURUMU, durumNotu } from '../../../core/cihaz/durumNotlari';
@@ -55,6 +56,8 @@ export interface DinleButonuProps {
      * "Found multiple elements") yaniltir.
      */
     erisimEtiketi: string;
+    /** Yuzeyin varsayilan sesi dinletilebilir mi? (iPhone ek yuzeyleri: hayir — telefonun sesi) */
+    varsayilanSesDinlenir?: boolean;
 }
 
 /**
@@ -72,12 +75,13 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
     bildirimSesi,
     cozulmusMetin = '',
     erisimEtiketi,
+    varsayilanSesDinlenir = true,
 }) => {
     const renkler = useRenkler();
     const dinle = useMetin().hatirlatma.akis.dinle;
 
     const anonsCalinacak = sesliAnonsGerekliMi(kanallar) && cozulmusMetin.trim().length > 0;
-    const bildirimCalinacak = bildirimSesiGerekliMi(kanallar);
+    const bildirimCalinacak = bildirimSesiGerekliMi(kanallar) && onizlemedeCalinirMi(bildirimSesi, varsayilanSesDinlenir);
     if (!anonsCalinacak && !bildirimCalinacak) return null;
 
     const ikon = anonsCalinacak && bildirimCalinacak ? 'bullhorn' : anonsCalinacak ? 'volume-up' : 'bell';
@@ -92,7 +96,7 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
             }}
             // Yangin-ve-unut: `adimiOnizle` sesin bitisini bekledigi icin artik
             // async; servis kendi hatalarini yutar, buton beklemez.
-            onPress={() => { void adimiOnizle({ kanallar, bildirimSesi, cozulmusMetin }); }}
+            onPress={() => { void adimiOnizle({ kanallar, bildirimSesi, cozulmusMetin, varsayilanSesDinlenir }); }}
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel={erisimEtiketi}

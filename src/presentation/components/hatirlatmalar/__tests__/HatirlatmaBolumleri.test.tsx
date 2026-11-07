@@ -226,7 +226,12 @@ describe('VakitGirinceBolumu — ses (iPhone)', () => {
         };
     });
 
-    afterEach(() => {
+    afterEach(async () => {
+        // Liste yükleme / dosya varlığı soruları (native köprü, async) test bitince çözülür:
+        // durum güncellemesi act içinde boşaltılır (CI'da act gürültüsü olmasın).
+        await act(async () => {
+            await new Promise((coz) => setTimeout(coz, 0));
+        });
         sesKimligi.sesPlatformunuAyarla('android');
         sesKimligi.eklenmisSesleriAyarla(null);
     });

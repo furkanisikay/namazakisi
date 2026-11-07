@@ -96,6 +96,15 @@ export function cihazdaCalinirMi(sesKimligi: string | undefined | null): boolean
 }
 
 /**
+ * Bildirim sesi uygulama icinde ONIZLENEBILIR mi? Bu cihazda calinan secim daima; varsayilan
+ * ise yalniz yuzeyin varsayilani uygulamanin sesiyse (`varsayilanDinlenir`). iPhone'da ek
+ * yuzeylerin varsayilani telefonun sesidir → onizleme `bildirim.mp3` calardi (sapma).
+ */
+export function onizlemedeCalinirMi(sesKimligi: string | undefined | null, varsayilanDinlenir: boolean = true): boolean {
+  return varsayilanDinlenir || cihazdaCalinirMi(sesKimligi);
+}
+
+/**
  * Diskten/eski kayittan gelen ham degeri gecerli bir ses kimligine cevirir.
  *
  * ESKI PALET GOCU BEDAVA: eski `SES_PALETI` uc isim ('can'/'melodi'/'alarm')

@@ -610,6 +610,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                         kanallar={seviye.kanallar}
                                         ozetKanallari={ozet.kanallar}
                                         bildirimSesi={seviye.bildirimSesi}
+                                        varsayilanSesDinlenir={varsayilanSes.dinlenir}
                                         renk={bilgi.renk}
                                         ikon={tanim.ikon}
                                         saat={onizlemeSaati}
