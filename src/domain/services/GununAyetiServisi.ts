@@ -16,6 +16,7 @@ import {
   duvarAyariNormalize,
   gununAyetiYukuOlustur,
   koordinatImsakKaynagi,
+  koordinatVakitKaynagi,
   type DuvarKagidiAyari,
 } from '../../core/icerik/gununAyetiYuku';
 import { Logger } from '../../core/utils/Logger';
@@ -89,7 +90,9 @@ export class GununAyetiServisi {
     if (!hedef?.gununAyetiKaydet) return;
     try {
       const duvar = await this.duvarAyariOku();
-      const yuk = JSON.stringify(gununAyetiYukuOlustur(new Date(), koordinatImsakKaynagi(this.sonKoordinat), duvar));
+      const yuk = JSON.stringify(
+        gununAyetiYukuOlustur(new Date(), koordinatImsakKaynagi(this.sonKoordinat), duvar, undefined, undefined, koordinatVakitKaynagi(this.sonKoordinat))
+      );
       if (yuk === this.sonYuk) return;
       await hedef.gununAyetiKaydet(yuk);
       this.sonYuk = yuk;

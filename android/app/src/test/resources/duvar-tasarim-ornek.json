@@ -1,0 +1,1794 @@
+{
+ "surum": 1,
+ "sahneler": {
+  "imsak": {
+   "gradyan": [
+    {
+     "konum": 0,
+     "renk": "#0F1430"
+    },
+    {
+     "konum": 0.55,
+     "renk": "#3B2D57"
+    },
+    {
+     "konum": 0.82,
+     "renk": "#8E5B7A"
+    },
+    {
+     "konum": 1,
+     "renk": "#E7A27C"
+    }
+   ],
+   "yildizlar": [
+    {
+     "x": 0.1212,
+     "y": 0.2286,
+     "r": 0.0036,
+     "opaklik": 0.8
+    },
+    {
+     "x": 0.2788,
+     "y": 0.3,
+     "r": 0.0027,
+     "opaklik": 0.6
+    },
+    {
+     "x": 0.8364,
+     "y": 0.2714,
+     "r": 0.0039,
+     "opaklik": 0.8
+    },
+    {
+     "x": 0.9091,
+     "y": 0.3571,
+     "r": 0.0024,
+     "opaklik": 0.5
+    },
+    {
+     "x": 0.1818,
+     "y": 0.4286,
+     "r": 0.0024,
+     "opaklik": 0.5
+    },
+    {
+     "x": 0.6364,
+     "y": 0.2,
+     "r": 0.003,
+     "opaklik": 0.7
+    }
+   ],
+   "cisim": {
+    "tur": "hilal",
+    "konumlar": [
+     [
+      0.7939,
+      0.6343
+     ],
+     [
+      0.7939,
+      0.3371
+     ],
+     [
+      0.2121,
+      0.3371
+     ]
+    ],
+    "r": 0.0788,
+    "kesX": -0.0273,
+    "kesY": -0.0086,
+    "kesR": 0.0636,
+    "renk": "#F6EBD0",
+    "opaklik": 0.95
+   },
+   "huzmeler": [],
+   "ufuk": [
+    {
+     "noktalar": [
+      [
+       0,
+       0.8857
+      ],
+      [
+       0.1515,
+       0.8657
+      ],
+      [
+       0.2727,
+       0.8771
+      ],
+      [
+       0.4545,
+       0.8486
+      ],
+      [
+       0.6061,
+       0.8686
+      ],
+      [
+       0.7879,
+       0.8429
+      ],
+      [
+       1,
+       0.8657
+      ],
+      [
+       1,
+       1
+      ],
+      [
+       0,
+       1
+      ]
+     ],
+     "renk": "#1E1730",
+     "opaklik": 0.55
+    }
+   ],
+   "metin": "#FFFFFF"
+  },
+  "kusluk": {
+   "gradyan": [
+    {
+     "konum": 0,
+     "renk": "#5E9BCB"
+    },
+    {
+     "konum": 0.6,
+     "renk": "#A9CDE6"
+    },
+    {
+     "konum": 1,
+     "renk": "#EAF3F7"
+    }
+   ],
+   "yildizlar": [],
+   "cisim": {
+    "tur": "gunes",
+    "konumlar": [
+     [
+      0.2727,
+      0.3571
+     ],
+     [
+      0.7273,
+      0.3571
+     ],
+     [
+      0.2727,
+      0.6714
+     ]
+    ],
+    "r": 0.0667,
+    "renk": "#FFF8E6",
+    "opaklik": 1,
+    "isimaR": 0.2727,
+    "isimaRenk": "#FFF6DA",
+    "isimaOpaklik": 0.9
+   },
+   "huzmeler": [],
+   "ufuk": [],
+   "metin": "#1F2A22"
+  },
+  "ikindi": {
+   "gradyan": [
+    {
+     "konum": 0,
+     "renk": "#B9782E"
+    },
+    {
+     "konum": 0.55,
+     "renk": "#DDA95E"
+    },
+    {
+     "konum": 1,
+     "renk": "#F3DCA8"
+    }
+   ],
+   "yildizlar": [],
+   "cisim": {
+    "tur": "gunes",
+    "konumlar": [
+     [
+      0.8182,
+      0.3
+     ],
+     [
+      0.1818,
+      0.3
+     ]
+    ],
+    "r": 0.0606,
+    "renk": "#FFF3D2",
+    "opaklik": 1,
+    "isimaR": 0.3333,
+    "isimaRenk": "#FFF6DA",
+    "isimaOpaklik": 0.85
+   },
+   "huzmeler": [
+    {
+     "x": 0.1212,
+     "y": 1,
+     "kalinlik": 0.0545,
+     "renk": "#FFF3D2",
+     "opaklik": 0.18
+    },
+    {
+     "x": 0.4545,
+     "y": 1,
+     "kalinlik": 0.0545,
+     "renk": "#FFF3D2",
+     "opaklik": 0.18
+    },
+    {
+     "x": 1,
+     "y": 1,
+     "kalinlik": 0.0545,
+     "renk": "#FFF3D2",
+     "opaklik": 0.18
+    }
+   ],
+   "ufuk": [],
+   "metin": "#3B2410"
+  },
+  "aksam": {
+   "gradyan": [
+    {
+     "konum": 0,
+     "renk": "#2A1530"
+    },
+    {
+     "konum": 0.5,
+     "renk": "#7A2E3F"
+    },
+    {
+     "konum": 0.78,
+     "renk": "#D2653F"
+    },
+    {
+     "konum": 1,
+     "renk": "#F2A65A"
+    }
+   ],
+   "yildizlar": [],
+   "cisim": {
+    "tur": "gunes",
+    "konumlar": [
+     [
+      0.5,
+      0.8714
+     ]
+    ],
+    "r": 0.103,
+    "renk": "#FFD9A0",
+    "opaklik": 1,
+    "isimaR": 0.4545,
+    "isimaRenk": "#F7A15C",
+    "isimaOpaklik": 0.7
+   },
+   "huzmeler": [],
+   "ufuk": [
+    {
+     "noktalar": [
+      [
+       0,
+       0.8714
+      ],
+      [
+       1,
+       0.8714
+      ],
+      [
+       1,
+       1
+      ],
+      [
+       0,
+       1
+      ]
+     ],
+     "renk": "#3A1A2A",
+     "opaklik": 1
+    }
+   ],
+   "metin": "#FFFFFF"
+  },
+  "yatsi": {
+   "gradyan": [
+    {
+     "konum": 0,
+     "renk": "#070C18"
+    },
+    {
+     "konum": 0.7,
+     "renk": "#14223B"
+    },
+    {
+     "konum": 1,
+     "renk": "#22385A"
+    }
+   ],
+   "yildizlar": [
+    {
+     "x": 0.0909,
+     "y": 0.2,
+     "r": 0.0039,
+     "opaklik": 0.9
+    },
+    {
+     "x": 0.2121,
+     "y": 0.3286,
+     "r": 0.0024,
+     "opaklik": 0.6
+    },
+    {
+     "x": 0.3636,
+     "y": 0.2429,
+     "r": 0.003,
+     "opaklik": 0.7
+    },
+    {
+     "x": 0.5455,
+     "y": 0.1714,
+     "r": 0.0042,
+     "opaklik": 0.9
+    },
+    {
+     "x": 0.7273,
+     "y": 0.3,
+     "r": 0.0027,
+     "opaklik": 0.6
+    },
+    {
+     "x": 0.8788,
+     "y": 0.2143,
+     "r": 0.0036,
+     "opaklik": 0.8
+    },
+    {
+     "x": 0.9394,
+     "y": 0.4286,
+     "r": 0.0024,
+     "opaklik": 0.5
+    },
+    {
+     "x": 0.0606,
+     "y": 0.4857,
+     "r": 0.0027,
+     "opaklik": 0.6
+    },
+    {
+     "x": 0.4545,
+     "y": 0.4286,
+     "r": 0.0021,
+     "opaklik": 0.5
+    },
+    {
+     "x": 0.7879,
+     "y": 0.5143,
+     "r": 0.003,
+     "opaklik": 0.6
+    },
+    {
+     "x": 0.2727,
+     "y": 0.6,
+     "r": 0.0021,
+     "opaklik": 0.4
+    },
+    {
+     "x": 0.6364,
+     "y": 0.6714,
+     "r": 0.0024,
+     "opaklik": 0.4
+    }
+   ],
+   "cisim": {
+    "tur": "hilal",
+    "konumlar": [
+     [
+      0.7939,
+      0.6343
+     ],
+     [
+      0.1818,
+      0.6343
+     ],
+     [
+      0.7939,
+      0.3371
+     ]
+    ],
+    "r": 0.0424,
+    "kesX": -0.0152,
+    "kesY": -0.0043,
+    "kesR": 0.0333,
+    "renk": "#EDE6CF",
+    "opaklik": 0.9
+   },
+   "huzmeler": [],
+   "ufuk": [],
+   "metin": "#FFFFFF"
+  }
+ },
+ "izinliBantlar": {
+  "android": {
+   "kilit": [
+    [
+     0.08,
+     0.26
+    ],
+    [
+     0.64,
+     0.84
+    ]
+   ],
+   "ana": [
+    [
+     0.07,
+     0.88
+    ]
+   ]
+  },
+  "ios": {
+   "kilit": [
+    [
+     0.34,
+     0.85
+    ]
+   ],
+   "ana": [
+    [
+     0.07,
+     0.86
+    ]
+   ]
+  }
+ },
+ "varsayilanMerkez": {
+  "android": {
+   "kilit": 0.73,
+   "ana": 0.215
+  },
+  "ios": {
+   "kilit": 0.58,
+   "ana": 0.25
+  }
+ },
+ "gok": {
+  "vakitler": [
+   1762489200000,
+   1762494300000,
+   1762514700000,
+   1762524000000,
+   1762528800000
+  ],
+  "ornekler": [
+   {
+    "an": 1762489199999,
+    "gok": "yatsi",
+    "sonrakiSinir": 1762489200000
+   },
+   {
+    "an": 1762489200000,
+    "gok": "imsak",
+    "sonrakiSinir": 1762494300000
+   },
+   {
+    "an": 1762494299999,
+    "gok": "imsak",
+    "sonrakiSinir": 1762494300000
+   },
+   {
+    "an": 1762494300000,
+    "gok": "kusluk",
+    "sonrakiSinir": 1762514700000
+   },
+   {
+    "an": 1762514700000,
+    "gok": "ikindi",
+    "sonrakiSinir": 1762524000000
+   },
+   {
+    "an": 1762524060000,
+    "gok": "aksam",
+    "sonrakiSinir": 1762528800000
+   },
+   {
+    "an": 1762528800000,
+    "gok": "yatsi",
+    "sonrakiSinir": null
+   },
+   {
+    "an": 1762532400000,
+    "gok": "yatsi",
+    "sonrakiSinir": null
+   }
+  ]
+ },
+ "yerlesim": [
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.08,
+    "bant": [
+     0.08,
+     0.26
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.08,
+    "bant": [
+     0.08,
+     0.26
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0,
+   "blok": 0.3,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.15,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.11,
+    "bant": [
+     0.08,
+     0.26
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.15,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.08,
+    "bant": [
+     0.08,
+     0.26
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.15,
+   "blok": 0.3,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.15,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.4,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.18,
+    "bant": [
+     0.08,
+     0.26
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.4,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.09,
+    "bant": [
+     0.08,
+     0.26
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.4,
+   "blok": 0.3,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.4,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.73,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.69,
+    "bant": [
+     0.64,
+     0.84
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.73,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.645,
+    "bant": [
+     0.64,
+     0.84
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.73,
+   "blok": 0.3,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.73,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.95,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.76,
+    "bant": [
+     0.64,
+     0.84
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.95,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.67,
+    "bant": [
+     0.64,
+     0.84
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.95,
+   "blok": 0.3,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "kilit",
+   "istenen": 0.95,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.15,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.11,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.15,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.15,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.15,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.4,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.36,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.4,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.315,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.4,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.25,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.4,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.215,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.175,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.215,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.13,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.215,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.215,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.95,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.8,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.95,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.71,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.95,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.58,
+    "bant": [
+     0.07,
+     0.88
+    ]
+   }
+  },
+  {
+   "platform": "android",
+   "ekran": "ana",
+   "istenen": 0.95,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.34,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.34,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.34,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.15,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.34,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.15,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.34,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.15,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.34,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.15,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.4,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.36,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.4,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.34,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.4,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.34,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.4,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.58,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.54,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.58,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.495,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.58,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.43,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.58,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.95,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.77,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.95,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.68,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.95,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.55,
+    "bant": [
+     0.34,
+     0.85
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "kilit",
+   "istenen": 0.95,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.15,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.11,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.15,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.15,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.07,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.15,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.4,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.36,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.4,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.315,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.4,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.25,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.4,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.25,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.21,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.25,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.165,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.25,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.1,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.25,
+   "blok": 0.9,
+   "beklenen": null
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.95,
+   "blok": 0.08,
+   "beklenen": {
+    "ust": 0.78,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.95,
+   "blok": 0.17,
+   "beklenen": {
+    "ust": 0.69,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.95,
+   "blok": 0.3,
+   "beklenen": {
+    "ust": 0.56,
+    "bant": [
+     0.07,
+     0.86
+    ]
+   }
+  },
+  {
+   "platform": "ios",
+   "ekran": "ana",
+   "istenen": 0.95,
+   "blok": 0.9,
+   "beklenen": null
+  }
+ ],
+ "cisim": [
+  {
+   "gok": "imsak",
+   "kutu": null,
+   "oran": 2.1667,
+   "beklenen": [
+    0.7939,
+    0.6343
+   ]
+  },
+  {
+   "gok": "imsak",
+   "kutu": [
+    0.1,
+    0.6,
+    0.9,
+    0.7
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.7939,
+    0.3371
+   ]
+  },
+  {
+   "gok": "imsak",
+   "kutu": [
+    0.1,
+    0.3,
+    0.9,
+    0.36
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.7939,
+    0.6343
+   ]
+  },
+  {
+   "gok": "imsak",
+   "kutu": [
+    0.05,
+    0.2,
+    0.95,
+    0.9
+   ],
+   "oran": 2.1667,
+   "beklenen": null
+  },
+  {
+   "gok": "kusluk",
+   "kutu": null,
+   "oran": 2.1667,
+   "beklenen": [
+    0.2727,
+    0.3571
+   ]
+  },
+  {
+   "gok": "kusluk",
+   "kutu": [
+    0.1,
+    0.6,
+    0.9,
+    0.7
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.2727,
+    0.3571
+   ]
+  },
+  {
+   "gok": "kusluk",
+   "kutu": [
+    0.1,
+    0.3,
+    0.9,
+    0.36
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.2727,
+    0.6714
+   ]
+  },
+  {
+   "gok": "kusluk",
+   "kutu": [
+    0.05,
+    0.2,
+    0.95,
+    0.9
+   ],
+   "oran": 2.1667,
+   "beklenen": null
+  },
+  {
+   "gok": "ikindi",
+   "kutu": null,
+   "oran": 2.1667,
+   "beklenen": [
+    0.8182,
+    0.3
+   ]
+  },
+  {
+   "gok": "ikindi",
+   "kutu": [
+    0.1,
+    0.6,
+    0.9,
+    0.7
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.8182,
+    0.3
+   ]
+  },
+  {
+   "gok": "ikindi",
+   "kutu": [
+    0.1,
+    0.3,
+    0.9,
+    0.36
+   ],
+   "oran": 2.1667,
+   "beklenen": null
+  },
+  {
+   "gok": "ikindi",
+   "kutu": [
+    0.05,
+    0.2,
+    0.95,
+    0.9
+   ],
+   "oran": 2.1667,
+   "beklenen": null
+  },
+  {
+   "gok": "aksam",
+   "kutu": null,
+   "oran": 2.1667,
+   "beklenen": [
+    0.5,
+    0.8714
+   ]
+  },
+  {
+   "gok": "aksam",
+   "kutu": [
+    0.1,
+    0.6,
+    0.9,
+    0.7
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.5,
+    0.8714
+   ]
+  },
+  {
+   "gok": "aksam",
+   "kutu": [
+    0.1,
+    0.3,
+    0.9,
+    0.36
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.5,
+    0.8714
+   ]
+  },
+  {
+   "gok": "aksam",
+   "kutu": [
+    0.05,
+    0.2,
+    0.95,
+    0.9
+   ],
+   "oran": 2.1667,
+   "beklenen": null
+  },
+  {
+   "gok": "yatsi",
+   "kutu": null,
+   "oran": 2.1667,
+   "beklenen": [
+    0.7939,
+    0.6343
+   ]
+  },
+  {
+   "gok": "yatsi",
+   "kutu": [
+    0.1,
+    0.6,
+    0.9,
+    0.7
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.7939,
+    0.3371
+   ]
+  },
+  {
+   "gok": "yatsi",
+   "kutu": [
+    0.1,
+    0.3,
+    0.9,
+    0.36
+   ],
+   "oran": 2.1667,
+   "beklenen": [
+    0.7939,
+    0.6343
+   ]
+  },
+  {
+   "gok": "yatsi",
+   "kutu": [
+    0.05,
+    0.2,
+    0.95,
+    0.9
+   ],
+   "oran": 2.1667,
+   "beklenen": null
+  }
+ ],
+ "okunurluk": [
+  {
+   "parlaklik": 0,
+   "beklenen": {
+    "metin": "#FFFFFF",
+    "perde": "#000000",
+    "perdeOpakligi": 0
+   }
+  },
+  {
+   "parlaklik": 0.05,
+   "beklenen": {
+    "metin": "#FFFFFF",
+    "perde": "#000000",
+    "perdeOpakligi": 0
+   }
+  },
+  {
+   "parlaklik": 0.12,
+   "beklenen": {
+    "metin": "#FFFFFF",
+    "perde": "#000000",
+    "perdeOpakligi": 0
+   }
+  },
+  {
+   "parlaklik": 0.18,
+   "beklenen": {
+    "metin": "#FFFFFF",
+    "perde": "#000000",
+    "perdeOpakligi": 0
+   }
+  },
+  {
+   "parlaklik": 0.25,
+   "beklenen": {
+    "metin": "#1F2A22",
+    "perde": "#FFFFFF",
+    "perdeOpakligi": 0.05
+   }
+  },
+  {
+   "parlaklik": 0.35,
+   "beklenen": {
+    "metin": "#1F2A22",
+    "perde": "#FFFFFF",
+    "perdeOpakligi": 0
+   }
+  },
+  {
+   "parlaklik": 0.5,
+   "beklenen": {
+    "metin": "#1F2A22",
+    "perde": "#FFFFFF",
+    "perdeOpakligi": 0
+   }
+  },
+  {
+   "parlaklik": 0.7,
+   "beklenen": {
+    "metin": "#1F2A22",
+    "perde": "#FFFFFF",
+    "perdeOpakligi": 0
+   }
+  },
+  {
+   "parlaklik": 1,
+   "beklenen": {
+    "metin": "#1F2A22",
+    "perde": "#FFFFFF",
+    "perdeOpakligi": 0
+   }
+  }
+ ],
+ "normalize": [
+  {
+   "ham": {
+    "acik": true,
+    "yer": "kilit",
+    "zemin": "gece",
+    "arapca": false,
+    "paletRenk": "#2E7D32"
+   },
+   "beklenen": {
+    "acik": true,
+    "yer": "kilit",
+    "zemin": "gece",
+    "arapca": false,
+    "paletRenk": "#2E7D32",
+    "vakteUysun": true,
+    "yazi": {
+     "kilitY": null,
+     "anaY": null,
+     "olcek": 1,
+     "hiza": "orta",
+     "tip": "klasik"
+    },
+    "sus": {
+     "tur": "yildiz",
+     "belirginlik": 0.5
+    },
+    "foto": {
+     "dosya": null,
+     "karartma": 0.4,
+     "bulaniklik": 0.15,
+     "x": 0.5,
+     "y": 0.5,
+     "yakinlik": 1,
+     "okunurluk": true
+    }
+   }
+  },
+  {
+   "ham": {
+    "zemin": "foto",
+    "foto": {
+     "dosya": "../x.jpg",
+     "karartma": 2
+    },
+    "yazi": {
+     "olcek": 9,
+     "hiza": "x"
+    }
+   },
+   "beklenen": {
+    "acik": false,
+    "yer": "kilit",
+    "zemin": "foto",
+    "arapca": false,
+    "paletRenk": "#2E7D32",
+    "vakteUysun": true,
+    "yazi": {
+     "kilitY": null,
+     "anaY": null,
+     "olcek": 1.6,
+     "hiza": "orta",
+     "tip": "klasik"
+    },
+    "sus": {
+     "tur": "yildiz",
+     "belirginlik": 0.5
+    },
+    "foto": {
+     "dosya": null,
+     "karartma": 0.85,
+     "bulaniklik": 0.15,
+     "x": 0.5,
+     "y": 0.5,
+     "yakinlik": 1,
+     "okunurluk": true
+    }
+   }
+  }
+ ]
+}

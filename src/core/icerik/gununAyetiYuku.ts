@@ -9,9 +9,26 @@ import { aktifDil, sozluk } from '../dil/aktifDil';
 import type { DilKodu } from '../dil/diller';
 import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import { gununAyetiPlani, type GununAyetiPlanKaydi, type ImsakKaynagi } from './gununAyeti';
+import {
+  DUVAR_GOKLERI,
+  fotoAyariNormalize,
+  GOK_SAHNELERI,
+  susAyariNormalize,
+  VARSAYILAN_FOTO,
+  VARSAYILAN_SUS,
+  VARSAYILAN_YAZI,
+  yaziAyariNormalize,
+  type DuvarFotoAyari,
+  type DuvarGogu,
+  type DuvarSusAyari,
+  type DuvarYaziAyari,
+  type GokSahnesi,
+  type GunVakitleri,
+} from './duvarTasarimi';
 
 export type DuvarYeri = 'kilit' | 'ana' | 'ikisi';
-export type DuvarZemini = 'gece' | 'kagit' | 'palet';
+/** Düz zeminler + vakit gökleri (`duvarTasarimi.GOK_SAHNELERI`) + kullanıcının fotoğrafı. */
+export type DuvarZemini = 'gece' | 'kagit' | 'palet' | DuvarGogu | 'foto';
 
 export interface DuvarKagidiAyari {
   acik: boolean;
@@ -21,18 +38,31 @@ export interface DuvarKagidiAyari {
   arapca: boolean;
   /** `palet` zemininin rengi (seçildiği andaki tema rengi). */
   paletRenk: string;
+  /**
+   * Zemin bir vakit göğüyse gün içinde o anki vaktin göğüne geçer (sahip kararı 2026-11-07:
+   * varsayılan AÇIK). Android'de her vakit sınırında yeniden yazılır; iPhone'da Kısayollar
+   * görseli çalıştığı anın göğünü çizer.
+   */
+  vakteUysun: boolean;
+  yazi: DuvarYaziAyari;
+  sus: DuvarSusAyari;
+  foto: DuvarFotoAyari;
 }
 
 export const VARSAYILAN_DUVAR_AYARI: DuvarKagidiAyari = {
   acik: false,
   yer: 'kilit',
-  zemin: 'gece',
+  zemin: 'imsak',
   arapca: false,
   paletRenk: '#2E7D32',
+  vakteUysun: true,
+  yazi: VARSAYILAN_YAZI,
+  sus: VARSAYILAN_SUS,
+  foto: VARSAYILAN_FOTO,
 };
 
 const YERLER: readonly DuvarYeri[] = ['kilit', 'ana', 'ikisi'];
-const ZEMINLER: readonly DuvarZemini[] = ['gece', 'kagit', 'palet'];
+const ZEMINLER: readonly DuvarZemini[] = ['gece', 'kagit', 'palet', ...DUVAR_GOKLERI, 'foto'];
 
 /** Bozuk ya da eksik kayıt varsayılanla tamamlanır. */
 export function duvarAyariNormalize(ham: unknown): DuvarKagidiAyari {
@@ -44,16 +74,28 @@ export function duvarAyariNormalize(ham: unknown): DuvarKagidiAyari {
     arapca: k.arapca === true,
     paletRenk:
       typeof k.paletRenk === 'string' && /^#[0-9A-Fa-f]{6}$/.test(k.paletRenk) ? k.paletRenk : VARSAYILAN_DUVAR_AYARI.paletRenk,
+    vakteUysun: k.vakteUysun !== false,
+    yazi: yaziAyariNormalize(k.yazi),
+    sus: susAyariNormalize(k.sus),
+    foto: fotoAyariNormalize(k.foto),
   };
 }
+
+/** Fotoğraf zemini dosyası yoksa (silinmiş, başka cihazdan) çizici gece zeminine düşer. */
+export const fotoZeminiGecerliMi = (a: DuvarKagidiAyari): boolean => a.zemin !== 'foto' || a.foto.dosya !== null;
 
 export interface GununAyetiYuku {
   v: 1;
   dil: DilKodu;
   metin: { etiket: string; sigmiyor: string; acin: string; arapcaKaynagi: string };
-  plan: Omit<GununAyetiPlanKaydi, 'tamKunye'>[];
+  plan: (Omit<GununAyetiPlanKaydi, 'tamKunye'> & { vakitler?: GunVakitleri })[];
   duvar: DuvarKagidiAyari;
+  /** Vakit gökleri (tek kaynak `duvarTasarimi.GOK_SAHNELERI`); native sanatı yeniden tanımlamaz. */
+  sahneler: Readonly<Record<DuvarGogu, GokSahnesi>>;
 }
+
+/** Bir namaz gününün vakitleri; konum yoksa null (vakte uyan gök o gün imsak göğünde kalır). */
+export type VakitKaynagi = (tarih: Date) => GunVakitleri | null;
 
 /** Koordinattan imsak kaynağı; konum yoksa her gün `null` (plan 05:00 sınırına düşer). */
 export function koordinatImsakKaynagi(koordinat: { lat: number; lng: number } | null): ImsakKaynagi {
@@ -62,19 +104,35 @@ export function koordinatImsakKaynagi(koordinat: { lat: number; lng: number } | 
   return (tarih) => aktifPrayerTimes(c, tarih).fajr;
 }
 
+/** Koordinattan günün vakitleri (imsak, güneş, ikindi, akşam, yatsı); konum yoksa null. */
+export function koordinatVakitKaynagi(koordinat: { lat: number; lng: number } | null): VakitKaynagi {
+  if (!koordinat || (koordinat.lat === 0 && koordinat.lng === 0)) return () => null;
+  const c = new Coordinates(koordinat.lat, koordinat.lng);
+  return (tarih) => {
+    const p = aktifPrayerTimes(c, tarih);
+    return [p.fajr.getTime(), p.sunrise.getTime(), p.asr.getTime(), p.maghrib.getTime(), p.isha.getTime()];
+  };
+}
+
 export function gununAyetiYukuOlustur(
   simdi: Date,
   imsak: ImsakKaynagi,
   duvar: DuvarKagidiAyari,
   dil: DilKodu = aktifDil(),
-  gunSayisi = 14
+  gunSayisi = 14,
+  vakitler: VakitKaynagi = () => null
 ): GununAyetiYuku {
   const m = sozluk(dil).gununAyeti;
   return {
     v: 1,
     dil,
     metin: { etiket: m.etiket, sigmiyor: m.sigmiyor, acin: m.acin, arapcaKaynagi: m.arapcaKaynagi },
-    plan: gununAyetiPlani(simdi, imsak, gunSayisi, dil).map(({ tamKunye: _tam, ...kayit }) => kayit),
+    plan: gununAyetiPlani(simdi, imsak, gunSayisi, dil).map(({ tamKunye: _tam, ...kayit }) => {
+      const [yil, ay, gun] = kayit.gun.split('-').map(Number);
+      const v = vakitler(new Date(yil, ay - 1, gun, 12));
+      return v ? { ...kayit, vakitler: v } : kayit;
+    }),
     duvar,
+    sahneler: GOK_SAHNELERI,
   };
 }
