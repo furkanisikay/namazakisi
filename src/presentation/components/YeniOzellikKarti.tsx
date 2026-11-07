@@ -64,6 +64,8 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                         onPress={onKapat}
                         hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                         style={{ marginLeft: 'auto' }}
+                        accessibilityRole="button"
+                        accessibilityLabel="Kapat"
                     >
                         <FontAwesome5 name="times" size={14} color={renkler.metinIkincil} />
                     </TouchableOpacity>
@@ -91,6 +93,7 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                     style={{ backgroundColor: renkler.birincil }}
                     onPress={onAc}
                     activeOpacity={0.85}
+                    accessibilityRole="button"
                 >
                     <YonluIkon name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                     <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
