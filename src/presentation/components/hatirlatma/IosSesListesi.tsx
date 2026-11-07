@@ -6,9 +6,9 @@
  * dosyanızdan seçin". Satırın içinde açılır çünkü adım detayı zaten bir modaldır ve
  * iOS aynı anda iki kardeş modal sunamaz (AGENTS.md); ayrıca seçim tek dokunuşla biter.
  *
- * Her satır: seçim (radyo) + "dinle"; eklenen dosyada ayrıca "sil". Seçili dosya
- * silinirse seçim varsayılana döner (silinen sesi çalmaya çalışan bildirim de
- * teslimcide varsayılana düşer — sessiz sapma yok).
+ * Her satır: seçim (radyo) + "dinle"; eklenen dosyada ayrıca "sil". Silinen dosyayı
+ * kullanan HER kayıt varsayılana döner ve planlar yenilenir (`store/iosSesSilme`).
+ * Listede olmayan dosya seçiliyse varsayılan seçili görünür (`cihazdaCalinirMi`).
  */
 import * as React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
@@ -17,7 +17,7 @@ import { useRenkler } from '../../../core/theme';
 import { bicim } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
 import { PAKET_SESLERI, dosyaSesKimligi, paketSesKimligi } from '../../../core/muhafiz/ios/paketSesleri';
-import { platformdaCalinirMi } from '../../../core/muhafiz/sesKimligi';
+import { cihazdaCalinirMi } from '../../../core/muhafiz/sesKimligi';
 import type { IosSesSecimi } from '../../hooks/useIosSesSecimi';
 
 export interface IosSesListesiProps {
@@ -54,7 +54,8 @@ export const IosSesListesi: React.FC<IosSesListesiProps> = ({
 }) => {
     const renkler = useRenkler();
     const ms = useMetin().hatirlatma.sesSecim;
-    const seciliKimlik = secili && platformdaCalinirMi(secili, 'ios') ? secili : null;
+    // Silinmiş dosya ya da başka platformun kimliği: varsayılan seçili görünür (çalan odur).
+    const seciliKimlik = secili && cihazdaCalinirMi(secili) ? secili : null;
 
     const satirlar: Satir[] = [
         { kimlik: null, ad: varsayilanAdi, dinlenir: varsayilanDinlenir, testID: `${testID}-varsayilan` },
@@ -73,10 +74,9 @@ export const IosSesListesi: React.FC<IosSesListesiProps> = ({
         })),
     ];
 
-    const sil = async (kimlik: string) => {
-        await secim.sil(kimlik);
-        if (kimlik === seciliKimlik) onSec(null);
-    };
+    // Seçili dosya silinince bu satır da varsayılana döner: `secim.sil` onu kullanan HER kaydı
+    // (bu adım dahil) diskte varsayılana çevirip slice'ları tazeler — burada ayrıca yazılmaz.
+    const sil = (kimlik: string) => secim.sil(kimlik);
 
     const ekle = async () => {
         const eklenen = await secim.ekle();

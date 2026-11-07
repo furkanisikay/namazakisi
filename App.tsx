@@ -75,6 +75,8 @@ import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
 import { nowBarDegistiUygula } from './src/domain/services/NowBarDegisikligiServisi';
 import { metinKapisiniKur, NastalikYukleyici, NkoYukleyici } from './src/presentation/components/metin/MetinKapisi';
 import { useAktifDil } from './src/presentation/hooks/useMetin';
+import { iceAktarilanSesler } from './modules/expo-muhafiz-anons/src';
+import { eklenmisSesleriAyarla } from './src/core/muhafiz/sesKimligi';
 
 // Metin kapısı (rakam sistemi + Urduca Nestalik): RN `Text`'in çizim katmanı, ilk çizimden önce.
 metinKapisiniKur();
@@ -434,6 +436,12 @@ const AppIcerik: React.FC = () => {
         if (Platform.OS === 'ios') {
           CanliSayacPlanlayici.getInstance().iosBaslat();
           CanliSayacPlanlayici.getInstance().yenidenPlanla().catch(() => {});
+          // Eklenen ses dosyaları: silinmiş dosyayı seçen adım ekranda varsayılan görünsün.
+          iceAktarilanSesler()
+            .then((liste) => {
+              if (liste) eklenmisSesleriAyarla(liste.map((d) => d.dosya));
+            })
+            .catch(() => {});
         }
         // Takvim çakışması (issue #291): kılınan vaktin uyarısı iptal edilir.
         TakvimCakismaServisi.getInstance().baslat();

@@ -26,7 +26,7 @@
 import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
 import { VARSAYILAN_SES } from './matrisTipleri';
 import { metin } from '../dil/aktifDil';
-import { iosSesiMi, paketSesiBul } from './ios/paketSesleri';
+import { iosSesiMi, kullaniciSesDosyasi, paketSesiBul } from './ios/paketSesleri';
 import type { MuhafizPlatformu } from './ios/platformYetenekleri';
 
 /** Kullanicinin sectigi sistem sesleri bu semayla gelir (RingtoneManager). */
@@ -63,6 +63,48 @@ export function platformdaCalinirMi(
 }
 
 /**
+ * Uygulamanin CALISTIGI platform (ses adi ureticisi icin). Cekirdek `react-native` okumaz:
+ * giris noktasi (`index.ts`) her JS baglaminda bir kez yazar (`aktifDil` deseni).
+ * Varsayilan Android → Android davranisi yazilmasa da birebir.
+ */
+let sesPlatformuDegeri: MuhafizPlatformu = 'android';
+export function sesPlatformunuAyarla(platform: MuhafizPlatformu): void {
+  sesPlatformuDegeri = platform;
+}
+export function sesPlatformu(): MuhafizPlatformu {
+  return sesPlatformuDegeri;
+}
+
+/**
+ * iPhone: diskte DURAN eklenmis dosyalar (`Library/Sounds` adlari). `null` = henuz okunmadi
+ * → bilinmiyor sayilir ve dosya calinir kabul edilir (teslimci yine diske sorar). Ses
+ * listesi (`useIosSesSecimi`) ve acilis (`App.tsx`) native listeden yazar.
+ */
+let eklenmisSesler: ReadonlySet<string> | null = null;
+export function eklenmisSesleriAyarla(dosyalar: Iterable<string> | null): void {
+  eklenmisSesler = dosyalar === null ? null : new Set(dosyalar);
+}
+
+/**
+ * Bu kimlik BU CIHAZDA calinir mi? Platform (`platformdaCalinirMi`) + iPhone'da eklenen
+ * dosya hala listede mi. Calinmayan secim ekranda VARSAYILAN gorunur (calan budur).
+ */
+export function cihazdaCalinirMi(sesKimligi: string | undefined | null): boolean {
+  if (!platformdaCalinirMi(sesKimligi, sesPlatformuDegeri)) return false;
+  const dosya = kullaniciSesDosyasi(sesKimligi);
+  return dosya === null || eklenmisSesler === null || eklenmisSesler.has(dosya);
+}
+
+/**
+ * Bildirim sesi uygulama icinde ONIZLENEBILIR mi? Bu cihazda calinan secim daima; varsayilan
+ * ise yalniz yuzeyin varsayilani uygulamanin sesiyse (`varsayilanDinlenir`). iPhone'da ek
+ * yuzeylerin varsayilani telefonun sesidir → onizleme `bildirim.mp3` calardi (sapma).
+ */
+export function onizlemedeCalinirMi(sesKimligi: string | undefined | null, varsayilanDinlenir: boolean = true): boolean {
+  return varsayilanDinlenir || cihazdaCalinirMi(sesKimligi);
+}
+
+/**
  * Diskten/eski kayittan gelen ham degeri gecerli bir ses kimligine cevirir.
  *
  * ESKI PALET GOCU BEDAVA: eski `SES_PALETI` uc isim ('can'/'melodi'/'alarm')
@@ -95,14 +137,21 @@ export function sesKimliginiNormalize(ham: string | undefined | null): string {
  * hangisi oldugunu ayirt edemez.
  *
  * Ekran ozeti, ses secim satiri ve bildirim KANAL ADI ayni yerden beslenir.
+ *
+ * BU CIHAZDA CALINMAYAN secim (baska platformun kimligi — yedek/esitleme — ya da iPhone'da
+ * silinmis eklenen dosya) VARSAYILANIN adini alir: calan odur. `varsayilanAdi` yuzeyin
+ * varsayilan sesinin adidir (verilmezse "Uygulama sesi"; iPhone'da ek yuzeyler telefonun
+ * sesini calar).
  */
-export function sesGorunenAdi(sesKimligi: string, sesAdi?: string): string {
+export function sesGorunenAdi(sesKimligi: string, sesAdi?: string, varsayilanAdi?: string): string {
+  const k = metin().bildirim.kanal;
+  if (secilmisSesMi(sesKimligi) && !cihazdaCalinirMi(sesKimligi)) return varsayilanAdi ?? k.uygulamaSesi;
+  if (!secilmisSesMi(sesKimligi) && varsayilanAdi && !sesAdi?.trim()) return varsayilanAdi;
   // iPhone'un paketlenmis sesi: ad SOZLUKTEN (dil degisince ad da degisir; kayitli ad yok sayilir).
   const paket = paketSesiBul(sesKimligi);
   if (paket) return metin().hatirlatma.sesSecim.paket[paket.ad];
   const ad = sesAdi?.trim();
   if (ad) return ad;
-  const k = metin().bildirim.kanal;
   return secilmisSesMi(sesKimligi) ? k.seciliSes : k.uygulamaSesi;
 }
 

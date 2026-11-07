@@ -180,7 +180,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Off',
     nowBarAcik: cogul({ one: '{n} item on', other: '{n} items on' }),
     sesDosyasi: {
-      bicim: 'This file couldn’t be opened as audio. You can choose an MP3, M4A or WAV file.',
+      bicim: 'This file couldn’t be opened as audio. You can choose an MP3, M4A, OGG or WAV file.',
+      bicimIos: 'This file couldn’t be opened as audio. You can choose an MP3, M4A or WAV file.',
       boyut: 'The file is too large. You can choose up to 20 MB.',
       sure: 'The recording is too long. You can choose a sound up to 8 minutes long.',
       erisim: 'The file couldn’t be accessed. Try choosing a file on your phone.',

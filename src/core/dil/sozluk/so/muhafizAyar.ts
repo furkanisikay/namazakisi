@@ -180,7 +180,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Dansan',
     nowBarAcik: cogul({ one: '{n} shay ayaa shidan', other: '{n} shay ayaa shidan' }),
     sesDosyasi: {
-      bicim: 'Faylkan looma furi karin cod ahaan. Waxaad dooran kartaa fayl MP3, M4A ama WAV ah.',
+      bicim: 'Faylkan looma furi karin cod ahaan. Waxaad dooran kartaa fayl MP3, M4A, OGG ama WAV ah.',
+      bicimIos: 'Faylkan looma furi karin cod ahaan. Waxaad dooran kartaa fayl MP3, M4A ama WAV ah.',
       boyut: 'Faylku aad buu u weyn yahay. Waxaad dooran kartaa ilaa 20 MB.',
       sure: 'Duubistu aad bay u dheer tahay. Waxaad dooran kartaa cod ilaa 8 daqiiqo ah.',
       erisim: 'Faylka lama gaari karin. Isku day inaad doorato fayl taleefankaaga ku jira.',

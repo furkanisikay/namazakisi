@@ -181,7 +181,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Cufaa',
     nowBarAcik: cogul({ one: 'Wanti {n} banaa dha', other: 'Wantoonni {n} banaa dha' }),
     sesDosyasi: {
-      bicim: 'Faayiliin kun akka sagaleetti banamuu hin dandeenye. Faayilii MP3, M4A ykn WAV filachuu dandeessu.',
+      bicim: 'Faayiliin kun akka sagaleetti banamuu hin dandeenye. Faayilii MP3, M4A, OGG ykn WAV filachuu dandeessu.',
+      bicimIos: 'Faayiliin kun akka sagaleetti banamuu hin dandeenye. Faayilii MP3, M4A ykn WAV filachuu dandeessu.',
       boyut: "Faayiliin kun baay'ee guddaa dha. Hanga MB 20 filachuu dandeessu.",
       sure: "Galmeen kun baay'ee dheeraa dha. Sagalee hanga daqiiqaa 8 filachuu dandeessu.",
       erisim: "Faayilicha argachuun hin danda'amne. Faayilii bilbila keessan irra jiru filachuu yaalaa.",

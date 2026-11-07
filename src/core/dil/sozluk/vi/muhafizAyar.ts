@@ -180,7 +180,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Tắt',
     nowBarAcik: cogul({ other: '{n} mục đang bật' }),
     sesDosyasi: {
-      bicim: 'Không thể mở tệp này dưới dạng âm thanh. Bạn có thể chọn tệp MP3, M4A hoặc WAV.',
+      bicim: 'Không thể mở tệp này dưới dạng âm thanh. Bạn có thể chọn tệp MP3, M4A, OGG hoặc WAV.',
+      bicimIos: 'Không thể mở tệp này dưới dạng âm thanh. Bạn có thể chọn tệp MP3, M4A hoặc WAV.',
       boyut: 'Tệp quá lớn. Bạn có thể chọn tệp tối đa 20 MB.',
       sure: 'Bản ghi quá dài. Bạn có thể chọn âm thanh dài tối đa 8 phút.',
       erisim: 'Không thể truy cập tệp. Hãy thử chọn một tệp trên điện thoại.',

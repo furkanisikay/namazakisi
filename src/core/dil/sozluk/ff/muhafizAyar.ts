@@ -180,7 +180,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Ñifaa',
     nowBarAcik: cogul({ one: '{n} huunde huɓɓinaa', other: '{n} geɗe huɓɓinaa' }),
     sesDosyasi: {
-      bicim: 'Fiilde ndee udditaaki wa sowto. Hiɗon mbaawi suɓude fiilde MP3, M4A walla WAV.',
+      bicim: 'Fiilde ndee udditaaki wa sowto. Hiɗon mbaawi suɓude fiilde MP3, M4A, OGG walla WAV.',
+      bicimIos: 'Fiilde ndee udditaaki wa sowto. Hiɗon mbaawi suɓude fiilde MP3, M4A walla WAV.',
       boyut: 'Fiilde ndee ɓurii mawnude. Hiɗon mbaawi suɓude haa 20 MB.',
       sure: 'Winndannde ndee ɓurii juutde. Hiɗon mbaawi suɓude sowto haa 8 hojomaaji.',
       erisim: 'Fiilde ndee hewtaaka. Etee suɓude fiilde e talifon mon.',

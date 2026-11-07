@@ -214,12 +214,15 @@ export async function sesIceAktar(kaynakUri: string, gorunenAd: string): Promise
     }
 }
 
-/** Diskte duran ice aktarilmis sesler (eklenme sirasiyla). Bilinmiyorsa bos liste. */
-export async function iceAktarilanSesler(): Promise<IceAktarilanSes[]> {
-    if (!kullanilabilirMi() || typeof ExpoMuhafizAnons?.iceAktarilanSesler !== 'function') return [];
+/**
+ * Diskte duran ice aktarilmis sesler (eklenme sirasiyla). OKUNAMADIYSA `null` (bos liste
+ * DEGIL): cagiran "hic dosya yok" sanip eklenmis sesleri silinmis gostermesin.
+ */
+export async function iceAktarilanSesler(): Promise<IceAktarilanSes[] | null> {
+    if (!kullanilabilirMi() || typeof ExpoMuhafizAnons?.iceAktarilanSesler !== 'function') return null;
     try {
         const liste = await ExpoMuhafizAnons.iceAktarilanSesler();
-        if (!Array.isArray(liste)) return [];
+        if (!Array.isArray(liste)) return null;
         return liste.flatMap((o: unknown) => {
             const g = o as { dosya?: unknown; ad?: unknown } | null;
             return g && typeof g.dosya === 'string' && g.dosya.length > 0
@@ -227,7 +230,7 @@ export async function iceAktarilanSesler(): Promise<IceAktarilanSes[]> {
                 : [];
         });
     } catch {
-        return [];
+        return null;
     }
 }
 

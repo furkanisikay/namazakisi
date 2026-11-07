@@ -18,9 +18,7 @@ import { View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
-import { platformdaCalinirMi, secilmisSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
-import { VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
-import type { MuhafizPlatformu } from '../../../core/muhafiz/ios/platformYetenekleri';
+import { cihazdaCalinirMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
 import { bicim } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
 
@@ -37,11 +35,6 @@ interface Eylem {
 export interface SesSecimSatiriProps {
     /** `varsayilan`, Android `content://...` ya da iPhone `paket:…`/`dosya:…` */
     bildirimSesi: string;
-    /**
-     * Sesin ÇALINDIĞI platform (varsayılan Android). Başka platformun kimliği (yedekten
-     * gelen) burada varsayılan çalar → satır da varsayılanı gösterir.
-     */
-    platform?: MuhafizPlatformu;
     /**
      * iPhone: sistem ses seçicisi yok → satıra dokununca BU liste satırın altında açılır
      * (`IosSesListesi`; modal değil). Verilirse `onSec` ve ikincil eylemler kullanılmaz.
@@ -60,7 +53,7 @@ export interface SesSecimSatiriProps {
     onDinle: () => void;
     /**
      * Secili ses uygulama icinde dinletilebilir mi? (varsayilan: evet) iPhone'da "telefonun
-     * sesi" dinletilemez → olu bir "dinle" dugmesi cizilmez (yalniz kompakt satir).
+     * sesi" dinletilemez → olu bir "dinle" dugmesi cizilmez.
      */
     dinlenebilir?: boolean;
     /**
@@ -89,7 +82,6 @@ export interface SesSecimSatiriProps {
 
 export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     bildirimSesi,
-    platform = 'android',
     secimListesi,
     sesAdi,
     seciliyor = false,
@@ -109,13 +101,10 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     const ms = useMetin().hatirlatma.sesSecim;
     const varsayilanaDonEtiketi = varsayilanaDonEtiketiProp ?? ms.varsayilanaDon;
     const sesEtiketi = sesEtiketiProp ?? ms.sesEtiketi;
-    const ozelMi = platformdaCalinirMi(bildirimSesi, platform);
-    // Başka platformun sesi (yedekten) burada VARSAYILAN çalar → adı da varsayılanınki.
-    const baskaPlatformunSesi = !ozelMi && secilmisSesMi(bildirimSesi);
-    const ad =
-        !ozelMi && varsayilanAdi
-            ? varsayilanAdi
-            : sesGorunenAdi(baskaPlatformunSesi ? VARSAYILAN_SES : bildirimSesi, baskaPlatformunSesi ? undefined : sesAdi);
+    // Bu cihazda ÇALINMAYAN seçim (başka platformun kimliği, iPhone'da silinmiş dosya) varsayılan
+    // görünür: çalan odur (`sesGorunenAdi` aynı kuralla adlandırır).
+    const ozelMi = cihazdaCalinirMi(bildirimSesi);
+    const ad = !ozelMi && varsayilanAdi ? varsayilanAdi : sesGorunenAdi(bildirimSesi, sesAdi);
     const mesgul = seciliyor || dosyaAktariliyor;
     const [acik, setAcik] = useState(false);
     const listeli = secimListesi !== undefined && secimListesi !== null;
@@ -359,19 +348,21 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    className="w-11 h-11 items-center justify-center rounded-xl border mr-1.5"
-                    style={{
-                        backgroundColor: renkler.kartArkaplan,
-                        borderColor: renkler.sinir,
-                    }}
-                    onPress={onDinle}
-                    activeOpacity={0.7}
-                    accessibilityRole="button"
-                    accessibilityLabel={ms.seciliDinle}
-                >
-                    <FontAwesome5 name="play" size={12} color={renkler.birincil} solid />
-                </TouchableOpacity>
+                {dinlenebilir ? (
+                    <TouchableOpacity
+                        className="w-11 h-11 items-center justify-center rounded-xl border mr-1.5"
+                        style={{
+                            backgroundColor: renkler.kartArkaplan,
+                            borderColor: renkler.sinir,
+                        }}
+                        onPress={onDinle}
+                        activeOpacity={0.7}
+                        accessibilityRole="button"
+                        accessibilityLabel={ms.seciliDinle}
+                    >
+                        <FontAwesome5 name="play" size={12} color={renkler.birincil} solid />
+                    </TouchableOpacity>
+                ) : null}
 
                 {listeli ? (
                     <FontAwesome5

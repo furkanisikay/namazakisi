@@ -180,7 +180,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Öçük',
     nowBarAcik: cogul({ one: '{n} zat açyk', other: '{n} zat açyk' }),
     sesDosyasi: {
-      bicim: 'Bu faýl ses hökmünde açylmady. MP3, M4A ýa-da WAV faýlyny saýlap bilersiňiz.',
+      bicim: 'Bu faýl ses hökmünde açylmady. MP3, M4A, OGG ýa-da WAV faýlyny saýlap bilersiňiz.',
+      bicimIos: 'Bu faýl ses hökmünde açylmady. MP3, M4A ýa-da WAV faýlyny saýlap bilersiňiz.',
       boyut: 'Faýl gaty uly. 20 MB-a çenli saýlap bilersiňiz.',
       sure: 'Ýazgy gaty uzyn. 8 minuda çenli ses saýlap bilersiňiz.',
       erisim: 'Faýla girip bolmady. Telefonyňyzdaky faýly saýlap görüň.',

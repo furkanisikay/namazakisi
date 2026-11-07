@@ -201,7 +201,8 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
       other: 'Włączone {n} elementu',
     }),
     sesDosyasi: {
-      bicim: 'Nie udało się otworzyć tego pliku jako dźwięku. Możesz wybrać plik MP3, M4A lub WAV.',
+      bicim: 'Nie udało się otworzyć tego pliku jako dźwięku. Możesz wybrać plik MP3, M4A, OGG lub WAV.',
+      bicimIos: 'Nie udało się otworzyć tego pliku jako dźwięku. Możesz wybrać plik MP3, M4A lub WAV.',
       boyut: 'Plik jest za duży. Możesz wybrać do 20 MB.',
       sure: 'Nagranie jest za długie. Możesz wybrać dźwięk o długości do 8 minut.',
       erisim: 'Brak dostępu do pliku. Spróbuj wybrać plik z telefonu.',

@@ -12,13 +12,13 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-    iceAktarilanSesiSil,
     iceAktarilanSesler,
     sesIceAktar,
     sesIceAktarmaDestekleniyor,
     type IceAktarilanSes,
 } from '../../../modules/expo-muhafiz-anons/src';
 import { dosyaSesKimligi, kullaniciSesDosyasi } from '../../core/muhafiz/ios/paketSesleri';
+import { eklenmisSesleriAyarla } from '../../core/muhafiz/sesKimligi';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { metin } from '../../core/dil/aktifDil';
 import { SES_DOSYASI_HATA_METINLERI } from './useSesDosyasiSecimi';
@@ -53,7 +53,9 @@ export function useIosSesSecimi(aktif: boolean): IosSesSecimi {
 
     const tazele = useCallback(async () => {
         const liste = await iceAktarilanSesler();
-        if (canli.current) setDosyalar(liste);
+        // Ad üreticisinin kaydı da tazelenir (okunamadıysa dokunulmaz → "bilinmiyor").
+        if (liste) eklenmisSesleriAyarla(liste.map((d) => d.dosya));
+        if (canli.current) setDosyalar(liste ?? []);
     }, []);
 
     useEffect(() => {
@@ -88,7 +90,13 @@ export function useIosSesSecimi(aktif: boolean): IosSesSecimi {
             if (!varlik?.uri) return null;
             const sonuc = await sesIceAktar(varlik.uri, dosyaGorunenAdi(varlik.name));
             if ('hata' in sonuc) {
-                kisaBildirimGoster(SES_DOSYASI_HATA_METINLERI[sonuc.hata], true);
+                // iPhone OGG okuyamaz → biçim hatası OGG önermez (Android'in metni OGG der).
+                kisaBildirimGoster(
+                    sonuc.hata === 'bicim'
+                        ? metin().muhafizAyar.kanca.sesDosyasi.bicimIos
+                        : SES_DOSYASI_HATA_METINLERI[sonuc.hata],
+                    true
+                );
                 return null;
             }
             // Sessiz sapma yok: 30 sn'den uzun dosyanın yalnız başı çalar.
@@ -103,9 +111,17 @@ export function useIosSesSecimi(aktif: boolean): IosSesSecimi {
 
     const sil = useCallback(
         async (kimlik: string) => {
-            const dosya = kullaniciSesDosyasi(kimlik);
-            if (!dosya) return;
-            await iceAktarilanSesiSil(dosya);
+            if (!kullaniciSesDosyasi(kimlik)) return;
+            // TEK yol: dosya silinir, onu kullanan HER kayıt varsayılana döner, slice'lar
+            // tazelenir ve planlar yenilenir (`store/iosSesSilme`). TEMBEL: store'u (ve
+            // ağır servisleri) bu kancayı yükleyen her ekran testi yüklemesin.
+            const { store } = require('../store/store') as typeof import('../store/store');
+            const { iosSesiniSil } = require('../store/iosSesSilme') as typeof import('../store/iosSesSilme');
+            try {
+                await store.dispatch(iosSesiniSil(kimlik));
+            } catch (e) {
+                Logger.warn('IosSes', 'Ses silinemedi', e);
+            }
             await tazele();
         },
         [tazele]
