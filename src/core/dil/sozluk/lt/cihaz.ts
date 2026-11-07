@@ -91,6 +91,7 @@ export const cihaz: Sozluk['cihaz'] = {
       '„Android TV“ įdiekite „Namaz Akışı“ ir šiuo telefonu nuskaitykite ekrane rodomą QR kodą. Maldų laikai ir Ramadano skaitiklis bus rodomi dideliame namų ekrane.',
     tabletVeTelefonlar: 'Planšetės ir telefonai',
     esYok: 'Pridėkite planšetę ar antrąjį telefoną: viename pažymėta malda persikels į kitą.',
+    kayipEslesmeler: 'Ankstesnių susiejimų nepavyko nuskaityti ({adlar}). Šio telefono saugi saugykla galėjo būti atkurta; pridėkite įrenginius iš naujo.',
     cihaziKaldirinErisim: 'Pašalinti įrenginį {ad}',
     tabletEkleyin: 'Pridėti planšetę ar telefoną',
     saat: 'Laikrodis',

@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Android TV에 Namaz Akışı를 설치하고 화면의 QR 코드를 이 휴대전화로 스캔하세요. 예배 시간과 라마단 카운트다운이 집의 큰 화면에 나타납니다.',
     tabletVeTelefonlar: '태블릿과 휴대전화',
     esYok: '태블릿이나 두 번째 휴대전화를 추가하세요. 한쪽에서 표시한 예배가 다른 쪽으로 옮겨집니다.',
+    kayipEslesmeler: '이전 연결을 읽을 수 없습니다({adlar}). 이 휴대폰의 보안 저장소가 초기화되었을 수 있습니다. 기기를 다시 추가하세요.',
     cihaziKaldirinErisim: '{ad} 삭제',
     tabletEkleyin: '태블릿 또는 휴대전화 추가',
     saat: '시계',

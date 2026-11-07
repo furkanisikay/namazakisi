@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Botia Namaz Akışı na Android TV na bino mpe botanga code QR oyo ezali na ekran na telefone oyo. Bangonga ya losambo mpe kotanga ntango ya Ramadan ekomonana na ekran monene na ndako.',
     tabletVeTelefonlar: 'Ba tablɛti mpe ba telefone',
     esYok: 'Bobakisa tablɛti na bino to telefone ya mibale: losambo oyo botii elembo na mɔkɔ ekendaka na mosusu.',
+    kayipEslesmeler: 'Bokangisi ya liboso ekoki kotangama te ({adlar}). Ekoki kozala ete esika ya kobomba na sekirite ya telefone oyo ezongisami na ebandeli; bakisá lisusu bisaleli.',
     cihaziKaldirinErisim: 'Bolongola {ad}',
     tabletEkleyin: 'Bobakisa tablɛti to telefone',
     saat: 'Montre',

@@ -92,6 +92,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Instalați Namaz Akışı pe Android TV și scanați cu acest telefon codul QR de pe ecran. Orele de rugăciune și numărătoarea pentru Ramadan apar pe ecranul mare de acasă.',
     tabletVeTelefonlar: 'Tablete și telefoane',
     esYok: 'Adăugați tableta sau al doilea telefon: o rugăciune marcată pe unul trece pe celălalt.',
+    kayipEslesmeler: 'Asocierile anterioare nu au putut fi citite ({adlar}). Este posibil ca spațiul de stocare securizat al acestui telefon să fi fost resetat; adăugați din nou dispozitivele.',
     cihaziKaldirinErisim: 'Eliminați {ad}',
     tabletEkleyin: 'Adăugați o tabletă sau un telefon',
     saat: 'Ceas',

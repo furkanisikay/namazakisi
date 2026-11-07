@@ -87,6 +87,7 @@ export const cihaz: Sozluk['cihaz'] = {
     tvYokAciklama: '在您的 Android TV 上安装 Namaz Akışı，并用这部手机扫描屏幕上的二维码。礼拜时间和斋月倒计时会显示在家中的大屏幕上。',
     tabletVeTelefonlar: '平板和手机',
     esYok: '添加您的平板或第二部手机: 在一台设备上标记的礼拜会同步到另一台。',
+    kayipEslesmeler: '无法读取之前的配对（{adlar}）。此手机的安全存储可能已被重置，请重新添加设备。',
     cihaziKaldirinErisim: '移除{ad}',
     tabletEkleyin: '添加平板或手机',
     saat: '手表',

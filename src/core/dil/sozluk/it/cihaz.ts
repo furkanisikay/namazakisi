@@ -91,6 +91,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Installi Namaz Akışı sulla sua Android TV e scansioni con questo telefono il codice QR sullo schermo. Gli orari di preghiera e il conto alla rovescia del Ramadan compaiono sul grande schermo di casa.',
     tabletVeTelefonlar: 'Tablet e telefoni',
     esYok: 'Aggiunga il tablet o un secondo telefono: una preghiera segnata su uno passa all’altro.',
+    kayipEslesmeler: 'Non è stato possibile leggere gli abbinamenti precedenti ({adlar}). L\'archivio sicuro di questo telefono potrebbe essere stato reimpostato; aggiunga di nuovo i dispositivi.',
     cihaziKaldirinErisim: 'Rimuovere {ad}',
     tabletEkleyin: 'Aggiungere tablet o telefono',
     saat: 'Orologio',

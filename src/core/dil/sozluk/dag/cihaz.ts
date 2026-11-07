@@ -91,6 +91,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Zalimi ya Namaz Akışı yi Android TV zuɣu ka karim QR kood din be yaɣili zuɣu ni tilifoŋ ŋɔ. Jiŋli saha mini Nolɔri goli saha kalibu ni yi yaɣili kpeeni zuɣu yiŋa.',
     tabletVeTelefonlar: 'Tablet mini tilifoŋ nima',
     esYok: 'Pahimi ya yi tablet bee yi tilifoŋ din pahi ayi: jiŋli shɛli yi ni dalim yini zuɣu chaŋdi yini maa zuɣu.',
+    kayipEslesmeler: 'Pahi ŋɔ zaŋ chaŋ shɛli din daa pa ŋɔ ka bi tooi karim li ({adlar}). Tilifoŋ ŋɔ bɔbbu shee niŋ yɛla; pahimi ka binyɛra maa yaha.',
     cihaziKaldirinErisim: 'Yihimi ya {ad}',
     tabletEkleyin: 'Pahimi ya tablet bee tilifoŋ',
     saat: 'Wɔɔchi',

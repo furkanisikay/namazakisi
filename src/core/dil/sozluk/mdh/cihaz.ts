@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'I-install su Namaz Akışı sa Android TV nu endu ilayn su QR code sa screen sa telepono ini. Mailay sa masla a screen sa walay su manga waktu nu sambayang endu su countdown nu Ramadhan.',
     tabletVeTelefonlar: 'Manga tablet endu telepono',
     esYok: 'Isama su tablet atawka ikadua a telepono nu: su sambayang a natandaan nu sa isa na makawma sa salakaw.',
+    kayipEslesmeler: 'Di mabatya su nauna a kapagpares ({adlar}). Mapakay a na-reset su secure storage na kanu telepono a nan; idsugpat manem su manga device.',
     cihaziKaldirinErisim: 'Kwaan su {ad}',
     tabletEkleyin: 'Isama su tablet atawka telepono',
     saat: 'Relo',

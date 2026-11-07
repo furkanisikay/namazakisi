@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Android TV-ňize Namaz Akışı-ny guruň we ekrandaky QR kody şu telefon bilen skanirläň. Namaz wagtlary we Oraza aýynyň sanawy öýdäki uly ekranda görünýär.',
     tabletVeTelefonlar: 'Planşetler we telefonlar',
     esYok: 'Planşetiňizi ýa-da ikinji telefonyňyzy goşuň: birinde bellän namazyňyz beýlekisine geçýär.',
+    kayipEslesmeler: 'Öňki jübütlemeler okalyp bilinmedi ({adlar}). Bu telefonyň goragly ammary täzeden düzülen bolmagy mümkin; enjamlary täzeden goşuň.',
     cihaziKaldirinErisim: '{ad} enjamyny aýyryň',
     tabletEkleyin: 'Planşet ýa-da telefon goşuň',
     saat: 'Sagat',

@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Sakinisha Namaz Akışı kwenye Android TV yako na uchanganue msimbo wa QR ulio kwenye skrini kwa simu hii. Nyakati za Swala na muda uliobaki wa Ramadhani huonekana kwenye skrini kubwa nyumbani.',
     tabletVeTelefonlar: 'Kompyuta kibao na simu',
     esYok: 'Ongeza kompyuta kibao yako au simu ya pili: Swala unayoiwekea alama kwenye kimoja inahamia kwenye kingine.',
+    kayipEslesmeler: 'Uoanishaji wa awali haukuweza kusomwa ({adlar}). Hifadhi salama ya simu hii huenda imewekwa upya; ongeza vifaa tena.',
     cihaziKaldirinErisim: 'Ondoa {ad}',
     tabletEkleyin: 'Ongeza kompyuta kibao au simu',
     saat: 'Saa',

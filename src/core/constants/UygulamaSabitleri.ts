@@ -285,6 +285,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   // "Hatırlatmaları bu cihazda kur" (tek beyin): ana telefon mu, ikinci cihaz mı.
   // Cihaza özgü → YEDEKLENMEZ (yedek ikinci cihaza dönünce telefonun rolünü taşımasın).
   CIHAZ_ROLU: '@namaz_akisi/cihaz_rolu',
+  // Cihaz ağı üyeliklerinin SIRSIZ gölgesi (kimlik, ad, tür; anahtar YOK): güvenli depo
+  // okunamaz ya da sıfırlanırsa Cihazlarım boş liste yerine "okunamadı" der. Cihaza özgü,
+  // YEDEKLENMEZ (`CihazAgiDeposu`).
+  CIHAZ_AGI_GOLGESI: '@namaz_akisi/cihaz_agi_golgesi',
   // TEK RIZA (sade tasarım, Dalga 3): sesli okuma + gerçek alarm onayı BİR KEZ, tüm
   // hatırlatmalar için. Eski yüzey kayıtlarından bir kez göç eder (`core/hatirlatma/rizalar`).
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde).

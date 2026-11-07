@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Pasang Namaz Akışı di Android TV, lalu pindai kode QR di layar dengan ponsel ini. Waktu salat dan hitung mundur Ramadan tampil di layar besar rumah Anda.',
     tabletVeTelefonlar: 'Tablet dan ponsel',
     esYok: 'Tambahkan tablet atau ponsel kedua Anda: salat yang Anda tandai di satu perangkat berpindah ke perangkat lainnya.',
+    kayipEslesmeler: 'Pemasangan sebelumnya tidak dapat dibaca ({adlar}). Penyimpanan aman ponsel ini mungkin telah direset; tambahkan perangkat lagi.',
     cihaziKaldirinErisim: 'Hapus perangkat {ad}',
     tabletEkleyin: 'Tambahkan tablet atau ponsel',
     saat: 'Jam tangan',

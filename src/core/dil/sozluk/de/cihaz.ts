@@ -91,6 +91,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Installieren Sie Namaz Akışı auf Ihrem Android TV und scannen Sie den QR-Code auf dem Bildschirm mit diesem Telefon. Gebetszeiten und Ramadan-Countdown erscheinen dann auf dem großen Bildschirm zu Hause.',
     tabletVeTelefonlar: 'Tablets und Telefone',
     esYok: 'Fügen Sie Ihr Tablet oder zweites Telefon hinzu: Ein Gebet, das Sie auf einem Gerät markieren, erscheint auch auf dem anderen.',
+    kayipEslesmeler: 'Frühere Kopplungen konnten nicht gelesen werden ({adlar}). Der sichere Speicher dieses Telefons wurde möglicherweise zurückgesetzt; fügen Sie die Geräte erneut hinzu.',
     cihaziKaldirinErisim: '{ad} entfernen',
     tabletEkleyin: 'Tablet oder Telefon hinzufügen',
     saat: 'Uhr',

@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Sinni Android TVl Namaz Akışı ossaay foocal tan QR kood ama telefoonat ikriya. Salat wakti kee Ramadaan loowiyya buxal kaxxa foocal ubbulta.',
     tabletVeTelefonlar: 'Tablet kee telefoon',
     esYok: 'Sinni tablet hinnay lammay hayto telefoon ossa: inkil calaamisseen salat akkel gexa.',
+    kayipEslesmeler: 'Kaxxa abinaanih tan fanteyna ma yakriyimta ({adlar}). Ta telefoonih dacrisame kuusaa qusbah qimbisime takkek; qalabtaa qusbah oson.',
     cihaziKaldirinErisim: '{ad} kala',
     tabletEkleyin: 'Tablet hinnay telefoon ossa',
     saat: 'Gaba saaqat',

@@ -13,6 +13,8 @@ import { eslesmeYanitiniCoz, type EslesmeQr } from '../../core/cihazAgi/eslesme'
 import { CihazAgiDeposu } from '../../data/local/CihazAgiDeposu';
 import { Logger } from '../../core/utils/Logger';
 import { rastgeleBaytlar, yereleGonder } from './CihazAgiTasima';
+// Döngü yok: CihazEsServisi bu modülü yalnız çağrı anında `require` eder.
+import { buCihazinTuru } from './CihazEsServisi';
 
 export type EslesmeSonucu = 'onay' | 'red' | 'zamanAsimi' | 'ulasilamadi' | 'gecersiz' | 'iptal';
 
@@ -21,13 +23,19 @@ const AZAMI_BEKLEME_MS = 150_000;
 
 const hex = (b: Uint8Array) => Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
 
-/** Kullanıcıya görünen telefon adı (TV'nin onay diyaloğunda okunur). */
-export function telefonAdi(): string {
+/**
+ * Kullanıcıya görünen cihaz adı (TV'nin onay diyaloğunda ve eşin Cihazlarım listesinde okunur):
+ * marka + tür. Tablet "telefon" diye görünmesin diye tür `buCihazinTuru`'ndan gelir.
+ */
+export function telefonAdi(tur: 'tablet' | 'telefon' = buCihazinTuru()): string {
     const c = (Platform.constants ?? {}) as { Brand?: string; Model?: string };
-    if (Platform.OS === 'ios') return 'iPhone';
+    if (Platform.OS === 'ios') return tur === 'tablet' ? 'iPad' : 'iPhone';
     const marka = (c.Brand ?? '').trim();
-    if (!marka) return 'Android telefon';
-    return `${marka.charAt(0).toLocaleUpperCase('tr-TR')}${marka.slice(1)} telefon`.slice(0, 40);
+    if (!marka) return `Android ${tur}`;
+    // Marka adı ASCII'dir ("samsung"); ilk harf yerel ayardan bağımsız büyütülür (Türkçe i/İ tuzağı).
+    const ilk = marka.charAt(0);
+    const buyuk = ilk >= 'a' && ilk <= 'z' ? String.fromCharCode(ilk.charCodeAt(0) - 32) : ilk;
+    return `${buyuk}${marka.slice(1)} ${tur}`.slice(0, 40);
 }
 
 export async function esles(

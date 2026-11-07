@@ -91,6 +91,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Aafee Namaz Akışı e Android TV mon, janngee kod QR ngo e yaynirde e talifon ngon. Saa’iiji juulɗe e saa’i heddiiɗo Suumayee ɓanngoto e yaynirde mawnde e galle.',
     tabletVeTelefonlar: 'Tabletelli e talifonji',
     esYok: 'Ɓeydee tabletel mon walla talifon ɗiɗaɓo: juulde nde maandini-ɗon e gooto hino yaha e goɗɗo oo.',
+    kayipEslesmeler: 'Jokkondirɗe adannde ɗe njanndaaki ({adlar}). Ndeenka koolniinde talifon ngon no waawi wonde ina fuɗɗitaa; ɓeydee kaɓirɗe ɗee kadi.',
     cihaziKaldirinErisim: 'Ittee {ad}',
     tabletEkleyin: 'Ɓeydee tabletel walla talifon',
     saat: 'Montoro',

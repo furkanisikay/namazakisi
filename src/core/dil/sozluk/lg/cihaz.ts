@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Teeka Namaz Akışı ku Android TV yo osome koodi ya QR eri ku lutimbe n’essimu eno. Ebiseera by’esswala n’okubala ekiseera kwa Lamanzaane birabika ku lutimbe olunene awaka.',
     tabletVeTelefonlar: 'Taabuleti n’essimu',
     esYok: 'Gattako taabuleti yo oba essimu ey’okubiri: esswala gy’oteekako akabonero ku kimu egenda ku kirala.',
+    kayipEslesmeler: 'Okugatta okw\'emabega tekwasobola kusomebwa ({adlar}). Ekitereke ekikuumibwa eky\'essimu eno kiyinza okuba nga kyazzibwa buggya; ddamu oyongeremu ebyuma.',
     cihaziKaldirinErisim: 'Ggyawo {ad}',
     tabletEkleyin: 'Gattako taabuleti oba essimu',
     saat: 'Essaawa',

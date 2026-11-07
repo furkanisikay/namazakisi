@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Android TVにNamaz Akışıをインストールし、画面のQRコードをこのスマートフォンで読み取ってください。自宅の大きな画面に礼拝時間とラマダーンのカウントダウンが表示されます。',
     tabletVeTelefonlar: 'タブレットとスマートフォン',
     esYok: 'タブレットや2台目のスマートフォンを追加すると、片方で記録した礼拝がもう片方にも反映されます。',
+    kayipEslesmeler: '以前のペアリングを読み込めませんでした（{adlar}）。この電話の安全な保存領域がリセットされた可能性があります。デバイスをもう一度追加してください。',
     cihaziKaldirinErisim: '{ad}を削除',
     tabletEkleyin: 'タブレットまたはスマートフォンを追加',
     saat: 'ウォッチ',

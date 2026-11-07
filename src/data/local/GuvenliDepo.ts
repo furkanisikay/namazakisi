@@ -14,6 +14,8 @@
  *   fırlatmaz — yazılamayan parola kullanıcıya hata olarak dönmeli.
  */
 
+import { Logger } from '../../core/utils/Logger';
+
 type SecureStoreModulu = typeof import('expo-secure-store');
 
 let modulOnbellegi: SecureStoreModulu | null | undefined;
@@ -38,7 +40,9 @@ export const GuvenliDepo = {
     if (!m) return null;
     try {
       return await m.getItemAsync(anahtar, secenekler(m));
-    } catch {
+    } catch (e) {
+      // Değer ASLA yazılmaz; yalnız anahtar adı ve hata (tanı raporunda "depo okunamadı" izi).
+      Logger.warn('GuvenliDepo', 'Güvenli depo okunamadı', { anahtar, hata: String(e) });
       return null;
     }
   },

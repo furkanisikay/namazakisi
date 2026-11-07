@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Mushire Namaz Akışı kuri Android TV yanyu musome kode QR iri kuri ecran mukoresheje iyi terefone. Ibihe vy’isengesho n’igihe gisigaye ca Ramadhani biboneka kuri ecran nini y’i muhira.',
     tabletVeTelefonlar: 'Tabuleti na terefone',
     esYok: 'Mwongere tabuleti canke terefone yanyu ya kabiri: isengesho mwemeje kuri kimwe rija no ku kindi.',
+    kayipEslesmeler: 'Ugufatanya kwabanje ntikwashoboye gusomwa ({adlar}). Ububiko bukingiwe bw\'iyi terefone bushobora kuba bwasubijwe uko bwahora; mwongere mwongeremo ivyuma.',
     cihaziKaldirinErisim: 'Mukureho {ad}',
     tabletEkleyin: 'Mwongere tabuleti canke terefone',
     saat: 'Isaha',

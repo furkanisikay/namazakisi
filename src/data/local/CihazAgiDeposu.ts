@@ -8,6 +8,8 @@
  * kayıt `cihazAgi.u.<alıcıKimlik>`. Kayıt küçük (< 600 B; secure-store sınırının altında).
  */
 import { GuvenliDepo } from './GuvenliDepo';
+import { Depolama } from './Depolama';
+import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 
 /** `tv`: yalnız alıcı pano. `tablet` / `telefon`: çift yönlü eş (karşı cihazın türü). */
 export type CihazTuru = 'tv' | 'tablet' | 'telefon';
@@ -71,6 +73,25 @@ function gecerliMi(o: unknown): o is CihazUyeligi {
     );
 }
 
+/**
+ * Sırsız gölge (AsyncStorage): güvenli depo sessizce boşalırsa (Keystore anahtarı kaybolunca
+ * `expo-secure-store` kaydı kendisi siler ve `null` döner) kullanıcıya "okunamadı" denebilsin.
+ * Yalnız kimlik, ad ve tür; anahtar ve adres YOK.
+ */
+export interface GolgeKaydi {
+    kimlik: string;
+    ad: string;
+    tur: CihazTuru;
+}
+
+async function golgeOku(): Promise<GolgeKaydi[] | null> {
+    const g = await Depolama.oku<GolgeKaydi[]>(DEPOLAMA_ANAHTARLARI.CIHAZ_AGI_GOLGESI).catch(() => null);
+    return Array.isArray(g) ? g.filter((x) => !!x && typeof x.kimlik === 'string' && typeof x.ad === 'string') : null;
+}
+
+const golgeYaz = (g: GolgeKaydi[]): Promise<void> =>
+    Depolama.yaz(DEPOLAMA_ANAHTARLARI.CIHAZ_AGI_GOLGESI, g).catch(() => undefined);
+
 /** Eşzamanlı yazımlar aynı kaydı ezmesin (gönderim zinciri + ekran). */
 let zincir: Promise<unknown> = Promise.resolve();
 const sirala = <T>(is: () => Promise<T>): Promise<T> => {
@@ -92,7 +113,31 @@ export const CihazAgiDeposu = {
                 // bozuk kayıt atlanır
             }
         }
+        // Gölgesi hiç olmayan eski kurulum: ilk okumada mevcut liste gölgeye alınır (göç).
+        if (sonuc.length > 0 && (await golgeOku()) === null) {
+            await golgeYaz(sonuc.map((u) => ({ kimlik: u.aliciKimlik, ad: u.aliciAdi, tur: u.tur })));
+        }
         return sonuc;
+    },
+
+    /**
+     * Gölgede olup güvenli depoda artık okunamayan üyelikler (kayıp). Boşsa sorun yok. Güvenli
+     * depo okunamadıkça ya da kullanıcı `kayiplariUnut` deyinceye dek döner.
+     */
+    async kayiplar(): Promise<GolgeKaydi[]> {
+        const g = await golgeOku();
+        if (!g || g.length === 0) return [];
+        const mevcut = new Set((await CihazAgiDeposu.liste()).map((u) => u.aliciKimlik));
+        return g.filter((x) => !mevcut.has(x.kimlik));
+    },
+
+    /** Kullanıcı kayıp uyarısını kapattı: gölge yalnız okunabilen üyeliklere indirilir. */
+    kayiplariUnut(): Promise<void> {
+        return sirala(async () => {
+            const mevcut = new Set((await CihazAgiDeposu.liste()).map((u) => u.aliciKimlik));
+            const g = (await golgeOku()) ?? [];
+            await golgeYaz(g.filter((x) => mevcut.has(x.kimlik)));
+        });
     },
 
     kaydet(u: CihazUyeligi): Promise<void> {
@@ -100,6 +145,8 @@ export const CihazAgiDeposu = {
             await GuvenliDepo.yaz(kayitAnahtari(u.aliciKimlik), JSON.stringify(u));
             const kimlikler = await listeOku();
             if (!kimlikler.includes(u.aliciKimlik)) await GuvenliDepo.yaz(LISTE, JSON.stringify([...kimlikler, u.aliciKimlik]));
+            // Yeni eşleşme: gölgedeki kayıplar da bırakılır (kullanıcı yeniden ekliyor).
+            await golgeYaz([{ kimlik: u.aliciKimlik, ad: u.aliciAdi, tur: u.tur }, ...((await golgeOku()) ?? []).filter((x) => x.kimlik !== u.aliciKimlik && kimlikler.includes(x.kimlik))]);
         });
     },
 
@@ -131,6 +178,8 @@ export const CihazAgiDeposu = {
             await GuvenliDepo.sil(kayitAnahtari(aliciKimlik));
             const kimlikler = await listeOku();
             await GuvenliDepo.yaz(LISTE, JSON.stringify(kimlikler.filter((k) => k !== aliciKimlik))).catch(() => undefined);
+            const g = await golgeOku();
+            if (g) await golgeYaz(g.filter((x) => x.kimlik !== aliciKimlik));
         });
     },
 };

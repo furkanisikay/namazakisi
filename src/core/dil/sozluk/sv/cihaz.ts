@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Installera Namaz Akışı på din Android TV och skanna QR-koden på skärmen med den här telefonen. Bönetider och nedräkningen under ramadan visas på den stora skärmen hemma.',
     tabletVeTelefonlar: 'Surfplattor och telefoner',
     esYok: 'Lägg till din surfplatta eller andra telefon: en bön du markerar på den ena flyttas till den andra.',
+    kayipEslesmeler: 'Tidigare kopplingar kunde inte läsas ({adlar}). Telefonens säkra lagring kan ha återställts; lägg till enheterna igen.',
     cihaziKaldirinErisim: 'Ta bort {ad}',
     tabletEkleyin: 'Lägg till en surfplatta eller telefon',
     saat: 'Klocka',

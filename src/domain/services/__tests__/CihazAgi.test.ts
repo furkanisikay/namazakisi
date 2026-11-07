@@ -245,13 +245,22 @@ describe('eşleştirme v2 — kenar durumlar', () => {
     it('telefon adı: iPhone; Android markadan', () => {
         const { telefonAdi } = require('../CihazEslesmeServisi');
         jest.replaceProperty(Platform, 'OS', 'ios');
-        expect(telefonAdi()).toBe('iPhone');
+        expect(telefonAdi('telefon')).toBe('iPhone');
         jest.replaceProperty(Platform, 'OS', 'android');
         const sabitler = jest.spyOn(Platform, 'constants', 'get');
         sabitler.mockReturnValue({ Brand: 'samsung' } as unknown as typeof Platform.constants);
-        expect(telefonAdi()).toBe('Samsung telefon');
+        expect(telefonAdi('telefon')).toBe('Samsung telefon');
         sabitler.mockReturnValue({ Brand: '' } as unknown as typeof Platform.constants);
-        expect(telefonAdi()).toBe('Android telefon');
+        expect(telefonAdi('telefon')).toBe('Android telefon');
+    });
+
+    it('tablet kendini "tablet" diye tanıtır (eşin listesinde telefon adıyla görünmez)', () => {
+        const { telefonAdi } = require('../CihazEslesmeServisi');
+        jest.replaceProperty(Platform, 'OS', 'android');
+        jest.spyOn(Platform, 'constants', 'get').mockReturnValue({ Brand: 'samsung' } as unknown as typeof Platform.constants);
+        expect(telefonAdi('tablet')).toBe('Samsung tablet');
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        expect(telefonAdi('tablet')).toBe('iPad');
     });
 
     it('TV ulaşılamaz → "ulasilamadi"; kullanıcı iptal ederse "iptal"; TV "Hayır" → "red"', async () => {

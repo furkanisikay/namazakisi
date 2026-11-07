@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Ku saka Namaz Akışı a Android TV ɗinku ku karanta lambar QR da ke kan allon da wannan waya. Lokutan salla da ƙidayar Ramadan za su bayyana a babban allo a gida.',
     tabletVeTelefonlar: 'Kwamfutocin hannu da wayoyi',
     esYok: 'Ku ƙara kwamfutar hannu ko waya ta biyu: sallar da kuka yi wa alama a ɗaya tana komawa ɗayan.',
+    kayipEslesmeler: 'Ba a iya karanta haɗe-haɗen da suka gabata ba ({adlar}). Wataƙila an sake saita amintaccen ma\'ajin wannan waya; sake ƙara na\'urorin.',
     cihaziKaldirinErisim: 'Cire {ad}',
     tabletEkleyin: 'Ƙara kwamfutar hannu ko waya',
     saat: 'Agogo',

@@ -90,6 +90,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Namaz Akışı li ser Android TV ya xwe saz bikin û koda QR ya li ser dîmenê bi vê telefonê skan bikin. Demên nimêjê û jimartina Remezanê li malê li ser dîmena mezin xuya dibin.',
     tabletVeTelefonlar: 'Tablet û telefon',
     esYok: 'Tablet an telefona xwe ya duyem zêde bikin: nimêja ku hûn li ser yekê nîşan dikin derbasî ya din dibe.',
+    kayipEslesmeler: 'Hevgirêdanên berê nehatin xwendin ({adlar}). Dibe ku depoya ewle ya vê telefonê ji nû ve hatibe sazkirin; amûran dîsa zêde bikin.',
     cihaziKaldirinErisim: '{ad} rakin',
     tabletEkleyin: 'Tablet an telefonekê zêde bikin',
     saat: 'Saet',
