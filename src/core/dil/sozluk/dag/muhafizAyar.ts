@@ -181,7 +181,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Kpariya',
     nowBarAcik: cogul({ one: 'Binshɛŋa {n} yooya', other: 'Binshɛŋa {n} yooya' }),
     sesDosyasi: {
-      bicim: 'Faali ŋɔ bi tooi yooi kamani kukoli. Yi ni tooi piri MP3, M4A, OGG bee WAV faali.',
+      bicim: 'Faali ŋɔ bi tooi yooi kamani kukoli. Yi ni tooi piri MP3, M4A bee WAV faali.',
       boyut: 'Faali maa kpɛmya pam. Yi ni tooi piri hali ni MB 20.',
       sure: 'Kukoli maa waɣiya pam. Yi ni tooi piri kukoli din waɣi hali ni minti 8.',
       erisim: 'Bɛ bi tooi nya faali maa. Piimi ya faali din be yi tilifoŋ zuɣu.',

@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Pagame',
     nowBarAcik: cogul({ one: 'Bũmb {n} pakame', other: 'Bũmb {n} pakame' }),
     sesDosyasi: {
-      bicim: 'B pa tõog n pak fiyẽ-kãngã wala koɛɛg ye. Y tõe n tũus MP3, M4A, OGG maa WAV fiyẽ.',
+      bicim: 'B pa tõog n pak fiyẽ-kãngã wala koɛɛg ye. Y tõe n tũus MP3, M4A maa WAV fiyẽ.',
       boyut: 'Fiyẽ wã yaa kãsenga n yɩɩda. Y tõe n tũus n tãag 20 MB.',
       sure: 'Gʋlsgã yaa woglem n yɩɩda. Y tõe n tũus koɛɛg n tãag minit 8.',
       erisim: 'B pa tõog n paam fiyẽ wã ye. Mak-y n tũus fiyẽ sẽn be y telefõnã pʋgẽ.',

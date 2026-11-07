@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Desativado',
     nowBarAcik: cogul({ one: '{n} item ativado', many: '{n} de itens ativados', other: '{n} itens ativados' }),
     sesDosyasi: {
-      bicim: 'Não foi possível abrir este ficheiro como áudio. Pode escolher um ficheiro MP3, M4A, OGG ou WAV.',
+      bicim: 'Não foi possível abrir este ficheiro como áudio. Pode escolher um ficheiro MP3, M4A ou WAV.',
       boyut: 'O ficheiro é demasiado grande. Pode escolher até 20 MB.',
       sure: 'A gravação é demasiado longa. Pode escolher um som com até 8 minutos.',
       erisim: 'Não foi possível aceder ao ficheiro. Experimente escolher um ficheiro do telemóvel.',

@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Av',
     nowBarAcik: cogul({ one: '{n} objekt på', other: '{n} objekt på' }),
     sesDosyasi: {
-      bicim: 'Filen kunde inte öppnas som ljud. Du kan välja en MP3-, M4A-, OGG- eller WAV-fil.',
+      bicim: 'Filen kunde inte öppnas som ljud. Du kan välja en MP3-, M4A- eller WAV-fil.',
       boyut: 'Filen är för stor. Du kan välja upp till 20 MB.',
       sure: 'Inspelningen är för lång. Du kan välja ett ljud på upp till 8 minuter.',
       erisim: 'Filen kunde inte nås. Försök välja en fil på telefonen.',

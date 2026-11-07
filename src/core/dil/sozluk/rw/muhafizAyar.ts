@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Bifunze',
     nowBarAcik: cogul({ one: 'Ibintu {n} bifunguye', other: 'Ibintu {n} bifunguye' }),
     sesDosyasi: {
-      bicim: 'Iyi dosiye ntiyashoboye gufungurwa nk’ijwi. Mushobora guhitamo dosiye ya MP3, M4A, OGG cyangwa WAV.',
+      bicim: 'Iyi dosiye ntiyashoboye gufungurwa nk’ijwi. Mushobora guhitamo dosiye ya MP3, M4A cyangwa WAV.',
       boyut: 'Dosiye ni nini cyane. Mushobora guhitamo itarenze 20 MB.',
       sure: 'Ijwi ryafashwe ni rirerire cyane. Mushobora guhitamo ijwi ritarenze iminota 8.',
       erisim: 'Ntibyashobotse kugera kuri dosiye. Mugerageze guhitamo dosiye iri kuri telefoni yanyu.',

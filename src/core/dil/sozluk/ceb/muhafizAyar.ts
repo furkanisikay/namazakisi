@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Naka-off',
     nowBarAcik: cogul({ one: '{n} ka butang ang naka-on', other: '{n} ka butang ang naka-on' }),
     sesDosyasi: {
-      bicim: 'Dili maablihan kining file isip audio. Makapili kamo og MP3, M4A, OGG o WAV nga file.',
+      bicim: 'Dili maablihan kining file isip audio. Makapili kamo og MP3, M4A o WAV nga file.',
       boyut: 'Dako kaayo ang file. Makapili kamo hangtod 20 MB.',
       sure: 'Taas kaayo ang rekording. Makapili kamo og tingog hangtod 8 ka minuto.',
       erisim: 'Dili ma-access ang file. Sulayi pagpili og file sa inyong telepono.',

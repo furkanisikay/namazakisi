@@ -196,7 +196,7 @@ export const muhafizAyar = {
     nowBarKapali: 'Kapalı',
     nowBarAcik: cogul({ one: '{n} öğe açık', other: '{n} öğe açık' }),
     sesDosyasi: {
-      bicim: 'Bu dosya ses olarak açılamadı. MP3, M4A, OGG ya da WAV dosyası seçebilirsiniz.',
+      bicim: 'Bu dosya ses olarak açılamadı. MP3, M4A ya da WAV dosyası seçebilirsiniz.',
       boyut: 'Dosya çok büyük. En fazla 20 MB seçebilirsiniz.',
       sure: 'Kayıt çok uzun. En fazla 8 dakikalık bir ses seçebilirsiniz.',
       erisim: 'Dosyaya erişilemedi. Telefonunuzdaki bir dosyayı seçmeyi deneyin.',

@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: '꺼짐',
     nowBarAcik: cogul({ other: '{n}개 항목 켜짐' }),
     sesDosyasi: {
-      bicim: '이 파일을 오디오로 열 수 없습니다. MP3, M4A, OGG, WAV 파일을 선택할 수 있습니다.',
+      bicim: '이 파일을 오디오로 열 수 없습니다. MP3, M4A, WAV 파일을 선택할 수 있습니다.',
       boyut: '파일이 너무 큽니다. 최대 20MB까지 선택할 수 있습니다.',
       sure: '녹음이 너무 깁니다. 최대 8분 길이의 소리를 선택할 수 있습니다.',
       erisim: '파일에 접근할 수 없습니다. 휴대전화에 있는 파일을 선택해 보세요.',

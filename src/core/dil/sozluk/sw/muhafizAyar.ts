@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Imezimwa',
     nowBarAcik: cogul({ one: 'Kipengee {n} kimewashwa', other: 'Vipengee {n} vimewashwa' }),
     sesDosyasi: {
-      bicim: 'Faili hili halikuweza kufunguliwa kama sauti. Unaweza kuchagua faili la MP3, M4A, OGG au WAV.',
+      bicim: 'Faili hili halikuweza kufunguliwa kama sauti. Unaweza kuchagua faili la MP3, M4A au WAV.',
       boyut: 'Faili ni kubwa mno. Unaweza kuchagua hadi MB 20.',
       sure: 'Rekodi ni ndefu mno. Unaweza kuchagua sauti ya hadi dakika 8.',
       erisim: 'Faili halikuweza kufikiwa. Jaribu kuchagua faili lililo kwenye simu yako.',

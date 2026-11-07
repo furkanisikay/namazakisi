@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Joaktiv',
     nowBarAcik: cogul({ one: '{n} element aktiv', other: '{n} elemente aktive' }),
     sesDosyasi: {
-      bicim: 'Ky skedar nuk u hap si audio. Mund të zgjidhni një skedar MP3, M4A, OGG ose WAV.',
+      bicim: 'Ky skedar nuk u hap si audio. Mund të zgjidhni një skedar MP3, M4A ose WAV.',
       boyut: 'Skedari është shumë i madh. Mund të zgjidhni deri në 20 MB.',
       sure: 'Regjistrimi është shumë i gjatë. Mund të zgjidhni një tingull deri në 8 minuta.',
       erisim: 'Skedari nuk u arrit. Provoni të zgjidhni një skedar në telefon.',

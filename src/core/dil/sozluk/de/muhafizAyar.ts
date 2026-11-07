@@ -183,7 +183,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Aus',
     nowBarAcik: cogul({ one: '{n} Element an', other: '{n} Elemente an' }),
     sesDosyasi: {
-      bicim: 'Diese Datei konnte nicht als Audio geöffnet werden. Sie können eine MP3-, M4A-, OGG- oder WAV-Datei wählen.',
+      bicim: 'Diese Datei konnte nicht als Audio geöffnet werden. Sie können eine MP3-, M4A- oder WAV-Datei wählen.',
       boyut: 'Die Datei ist zu groß. Sie können höchstens 20 MB wählen.',
       sure: 'Die Aufnahme ist zu lang. Sie können einen Ton von höchstens 8 Minuten wählen.',
       erisim: 'Auf die Datei konnte nicht zugegriffen werden. Wählen Sie eine Datei auf Ihrem Telefon.',

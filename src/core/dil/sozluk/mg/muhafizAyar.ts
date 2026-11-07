@@ -190,7 +190,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Tsy mandeha',
     nowBarAcik: cogul({ one: 'Zavatra {n} mandeha', other: 'Zavatra {n} mandeha' }),
     sesDosyasi: {
-      bicim: 'Tsy nety nosokafana ho feo ity rakitra ity. Azonao fidiana ny rakitra MP3, M4A, OGG na WAV.',
+      bicim: 'Tsy nety nosokafana ho feo ity rakitra ity. Azonao fidiana ny rakitra MP3, M4A na WAV.',
       boyut: "Lehibe loatra ny rakitra. Hatramin'ny 20 MB no azonao fidiana.",
       sure: "Lava loatra ny firaketana. Feo hatramin'ny 8 minitra no azonao fidiana.",
       erisim: "Tsy azo idirana ny rakitra. Andramo mifidy rakitra ao amin'ny findainao.",

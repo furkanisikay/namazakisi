@@ -189,7 +189,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Isključeno',
     nowBarAcik: cogul({ one: 'Uključena {n} stavka', few: 'Uključene {n} stavke', other: 'Uključeno {n} stavki' }),
     sesDosyasi: {
-      bicim: 'Ova se datoteka nije mogla otvoriti kao zvuk. Možete odabrati datoteku MP3, M4A, OGG ili WAV.',
+      bicim: 'Ova se datoteka nije mogla otvoriti kao zvuk. Možete odabrati datoteku MP3, M4A ili WAV.',
       boyut: 'Datoteka je prevelika. Možete odabrati do 20 MB.',
       sure: 'Snimka je preduga. Možete odabrati zvuk dug do 8 minuta.',
       erisim: 'Datoteci nije bilo moguće pristupiti. Pokušajte odabrati datoteku na telefonu.',

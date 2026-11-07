@@ -180,7 +180,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarKapali: 'Nonaktif',
     nowBarAcik: cogul({ other: '{n} item aktif' }),
     sesDosyasi: {
-      bicim: 'File ini tidak dapat dibuka sebagai audio. Anda dapat memilih file MP3, M4A, OGG, atau WAV.',
+      bicim: 'File ini tidak dapat dibuka sebagai audio. Anda dapat memilih file MP3, M4A, atau WAV.',
       boyut: 'File terlalu besar. Anda dapat memilih hingga 20 MB.',
       sure: 'Rekaman terlalu panjang. Anda dapat memilih suara hingga 8 menit.',
       erisim: 'File tidak dapat diakses. Coba pilih file yang ada di ponsel Anda.',
