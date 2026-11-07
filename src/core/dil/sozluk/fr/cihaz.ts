@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Autres appareils',
     dugumErisim: '{ad} : {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Téléphone {marka}',
+    tablet: 'Tablette {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Impossible d’enregistrer le réglage. Réessayez.',
     kaldirildi: '{ad} a été retiré.',

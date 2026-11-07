@@ -142,9 +142,12 @@ describe('TV durum gönderimi', () => {
         await eslesmisKur();
         mockGonder.mockRejectedValue(new Error('zaman aşımı'));
         const { TvSenkronServisi, geriCekilmeMs } = require('../TvSenkronServisi');
-        // İlk tur zorlanır (önceki testlerin özet tekilleştirmesi "ayni" demesin).
+        // Zorla deneme (kullanıcı Cihazlarım'ı açtı) başarısız olsa da geri çekilmeyi UZATMAZ.
         expect(await TvSenkronServisi.getInstance().gonder(true)).toEqual({ [TV]: 'ulasilamadi' });
-        expect((await CihazAgiDeposu.liste())[0].hataSayisi).toBe(1);
+        expect((await CihazAgiDeposu.liste())[0].hataSayisi).toBe(0);
+        // Olağan bir turun başarısızlığı geri çekilmeyi başlatmış olsun (özet tekilleştirmesi
+        // önceki testlerden "ayni" dediği için sayaç doğrudan kurulur).
+        await CihazAgiDeposu.guncelle(TV, { hataSayisi: 1, sonHataMs: Date.now() });
         mockGonder.mockClear();
         expect(await TvSenkronServisi.getInstance().gonder()).toEqual({ [TV]: 'atlandi' });
         expect(mockGonder).not.toHaveBeenCalled();

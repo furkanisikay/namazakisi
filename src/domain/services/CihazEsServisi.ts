@@ -235,7 +235,8 @@ export class CihazEsServisi {
             } catch (hata) {
                 Logger.info('CihazEs', 'Eşe ulaşılamadı', { hata: String(hata) });
                 sonuc[e.aliciKimlik] = 'ulasilamadi';
-                await CihazAgiDeposu.guncelle(e.aliciKimlik, { durum: 'ulasilamadi', sonHataMs: Date.now(), hataSayisi: (e.hataSayisi ?? 0) + 1 });
+                // Zorla deneme (kullanıcı sayfayı açtı) geri çekilmeyi uzatmaz; yalnız zamanı yazar.
+                await CihazAgiDeposu.guncelle(e.aliciKimlik, { durum: 'ulasilamadi', sonHataMs: Date.now(), hataSayisi: (e.hataSayisi ?? 0) + (zorla ? 0 : 1) });
             }
         }
         return sonuc;

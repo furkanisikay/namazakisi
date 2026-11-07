@@ -49,12 +49,18 @@ const kayitAnahtari = (k: string) => `cihazAgi.u.${k}`;
 const KIMLIK = /^[0-9a-f]{16}$/;
 
 async function listeOku(): Promise<string[]> {
+    return (await listeOkuDurumlu()).kimlikler;
+}
+
+/** Liste + okunabildi mi (`okunamadi`: depo geçici olarak okunamadı → "kayıp" denmez). */
+async function listeOkuDurumlu(): Promise<{ kimlikler: string[]; okunamadi: boolean }> {
+    const { deger, hata } = await GuvenliDepo.okuDurumlu(LISTE);
     try {
-        const ham = await GuvenliDepo.oku(LISTE);
-        const dizi = ham ? (JSON.parse(ham) as unknown) : [];
-        return Array.isArray(dizi) ? dizi.filter((x): x is string => typeof x === 'string' && KIMLIK.test(x)) : [];
+        const dizi = deger ? (JSON.parse(deger) as unknown) : [];
+        const kimlikler = Array.isArray(dizi) ? dizi.filter((x): x is string => typeof x === 'string' && KIMLIK.test(x)) : [];
+        return { kimlikler, okunamadi: hata };
     } catch {
-        return [];
+        return { kimlikler: [], okunamadi: hata };
     }
 }
 
@@ -100,53 +106,78 @@ const sirala = <T>(is: () => Promise<T>): Promise<T> => {
     return sonuc;
 };
 
+/** Okunabilen üyelikler + herhangi bir okuma geçici olarak başarısız oldu mu. */
+async function uyelikleriOku(): Promise<{ uyeler: CihazUyeligi[]; okunamadi: boolean }> {
+    const { kimlikler, okunamadi } = await listeOkuDurumlu();
+    let hata = okunamadi;
+    const uyeler: CihazUyeligi[] = [];
+    for (const k of kimlikler) {
+        const { deger, hata: h } = await GuvenliDepo.okuDurumlu(kayitAnahtari(k));
+        hata = hata || h;
+        try {
+            const o = deger ? (JSON.parse(deger) as unknown) : null;
+            if (gecerliMi(o)) uyeler.push(o);
+        } catch {
+            // bozuk kayıt atlanır
+        }
+    }
+    return { uyeler, okunamadi: hata };
+}
+
+const golgeKaydi = (u: CihazUyeligi): GolgeKaydi => ({ kimlik: u.aliciKimlik, ad: u.aliciAdi, tur: u.tur });
+
+/** Süreç başına bir kez: gölgesi olmayan eski kurulumda okunabilen liste gölgeye alınır (göç). */
+let golgeGocuYapildi = false;
+async function golgeGocu(uyeler: CihazUyeligi[]): Promise<void> {
+    if (golgeGocuYapildi || uyeler.length === 0) return;
+    golgeGocuYapildi = true;
+    if ((await golgeOku()) === null) await golgeYaz(uyeler.map(golgeKaydi));
+}
+
 export const CihazAgiDeposu = {
+    /** Testler için: göç bayrağını sıfırlar. */
+    _sifirla(): void {
+        golgeGocuYapildi = false;
+    },
+
     async liste(): Promise<CihazUyeligi[]> {
-        const kimlikler = await listeOku();
-        const sonuc: CihazUyeligi[] = [];
-        for (const k of kimlikler) {
-            try {
-                const ham = await GuvenliDepo.oku(kayitAnahtari(k));
-                const o = ham ? (JSON.parse(ham) as unknown) : null;
-                if (gecerliMi(o)) sonuc.push(o);
-            } catch {
-                // bozuk kayıt atlanır
-            }
-        }
-        // Gölgesi hiç olmayan eski kurulum: ilk okumada mevcut liste gölgeye alınır (göç).
-        if (sonuc.length > 0 && (await golgeOku()) === null) {
-            await golgeYaz(sonuc.map((u) => ({ kimlik: u.aliciKimlik, ad: u.aliciAdi, tur: u.tur })));
-        }
-        return sonuc;
+        const { uyeler } = await uyelikleriOku();
+        await golgeGocu(uyeler);
+        return uyeler;
     },
 
     /**
-     * Gölgede olup güvenli depoda artık okunamayan üyelikler (kayıp). Boşsa sorun yok. Güvenli
-     * depo okunamadıkça ya da kullanıcı `kayiplariUnut` deyinceye dek döner.
+     * Gölgede olup güvenli depoda artık bulunmayan üyelikler (kayıp). Depo şu an okunamıyorsa
+     * (geçici hata) boş döner: "silindi" ancak secure-store kaydı gerçekten yokken söylenir.
      */
     async kayiplar(): Promise<GolgeKaydi[]> {
         const g = await golgeOku();
         if (!g || g.length === 0) return [];
-        const mevcut = new Set((await CihazAgiDeposu.liste()).map((u) => u.aliciKimlik));
+        const { uyeler, okunamadi } = await uyelikleriOku();
+        if (okunamadi) return [];
+        const mevcut = new Set(uyeler.map((u) => u.aliciKimlik));
         return g.filter((x) => !mevcut.has(x.kimlik));
     },
 
-    /** Kullanıcı kayıp uyarısını kapattı: gölge yalnız okunabilen üyeliklere indirilir. */
+    /** Kullanıcı kayıp uyarısını kapattı: gölge yalnız okunabilen üyeliklere indirilir (depo okunamıyorsa dokunulmaz). */
     kayiplariUnut(): Promise<void> {
         return sirala(async () => {
-            const mevcut = new Set((await CihazAgiDeposu.liste()).map((u) => u.aliciKimlik));
-            const g = (await golgeOku()) ?? [];
-            await golgeYaz(g.filter((x) => mevcut.has(x.kimlik)));
+            const { uyeler, okunamadi } = await uyelikleriOku();
+            if (okunamadi) return;
+            const mevcut = new Set(uyeler.map((u) => u.aliciKimlik));
+            await golgeYaz(((await golgeOku()) ?? []).filter((x) => mevcut.has(x.kimlik)));
         });
     },
 
     kaydet(u: CihazUyeligi): Promise<void> {
         return sirala(async () => {
+            // Gölgesi olmayan eski kurulum: önce mevcut üyelikler gölgeye (göç `liste()`'den önce de olsun).
+            const onceki = (await golgeOku()) ?? (await uyelikleriOku()).uyeler.map(golgeKaydi);
             await GuvenliDepo.yaz(kayitAnahtari(u.aliciKimlik), JSON.stringify(u));
             const kimlikler = await listeOku();
             if (!kimlikler.includes(u.aliciKimlik)) await GuvenliDepo.yaz(LISTE, JSON.stringify([...kimlikler, u.aliciKimlik]));
-            // Yeni eşleşme: gölgedeki kayıplar da bırakılır (kullanıcı yeniden ekliyor).
-            await golgeYaz([{ kimlik: u.aliciKimlik, ad: u.aliciAdi, tur: u.tur }, ...((await golgeOku()) ?? []).filter((x) => x.kimlik !== u.aliciKimlik && kimlikler.includes(x.kimlik))]);
+            // Yeni eşleşme: gölgedeki kayıplar bırakılır (kullanıcı yeniden ekliyor).
+            await golgeYaz([golgeKaydi(u), ...onceki.filter((x) => x.kimlik !== u.aliciKimlik && kimlikler.includes(x.kimlik))]);
         });
     },
 

@@ -77,6 +77,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Fitaovana hafa',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Finday {marka}',
+    tablet: 'Takelaka {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Tsy voatahiry ny fikirana. Andramo indray.',
     kaldirildi: 'Nesorina ny {ad}.',

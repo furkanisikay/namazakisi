@@ -80,6 +80,11 @@ export const cihaz = {
     digerCihazlar: 'Diğer cihazlar',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} telefon',
+    tablet: '{marka} tablet',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Ayar kaydedilemedi. Lütfen yeniden deneyin.',
     kaldirildi: '{ad} kaldırıldı.',

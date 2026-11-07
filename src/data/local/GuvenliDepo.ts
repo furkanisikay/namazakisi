@@ -36,14 +36,24 @@ const secenekler = (m: SecureStoreModulu) => ({
 
 export const GuvenliDepo = {
   async oku(anahtar: string): Promise<string | null> {
+    return (await GuvenliDepo.okuDurumlu(anahtar)).deger;
+  },
+
+  /**
+   * Okuma + okunabildi mi? `hata: true` = depo şu an okunamadı (modül yok, geçici Keystore
+   * hatası); `deger: null, hata: false` = gerçekten yok (secure-store kaybolan anahtarın
+   * kaydını kendisi silip `null` döndüğünde de böyledir). Kayıp uyarısı yalnız ikincisinde
+   * verilir; geçici hata "eşleştirmeler silindi" sanılmasın.
+   */
+  async okuDurumlu(anahtar: string): Promise<{ deger: string | null; hata: boolean }> {
     const m = modul();
-    if (!m) return null;
+    if (!m) return { deger: null, hata: true };
     try {
-      return await m.getItemAsync(anahtar, secenekler(m));
+      return { deger: await m.getItemAsync(anahtar, secenekler(m)), hata: false };
     } catch (e) {
       // Değer ASLA yazılmaz; yalnız anahtar adı ve hata (tanı raporunda "depo okunamadı" izi).
       Logger.warn('GuvenliDepo', 'Güvenli depo okunamadı', { anahtar, hata: String(e) });
-      return null;
+      return { deger: null, hata: true };
     }
   },
 

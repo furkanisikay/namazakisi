@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'ఇతర పరికరాలు',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} ఫోన్',
+    tablet: '{marka} టాబ్లెట్',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'సెట్టింగ్‌ను సేవ్ చేయడం సాధ్యం కాలేదు. మళ్లీ ప్రయత్నించండి.',
     kaldirildi: '{ad} తీసివేయబడింది.',

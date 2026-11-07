@@ -3,9 +3,11 @@
  * yerine "okunamadı" diyebilsin. Gölgede anahtar/adres YOK.
  */
 const mockGuvenli = new Map<string, string>();
+let mockOkumaHatasi = false;
 jest.mock('../GuvenliDepo', () => ({
     GuvenliDepo: {
-        oku: async (k: string) => mockGuvenli.get(k) ?? null,
+        oku: async (k: string) => (mockOkumaHatasi ? null : (mockGuvenli.get(k) ?? null)),
+        okuDurumlu: async (k: string) => (mockOkumaHatasi ? { deger: null, hata: true } : { deger: mockGuvenli.get(k) ?? null, hata: false }),
         yaz: async (k: string, v: string) => {
             mockGuvenli.set(k, v);
         },
@@ -46,6 +48,8 @@ const uye = (kimlik: string, ad: string, tur: CihazUyeligi['tur'] = 'tv'): Cihaz
 beforeEach(() => {
     mockGuvenli.clear();
     mockDisk.clear();
+    mockOkumaHatasi = false;
+    CihazAgiDeposu._sifirla();
 });
 
 describe('CihazAgiDeposu gölgesi', () => {
@@ -64,6 +68,24 @@ describe('CihazAgiDeposu gölgesi', () => {
         expect((await CihazAgiDeposu.kayiplar()).map((k) => k.ad).sort()).toEqual(['Salon TV', 'Samsung tablet']);
         await CihazAgiDeposu.kayiplariUnut();
         expect(await CihazAgiDeposu.kayiplar()).toEqual([]);
+    });
+
+    it('depo geçici olarak okunamıyorsa kayıp denmez ve kapatma gölgeyi silmez', async () => {
+        await CihazAgiDeposu.kaydet(uye('0123456789abcdef', 'Salon TV'));
+        mockOkumaHatasi = true;
+        expect(await CihazAgiDeposu.kayiplar()).toEqual([]);
+        await CihazAgiDeposu.kayiplariUnut();
+        mockOkumaHatasi = false;
+        mockGuvenli.clear();
+        expect((await CihazAgiDeposu.kayiplar()).map((k) => k.ad)).toEqual(['Salon TV']);
+    });
+
+    it('gölgesiz eski kurulumda liste okunmadan eşleştirme yapılsa da eski üyelikler gölgeye girer', async () => {
+        mockGuvenli.set('cihazAgi.liste', JSON.stringify(['0123456789abcdef']));
+        mockGuvenli.set('cihazAgi.u.0123456789abcdef', JSON.stringify(uye('0123456789abcdef', 'Salon TV')));
+        await CihazAgiDeposu.kaydet(uye('fedcba9876543210', 'Samsung tablet', 'tablet'));
+        mockGuvenli.clear();
+        expect((await CihazAgiDeposu.kayiplar()).map((k) => k.ad).sort()).toEqual(['Salon TV', 'Samsung tablet']);
     });
 
     it('kullanıcının kaldırdığı üyelik kayıp sayılmaz', async () => {
