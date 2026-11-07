@@ -39,7 +39,7 @@ import {
     vakitSesGorunenAdi,
     type VakitSesSecimi,
 } from '../../../core/bildirim/vakitBildirimSesi';
-import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
+import { ozelSesMi, platformdaCalinirMi } from '../../../core/muhafiz/sesKimligi';
 
 /** Taban `vakit_bildirim` kanalı sistemin varsayılan bildirim sesini çalar (önizleme bunu çalar). */
 const SISTEM_BILDIRIM_SESI = 'content://settings/system/notification_sound';
@@ -208,6 +208,8 @@ export const VakitGirinceBolumu: React.FC = () => {
                                             sesler[v.anahtar]?.bildirimSesi ?? SISTEM_BILDIRIM_SESI
                                         )
                                     }
+                                    // iPhone: telefonun sesi uygulama içinde dinletilemez (ölü düğme yok).
+                                    dinlenebilir={sistemSecici || platformdaCalinirMi(sesler[v.anahtar]?.bildirimSesi, 'ios')}
                                 />
                             </View>
                         ) : null}

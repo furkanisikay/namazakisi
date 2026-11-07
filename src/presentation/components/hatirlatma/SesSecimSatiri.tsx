@@ -59,6 +59,11 @@ export interface SesSecimSatiriProps {
     /** Secili sesi calar */
     onDinle: () => void;
     /**
+     * Secili ses uygulama icinde dinletilebilir mi? (varsayilan: evet) iPhone'da "telefonun
+     * sesi" dinletilemez → olu bir "dinle" dugmesi cizilmez (yalniz kompakt satir).
+     */
+    dinlenebilir?: boolean;
+    /**
      * "Kendi dosyanizdan secin" (Android 10+; SAF → MediaStore). Verilmezse secenek
      * cizilmez. Ornegin bir ezan kaydi buradan eklenir.
      */
@@ -90,6 +95,7 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     seciliyor = false,
     onSec,
     onDinle,
+    dinlenebilir = true,
     onDosyadanSec,
     dosyaAktariliyor = false,
     onVarsayilanaDon,
@@ -272,15 +278,17 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                             style={{ marginHorizontal: 8 }}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        className="w-11 h-11 items-center justify-center rounded-xl"
-                        onPress={onDinle}
-                        activeOpacity={0.7}
-                        accessibilityRole="button"
-                        accessibilityLabel={bicim(ms.dinleErisim, { ses: sesEtiketi })}
-                    >
-                        <FontAwesome5 name="play" size={11} color={renkler.birincil} solid />
-                    </TouchableOpacity>
+                    {dinlenebilir ? (
+                        <TouchableOpacity
+                            className="w-11 h-11 items-center justify-center rounded-xl"
+                            onPress={onDinle}
+                            activeOpacity={0.7}
+                            accessibilityRole="button"
+                            accessibilityLabel={bicim(ms.dinleErisim, { ses: sesEtiketi })}
+                        >
+                            <FontAwesome5 name="play" size={11} color={renkler.birincil} solid />
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
                 {acik ? (listeli ? secimListesi : eylemListesi) : null}
             </View>

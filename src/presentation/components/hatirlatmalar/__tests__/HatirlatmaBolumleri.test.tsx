@@ -227,6 +227,8 @@ describe('VakitGirinceBolumu — ses (iPhone)', () => {
     it('satıra dokununca uygulamanın ses listesi AÇILIR (sistem seçicisi yok); seçilen ses o vakte yazılır', async () => {
         const e = render(<VakitGirinceBolumu />);
         expect(e.queryByLabelText('Sakin zil')).toBeNull();
+        // Telefonun sesi uygulama içinde dinletilemez → satırda ölü "dinle" düğmesi yok.
+        expect(e.queryByLabelText('Sabah bildirim sesini dinleyin')).toBeNull();
         fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi: Telefonun bildirim sesi/));
         // "Telefonun sesleri" (Android sistem seçicisi) iPhone'da YOK.
         expect(e.queryByLabelText('Sabah bildirim sesi: telefonun seslerinden seçin')).toBeNull();
