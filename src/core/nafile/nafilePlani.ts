@@ -26,7 +26,7 @@ import { alarmPayinaSigdir, ekAlarmKurarMi, ekAnonsAlarmiKurarMi } from '../hati
 import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 import { teheccudPenceresiniUygula, type NafilePencere } from './nafileVakitleri';
 import { nafileAnonsMetni, nafileBildirimMetni } from './nafileMetinleri';
-import { saatUyandiriyorMu, uyandirmaTelefonMs, type SaatTeslimBaglami } from '../saat/saatAyarlari';
+import { saatUyandiriyorMu, uyandirmaTelefonMs, yedekOlcuDk, type SaatTeslimBaglami } from '../saat/saatAyarlari';
 import { nafileUyandirmasiMi } from '../saat/uyandirmaKapisi';
 import {
     NAFILE_ADLARI,
@@ -229,12 +229,16 @@ export function nafilePlaniOlustur(
                 if (secenekler.pencereSonunaKadarTut ? p.bitis.getTime() <= simdi.getTime() : zamanMs <= simdi.getTime()) {
                     continue;
                 }
+                // Yedek geç çalıyorsa metin gerçek ana göre konuşur (kimlik özgün kalanDk'da kalır).
+                const ozgunMs = t.zaman.getTime();
+                const kaydi = zamanMs !== ozgunMs;
+                const olcuDk = yedekOlcuDk(ayar.yon, t.uyari.olcuDk, ozgunMs, zamanMs, p.bitis.getTime());
                 const girdi = {
                     tur: p.tur,
                     son: p.bitis,
                     yon: ayar.yon,
                     ilk: t.ilk,
-                    kalanDk: t.uyari.kalanDk,
+                    kalanDk: kaydi ? Math.max(1, Math.ceil((p.bitis.getTime() - zamanMs) / 60000)) : t.uyari.kalanDk,
                     teheccudPenceresi: teheccud?.pencere,
                     uyandirma,
                 };
@@ -249,11 +253,12 @@ export function nafilePlaniOlustur(
                     son: p.bitis,
                     uyari: {
                         ...t.uyari,
+                        olcuDk,
                         // Kullanıcının metni (`{süre}` ölçüdür: girişte geçen, çıkışta kalan dk);
                         // boşsa bugünkü otomatik nafile cümlesi.
                         anonsMetni: adimAnonsMetni(
                             t.uyari.anonsMetni,
-                            { vakit: NAFILE_ADLARI[p.tur], sureDk: t.uyari.olcuDk, yon: ayar.yon },
+                            { vakit: NAFILE_ADLARI[p.tur], sureDk: olcuDk, yon: ayar.yon },
                             () => nafileAnonsMetni(girdi)
                         ),
                     },

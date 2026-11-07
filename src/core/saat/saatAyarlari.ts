@@ -80,6 +80,23 @@ export function uyandirmaTelefonMs(
     return telefonYedegiGecikirMi(baglam) ? Math.min(ozgunMs + gecikme, sinir) : ozgunMs;
 }
 
+/**
+ * Kaydırılmış (yedek) tetiğin METİN ölçüsü: kalan/geçen dakika telefonun GERÇEK anına
+ * göre söylenir. Kimlik ve eşik özgün `kalanDk`'da kalır; yalnız metin değişir. Çıkış
+ * yönünde kalan dakika yukarı yuvarlanır ve en az 1'dir (0 ya da eksi asla söylenmez).
+ */
+export function yedekOlcuDk(
+    yon: 'cikisaDogru' | 'girisindenItibaren',
+    ozgunOlcuDk: number,
+    ozgunMs: number,
+    zamanMs: number,
+    sonMs: number
+): number {
+    if (zamanMs === ozgunMs) return ozgunOlcuDk;
+    if (yon === 'girisindenItibaren') return ozgunOlcuDk + Math.round((zamanMs - ozgunMs) / 60000);
+    return Math.max(1, Math.ceil((sonMs - zamanMs) / 60000));
+}
+
 const UYANDIRMA_YERLERI: readonly UyandirmaYeri[] = ['telefon', 'saat', 'ikisi'];
 const ANONS_YERLERI: readonly AnonsYeri[] = ['otomatik', 'telefon', 'saat'];
 
