@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Tingog nga inyong gipili',
     dokunarak: 'I-tap aron usbon',
     seciliDinle: 'Paminawa ang gipiling tingog sa pahibalo',
+    paket: {
+      zil: 'Hinay nga lingganay',
+      ikiton: 'Duha ka tono',
+      damla: 'Mga tulo',
+      sabah: 'Buntag',
+    },
+    silErisim: 'Papasa ang tingog nga {ad}',
+    ornekDinleErisim: 'Paminawa: {ad}',
+    uzunlukNotu: 'Ang tingog sa pahibalo motingog hangtod sa 30 segundos; sa mas taas nga file, ang unang 30 segundos ang gamiton.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

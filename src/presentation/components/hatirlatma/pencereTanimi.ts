@@ -505,8 +505,8 @@ export interface PencereTanimi {
  * Sahip kararı: hatırlatma yapısı HER YERDE aynıdır — bir yüzeye sesli anons,
  * alarm ya da tekrar eklenip ötekine eklenmemesi kabul edilmez. Her pencere
  * tanımı bu nesneyi YAYAR; bir yeteneği kapatmak, gerekçesi yanında yazan AÇIK
- * bir istisnadır (yorum zorunlu). Platform yeteneği olmayanlar (iOS'ta ses
- * seçici ve titreşim) `yetenekler`den türetilir — o da
+ * bir istisnadır (yorum zorunlu). Platform yeteneği olmayanlar (iOS'ta titreşim;
+ * ses seçimi iOS'ta uygulamanın listesidir) `yetenekler`den türetilir — o da
  * istisna değil, cihazın gerçeğidir.
  *
  * Nöbetçi: `pencereTanimi.test.ts > YETENEK STANDARDI`.

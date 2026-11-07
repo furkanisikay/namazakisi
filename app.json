@@ -280,7 +280,11 @@
           "sounds": [
             "./assets/sounds/bildirim.mp3",
             "./assets/sounds/bildirim_ios.wav",
-            "./assets/sounds/alarm_ios.wav"
+            "./assets/sounds/alarm_ios.wav",
+            "./assets/sounds/zil_ios.wav",
+            "./assets/sounds/ikiton_ios.wav",
+            "./assets/sounds/damla_ios.wav",
+            "./assets/sounds/sabah_ios.wav"
           ]
         }
       ],

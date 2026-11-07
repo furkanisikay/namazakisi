@@ -359,6 +359,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Выбранный вами звук',
     dokunarak: 'Нажмите, чтобы изменить',
     seciliDinle: 'Прослушать выбранный звук уведомления',
+    paket: {
+      zil: 'Мягкий звон',
+      ikiton: 'Два тона',
+      damla: 'Капли',
+      sabah: 'Утро',
+    },
+    silErisim: 'Удалить звук «{ad}»',
+    ornekDinleErisim: 'Прослушать: {ad}',
+    uzunlukNotu: 'Звук уведомления звучит не дольше 30 секунд; у более длинного файла используются первые 30 секунд.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

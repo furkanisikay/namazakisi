@@ -25,14 +25,18 @@
  * ---------------------------------------------------------------------------
  * SES
  *
- * iOS'ta ses KANAL degil BILDIRIM ozelligidir ve uygulama paketindeki bir dosya
- * ADIdir (<=30 sn). Kullanicinin Android'de sectigi `content://` URI'si iOS'ta
- * ANLAMSIZDIR (baska platformun kimligi) → varsayilana duser. Bu, yedek dosyasi
- * Android'den iPhone'a tasindiginda sessiz bir bozulma yerine ongorulebilir bir
- * geri duste sonuclanir.
+ * iOS'ta ses KANAL degil BILDIRIM ozelligidir ve bir dosya ADIdir: uygulama
+ * paketindeki bir ses (`paket:<ad>`) ya da kullanicinin ekledigi, `Library/Sounds`
+ * altindaki bir CAF (`dosya:<ad>`) — bkz. `paketSesleri.ts`. 30 sn'yi asan ses
+ * KIRPILMAZ; iOS onun yerine SISTEMIN varsayilan sesini calar (Apple
+ * `UNNotificationSound`) → dosyalar 29,5 sn'ye kirpilarak eklenir. Kullanicinin
+ * Android'de sectigi `content://` URI'si iOS'ta ANLAMSIZDIR (baska platformun
+ * kimligi) → varsayilana duser. Bu, yedek dosyasi Android'den iPhone'a
+ * tasindiginda sessiz bir bozulma yerine ongorulebilir bir geri duste sonuclanir.
  */
 import type { UyariPlani } from '../motorAdaptoru';
 import type { PlatformYetenekleri } from './platformYetenekleri';
+import { iosSesDosyasi } from './paketSesleri';
 
 /** iOS bildiriminin kesinti seviyesi. */
 export type KesintiSeviyesi = 'active' | 'timeSensitive';
@@ -58,7 +62,8 @@ export const IOS_BILDIRIM_SESI = 'bildirim_ios.wav';
 
 /**
  * GERCEK ALARM adiminin iOS sesi (issue #74) — `bildirim_ios.wav`'in 9 kez, araliklarla
- * tekrari (~28 sn; iOS 30 sn'yi asan bildirim sesini kirpmaz, HIC calmaz). AlarmKit
+ * tekrari (~28 sn; iOS 30 sn'yi asan bildirim sesini kirpmaz, onun yerine sistemin
+ * varsayilan sesini calar). AlarmKit
  * yoksa (iOS < 26, izin reddedildi, Odak filtresi sessiz) alarm, zamana duyarli bildirim
  * + bu uzun sesle teslim edilir; sessiz anahtarini DELMEZ (ekran bunu soyler). Govde adi Android `res/raw`'daki
  * hicbir kaynakla cakismaz (bkz. `IOS_BILDIRIM_SESI` notu).
@@ -78,18 +83,19 @@ export interface IosTeslim {
 }
 
 /**
- * Kullanicinin sectigi ses kimligi iOS'ta kullanilabilir mi?
+ * Kullanicinin sectigi ses kimligi -> iOS bildiriminin ses DOSYA ADI.
  *
- * Android'in `content://` URI'si ve `'varsayilan'` disindaki her sey iOS'ta
- * cozulemez → paketlenmis varsayilana duseriz.
+ * `paket:<ad>` → paketteki dosya, `dosya:<ad>` → `Library/Sounds` altindaki dosya.
+ * Varsayilan, Android'in `content://` URI'si ve bilinmeyen/bozuk her kimlik
+ * paketlenmis varsayilana duser. Kullanici DOSYASININ diskte olup olmadigi burada
+ * SORULMAZ (saf modul): teslimci bunu diske sorar ve yoksa varsayilana duser
+ * (`IosMuhafizTeslimcisi`) — yoksa iOS sistemin sesini calardi (sessiz sapma).
  */
 export function iosSesiCoz(bildirimSesi: string | undefined): string {
-    if (!bildirimSesi) return IOS_BILDIRIM_SESI;
-    if (bildirimSesi.startsWith('content://')) return IOS_BILDIRIM_SESI;
     // Sesli adimin anons klibi BURADA secilmez: klip adi cozulmus metne ve cihazdaki
     // Turkce sese baglidir, dosyanin var olup olmadigi da diske sorulmalidir →
     // `IosMuhafizTeslimcisi.anonsSesiniCoz` bu sonucun USTUNE yazar.
-    return IOS_BILDIRIM_SESI;
+    return iosSesDosyasi(bildirimSesi) ?? IOS_BILDIRIM_SESI;
 }
 
 /** Seviyeye gore kesinti seviyesi (tek kural, tek yer). */

@@ -29,6 +29,11 @@ interface AnonsNativeModule {
     kullanilmayanlariSil(korunacak: string[], onek: string): Promise<number>;
     konus(metin: string): Promise<boolean>;
     sustur(): Promise<void>;
+    /** Kendi ses dosyası (yeni köprü — eski native'de yoktur). */
+    sesIceAktar?(kaynakUri: string, gorunenAd: string): Promise<unknown>;
+    iceAktarilanSesler?(): Promise<unknown>;
+    iceAktarilanSesiSil?(dosyaAdi: string): Promise<boolean>;
+    sesDosyasiUri?(dosyaAdi: string): Promise<string | null>;
 }
 
 const ExpoMuhafizAnons = requireOptionalNativeModule<AnonsNativeModule>('ExpoMuhafizAnons');
@@ -153,5 +158,96 @@ export async function anonsuSustur(): Promise<void> {
         await ExpoMuhafizAnons!.sustur();
     } catch {
         // Durdurma hatasi bir sonuctur; yutulur.
+    }
+}
+
+// ============================================================
+// KENDI SES DOSYANIZ (iPhone) — `Library/Sounds/kullanici_ses_<sha8>.caf`
+// ============================================================
+//
+// Kullanicinin sectigi dosya (belge secicinin uygulama onbellegine kopyasi) native
+// tarafta AVFoundation ile dogrusal PCM CAF'a cevrilir, 29,5 sn'ye KIRPILIR (iOS 30 sn'yi
+// asan bildirim sesini calmaz; yerine sistemin sesini calar) ve bildirim sesinin
+// arandigi `Library/Sounds`'a yazilir. Ayni icerik ayni adi alir (yeniden kullanilir).
+// Kimlik `dosya:<dosyaAdi>` (`core/muhafiz/ios/paketSesleri.ts`).
+
+/** Ice aktarma hatasi: `bicim` (ses degil/acilamadi), `boyut` (>20 MB), `erisim`, `yazilamadi`, `desteklenmiyor`. */
+export type IosSesAktarmaHatasi = 'bicim' | 'boyut' | 'erisim' | 'yazilamadi' | 'desteklenmiyor';
+
+export interface IceAktarilanSes {
+    /** `Library/Sounds` altindaki dosya adi (`kullanici_ses_<sha8>.caf`). */
+    dosya: string;
+    /** Kullanicinin gordugu ad (asil dosyanin adi). */
+    ad: string;
+}
+
+export type IosSesAktarmaSonucu =
+    | (IceAktarilanSes & { /** 30 sn'den uzundu, ilk 29,5 sn alindi. */ kirpildi: boolean })
+    | { hata: IosSesAktarmaHatasi };
+
+const AKTARMA_HATALARI: readonly IosSesAktarmaHatasi[] = ['bicim', 'boyut', 'erisim', 'yazilamadi', 'desteklenmiyor'];
+
+/** Bu build'de "kendi dosyanizdan" yolu var mi? (eski native ikilide yoktur) */
+export function sesIceAktarmaDestekleniyor(): boolean {
+    return kullanilabilirMi() && typeof ExpoMuhafizAnons?.sesIceAktar === 'function';
+}
+
+/** Dosyayi bildirim sesi yapar. ASLA firlatmaz. */
+export async function sesIceAktar(kaynakUri: string, gorunenAd: string): Promise<IosSesAktarmaSonucu> {
+    if (!sesIceAktarmaDestekleniyor()) return { hata: 'desteklenmiyor' };
+    if (!kaynakUri) return { hata: 'erisim' };
+    try {
+        const sonuc = (await ExpoMuhafizAnons!.sesIceAktar!(kaynakUri, gorunenAd)) as
+            | { dosya?: unknown; ad?: unknown; kirpildi?: unknown; hata?: unknown }
+            | null;
+        if (sonuc && typeof sonuc.dosya === 'string' && sonuc.dosya.length > 0) {
+            return {
+                dosya: sonuc.dosya,
+                ad: typeof sonuc.ad === 'string' ? sonuc.ad : '',
+                kirpildi: sonuc.kirpildi === true,
+            };
+        }
+        const hata = AKTARMA_HATALARI.find((h) => h === sonuc?.hata) ?? 'yazilamadi';
+        return { hata };
+    } catch {
+        return { hata: 'yazilamadi' };
+    }
+}
+
+/** Diskte duran ice aktarilmis sesler (eklenme sirasiyla). Bilinmiyorsa bos liste. */
+export async function iceAktarilanSesler(): Promise<IceAktarilanSes[]> {
+    if (!kullanilabilirMi() || typeof ExpoMuhafizAnons?.iceAktarilanSesler !== 'function') return [];
+    try {
+        const liste = await ExpoMuhafizAnons.iceAktarilanSesler();
+        if (!Array.isArray(liste)) return [];
+        return liste.flatMap((o: unknown) => {
+            const g = o as { dosya?: unknown; ad?: unknown } | null;
+            return g && typeof g.dosya === 'string' && g.dosya.length > 0
+                ? [{ dosya: g.dosya, ad: typeof g.ad === 'string' ? g.ad : '' }]
+                : [];
+        });
+    } catch {
+        return [];
+    }
+}
+
+/** Ice aktarilmis sesi siler (yalniz `kullanici_ses_` adlari). Basarisizlikta `false`. */
+export async function iceAktarilanSesiSil(dosyaAdi: string): Promise<boolean> {
+    if (!kullanilabilirMi() || typeof ExpoMuhafizAnons?.iceAktarilanSesiSil !== 'function' || !dosyaAdi) return false;
+    try {
+        return (await ExpoMuhafizAnons.iceAktarilanSesiSil(dosyaAdi)) === true;
+    } catch {
+        return false;
+    }
+}
+
+/** Onizleme icin dosyanin `file://` adresi; yoksa `null`. */
+export async function sesDosyasiUri(dosyaAdi: string): Promise<string | null> {
+    if (!kullanilabilirMi() || typeof ExpoMuhafizAnons?.sesDosyasiUri !== 'function' || !dosyaAdi) return null;
+    try {
+        const uri = await ExpoMuhafizAnons.sesDosyasiUri(dosyaAdi);
+        return typeof uri === 'string' && uri.length > 0 ? uri : null;
+    } catch {
+        return null;
     }
 }

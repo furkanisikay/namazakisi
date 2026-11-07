@@ -21,7 +21,7 @@ import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matri
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { adimOzetiOlustur, seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
 import { vakitOzetiOlustur, vakitOzetiVerisi, aktifSeviyeSayisi } from '../../../core/muhafiz/vakitOzeti';
-import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
+import { platformdaCalinirMi } from '../../../core/muhafiz/sesKimligi';
 import { adimAnahtarlariniGuncelle, type AdimAnahtarDurumu } from '../../../core/hatirlatma/adimAnahtarlari';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { OzetCipleri } from './OzetCipleri';
@@ -351,7 +351,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                         kanallar={ozet.kanallar}
                                         renk={bilgi.renk}
                                         tekrarDk={ozet.tekrarDk}
-                                        sesAdi={ozelSesMi(seviye.bildirimSesi) ? ozet.sesAdi : undefined}
+                                        sesAdi={platformdaCalinirMi(seviye.bildirimSesi, tanim.yetenekler.platform) ? ozet.sesAdi : undefined}
                                         boyut="kucuk"
                                     />
                                 )}

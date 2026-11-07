@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Tunog na pinili ninyo',
     dokunarak: 'I-tap para palitan',
     seciliDinle: 'Pakinggan ang napiling tunog ng notification',
+    paket: {
+      zil: 'Malambing na kampana',
+      ikiton: 'Dalawang tono',
+      damla: 'Mga patak',
+      sabah: 'Umaga',
+    },
+    silErisim: 'Burahin ang tunog na {ad}',
+    ornekDinleErisim: 'Pakinggan: {ad}',
+    uzunlukNotu: 'Tumutunog ang notification nang hanggang 30 segundo; sa mas mahabang file, ang unang 30 segundo ang gagamitin.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

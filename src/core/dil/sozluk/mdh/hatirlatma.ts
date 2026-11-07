@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Suara a napili nu',
     dokunarak: 'I-tap para ilisan',
     seciliDinle: 'Pakinegen su suara nu notification a napili',
+    paket: {
+      zil: 'Malemu a kampana',
+      ikiton: 'Duwa a tono',
+      damla: 'Mga tedtu',
+      sabah: 'Mapita',
+    },
+    silErisim: 'Kwaan su suara a {ad}',
+    ornekDinleErisim: 'Pakinegen: {ad}',
+    uzunlukNotu: 'Su suara nu notification na taman sa 30 segundo; sa malendu a file, su unan a 30 segundo i gamitan.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

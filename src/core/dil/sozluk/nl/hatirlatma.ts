@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Een geluid dat u koos',
     dokunarak: 'Tik om te wijzigen',
     seciliDinle: 'Luisteren naar het gekozen meldingsgeluid',
+    paket: {
+      zil: 'Zacht klokje',
+      ikiton: 'Twee tonen',
+      damla: 'Druppels',
+      sabah: 'Ochtend',
+    },
+    silErisim: 'Het geluid {ad} verwijderen',
+    ornekDinleErisim: 'Luisteren: {ad}',
+    uzunlukNotu: 'Een meldingsgeluid speelt hoogstens 30 seconden; van een langer bestand worden de eerste 30 seconden gebruikt.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

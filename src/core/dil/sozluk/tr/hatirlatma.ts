@@ -334,6 +334,19 @@ export const hatirlatma = {
     kendiSesiniz: 'Kendi seçtiğiniz ses',
     dokunarak: 'Dokunarak değiştirin',
     seciliDinle: 'Seçili bildirim sesini dinleyin',
+    /** iPhone'un uygulamayla gelen sesleri (`core/muhafiz/ios/paketSesleri.ts`). */
+    paket: {
+      zil: 'Sakin zil',
+      ikiton: 'İki ton',
+      damla: 'Damla',
+      sabah: 'Sabah',
+    },
+    /** iPhone ses listesi: eklenen dosyayı silme düğmesi (ekran okuyucu). */
+    silErisim: '{ad} sesini silin',
+    /** iPhone ses listesi: tek sesi dinleme düğmesi (ekran okuyucu). */
+    ornekDinleErisim: '{ad}: dinleyin',
+    /** iPhone: bildirim sesi en çok 30 sn; uzun dosya kırpılır. */
+    uzunlukNotu: 'Bildirim sesi en çok 30 saniye çalar; daha uzun bir dosyanın ilk 30 saniyesi kullanılır.',
   },
   /** Vakit başına düzey listesi (`VakitDuzeyListesi`). */
   vakitDuzey: {

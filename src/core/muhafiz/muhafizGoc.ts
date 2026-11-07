@@ -4,7 +4,7 @@ import { KAPALI_KANALLAR, adimKapaliMi, modKanallaraCevir } from './kanalKumesi'
 import { esikSiralamasiGecerliMi, esiklerTekilMi, kronolojikSirala } from './aktifSeviye';
 import { girisZamanlamasiniSec } from './girisZamanlamasi';
 import { sablonKonumu } from '../hatirlatma/anonsSablonlari';
-import { sesKimliginiNormalize } from './sesKimligi';
+import { secilmisSesMi, sesKimliginiNormalize } from './sesKimligi';
 import { MUHAFIZ_MIN_ADIM } from './matrisTipleri';
 import { vakitSayacEsigiHesapla } from '../utils/vakitSayacYardimcisi';
 
@@ -100,7 +100,8 @@ export function kapaliVarsayilanAdimMi(s: SeviyeAyari): boolean {
   if (!s || !adimKapaliMi(s.kanallar)) return false;
   const metin = s.anonsMetni ?? '';
   if (metin.length > 0 && !hazirMuhafizSablonuMu(metin)) return false;
-  if (sesKimliginiNormalize(s.bildirimSesi) !== VARSAYILAN_SES) return false;
+  // iPhone sesi (`paket:`/`dosya:`) normalize'da varsayılana iner ama kullanıcının seçimidir.
+  if (sesKimliginiNormalize(s.bildirimSesi) !== VARSAYILAN_SES || secilmisSesMi(s.bildirimSesi)) return false;
   if (s.alarmKapsami !== undefined) return false;
   const h = s.oncekiKanallar;
   if (h && (h.sesli === true || h.titresim === true || h.alarm === true)) return false;

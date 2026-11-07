@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'صدایی که خودتان انتخاب کرده‌اید',
     dokunarak: 'برای تغییر ضربه بزنید',
     seciliDinle: 'گوش دادن به صدای اعلان انتخاب‌شده',
+    paket: {
+      zil: 'زنگ ملایم',
+      ikiton: 'دو نوا',
+      damla: 'قطره‌ها',
+      sabah: 'صبح',
+    },
+    silErisim: 'حذف صدای {ad}',
+    ornekDinleErisim: 'گوش دادن: {ad}',
+    uzunlukNotu: 'صدای اعلان حداکثر 30 ثانیه پخش می‌شود؛ از فایل طولانی‌تر 30 ثانیهٔ اول استفاده می‌شود.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

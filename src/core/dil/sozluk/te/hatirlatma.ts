@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'మీరు ఎంచుకున్న సౌండ్',
     dokunarak: 'మార్చడానికి నొక్కండి',
     seciliDinle: 'ఎంచుకున్న నోటిఫికేషన్ సౌండ్‌ను వినండి',
+    paket: {
+      zil: 'మృదువైన గంట',
+      ikiton: 'రెండు స్వరాలు',
+      damla: 'చుక్కలు',
+      sabah: 'ఉదయం',
+    },
+    silErisim: '{ad} సౌండ్‌ను తొలగించండి',
+    ornekDinleErisim: 'వినండి: {ad}',
+    uzunlukNotu: 'నోటిఫికేషన్ సౌండ్ గరిష్ఠంగా 30 సెకన్లు మోగుతుంది; పొడవైన ఫైల్‌లోని మొదటి 30 సెకన్లు ఉపయోగించబడతాయి.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',
