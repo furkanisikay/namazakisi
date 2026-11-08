@@ -1,27 +1,28 @@
 /**
  * Günün ayeti ayarı (#380 widget, #381 duvar kâğıdı). İçerik ayarı YOK (sahip kararı: yalnız ayet).
  *
- * Android: duvar kâğıdı anahtarı açılırken onay penceresi (eski duvar kâğıdı saklanamaz + fıkıh
- * notu), yer/zemin/Arapça seçimi, önizleme. Sistem engelliyse (iş/okul yönetimi) anahtar soluk ve
- * nedeni yazılı; son otomatik değişim başarısızsa bilgi satırı (sessiz sapma yok).
- * iOS: uygulama duvar kâğıdını değiştiremez → Kısayollar rehberi + görseli elle kaydetme.
+ * Duvar kâğıdı (taslak 2): görünüm kartı (kilit ve ana ekranın küçük önizlemesi + düzenleyici),
+ * "Nerede", hazır görünümler. Zemin, yazı, süs ve Arapça düzenleyicidedir (`DuvarDuzenleyici`).
+ * Android: anahtar açılırken onay penceresi (eski duvar kâğıdı saklanamaz + fıkıh notu). Sistem
+ * engelliyse (iş/okul yönetimi) anahtar soluk ve nedeni yazılı; son otomatik değişim başarısızsa
+ * bilgi satırı (sessiz sapma yok).
+ * iOS: uygulama duvar kâğıdını değiştiremez → Kısayollar rehberi + görseli elle kaydetme; görünüm
+ * ayarı Kısayollar görseline gider.
  * Duvar ayarı cihaza özgüdür, yedeklenmez (`GUNUN_AYETI_DUVAR`).
  */
 import * as React from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Image, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Dimensions, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useRenkler } from '../../core/theme';
-import { aktifNamazGunu, dilinMealiVar, gununAyetiGorunumu, gununAyetiKaydi, isoGun } from '../../core/icerik/gununAyeti';
-import {
-  VARSAYILAN_DUVAR_AYARI,
-  koordinatImsakKaynagi,
-  type DuvarKagidiAyari,
-  type DuvarYeri,
-  type DuvarZemini,
-} from '../../core/icerik/gununAyetiYuku';
+import { dilinMealiVar } from '../../core/icerik/gununAyeti';
+import { VARSAYILAN_DUVAR_AYARI, type DuvarKagidiAyari, type DuvarYeri } from '../../core/icerik/gununAyetiYuku';
+import type { DuvarPlatformu } from '../../core/icerik/duvarTasarimi';
+import { DUVAR_HAZIRLARI, gokMu, type DuvarHazirAdi } from '../../core/icerik/duvarCizimi';
 import type { DuvarKagidiDurumu, GununAyetiServisi as ServisTipi } from '../../domain/services/GununAyetiServisi';
-import { useAppSelector } from '../store/hooks';
+import type { AyarlarStackParamList } from '../../navigation/ayarlarEkranlari';
 import { useAktifDil, useMetin } from '../hooks/useMetin';
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { NotSatiri } from '../components/ortak/NotSatiri';
@@ -30,6 +31,10 @@ import { SecenekListesi } from '../components/ortak/SecenekListesi';
 import { BildirimModali } from '../components/common/BildirimModali';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { AyetGorseli, ayetGorseliniPaylas } from '../components/gununAyeti/AyetGorseli';
+import { DuvarOnizleme } from '../components/gununAyeti/duvar/DuvarOnizleme';
+import { useDuvarYaziTipleri } from '../components/gununAyeti/duvar/DuvarYazisi';
+import { useFotoKaynagi } from '../components/gununAyeti/duvar/useFotoKaynagi';
+import { useBugununAyeti } from '../components/gununAyeti/duvar/useBugununAyeti';
 
 /** Native köprüyü (siri modülü) jest'te ve açılışta yüklememek için tembel. */
 const servis = (): ServisTipi =>
@@ -111,60 +116,83 @@ export const GununAyetiAyarlariSayfasi: React.FC = () => {
       {dilinMealiVar(dil) ? null : <NotSatiri testID="gunun-ayeti-meal-yok" metin={m.sayfa.mealYok} style={{ marginTop: 12 }} />}
 
       <BolumBasligi metin={m.ayar.duvarBolum} style={{ marginTop: 24 }} />
-      {Platform.OS === 'android' ? <AndroidDuvarKagidi /> : <IosKisayolRehberi />}
+      <DuvarKagidiBolumu />
     </ScrollView>
   );
 };
 
-const AndroidDuvarKagidi: React.FC = () => {
+/** Hazır görünüm çiplerinin etiketleri (sözlükteki mevcut adlar). */
+const hazirEtiketi = (ad: DuvarHazirAdi, s: ReturnType<typeof useMetin>): string => {
+  const m = s.gununAyeti;
+  if (ad === 'sade') return m.duvar.yaziTipleri.sade;
+  if (ad === 'mihrap') return m.duvar.susler.mihrap;
+  if (ad === 'gece') return m.ayar.zeminler.gece;
+  return m.duvar.foto;
+};
+
+const ONIZLEME_YUKSEKLIGI = 188;
+
+/**
+ * Duvar kâğıdı bölümü (iki platform): görünüm kartı (iki küçük önizleme + "Görünümü
+ * düzenleyin"), "Nerede", hazır görünümler. Android'de üstte açma anahtarı (onay penceresi +
+ * fıkıh notu); iPhone'da altta Kısayollar rehberi.
+ */
+const DuvarKagidiBolumu: React.FC = () => {
   const renkler = useRenkler();
   const sozluk = useMetin();
   const m = sozluk.gununAyeti;
+  const d = m.duvar;
   const vazgecin = sozluk.ortak.vazgecin;
+  const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
+  const gezinmeRef = useRef(navigation);
+  gezinmeRef.current = navigation;
+  const android = Platform.OS === 'android';
+  const platform: DuvarPlatformu = Platform.OS === 'ios' ? 'ios' : 'android';
   const [ayar, setAyar] = useState<DuvarKagidiAyari | null>(null);
   const [durum, setDurum] = useState<DuvarKagidiDurumu | null>(null);
   const [onayGorunur, setOnayGorunur] = useState(false);
   const [yazilamadi, setYazilamadi] = useState(false);
-  const [onizleme, setOnizleme] = useState<string | null>(null);
-  const [onizlemeYukleniyor, setOnizlemeYukleniyor] = useState(false);
+  const ayet = useBugununAyeti();
+  const yaziTipleri = useDuvarYaziTipleri();
+  const foto = useFotoKaynagi(ayar?.foto.dosya ?? null);
+
+  const yukle = useCallback(() => {
+    const sv = servis();
+    return Promise.all([sv.duvarAyariOku(), android ? sv.duvarKagidiDurumu() : Promise.resolve(null)]).then(([a, dr]) => {
+      setAyar(a);
+      setDurum(dr);
+      setYazilamadi(a.acik && dr?.sonHataVar === true);
+    });
+  }, [android]);
 
   useEffect(() => {
     let iptal = false;
-    const sv = servis();
-    Promise.all([sv.duvarAyariOku(), sv.duvarKagidiDurumu()])
-      .then(([a, d]) => {
-        if (iptal) return;
-        setAyar(a);
-        setDurum(d);
-        setYazilamadi(a.acik && d.sonHataVar);
-      })
-      .catch(() => {
-        if (!iptal) setAyar(VARSAYILAN_DUVAR_AYARI);
-      });
+    yukle().catch(() => {
+      if (!iptal) setAyar(VARSAYILAN_DUVAR_AYARI);
+    });
+    // Düzenleyiciden dönünce kayıtlı görünüm yeniden okunur (abonelik bir kez; gezinme nesnesi
+    // her çizimde yeni olabilir, bağımlılığa girerse ayar her çizimde diskten ezilirdi).
+    const kaldir = gezinmeRef.current.addListener?.('focus', () => {
+      yukle().catch(() => undefined);
+    });
     return () => {
       iptal = true;
+      kaldir?.();
     };
-  }, []);
+  }, [yukle]);
 
-  const kaydet = useCallback(async (yeni: DuvarKagidiAyari, uygula: boolean) => {
-    setAyar(yeni);
-    setOnizleme(null);
-    const sv = servis();
-    await sv.duvarAyariKaydet(yeni);
-    if (!uygula || !yeni.acik) return;
-    const tamam = await sv.duvarKagidiniSimdiUygula();
-    setYazilamadi(!tamam);
-    if (tamam) kisaBildirimGoster(m.ayar.yerlestirildi);
-  }, [m.ayar.yerlestirildi]);
-
-  const onizle = async () => {
-    setOnizlemeYukleniyor(true);
-    const { width, height } = Dimensions.get('screen');
-    const genislik = 540;
-    const uri = await servis().duvarOnizlemesi(genislik, (genislik * height) / Math.max(width, 1));
-    setOnizleme(uri);
-    setOnizlemeYukleniyor(false);
-  };
+  const kaydet = useCallback(
+    async (yeni: DuvarKagidiAyari, uygula: boolean) => {
+      setAyar(yeni);
+      const sv = servis();
+      await sv.duvarAyariKaydet(yeni);
+      if (!uygula || !yeni.acik || !android) return;
+      const tamam = await sv.duvarKagidiniSimdiUygula();
+      setYazilamadi(!tamam);
+      if (tamam) kisaBildirimGoster(m.ayar.yerlestirildi);
+    },
+    [android, m.ayar.yerlestirildi]
+  );
 
   if (!ayar) return <ActivityIndicator color={renkler.birincil} style={{ marginVertical: 24 }} />;
 
@@ -174,143 +202,165 @@ const AndroidDuvarKagidi: React.FC = () => {
     { deger: 'ana', etiket: m.ayar.yerler.ana },
     { deger: 'ikisi', etiket: m.ayar.yerler.ikisi },
   ];
-  const zeminler: { deger: DuvarZemini; etiket: string }[] = [
-    { deger: 'gece', etiket: m.ayar.zeminler.gece },
-    { deger: 'kagit', etiket: m.ayar.zeminler.kagit },
-    { deger: 'palet', etiket: m.ayar.zeminler.palet },
-  ];
+  const ekranOrani = (() => {
+    const { width, height } = Dimensions.get('screen');
+    return height / Math.max(1, width);
+  })();
+  const onizlemeG = Math.round(ONIZLEME_YUKSEKLIGI / ekranOrani);
+  const kartStili = { backgroundColor: renkler.kartArkaplan, borderRadius: 24, padding: 16, marginTop: 12 };
+  const aciklama = ayar.vakteUysun && gokMu(ayar.zemin) ? `${d.kartAciklama} ${d.kartVakteUyar}` : d.kartAciklama;
 
   return (
     <View>
-      <View style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, paddingHorizontal: 16, paddingVertical: 4 }}>
-        <AnahtarSatiri
-          testID="gunun-ayeti-duvar-anahtar"
-          ikon="image"
-          baslik={m.ayar.duvarAnahtar}
-          ozet={engelli ? m.ayar.kullanilamiyor : ayar.acik ? m.ayar.duvarAcikOzet : m.ayar.duvarKapaliOzet}
-          deger={ayar.acik && !engelli}
-          devreDisi={engelli}
-          onDegistir={(yeni) => {
-            if (yeni) setOnayGorunur(true);
-            else kaydet({ ...ayar, acik: false }, false).catch(() => undefined);
-          }}
-        />
-      </View>
-      {engelli ? <NotSatiri metin={m.ayar.engelli} tip="uyari" style={{ marginTop: 12 }} /> : null}
-      {yazilamadi && ayar.acik && !engelli ? (
-        <NotSatiri testID="gunun-ayeti-yazilamadi" metin={m.ayar.yazilamadi} tip="uyari" style={{ marginTop: 12 }} />
-      ) : null}
-
-      {ayar.acik && !engelli ? (
-        <View style={{ marginTop: 16 }}>
-          <Text style={{ fontSize: 14, fontWeight: '600', marginBottom: 8, color: renkler.metinIkincil }}>{m.ayar.yer}</Text>
-          <SecenekListesi
-            gorunum="cip"
-            erisimEtiketi={m.ayar.yer}
-            secenekler={yerler}
-            secili={ayar.yer}
-            onSec={(yer) => kaydet({ ...ayar, yer }, true).catch(() => undefined)}
-          />
-          <Text style={{ fontSize: 14, fontWeight: '600', marginTop: 16, marginBottom: 8, color: renkler.metinIkincil }}>
-            {m.ayar.zemin}
-          </Text>
-          <SecenekListesi
-            gorunum="cip"
-            erisimEtiketi={m.ayar.zemin}
-            secenekler={zeminler}
-            secili={ayar.zemin}
-            onSec={(zemin) =>
-              kaydet({ ...ayar, zemin, paletRenk: zemin === 'palet' ? renkler.birincil : ayar.paletRenk }, true).catch(
-                () => undefined
-              )
-            }
-          />
-          <View style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, paddingHorizontal: 16, paddingVertical: 4, marginTop: 16 }}>
+      {android ? (
+        <>
+          <View style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, paddingHorizontal: 16, paddingVertical: 4 }}>
             <AnahtarSatiri
-              testID="gunun-ayeti-arapca"
-              ikon="language"
-              baslik={m.ayar.arapca}
-              deger={ayar.arapca}
-              onDegistir={(arapca) => kaydet({ ...ayar, arapca }, true).catch(() => undefined)}
+              testID="gunun-ayeti-duvar-anahtar"
+              ikon="image"
+              baslik={m.ayar.duvarAnahtar}
+              ozet={engelli ? m.ayar.kullanilamiyor : ayar.acik ? m.ayar.duvarAcikOzet : m.ayar.duvarKapaliOzet}
+              deger={ayar.acik && !engelli}
+              devreDisi={engelli}
+              onDegistir={(yeni) => {
+                if (yeni) setOnayGorunur(true);
+                else kaydet({ ...ayar, acik: false }, false).catch(() => undefined);
+              }}
             />
           </View>
-          <NotSatiri metin={m.ayar.arapcaNot} style={{ marginTop: 12 }} />
-
-          <TouchableOpacity
-            testID="gunun-ayeti-onizle"
-            onPress={() => onizle().catch(() => setOnizlemeYukleniyor(false))}
-            disabled={onizlemeYukleniyor}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: onizlemeYukleniyor, busy: onizlemeYukleniyor }}
-            activeOpacity={0.7}
-            style={{
-              marginTop: 16,
-              minHeight: 48,
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: renkler.sinir,
-              backgroundColor: renkler.arkaplan,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {onizlemeYukleniyor ? (
-              <ActivityIndicator color={renkler.birincil} />
-            ) : (
-              <FontAwesome5 name="eye" size={14} color={renkler.metin} />
-            )}
-            <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: '600', color: renkler.metin }}>{m.ayar.onizleyin}</Text>
-          </TouchableOpacity>
-          {onizleme ? (
-            <Image
-              source={{ uri: onizleme }}
-              accessible
-              accessibilityLabel={m.ayar.onizlemeErisim}
-              resizeMode="contain"
-              style={{ width: '60%', aspectRatio: 9 / 19.5, alignSelf: 'center', marginTop: 16, borderRadius: 24 }}
-            />
+          {engelli ? <NotSatiri metin={m.ayar.engelli} tip="uyari" style={{ marginTop: 12 }} /> : null}
+          {yazilamadi && ayar.acik && !engelli ? (
+            <NotSatiri testID="gunun-ayeti-yazilamadi" metin={m.ayar.yazilamadi} tip="uyari" style={{ marginTop: 12 }} />
           ) : null}
-          <NotSatiri metin={m.ayar.kapatNotu} style={{ marginTop: 16 }} />
-        </View>
+        </>
       ) : null}
 
-      <BildirimModali
-        gorunur={onayGorunur}
-        tip="bilgi"
-        baslik={m.onay.baslik}
-        mesaj={m.onay.metin}
-        icerik={<NotSatiri metin={m.ayar.arapcaNot} />}
-        birincilEtiket={m.onay.acin}
-        birincilIkon="image"
-        onBirincil={() => {
-          setOnayGorunur(false);
-          kaydet({ ...ayar, acik: true }, true).catch(() => setYazilamadi(true));
-        }}
-        kapatEtiketi={vazgecin}
-        onKapat={() => setOnayGorunur(false)}
-      />
+      {/* Görünüm kartı */}
+      <View style={android ? kartStili : { ...kartStili, marginTop: 0 }}>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>{m.ayar.duvarBolum}</Text>
+        <Text style={{ fontSize: 14, lineHeight: 20, marginTop: 2, color: renkler.metinIkincil }}>{aciklama}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, marginTop: 14 }}>
+          {(['kilit', 'ana'] as const).map((ekran) => (
+            <View key={ekran} style={{ alignItems: 'center' }}>
+              <View
+                testID={`duvar-onizleme-${ekran}`}
+                accessible
+                accessibilityRole="image"
+                accessibilityLabel={`${m.ayar.onizlemeErisim}: ${m.ayar.yerler[ekran]}`}
+                style={{ width: onizlemeG, height: ONIZLEME_YUKSEKLIGI, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: renkler.sinir }}
+              >
+                <DuvarOnizleme
+                  genislik={onizlemeG}
+                  yukseklik={ONIZLEME_YUKSEKLIGI}
+                  ayar={ayar}
+                  ayet={ayet}
+                  ekran={ekran}
+                  platform={platform}
+                  foto={foto}
+                  yaziTipleri={yaziTipleri}
+                  kimlik={`ayar-${ekran}`}
+                />
+              </View>
+              <Text style={{ fontSize: 12, marginTop: 6, color: renkler.metinIkincil }}>{m.ayar.yerler[ekran]}</Text>
+            </View>
+          ))}
+        </View>
+        <TouchableOpacity
+          testID="duvar-duzenle"
+          onPress={() => navigation.navigate('DuvarDuzenleyici')}
+          accessibilityRole="button"
+          activeOpacity={0.8}
+          style={{
+            marginTop: 14,
+            minHeight: 48,
+            borderRadius: 16,
+            backgroundColor: renkler.birincil,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <FontAwesome5 name="pen" size={14} color="#FFFFFF" />
+          <Text style={{ marginStart: 8, fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}>{d.duzenleyin}</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Nerede */}
+      <View style={kartStili}>
+        <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 10, color: renkler.metin }}>{m.ayar.yer}</Text>
+        <SecenekListesi
+          gorunum="cip"
+          erisimEtiketi={m.ayar.yer}
+          secenekler={yerler}
+          secili={ayar.yer}
+          onSec={(yer) => kaydet({ ...ayar, yer }, true).catch(() => undefined)}
+        />
+      </View>
+
+      {/* Hazır görünümler */}
+      <View style={kartStili}>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>{d.hazirBaslik}</Text>
+        <Text style={{ fontSize: 14, lineHeight: 20, marginTop: 2, color: renkler.metinIkincil }}>{d.hazirAciklama}</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+          {DUVAR_HAZIRLARI.map((ad) => (
+            <TouchableOpacity
+              key={ad}
+              testID={`duvar-hazir-${ad}`}
+              onPress={() => navigation.navigate('DuvarDuzenleyici', { hazir: ad })}
+              accessibilityRole="button"
+              activeOpacity={0.7}
+              style={{
+                minHeight: 44,
+                paddingHorizontal: 16,
+                borderRadius: 22,
+                borderWidth: 1,
+                borderColor: renkler.sinir,
+                backgroundColor: renkler.arkaplan,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              {ad === 'foto' ? <FontAwesome5 name="image" size={13} color={renkler.birincil} style={{ marginEnd: 6 }} /> : null}
+              <Text style={{ fontSize: 14, color: renkler.metin }}>{hazirEtiketi(ad, sozluk)}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {android && ayar.acik && !engelli ? <NotSatiri metin={m.ayar.kapatNotu} style={{ marginTop: 16 }} /> : null}
+      {android ? null : (
+        <View style={{ marginTop: 24 }}>
+          <IosKisayolRehberi vakteUysun={ayar.vakteUysun && gokMu(ayar.zemin)} />
+        </View>
+      )}
+
+      {android ? (
+        <BildirimModali
+          gorunur={onayGorunur}
+          tip="bilgi"
+          baslik={m.onay.baslik}
+          mesaj={m.onay.metin}
+          icerik={<NotSatiri metin={m.ayar.arapcaNot} />}
+          birincilEtiket={m.onay.acin}
+          birincilIkon="image"
+          onBirincil={() => {
+            setOnayGorunur(false);
+            kaydet({ ...ayar, acik: true }, true).catch(() => setYazilamadi(true));
+          }}
+          kapatEtiketi={vazgecin}
+          onKapat={() => setOnayGorunur(false)}
+        />
+      ) : null}
     </View>
   );
 };
 
-const IosKisayolRehberi: React.FC = () => {
+const IosKisayolRehberi: React.FC<{ vakteUysun: boolean }> = ({ vakteUysun }) => {
   const renkler = useRenkler();
-  const sozlukler = useMetin();
-  const m = sozlukler.gununAyeti;
-  const dil = useAktifDil();
-  const koordinat = useAppSelector((state) => state.konum.koordinatlar);
+  const m = useMetin().gununAyeti;
   const gorselRef = useRef<View>(null);
   const [kaydediliyor, setKaydediliyor] = useState(false);
-
-  const lat = koordinat?.lat ?? 0;
-  const lng = koordinat?.lng ?? 0;
-  const ayet = useMemo(() => {
-    const gun = aktifNamazGunu(new Date(), koordinatImsakKaynagi(lat === 0 && lng === 0 ? null : { lat, lng }));
-    return gununAyetiGorunumu(gununAyetiKaydi(isoGun(gun), dil), dil);
-    // `sozlukler`: alfabe (Latin/Kiril) değişince meal yeniden çevrilir; dil aynı kalır, sözlük referansı değişir.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lat, lng, dil, sozlukler]);
+  const ayet = useBugununAyeti();
 
   const kaydet = async () => {
     setKaydediliyor(true);
@@ -369,6 +419,8 @@ const IosKisayolRehberi: React.FC = () => {
           <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}>{m.ios.kisayollariAcin}</Text>
         </TouchableOpacity>
       </View>
+      {/* Vakte uyan gök: Kısayollar görseli çalıştığı anın göğünü çizer; gün içinde ek otomasyonlar gerekir. */}
+      {vakteUysun ? <NotSatiri testID="gunun-ayeti-vakte-uysun-ios" metin={m.duvar.vakteUysunIos} style={{ marginTop: 12 }} /> : null}
 
       <BolumBasligi metin={m.ios.elle} style={{ marginTop: 24 }} />
       <TouchableOpacity

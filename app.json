@@ -275,6 +275,14 @@
         }
       ],
       [
+        "expo-image-picker",
+        {
+          "photosPermission": false,
+          "cameraPermission": "Kıble yönünü kamera görüntüsü üzerinde göstermek ve televizyondaki eşleştirme kodunu okumak için kameranız kullanılır. Görüntü kaydedilmez ve cihazınızdan çıkmaz.",
+          "microphonePermission": false
+        }
+      ],
+      [
         "expo-notifications",
         {
           "sounds": [
