@@ -11,9 +11,9 @@
  *   çizdiği görselle aynı düzen.
  */
 import * as React from 'react';
-import { Dimensions, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useFonts } from 'expo-font';
-import { KOYU_TEMA, useRenkler } from '../../../core/theme';
+import { useRenkler } from '../../../core/theme';
 import type { GununAyetiGorunumu } from '../../../core/icerik/gununAyeti';
 import { useMetin } from '../../hooks/useMetin';
 import { sagaYasliMetin } from '../common/yon';
@@ -28,7 +28,8 @@ export function useArapcaYaziTipi(): string | undefined {
   return yuklendi ? ARAPCA_YAZI_TIPI : undefined;
 }
 
-export type AyetGorseliTuru = 'kart' | 'duvar';
+/** Duvar kâğıdı görseli artık `DuvarOnizleme`'den yakalanır; burada yalnız paylaşım kartı kalır. */
+export type AyetGorseliTuru = 'kart';
 
 /** Kartın çizim genişliği (dp); yakalama `width` ile piksele ölçeklenir. */
 export const KART_GENISLIGI = 360;
@@ -39,37 +40,10 @@ interface Props {
   yaziTipi?: string;
 }
 
-export const AyetGorseli = React.forwardRef<View, Props>(({ ayet, tur, yaziTipi }, ref) => {
+export const AyetGorseli = React.forwardRef<View, Props>(({ ayet, yaziTipi }, ref) => {
   const renkler = useRenkler();
   const s = useMetin();
   const m = s.gununAyeti;
-
-  if (tur === 'duvar') {
-    const koyu = KOYU_TEMA.renkler;
-    const { width, height } = Dimensions.get('screen');
-    const genislik = KART_GENISLIGI;
-    const yukseklik = Math.round((genislik * height) / Math.max(width, 1));
-    return (
-      <View ref={ref} collapsable={false} style={{ width: genislik, height: yukseklik, backgroundColor: koyu.arkaplan }}>
-        <View
-          style={{
-            position: 'absolute',
-            top: yukseklik * 0.36,
-            height: yukseklik * 0.44,
-            left: 28,
-            right: 28,
-            justifyContent: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 11, fontWeight: '700', letterSpacing: 1.5, color: koyu.metinIkincil }}>{m.etiket}</Text>
-          <Text style={{ fontSize: 19, lineHeight: 28, marginTop: 12, color: koyu.metin }}>{ayet.meal ?? ayet.kisaKunye}</Text>
-          <Text style={{ fontSize: 12, marginTop: 14, color: koyu.metinIkincil }}>
-            {ayet.mealKaynagi ? surumuKoru(`${ayet.kisaKunye} · ${ayet.mealKaynagi}`, ayet.mealSurumu) : ayet.kisaKunye}
-          </Text>
-        </View>
-      </View>
-    );
-  }
 
   return (
     <View

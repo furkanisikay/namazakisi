@@ -30,7 +30,7 @@ import { AnahtarSatiri } from '../components/ortak/AnahtarSatiri';
 import { SecenekListesi } from '../components/ortak/SecenekListesi';
 import { BildirimModali } from '../components/common/BildirimModali';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
-import { AyetGorseli, ayetGorseliniPaylas } from '../components/gununAyeti/AyetGorseli';
+import { ayetGorseliniPaylas } from '../components/gununAyeti/AyetGorseli';
 import { DuvarOnizleme } from '../components/gununAyeti/duvar/DuvarOnizleme';
 import { useDuvarYaziTipleri } from '../components/gununAyeti/duvar/DuvarYazisi';
 import { useFotoKaynagi } from '../components/gununAyeti/duvar/useFotoKaynagi';
@@ -330,7 +330,7 @@ const DuvarKagidiBolumu: React.FC = () => {
       {android && ayar.acik && !engelli ? <NotSatiri metin={m.ayar.kapatNotu} style={{ marginTop: 16 }} /> : null}
       {android ? null : (
         <View style={{ marginTop: 24 }}>
-          <IosKisayolRehberi vakteUysun={ayar.vakteUysun && gokMu(ayar.zemin)} />
+          <IosKisayolRehberi vakteUysun={ayar.vakteUysun && gokMu(ayar.zemin)} ayar={ayar} foto={foto} yaziTipleri={yaziTipleri} />
         </View>
       )}
 
@@ -355,12 +355,21 @@ const DuvarKagidiBolumu: React.FC = () => {
   );
 };
 
-const IosKisayolRehberi: React.FC<{ vakteUysun: boolean }> = ({ vakteUysun }) => {
+type OnizlemeProps = React.ComponentProps<typeof DuvarOnizleme>;
+
+/** Elle kaydedilen görsel, düzenleyicide kurulan görünümün kendisidir (ekran boyutunda, saat hayaleti yok). */
+const IosKisayolRehberi: React.FC<{
+  vakteUysun: boolean;
+  ayar: DuvarKagidiAyari;
+  foto: OnizlemeProps['foto'];
+  yaziTipleri: OnizlemeProps['yaziTipleri'];
+}> = ({ vakteUysun, ayar, foto, yaziTipleri }) => {
   const renkler = useRenkler();
   const m = useMetin().gununAyeti;
   const gorselRef = useRef<View>(null);
   const [kaydediliyor, setKaydediliyor] = useState(false);
   const ayet = useBugununAyeti();
+  const ekranBoyutu = Dimensions.get('screen');
 
   const kaydet = async () => {
     setKaydediliyor(true);
@@ -378,7 +387,19 @@ const IosKisayolRehberi: React.FC<{ vakteUysun: boolean }> = ({ vakteUysun }) =>
   return (
     <View>
       <View style={{ position: 'absolute', left: -10000, top: 0 }} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-        <AyetGorseli ref={gorselRef} ayet={ayet} tur="duvar" />
+        <View ref={gorselRef} collapsable={false}>
+          <DuvarOnizleme
+            genislik={ekranBoyutu.width}
+            yukseklik={ekranBoyutu.height}
+            ayar={ayar}
+            ayet={ayet}
+            ekran={ayar.yer === 'ana' ? 'ana' : 'kilit'}
+            platform="ios"
+            foto={foto}
+            yaziTipleri={yaziTipleri}
+            kimlik="ios-kaydet"
+          />
+        </View>
       </View>
       <View style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, padding: 16 }}>
         <Text style={{ fontSize: 15, lineHeight: 22, color: renkler.metin }}>{m.ios.aciklama}</Text>
