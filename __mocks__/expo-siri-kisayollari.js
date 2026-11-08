@@ -29,8 +29,13 @@ const saatUyandirmaDurumlariniOku = jest.fn().mockResolvedValue(null);
 const saatNafileKildimleriniAl = jest.fn().mockResolvedValue([]);
 // Cihaz ağı dinleyicisi: varsayılan YOK.
 const iosDinleyici = jest.fn().mockReturnValue(null);
+// Duvar kâğıdı fotoğrafı: varsayılan köprü YOK (yazılamadı).
+const duvarFotografiniYaz = jest.fn().mockResolvedValue(false);
+const duvarFotografiniSil = jest.fn().mockResolvedValue(undefined);
 
 module.exports = {
+  duvarFotografiniYaz,
+  duvarFotografiniSil,
   saatUygulamasiDestekli,
   saatKoprusu,
   saatUyandirmaDurumlariniOku,

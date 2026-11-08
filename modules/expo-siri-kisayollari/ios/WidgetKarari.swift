@@ -153,7 +153,9 @@ public enum WidgetKarari {
  * 14 gunluk plani App Group'a yazar (`SiriDeposu.gununAyetiYaz`); native ayet SECMEZ ve
  * namaz vakti HESAPLAMAZ: `baslangicMs <= simdi` olan SON kaydi cizer, plan biterse son
  * kaydi gostermeye devam eder. Metinler JS'te etkin dilde cozulmus gelir (native ek
- * ceviri tasimaz). `duvar` alani iOS'ta YOK SAYILIR (Codable bilinmeyen anahtari atlar).
+ * ceviri tasimaz). Bu tip `duvar`, `sahneler` ve plan `vakitler`'ini OKUMAZ (widget ve saat
+ * kullanmaz; Codable bilinmeyen anahtari atlar): duvar kagidi bunlari ayri ve hosgorulu
+ * cozer (`GununAyetiKarari.duvarEki`, asagida) — bozuk duvar alani widget'i bosaltmaz.
  *
  * Bu bolum bilincli olarak `WidgetKarari.swift` icindedir: dosya zaten pod'da derlenir,
  * widget uzantisina kopyalanir ve CI Swift testinin derleme listesindedir (yeni bir dosya
@@ -271,8 +273,9 @@ public enum GununAyetiKarari {
         return !meal.unicodeScalars.contains { s in serifsizAraliklar.contains { $0.contains(s.value) } }
     }
 
-    /// Kisayollar duvar kagidi gorselinin govdesi: meal; meali olmayan dilde (ar ve mealsiz diller ku, tk,
-    /// tt, sd, pl) kisa kunye (gorsel Arapca CIZMEZ, ana uygulamada Arapca font yok).
+    /// Arapcasiz govde: meal; meali olmayan dilde (ar ve mealsiz diller ku, tk, tt, sd, pl) kisa kunye.
+    /// Kisayollar gorseli kisisellestirmeden (taslak 2) beri bunu KULLANMAZ: meali olmayan dilde
+    /// Arapca cizer (`duvardaArapca`).
     public static func gorselGovdesi(_ kayit: GununAyetiKaydi) -> String {
         kayit.meal ?? kayit.kisaKunye
     }
@@ -289,5 +292,736 @@ public enum GununAyetiKarari {
         if let k = kayit.mealKaynagi, !k.isEmpty { parcalar.append(k) }
         if arapcaVar { parcalar.append(metin.arapcaKaynagi) }
         return parcalar.joined(separator: " · ")
+    }
+
+    /// Duvar kagidinda Arapca cizilir mi? Ayar acik ya da meal yok (Kotlin `duvardaArapca` ikizi).
+    public static func duvardaArapca(_ kayit: GununAyetiKaydi, ayar: DuvarAyari) -> Bool {
+        ayar.arapca || kayit.meal == nil
+    }
+
+    /// Duvar kagidinin ATIF satiri (kunyenin altinda, her gorselde): meal kaynagi + Arapca
+    /// gorunuyorsa (ya da meal yoksa) Arapca kaynagi. Kotlin `atifSatiri` ikizi.
+    public static func atifSatiri(_ kayit: GununAyetiKaydi, metin: GununAyetiMetinleri, arapcaGorunuyor: Bool) -> String {
+        var parcalar: [String] = []
+        if kayit.meal != nil, let k = kayit.mealKaynagi, !k.isEmpty { parcalar.append(k) }
+        if arapcaGorunuyor || kayit.meal == nil, !metin.arapcaKaynagi.trimmingCharacters(in: .whitespaces).isEmpty {
+            parcalar.append(metin.arapcaKaynagi)
+        }
+        return parcalar.joined(separator: " · ")
+    }
+
+    /// Yukun duvar kagidi eki: `duvar` ayari (JS `duvarAyariNormalize` ile AYNI varsayilanlar),
+    /// vakit gokleri ve plan kayitlarinin vakitleri. Hicbir zaman nil degil: yuk yok ya da bozuksa
+    /// varsayilan ayar + bos gokler (cizici gece zeminine duser).
+    public static func duvarEki(_ ham: String?) -> GununAyetiDuvarEki {
+        guard let ham, let veri = ham.data(using: .utf8),
+              let e = try? JSONDecoder().decode(DuvarEkiHam.self, from: veri) else {
+            return GununAyetiDuvarEki(duvar: DuvarAyari.normalize(nil), sahneler: [:], vakitler: [:])
+        }
+        var vakitler: [String: [Int64]] = [:]
+        for kayit in e.plan ?? [] {
+            guard let gun = kayit["gun"]?.metin, let dizi = kayit["vakitler"]?.dizi, dizi.count == 5 else { continue }
+            let ms = dizi.compactMap { $0.sayi }.filter { abs($0) < 9e15 }.map { Int64($0) }
+            if ms.count == 5 { vakitler[gun] = ms }
+        }
+        return GununAyetiDuvarEki(duvar: DuvarAyari.normalize(e.duvar), sahneler: e.sahneler ?? [:], vakitler: vakitler)
+    }
+}
+
+// MARK: - Gunun ayeti duvar kagidi kisisellestirme (taslak 2) — `src/core/icerik/duvarTasarimi.ts` ikizi
+
+/*
+ * DUVAR KAGIDI TASARIM SOZLESMESI (SAF, yalniz Foundation): JS `src/core/icerik/duvarTasarimi.ts`
+ * + `gununAyetiYuku.duvarAyariNormalize` ve Kotlin `cekirdek/GununAyeti.kt` ikizi. Eslik ornegi
+ * `android/app/src/test/resources/duvar-tasarim-ornek.json` (Swift testi `test/main.swift` §14).
+ * Kural ya da ornek degisirse JS + Kotlin + Swift BIRLIKTE degisir. Bu dosya widget ve saat
+ * hedeflerine de kopyalanir: CoreGraphics/UIKit YOK, yalniz Double. Cizici
+ * `targets/siri-kisayollari/GununAyetiGorseliIntent.swift`.
+ */
+
+/// Hosgorulu JSON degeri: JS'in `typeof` denetimlerini birebir taklit etmek icin. JSON `true`
+/// SAYI DEGILDIR (`JSONSerialization` Darwin'de onu NSNumber yapar ve `as? Double`'dan gecirirdi;
+/// `JSONDecoder` Bool ile sayiyi ayirir).
+public enum DuvarJson: Decodable, Equatable, Sendable {
+    case mantik(Bool)
+    case sayi(Double)
+    case metin(String)
+    case dizi([DuvarJson])
+    case nesne([String: DuvarJson])
+    case bos
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if c.decodeNil() {
+            self = .bos
+        } else if let b = try? c.decode(Bool.self) {
+            self = .mantik(b)
+        } else if let d = try? c.decode(Double.self) {
+            self = .sayi(d)
+        } else if let s = try? c.decode(String.self) {
+            self = .metin(s)
+        } else if let a = try? c.decode([DuvarJson].self) {
+            self = .dizi(a)
+        } else if let o = try? c.decode([String: DuvarJson].self) {
+            self = .nesne(o)
+        } else {
+            self = .bos
+        }
+    }
+
+    public subscript(_ anahtar: String) -> DuvarJson? {
+        if case let .nesne(o) = self { return o[anahtar] }
+        return nil
+    }
+
+    /// Sonlu sayi (JS `typeof v === 'number' && Number.isFinite(v)`).
+    public var sayi: Double? {
+        if case let .sayi(d) = self, d.isFinite { return d }
+        return nil
+    }
+
+    public var metin: String? {
+        if case let .metin(s) = self { return s }
+        return nil
+    }
+
+    public var mantik: Bool? {
+        if case let .mantik(b) = self { return b }
+        return nil
+    }
+
+    public var dizi: [DuvarJson]? {
+        if case let .dizi(a) = self { return a }
+        return nil
+    }
+}
+
+/// JS `sinirla`: sonlu sayi → [alt, ust]; degilse varsayilan.
+private func duvarSinirla(_ v: DuvarJson?, _ alt: Double, _ ust: Double, _ varsayilan: Double) -> Double {
+    guard let d = v?.sayi else { return varsayilan }
+    return min(ust, max(alt, d))
+}
+
+private func duvarSecim(_ v: DuvarJson?, _ secenekler: [String], _ varsayilan: String) -> String {
+    guard let s = v?.metin, secenekler.contains(s) else { return varsayilan }
+    return s
+}
+
+public struct DuvarYaziAyari: Equatable, Sendable {
+    /// Yazi blogunun DIKEY MERKEZI (ekran kesri); nil = ekranin varsayilani. Kilit ve ana ayri.
+    public var kilitY: Double?
+    public var anaY: Double?
+    /// Yazi boyutu carpani (0,7–1,6).
+    public var olcek: Double
+    /// `bas` | `orta` | `son`.
+    public var hiza: String
+    /// `klasik` | `zarif` | `sade`.
+    public var tip: String
+
+    public init(kilitY: Double?, anaY: Double?, olcek: Double, hiza: String, tip: String) {
+        self.kilitY = kilitY
+        self.anaY = anaY
+        self.olcek = olcek
+        self.hiza = hiza
+        self.tip = tip
+    }
+
+    public static let varsayilan = DuvarYaziAyari(kilitY: nil, anaY: nil, olcek: 1, hiza: "orta", tip: "klasik")
+
+    /// JS `yaziAyariNormalize` ikizi.
+    public static func normalize(_ ham: DuvarJson?) -> DuvarYaziAyari {
+        let yKes: (DuvarJson?) -> Double? = { v in v?.sayi.map { min(1, max(0, $0)) } }
+        return DuvarYaziAyari(
+            kilitY: yKes(ham?["kilitY"]),
+            anaY: yKes(ham?["anaY"]),
+            olcek: duvarSinirla(ham?["olcek"], 0.7, 1.6, varsayilan.olcek),
+            hiza: duvarSecim(ham?["hiza"], ["bas", "orta", "son"], varsayilan.hiza),
+            tip: duvarSecim(ham?["tip"], ["klasik", "zarif", "sade"], varsayilan.tip)
+        )
+    }
+}
+
+public struct DuvarSusAyari: Equatable, Sendable {
+    /// `yildiz` | `mihrap` | `girih` | `yok`.
+    public var tur: String
+    /// 0–1.
+    public var belirginlik: Double
+
+    public init(tur: String, belirginlik: Double) {
+        self.tur = tur
+        self.belirginlik = belirginlik
+    }
+
+    public static let varsayilan = DuvarSusAyari(tur: "yildiz", belirginlik: 0.5)
+
+    /// JS `susAyariNormalize` ikizi.
+    public static func normalize(_ ham: DuvarJson?) -> DuvarSusAyari {
+        DuvarSusAyari(
+            tur: duvarSecim(ham?["tur"], ["yildiz", "mihrap", "girih", "yok"], varsayilan.tur),
+            belirginlik: duvarSinirla(ham?["belirginlik"], 0, 1, varsayilan.belirginlik)
+        )
+    }
+}
+
+public struct DuvarFotoAyari: Equatable, Sendable {
+    /// Uygulamanin kendi kopyasinin adi (`duvar-foto-<ozet>.jpg`); nil = secilmedi.
+    public var dosya: String?
+    /// Siyah ortu 0–0,85.
+    public var karartma: Double
+    /// 0–1 (cizicide yaricap: kisa kenarin %0–%4'u).
+    public var bulaniklik: Double
+    /// Kirpma merkezi (gorsel kesri) ve yakinlik (1–4).
+    public var x: Double
+    public var y: Double
+    public var yakinlik: Double
+    /// Acikken yazi rengi ve yazi arkasi perde fotografa gore secilir (`okunurlukKarari`).
+    public var okunurluk: Bool
+
+    public init(dosya: String?, karartma: Double, bulaniklik: Double, x: Double, y: Double, yakinlik: Double, okunurluk: Bool) {
+        self.dosya = dosya
+        self.karartma = karartma
+        self.bulaniklik = bulaniklik
+        self.x = x
+        self.y = y
+        self.yakinlik = yakinlik
+        self.okunurluk = okunurluk
+    }
+
+    public static let varsayilan = DuvarFotoAyari(dosya: nil, karartma: 0.4, bulaniklik: 0.15, x: 0.5, y: 0.5, yakinlik: 1, okunurluk: true)
+
+    /// JS `fotoAyariNormalize` ikizi.
+    public static func normalize(_ ham: DuvarJson?) -> DuvarFotoAyari {
+        let ad = ham?["dosya"]?.metin
+        return DuvarFotoAyari(
+            dosya: ad.flatMap { DuvarAyari.fotoAdiGecerliMi($0) ? $0 : nil },
+            karartma: duvarSinirla(ham?["karartma"], 0, 0.85, varsayilan.karartma),
+            bulaniklik: duvarSinirla(ham?["bulaniklik"], 0, 1, varsayilan.bulaniklik),
+            x: duvarSinirla(ham?["x"], 0, 1, varsayilan.x),
+            y: duvarSinirla(ham?["y"], 0, 1, varsayilan.y),
+            yakinlik: duvarSinirla(ham?["yakinlik"], 1, 4, varsayilan.yakinlik),
+            okunurluk: ham?["okunurluk"]?.mantik != false
+        )
+    }
+}
+
+/// Duvar kagidi ayari (yuk `duvar`). JS `DuvarKagidiAyari` ikizi.
+public struct DuvarAyari: Equatable, Sendable {
+    public var acik: Bool
+    /// `kilit` | `ana` | `ikisi`.
+    public var yer: String
+    /// `gece` | `kagit` | `palet` | gok (`imsak`…`yatsi`) | `foto`.
+    public var zemin: String
+    public var arapca: Bool
+    public var paletRenk: String
+    public var vakteUysun: Bool
+    public var yazi: DuvarYaziAyari
+    public var sus: DuvarSusAyari
+    public var foto: DuvarFotoAyari
+
+    public init(
+        acik: Bool, yer: String, zemin: String, arapca: Bool, paletRenk: String, vakteUysun: Bool,
+        yazi: DuvarYaziAyari, sus: DuvarSusAyari, foto: DuvarFotoAyari
+    ) {
+        self.acik = acik
+        self.yer = yer
+        self.zemin = zemin
+        self.arapca = arapca
+        self.paletRenk = paletRenk
+        self.vakteUysun = vakteUysun
+        self.yazi = yazi
+        self.sus = sus
+        self.foto = foto
+    }
+
+    public static let varsayilanZemin = "imsak"
+    public static let varsayilanPalet = "#2E7D32"
+
+    /// JS `duvarAyariNormalize` ikizi: bozuk ya da eksik kayit varsayilanla tamamlanir; eski (v1
+    /// alanli) kayit zeminini korur.
+    public static func normalize(_ ham: DuvarJson?) -> DuvarAyari {
+        let palet = ham?["paletRenk"]?.metin
+        return DuvarAyari(
+            acik: ham?["acik"]?.mantik == true,
+            yer: duvarSecim(ham?["yer"], ["kilit", "ana", "ikisi"], "kilit"),
+            zemin: duvarSecim(ham?["zemin"], DuvarTasarimi.zeminler, varsayilanZemin),
+            arapca: ham?["arapca"]?.mantik == true,
+            paletRenk: palet.flatMap { DuvarTasarimi.rgb($0) != nil ? $0 : nil } ?? varsayilanPalet,
+            vakteUysun: ham?["vakteUysun"]?.mantik != false,
+            yazi: DuvarYaziAyari.normalize(ham?["yazi"]),
+            sus: DuvarSusAyari.normalize(ham?["sus"]),
+            foto: DuvarFotoAyari.normalize(ham?["foto"])
+        )
+    }
+
+    /// `^duvar-foto-[0-9a-z]{4,40}\.(jpg|png)$` (JS `fotoAyariNormalize`): yol tasinmaz, yalniz ad.
+    public static func fotoAdiGecerliMi(_ ad: String) -> Bool {
+        let u = Array(ad.unicodeScalars)
+        let onEk = Array("duvar-foto-".unicodeScalars)
+        guard u.count >= onEk.count + 4 + 4, Array(u.prefix(onEk.count)) == onEk else { return false }
+        let son = Array(u.suffix(4))
+        guard son == Array(".jpg".unicodeScalars) || son == Array(".png".unicodeScalars) else { return false }
+        let govde = u[onEk.count ..< (u.count - 4)]
+        guard (4 ... 40).contains(govde.count) else { return false }
+        return govde.allSatisfy { (0x30 ... 0x39).contains($0.value) || (0x61 ... 0x7A).contains($0.value) }
+    }
+}
+
+// MARK: Gok sahneleri (VERI; JS `GOK_SAHNELERI` yukte `sahneler` olarak gelir)
+
+public struct DuvarRenkDuragi: Decodable, Equatable, Sendable {
+    public let konum: Double
+    public let renk: String
+}
+
+/// Gok cismi. `hilal`: (x,y,r) dairesinden (x+kesX, y+kesY, kesR) dairesi CIKARILIR (kesX/kesR
+/// genislik, kesY yukseklik kesri). `konumlar` sirali adaylar (`cisimKonumuSec`).
+public struct DuvarGokCismi: Decodable, Equatable, Sendable {
+    public let tur: String
+    public let konumlar: [[Double]]
+    public let r: Double
+    public let renk: String
+    public let opaklik: Double
+    public let kesX: Double?
+    public let kesY: Double?
+    public let kesR: Double?
+    public let isimaR: Double?
+    public let isimaRenk: String?
+    public let isimaOpaklik: Double?
+}
+
+public struct DuvarYildizi: Decodable, Equatable, Sendable {
+    public let x: Double
+    public let y: Double
+    public let r: Double
+    public let opaklik: Double
+}
+
+/// Cismin merkezinden (x, y) ucuna uzanan isik huzmesi.
+public struct DuvarHuzmesi: Decodable, Equatable, Sendable {
+    public let x: Double
+    public let y: Double
+    public let kalinlik: Double
+    public let renk: String
+    public let opaklik: Double
+}
+
+public struct DuvarCokgeni: Decodable, Equatable, Sendable {
+    public let noktalar: [[Double]]
+    public let renk: String
+    public let opaklik: Double
+}
+
+public struct DuvarGokSahnesi: Decodable, Equatable, Sendable {
+    public let gradyan: [DuvarRenkDuragi]
+    public let yildizlar: [DuvarYildizi]
+    public let cisim: DuvarGokCismi?
+    public let huzmeler: [DuvarHuzmesi]
+    /// Ufuk/zemin cokgenleri (en son, cisimden SONRA cizilir).
+    public let ufuk: [DuvarCokgeni]
+    /// Yazi rengi. Kunye ve atif ayni rengin %72 ve %55 opakligi.
+    public let metin: String
+}
+
+/// Yukun duvar kagidi eki (`GununAyetiKarari.duvarEki`).
+public struct GununAyetiDuvarEki: Equatable, Sendable {
+    public let duvar: DuvarAyari
+    /// Gok adi (`imsak`…`yatsi`) → sahne; yok/bozuksa bos (cizici gece zeminine duser).
+    public let sahneler: [String: DuvarGokSahnesi]
+    /// Namaz gunu (`YYYY-MM-DD`) → [imsak, gunes, ikindi, aksam, yatsi] ms (konum yoksa yok).
+    public let vakitler: [String: [Int64]]
+
+    public init(duvar: DuvarAyari, sahneler: [String: DuvarGokSahnesi], vakitler: [String: [Int64]]) {
+        self.duvar = duvar
+        self.sahneler = sahneler
+        self.vakitler = vakitler
+    }
+}
+
+/// Her alan ayri ve hosgorulu cozulur: bozuk `sahneler` ayari, bozuk `duvar` gokleri dusurmez.
+struct DuvarEkiHam: Decodable {
+    let duvar: DuvarJson?
+    let sahneler: [String: DuvarGokSahnesi]?
+    let plan: [DuvarJson]?
+
+    enum Anahtar: String, CodingKey { case duvar, sahneler, plan }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: Anahtar.self)
+        duvar = try? c.decodeIfPresent(DuvarJson.self, forKey: .duvar)
+        sahneler = try? c.decodeIfPresent([String: DuvarGokSahnesi].self, forKey: .sahneler)
+        plan = try? c.decodeIfPresent([DuvarJson].self, forKey: .plan)
+    }
+}
+
+// MARK: Kurallar
+
+public struct DuvarBandi: Equatable, Sendable, CustomStringConvertible {
+    public let ust: Double
+    public let alt: Double
+    public init(ust: Double, alt: Double) {
+        self.ust = ust
+        self.alt = alt
+    }
+    public var description: String { "[\(ust), \(alt)]" }
+}
+
+public struct DuvarYerlesimi: Equatable, Sendable {
+    /// Blogun ust kenari (ekran kesri).
+    public let ust: Double
+    public let bant: DuvarBandi
+}
+
+public struct DuvarOkunurluk: Equatable, Sendable {
+    public let metin: String
+    public let perde: String
+    public let perdeOpakligi: Double
+}
+
+/// gece/kagit/palet zemininin renkleri (RGB, 0xRRGGBB). Kotlin `DuvarRenkleri` ikizi.
+public struct DuvarZeminRenkleri: Equatable, Sendable {
+    public let zemin: UInt32
+    public let metin: UInt32
+    public let kunye: UInt32
+    public let atif: UInt32
+    public let sus: UInt32
+    public let susOpakligi: Double
+}
+
+public struct DuvarDikdortgen: Equatable, Sendable {
+    public let x: Double
+    public let y: Double
+    public let genislik: Double
+    public let yukseklik: Double
+}
+
+public enum DuvarHizasi: Equatable, Sendable { case sol, orta, sag }
+
+public enum DuvarYazitipi: Equatable, Sendable {
+    /// Sistem serif tasarimi (New York).
+    case serif
+    case sistem
+    /// Amiri (OFL; "Zarif").
+    case amiri
+}
+
+public enum DuvarTasarimi {
+    public static let goklar = ["imsak", "kusluk", "ikindi", "aksam", "yatsi"]
+    public static let zeminler = ["gece", "kagit", "palet"] + goklar + ["foto"]
+
+    // --- Gok secimi ---------------------------------------------------------------------
+
+    /// O anin gogu: imsak ≤ t < gunes → imsak; gunes ≤ t < ikindi → kusluk; ikindi ≤ t < aksam →
+    /// ikindi; aksam ≤ t < yatsi → aksam; yatsidan sonra ve imsaktan once → yatsi. `v` = 5 an.
+    public static func vaktinGogu(_ simdiMs: Int64, _ v: [Int64]) -> String {
+        guard v.count >= 5 else { return "yatsi" }
+        if simdiMs >= v[0] && simdiMs < v[1] { return "imsak" }
+        if simdiMs >= v[1] && simdiMs < v[2] { return "kusluk" }
+        if simdiMs >= v[2] && simdiMs < v[3] { return "ikindi" }
+        if simdiMs >= v[3] && simdiMs < v[4] { return "aksam" }
+        return "yatsi"
+    }
+
+    /// `simdiMs`'den sonraki ilk gok siniri (yoksa nil).
+    public static func sonrakiGokSiniri(_ simdiMs: Int64, _ v: [Int64]) -> Int64? {
+        v.first { $0 > simdiMs }
+    }
+
+    /// Cizilecek gok ya da nil (zemin gok degil). Vakte uyan gok, kaydin vakitleri yoksa (konum
+    /// yok) secilen gokte kalir.
+    public static func cizilecekGok(zemin: String, vakteUysun: Bool, simdiMs: Int64, vakitler: [Int64]?) -> String? {
+        guard goklar.contains(zemin) else { return nil }
+        if vakteUysun, let v = vakitler, v.count == 5 { return vaktinGogu(simdiMs, v) }
+        return zemin
+    }
+
+    // --- Guvenli alan ve yerlesim -------------------------------------------------------
+
+    /// Yazinin girebilecegi dikey bantlar (ekran kesri), yukaridan asagi. JS `IZINLI_BANTLAR`.
+    public static let izinliBantlar: [String: [String: [DuvarBandi]]] = [
+        "android": [
+            "kilit": [DuvarBandi(ust: 0.08, alt: 0.26), DuvarBandi(ust: 0.64, alt: 0.84)],
+            "ana": [DuvarBandi(ust: 0.07, alt: 0.88)],
+        ],
+        "ios": [
+            "kilit": [DuvarBandi(ust: 0.34, alt: 0.85)],
+            "ana": [DuvarBandi(ust: 0.07, alt: 0.86)],
+        ],
+    ]
+
+    /// Ekranin varsayilan yazi merkezi. JS `VARSAYILAN_MERKEZ`.
+    public static let varsayilanMerkez: [String: [String: Double]] = [
+        "android": ["kilit": 0.73, "ana": 0.215],
+        "ios": ["kilit": 0.58, "ana": 0.25],
+    ]
+
+    /// Ayarin `yer`'inden cizilecek ekran: `ana` → ana, digerleri (`kilit`, `ikisi`) → kilit.
+    public static func ekran(_ yer: String) -> String { yer == "ana" ? "ana" : "kilit" }
+
+    /// Kullanicinin tasidigi merkez ya da ekranin varsayilani.
+    public static func yaziMerkezi(_ yazi: DuvarYaziAyari, ekran: String, platform: String = "ios") -> Double {
+        let secilen = ekran == "ana" ? yazi.anaY : yazi.kilitY
+        return secilen ?? varsayilanMerkez[platform]?[ekran] ?? 0.5
+    }
+
+    /// Istenen merkeze EN YAKIN, blogun SIGDIGI bant ici yerlesim; esitlikte USTTEKI bant (kesin
+    /// `<`). Hicbir banda sigmiyorsa nil (cizici yaziyi kucultup yeniden dener). JS `yaziYerlesimi`.
+    public static func yaziYerlesimi(_ istenenMerkez: Double, _ blok: Double, _ bantlar: [DuvarBandi]) -> DuvarYerlesimi? {
+        var enIyi: DuvarYerlesimi?
+        var enIyiFark = 0.0
+        for b in bantlar {
+            if b.alt - b.ust < blok { continue }
+            let ust = min(b.alt - blok, max(b.ust, istenenMerkez - blok / 2))
+            let fark = abs(ust + blok / 2 - istenenMerkez)
+            if enIyi == nil || fark < enIyiFark {
+                enIyi = DuvarYerlesimi(ust: ust, bant: b)
+                enIyiFark = fark
+            }
+        }
+        return enIyi
+    }
+
+    /// Sigmayan yazinin kucultme adimlari (Kotlin `DuvarKagidiCizici.sigdir`: ×1'den %6 adimla,
+    /// carpan 0,6'nin ustundeyken bir adim daha → son adim ~0,58).
+    public static func kucultmeAdimlari() -> [Double] {
+        var adimlar = [1.0]
+        var carpan = 1.0
+        while carpan > 0.6 {
+            carpan -= 0.06
+            adimlar.append(carpan)
+        }
+        return adimlar
+    }
+
+    /// Yazi kutusunun cisimle kesisme denetiminde kenar payi (genislik kesri).
+    public static let cisimPayi = 0.04
+
+    /// Gok cisminin adaylarindan yazi kutusuna (x1,y1,x2,y2 kesir; nil = yazi yok) degmeyen ilki;
+    /// hepsi degiyorsa nil (cisim ve isimasi cizilmez). `oran` = yukseklik/genislik. JS ikizi.
+    public static func cisimKonumuSec(_ cisim: DuvarGokCismi, kutu: [Double]?, oran: Double) -> [Double]? {
+        for k in cisim.konumlar where k.count >= 2 {
+            guard let kutu, kutu.count >= 4 else { return k }
+            let cx = k[0]
+            let cy = k[1] * oran
+            let r = cisim.r + cisimPayi
+            let yakX = min(kutu[2], max(kutu[0], cx))
+            let yakY = min(kutu[3] * oran, max(kutu[1] * oran, cy))
+            if (cx - yakX) * (cx - yakX) + (cy - yakY) * (cy - yakY) > r * r { return k }
+        }
+        return nil
+    }
+
+    // --- Renk ve okunurluk --------------------------------------------------------------
+
+    /// `#RRGGBB` → 0xRRGGBB; baska bicim nil (JS `/^#[0-9A-Fa-f]{6}$/`).
+    public static func rgb(_ renk: String) -> UInt32? {
+        let u = Array(renk.unicodeScalars)
+        guard u.count == 7, u[0] == "#" else { return nil }
+        let onaltilik = u.dropFirst().allSatisfy {
+            (0x30 ... 0x39).contains($0.value) || (0x41 ... 0x46).contains($0.value) || (0x61 ... 0x66).contains($0.value)
+        }
+        return onaltilik ? UInt32(String(renk.dropFirst()), radix: 16) : nil
+    }
+
+    /// sRGB kanal (0–1) → dogrusal (WCAG).
+    private static func dogrusal(_ s: Double) -> Double {
+        s <= 0.03928 ? s / 12.92 : pow((s + 0.055) / 1.055, 2.4)
+    }
+
+    /// sRGB bagil parlaklik (WCAG), kanallar 0–1.
+    public static func bagilParlaklik(r: Double, g: Double, b: Double) -> Double {
+        0.2126 * dogrusal(r) + 0.7152 * dogrusal(g) + 0.0722 * dogrusal(b)
+    }
+
+    public static func bagilParlaklik(rgb n: UInt32) -> Double {
+        bagilParlaklik(r: Double((n >> 16) & 255) / 255, g: Double((n >> 8) & 255) / 255, b: Double(n & 255) / 255)
+    }
+
+    /// JS `bagilParlaklik(renk)`.
+    public static func bagilParlaklik(_ renk: String) -> Double {
+        bagilParlaklik(rgb: rgb(renk) ?? 0)
+    }
+
+    private static func kontrast(_ a: Double, _ b: Double) -> Double {
+        (max(a, b) + 0.05) / (min(a, b) + 0.05)
+    }
+
+    public static let acikMetin = "#FFFFFF"
+    public static let koyuMetin = "#1F2A22"
+
+    /// Fotograf zemininde yazi kutusunun ORTALAMA bagil parlakligina gore yazi rengi ve perde
+    /// (hedef 4,5:1; 0,05 adim, en cok 0,6). JS `okunurlukKarari` ikizi.
+    public static func okunurlukKarari(_ ortalamaParlaklik: Double) -> DuvarOkunurluk {
+        let L = min(1, max(0, ortalamaParlaklik))
+        let acikla = kontrast(1, L)
+        let koyuL = bagilParlaklik(koyuMetin)
+        let koyuyla = kontrast(koyuL, L)
+        let acik = acikla >= koyuyla
+        let metinL = acik ? 1.0 : koyuL
+        let perdeL = acik ? 0.0 : 1.0
+        var opaklik = 0.0
+        while opaklik < 0.6 - 1e-9 {
+            let zemin = L * (1 - opaklik) + perdeL * opaklik
+            if kontrast(metinL, zemin) >= 4.5 { break }
+            // JS `Math.round(x)` = floor(x + 0,5).
+            opaklik = ((opaklik + 0.05) * 100 + 0.5).rounded(.down) / 100
+        }
+        return DuvarOkunurluk(metin: acik ? acikMetin : koyuMetin, perde: acik ? "#000000" : "#FFFFFF", perdeOpakligi: opaklik)
+    }
+
+    /// Yazi kutusunun altindaki fotograf piksellerinin (RGBA, 8 bit, opak, sRGB) ortalama bagil
+    /// parlakligi; siyah ortu (`karartma`) her kanala uygulanarak. Bos → 0.
+    public static func ortalamaParlaklik(rgba: [UInt8], karartma: Double) -> Double {
+        let kalan = 1 - min(1, max(0, karartma))
+        var toplam = 0.0
+        var sayi = 0
+        var i = 0
+        while i + 3 < rgba.count {
+            toplam += bagilParlaklik(
+                r: Double(rgba[i]) / 255 * kalan, g: Double(rgba[i + 1]) / 255 * kalan, b: Double(rgba[i + 2]) / 255 * kalan
+            )
+            sayi += 1
+            i += 4
+        }
+        return sayi == 0 ? 0 : toplam / Double(sayi)
+    }
+
+    // --- gece / kagit / palet (Kotlin `DuvarKagidiKurallari` ikizi) ------------------------
+
+    private static let acikZeminMetni: UInt32 = 0xF1F8E9
+    private static let koyuZeminMetni: UInt32 = 0x1F2A22
+
+    /// a → b dogrusal karisim (kanal basina, Kotlin `Math.round` = floor(x + 0,5)).
+    public static func karistir(_ a: UInt32, _ b: UInt32, _ oran: Double) -> UInt32 {
+        func kanal(_ kaydir: UInt32) -> UInt32 {
+            let x = Double((a >> kaydir) & 0xFF)
+            let y = Double((b >> kaydir) & 0xFF)
+            return UInt32(min(255, max(0, (x + (y - x) * oran + 0.5).rounded(.down))))
+        }
+        return (kanal(16) << 16) | (kanal(8) << 8) | kanal(0)
+    }
+
+    public static func kontrastOrani(_ a: UInt32, _ b: UInt32) -> Double {
+        kontrast(bagilParlaklik(rgb: a), bagilParlaklik(rgb: b))
+    }
+
+    /// Orta tonlu palet: zemin acik ya da koyu metinle 4,5:1'i tutana kadar %10 adimla koyulasir.
+    public static func okunurPaletZemini(_ palet: UInt32) -> UInt32 {
+        var zemin = palet & 0xFFFFFF
+        for _ in 0 ..< 10 {
+            let enIyi = max(kontrastOrani(acikZeminMetni, zemin), kontrastOrani(koyuZeminMetni, zemin))
+            if enIyi >= 4.5 { return zemin }
+            zemin = karistir(zemin, 0x000000, 0.10)
+        }
+        return zemin
+    }
+
+    public static func acikMetinSecilsinMi(_ zemin: UInt32) -> Bool {
+        kontrastOrani(acikZeminMetni, zemin) >= kontrastOrani(koyuZeminMetni, zemin)
+    }
+
+    /// Metni zemine dogru en cok %35 karistirir; 4,5:1 altina dusmeden durur.
+    public static func ikincilTon(_ metin: UInt32, _ zemin: UInt32) -> UInt32 {
+        var oran = 0.35
+        while oran > 0 {
+            let aday = karistir(metin, zemin, oran)
+            if kontrastOrani(aday, zemin) >= 4.5 { return aday }
+            oran -= 0.05
+        }
+        return metin
+    }
+
+    /// Duz zeminlerin renkleri; gok/foto icin cagrilmaz (gece doner).
+    public static func zeminRenkleri(_ zemin: String, paletRenk: String) -> DuvarZeminRenkleri {
+        switch zemin {
+        case "kagit":
+            return DuvarZeminRenkleri(zemin: 0xF3F1EA, metin: 0x1F2A22, kunye: 0x2E7D32, atif: 0x4E5B52, sus: 0x1B5E20, susOpakligi: 0.07)
+        case "palet":
+            let zeminRengi = okunurPaletZemini(rgb(paletRenk) ?? 0x2E7D32)
+            let acik = acikMetinSecilsinMi(zeminRengi)
+            let metin = acik ? acikZeminMetni : koyuZeminMetni
+            let ikincil = ikincilTon(metin, zeminRengi)
+            return DuvarZeminRenkleri(
+                zemin: zeminRengi, metin: metin, kunye: ikincil, atif: ikincil, sus: acik ? 0xFFFFFF : 0x000000, susOpakligi: 0.09
+            )
+        default:
+            return DuvarZeminRenkleri(zemin: 0x14211A, metin: 0xF1F8E9, kunye: 0xA5D6A7, atif: 0x81C784, sus: 0xFFFFFF, susOpakligi: 0.08)
+        }
+    }
+
+    /// Yildiz susunun merkezi (ekran kesri): kagit sol, palet sag, gece/gok/foto sag alt.
+    public static func yildizKonumu(_ zemin: String) -> [Double] {
+        switch zemin {
+        case "kagit": return [0.097, 0.64]
+        case "palet": return [0.903, 0.693]
+        default: return [0.855, 0.878]
+        }
+    }
+
+    /// Sus opakligi carpani: belirginlik 0,5 (varsayilan) bugunku gorunum (×1).
+    public static func susCarpani(_ belirginlik: Double) -> Double { 0.5 + min(1, max(0, belirginlik)) }
+
+    // --- Yazi ---------------------------------------------------------------------------
+
+    /// Ilk guclu yon karakteri sagdan sola mi? (Ibrani, Arap, Suryani, Tana, N'Ko ve sunum bicimleri.)
+    public static func sagdanSolaMi(_ metin: String) -> Bool {
+        for s in metin.unicodeScalars {
+            let v = s.value
+            if (0x0590 ... 0x08FF).contains(v) || (0xFB1D ... 0xFDFF).contains(v) || (0xFE70 ... 0xFEFF).contains(v)
+                || (0x10800 ... 0x10FFF).contains(v) {
+                return true
+            }
+            if s.properties.isAlphabetic { return false }
+        }
+        return false
+    }
+
+    /// `bas`/`son` yazinin YONUNE gore: sagdan sola metinde bas = sag.
+    public static func hiza(_ ayar: String, sagdanSola: Bool) -> DuvarHizasi {
+        switch ayar {
+        case "bas": return sagdanSola ? .sag : .sol
+        case "son": return sagdanSola ? .sol : .sag
+        default: return .orta
+        }
+    }
+
+    /// Amiri'nin (Zarif) kapsadigi yazi: Temel Latin, Latin-1, Latin Genisletilmis-A, genel
+    /// noktalama ve Arap bloklari (fontTools cmap, Amiri 1.002). Disi → klasik kural.
+    static let amiriAraliklari: [ClosedRange<UInt32>] = [
+        0x0000 ... 0x017F, 0x0600 ... 0x06FF, 0x0750 ... 0x077F, 0x2000 ... 0x206F, 0xFB50 ... 0xFDFF, 0xFE70 ... 0xFEFF,
+    ]
+
+    public static func amiriKapsarMi(_ metin: String) -> Bool {
+        metin.unicodeScalars.allSatisfy { s in amiriAraliklari.contains { $0.contains(s.value) } }
+    }
+
+    /// Mealin yazi tipi: sade → sistem; zarif → Amiri (kapsamadigi yazida klasik kurala duser);
+    /// klasik → serif (yazi serif tasarimda yoksa sistem, `mealSerifMi`).
+    public static func mealYazitipi(_ tip: String, meal: String) -> DuvarYazitipi {
+        if tip == "sade" { return .sistem }
+        if tip == "zarif" && amiriKapsarMi(meal) { return .amiri }
+        return GununAyetiKarari.mealSerifMi(meal) ? .serif : .sistem
+    }
+
+    // --- Fotograf -------------------------------------------------------------------------
+
+    /// En-boy dolduran kirpma (gorsel pikseli, sol ust koken): olcek = max(G/g, Y/y) × yakinlik,
+    /// merkez (x·g, y·y), gorselin icinde kalacak sekilde kaydirilir.
+    public static func fotoKirpmasi(
+        gorselG: Double, gorselY: Double, hedefG: Double, hedefY: Double, x: Double, y: Double, yakinlik: Double
+    ) -> DuvarDikdortgen {
+        guard gorselG > 0, gorselY > 0, hedefG > 0, hedefY > 0 else {
+            return DuvarDikdortgen(x: 0, y: 0, genislik: max(0, gorselG), yukseklik: max(0, gorselY))
+        }
+        let olcek = max(hedefG / gorselG, hedefY / gorselY) * max(1, yakinlik)
+        let g = min(gorselG, hedefG / olcek)
+        let h = min(gorselY, hedefY / olcek)
+        let sol = min(gorselG - g, max(0, x * gorselG - g / 2))
+        let ust = min(gorselY - h, max(0, y * gorselY - h / 2))
+        return DuvarDikdortgen(x: sol, y: ust, genislik: g, yukseklik: h)
+    }
+
+    /// Bulaniklik yaricapi (piksel): kisa kenarin bulaniklik × %4'u.
+    public static func bulaniklikYaricapi(_ bulaniklik: Double, genislik: Double, yukseklik: Double) -> Double {
+        min(1, max(0, bulaniklik)) * 0.04 * min(genislik, yukseklik)
     }
 }
