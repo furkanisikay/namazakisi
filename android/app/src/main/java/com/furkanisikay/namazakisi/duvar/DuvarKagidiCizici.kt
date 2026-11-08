@@ -241,6 +241,18 @@ object DuvarKagidiCizici {
             YaziHizasi.BAS -> if (mealRtl) x + g - yari else x + yari
             YaziHizasi.SON -> if (mealRtl) x + yari else x + g - yari
         }
+        // Künye ve atıf, yönü bloğun yönünden farklı olsa da (RTL mealin altında Latin kaynak satırı)
+        // aynı kenara yaslanır: NORMAL/OPPOSITE satırın kendi yönüne göre çözüldüğü için ters çevrilir.
+        val blokRtl = if (meal != null) mealRtl else arapca
+        fun satirHizasi(metin: String): Layout.Alignment {
+            val satirRtl = TextDirectionHeuristics.FIRSTSTRONG_LTR.isRtl(metin, 0, metin.length)
+            if (satirRtl == blokRtl) return hiza
+            return when (hiza) {
+                Layout.Alignment.ALIGN_NORMAL -> Layout.Alignment.ALIGN_OPPOSITE
+                Layout.Alignment.ALIGN_OPPOSITE -> Layout.Alignment.ALIGN_NORMAL
+                else -> hiza
+            }
+        }
         if (arapca) {
             val ar = yerlesim(kayit.ar, boya(AyetYazitipleri.arapca(context), 28f * o, renk.metin), genislik, 1f, hiza, rtl = true)
             parcalar += Parca(0f, ar.height.toFloat(), ar) { t, x, y, _ -> yerlesimCiz(t, ar, x, y) }
@@ -265,12 +277,13 @@ object DuvarKagidiCizici {
             parcalar += Parca((if (arapca) 14f else 18f) * o, m.height.toFloat(), m) { t, x, y, _ -> yerlesimCiz(t, m, x, y) }
         }
         val kunyeBoyasi = boya(Typeface.create("sans-serif", Typeface.NORMAL), 12f * o, renk.kunye).apply { letterSpacing = 0.04f }
-        val kunye = yerlesim(kayit.kisaKunye.rakamla(sifir), kunyeBoyasi, genislik, 1f, hiza)
+        val kunyeMetni = kayit.kisaKunye.rakamla(sifir)
+        val kunye = yerlesim(kunyeMetni, kunyeBoyasi, genislik, 1f, satirHizasi(kunyeMetni))
         parcalar += Parca((if (arapca) 14f else 18f) * o, kunye.height.toFloat(), kunye) { t, x, y, _ -> yerlesimCiz(t, kunye, x, y) }
 
         // Atıf zorunludur ve okunur kalmalı: kullanıcının yazı boyutundan bağımsız, en az ×0,9.
         val atifMetni = GununAyetiKurallari.atifSatiri(kayit, yuk.metin, arapca)
-        val atif = yerlesim(atifMetni, boya(Typeface.create("sans-serif", Typeface.NORMAL), 10f * s * carpan.coerceAtLeast(0.9f), renk.atif), genislik, 1f, hiza)
+        val atif = yerlesim(atifMetni, boya(Typeface.create("sans-serif", Typeface.NORMAL), 10f * s * carpan.coerceAtLeast(0.9f), renk.atif), genislik, 1f, satirHizasi(atifMetni))
         return Blok(parcalar, atif, 12f * s)
     }
 
