@@ -129,7 +129,7 @@ jobs:
       - name: 🏷️ Semantic Versiyon Hesapla (Release)
         if: inputs.build_type == 'release'
         id: version
-        uses: paulhatch/semantic-version@4d6da96a9bc3116da3613309a11ff75fba58eb8d # v6.0.4
+        uses: paulhatch/semantic-version@5ae1354e589c5a67345fb2c6e65b025ff676d7c7 # v6.0.7
         with:
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
@@ -545,7 +545,7 @@ jobs:
 
       - name: 🚀 GitHub Release (Release)
         if: inputs.build_type == 'release' && success()
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
         with:
           tag_name: ${{ steps.version.outputs.version_tag }}
           name: "🕌 Namaz Akışı v${{ steps.version.outputs.version }}"
