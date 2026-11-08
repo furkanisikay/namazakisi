@@ -94,7 +94,7 @@ export interface GununAyetiYuku {
   sahneler: Readonly<Record<DuvarGogu, GokSahnesi>>;
 }
 
-/** Bir namaz gününün vakitleri; konum yoksa null (vakte uyan gök o gün imsak göğünde kalır). */
+/** Bir namaz gününün vakitleri; konum yoksa null (vakte uyan gök o gün kullanıcının seçtiği gökte kalır). */
 export type VakitKaynagi = (tarih: Date) => GunVakitleri | null;
 
 /** Koordinattan imsak kaynağı; konum yoksa her gün `null` (plan 05:00 sınırına düşer). */

@@ -46,6 +46,10 @@ on:
       - 'src/core/siri/**'
       - 'src/core/widget/iosWidgetKarari.ts'
       - 'android/app/src/test/resources/widget-ornek.json'
+      # Duvar kâğıdı sözleşmesi + eşlik örneği (Swift §14 okur); yalnız sözleşmeyi değiştiren PR de koşsun.
+      - 'src/core/icerik/duvarTasarimi.ts'
+      - 'android/app/src/test/resources/duvar-tasarim-ornek.json'
+      - 'assets/fonts/Amiri*.ttf'
       - '.github/workflows/ios-siri-derleme.yml'
   workflow_dispatch:
 
