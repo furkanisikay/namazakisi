@@ -33,22 +33,45 @@
  *    `app.json > locales` dosyasindadir (`locales/<dil>.json`) — ayni adla iki kaynak ezisir.
  *  - AppIntents.framework hedefe ZAYIF (Weak) baglanir: dagitim hedefi 15.1,
  *    AppIntents iOS 16'dadir (bkz. `appIntentsZayifBagla`).
+ *  - Duvar kagidi yazi tipleri (`FONT_KAYNAKLARI`) ana hedefin Resources fazina ve Info.plist
+ *    `UIAppFonts`'a girer (bkz. `fontlariEkle`).
  */
 const fs = require('fs');
 const path = require('path');
 
-let withXcodeProject;
-let IOSConfig;
-try {
-  ({ withXcodeProject, IOSConfig } = require('@expo/config-plugins'));
-} catch {
-  // Global eas-cli baglaminda @expo/config-plugins bulunamayabilir → no-op
-  // (withPlayStoreDependency ile ayni desen).
-  module.exports = function withSiriKisayollari(config) {
-    return config;
-  };
-  return;
+/**
+ * Ana uygulamanin paketledigi yazi tipleri (ad → kaynak). TEK KAYNAK `assets/fonts/` (git'te kopya
+ * YOK; prebuild `ios/<Proje>/`'ye kopyalar). "Gunun ayeti gorseli" intent'i ana uygulama
+ * surecinde cogu zaman JS hic calismadan (Kisayollar otomasyonu) cizer: `expo-font`'un calisma
+ * aninda yukledigi font orada yoktur → Resources + `UIAppFonts`. expo-font ayni dosyayi yeniden
+ * kaydederken `alreadyRegistered`/`duplicatedName` hatasini yutar (`useFonts` bozulmaz).
+ *   - Amiri Quran (OFL 1.1, `assets/fonts/OFL.txt`): duvar kagidinda Arapca (`duvar.arapca` ya da
+ *     meali olmayan dil).
+ *   - Amiri (OFL 1.1): "Zarif" yazi tipi.
+ * PostScript adlari Swift'te `DuvarYazitipleri` (intent dosyasi) ile AYNI.
+ */
+const FONT_KAYNAKLARI = {
+  'AmiriQuran-Regular.ttf': path.join(__dirname, '..', 'assets', 'fonts', 'AmiriQuran-Regular.ttf'),
+  'Amiri-Regular.ttf': path.join(__dirname, '..', 'assets', 'fonts', 'Amiri-Regular.ttf'),
+};
+const ANA_FONTLAR = Object.keys(FONT_KAYNAKLARI);
+
+/** Info.plist `UIAppFonts`'a eksik fontlari ekler (mevcut liste korunur, tekrar eklenmez). */
+function fontlariPlisteEkle(infoPlist) {
+  const mevcut = Array.isArray(infoPlist.UIAppFonts) ? infoPlist.UIAppFonts : [];
+  infoPlist.UIAppFonts = [...mevcut, ...ANA_FONTLAR.filter((ad) => !mevcut.includes(ad))];
+  return infoPlist;
 }
+
+// Global eas-cli baglaminda @expo/config-plugins bulunamayabilir → eklenti no-op
+// (withNamazWidget ile ayni desen; ust duzey `return` Babel/jest'te sozdizimi hatasidir).
+let eklentiAraclari = null;
+try {
+  eklentiAraclari = require('@expo/config-plugins');
+} catch {
+  eklentiAraclari = null;
+}
+const IOSConfig = eklentiAraclari ? eklentiAraclari.IOSConfig : null;
 
 const KAYNAK_DIZINI = path.join(__dirname, '..', 'targets', 'siri-kisayollari');
 const GELISTIRME_BOLGESI = 'tr';
@@ -151,14 +174,53 @@ function appIntentsZayifBagla(proje, projeAdi) {
   proje.addFramework('AppIntents.framework', { weak: true, target: uuid });
 }
 
-module.exports = function withSiriKisayollari(config, secenekler = {}) {
+/**
+ * `FONT_KAYNAKLARI`'ni `ios/<Proje>/`'ye kopyalar ve ANA hedefin Resources fazina ekler
+ * (Expo `GoogleService-Info.plist` deseni). Dosya her prebuild'de yenilenir; proje kaydi
+ * idempotenttir (`hasFile`).
+ */
+function fontlariEkle(proje, platformProjeKoku, projeAdi) {
+  const { uuid } = IOSConfig.XcodeUtils.getApplicationNativeTarget({ project: proje, projectName: projeAdi });
+  const hedefDizin = path.join(platformProjeKoku, projeAdi);
+  fs.mkdirSync(hedefDizin, { recursive: true });
+  let sonuc = proje;
+  for (const ad of ANA_FONTLAR) {
+    fs.copyFileSync(FONT_KAYNAKLARI[ad], path.join(hedefDizin, ad));
+    const dosyaYolu = `${projeAdi}/${ad}`;
+    if (sonuc.hasFile(dosyaYolu)) continue;
+    sonuc = IOSConfig.XcodeUtils.addResourceFileToGroup({
+      filepath: dosyaYolu,
+      groupName: projeAdi,
+      project: sonuc,
+      isBuildFile: true,
+      verbose: true,
+      targetUuid: uuid,
+    });
+  }
+  return sonuc;
+}
+
+function withSiriKisayollari(config, secenekler = {}) {
+  if (!eklentiAraclari) return config;
+  const { withXcodeProject, withInfoPlist } = eklentiAraclari;
   const diller = Array.isArray(secenekler.diller) && secenekler.diller.length > 0 ? secenekler.diller : VARSAYILAN_DILLER;
-  return withXcodeProject(config, (mod) => {
+  const projeli = withXcodeProject(config, (mod) => {
     const { proje: kaynakli, projeAdi } = kaynaklariEkle(mod.modResults, mod.modRequest);
-    const proje = yerellestirmeleriEkle(kaynakli, mod.modRequest, projeAdi, diller);
+    const yerelli = yerellestirmeleriEkle(kaynakli, mod.modRequest, projeAdi, diller);
+    const proje = fontlariEkle(yerelli, mod.modRequest.platformProjectRoot, projeAdi);
     gelistirmeBolgesiniAyarla(proje, diller);
     appIntentsZayifBagla(proje, projeAdi);
     mod.modResults = proje;
     return mod;
   });
-};
+  return withInfoPlist(projeli, (mod) => {
+    mod.modResults = fontlariPlisteEkle(mod.modResults);
+    return mod;
+  });
+}
+
+module.exports = withSiriKisayollari;
+module.exports.FONT_KAYNAKLARI = FONT_KAYNAKLARI;
+module.exports.ANA_FONTLAR = ANA_FONTLAR;
+module.exports.fontlariPlisteEkle = fontlariPlisteEkle;
+module.exports.fontlariEkle = fontlariEkle;

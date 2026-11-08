@@ -94,6 +94,17 @@ public class ExpoSiriKisayollariModule: Module {
             CanliEtkinlikKoprusu.gununAyetiWidgetiniTazele()
         }
 
+        /// Duvar kagidi fotograf zemini: secilen gorseli App Group'a `duvar/<dosya>` olarak yeniden
+        /// kodlar (en cok 2048 px, JPEG 0,9). Ad `duvar-foto-<ozet>.(jpg|png)` degilse false.
+        /// AsyncFunction: kod cozme/kodlama JS thread'ini bekletmesin (ANR).
+        AsyncFunction("duvarFotografiniYaz") { (kaynakUri: String, dosya: String) -> Bool in
+            return DuvarFotografi.yaz(kaynakUri: kaynakUri, dosya: dosya)
+        }
+
+        AsyncFunction("duvarFotografiniSil") { (dosya: String) in
+            DuvarFotografi.sil(dosya)
+        }
+
         AsyncFunction("bekleyenleriAl") { () -> String in
             return SiriDeposu.varsayilan.bekleyenleriJson()
         }
