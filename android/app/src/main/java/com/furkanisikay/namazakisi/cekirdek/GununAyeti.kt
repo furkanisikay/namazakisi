@@ -21,7 +21,11 @@ data class AyetMetinleri(
     val arapcaKaynagi: String,
 )
 
-/** Planın bir günü. [meal] null olabilir (meali olmayan dil): o zaman yalnız Arapça çizilir. */
+/**
+ * Planın bir günü. [meal] null olabilir (meali olmayan dil): o zaman yalnız Arapça çizilir.
+ * [vakitler] konum varsa o namaz gününün imsak, güneş, ikindi, akşam, yatsı vakitleri (epoch ms;
+ * vakte uyan gök için), yoksa `null`.
+ */
 data class AyetKaydi(
     val gun: String,
     val baslangicMs: Long,
@@ -30,34 +34,49 @@ data class AyetKaydi(
     val meal: String?,
     val kisaKunye: String,
     val mealKaynagi: String?,
+    val vakitler: List<Long>? = null,
 )
 
 enum class DuvarYeri(val kod: String) {
     KILIT("kilit"), ANA("ana"), IKISI("ikisi");
 
     companion object {
-        fun coz(kod: String?): DuvarYeri = values().firstOrNull { it.kod == kod } ?: KILIT
+        fun coz(kod: Any?): DuvarYeri = values().firstOrNull { it.kod == kod } ?: KILIT
     }
 }
 
-enum class DuvarZemini(val kod: String) {
-    GECE("gece"), KAGIT("kagit"), PALET("palet");
+/** Düz zeminler + vakit gökleri (`yuk.sahneler`) + kullanıcının fotoğrafı. */
+enum class DuvarZemini(val kod: String, val gok: DuvarGogu? = null) {
+    GECE("gece"), KAGIT("kagit"), PALET("palet"),
+    IMSAK("imsak", DuvarGogu.IMSAK), KUSLUK("kusluk", DuvarGogu.KUSLUK), IKINDI("ikindi", DuvarGogu.IKINDI),
+    AKSAM("aksam", DuvarGogu.AKSAM), YATSI("yatsi", DuvarGogu.YATSI),
+    FOTO("foto");
+
+    /** Tek renkli zemin mi (gece, kâğıt, palet)? */
+    val duzMu: Boolean get() = this == GECE || this == KAGIT || this == PALET
 
     companion object {
-        fun coz(kod: String?): DuvarZemini = values().firstOrNull { it.kod == kod } ?: GECE
+        /** Tanınmayan kod JS `duvarAyariNormalize` gibi `imsak`a düşer. */
+        fun coz(kod: Any?): DuvarZemini = values().firstOrNull { it.kod == kod } ?: IMSAK
     }
 }
 
 /** Duvar kâğıdının hangi ekran için çizildiği (yer `ikisi` ise iki ayrı görsel çizilir). */
 enum class DuvarEkrani { KILIT, ANA }
 
+/** Varsayılanlar JS `VARSAYILAN_DUVAR_AYARI` ile aynıdır (eski yük bu değerlerle dolar). */
 data class DuvarAyari(
     val acik: Boolean = false,
     val yer: DuvarYeri = DuvarYeri.KILIT,
-    val zemin: DuvarZemini = DuvarZemini.GECE,
+    val zemin: DuvarZemini = DuvarZemini.IMSAK,
     val arapca: Boolean = false,
     /** ARGB. */
     val paletRenk: Int = VARSAYILAN_PALET,
+    /** Zemin bir vakit göğüyse gün içinde o anki vaktin göğüne geçer (her gök sınırında yeniden yazılır). */
+    val vakteUysun: Boolean = true,
+    val yazi: DuvarYaziAyari = DuvarYaziAyari(),
+    val sus: DuvarSusAyari = DuvarSusAyari(),
+    val foto: DuvarFotoAyari = DuvarFotoAyari(),
 ) {
     /** Bu ayarla çizilecek görseller (sıra: önce ana ekran, kilit EN SON — bkz. `DuvarKagidiUygulayici`). */
     fun ekranlar(): List<DuvarEkrani> = when (yer) {
@@ -79,6 +98,8 @@ data class GununAyetiYuku(
     /** `baslangicMs`'e göre artan sırada. */
     val plan: List<AyetKaydi>,
     val duvar: DuvarAyari,
+    /** Vakit gökleri (JS `GOK_SAHNELERI`); eski yükte boş → gök zemini gece zeminine düşer. */
+    val sahneler: Map<DuvarGogu, GokSahnesi> = emptyMap(),
 )
 
 object GununAyetiKurallari {
@@ -156,18 +177,40 @@ object GununAyetiKurallari {
             val plan = (0 until dizi.length()).mapNotNull { i -> dizi.optJSONObject(i)?.let(::kaydiCoz) }
                 .sortedBy { it.baslangicMs }
             if (plan.isEmpty()) return null
-            val d = o.optJSONObject("duvar")
-            val duvar = if (d == null) DuvarAyari() else DuvarAyari(
-                acik = d.optBoolean("acik", false),
-                yer = DuvarYeri.coz(d.optString("yer")),
-                zemin = DuvarZemini.coz(d.optString("zemin")),
-                arapca = d.optBoolean("arapca", false),
-                paletRenk = renkCoz(d.optString("paletRenk")) ?: DuvarAyari.VARSAYILAN_PALET,
-            )
-            GununAyetiYuku(surum, MetinDili.coz(o.optString("dil")), metin, plan, duvar)
+            val duvar = duvarCoz(o.optJSONObject("duvar"))
+            // Sahneler kendi kapısında: bozuk sahne yükü düşürmez (o gök gece zeminine düşer).
+            val sahneler = try {
+                DuvarTasarimi.sahnelerCoz(o.optJSONObject("sahneler"))
+            } catch (_: Exception) {
+                emptyMap()
+            }
+            GununAyetiYuku(surum, MetinDili.coz(o.optString("dil")), metin, plan, duvar, sahneler)
         } catch (_: Exception) {
             null
         }
+    }
+
+    private val PALET_RENGI = Regex("^#[0-9A-Fa-f]{6}$")
+
+    /**
+     * Duvar ayarı — JS `duvarAyariNormalize` ile AYNI kurallar (eşlik: `DuvarTasarimiTest.normalize`):
+     * eksik/bozuk alan varsayılana düşer, sayılar sınırlanır, `acik`/`arapca` yalnız `true` ise açık,
+     * `vakteUysun`/`foto.okunurluk` yalnız `false` ise kapalı.
+     */
+    fun duvarCoz(d: JSONObject?): DuvarAyari {
+        if (d == null) return DuvarAyari()
+        val palet = (d.opt("paletRenk") as? String)?.takeIf { PALET_RENGI.matches(it) }?.let(::renkCoz)
+        return DuvarAyari(
+            acik = d.opt("acik") == true,
+            yer = DuvarYeri.coz(d.opt("yer")),
+            zemin = DuvarZemini.coz(d.opt("zemin")),
+            arapca = d.opt("arapca") == true,
+            paletRenk = palet ?: DuvarAyari.VARSAYILAN_PALET,
+            vakteUysun = d.opt("vakteUysun") != false,
+            yazi = DuvarTasarimi.yaziAyariCoz(d.optJSONObject("yazi")),
+            sus = DuvarTasarimi.susAyariCoz(d.optJSONObject("sus")),
+            foto = DuvarTasarimi.fotoAyariCoz(d.optJSONObject("foto")),
+        )
     }
 
     private fun kaydiCoz(o: JSONObject): AyetKaydi? {
@@ -182,6 +225,11 @@ object GununAyetiKurallari {
             meal = metinVeyaNull(o, "meal"),
             kisaKunye = metinVeyaNull(o, "kisaKunye") ?: ref,
             mealKaynagi = metinVeyaNull(o, "mealKaynagi"),
+            vakitler = try {
+                DuvarTasarimi.vakitlerCoz(o.optJSONArray("vakitler"))
+            } catch (_: Exception) {
+                null
+            },
         )
     }
 
@@ -196,6 +244,31 @@ object GununAyetiKurallari {
     /** Bir sonraki gün sınırı (şimdiden SONRA başlayan ilk kayıt); plan bittiyse `null` (alarm yok). */
     fun sonrakiSinirMs(plan: List<AyetKaydi>, simdiMs: Long): Long? =
         plan.asSequence().map { it.baslangicMs }.filter { it > simdiMs }.minOrNull()
+
+    /**
+     * Duvar kâğıdında ÇİZİLECEK gök: zemin gök değilse `null`; `vakteUysun` kapalıysa ya da kayıtta
+     * vakit yoksa (konum yok) seçilen gök; aksi o anın göğü (`vaktinGogu`, geçerli kaydın vakitleri).
+     */
+    fun etkinGok(ayar: DuvarAyari, kayit: AyetKaydi?, simdiMs: Long): DuvarGogu? {
+        val secili = ayar.zemin.gok ?: return null
+        if (!ayar.vakteUysun) return secili
+        val v = kayit?.vakitler ?: return secili
+        return DuvarTasarimi.vaktinGogu(simdiMs, v)
+    }
+
+    /**
+     * Ayet yüzeylerinin TEK alarmının zamanı: bir sonraki gün sınırı; duvar kâğıdı açık, zemin bir
+     * vakit göğü ve `vakteUysun` ise bir sonraki gök sınırı da (hangisi önceyse). Gece yarısından
+     * sonra geçerli kayıt dünündür: onun gök sınırı kalmamıştır, ertesi imsak zaten gün sınırıdır.
+     */
+    fun sonrakiUyanmaMs(yuk: GununAyetiYuku, simdiMs: Long): Long? {
+        val gun = sonrakiSinirMs(yuk.plan, simdiMs)
+        val d = yuk.duvar
+        if (!d.acik || !d.vakteUysun || d.zemin.gok == null) return gun
+        val v = gecerliKayit(yuk.plan, simdiMs)?.vakitler ?: return gun
+        val gok = DuvarTasarimi.sonrakiGokSiniri(simdiMs, v) ?: return gun
+        return if (gun == null) gok else minOf(gun, gok)
+    }
 
     /** "#RRGGBB" / "#AARRGGBB" → ARGB; tanınmazsa `null`. */
     fun renkCoz(metin: String?): Int? {
@@ -251,13 +324,39 @@ object GununAyetiKurallari {
     /**
      * Duvar kâğıdı İMZASI: bu değişmedikçe görsel yeniden yazılmaz. Yük her açılışta, konum
      * değişiminde ve arka plan turunda yeniden yazılır; her yazımda `setBitmap` kilit ekranını
-     * titretir ve Material You renklerini yeniden türetirdi.
+     * titretir ve Material You renklerini yeniden türetirdi. İmza GÖRÜNENİ taşır: çizilen gök
+     * ([gok], sahnesi [sahne]; `vakteUysun`'un kendisi değil) ve fotoğrafın adı + değişme zamanı
+     * ([fotoDamgasi], dosya yoksa `null`); zemin çizilemiyorsa (sahne/dosya yok) gece sayılır.
+     * Yalnız çizilen ekranın yazı merkezi ve görünen süs ayarı girer.
      */
-    fun duvarImzasi(k: AyetKaydi, metin: AyetMetinleri, ayar: DuvarAyari): String =
-        listOf(
+    fun duvarImzasi(
+        k: AyetKaydi,
+        metin: AyetMetinleri,
+        ayar: DuvarAyari,
+        gok: DuvarGogu? = null,
+        sahne: GokSahnesi? = null,
+        fotoDamgasi: Long? = null,
+    ): String {
+        val f = ayar.foto
+        val zemin = when {
+            ayar.zemin == DuvarZemini.PALET -> "palet:" + Integer.toHexString(ayar.paletRenk)
+            ayar.zemin.duzMu -> ayar.zemin.kod
+            ayar.zemin.gok != null && gok != null && sahne != null -> "gok:${gok.kod}:${sahne.hashCode()}"
+            ayar.zemin == DuvarZemini.FOTO && f.dosya != null && fotoDamgasi != null ->
+                "foto:${f.dosya}:$fotoDamgasi:${f.karartma}:${f.bulaniklik}:${f.x}:${f.y}:${f.yakinlik}:${f.okunurluk}"
+            else -> DuvarZemini.GECE.kod
+        }
+        val ekranlar = ayar.ekranlar()
+        val y = ayar.yazi
+        val sus = if (ayar.sus.tur == SusTuru.YOK) SusTuru.YOK.kod else "${ayar.sus.tur.kod}:${ayar.sus.belirginlik}"
+        return listOf(
             k.gun, k.ref, k.ar, k.meal.orEmpty(), k.kisaKunye, k.mealKaynagi.orEmpty(), metin.arapcaKaynagi,
-            ayar.yer.kod, ayar.zemin.kod, ayar.arapca.toString(), Integer.toHexString(ayar.paletRenk),
+            ayar.yer.kod, zemin, ayar.arapca.toString(),
+            if (DuvarEkrani.KILIT in ekranlar) y.kilitY.toString() else "-",
+            if (DuvarEkrani.ANA in ekranlar) y.anaY.toString() else "-",
+            y.olcek.toString(), y.hiza.kod, y.tip.kod, sus,
         ).joinToString("\u0001").hashCode().let { Integer.toHexString(it) }
+    }
 }
 
 // --- Widget düzeni ------------------------------------------------------------------------
@@ -391,24 +490,30 @@ object DuvarKagidiKurallari {
     const val TASARIM_GENISLIGI = 412f
 
     /**
-     * Metin bandı (ekran yüksekliğinin oranı). Kilit: %64–%82 — Android 14+ büyük kilit saati
-     * (bildirim yokken) ekranın ~%28–%62'sini kaplar (emülatör karesi 66 ile ölçüldü), kilit
-     * simgesi/parmak izi ~%84'ten başlar; metin ikisinin arasında kalır, sığmazsa küçülür.
-     * Ana ekran: simgeler aşağıda olduğu için metin üstte ve küçük.
+     * Ana ekranda yazı kilit ekranındakinin bu oranıdır. Yazının girebileceği bantlar ve varsayılan
+     * merkez `DuvarTasarimi.IZINLI_BANTLAR` / `VARSAYILAN_MERKEZ`'dedir.
      */
-    fun bant(ekran: DuvarEkrani): Pair<Float, Float> = when (ekran) {
-        DuvarEkrani.KILIT -> 0.64f to 0.82f
-        DuvarEkrani.ANA -> 0.09f to 0.34f
-    }
-
-    /** Ana ekranda yazı kilit ekranındakinin bu oranıdır. */
     fun yaziOlcegi(ekran: DuvarEkrani): Float = if (ekran == DuvarEkrani.ANA) 0.75f else 1f
 
+    /** Gök ve fotoğraf zemininde künye ve atıf: yazı renginin %72 ve %55 opaklığı (sözleşme). */
+    const val KUNYE_OPAKLIGI = 0.72f
+    const val ATIF_OPAKLIGI = 0.55f
+    /** Gök ve fotoğraf zemininde silik yıldız süsünün opaklığı (belirginlik 0,5'te). */
+    const val GOK_SUS_OPAKLIGI = 0.08f
+
+    /** ARGB rengin alfasını [opaklik] yapar. */
+    fun opaklastir(renk: Int, opaklik: Float): Int =
+        (renk and 0x00FFFFFF) or (Math.round(255 * opaklik.coerceIn(0f, 1f)) shl 24)
+
+    /** Gök/fotoğraf zemininde yazı renkleri: tek renk + künye/atıf opaklıkları, süs yazı renginde. */
+    fun yaziRenkleri(metin: Int, zemin: Int): DuvarRenkleri = DuvarRenkleri(
+        zemin = zemin, metin = metin or 0xFF000000.toInt(),
+        kunye = opaklastir(metin, KUNYE_OPAKLIGI), atif = opaklastir(metin, ATIF_OPAKLIGI),
+        sus = metin or 0xFF000000.toInt(), susOpakligi = GOK_SUS_OPAKLIGI,
+    )
+
+    /** Düz zemin renkleri; gök ve fotoğraf zemini çizilemediğinde gece zeminine düşülür. */
     fun renkler(ayar: DuvarAyari): DuvarRenkleri = when (ayar.zemin) {
-        DuvarZemini.GECE -> DuvarRenkleri(
-            zemin = 0xFF14211A.toInt(), metin = 0xFFF1F8E9.toInt(), kunye = 0xFFA5D6A7.toInt(),
-            atif = 0xFF81C784.toInt(), sus = 0xFFFFFFFF.toInt(), susOpakligi = 0.08f,
-        )
         DuvarZemini.KAGIT -> DuvarRenkleri(
             zemin = 0xFFF3F1EA.toInt(), metin = 0xFF1F2A22.toInt(), kunye = 0xFF2E7D32.toInt(),
             atif = 0xFF4E5B52.toInt(), sus = 0xFF1B5E20.toInt(), susOpakligi = 0.07f,
@@ -424,6 +529,10 @@ object DuvarKagidiKurallari {
                 sus = if (acikMetin) 0xFFFFFFFF.toInt() else 0xFF000000.toInt(), susOpakligi = 0.09f,
             )
         }
+        else -> DuvarRenkleri(
+            zemin = 0xFF14211A.toInt(), metin = 0xFFF1F8E9.toInt(), kunye = 0xFFA5D6A7.toInt(),
+            atif = 0xFF81C784.toInt(), sus = 0xFFFFFFFF.toInt(), susOpakligi = 0.08f,
+        )
     }
 
     /**

@@ -177,7 +177,8 @@ class GununAyetiTest {
         o.put("duvar", d)
         val c = requireNotNull(GununAyetiKurallari.coz(o.toString())).duvar
         assertEquals(DuvarYeri.KILIT, c.yer)
-        assertEquals(DuvarZemini.GECE, c.zemin)
+        // JS `duvarAyariNormalize` ile aynı: tanınmayan zemin imsak göğüne düşer.
+        assertEquals(DuvarZemini.IMSAK, c.zemin)
         assertEquals(DuvarAyari.VARSAYILAN_PALET, c.paletRenk)
     }
 
@@ -360,19 +361,18 @@ class GununAyetiTest {
     // --- Duvar kâğıdı yerleşimi ve renk ------------------------------------------------
 
     @Test
-    fun kilitBandiSaatVeParmakIziDisinda() {
-        val (ust, alt) = DuvarKagidiKurallari.bant(DuvarEkrani.KILIT)
+    fun kilitBantlariSaatVeKilitSimgesiDisinda() {
         // Büyük kilit saati ~%28–%62, kilit simgesi ~%84'ten başlar.
-        assertTrue(ust >= 0.64f)
-        assertTrue(alt <= 0.83f)
-        val (anaUst, anaAlt) = DuvarKagidiKurallari.bant(DuvarEkrani.ANA)
-        assertTrue(anaUst < anaAlt && anaAlt <= ust)
+        for (b in DuvarTasarimi.IZINLI_BANTLAR.getValue(DuvarEkrani.KILIT)) {
+            assertTrue(b.toString(), b.alt <= 0.28 || b.ust >= 0.62)
+            assertTrue(b.toString(), b.alt <= 0.84)
+        }
         assertTrue(DuvarKagidiKurallari.yaziOlcegi(DuvarEkrani.ANA) < 1f)
     }
 
     @Test
     fun zeminRenkleriOkunur() {
-        for (zemin in DuvarZemini.values()) {
+        for (zemin in DuvarZemini.values().filter { it.duzMu }) {
             val paletler = listOf(0xFF2E7D32, 0xFFFFF59D, 0xFF0D47A1, 0xFFFFFFFF, 0xFF777777, 0xFF808080).map { it.toInt() }
             for (palet in paletler) {
                 val r = DuvarKagidiKurallari.renkler(DuvarAyari(zemin = zemin, paletRenk = palet))

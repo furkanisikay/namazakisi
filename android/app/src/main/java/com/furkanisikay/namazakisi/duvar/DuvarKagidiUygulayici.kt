@@ -7,8 +7,10 @@ import android.graphics.Point
 import android.hardware.display.DisplayManager
 import android.util.Log
 import android.view.Display
+import com.furkanisikay.namazakisi.cekirdek.AyetKaydi
 import com.furkanisikay.namazakisi.cekirdek.DuvarEkrani
 import com.furkanisikay.namazakisi.cekirdek.GununAyetiKurallari
+import com.furkanisikay.namazakisi.cekirdek.GununAyetiYuku
 import com.furkanisikay.namazakisi.widget.GununAyetiDeposu
 import java.io.File
 import java.io.FileOutputStream
@@ -21,10 +23,11 @@ import java.util.concurrent.Executors
  *
  * - `WallpaperManager.setBitmap(…, FLAG_LOCK | FLAG_SYSTEM)`, izin `SET_WALLPAPER` (normal izin,
  *   kurulumda sorulmaz). Ön plan servisi, WorkManager, pil muafiyeti, depolama izni YOK.
- * - İDEMPOTENT: görsel yalnız İMZA (gün + metin + duvar ayarı, `GununAyetiKurallari.duvarImzasi`)
- *   son başarılı yazımdan farklıysa yazılır. Yük her açılışta / konum değişiminde / arka plan
- *   turunda yeniden yazılır; her `setBitmap` kilit ekranını titretir ve Material You renklerini
- *   yeniden türetir. [arkaPlandaSimdiUygula] de imzaya uyar; yalnız sonucu bildirir.
+ * - İDEMPOTENT: görsel yalnız İMZA (gün + metin + duvar ayarı + çizilen gök + fotoğraf dosyası,
+ *   `GununAyetiKurallari.duvarImzasi`) son başarılı yazımdan farklıysa yazılır. Yük her açılışta /
+ *   konum değişiminde / arka plan turunda yeniden yazılır; her `setBitmap` kilit ekranını titretir
+ *   ve Material You renklerini yeniden türetir. [arkaPlandaSimdiUygula] de imzaya uyar; yalnız
+ *   sonucu bildirir. Vakte uyan gökte gök sınırı alarmı (`GununAyetiGuncelleyici`) imzayı değiştirir.
  * - Mevcut duvar kâğıdı SAKLANMAZ (Android 14+'ta okunamaz) → kapatınca geri yükleme yok; yer
  *   değişince eski ekrandaki görsel kalır.
  * - Hata `sonHata = "yazilamadi"` olarak kaydedilir (`DuvarKagidi.durum`), başarıda silinir.
@@ -93,8 +96,9 @@ object DuvarKagidiUygulayici {
     private fun uygula(context: Context, zorla: Boolean): Boolean {
         val yuk = GununAyetiDeposu.yuk(context) ?: return !zorla
         if (!zorla && !yuk.duvar.acik) return true
-        val kayit = GununAyetiKurallari.gecerliKayit(yuk.plan, System.currentTimeMillis()) ?: return false
-        val imza = GununAyetiKurallari.duvarImzasi(kayit, yuk.metin, yuk.duvar)
+        val simdi = System.currentTimeMillis()
+        val kayit = GununAyetiKurallari.gecerliKayit(yuk.plan, simdi) ?: return false
+        val imza = imza(context, yuk, kayit, simdi)
         if (!zorla && imza == GununAyetiDeposu.duvarImzasi(context)) return true
         if (!izinliMi(context)) {
             GununAyetiDeposu.duvarBasarisiz(context)
@@ -108,7 +112,7 @@ object DuvarKagidiUygulayici {
             // `migrateSystemToLockWallpaperLocked`; cihazda DOĞRULANMADI) — kilit en son yazılınca
             // hangi durumda olursa olsun kendi ayet görselinde kalır.
             for (ekran in yuk.duvar.ekranlar()) {
-                val bmp = DuvarKagidiCizici.ciz(context, yuk, kayit, ekran, genislik, yukseklik)
+                val bmp = DuvarKagidiCizici.ciz(context, yuk, kayit, ekran, genislik, yukseklik, simdi)
                 try {
                     val bayrak = if (ekran == DuvarEkrani.KILIT) WallpaperManager.FLAG_LOCK else WallpaperManager.FLAG_SYSTEM
                     val kimlik = wm.setBitmap(bmp, null, true, bayrak)
@@ -127,19 +131,32 @@ object DuvarKagidiUygulayici {
     }
 
     /**
+     * Görünen her şeyin imzası: içerik + ayar + ŞU AN çizilecek gök (vakte uyan gökte her sınırda
+     * değişir) + fotoğrafın adı ve değişme zamanı (dosya yoksa gece zemini sayılır).
+     */
+    private fun imza(context: Context, yuk: GununAyetiYuku, kayit: AyetKaydi, simdi: Long): String {
+        val gok = GununAyetiKurallari.etkinGok(yuk.duvar, kayit, simdi)
+        return GununAyetiKurallari.duvarImzasi(
+            kayit, yuk.metin, yuk.duvar, gok, gok?.let { yuk.sahneler[it] }, DuvarFotoZemini.damga(context, yuk.duvar),
+        )
+    }
+
+    /**
      * Bugünün görselini mevcut ayarla [genislik]×[yukseklik] PNG olarak önbelleğe çizer (ayar
-     * ekranının önizlemesi). Yer `ana` ise ana ekran, değilse kilit ekranı görseli. Eski
-     * önizlemeler silinir; dosya adı her seferinde yenidir (görsel önbelleği eski resmi tutmasın).
+     * ekranının önizlemesi; vakte uyan gökte şu anın göğü). Yer `ana` ise ana ekran, değilse kilit
+     * ekranı görseli. Eski önizlemeler silinir; dosya adı her seferinde yenidir (görsel önbelleği
+     * eski resmi tutmasın).
      */
     fun onizlemeUret(context: Context, genislik: Int, yukseklik: Int): File? {
         if (genislik !in 1..EN_BUYUK_ONIZLEME || yukseklik !in 1..EN_BUYUK_ONIZLEME) return null
         val yuk = GununAyetiDeposu.yuk(context) ?: return null
-        val kayit = GununAyetiKurallari.gecerliKayit(yuk.plan, System.currentTimeMillis()) ?: return null
+        val simdi = System.currentTimeMillis()
+        val kayit = GununAyetiKurallari.gecerliKayit(yuk.plan, simdi) ?: return null
         val ekran = if (yuk.duvar.ekranlar() == listOf(DuvarEkrani.ANA)) DuvarEkrani.ANA else DuvarEkrani.KILIT
         val dizin = context.cacheDir
         dizin.listFiles()?.filter { it.name.startsWith(ONIZLEME_ONEKI) }?.forEach { it.delete() }
-        val dosya = File(dizin, "$ONIZLEME_ONEKI${System.currentTimeMillis()}.png")
-        val bmp = DuvarKagidiCizici.ciz(context, yuk, kayit, ekran, genislik, yukseklik)
+        val dosya = File(dizin, "$ONIZLEME_ONEKI$simdi.png")
+        val bmp = DuvarKagidiCizici.ciz(context, yuk, kayit, ekran, genislik, yukseklik, simdi)
         try {
             FileOutputStream(dosya).use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
         } finally {

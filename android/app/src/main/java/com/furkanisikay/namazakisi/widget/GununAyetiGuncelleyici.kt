@@ -19,10 +19,12 @@ import com.furkanisikay.namazakisi.cekirdek.SinirAlarmi
  *   sayımını ve namaz sınır alarmının iptal sayımını besler; ayet widget'ı oraya girmez.
  * - Namaz sınır alarmı requestCode 0 + `VAKIT_SINIRI` niyetidir; aynı niyet ezilirdi.
  *
- * Dakikalık/periyodik iş YOK: planın bir sonraki `baslangicMs`'ine (imsak) TEK alarm. Widget
- * yalnızken alarm UYANDIRMAZ (`RTC`, widget ekran açıkken görünür); duvar kâğıdı açıksa
- * `RTC_WAKEUP` + Doze'da da çalışan kurulum (`…AllowWhileIdle`): kişi telefonu eline aldığında
- * kilit ekranında bugünün ayeti hazır olsun. Günde bir uyanma.
+ * Dakikalık/periyodik iş YOK: planın bir sonraki `baslangicMs`'ine (imsak) TEK alarm; duvar
+ * kâğıdı vakte uyan bir gökteyse aynı alarm bir sonraki gök sınırına kurulur
+ * (`GununAyetiKurallari.sonrakiUyanmaMs`). Widget yalnızken alarm UYANDIRMAZ (`RTC`, widget ekran
+ * açıkken görünür); duvar kâğıdı açıksa `RTC_WAKEUP` + Doze'da da çalışan kurulum
+ * (`…AllowWhileIdle`): kişi telefonu eline aldığında kilit ekranında bugünün ayeti hazır olsun.
+ * Günde bir uyanma; vakte uyan gökte günde beş.
  *
  * Tetikler: sınır alarmı, saat/saat dilimi/tarih değişimi, açılış ve paket güncellemesi
  * (`NamazWidgetAlarmAlici` → `GununAyetiAlarmAlici`'ye açık yayın), JS yükü yazınca
@@ -92,10 +94,14 @@ object GununAyetiGuncelleyici {
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
 
-    /** Aynı PendingIntent → önceki alarm ezilir; bekleyen alarm sayısı her zaman ≤ 1. */
+    /**
+     * Aynı PendingIntent → önceki alarm ezilir; bekleyen alarm sayısı her zaman ≤ 1. Zaman
+     * `sonrakiUyanmaMs`: gün sınırı; duvar kâğıdı vakte uyan gökteyse bir sonraki gök sınırı da
+     * (imsak, güneş, ikindi, akşam, yatsı — hangisi önceyse).
+     */
     private fun sinirAlarminiKur(context: Context, yuk: GununAyetiYuku, simdiMs: Long, uyandir: Boolean) {
         val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val sinir = GununAyetiKurallari.sonrakiSinirMs(yuk.plan, simdiMs)
+        val sinir = GununAyetiKurallari.sonrakiUyanmaMs(yuk, simdiMs)
         if (sinir == null) {
             // Plan bitti: son kayıtta kalınır; JS bir sonraki yazımda planı uzatır.
             alarm.cancel(sinirNiyeti(context))
