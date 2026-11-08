@@ -17,6 +17,11 @@ import org.junit.Test
  */
 class DuvarTasarimiTest {
 
+    private companion object {
+        /** `sahneOzetiSureclerArasiKararli` sahnesinin özeti (data class `toString` biçimine bağlı). */
+        const val SAHNE_OZETI = "9282e8b6"
+    }
+
     private val ornek: JSONObject = JSONObject(
         requireNotNull(javaClass.classLoader?.getResource("duvar-tasarim-ornek.json")) { "ornek dosya yok" }.readText()
     )
@@ -314,6 +319,23 @@ class DuvarTasarimiTest {
         assertNotEquals(f1, imza(foto.copy(foto = foto.foto.copy(dosya = "duvar-foto-efgh.jpg")), null, 100L))
         assertNotEquals(f1, imza(foto.copy(foto = foto.foto.copy(karartma = 0.6)), null, 100L))
         assertEquals(imza(d.copy(zemin = DuvarZemini.GECE), null), imza(foto, null, null))
+    }
+
+    @Test
+    fun sahneOzetiSureclerArasiKararli() {
+        // Elle kurulmuş sahne (örnekten değil): özet SABİT bir değer olmalı. Kimlik hash'i (enum
+        // `hashCode`) imzaya girerse bu değer koşudan koşuya değişir ve duvar kâğıdı her açılışta
+        // yeniden yazılır.
+        val s = GokSahnesi(
+            gradyan = listOf(RenkDuragi(0.0, 0xFF070C18.toInt()), RenkDuragi(1.0, 0xFF22385A.toInt())),
+            yildizlar = listOf(Yildiz(0.1, 0.2, 0.004, 0.9)),
+            cisim = GokCismi(CisimTuru.HILAL, listOf(Nokta(0.79, 0.63)), 0.04, 0xFFEDE6CF.toInt(), 0.9, -0.015, -0.004, 0.033),
+            huzmeler = emptyList(),
+            ufuk = emptyList(),
+            metin = 0xFFFFFFFF.toInt(),
+        )
+        assertEquals(SAHNE_OZETI, DuvarTasarimi.sahneOzeti(s))
+        assertNotEquals(SAHNE_OZETI, DuvarTasarimi.sahneOzeti(s.copy(cisim = s.cisim!!.copy(tur = CisimTuru.GUNES))))
     }
 
     // --- Zarif yazı tipi ----------------------------------------------------------------------

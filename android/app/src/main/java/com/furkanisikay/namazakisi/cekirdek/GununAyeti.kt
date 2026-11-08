@@ -341,7 +341,7 @@ object GununAyetiKurallari {
         val zemin = when {
             ayar.zemin == DuvarZemini.PALET -> "palet:" + Integer.toHexString(ayar.paletRenk)
             ayar.zemin.duzMu -> ayar.zemin.kod
-            ayar.zemin.gok != null && gok != null && sahne != null -> "gok:${gok.kod}:${sahne.hashCode()}"
+            ayar.zemin.gok != null && gok != null && sahne != null -> "gok:${gok.kod}:${DuvarTasarimi.sahneOzeti(sahne)}"
             ayar.zemin == DuvarZemini.FOTO && f.dosya != null && fotoDamgasi != null ->
                 "foto:${f.dosya}:$fotoDamgasi:${f.karartma}:${f.bulaniklik}:${f.x}:${f.y}:${f.yakinlik}:${f.okunurluk}"
             else -> DuvarZemini.GECE.kod

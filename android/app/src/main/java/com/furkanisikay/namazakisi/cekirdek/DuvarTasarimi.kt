@@ -288,6 +288,13 @@ object DuvarTasarimi {
         return v
     }
 
+    /**
+     * Sahnenin SÜREÇLER ARASI kararlı özeti (duvar kâğıdı imzası için). Data class `hashCode()`
+     * KULLANILMAZ: enum alanı (`CisimTuru`) kimlik hash'i taşır ve her süreçte değişir → her soğuk
+     * açılışta duvar kâğıdı yeniden yazılırdı. `toString` enum adını ve sayıları deterministik yazar.
+     */
+    fun sahneOzeti(sahne: GokSahnesi): String = Integer.toHexString(sahne.toString().hashCode())
+
     // --- Sahne ayrıştırma --------------------------------------------------------------------
 
     /** `yuk.sahneler`: bozuk sahne yok sayılır (o gök seçilirse çizici gece zeminine düşer). */
