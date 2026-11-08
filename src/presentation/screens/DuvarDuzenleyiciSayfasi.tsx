@@ -15,7 +15,7 @@
  */
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, PanResponder, Platform, ScrollView, Text, TouchableOpacity, View, type GestureResponderEvent } from 'react-native';
+import { ActivityIndicator, Dimensions, InteractionManager, PanResponder, Platform, ScrollView, Text, TouchableOpacity, View, type GestureResponderEvent } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -137,7 +137,11 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
         kayitliRef.current = a;
         setKayitli(a);
         setTaslak(hazir && hazir !== 'foto' ? hazirUygula(a, hazir) : a);
-        if (hazir === 'foto') fotoSec().catch(() => undefined);
+        // Seçici geçiş animasyonu bitince açılır (iOS'ta geçiş sürerken sunulan seçici görünmeyebilir).
+        if (hazir === 'foto')
+          InteractionManager.runAfterInteractions(() => {
+            if (!iptal) fotoSec().catch(() => undefined);
+          });
       });
     return () => {
       iptal = true;
@@ -240,7 +244,8 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
 
   const zeminSec = (zemin: DuvarZemini) => {
     if (zemin === 'foto') {
-      if (taslak?.foto.dosya) guncelle((t) => ({ ...t, zemin }));
+      // Kayıtlı kopya okunamıyorsa (silinmiş, başka cihazdan) yeniden seçtirilir; yoksa kullanıcı takılırdı.
+      if (taslak?.foto.dosya && foto) guncelle((t) => ({ ...t, zemin }));
       else fotoSec().catch(() => undefined);
       return;
     }

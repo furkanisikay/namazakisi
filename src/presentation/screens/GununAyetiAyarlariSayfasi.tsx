@@ -237,8 +237,8 @@ const DuvarKagidiBolumu: React.FC = () => {
 
       {/* Görünüm kartı */}
       <View style={android ? kartStili : { ...kartStili, marginTop: 0 }}>
-        <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>{m.ayar.duvarBolum}</Text>
-        <Text style={{ fontSize: 14, lineHeight: 20, marginTop: 2, color: renkler.metinIkincil }}>{aciklama}</Text>
+        {/* Başlık bölüm başlığında ("Duvar kâğıdı"); kart tekrarlamaz. */}
+        <Text style={{ fontSize: 14, lineHeight: 20, color: renkler.metinIkincil }}>{aciklama}</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, marginTop: 14 }}>
           {(['kilit', 'ana'] as const).map((ekran) => (
             <View key={ekran} style={{ alignItems: 'center' }}>

@@ -203,6 +203,13 @@ describe('DuvarDuzenleyiciSayfasi', () => {
             expect(mockServis.duvarAyariKaydet).not.toHaveBeenCalled();
         });
 
+        it('kayıtlı kopya okunamıyorsa Fotoğraf karesi seçiciyi yeniden açar', async () => {
+            jest.spyOn(Image, 'getSize').mockImplementation(((_u: string, _ok: unknown, hata: () => void) => hata()) as never);
+            const e = await ac({ foto: { ...VARSAYILAN_DUVAR_AYARI.foto, dosya: 'duvar-foto-kayipkayip.jpg' } });
+            fireEvent.press(e.getByTestId('duvar-zemin-foto'));
+            await waitFor(() => expect(mockSec).toHaveBeenCalled());
+        });
+
         it('kopyalanamazsa bilgi satırı çıkar, zemin değişmez', async () => {
             mockSec.mockResolvedValue(secim);
             mockKopyala.mockRejectedValue(new Error('disk'));
