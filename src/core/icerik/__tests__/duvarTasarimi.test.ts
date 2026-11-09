@@ -8,6 +8,10 @@ import {
   cisimKonumuSec,
   GOK_SAHNELERI,
   IZINLI_BANTLAR,
+  izinliBantlar,
+  saatAlaniBul,
+  saatAlaniNormalize,
+  saatSolmasi,
   okunurlukKarari,
   vaktinGogu,
   yaziYerlesimi,
@@ -75,6 +79,39 @@ describe('duvar tasarım sözleşmesi', () => {
     expect(anlikDuvarAyari(ayar, new Date(t(13)), imsak, () => null).zemin).toBe('imsak');
     // Düz zemin ve fotoğraf hiç değişmez.
     expect(anlikDuvarAyari({ ...ayar, zemin: 'kagit' }, new Date(t(13)), imsak, vakitler).zemin).toBe('kagit');
+  });
+
+  it('saat alanı ölçülmemişse bantlar eski sabitlerle birebir aynı; ölçülünce saatin üstü ve altı', () => {
+    for (const p of ['android', 'ios'] as const) {
+      expect(izinliBantlar(p, 'kilit', null)).toEqual(IZINLI_BANTLAR[p].kilit);
+      expect(izinliBantlar(p, 'ana', [0.3, 0.5])).toEqual(IZINLI_BANTLAR[p].ana);
+    }
+    expect(izinliBantlar('android', 'kilit', [0.3, 0.5])).toEqual([[0.08, 0.3], [0.5, 0.84]]);
+    // İki şerit de darsa büyüğü kalır (yazı hiç yer bulamamazlık etmez).
+    expect(izinliBantlar('android', 'kilit', [0.1, 0.81])).toEqual([[0.81, 0.84]]);
+  });
+
+  it('gök cismi saat alanından kaçar: aday yoksa saatin hemen üstüne kayar', () => {
+    const gunes = GOK_SAHNELERI.kusluk.cisim!;
+    const [x, y] = cisimKonumuSec(gunes, null, 2.1667, [0.26, 0.64])!;
+    expect(x).toBe(gunes.konumlar[0][0]);
+    expect(y + (gunes.r + 0.04) / 2.1667).toBeLessThanOrEqual(0.26 + 1e-4);
+  });
+
+  it('mihrap saat alanına girerken solar, dışarıda tam görünür', () => {
+    expect(saatSolmasi(0.45, [0.26, 0.64])).toBe(0);
+    expect(saatSolmasi(0.7, [0.26, 0.64])).toBe(1);
+    expect(saatSolmasi(0.64, [0.26, 0.64])).toBeCloseTo(0.8);
+    expect(saatSolmasi(0.45, null)).toBe(1);
+  });
+
+  it('kilit ekranı görüntüsünden ölçüm: en yüksek orta bölge saat; çok dolu = başka duvar kâğıdı', () => {
+    const profil = (dolu: [number, number][]) => Array.from({ length: 200 }, (_, i) => (dolu.some(([a, b]) => i / 200 >= a && i / 200 < b) ? 0.3 : 0));
+    expect(saatAlaniBul(profil([[0, 0.03], [0.3, 0.6], [0.88, 0.9]]))).toEqual({ sonuc: 'tamam', alan: [0.29, 0.61] });
+    expect(saatAlaniBul(profil([[0, 0.8]])).sonuc).toBe('uyusmadi');
+    expect(saatAlaniBul(profil([])).sonuc).toBe('bulunamadi');
+    expect(saatAlaniNormalize([0.5, 0.2])).toEqual([0.5, 0.54]);
+    expect(saatAlaniNormalize('x')).toBeNull();
   });
 
   it('yük gökleri ve (konum varsa) günün vakitlerini taşır', () => {

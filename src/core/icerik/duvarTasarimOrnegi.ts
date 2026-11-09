@@ -12,6 +12,14 @@ import {
   vaktinGogu,
   VARSAYILAN_MERKEZ,
   yaziYerlesimi,
+  izinliBantlar,
+  saatAlaniBul,
+  saatAlaniNormalize,
+  saatSolmasi,
+  saateDegiyor,
+  KILIT_DIS_SINIR,
+  VARSAYILAN_SAAT_ALANI,
+  type SaatAlani,
   DUVAR_GOKLERI,
   type DuvarEkrani,
   type DuvarPlatformu,
@@ -69,6 +77,40 @@ function cizimOrnegi() {
 
 const yuvarla = (v: number) => Math.round(v * 1e6) / 1e6;
 
+/**
+ * Kilit ekranı saat alanı: bantlar, cisim kaçışı, süs solması ve ölçüm. Profiller sentetiktir
+ * (240 satır): Android büyük saat + tarih şeridi + kilit simgesi; iPhone üstte saat; başka duvar
+ * kâğıdı (her yer dolu); boş.
+ */
+function saatOrnegi() {
+  const alanlar: (SaatAlani | null)[] = [null, [0.26, 0.64], [0.3, 0.5], [0.1, 0.7], [0.06, 0.3], [0.5, 0.82], [0.02, 0.62]];
+  const platformlar: DuvarPlatformu[] = ['android', 'ios'];
+  const bantlar = platformlar.flatMap((p) => alanlar.map((alan) => ({ platform: p, alan, beklenen: izinliBantlar(p, 'kilit', alan) })));
+  const kutular: (readonly [number, number, number, number] | null)[] = [null, [0.1, 0.66, 0.9, 0.82], [0.1, 0.1, 0.9, 0.24]];
+  const cisim: unknown[] = [];
+  for (const g of DUVAR_GOKLERI) {
+    const c = GOK_SAHNELERI[g].cisim;
+    if (!c) continue;
+    for (const kutu of kutular)
+      for (const alan of [null, [0.26, 0.64] as SaatAlani, [0.08, 0.34] as SaatAlani])
+        cisim.push({ gok: g, kutu, alan, oran: 2.1667, beklenen: cisimKonumuSec(c, kutu, 2.1667, alan) });
+  }
+  const solma = [0, 0.2, 0.25, 0.26, 0.3, 0.45, 0.6, 0.62, 0.64, 0.65, 0.66, 0.7].map((y) => ({ y, alan: [0.26, 0.64], beklenen: yuvarla(saatSolmasi(y, [0.26, 0.64])) }));
+  const degme = [[0.1, 0.2], [0.2, 0.27], [0.3, 0.4], [0.63, 0.7], [0.64, 0.7], [0.7, 0.8]].map(([a, b]) => ({ y1: a, y2: b, alan: [0.26, 0.64], beklenen: saateDegiyor(a, b, [0.26, 0.64]) }));
+  const profil = (dolu: [number, number][], n = 240) => Array.from({ length: n }, (_, i) => (dolu.some(([a, b]) => i / n >= a && i / n < b) ? 0.3 : 0.004));
+  const profiller: [string, number[]][] = [
+    ['android-buyuk-saat', profil([[0, 0.03], [0.08, 0.1], [0.3, 0.65], [0.87, 0.9]])],
+    ['ios-ustte-saat', profil([[0, 0.025], [0.09, 0.12], [0.13, 0.31], [0.9, 0.93]])],
+    ['tarih-saate-yakin', profil([[0.27, 0.29], [0.295, 0.6]])],
+    ['baska-duvar', profil([[0, 0.7]])],
+    ['bos', profil([])],
+    ['yalniz-durum-cubugu', profil([[0, 0.03]])],
+    ['kisa', [0.5, 0.5]],
+  ];
+  const olcum = profiller.map(([ad, p]) => ({ ad, profil: p, beklenen: saatAlaniBul(p) }));
+  return { varsayilan: VARSAYILAN_SAAT_ALANI, disSinir: KILIT_DIS_SINIR, bantlar, cisim, solma, degme, olcum, normalize: [[0.3, 0.55], [0.5, 0.2], [-1, 2], [0.1, 0.9], [0.4], 'x', null].map((ham) => ({ ham, beklenen: saatAlaniNormalize(ham) })) };
+}
+
 export function duvarTasarimOrnegi() {
   // 2026-11-07 İstanbul benzeri vakitler (sabit epoch ms; saat dilimi bağımsız).
   const v: GunVakitleri = [1762489200000, 1762494300000, 1762514700000, 1762524000000, 1762528800000];
@@ -105,11 +147,15 @@ export function duvarTasarimOrnegi() {
     yerlesim,
     cisim,
     cizim: cizimOrnegi(),
+    saat: saatOrnegi(),
     okunurluk: [0, 0.05, 0.12, 0.18, 0.25, 0.35, 0.5, 0.7, 1].map((L) => ({ parlaklik: L, beklenen: okunurlukKarari(L) })),
     // Eski kayıt (yalnız v1 alanları) → yeni alanlar varsayılanla dolar; native ayrıştırıcı da aynısını yapmalı.
     normalize: [
       { ham: { acik: true, yer: 'kilit', zemin: 'gece', arapca: false, paletRenk: '#2E7D32' }, beklenen: duvarAyariNormalize({ acik: true, yer: 'kilit', zemin: 'gece', arapca: false, paletRenk: '#2E7D32' }) },
       { ham: { zemin: 'foto', foto: { dosya: '../x.jpg', karartma: 2 }, yazi: { olcek: 9, hiza: 'x' } }, beklenen: duvarAyariNormalize({ zemin: 'foto', foto: { dosya: '../x.jpg', karartma: 2 }, yazi: { olcek: 9, hiza: 'x' } }) },
+      { ham: { saatAlani: [0.3, 0.55] }, beklenen: duvarAyariNormalize({ saatAlani: [0.3, 0.55] }) },
+      { ham: { saatAlani: [0.5, 0.2] }, beklenen: duvarAyariNormalize({ saatAlani: [0.5, 0.2] }) },
+      { ham: { saatAlani: 'x' }, beklenen: duvarAyariNormalize({ saatAlani: 'x' }) },
     ],
   };
 }

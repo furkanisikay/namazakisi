@@ -350,6 +350,64 @@ export const IZINLI_BANTLAR: Readonly<Record<DuvarPlatformu, Readonly<Record<Duv
   ios: { kilit: [[0.34, 0.85]], ana: [[0.07, 0.86]] },
 };
 
+// --- Kilit ekranı saat alanı -------------------------------------------------------------
+// Saatin yerini veren genel API YOK (Android'de yerel renk alanları `@hide`, iOS'ta hiç yok;
+// Pixel'de bildirimle küçülür, Samsung'da taşınır, iOS 26'da boyutlanır). Varsayılan tahmindir;
+// kullanıcı kilit ekranı görüntüsünden ölçebilir (`saatAlaniBul`) ya da kenarları elle ayarlar.
+
+/** Kilit ekranında saatin (tarihle birlikte) kapladığı dikey aralık [üst, alt], ekran kesri. */
+export type SaatAlani = readonly [number, number];
+
+/** Ölçülmemişse: Android 14+ büyük saat (emülatör karesi 66), iPhone saati üstte. */
+export const VARSAYILAN_SAAT_ALANI: Readonly<Record<DuvarPlatformu, SaatAlani>> = {
+  android: [0.26, 0.64],
+  ios: [0.08, 0.34],
+};
+
+/** Kilit ekranında yazının dış sınırları (üstte durum çubuğu/tarih, altta kilit simgesi/fener). */
+export const KILIT_DIS_SINIR: Readonly<Record<DuvarPlatformu, SaatAlani>> = {
+  android: [0.08, 0.84],
+  ios: [0.08, 0.85],
+};
+
+/** Saatin üstünde/altında kalan şerit bundan inceyse yazıya bant sayılmaz. */
+export const EN_DAR_BANT = 0.05;
+/** Saat alanının en az ve en çok yüksekliği (ölçüm ve elle ayar bununla sınırlanır). */
+export const SAAT_ALANI_EN_AZ = 0.04;
+export const SAAT_ALANI_EN_COK = 0.6;
+
+const dort = (v: number) => Math.round(v * 10000) / 10000;
+
+/** Bozuk saat alanı `null` (varsayılan kullanılır); geçerliyse sınırlanır ve 4 haneye yuvarlanır. */
+export function saatAlaniNormalize(ham: unknown): SaatAlani | null {
+  if (!Array.isArray(ham) || ham.length !== 2) return null;
+  const [u, a] = ham as unknown[];
+  if (typeof u !== 'number' || typeof a !== 'number' || !Number.isFinite(u) || !Number.isFinite(a)) return null;
+  const ust = Math.min(0.9 - SAAT_ALANI_EN_AZ, Math.max(0, u));
+  const alt = Math.min(Math.min(0.95, ust + SAAT_ALANI_EN_COK), Math.max(ust + SAAT_ALANI_EN_AZ, a));
+  return [dort(ust), dort(alt)];
+}
+
+/**
+ * Yazının girebileceği bantlar. Ana ekran sabit (`IZINLI_BANTLAR`); kilit ekranı = dış sınır eksi
+ * saat alanı (ölçülmemişse platform varsayılanı → `IZINLI_BANTLAR` ile birebir aynı). En az bir
+ * bant döner: iki şerit de dar kalırsa büyüğü.
+ */
+export function izinliBantlar(
+  platform: DuvarPlatformu,
+  ekran: DuvarEkrani,
+  saatAlani: SaatAlani | null
+): readonly (readonly [number, number])[] {
+  if (ekran === 'ana') return IZINLI_BANTLAR[platform].ana;
+  const [du, da] = KILIT_DIS_SINIR[platform];
+  const [su, sa] = saatAlani ?? VARSAYILAN_SAAT_ALANI[platform];
+  const ustSerit: readonly [number, number] = [du, Math.max(du, Math.min(su, da))];
+  const altSerit: readonly [number, number] = [Math.min(da, Math.max(sa, du)), da];
+  const bantlar = [ustSerit, altSerit].filter((b) => b[1] - b[0] >= EN_DAR_BANT);
+  if (bantlar.length) return bantlar;
+  return [ustSerit[1] - ustSerit[0] >= altSerit[1] - altSerit[0] ? ustSerit : altSerit];
+}
+
 /** Ekranın varsayılan yazı merkezi (kullanıcı taşımadıysa): mevcut bant düzeni. */
 export const VARSAYILAN_MERKEZ: Readonly<Record<DuvarPlatformu, Readonly<Record<DuvarEkrani, number>>>> = {
   android: { kilit: 0.73, ana: 0.215 },
@@ -379,26 +437,110 @@ export function yaziYerlesimi(
 /** Yazı kutusunun cisimle kesişme denetiminde kenar payı (genişlik kesri). */
 export const CISIM_PAYI = 0.04;
 
+/** Cisim diski (+ pay) yazı kutusuna değiyor mu? (y kesri `oran` ile genişlik birimine çevrilir.) */
+function kutuyaDeger(k: readonly [number, number], r: number, kutu: readonly [number, number, number, number] | null, oran: number): boolean {
+  if (!kutu) return false;
+  const cx = k[0];
+  const cy = k[1] * oran;
+  const yakX = Math.min(kutu[2], Math.max(kutu[0], cx));
+  const yakY = Math.min(kutu[3] * oran, Math.max(kutu[1] * oran, cy));
+  return (cx - yakX) ** 2 + (cy - yakY) ** 2 <= r * r;
+}
+
 /**
- * Gök cisminin adaylarından yazı kutusuna (x1,y1,x2,y2 kesir; `null` = yazı yok) değmeyen ilki;
- * hepsi değiyorsa `null` (cisim çizilmez). Kesişme: cismin ışımasız diski + pay, kutuyla.
- * `oran` = yükseklik/genişlik (y kesrini genişlik birimine çevirir).
+ * Gök cisminin yeri. Sırayla: (1) yazı kutusuna (x1,y1,x2,y2 kesir; `null` = yazı yok) ve saat
+ * alanına (tam genişlik dikey aralık; `null` = yok, ör. ana ekran) değmeyen ilk aday; (2) yoksa
+ * kutuya değmeyen ilk adayın x'inde, saat alanının hemen ÜSTÜNE (sığmazsa hemen altına) kaydırılmış
+ * konum (yine kutuya değmemeli, ekrandan taşmamalı); (3) hiçbiri olmazsa `null` (cisim çizilmez).
+ * Kesişme: cismin ışımasız diski + `CISIM_PAYI`. `oran` = yükseklik/genişlik.
  */
 export function cisimKonumuSec(
   cisim: GokCismi,
   kutu: readonly [number, number, number, number] | null,
-  oran: number
+  oran: number,
+  saatAlani: SaatAlani | null = null
 ): readonly [number, number] | null {
+  const r = cisim.r + CISIM_PAYI;
+  const ry = r / oran;
+  const saateDeger = (y: number) => !!saatAlani && y + ry > saatAlani[0] && y - ry < saatAlani[1];
   for (const k of cisim.konumlar) {
-    if (!kutu) return k;
-    const cx = k[0];
-    const cy = k[1] * oran;
-    const r = cisim.r + CISIM_PAYI;
-    const yakX = Math.min(kutu[2], Math.max(kutu[0], cx));
-    const yakY = Math.min(kutu[3] * oran, Math.max(kutu[1] * oran, cy));
-    if ((cx - yakX) ** 2 + (cy - yakY) ** 2 > r * r) return k;
+    if (!kutuyaDeger(k, r, kutu, oran) && !saateDeger(k[1])) return k;
+  }
+  if (!saatAlani) return null;
+  const temel = cisim.konumlar.find((k) => !kutuyaDeger(k, r, kutu, oran));
+  if (!temel) return null;
+  for (const y of [saatAlani[0] - ry, saatAlani[1] + ry]) {
+    const aday: readonly [number, number] = [temel[0], dort(y)];
+    if (y - ry >= 0 && y + ry <= 1 && !kutuyaDeger(aday, r, kutu, oran)) return aday;
   }
   return null;
+}
+
+/**
+ * Süsün saat alanında görünürlüğü (0–1): alanın içinde `SOLMA_IC` derinlikten sonra 0, alanın
+ * dışına `SOLMA_DIS` çıkınca 1, arası doğrusal. Mihrap kemeri saate girerken bununla solar;
+ * saat alanı yoksa (ana ekran) her yerde 1.
+ */
+export const SOLMA_IC = 0.05;
+export const SOLMA_DIS = 0.0125;
+export function saatSolmasi(y: number, saatAlani: SaatAlani | null): number {
+  if (!saatAlani) return 1;
+  const disarida = y < saatAlani[0] ? saatAlani[0] - y : y > saatAlani[1] ? y - saatAlani[1] : -Math.min(y - saatAlani[0], saatAlani[1] - y);
+  return Math.min(1, Math.max(0, (disarida + SOLMA_IC) / (SOLMA_IC + SOLMA_DIS)));
+}
+
+/** [y1, y2] dikey aralığı (ekran kesri) saat alanına değiyor mu? (Mihrap yıldızı değiyorsa çizilmez.) */
+export function saateDegiyor(y1: number, y2: number, saatAlani: SaatAlani | null): boolean {
+  return !!saatAlani && y2 > saatAlani[0] && y1 < saatAlani[1];
+}
+
+// --- Saat alanını kilit ekranı görüntüsünden ölçme ----------------------------------------
+// Native, kullanıcının seçtiği kilit ekranı görüntüsünü SON uygulanan kilit görseliyle (aynı
+// boyuta küçültülmüş) karşılaştırır: parlaklık kazanç/kaymayla eşlenir (kilit ekranı karartır),
+// eşiği aşan pikseller "üstte çizilmiş" sayılır ve her satır için oranı döner (`profil`). Karar
+// burada, tek yerde verilir.
+
+/** Bir satır, piksellerinin en az bu oranı farklıysa "dolu" sayılır. */
+export const OLCUM_SATIR_ESIGI = 0.02;
+/** Arası bu kadar (ekran kesri) olan dolu bölgeler birleşir (tarih + saat tek alan). */
+export const OLCUM_BIRLESTIRME = 0.015;
+/** Bundan kısa dolu bölge saat sayılmaz (tek satır bildirim/simge). */
+export const OLCUM_EN_KISA = 0.03;
+/** Satırların bundan fazlası doluysa görüntü bu duvar kâğıdına ait değildir. */
+export const OLCUM_EN_COK_DOLU = 0.6;
+/** Bulunan alana her iki yandan eklenen pay. */
+export const OLCUM_PAY = 0.01;
+
+export type SaatOlcumu = { sonuc: 'tamam'; alan: SaatAlani } | { sonuc: 'uyusmadi' } | { sonuc: 'bulunamadi' };
+
+/**
+ * Satır profilinden saat alanı: dolu satırlar bölgelere ayrılır (yakınlar birleşir), ekranın
+ * %5–%80 arasında ortalanan en yüksek bölge saattir (durum çubuğu ve alttaki kilit/fener dışarıda
+ * kalır). Çok dolu profil = başka bir duvar kâğıdının görüntüsü.
+ */
+export function saatAlaniBul(profil: readonly number[]): SaatOlcumu {
+  const n = profil.length;
+  if (n < 20) return { sonuc: 'bulunamadi' };
+  const dolu = profil.map((v) => Number.isFinite(v) && v >= OLCUM_SATIR_ESIGI);
+  if (dolu.filter(Boolean).length / n > OLCUM_EN_COK_DOLU) return { sonuc: 'uyusmadi' };
+  const bolgeler: [number, number][] = [];
+  for (let i = 0; i < n; i++) {
+    if (!dolu[i]) continue;
+    const son = bolgeler[bolgeler.length - 1];
+    if (son && i - son[1] - 1 <= OLCUM_BIRLESTIRME * n) son[1] = i;
+    else bolgeler.push([i, i]);
+  }
+  let enIyi: [number, number] | null = null;
+  for (const [b, s] of bolgeler) {
+    const ust = b / n;
+    const alt = (s + 1) / n;
+    const orta = (ust + alt) / 2;
+    if (alt - ust < OLCUM_EN_KISA || orta < 0.05 || orta > 0.8) continue;
+    if (!enIyi || alt - ust > enIyi[1] - enIyi[0]) enIyi = [ust, alt];
+  }
+  if (!enIyi) return { sonuc: 'bulunamadi' };
+  const alan = saatAlaniNormalize([enIyi[0] - OLCUM_PAY, enIyi[1] + OLCUM_PAY]);
+  return alan ? { sonuc: 'tamam', alan } : { sonuc: 'bulunamadi' };
 }
 
 // --- Okunurluk -------------------------------------------------------------------------

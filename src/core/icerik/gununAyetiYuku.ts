@@ -24,6 +24,8 @@ import {
   type DuvarYaziAyari,
   type GokSahnesi,
   type GunVakitleri,
+  type SaatAlani,
+  saatAlaniNormalize,
   vaktinGogu,
 } from './duvarTasarimi';
 
@@ -48,6 +50,8 @@ export interface DuvarKagidiAyari {
   yazi: DuvarYaziAyari;
   sus: DuvarSusAyari;
   foto: DuvarFotoAyari;
+  /** Kilit ekranında saatin kapladığı alan (bu cihazda ölçülen/ayarlanan); `null` = platform varsayılanı. */
+  saatAlani: SaatAlani | null;
 }
 
 export const VARSAYILAN_DUVAR_AYARI: DuvarKagidiAyari = {
@@ -60,6 +64,7 @@ export const VARSAYILAN_DUVAR_AYARI: DuvarKagidiAyari = {
   yazi: VARSAYILAN_YAZI,
   sus: VARSAYILAN_SUS,
   foto: VARSAYILAN_FOTO,
+  saatAlani: null,
 };
 
 const YERLER: readonly DuvarYeri[] = ['kilit', 'ana', 'ikisi'];
@@ -79,6 +84,7 @@ export function duvarAyariNormalize(ham: unknown): DuvarKagidiAyari {
     yazi: yaziAyariNormalize(k.yazi),
     sus: susAyariNormalize(k.sus),
     foto: fotoAyariNormalize(k.foto),
+    saatAlani: saatAlaniNormalize(k.saatAlani),
   };
 }
 
