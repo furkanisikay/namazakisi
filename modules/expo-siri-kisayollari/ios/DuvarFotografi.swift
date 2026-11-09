@@ -109,7 +109,7 @@ public enum DuvarFotografi {
     /// Kilit ekrani goruntusunun (secicinin `file://` URI'si) son kilit kopyasina gore satir profili:
     /// `["profil": [Double]]` (yukaridan asagi, satir basina degisen piksel orani; karar JS `saatAlaniBul`)
     /// ya da `["hata": "referans-yok" | "okunamadi" | "oran"]`. Iki gorsel de 108 × round(108·y/g)
-    /// RGBA'ya cizilir (y/g goruntununki), kural saf `DuvarTasarimi.kilitProfili`. Agir is: koprude `AsyncFunction`.
+    /// RGBA'ya cizilir (y/g referansinki), kural saf `DuvarTasarimi.kilitProfili`. Agir is: koprude `AsyncFunction`.
     public static func kilitEkraniProfili(uri: String) -> [String: Any] {
         guard let refUrl = kilitReferansUrl(), FileManager.default.fileExists(atPath: refUrl.path) else {
             return ["hata": "referans-yok"]
@@ -122,7 +122,8 @@ public enum DuvarFotografi {
             return ["hata": "oran"]
         }
         let g = DuvarTasarimi.olcumGenisligi
-        let y = DuvarTasarimi.olcumYuksekligi(genislik: eg, yukseklik: ey)
+        // Yukseklik REFERANSIN oranindan (Android `KilitReferansi` ile ayni; referans uygulamanin kendi tam ekran gorseli).
+        let y = DuvarTasarimi.olcumYuksekligi(genislik: Double(referans.width), yukseklik: Double(referans.height))
         guard let ekranRgba = rgba(ekran, genislik: g, yukseklik: y), let refRgba = rgba(referans, genislik: g, yukseklik: y) else {
             return ["hata": "okunamadi"]
         }
