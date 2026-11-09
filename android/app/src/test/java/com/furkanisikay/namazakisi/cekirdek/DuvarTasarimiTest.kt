@@ -653,6 +653,40 @@ class DuvarTasarimiTest {
         assertEquals(0.0, p[6], 0.0)
     }
 
+    /**
+     * iOS ile çapraz denetim (küçük, ikili kesirli → kayan nokta eşitlikleri KESİN). 5×5, düz
+     * referans 0,5 → a = 0; ilk eşleme b = 0,5. Artıklar 0,5 ± d çiftleri: d = 0,09375 (1, 6),
+     * 0,25 (12, 13), 0,3125 (7 = 0,8125 ve 18 = 0,1875 — EŞİT artık), 0,375 (20, 24), 0,4375 (21, 3);
+     * kalan 15 piksel 0,5. n − floor(0,2·n) = 20 piksel kalır: 15 + (1, 6) + (12, 13) + eşitlikte
+     * KÜÇÜK indeks 7. Yeniden eşleme b = 10,3125 / 20 = 0,515625 → 6 (0,40625) değişmiş, 1 (0,59375)
+     * değil. Beklenen profil [0,2, 0,4, 0,4, 0,2, 0,6]; eşitlikte büyük indeks seçilseydi (18 kalır,
+     * b = 0,484375) [0,4, 0,2, 0,4, 0,2, 0,6] çıkardı.
+     */
+    @Test
+    fun capraziDenetimDuzReferansEsitlikKucukIndeks() {
+        val e = DoubleArray(25) { 0.5 }
+        mapOf(
+            1 to 0.59375, 6 to 0.40625, 12 to 0.75, 13 to 0.25, 7 to 0.8125, 18 to 0.1875,
+            20 to 0.875, 24 to 0.125, 21 to 0.9375, 3 to 0.0625,
+        ).forEach { (i, v) -> e[i] = v }
+        val p = DuvarOlcumu.satirProfili(e, DoubleArray(25) { 0.5 }, 5)
+        assertEquals(listOf(0.2, 0.4, 0.4, 0.2, 0.6), p.toList())
+    }
+
+    /**
+     * iOS ile çapraz denetim, eğimli referans: 4×5, r_i = i/32, ekran = 0,5·r + 0,125; yalnız 9 = 1,0 ve
+     * 10 = 0,9375 (üstte çizilmiş). İlk eşleme bunlarla bozulur, en büyük 4 artık atılınca kalan 16
+     * piksel doğrunun üstündedir → a = 0,5, b = 0,125; yalnız 9 ve 10 değişmiş. Profil [0, 0, 0,5, 0, 0].
+     */
+    @Test
+    fun capraziDenetimEgimliReferans() {
+        val r = DoubleArray(20) { it / 32.0 }
+        val e = DoubleArray(20) { 0.5 * r[it] + 0.125 }
+        e[9] = 1.0
+        e[10] = 0.9375
+        assertEquals(listOf(0.0, 0.0, 0.5, 0.0, 0.0), DuvarOlcumu.satirProfili(e, r, 4).toList())
+    }
+
     @Test
     fun olcumBoyutlariVeOran() {
         assertEquals(240, DuvarOlcumu.olcumYuksekligi(1080, 2400))
