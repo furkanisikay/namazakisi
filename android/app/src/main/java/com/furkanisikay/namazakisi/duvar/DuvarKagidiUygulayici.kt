@@ -29,6 +29,7 @@ import java.util.concurrent.Executors
  * - Mevcut duvar kâğıdı SAKLANMAZ (Android 14+'ta okunamaz) → kapatınca geri yükleme yok; yer
  *   değişince eski ekrandaki görsel kalır.
  * - Hata `sonHata = "yazilamadi"` olarak kaydedilir (`DuvarKagidi.durum`), başarıda silinir.
+ * - Kilit görseli yazılınca küçük kopyası saat alanı ölçümünün referansı olur ([KilitReferansi]).
  * - İş tek arka plan iş parçacığında sıralanır (çizim + yazım ~yüzlerce ms; ana iş parçacığı değil).
  */
 object DuvarKagidiUygulayici {
@@ -86,6 +87,23 @@ object DuvarKagidiUygulayici {
     }
 
     /**
+     * Kilit ekranı görüntüsünün satır profilini ([KilitReferansi.profil]) aynı sıralı kuyrukta
+     * çıkarır: devam eden yazım bitmeden eski referansla karşılaştırılmaz. [sonuc] her durumda çağrılır.
+     */
+    fun arkaPlandaKilitProfili(context: Context, uri: String, sonuc: (KilitReferansi.Sonuc) -> Unit) {
+        val uygulama = context.applicationContext
+        yurutucu.execute {
+            val s = try {
+                KilitReferansi.profil(uygulama, uri)
+            } catch (e: Throwable) {
+                Log.e(TAG, "Kilit ekrani profili cikarilamadi", e)
+                KilitReferansi.Sonuc.Hata("okunamadi")
+            }
+            sonuc(s)
+        }
+    }
+
+    /**
      * @param zorla true: `duvar.acik` ve imza denetlenmez.
      * @return true: yazıldı ya da yazmaya gerek yoktu; false: yazılamadı (ya da yük yok).
      */
@@ -115,6 +133,8 @@ object DuvarKagidiUygulayici {
                     val bayrak = if (ekran == DuvarEkrani.KILIT) WallpaperManager.FLAG_LOCK else WallpaperManager.FLAG_SYSTEM
                     val kimlik = wm.setBitmap(bmp, null, true, bayrak)
                     if (kimlik == 0) throw IllegalStateException("setBitmap 0 dondu: $ekran")
+                    // Saat alanı ölçümünün referansı (hata yalnız loglanır, yazımı bozmaz).
+                    if (ekran == DuvarEkrani.KILIT) KilitReferansi.kaydet(context, bmp)
                 } finally {
                     bmp.recycle()
                 }

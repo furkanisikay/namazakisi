@@ -106,8 +106,8 @@ object DuvarFotoZemini {
         ExifInterface.ORIENTATION_NORMAL
     }
 
-    /** EXIF yönünü uygular (döndürme/yansıtma); gerekmiyorsa aynı nesne. */
-    private fun yonUygula(bmp: Bitmap, yon: Int): Bitmap {
+    /** EXIF yönünü uygular (döndürme/yansıtma); gerekmiyorsa aynı nesne (değilse [bmp] `recycle` edilir). */
+    internal fun yonUygula(bmp: Bitmap, yon: Int): Bitmap {
         val m = Matrix()
         when (yon) {
             ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> m.setScale(-1f, 1f)

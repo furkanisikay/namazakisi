@@ -115,6 +115,9 @@ data class GokSahnesi(
 /** İzinli dikey bant [ust, alt] (ekran kesri). */
 data class Bant(val ust: Double, val alt: Double)
 
+/** Kilit ekranında saatin (tarihle birlikte) kapladığı dikey aralık [ust, alt], ekran kesri. JS `SaatAlani`. */
+typealias SaatAlani = Bant
+
 data class YaziYeri(val ust: Double, val bant: Bant)
 
 /** Yazı kutusu (ekran kesri): sol, üst, sağ, alt. */
@@ -132,6 +135,91 @@ object DuvarTasarimi {
         DuvarEkrani.KILIT to listOf(Bant(0.08, 0.26), Bant(0.64, 0.84)),
         DuvarEkrani.ANA to listOf(Bant(0.07, 0.88)),
     )
+
+    // --- Kilit ekranı saat alanı (JS "Kilit ekranı saat alanı") ------------------------------
+    // Saatin yerini veren genel API yok: varsayılan tahmindir, kullanıcı kilit ekranı görüntüsünden
+    // ölçer (JS `saatAlaniBul`, profil native `DuvarOlcumu.satirProfili`) ya da elle ayarlar.
+
+    /** Ölçülmemişse: Android 14+ büyük saat (emülatör karesi 66). JS `VARSAYILAN_SAAT_ALANI.android`. */
+    val VARSAYILAN_SAAT_ALANI: SaatAlani = SaatAlani(0.26, 0.64)
+
+    /** Kilit ekranında yazının dış sınırları (üstte durum çubuğu/tarih, altta kilit simgesi). JS `KILIT_DIS_SINIR.android`. */
+    val KILIT_DIS_SINIR: Bant = Bant(0.08, 0.84)
+
+    /** Saatin üstünde/altında kalan şerit bundan inceyse yazıya bant sayılmaz. */
+    const val EN_DAR_BANT = 0.05
+
+    /** Saat alanının en az ve en çok yüksekliği. */
+    const val SAAT_ALANI_EN_AZ = 0.04
+    const val SAAT_ALANI_EN_COK = 0.6
+
+    /** Süs saat alanının içinde bu derinlikten sonra görünmez, dışına bu kadar çıkınca tam görünür. */
+    const val SOLMA_IC = 0.05
+    const val SOLMA_DIS = 0.0125
+
+    /** JS `Math.round(v * 10000) / 10000` (yarım yukarı; Java `Math.round` da +∞'a yuvarlar). */
+    private fun dort(v: Double): Double = Math.round(v * 10000) / 10000.0
+
+    /**
+     * Bozuk saat alanı `null` (varsayılan kullanılır); geçerliyse sınırlanır ve 4 haneye yuvarlanır.
+     * Geçerli = iki sonlu SAYI taşıyan dizi (JSON dize/boolean sayı değildir). JS `saatAlaniNormalize`.
+     */
+    fun saatAlaniNormalize(ham: Any?): SaatAlani? {
+        val d = ham as? JSONArray ?: return null
+        if (d.length() != 2) return null
+        val u = sayi(d.opt(0)) ?: return null
+        val a = sayi(d.opt(1)) ?: return null
+        val ust = minOf(0.9 - SAAT_ALANI_EN_AZ, maxOf(0.0, u))
+        val alt = minOf(minOf(0.95, ust + SAAT_ALANI_EN_COK), maxOf(ust + SAAT_ALANI_EN_AZ, a))
+        return SaatAlani(dort(ust), dort(alt))
+    }
+
+    /**
+     * Yazının girebileceği bantlar. Ana ekran sabit ([IZINLI_BANTLAR]); kilit ekranı = dış sınır
+     * eksi saat alanı (`null` = [VARSAYILAN_SAAT_ALANI] → [IZINLI_BANTLAR] ile aynı). En az bir bant:
+     * iki şerit de dar kalırsa büyüğü (eşitlikte üstteki). JS `izinliBantlar('android', …)`.
+     */
+    fun izinliBantlar(ekran: DuvarEkrani, saatAlani: SaatAlani?): List<Bant> {
+        if (ekran == DuvarEkrani.ANA) return IZINLI_BANTLAR.getValue(DuvarEkrani.ANA)
+        val du = KILIT_DIS_SINIR.ust
+        val da = KILIT_DIS_SINIR.alt
+        val s = saatAlani ?: VARSAYILAN_SAAT_ALANI
+        val ustSerit = Bant(du, maxOf(du, minOf(s.ust, da)))
+        val altSerit = Bant(minOf(da, maxOf(s.alt, du)), da)
+        val bantlar = listOf(ustSerit, altSerit).filter { it.alt - it.ust >= EN_DAR_BANT }
+        if (bantlar.isNotEmpty()) return bantlar
+        return listOf(if (ustSerit.alt - ustSerit.ust >= altSerit.alt - altSerit.ust) ustSerit else altSerit)
+    }
+
+    /**
+     * Süsün saat alanında görünürlüğü (0–1): alanın içinde [SOLMA_IC] derinlikten sonra 0, dışına
+     * [SOLMA_DIS] çıkınca 1, arası doğrusal; alan yoksa 1. JS `saatSolmasi`.
+     */
+    fun saatSolmasi(y: Double, saatAlani: SaatAlani?): Double {
+        if (saatAlani == null) return 1.0
+        val disarida = when {
+            y < saatAlani.ust -> saatAlani.ust - y
+            y > saatAlani.alt -> y - saatAlani.alt
+            else -> -minOf(y - saatAlani.ust, saatAlani.alt - y)
+        }
+        return minOf(1.0, maxOf(0.0, (disarida + SOLMA_IC) / (SOLMA_IC + SOLMA_DIS)))
+    }
+
+    /**
+     * [saatSolmasi]'nın kırılma noktaları (0–1 içinde, sıralı, 0 ve 1 dahil): fonksiyon bunların
+     * arasında DOĞRUSALDIR, bu noktalardaki değerlerle kurulan doğrusal renk geçişi onu birebir verir.
+     * Dar alanda (yükseklik < 2·[SOLMA_IC]) içerideki tepe noktası (orta) da kırılmadır.
+     */
+    fun saatSolmasiDuraklari(saatAlani: SaatAlani): List<Double> = listOf(
+        0.0, 1.0,
+        saatAlani.ust - SOLMA_DIS, saatAlani.ust + SOLMA_IC,
+        (saatAlani.ust + saatAlani.alt) / 2,
+        saatAlani.alt - SOLMA_IC, saatAlani.alt + SOLMA_DIS,
+    ).filter { it in 0.0..1.0 }.distinct().sorted()
+
+    /** [y1, y2] dikey aralığı saat alanına değiyor mu? (Mihrap yıldızı değiyorsa çizilmez.) JS `saateDegiyor`. */
+    fun saateDegiyor(y1: Double, y2: Double, saatAlani: SaatAlani?): Boolean =
+        saatAlani != null && y2 > saatAlani.ust && y1 < saatAlani.alt
 
     /** Kullanıcı taşımadıysa yazı bloğunun merkezi (eski bant düzeni). JS `VARSAYILAN_MERKEZ.android`. */
     val VARSAYILAN_MERKEZ: Map<DuvarEkrani, Double> = mapOf(DuvarEkrani.KILIT to 0.73, DuvarEkrani.ANA to 0.215)
@@ -183,21 +271,37 @@ object DuvarTasarimi {
         return enIyi
     }
 
+    /** Cisim diski (yarıçap [r], genişlik birimi) yazı kutusuna değiyor mu? Kutu yoksa değmez. */
+    private fun kutuyaDeger(k: Nokta, r: Double, kutu: Kutu?, oran: Double): Boolean {
+        if (kutu == null) return false
+        val cx = k.x
+        val cy = k.y * oran
+        val yakX = minOf(kutu.x2, maxOf(kutu.x1, cx))
+        val yakY = minOf(kutu.y2 * oran, maxOf(kutu.y1 * oran, cy))
+        val dx = cx - yakX
+        val dy = cy - yakY
+        return dx * dx + dy * dy <= r * r
+    }
+
     /**
-     * Gök cisminin adaylarından yazı kutusuna değmeyen ilki; hepsi değiyorsa `null` (cisim, ışıması
-     * ve huzmeleri çizilmez). Kesişme: ışımasız disk + [CISIM_PAYI], kutuyla. [oran] = yükseklik/genişlik.
+     * Gök cisminin yeri. Sırayla: (1) yazı kutusuna ve saat alanına (tam genişlik dikey aralık;
+     * `null` = yok, ör. ana ekran) değmeyen ilk aday; (2) yoksa kutuya değmeyen ilk adayın x'inde,
+     * saat alanının hemen ÜSTÜNE (sığmazsa hemen altına) kaydırılmış konum (y 4 haneye yuvarlanır;
+     * kutuya değmemeli, ekrandan taşmamalı); (3) hiçbiri olmazsa `null` (cisim, ışıması ve huzmeleri
+     * çizilmez). Kesişme: ışımasız disk + [CISIM_PAYI]. [oran] = yükseklik/genişlik. JS `cisimKonumuSec`.
      */
-    fun cisimKonumuSec(cisim: GokCismi, kutu: Kutu?, oran: Double): Nokta? {
+    fun cisimKonumuSec(cisim: GokCismi, kutu: Kutu?, oran: Double, saatAlani: SaatAlani? = null): Nokta? {
+        val r = cisim.r + CISIM_PAYI
+        val ry = r / oran
+        fun saateDeger(y: Double) = saatAlani != null && y + ry > saatAlani.ust && y - ry < saatAlani.alt
         for (k in cisim.konumlar) {
-            if (kutu == null) return k
-            val cx = k.x
-            val cy = k.y * oran
-            val r = cisim.r + CISIM_PAYI
-            val yakX = minOf(kutu.x2, maxOf(kutu.x1, cx))
-            val yakY = minOf(kutu.y2 * oran, maxOf(kutu.y1 * oran, cy))
-            val dx = cx - yakX
-            val dy = cy - yakY
-            if (dx * dx + dy * dy > r * r) return k
+            if (!kutuyaDeger(k, r, kutu, oran) && !saateDeger(k.y)) return k
+        }
+        if (saatAlani == null) return null
+        val temel = cisim.konumlar.firstOrNull { !kutuyaDeger(it, r, kutu, oran) } ?: return null
+        for (y in listOf(saatAlani.ust - ry, saatAlani.alt + ry)) {
+            val aday = Nokta(temel.x, dort(y))
+            if (y - ry >= 0 && y + ry <= 1 && !kutuyaDeger(aday, r, kutu, oran)) return aday
         }
         return null
     }

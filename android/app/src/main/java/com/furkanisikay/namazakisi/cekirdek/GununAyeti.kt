@@ -77,6 +77,8 @@ data class DuvarAyari(
     val yazi: DuvarYaziAyari = DuvarYaziAyari(),
     val sus: DuvarSusAyari = DuvarSusAyari(),
     val foto: DuvarFotoAyari = DuvarFotoAyari(),
+    /** Kilit ekranında saatin kapladığı alan (bu cihazda ölçülen/ayarlanan); `null` = `DuvarTasarimi.VARSAYILAN_SAAT_ALANI`. */
+    val saatAlani: SaatAlani? = null,
 ) {
     /** Bu ayarla çizilecek görseller (sıra: önce ana ekran, kilit EN SON — bkz. `DuvarKagidiUygulayici`). */
     fun ekranlar(): List<DuvarEkrani> = when (yer) {
@@ -210,6 +212,7 @@ object GununAyetiKurallari {
             yazi = DuvarTasarimi.yaziAyariCoz(d.optJSONObject("yazi")),
             sus = DuvarTasarimi.susAyariCoz(d.optJSONObject("sus")),
             foto = DuvarTasarimi.fotoAyariCoz(d.optJSONObject("foto")),
+            saatAlani = DuvarTasarimi.saatAlaniNormalize(d.opt("saatAlani")),
         )
     }
 
@@ -327,7 +330,7 @@ object GununAyetiKurallari {
      * titretir ve Material You renklerini yeniden türetirdi. İmza GÖRÜNENİ taşır: çizilen gök
      * ([gok], sahnesi [sahne]; `vakteUysun`'un kendisi değil) ve fotoğrafın adı + değişme zamanı
      * ([fotoDamgasi], dosya yoksa `null`); zemin çizilemiyorsa (sahne/dosya yok) gece sayılır.
-     * Yalnız çizilen ekranın yazı merkezi ve görünen süs ayarı girer.
+     * Yalnız çizilen ekranın yazı merkezi, görünen süs ayarı ve kilit çiziliyorsa saat alanı girer.
      */
     fun duvarImzasi(
         k: AyetKaydi,
@@ -355,6 +358,7 @@ object GununAyetiKurallari {
             if (DuvarEkrani.KILIT in ekranlar) y.kilitY.toString() else "-",
             if (DuvarEkrani.ANA in ekranlar) y.anaY.toString() else "-",
             y.olcek.toString(), y.hiza.kod, y.tip.kod, sus,
+            if (DuvarEkrani.KILIT in ekranlar) ayar.saatAlani?.let { "saat:${it.ust}:${it.alt}" } ?: "saat:-" else "-",
         ).joinToString("\u0001").hashCode().let { Integer.toHexString(it) }
     }
 }

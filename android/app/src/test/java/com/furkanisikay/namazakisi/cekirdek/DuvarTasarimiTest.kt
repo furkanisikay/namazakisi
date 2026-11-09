@@ -167,6 +167,7 @@ class DuvarTasarimiTest {
                 .put("bulaniklik", a.foto.bulaniklik).put("x", a.foto.x).put("y", a.foto.y)
                 .put("yakinlik", a.foto.yakinlik).put("okunurluk", a.foto.okunurluk),
         )
+        .put("saatAlani", a.saatAlani?.let { JSONArray().put(it.ust).put(it.alt) } ?: JSONObject.NULL)
 
     private fun ayniMi(beklenen: Any?, gercek: Any?, yol: String) {
         when (beklenen) {
@@ -175,6 +176,13 @@ class DuvarTasarimiTest {
                 val g = gercek as JSONObject
                 assertEquals(yol, beklenen.anahtarlar(), g.anahtarlar())
                 for (k in beklenen.anahtarlar()) ayniMi(beklenen.get(k), g.get(k), "$yol.$k")
+            }
+            // `JSONArray` `equals`'ı ezmez: öğe öğe karşılaştırılır.
+            is JSONArray -> {
+                assertTrue(yol, gercek is JSONArray)
+                val g = gercek as JSONArray
+                assertEquals(yol, beklenen.length(), g.length())
+                for (i in 0 until beklenen.length()) ayniMi(beklenen.get(i), g.get(i), "$yol[$i]")
             }
             is Number -> assertEquals(yol, beklenen.toDouble(), (gercek as Number).toDouble(), 1e-12)
             else -> assertEquals(yol, beklenen, gercek)
@@ -312,6 +320,10 @@ class DuvarTasarimiTest {
         assertNotEquals(sabah, imza(d.copy(sus = d.sus.copy(belirginlik = 0.9)), DuvarGogu.IMSAK))
         // Yalnız kilit çiziliyorsa ana ekranın yazı merkezi görünmez.
         assertEquals(sabah, imza(d.copy(yazi = d.yazi.copy(anaY = 0.5)), DuvarGogu.IMSAK))
+        // Saat alanı kilit çiziliyorsa görünür (bantlar, cisim, mihrap ona göre); yalnız ana çiziliyorsa görünmez.
+        assertNotEquals(sabah, imza(d.copy(saatAlani = SaatAlani(0.3, 0.55)), DuvarGogu.IMSAK))
+        val ana = d.copy(yer = DuvarYeri.ANA)
+        assertEquals(imza(ana, DuvarGogu.IMSAK), imza(ana.copy(saatAlani = SaatAlani(0.3, 0.55)), DuvarGogu.IMSAK))
         // Fotoğraf: dosya adı, değişme zamanı ve ayarlar; dosya yoksa gece.
         val foto = d.copy(zemin = DuvarZemini.FOTO, foto = DuvarFotoAyari(dosya = "duvar-foto-abcd.jpg"))
         val f1 = imza(foto, null, 100L)
@@ -486,6 +498,173 @@ class DuvarTasarimiTest {
             assertEquals(ad, ekran.getDouble(1), k.yukseklik * olcek, 1e-6)
             assertEquals(ad, e.getDouble("yukseklik"), gorsel.getDouble(1) * olcek, 1e-6)
         }
+    }
+
+    // --- Kilit ekranı saat alanı (örnekle eşlik) ---------------------------------------------------
+
+    private val saat: JSONObject get() = ornek.getJSONObject("saat")
+
+    private fun alanCoz(o: JSONObject, ad: String = "alan"): SaatAlani? =
+        if (o.isNull(ad)) null else o.getJSONArray(ad).let { SaatAlani(it.getDouble(0), it.getDouble(1)) }
+
+    @Test
+    fun saatSabitleriOrnekleAyni() {
+        val v = saat.getJSONObject("varsayilan").getJSONArray("android")
+        assertEquals(SaatAlani(v.getDouble(0), v.getDouble(1)), DuvarTasarimi.VARSAYILAN_SAAT_ALANI)
+        val d = saat.getJSONObject("disSinir").getJSONArray("android")
+        assertEquals(Bant(d.getDouble(0), d.getDouble(1)), DuvarTasarimi.KILIT_DIS_SINIR)
+        // Varsayılan alan eski sabit kilit bantlarını verir (ölçülmemiş cihazda görünüm değişmez).
+        assertEquals(DuvarTasarimi.IZINLI_BANTLAR[DuvarEkrani.KILIT], DuvarTasarimi.izinliBantlar(DuvarEkrani.KILIT, null))
+        assertEquals(DuvarTasarimi.IZINLI_BANTLAR[DuvarEkrani.ANA], DuvarTasarimi.izinliBantlar(DuvarEkrani.ANA, SaatAlani(0.3, 0.5)))
+    }
+
+    @Test
+    fun saatBantlariOrnekleri() {
+        val dizi = saat.getJSONArray("bantlar")
+        var sayi = 0
+        for (i in 0 until dizi.length()) {
+            val o = dizi.getJSONObject(i)
+            if (o.getString("platform") != "android") continue
+            sayi++
+            assertEquals(o.toString(), bantlar(o.getJSONArray("beklenen")), DuvarTasarimi.izinliBantlar(DuvarEkrani.KILIT, alanCoz(o)))
+        }
+        assertEquals(7, sayi)
+    }
+
+    @Test
+    fun saatCisimOrnekleri() {
+        val dizi = saat.getJSONArray("cisim")
+        assertEquals(45, dizi.length())
+        var kaydirilan = 0
+        for (i in 0 until dizi.length()) {
+            val o = dizi.getJSONObject(i)
+            val cisim = requireNotNull(sahneler.getValue(DuvarGogu.coz(o.getString("gok"))!!).cisim)
+            val kutu = if (o.isNull("kutu")) null else o.getJSONArray("kutu").let {
+                Kutu(it.getDouble(0), it.getDouble(1), it.getDouble(2), it.getDouble(3))
+            }
+            val sonuc = DuvarTasarimi.cisimKonumuSec(cisim, kutu, o.getDouble("oran"), alanCoz(o))
+            val beklenen = if (o.isNull("beklenen")) null else o.getJSONArray("beklenen").let { Nokta(it.getDouble(0), it.getDouble(1)) }
+            assertEquals(o.toString(), beklenen, sonuc)
+            if (beklenen != null && cisim.konumlar.none { it == beklenen }) kaydirilan++
+        }
+        // Örnek saatin üstüne/altına kaydırma dalını da kapsıyor.
+        assertTrue(kaydirilan > 0)
+    }
+
+    @Test
+    fun saatSolmasiVeDegmeOrnekleri() {
+        val solma = saat.getJSONArray("solma")
+        for (i in 0 until solma.length()) {
+            val o = solma.getJSONObject(i)
+            assertEquals(o.toString(), o.getDouble("beklenen"), DuvarTasarimi.saatSolmasi(o.getDouble("y"), alanCoz(o)), 1e-6)
+        }
+        val degme = saat.getJSONArray("degme")
+        for (i in 0 until degme.length()) {
+            val o = degme.getJSONObject(i)
+            assertEquals(o.toString(), o.getBoolean("beklenen"), DuvarTasarimi.saateDegiyor(o.getDouble("y1"), o.getDouble("y2"), alanCoz(o)))
+        }
+        // Alan yoksa (ana ekran) süs her yerde tam görünür, yıldız hiçbir yere değmez.
+        assertEquals(1.0, DuvarTasarimi.saatSolmasi(0.4, null), 0.0)
+        assertFalse(DuvarTasarimi.saateDegiyor(0.0, 1.0, null))
+    }
+
+    /** Durak noktaları arasında doğrusal ara değer = fonksiyonun kendisi (mihrap renk geçişi birebir). */
+    @Test
+    fun saatSolmasiDuraklariBirebir() {
+        for (alan in listOf(SaatAlani(0.26, 0.64), SaatAlani(0.3, 0.36), SaatAlani(0.0, 0.6), SaatAlani(0.5, 0.95), SaatAlani(0.4, 0.44))) {
+            val d = DuvarTasarimi.saatSolmasiDuraklari(alan)
+            assertEquals(0.0, d.first(), 0.0)
+            assertEquals(1.0, d.last(), 0.0)
+            assertEquals(d.sorted(), d)
+            for (j in 0..2000) {
+                val y = j / 2000.0
+                val k = maxOf(1, d.indexOfFirst { it >= y })
+                val t = (y - d[k - 1]) / (d[k] - d[k - 1])
+                val ara = DuvarTasarimi.saatSolmasi(d[k - 1], alan) * (1 - t) + DuvarTasarimi.saatSolmasi(d[k], alan) * t
+                assertEquals("$alan y=$y", DuvarTasarimi.saatSolmasi(y, alan), ara, 1e-9)
+            }
+        }
+    }
+
+    @Test
+    fun saatAlaniNormalizeOrnekleri() {
+        val dizi = saat.getJSONArray("normalize")
+        assertEquals(7, dizi.length())
+        for (i in 0 until dizi.length()) {
+            val o = dizi.getJSONObject(i)
+            assertEquals(o.toString(), alanCoz(o, "beklenen"), DuvarTasarimi.saatAlaniNormalize(o.opt("ham")))
+        }
+        // Dize ve boolean sayı değildir (JS `typeof`).
+        assertNull(DuvarTasarimi.saatAlaniNormalize(JSONArray("[\"0.3\", 0.5]")))
+        assertNull(DuvarTasarimi.saatAlaniNormalize(JSONArray("[true, 0.5]")))
+        // Yükte de aynı normalize: bozuk alan varsayılana (null), geçerli alan sınırlanır.
+        assertEquals(SaatAlani(0.5, 0.54), GununAyetiKurallari.duvarCoz(JSONObject("{\"saatAlani\":[0.5,0.2]}")).saatAlani)
+        assertNull(GununAyetiKurallari.duvarCoz(JSONObject("{\"saatAlani\":{\"ust\":0.3}}")).saatAlani)
+    }
+
+    // --- Saat alanı ölçümü (saf satır profili) ---------------------------------------------------
+
+    private val olcumG = 108
+    private val olcumY = 240
+
+    /** Düz olmayan sentetik referans: dikey geçiş + yatay dalga. */
+    private fun referans(): DoubleArray = DoubleArray(olcumG * olcumY) { i ->
+        val x = i % olcumG
+        val y = i / olcumG
+        0.15 + 0.5 * y / olcumY + 0.1 * Math.sin(x * 0.3)
+    }
+
+    @Test
+    fun ayniGoruntudeProfilBos() {
+        val r = referans()
+        val p = DuvarOlcumu.satirProfili(r.copyOf(), r, olcumG)
+        assertEquals(olcumY, p.size)
+        assertTrue(p.all { it < 1e-9 })
+    }
+
+    @Test
+    fun karartilmisKopyadaProfilBos() {
+        val r = referans()
+        val p = DuvarOlcumu.satirProfili(DoubleArray(r.size) { r[it] * 0.8 + 0.02 }, r, olcumG)
+        assertTrue(p.joinToString(), p.all { it < 1e-9 })
+    }
+
+    @Test
+    fun ustteCizilenBlokSatirlardaGorunur() {
+        val r = referans()
+        // Kilit ekranı karartması + 60–110. satırlarda, 20–90. sütunlarda beyaz saat.
+        val e = DoubleArray(r.size) { i ->
+            val x = i % olcumG
+            val y = i / olcumG
+            if (y in 60..110 && x in 20..90) 1.0 else r[i] * 0.8 + 0.02
+        }
+        val p = DuvarOlcumu.satirProfili(e, r, olcumG)
+        for (y in 0 until olcumY) {
+            if (y in 60..110) assertTrue("satir $y = ${p[y]}", p[y] > 0.5) else assertTrue("satir $y = ${p[y]}", p[y] < 1e-9)
+        }
+    }
+
+    @Test
+    fun duzReferanstaCokmez() {
+        val r = DoubleArray(olcumG * olcumY) { 0.2 }
+        assertTrue(DuvarOlcumu.satirProfili(r.copyOf(), r, olcumG).all { it < 1e-9 })
+        val p = DuvarOlcumu.satirProfili(DoubleArray(r.size) { if (it / olcumG == 5) 0.9 else 0.15 }, r, olcumG)
+        assertEquals(1.0, p[5], 0.0)
+        assertEquals(0.0, p[6], 0.0)
+    }
+
+    @Test
+    fun olcumBoyutlariVeOran() {
+        assertEquals(240, DuvarOlcumu.olcumYuksekligi(1080, 2400))
+        assertEquals(600, DuvarOlcumu.referansYuksekligi(1080, 2400))
+        assertTrue(DuvarOlcumu.oranUyar(270, 600, 1080, 2400))
+        assertTrue(DuvarOlcumu.oranUyar(1080, 2340, 270, 600))
+        assertFalse(DuvarOlcumu.oranUyar(1080, 2200, 270, 600))
+        assertFalse(DuvarOlcumu.oranUyar(2400, 1080, 270, 600))
+        assertFalse(DuvarOlcumu.oranUyar(0, 10, 270, 600))
+        assertEquals(1.0, DuvarOlcumu.parlaklik(0xFFFFFFFF.toInt()), 1e-12)
+        assertEquals(0.0, DuvarOlcumu.parlaklik(0xFF000000.toInt()), 1e-12)
+        assertEquals(0.7152, DuvarOlcumu.parlaklik(0xFF00FF00.toInt()), 1e-12)
     }
 
     // --- Zarif yazı tipi ----------------------------------------------------------------------

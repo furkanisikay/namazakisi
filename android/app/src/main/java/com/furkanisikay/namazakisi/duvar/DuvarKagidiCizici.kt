@@ -28,6 +28,7 @@ import com.furkanisikay.namazakisi.cekirdek.GokSahnesi
 import com.furkanisikay.namazakisi.cekirdek.GununAyetiKurallari
 import com.furkanisikay.namazakisi.cekirdek.GununAyetiYuku
 import com.furkanisikay.namazakisi.cekirdek.Kutu
+import com.furkanisikay.namazakisi.cekirdek.SaatAlani
 import com.furkanisikay.namazakisi.cekirdek.SusTuru
 import com.furkanisikay.namazakisi.cekirdek.YaziHizasi
 import com.furkanisikay.namazakisi.rakamSifiri
@@ -90,12 +91,14 @@ object DuvarKagidiCizici {
                 foto != null -> DuvarKagidiKurallari.yaziRenkleri(DuvarTasarimi.ACIK_METIN, Color.BLACK)
                 else -> DuvarKagidiKurallari.renkler(ayar.copy(zemin = duzZemin))
             }
-            val duzen = duzenBul(context, yuk, kayit, ekran, h, s, icGenislik, renk)
+            // Saat alanı yalnız kilit ekranında (ölçülmemişse varsayılan); ana ekranda yok.
+            val saatAlani = if (ekran == DuvarEkrani.KILIT) ayar.saatAlani ?: DuvarTasarimi.VARSAYILAN_SAAT_ALANI else null
+            val duzen = duzenBul(context, yuk, kayit, ekran, saatAlani, h, s, icGenislik, renk)
             val kutu = RectF(x, duzen.ustPx, x + icGenislik, duzen.ustPx + duzen.blok.yukseklik)
 
             // 2) Zemin.
             when {
-                sahne != null -> gokCiz(tuval, sahne, kutu, w, h)
+                sahne != null -> gokCiz(tuval, sahne, kutu, saatAlani, w, h)
                 foto != null -> {
                     tuval.drawBitmap(foto, 0f, 0f, null)
                     val karartma = Math.round(255 * ayar.foto.karartma).toInt().coerceIn(0, 255)
@@ -115,7 +118,7 @@ object DuvarKagidiCizici {
 
             // 4) Süs (yazı renginde; yıldız düz zeminde kendi süs renginde).
             val zeminTuru = if (sahne != null || foto != null) null else duzZemin
-            susCiz(tuval, ayar.sus.tur, ayar.sus.belirginlik, renk, zeminTuru, kutu, w, h)
+            susCiz(tuval, ayar.sus.tur, ayar.sus.belirginlik, renk, zeminTuru, kutu, saatAlani, w, h)
 
             // 5) Perde ve yazı.
             perde?.let { (p, o) -> perdeCiz(tuval, kutu, p, o, w) }
@@ -136,13 +139,14 @@ object DuvarKagidiCizici {
         yuk: GununAyetiYuku,
         kayit: AyetKaydi,
         ekran: DuvarEkrani,
+        saatAlani: SaatAlani?,
         h: Int,
         s: Float,
         icGenislik: Int,
         renk: DuvarRenkleri,
     ): Duzen {
         val yazi = yuk.duvar.yazi
-        val bantlar = DuvarTasarimi.IZINLI_BANTLAR.getValue(ekran)
+        val bantlar = DuvarTasarimi.izinliBantlar(ekran, saatAlani)
         val merkez = (if (ekran == DuvarEkrani.KILIT) yazi.kilitY else yazi.anaY)
             ?: DuvarTasarimi.VARSAYILAN_MERKEZ.getValue(ekran)
 
@@ -319,10 +323,10 @@ object DuvarKagidiCizici {
 
     /**
      * Vakit göğü (sözleşme verisi): renk geçişi → yıldızlar → ışıma → huzmeler → cisim → ufuk.
-     * Cisim yazı kutusuna değmeyen ilk adaya konur (`cisimKonumuSec`); hiçbiri yoksa cisim,
-     * ışıması ve huzmeleri çizilmez.
+     * Cisim yazı kutusuna ve kilit ekranında saat alanına değmeyen yere konur (`cisimKonumuSec`:
+     * ilk boş aday, yoksa saatin hemen üstü/altı); hiçbiri yoksa cisim, ışıması ve huzmeleri çizilmez.
      */
-    private fun gokCiz(t: Canvas, sahne: GokSahnesi, kutu: RectF, w: Int, h: Int) {
+    private fun gokCiz(t: Canvas, sahne: GokSahnesi, kutu: RectF, saatAlani: SaatAlani?, w: Int, h: Int) {
         val wf = w.toFloat()
         val hf = h.toFloat()
         val duraklar = sahne.gradyan.sortedBy { it.konum }
@@ -350,7 +354,7 @@ object DuvarKagidiCizici {
 
         val cisim = sahne.cisim
         val kutuKesir = Kutu((kutu.left / wf).toDouble(), (kutu.top / hf).toDouble(), (kutu.right / wf).toDouble(), (kutu.bottom / hf).toDouble())
-        val konum = cisim?.let { DuvarTasarimi.cisimKonumuSec(it, kutuKesir, hf.toDouble() / wf) }
+        val konum = cisim?.let { DuvarTasarimi.cisimKonumuSec(it, kutuKesir, hf.toDouble() / wf, saatAlani) }
         if (cisim != null && konum != null) {
             val cx = (konum.x * wf).toFloat()
             val cy = (konum.y * hf).toFloat()
@@ -427,6 +431,7 @@ object DuvarKagidiCizici {
         renk: DuvarRenkleri,
         duzZemin: DuvarZemini?,
         kutu: RectF,
+        saatAlani: SaatAlani?,
         w: Int,
         h: Int,
     ) {
@@ -440,7 +445,7 @@ object DuvarKagidiCizici {
                 val opaklik = (renk.susOpakligi * carpan).toFloat().coerceIn(0f, 1f)
                 yildizCiz(t, (w * k.x).toFloat(), (h * k.y).toFloat(), birim, renk.sus, opaklik, DuvarCizim.YILDIZ_KALINLIK.toFloat(), daire = true)
             }
-            SusTuru.MIHRAP -> mihrapCiz(t, kutu.top, renk.metin, carpan, w, h)
+            SusTuru.MIHRAP -> mihrapCiz(t, kutu.top, renk.metin, carpan, saatAlani, w, h)
             SusTuru.GIRIH -> girihCiz(t, renk.metin, carpan, w, h)
         }
     }
@@ -449,9 +454,16 @@ object DuvarKagidiCizici {
      * Mihrap: iki kemer (dış + iç) bacakları ekranın altından yükselir, yarım daireleri yazı kutusunun
      * üstünden döner (merkez kutu üstünün `merkezAlti` altında); tepede dolu beş köşeli yıldız. Kemer
      * yatayda ekrana göredir (yazı sütunu `MIHRAP_YAZI_YAN_PAYI` ile içinde kalır).
+     *
+     * Kilit ekranında ([saatAlani] dolu) kemer saate girerken solar: opaklık y boyunca
+     * `saatSolmasi(y)` ile çarpılır. Fonksiyon parça parça doğrusal olduğundan kırılma noktalarında
+     * (`saatSolmasiDuraklari`) örneklenmiş dikey `LinearGradient` onu BİREBİR verir. Yıldız saate
+     * değiyorsa (sınır dairesi, `saateDegiyor`) hiç çizilmez.
      */
-    private fun mihrapCiz(t: Canvas, ust: Float, renk: Int, carpan: Double, w: Int, h: Int) {
+    private fun mihrapCiz(t: Canvas, ust: Float, renk: Int, carpan: Double, saatAlani: SaatAlani?, w: Int, h: Int) {
         val wf = w.toDouble()
+        val hf = h.toFloat()
+        val duraklar = saatAlani?.let { DuvarTasarimi.saatSolmasiDuraklari(it) }
         for (k in listOf(DuvarCizim.MIHRAP_DIS, DuvarCizim.MIHRAP_IC)) {
             val sol = (k.yanPay * wf).toFloat()
             val sag = (wf - k.yanPay * wf).toFloat()
@@ -466,14 +478,27 @@ object DuvarKagidiCizici {
             }
             t.drawPath(yol, Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 style = Paint.Style.STROKE
-                color = renk
-                alpha = alfa(k.opaklik * carpan)
                 strokeWidth = (k.kalinlik * wf).toFloat()
+                if (duraklar == null) {
+                    color = renk
+                    alpha = alfa(k.opaklik * carpan)
+                } else {
+                    // Renk geçişi ekran koordinatında (0 → h): durak konumları ekran kesri.
+                    shader = LinearGradient(
+                        0f, 0f, 0f, hf,
+                        IntArray(duraklar.size) { i ->
+                            (renk and 0x00FFFFFF) or (alfa(k.opaklik * carpan * DuvarTasarimi.saatSolmasi(duraklar[i], saatAlani)) shl 24)
+                        },
+                        FloatArray(duraklar.size) { i -> duraklar[i].toFloat() },
+                        Shader.TileMode.CLAMP,
+                    )
+                }
             })
         }
-        val noktalar = DuvarCizim.besKoseliYildiz(
-            wf / 2, ust - DuvarCizim.MIHRAP_YILDIZ_UST * wf, DuvarCizim.MIHRAP_YILDIZ_DIS_R * wf, DuvarCizim.MIHRAP_YILDIZ_IC_R * wf,
-        )
+        val yildizY = ust - DuvarCizim.MIHRAP_YILDIZ_UST * wf
+        val yildizR = DuvarCizim.MIHRAP_YILDIZ_DIS_R * wf
+        if (DuvarTasarimi.saateDegiyor((yildizY - yildizR) / h, (yildizY + yildizR) / h, saatAlani)) return
+        val noktalar = DuvarCizim.besKoseliYildiz(wf / 2, yildizY, yildizR, DuvarCizim.MIHRAP_YILDIZ_IC_R * wf)
         val yildiz = Path()
         noktalar.forEachIndexed { i, n -> if (i == 0) yildiz.moveTo(n.x.toFloat(), n.y.toFloat()) else yildiz.lineTo(n.x.toFloat(), n.y.toFloat()) }
         yildiz.close()
