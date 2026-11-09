@@ -517,10 +517,13 @@ public struct DuvarAyari: Equatable, Sendable {
     public var yazi: DuvarYaziAyari
     public var sus: DuvarSusAyari
     public var foto: DuvarFotoAyari
+    /// Kilit ekraninda saatin kapladigi dikey alan (bu cihazda olculen/ayarlanan); nil = platform
+    /// varsayilani (`DuvarTasarimi.varsayilanSaatAlani`). JS `saatAlani` ikizi.
+    public var saatAlani: DuvarBandi?
 
     public init(
         acik: Bool, yer: String, zemin: String, arapca: Bool, paletRenk: String, vakteUysun: Bool,
-        yazi: DuvarYaziAyari, sus: DuvarSusAyari, foto: DuvarFotoAyari
+        yazi: DuvarYaziAyari, sus: DuvarSusAyari, foto: DuvarFotoAyari, saatAlani: DuvarBandi?
     ) {
         self.acik = acik
         self.yer = yer
@@ -531,6 +534,7 @@ public struct DuvarAyari: Equatable, Sendable {
         self.yazi = yazi
         self.sus = sus
         self.foto = foto
+        self.saatAlani = saatAlani
     }
 
     public static let varsayilanZemin = "imsak"
@@ -549,7 +553,8 @@ public struct DuvarAyari: Equatable, Sendable {
             vakteUysun: ham?["vakteUysun"]?.mantik != false,
             yazi: DuvarYaziAyari.normalize(ham?["yazi"]),
             sus: DuvarSusAyari.normalize(ham?["sus"]),
-            foto: DuvarFotoAyari.normalize(ham?["foto"])
+            foto: DuvarFotoAyari.normalize(ham?["foto"]),
+            saatAlani: DuvarTasarimi.saatAlaniNormalize(ham?["saatAlani"])
         )
     }
 
@@ -795,19 +800,222 @@ public enum DuvarTasarimi {
     /// Yazi kutusunun cisimle kesisme denetiminde kenar payi (genislik kesri).
     public static let cisimPayi = 0.04
 
-    /// Gok cisminin adaylarindan yazi kutusuna (x1,y1,x2,y2 kesir; nil = yazi yok) degmeyen ilki;
-    /// hepsi degiyorsa nil (cisim ve isimasi cizilmez). `oran` = yukseklik/genislik. JS ikizi.
-    public static func cisimKonumuSec(_ cisim: DuvarGokCismi, kutu: [Double]?, oran: Double) -> [Double]? {
-        for k in cisim.konumlar where k.count >= 2 {
-            guard let kutu, kutu.count >= 4 else { return k }
-            let cx = k[0]
-            let cy = k[1] * oran
-            let r = cisim.r + cisimPayi
-            let yakX = min(kutu[2], max(kutu[0], cx))
-            let yakY = min(kutu[3] * oran, max(kutu[1] * oran, cy))
-            if (cx - yakX) * (cx - yakX) + (cy - yakY) * (cy - yakY) > r * r { return k }
+    /// Cisim diski (+ pay, `r`) yazi kutusuna degiyor mu? (y kesri `oran` ile genislik birimine.) JS `kutuyaDeger`.
+    private static func kutuyaDeger(_ k: [Double], r: Double, kutu: [Double]?, oran: Double) -> Bool {
+        guard let kutu, kutu.count >= 4 else { return false }
+        let cx = k[0]
+        let cy = k[1] * oran
+        let yakX = min(kutu[2], max(kutu[0], cx))
+        let yakY = min(kutu[3] * oran, max(kutu[1] * oran, cy))
+        return (cx - yakX) * (cx - yakX) + (cy - yakY) * (cy - yakY) <= r * r
+    }
+
+    /// Gok cisminin yeri. JS `cisimKonumuSec` ikizi: (1) yazi kutusuna (x1,y1,x2,y2 kesir; nil = yazi
+    /// yok) ve saat alanina (nil = yok, or. ana ekran) degmeyen ilk aday; (2) yoksa kutuya degmeyen ilk
+    /// adayin x'inde saat alaninin hemen USTUNE (sigmazsa hemen altina) kaydirilmis konum (4 haneye
+    /// yuvarlanir; kutuya degmemeli, ekrandan tasmamali); (3) hicbiri olmazsa nil (cisim, isimasi ve
+    /// huzmeleri cizilmez). `oran` = yukseklik/genislik.
+    public static func cisimKonumuSec(_ cisim: DuvarGokCismi, kutu: [Double]?, oran: Double, saatAlani: DuvarBandi? = nil) -> [Double]? {
+        let r = cisim.r + cisimPayi
+        let ry = r / oran
+        let adaylar = cisim.konumlar.filter { $0.count >= 2 }
+        let saateDeger: (Double) -> Bool = { y in
+            guard let s = saatAlani else { return false }
+            return y + ry > s.ust && y - ry < s.alt
+        }
+        for k in adaylar where !kutuyaDeger(k, r: r, kutu: kutu, oran: oran) && !saateDeger(k[1]) {
+            return k
+        }
+        guard let s = saatAlani, let temel = adaylar.first(where: { !kutuyaDeger($0, r: r, kutu: kutu, oran: oran) }) else {
+            return nil
+        }
+        for y in [s.ust - ry, s.alt + ry] {
+            let aday = [temel[0], dortHane(y)]
+            if y - ry >= 0 && y + ry <= 1 && !kutuyaDeger(aday, r: r, kutu: kutu, oran: oran) { return aday }
         }
         return nil
+    }
+
+    /// JS `Math.round(v * 1e4) / 1e4` (`Math.round` = floor(x + 0,5)).
+    public static func dortHane(_ v: Double) -> Double {
+        (v * 10000 + 0.5).rounded(.down) / 10000
+    }
+
+    // --- Kilit ekrani saat alani (JS "Kilit ekrani saat alani") ---------------------------
+    // Saatin yerini veren genel API YOK (iOS 26'da saat boyutlanir). Varsayilan tahmindir; kullanici
+    // kilit ekrani goruntusunden olcer (`kilitProfili` → JS `saatAlaniBul`) ya da elle ayarlar.
+
+    /// Olculmemisse: Android 14+ buyuk saat, iPhone saati ustte. JS `VARSAYILAN_SAAT_ALANI`.
+    public static let varsayilanSaatAlani: [String: DuvarBandi] = [
+        "android": DuvarBandi(ust: 0.26, alt: 0.64),
+        "ios": DuvarBandi(ust: 0.08, alt: 0.34),
+    ]
+
+    /// Kilit ekraninda yazinin dis sinirlari (ustte durum cubugu/tarih, altta kilit simgesi/fener). JS `KILIT_DIS_SINIR`.
+    public static let kilitDisSinir: [String: DuvarBandi] = [
+        "android": DuvarBandi(ust: 0.08, alt: 0.84),
+        "ios": DuvarBandi(ust: 0.08, alt: 0.85),
+    ]
+
+    /// Saatin ustunde/altinda kalan serit bundan inceyse yaziya bant sayilmaz. JS `EN_DAR_BANT`.
+    public static let enDarBant = 0.05
+    /// Saat alaninin en az ve en cok yuksekligi. JS `SAAT_ALANI_EN_AZ` / `SAAT_ALANI_EN_COK`.
+    public static let saatAlaniEnAz = 0.04
+    public static let saatAlaniEnCok = 0.6
+
+    /// JS `saatAlaniNormalize`: iki sonlu sayili dizi degilse nil (varsayilan kullanilir); gecerliyse
+    /// sinirlanir ve 4 haneye yuvarlanir.
+    public static func saatAlaniNormalize(_ ham: DuvarJson?) -> DuvarBandi? {
+        guard let d = ham?.dizi, d.count == 2, let u = d[0].sayi, let a = d[1].sayi else { return nil }
+        let ust = min(0.9 - saatAlaniEnAz, max(0, u))
+        let alt = min(min(0.95, ust + saatAlaniEnCok), max(ust + saatAlaniEnAz, a))
+        return DuvarBandi(ust: dortHane(ust), alt: dortHane(alt))
+    }
+
+    /// Yazinin girebilecegi bantlar. JS `izinliBantlar(platform, ekran, saatAlani)` ikizi: ana ekran
+    /// sabit (`izinliBantlar` tablosu); kilit ekrani = dis sinir eksi saat alani (nil → platform
+    /// varsayilani → tabloyla birebir ayni). En az bir bant doner: iki serit de darsa buyugu.
+    public static func bantlar(_ platform: String, _ ekran: String, saatAlani: DuvarBandi?) -> [DuvarBandi] {
+        if ekran == "ana" { return izinliBantlar[platform]?["ana"] ?? [] }
+        guard let dis = kilitDisSinir[platform], let saat = saatAlani ?? varsayilanSaatAlani[platform] else {
+            return izinliBantlar[platform]?["kilit"] ?? []
+        }
+        let ustSerit = DuvarBandi(ust: dis.ust, alt: max(dis.ust, min(saat.ust, dis.alt)))
+        let altSerit = DuvarBandi(ust: min(dis.alt, max(saat.alt, dis.ust)), alt: dis.alt)
+        let genis = [ustSerit, altSerit].filter { $0.alt - $0.ust >= enDarBant }
+        if !genis.isEmpty { return genis }
+        return [ustSerit.alt - ustSerit.ust >= altSerit.alt - altSerit.ust ? ustSerit : altSerit]
+    }
+
+    /// Kilit gorselinin cizildigi saat alani: kilitte ayardaki ya da platform varsayilani, anada nil.
+    public static func etkinSaatAlani(_ ayar: DuvarAyari, ekran: String, platform: String = "ios") -> DuvarBandi? {
+        ekran == "kilit" ? (ayar.saatAlani ?? varsayilanSaatAlani[platform]) : nil
+    }
+
+    /// Sus solmasi: alanin icinde `solmaIc` derinlikten sonra 0, disina `solmaDis` cikinca 1. JS `SOLMA_IC/SOLMA_DIS`.
+    public static let solmaIc = 0.05
+    public static let solmaDis = 0.0125
+
+    /// Susun saat alaninda gorunurlugu (0–1); alan yoksa her yerde 1. JS `saatSolmasi` ikizi.
+    public static func saatSolmasi(_ y: Double, _ saatAlani: DuvarBandi?) -> Double {
+        guard let s = saatAlani else { return 1 }
+        let disarida: Double
+        if y < s.ust {
+            disarida = s.ust - y
+        } else if y > s.alt {
+            disarida = y - s.alt
+        } else {
+            disarida = -min(y - s.ust, s.alt - y)
+        }
+        return min(1, max(0, (disarida + solmaIc) / (solmaIc + solmaDis)))
+    }
+
+    /// `saatSolmasi`'nin ekran yuksekligi boyunca DOGRUSAL parcalarinin uclari ([konum, deger], konum
+    /// 0–1, artan, tekrarsiz): aralarinda dogrusal ara degerleme `saatSolmasi`'ni BIREBIR verir (cizici
+    /// bununla dikey renk gecisi maskesi kurar). Alan yoksa bos.
+    public static func solmaDuraklari(_ saatAlani: DuvarBandi?) -> [[Double]] {
+        guard let s = saatAlani else { return [] }
+        let kirilmalar = [0, 1, s.ust - solmaDis, s.ust, s.ust + solmaIc, (s.ust + s.alt) / 2, s.alt - solmaIc, s.alt, s.alt + solmaDis]
+        var konumlar: [Double] = []
+        for k in kirilmalar.map({ min(1, max(0, $0)) }).sorted() where konumlar.last.map({ k - $0 > 1e-9 }) ?? true {
+            konumlar.append(k)
+        }
+        return konumlar.map { [$0, saatSolmasi($0, s)] }
+    }
+
+    /// [y1, y2] dikey araligi (ekran kesri) saat alanina degiyor mu? (Mihrap yildizi degiyorsa cizilmez.) JS ikizi.
+    public static func saateDegiyor(_ y1: Double, _ y2: Double, _ saatAlani: DuvarBandi?) -> Bool {
+        guard let s = saatAlani else { return false }
+        return y2 > s.ust && y1 < s.alt
+    }
+
+    // --- Saat alanini kilit ekrani goruntusunden olcme (satir profili) ----------------------
+    // Kullanicinin kilit ekrani goruntusu, Kisayollar gorselinin SON kilit kopyasiyla (`duvar/son-kilit.png`)
+    // ayni boyuta kucultulup karsilastirilir. Karar (profil → alan) JS `saatAlaniBul`'dadir; burasi
+    // yalniz satir basina "ustte cizilmis" piksel oranini verir. Android ikiziyle ayni kural (yazili sozlesme).
+
+    /// Karsilastirma genisligi (piksel); yukseklik `olcumYuksekligi`.
+    public static let olcumGenisligi = 108
+    /// Iki gorselin yukseklik/genislik oranlari (referansa gore) bundan fazla farkliysa olculmez ("oran").
+    public static let olcumOranToleransi = 0.03
+    /// Parlaklik esinden bu kadar sapan piksel "degismis" sayilir.
+    public static let olcumFarkEsigi = 0.10
+    /// Ikinci uydurmada disarida birakilan en buyuk artik orani.
+    public static let olcumAykiriOrani = 0.2
+
+    /// round(108 · yukseklik / genislik) (JS `Math.round`), en az 1.
+    public static func olcumYuksekligi(genislik: Double, yukseklik: Double) -> Int {
+        guard genislik > 0, yukseklik > 0 else { return 1 }
+        return max(1, Int((Double(olcumGenisligi) * yukseklik / genislik + 0.5).rounded(.down)))
+    }
+
+    /// |(ekranY/ekranG) / (refY/refG) − 1| ≤ %3 mu?
+    public static func olcumOranlariUyumlu(ekranG: Double, ekranY: Double, refG: Double, refY: Double) -> Bool {
+        guard ekranG > 0, ekranY > 0, refG > 0, refY > 0 else { return false }
+        return abs((ekranY / ekranG) / (refY / refG) - 1) <= olcumOranToleransi
+    }
+
+    /// RGBA (8 bit) → piksel basina parlaklik 0,2126·r + 0,7152·g + 0,0722·b (kanallar 0–1, dogrusallastirma YOK).
+    public static func parlakliklar(rgba: [UInt8]) -> [Double] {
+        var sonuc: [Double] = []
+        sonuc.reserveCapacity(rgba.count / 4)
+        var i = 0
+        while i + 3 < rgba.count {
+            sonuc.append(0.2126 * Double(rgba[i]) / 255 + 0.7152 * Double(rgba[i + 1]) / 255 + 0.0722 * Double(rgba[i + 2]) / 255)
+            i += 4
+        }
+        return sonuc
+    }
+
+    /// En kucuk kareler s ≈ a·r + b (`secili` indisler); referans duzse (varyans ~0) a = 0, b = ortalama s.
+    private static func dogruUydur(_ ekran: [Double], _ referans: [Double], _ secili: [Int]) -> (a: Double, b: Double) {
+        guard !secili.isEmpty else { return (1, 0) }
+        let n = Double(secili.count)
+        var ortR = 0.0
+        var ortS = 0.0
+        for i in secili {
+            ortR += referans[i]
+            ortS += ekran[i]
+        }
+        ortR /= n
+        ortS /= n
+        var sxx = 0.0
+        var sxy = 0.0
+        for i in secili {
+            let dr = referans[i] - ortR
+            sxx += dr * dr
+            sxy += dr * (ekran[i] - ortS)
+        }
+        guard sxx > 1e-12 else { return (0, ortS) }
+        let a = sxy / sxx
+        return (a, ortS - a * ortR)
+    }
+
+    /// Satir profili: her satirda "ustte cizilmis" piksel orani (0–1), yukaridan asagi `yukseklik` deger.
+    /// Kilit ekrani gorseli karartir/renk kaydirir: ekran parlakligi referansa s ≈ a·r + b ile eslenir
+    /// (en kucuk kareler), en buyuk artikli %20 atilip BIR KEZ yeniden uydurulur; |s − (a·r + b)| > 0,10
+    /// olan piksel degismistir. Dizi boyu tutmazsa bos.
+    public static func kilitProfili(ekran: [Double], referans: [Double], genislik: Int, yukseklik: Int) -> [Double] {
+        let n = genislik * yukseklik
+        guard genislik > 0, yukseklik > 0, ekran.count >= n, referans.count >= n else { return [] }
+        let hepsi = Array(0 ..< n)
+        let ilk = dogruUydur(ekran, referans, hepsi)
+        let artiklar = hepsi.map { i in abs(ekran[i] - (ilk.a * referans[i] + ilk.b)) }
+        let tut = n - Int((Double(n) * olcumAykiriOrani).rounded(.down))
+        // Esit artikta kucuk indis once (siralama kararli olsun; Android ikiziyle ayni secim).
+        let secili = hepsi.sorted { artiklar[$0] < artiklar[$1] || (artiklar[$0] == artiklar[$1] && $0 < $1) }.prefix(tut)
+        let son = dogruUydur(ekran, referans, Array(secili))
+        var profil: [Double] = []
+        profil.reserveCapacity(yukseklik)
+        for satir in 0 ..< yukseklik {
+            var degisen = 0
+            for sutun in 0 ..< genislik {
+                let i = satir * genislik + sutun
+                if abs(ekran[i] - (son.a * referans[i] + son.b)) > olcumFarkEsigi { degisen += 1 }
+            }
+            profil.append(Double(degisen) / Double(genislik))
+        }
+        return profil
     }
 
     // --- Renk ve okunurluk --------------------------------------------------------------

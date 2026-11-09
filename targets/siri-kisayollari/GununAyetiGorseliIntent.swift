@@ -74,7 +74,29 @@ enum GununAyetiGorseli {
         let boyut = CGSize(width: ekran.nativeBounds.width / olcek, height: ekran.nativeBounds.height / olcek)
         guard boyut.width > 0, boyut.height > 0 else { return nil }
         DuvarYazitipleri.kaydet()
-        return DuvarCizici(kayit: kayit, metin: metin, ek: ek, simdiMs: simdiMs, boyut: boyut, olcek: olcek).png()
+        let gorsel = DuvarCizici(kayit: kayit, metin: metin, ek: ek, simdiMs: simdiMs, boyut: boyut, olcek: olcek).ciz()
+        guard let png = gorsel.pngData() else { return nil }
+        // Kilit gorseli (`kilit`/`ikisi`) uretildiginde kucuk kopyasi saklanir: kullanici kilit ekrani
+        // goruntusunden saat alanini olcerken (`kilitEkraniProfili`) karsilastirma referansi budur.
+        if DuvarTasarimi.ekran(ek.duvar.yer) == "kilit" { kilitReferansiYaz(gorsel) }
+        return png
+    }
+
+    /// `DuvarFotografi.kilitReferansGenisligi` genislikte (en-boy korunur) PNG kopya → App Group
+    /// `duvar/son-kilit.png`. Yazilamazsa sessizce atlanir (gorsel yine doner; olcum "referans-yok" der).
+    @MainActor
+    private static func kilitReferansiYaz(_ gorsel: UIImage) {
+        guard let cg = gorsel.cgImage, cg.width > 0, cg.height > 0 else { return }
+        let genislik = CGFloat(DuvarFotografi.kilitReferansGenisligi)
+        let yukseklik = max(1, (genislik * CGFloat(cg.height) / CGFloat(cg.width)).rounded())
+        let bicim = UIGraphicsImageRendererFormat()
+        bicim.scale = 1
+        bicim.opaque = true
+        bicim.preferredRange = .standard
+        let kucuk = UIGraphicsImageRenderer(size: CGSize(width: genislik, height: yukseklik), format: bicim).pngData { _ in
+            gorsel.draw(in: CGRect(x: 0, y: 0, width: genislik, height: yukseklik))
+        }
+        _ = DuvarFotografi.kilitReferansiYaz(kucuk)
     }
 
     /// Bagli sahnenin ekrani; arka planda (sahne yok) ana ekran.
@@ -192,6 +214,8 @@ private struct DuvarCizici {
     private var yanBosluk: CGFloat { CGFloat(DuvarCizim.yaziYanPayi(ayar.sus.tur)) * W }
     private var icGenislik: CGFloat { max(1, W - 2 * yanBosluk) }
     private var ekranAdi: String { DuvarTasarimi.ekran(ayar.yer) }
+    /// Kilit gorselinde saatin alani (ayardaki ya da iPhone varsayilani); ana ekranda nil (kacis/solma yok).
+    private var saatAlani: DuvarBandi? { DuvarTasarimi.etkinSaatAlani(ayar, ekran: ekranAdi) }
 
     private enum Zemin {
         case duz(String, DuvarZeminRenkleri)
@@ -244,7 +268,7 @@ private struct DuvarCizici {
 
     // MARK: Akis
 
-    func png() -> Data? {
+    func ciz() -> UIImage {
         let zemin = zeminCoz()
         // Yerlesim renkten bagimsizdir: once olc, sonra (fotografta parlakliga gore) renkle yeniden kur.
         let (olcu, ust) = yerlestir(renk: Renkler(tek: .white))
@@ -280,7 +304,7 @@ private struct DuvarCizici {
         bicim.opaque = true
         bicim.preferredRange = .standard
         let cizici = UIGraphicsImageRenderer(size: boyut, format: bicim)
-        return cizici.pngData { baglam in
+        return cizici.image { baglam in
             let ctx = baglam.cgContext
             zeminCiz(ctx, zemin, kutuKesri: kutuKesri)
             susCiz(ctx, zemin: zemin, renk: renkler, kutu: kutu)
@@ -397,7 +421,8 @@ private struct DuvarCizici {
     /// Arapcayi dusurup (meal varsa) baştan dener (Android ile ayni). Hic sigmazsa en buyuk bantta,
     /// ekranda kalacak sekilde cizer (gorsel HER ZAMAN uretilir). Doner: blok + ust kenar (kesir).
     private func yerlestir(renk: Renkler) -> (Blok, Double) {
-        let bantlar = DuvarTasarimi.izinliBantlar["ios"]?[ekranAdi] ?? []
+        // Kilitte bantlar = dis sinir eksi saat alani (olculmemisse iPhone varsayilani = eski tablo).
+        let bantlar = DuvarTasarimi.bantlar("ios", ekranAdi, saatAlani: ayar.saatAlani)
         let merkez = DuvarTasarimi.yaziMerkezi(ayar.yazi, ekran: ekranAdi)
         let arapca = GununAyetiKarari.duvardaArapca(kayit, ayar: ayar)
         var denemeler = [arapca]
@@ -482,9 +507,10 @@ private struct DuvarCizici {
             ctx.fillEllipse(in: CGRect(x: CGFloat(yildiz.x) * W - r, y: CGFloat(yildiz.y) * H - r, width: 2 * r, height: 2 * r))
         }
 
-        // Cisim yazi kutusuna degmeyen ilk adayda; hicbiri uymazsa cisim, isimasi ve huzmeleri (baslari
-        // cismin merkezidir) cizilmez.
-        if let cisim = g.cisim, let k = DuvarTasarimi.cisimKonumuSec(cisim, kutu: kutuKesri, oran: Double(H / W)) {
+        // Cisim yazi kutusuna ve (kilitte) saat alanina degmeyen ilk adayda, yoksa saatin hemen ust/altinda;
+        // hicbiri uymazsa cisim, isimasi ve huzmeleri (baslari cismin merkezidir) cizilmez.
+        if let cisim = g.cisim,
+           let k = DuvarTasarimi.cisimKonumuSec(cisim, kutu: kutuKesri, oran: Double(H / W), saatAlani: saatAlani) {
             let merkez = CGPoint(x: CGFloat(k[0]) * W, y: CGFloat(k[1]) * H)
             if let isimaR = cisim.isimaR, isimaR > 0 {
                 let isimaRenk = cisim.isimaRenk ?? cisim.renk
@@ -542,7 +568,7 @@ private struct DuvarCizici {
         guard ayar.sus.tur != "yok", carpan > 0 else { return }
         switch ayar.sus.tur {
         case "mihrap":
-            mihrapCiz(ctx, ust: kutu.minY, renk: renk.metin, carpan: carpan)
+            mihrapCiz(ctx, ust: kutu.minY, renk: renk.metin, carpan: carpan, saatAlani: saatAlani)
         case "girih":
             girihCiz(ctx, renk: renk.metin, carpan: carpan)
         default:
@@ -560,8 +586,22 @@ private struct DuvarCizici {
 
     /// Mihrap: iki kemer (dis + ic) bacaklari ekranin altindan yukselir, yarim daireleri yazi kutusunun
     /// ustunden doner (merkez kutu ustunun `merkezAlti` altinda); tepede DOLU bes koseli yildiz. Kemer
-    /// yatayda ekrana goredir (yazi sutunu `mihrapYaziYanPayi` ile icinde kalir).
-    private func mihrapCiz(_ ctx: CGContext, ust: CGFloat, renk: UIColor, carpan: Double) {
+    /// yatayda ekrana goredir (yazi sutunu `mihrapYaziYanPayi` ile icinde kalir). Kilitte kemerler saat
+    /// alaninda solar (`saatSolmasi`; dikey alfa gecisi maskesi), yildiz saate degiyorsa cizilmez.
+    private func mihrapCiz(_ ctx: CGContext, ust: CGFloat, renk: UIColor, carpan: Double, saatAlani: DuvarBandi?) {
+        // Solma `saatSolmasi`'nin dogrusal parcalarinin uclarinda orneklenir: aralarindaki dogrusal renk
+        // gecisi kurali BIREBIR verir (test §14). Alan yoksa maske yok.
+        let duraklar = DuvarTasarimi.solmaDuraklari(saatAlani)
+        let maskeRenkleri = duraklar.map { cgRenk("#000000", $0[1]) }
+        let maskeKonumlari = duraklar.map { CGFloat($0[0]) }
+        var maske: CGGradient?
+        if duraklar.count >= 2 {
+            maske = CGGradient(
+                colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: maskeRenkleri as CFArray, locations: maskeKonumlari
+            )
+        }
+        ctx.saveGState()
+        if maske != nil { ctx.beginTransparencyLayer(auxiliaryInfo: nil) }
         for k in [DuvarCizim.mihrapDis, DuvarCizim.mihrapIc] {
             let sol = CGFloat(k.yanPay) * W
             let sag = W - sol
@@ -580,10 +620,24 @@ private struct DuvarCizici {
             ctx.strokePath()
             ctx.restoreGState()
         }
+        if let maske {
+            // Katmandaki kemerler dikey alfa gecisiyle CARPILIR (hedef × kaynak alfasi), sonra birlesir.
+            ctx.setBlendMode(.destinationIn)
+            ctx.drawLinearGradient(
+                maske, start: .zero, end: CGPoint(x: 0, y: H), options: [.drawsBeforeStartLocation, .drawsAfterEndLocation]
+            )
+            ctx.setBlendMode(.normal)
+            ctx.endTransparencyLayer()
+        }
+        ctx.restoreGState()
         let w = Double(W)
-        let koseler = DuvarCizim.besKoseliYildiz(
+        let yildizKoseleri = DuvarCizim.besKoseliYildiz(
             cx: w / 2, cy: Double(ust) - DuvarCizim.mihrapYildizUst * w, dis: DuvarCizim.mihrapYildizDisR * w, ic: DuvarCizim.mihrapYildizIcR * w
-        ).map { CGPoint(x: CGFloat($0[0]), y: CGFloat($0[1])) }
+        )
+        // Yildizin dikey kapsami (koselerinden, ekran kesri) saate degiyorsa cizilmez.
+        let yildizY = yildizKoseleri.map { $0[1] / Double(H) }
+        if DuvarTasarimi.saateDegiyor(yildizY.min() ?? 0, yildizY.max() ?? 0, saatAlani) { return }
+        let koseler = yildizKoseleri.map { CGPoint(x: CGFloat($0[0]), y: CGFloat($0[1])) }
         ctx.saveGState()
         ctx.setFillColor(renk.withAlphaComponent(CGFloat(min(1, DuvarCizim.mihrapYildizOpaklik * carpan))).cgColor)
         ctx.addLines(between: koseler)
