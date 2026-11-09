@@ -986,7 +986,8 @@ public enum DuvarTasarimi {
             sxx += dr * dr
             sxy += dr * (ekran[i] - ortS)
         }
-        guard sxx > 1e-12 else { return (0, ortS) }
+        // Duz referans: varyans <= 1e-12 (Android `DuvarOlcumu.eslestir` ile ayni olcut).
+        guard sxx > 1e-12 * n else { return (0, ortS) }
         let a = sxy / sxx
         return (a, ortS - a * ortR)
     }

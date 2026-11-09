@@ -1321,6 +1321,16 @@ for satir in 0 ..< olcY {
     }
 }
 esitMi(DuvarTasarimi.kilitProfili(ekran: [0.5], referans: olcRef, genislik: olcG, yukseklik: olcY), [], "olcum: eksik dizi → bos")
+// Android `DuvarTasarimiTest` capraz denetim ornekleri (ikili kesirler: kayan nokta esitlikleri kesin).
+var duzEkran = [Double](repeating: 0.5, count: 25)
+for (i, v) in [(1, 0.59375), (6, 0.40625), (12, 0.75), (13, 0.25), (7, 0.8125), (18, 0.1875), (20, 0.875), (24, 0.125), (21, 0.9375), (3, 0.0625)] { duzEkran[i] = v }
+esitMi(DuvarTasarimi.kilitProfili(ekran: duzEkran, referans: [Double](repeating: 0.5, count: 25), genislik: 5, yukseklik: 5),
+       [0.2, 0.4, 0.4, 0.2, 0.6], "olcum capraz: duz referans, esitlikte kucuk indis")
+let egimRef = (0 ..< 20).map { Double($0) / 32 }
+var egimEkran = egimRef.map { 0.5 * $0 + 0.125 }
+egimEkran[9] = 1.0
+egimEkran[10] = 0.9375
+esitMi(DuvarTasarimi.kilitProfili(ekran: egimEkran, referans: egimRef, genislik: 4, yukseklik: 5), [0, 0, 0.5, 0, 0], "olcum capraz: egimli referans")
 yakinMi(DuvarTasarimi.parlakliklar(rgba: [255, 255, 255, 255, 0, 0, 0, 255])[0], 1, "olcum: beyaz parlaklik 1", tolerans: 1e-9)
 yakinMi(DuvarTasarimi.parlakliklar(rgba: [0, 255, 0, 255])[0], 0.7152, "olcum: yesil agirligi", tolerans: 1e-9)
 esitMi(DuvarTasarimi.parlakliklar(rgba: [1, 2, 3]).count, 0, "olcum: eksik piksel atlanir")
