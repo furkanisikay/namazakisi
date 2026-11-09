@@ -2,7 +2,11 @@
  * Duvar kâğıdı düzenleyicisi (taslak 2, sahip onaylı 2026-11-07): telefonun kilit/ana ekranı
  * üzerinde canlı önizleme. Yazı sürüklenir (dikey konum + yatay hiza), iki parmakla büyür;
  * saat ve alt simge alanı kesik çizgiyle görünür ve yazı oraya GİREMEZ (sözleşme:
- * `IZINLI_BANTLAR` + `yaziYerlesimi`). Alt tepside Zemin / Yazı / Süs sekmeleri.
+ * `izinliBantlar` + `yaziYerlesimi`). Alt tepside Zemin / Yazı / Süs sekmeleri.
+ *
+ * Kilit ekranında saatin yeri cihaza göre değişir (genel API yok): Yazı sekmesinde kullanıcı onu
+ * kilit ekranı görüntüsünden ölçer (`kilitEkraniProfili` → `saatAlaniBul`; görüntü saklanmaz) ya da
+ * kenarlarını tuvalde elle sürükler; sonuç taslağın `saatAlani`'dır, "Uygulayın" ile kaydedilir.
  *
  * Taslak YEREL kalır: düzenlerken servis çağrılmaz (yük yazımı `acik: true` iken kilit ekranını
  * değiştirirdi). "Uygulayın" kaydeder; Android'de duvar kâğıdı açıksa hemen uygular, kapalıysa
@@ -23,11 +27,22 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Path, Polygon, Rect } from 'react-native-svg';
 import { useRenkler } from '../../core/theme';
 import { bicim } from '../../core/dil/aktifDil';
-import { VARSAYILAN_MERKEZ, type DuvarEkrani, type DuvarPlatformu, type SusTuru, type YaziHizasi, type YaziTipi } from '../../core/icerik/duvarTasarimi';
+import {
+  VARSAYILAN_MERKEZ,
+  saatAlaniBul,
+  saatAlaniNormalize,
+  type DuvarEkrani,
+  type DuvarPlatformu,
+  type SaatAlani,
+  type SusTuru,
+  type YaziHizasi,
+  type YaziTipi,
+} from '../../core/icerik/duvarTasarimi';
 import {
   HIZA_ESIGI,
   duvarRenkleri,
   duvarYazisiYeri,
+  etkinSaatAlani,
   fotoKaydir,
   gokMu,
   hazirUygula,
@@ -41,6 +56,7 @@ import type { AyarlarStackParamList } from '../../navigation/ayarlarEkranlari';
 import { Logger } from '../../core/utils/Logger';
 import { useMetin } from '../hooks/useMetin';
 import { Anahtar } from '../components/common/Anahtar';
+import { BildirimModali } from '../components/common/BildirimModali';
 import { NotSatiri } from '../components/ortak/NotSatiri';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { sagdanSolaCiziliyor } from '../components/common/yon';
@@ -50,6 +66,7 @@ import { DuvarHayaleti } from '../components/gununAyeti/duvar/DuvarHayaleti';
 import { Kaydirici } from '../components/gununAyeti/duvar/Kaydirici';
 import { fizikselHiza, useDuvarYaziTipleri, yaziTipiAdi } from '../components/gununAyeti/duvar/DuvarYazisi';
 import { fotografSecVeKopyala, fotografiSil } from '../components/gununAyeti/duvar/duvarFotografi';
+import { kilitEkraniGoruntusuSec, kilitEkraniGoruntusunuBirak } from '../components/gununAyeti/duvar/kilitEkraniGoruntusu';
 import { useFotoKaynagiDurumu } from '../components/gununAyeti/duvar/useFotoKaynagi';
 import { useBugununAyeti } from '../components/gununAyeti/duvar/useBugununAyeti';
 import { ZEMIN_SIRASI, zeminEtiketi } from '../components/gununAyeti/duvar/duvarEtiketleri';
@@ -59,6 +76,10 @@ const servis = (): ServisTipi =>
   (require('../../domain/services/GununAyetiServisi') as typeof import('../../domain/services/GununAyetiServisi')).GununAyetiServisi.getInstance();
 
 type Sekme = 'zemin' | 'yazi' | 'sus';
+/** Kilit ekranı ölçümünün kullanıcıya söylenen sonucu (`oran` okunamadıya iner). */
+type OlcumSonucu = 'tamam' | 'uyusmadi' | 'bulunamadi' | 'referans-yok' | 'okunamadi';
+/** Ekran okuyucuyla saat alanı kenarı adımı (ekran kesri). */
+const KENAR_ADIMI = 0.01;
 
 /** Yazı tipi örneği (dil-bağımsız harf örneği, çeviri değil). */
 const YAZI_ORNEGI = 'Aa';
@@ -75,7 +96,13 @@ interface Baslangic {
   olcek: number;
   foto: DuvarKagidiAyari['foto'];
   mesafe: number | null;
+  /** Elle saat ayarında sürüklenen kenar (0 üst, 1 alt) ve başlangıçtaki alan. */
+  saat: { kenar: 0 | 1; alan: SaatAlani } | null;
 }
+
+/** Saat alanının bir kenarını `yeni`ye taşır; alan sözleşmeyle sınırlanır (en az/en çok yükseklik). */
+const kenariTasi = (alan: SaatAlani, kenar: 0 | 1, yeni: number): SaatAlani | null =>
+  saatAlaniNormalize(kenar === 0 ? [yeni, alan[1]] : [alan[0], yeni]);
 
 const mesafe = (e: GestureResponderEvent): number | null => {
   const t = e.nativeEvent.touches;
@@ -106,6 +133,10 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
   const [kaydediliyor, setKaydediliyor] = useState(false);
   const [alan, setAlan] = useState({ g: 0, y: 0 });
   const [kilavuz, setKilavuz] = useState<{ dikey: boolean; yatay: number | null } | null>(null);
+  const [saatKipi, setSaatKipi] = useState(false);
+  const [olcumPenceresi, setOlcumPenceresi] = useState(false);
+  const [olcumSonucu, setOlcumSonucu] = useState<OlcumSonucu | null>(null);
+  const olcuyorRef = useRef(false);
   const blok = useRef(0);
   const geciciDosyalar = useRef(new Set<string>());
   const kayitliRef = useRef<DuvarKagidiAyari | null>(null);
@@ -175,6 +206,11 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
 
   const { kaynak: foto, okunamadi: fotoOkunamadi } = useFotoKaynagiDurumu(taslak?.foto.dosya ?? null, yeniFoto);
   const ekran: DuvarEkrani = !taslak || taslak.yer === 'ikisi' ? ekranSecimi : taslak.yer;
+  // Elle saat ayarı yalnız Yazı sekmesinde ve kilit ekranında; başka yere geçilince kapanır (alan taslakta kalır).
+  const saatKipiEtkin = saatKipi && sekme === 'yazi' && ekran === 'kilit';
+  useEffect(() => {
+    if (saatKipi && !(sekme === 'yazi' && ekran === 'kilit')) setSaatKipi(false);
+  }, [saatKipi, sekme, ekran]);
 
   // Tuval: ekran oranında, tepsinin üstündeki alana sığar.
   const ekranOrani = useMemo(() => {
@@ -185,8 +221,8 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
   const tuvalG = tuvalY / ekranOrani;
   const tepsiY = sinirla(Dimensions.get('window').height * 0.4, 280, 380);
 
-  const anlik = useRef({ taslak, ekran, sekme, tuvalG, tuvalY, foto, platform, b: null as Baslangic | null });
-  anlik.current = { ...anlik.current, taslak, ekran, sekme, tuvalG, tuvalY, foto, platform };
+  const anlik = useRef({ taslak, ekran, sekme, tuvalG, tuvalY, foto, platform, saatKipi: saatKipiEtkin, b: null as Baslangic | null });
+  anlik.current = { ...anlik.current, taslak, ekran, sekme, tuvalG, tuvalY, foto, platform, saatKipi: saatKipiEtkin };
 
   const yanit = useRef(
     PanResponder.create({
@@ -196,15 +232,27 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
       onPanResponderGrant: (e) => {
         const a = anlik.current;
         if (!a.taslak) return;
-        const merkez = duvarYazisiYeri(istenenMerkez(a.taslak, a.ekran, a.platform), blok.current, a.platform, a.ekran).merkez;
+        const merkez = duvarYazisiYeri(istenenMerkez(a.taslak, a.ekran, a.platform), blok.current, a.platform, a.ekran, a.taslak.saatAlani).merkez;
         const fiz = fizikselHiza(a.taslak.yazi.hiza, sagdanSolaCiziliyor());
         const kayma = fiz === 'center' ? 0 : (fiz === 'left' ? -1 : 1) * HIZA_ESIGI * 1.5;
-        a.b = { merkez, kayma, olcek: a.taslak.yazi.olcek, foto: a.taslak.foto, mesafe: mesafe(e) };
+        // Elle saat ayarı: dokunulan yere en yakın kenar sürüklenir (tuvalin içindeki katmanlar dokunuş almaz,
+        // `locationY` tuvale göredir).
+        const alan = a.saatKipi ? etkinSaatAlani(a.taslak, 'kilit', a.platform) : null;
+        const dokunus = a.tuvalY > 0 ? e.nativeEvent.locationY / a.tuvalY : 0;
+        const saat = alan ? { kenar: (Math.abs(dokunus - alan[0]) <= Math.abs(dokunus - alan[1]) ? 0 : 1) as 0 | 1, alan } : null;
+        a.b = { merkez, kayma, olcek: a.taslak.yazi.olcek, foto: a.taslak.foto, mesafe: mesafe(e), saat };
       },
       onPanResponderMove: (e, g) => {
         const a = anlik.current;
         const b = a.b;
         if (!a.taslak || !b || a.tuvalY <= 0) return;
+        if (b.saat) {
+          if (mesafe(e) !== null) return; // iki parmak: saat ayarında yok
+          const { kenar, alan } = b.saat;
+          const yeni = kenariTasi(alan, kenar, alan[kenar] + g.dy / a.tuvalY);
+          if (yeni) setTaslak((t) => (t ? { ...t, saatAlani: yeni } : t));
+          return;
+        }
         const fotoKipi = a.sekme === 'zemin' && a.taslak.zemin === 'foto' && a.foto !== null;
         const simdi = mesafe(e);
         if (simdi !== null) {
@@ -230,7 +278,7 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
           setTaslak((t) => (t ? { ...t, foto: { ...t.foto, ...konum } } : t));
           return;
         }
-        const { merkez, oturdu } = surukleMerkezi(b.merkez + g.dy / a.tuvalY, blok.current, a.platform, a.ekran);
+        const { merkez, oturdu } = surukleMerkezi(b.merkez + g.dy / a.tuvalY, blok.current, a.platform, a.ekran, a.taslak.saatAlani);
         const hiza = hizaSec(b.kayma + g.dx / Math.max(1, a.tuvalG), sagdanSolaCiziliyor());
         const alanAdi = a.ekran === 'kilit' ? 'kilitY' : 'anaY';
         setTaslak((t) => (t ? { ...t, yazi: { ...t.yazi, [alanAdi]: merkez, hiza } } : t));
@@ -265,6 +313,34 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
   };
 
   const vazgec = () => navigation.goBack();
+
+  /** Kilit ekranı görüntüsünü seçtirir, son uygulanan görselle ölçtürür; görüntü saklanmaz. */
+  const kilitEkraniniOlc = async () => {
+    if (olcuyorRef.current) return;
+    olcuyorRef.current = true;
+    try {
+      const uri = await kilitEkraniGoruntusuSec();
+      if (!uri) return; // vazgeçildi: pencere açık kalır
+      const ham = await servis().kilitEkraniProfili(uri);
+      kilitEkraniGoruntusunuBirak(uri).catch(() => undefined);
+      let sonuc: OlcumSonucu;
+      if ('profil' in ham) {
+        const olcum = saatAlaniBul(ham.profil);
+        if (olcum.sonuc === 'tamam') guncelle((t) => ({ ...t, saatAlani: olcum.alan }));
+        sonuc = olcum.sonuc;
+      } else {
+        sonuc = ham.hata === 'referans-yok' ? 'referans-yok' : 'okunamadi';
+      }
+      setOlcumSonucu(sonuc);
+      setOlcumPenceresi(false);
+    } catch (e) {
+      Logger.warn('DuvarDuzenleyici', 'Kilit ekranı ölçülemedi', e);
+      setOlcumSonucu('okunamadi');
+      setOlcumPenceresi(false);
+    } finally {
+      olcuyorRef.current = false;
+    }
+  };
 
   const uygula = async () => {
     if (!taslak || !kayitli || kaydediliyorRef.current) return;
@@ -383,8 +459,8 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
             onAccessibilityAction={(e) => {
               // Ekran okuyucu: yukarı/aşağı kaydırma yazıyı %3 taşır (izinli banda kıstırılır).
               const yon = e.nativeEvent.actionName === 'increment' ? -1 : 1;
-              const mevcut = duvarYazisiYeri(istenenMerkez(taslak, ekran, platform), blok.current, platform, ekran).merkez;
-              const { merkez } = surukleMerkezi(mevcut + yon * 0.03, blok.current, platform, ekran);
+              const mevcut = duvarYazisiYeri(istenenMerkez(taslak, ekran, platform), blok.current, platform, ekran, taslak.saatAlani).merkez;
+              const { merkez } = surukleMerkezi(mevcut + yon * 0.03, blok.current, platform, ekran, taslak.saatAlani);
               guncelle((t) => ({ ...t, yazi: { ...t.yazi, [ekran === 'kilit' ? 'kilitY' : 'anaY']: merkez } }));
             }}
             style={{ width: tuvalG, height: tuvalY, borderRadius: 24, overflow: 'hidden' }}
@@ -407,6 +483,9 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
                 yukseklik={tuvalY}
                 platform={platform}
                 ekran={ekran}
+                ayarSaatAlani={taslak.saatAlani}
+                saatAlani={etkinSaatAlani(taslak, ekran, platform)}
+                saatKipi={saatKipiEtkin}
                 renk={renk.metin}
                 saat={saat}
                 tarih={tarih}
@@ -462,12 +541,47 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
               guncelle={guncelle}
             />
           ) : sekme === 'yazi' ? (
-            <YaziSekmesi taslak={taslak} mealVar={ayet.meal !== null} yaziTipleri={yaziTipleri} guncelle={guncelle} />
+            <>
+              <YaziSekmesi taslak={taslak} mealVar={ayet.meal !== null} yaziTipleri={yaziTipleri} guncelle={guncelle} />
+              {ekran === 'kilit' ? (
+                <SaatAlaniBolumu
+                  taslak={taslak}
+                  platform={platform}
+                  saatKipi={saatKipiEtkin}
+                  sonuc={olcumSonucu}
+                  onOlcun={() => setOlcumPenceresi(true)}
+                  onSaatKipi={() => {
+                    setOlcumSonucu(null);
+                    setSaatKipi((k) => !k);
+                  }}
+                  onVarsayilan={() => {
+                    setOlcumSonucu(null);
+                    guncelle((t) => ({ ...t, saatAlani: null }));
+                  }}
+                  guncelle={guncelle}
+                />
+              ) : null}
+            </>
           ) : (
             <SusSekmesi taslak={taslak} foto={foto} guncelle={guncelle} />
           )}
         </ScrollView>
       </View>
+
+      <BildirimModali
+        gorunur={olcumPenceresi}
+        tip="bilgi"
+        baslik={d.saatAlani.olcumBaslik}
+        mesaj={d.saatAlani.olcumAciklama}
+        icerik={<OlcumAdimlari platform={platform} />}
+        birincilEtiket={d.saatAlani.goruntuSecin}
+        birincilIkon="image"
+        onBirincil={() => {
+          kilitEkraniniOlc().catch(() => undefined);
+        }}
+        onKapat={() => setOlcumPenceresi(false)}
+        kapatEtiketi={s.ortak.vazgecin}
+      />
     </View>
   );
 };
@@ -723,6 +837,150 @@ const YaziSekmesi: React.FC<{ taslak: DuvarKagidiAyari; mealVar: boolean; yaziTi
       ) : (
         <NotSatiri metin={m.sayfa.mealYok} style={{ marginTop: 12 }} />
       )}
+    </View>
+  );
+};
+
+/** Ölçüm penceresinin üç adımı (pencere içeriği yalnız anlatır, eylem almaz). */
+const OlcumAdimlari: React.FC<{ platform: DuvarPlatformu }> = ({ platform }) => {
+  const renkler = useRenkler();
+  const sa = useMetin().gununAyeti.duvar.saatAlani;
+  const adimlar = [platform === 'ios' ? sa.adimIos : sa.adimAndroid, sa.adimGoruntu, sa.adimSecin];
+  return (
+    <View testID="duvar-saat-adimlar">
+      {adimlar.map((adim, i) => (
+        <View key={i} style={{ flexDirection: 'row', marginTop: i === 0 ? 0 : 10 }}>
+          <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: renkler.birincil + '20', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: renkler.birincil }}>{i + 1}</Text>
+          </View>
+          <Text style={{ flex: 1, marginStart: 10, fontSize: 14, lineHeight: 20, color: renkler.metin }}>{adim}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
+
+/** Ekran okuyucu ve göz için saat alanının bir kenarı: değer yüzde, artır/azalt %1 (aşağı/yukarı). */
+const KenarSatiri: React.FC<{ etiket: string; deger: number; testID: string; onAdim: (yon: 1 | -1) => void }> = ({ etiket, deger, testID, onAdim }) => {
+  const renkler = useRenkler();
+  const s = useMetin();
+  const yuzde = bicim(s.ilerleme.kilma.yuzde, { n: Math.round(deger * 100) });
+  return (
+    <View
+      testID={testID}
+      accessible
+      accessibilityRole="adjustable"
+      accessibilityLabel={etiket}
+      accessibilityValue={{ text: yuzde }}
+      accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+      onAccessibilityAction={(e) => onAdim(e.nativeEvent.actionName === 'increment' ? 1 : -1)}
+      style={{ flexDirection: 'row', alignItems: 'center', minHeight: 44 }}
+    >
+      <Text style={{ flex: 1, fontSize: 14, color: renkler.metinIkincil }}>{etiket}</Text>
+      <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.metin }}>{yuzde}</Text>
+    </View>
+  );
+};
+
+/** Yazı sekmesi, kilit ekranı: saatin kapladığı alan (tahmini/ölçülmüş), ölçüm, elle ayar, varsayılan. */
+const SaatAlaniBolumu: React.FC<{
+  taslak: DuvarKagidiAyari;
+  platform: DuvarPlatformu;
+  saatKipi: boolean;
+  sonuc: OlcumSonucu | null;
+  onOlcun: () => void;
+  onSaatKipi: () => void;
+  onVarsayilan: () => void;
+  guncelle: Guncelle;
+}> = ({ taslak, platform, saatKipi, sonuc, onOlcun, onSaatKipi, onVarsayilan, guncelle }) => {
+  const renkler = useRenkler();
+  const sa = useMetin().gununAyeti.duvar.saatAlani;
+  const alan = etkinSaatAlani(taslak, 'kilit', platform) as SaatAlani;
+  const sonucMetni: Record<OlcumSonucu, string> = {
+    tamam: sa.sonuc.tamam,
+    uyusmadi: sa.sonuc.uyusmadi,
+    bulunamadi: sa.sonuc.bulunamadi,
+    'referans-yok': platform === 'ios' ? sa.sonuc.referansYokIos : sa.sonuc.referansYokAndroid,
+    okunamadi: sa.sonuc.okunamadi,
+  };
+  const kenarAdimi = (kenar: 0 | 1) => (yon: 1 | -1) =>
+    guncelle((t) => {
+      const mevcut = etkinSaatAlani(t, 'kilit', platform) as SaatAlani;
+      return { ...t, saatAlani: kenariTasi(mevcut, kenar, mevcut[kenar] + yon * KENAR_ADIMI) ?? t.saatAlani };
+    });
+  const ikincilStil = {
+    flex: 1,
+    minHeight: 44,
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    borderWidth: 1,
+  };
+  return (
+    <View testID="duvar-saat-bolumu" style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: renkler.sinir }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: renkler.birincil + '20', alignItems: 'center', justifyContent: 'center' }}>
+          <FontAwesome5 name="clock" size={18} color={renkler.birincil} />
+        </View>
+        <View style={{ flex: 1, marginStart: 12 }}>
+          <Text style={{ fontSize: 15, fontWeight: '600', color: renkler.metin }}>{sa.baslik}</Text>
+          <Text testID="duvar-saat-durum" style={{ fontSize: 13, marginTop: 2, color: renkler.metinIkincil }}>
+            {taslak.saatAlani ? sa.olculdu : sa.tahmini}
+          </Text>
+        </View>
+      </View>
+      <TouchableOpacity
+        testID="duvar-saat-olcun"
+        onPress={onOlcun}
+        accessibilityRole="button"
+        activeOpacity={0.85}
+        style={{ marginTop: 12, minHeight: 48, borderRadius: 16, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: renkler.birincil }}
+      >
+        <FontAwesome5 name="mobile-alt" size={14} color="#FFFFFF" />
+        <Text style={{ marginStart: 8, flexShrink: 1, textAlign: 'center', fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}>{sa.olcun}</Text>
+      </TouchableOpacity>
+      <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+        <TouchableOpacity
+          testID="duvar-saat-elle"
+          onPress={onSaatKipi}
+          accessibilityRole="button"
+          accessibilityState={{ selected: saatKipi }}
+          activeOpacity={0.8}
+          style={{ ...ikincilStil, backgroundColor: saatKipi ? renkler.birincil + '20' : renkler.arkaplan, borderColor: saatKipi ? renkler.birincil : renkler.sinir }}
+        >
+          <FontAwesome5 name="arrows-alt-v" size={13} color={saatKipi ? renkler.birincil : renkler.metinIkincil} />
+          <Text style={{ marginStart: 8, flexShrink: 1, textAlign: 'center', fontSize: 14, fontWeight: '600', color: saatKipi ? renkler.birincil : renkler.metin }}>{sa.elle}</Text>
+        </TouchableOpacity>
+        {taslak.saatAlani ? (
+          <TouchableOpacity
+            testID="duvar-saat-varsayilan"
+            onPress={onVarsayilan}
+            accessibilityRole="button"
+            activeOpacity={0.8}
+            style={{ ...ikincilStil, backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
+          >
+            <FontAwesome5 name="undo" size={12} color={renkler.metinIkincil} />
+            <Text style={{ marginStart: 8, flexShrink: 1, textAlign: 'center', fontSize: 14, fontWeight: '600', color: renkler.metin }}>{sa.varsayilan}</Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+      {saatKipi ? (
+        <View style={{ marginTop: 8 }}>
+          <NotSatiri testID="duvar-saat-ipucu" metin={sa.ipucu} ikon="hand-pointer" />
+          <KenarSatiri testID="duvar-saat-ust" etiket={sa.ustKenar} deger={alan[0]} onAdim={kenarAdimi(0)} />
+          <KenarSatiri testID="duvar-saat-alt" etiket={sa.altKenar} deger={alan[1]} onAdim={kenarAdimi(1)} />
+        </View>
+      ) : null}
+      {sonuc ? (
+        <NotSatiri
+          testID="duvar-saat-sonuc"
+          metin={sonucMetni[sonuc]}
+          tip={sonuc === 'tamam' ? 'basari' : sonuc === 'bulunamadi' ? 'bilgi' : 'uyari'}
+          style={{ marginTop: 10 }}
+        />
+      ) : null}
     </View>
   );
 };

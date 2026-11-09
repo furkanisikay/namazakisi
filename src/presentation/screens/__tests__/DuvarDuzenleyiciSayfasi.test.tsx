@@ -11,13 +11,14 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { Image, Platform } from 'react-native';
 import { DuvarDuzenleyiciSayfasi } from '../DuvarDuzenleyiciSayfasi';
 import { VARSAYILAN_DUVAR_AYARI, type DuvarKagidiAyari } from '../../../core/icerik/gununAyetiYuku';
-import { IZINLI_BANTLAR } from '../../../core/icerik/duvarTasarimi';
+import { IZINLI_BANTLAR, saatAlaniBul } from '../../../core/icerik/duvarTasarimi';
 import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const mockServis = {
     duvarAyariOku: jest.fn(),
     duvarAyariKaydet: jest.fn(),
     duvarKagidiniSimdiUygula: jest.fn(),
+    kilitEkraniProfili: jest.fn(),
 };
 jest.mock('../../../domain/services/GununAyetiServisi', () => ({ GununAyetiServisi: { getInstance: () => mockServis } }));
 
@@ -172,6 +173,181 @@ describe('DuvarDuzenleyiciSayfasi', () => {
         // Yukarı taşındıkça saatin üstündeki ince banda geçer; saat alanına (%26–%64) asla girmez.
         expect(IZINLI_BANTLAR.android.kilit.some(([a, b]) => ust >= a - 1e-6 && alt <= b + 1e-6)).toBe(true);
         expect(alt <= 0.26 + 1e-6 || ust >= 0.64 - 1e-6).toBe(true);
+    });
+
+    describe('kilit ekranı saat alanı', () => {
+        const GORUNTU = { canceled: false, assets: [{ uri: 'file:///secici/kilit.png', width: 1080, height: 2400 }] };
+        /** 100 satır; 30–60 arası "üstte çizilmiş" (saat): `saatAlaniBul` → tamam. */
+        const SAATLI = Array.from({ length: 100 }, (_, i) => (i >= 30 && i <= 60 ? 0.1 : 0));
+
+        async function olc(e: Awaited<ReturnType<typeof ac>>) {
+            fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
+            fireEvent.press(e.getByTestId('duvar-saat-olcun'));
+            // Pencere üç adımı ve seçim düğmesini gösterir (görüntü SEÇİLMEDEN ölçüm yok).
+            expect(e.getByTestId('duvar-saat-adimlar')).toBeTruthy();
+            expect(mockServis.kilitEkraniProfili).not.toHaveBeenCalled();
+            fireEvent.press(e.getByText('Görüntüyü seçin'));
+            return e.findByTestId('duvar-saat-sonuc');
+        }
+
+        beforeEach(() => {
+            mockSec.mockResolvedValue(GORUNTU);
+            mockServis.kilitEkraniProfili.mockResolvedValue({ profil: SAATLI });
+        });
+
+        it('Yazı sekmesinde yalnız kilit ekranı düzenlenirken görünür', async () => {
+            const e = await ac();
+            fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
+            expect(e.getByTestId('duvar-saat-bolumu')).toBeTruthy();
+            expect(e.getByText('Tahmini konum')).toBeTruthy();
+            // Varsayılandayken "Varsayılana dönün" yok.
+            expect(e.queryByTestId('duvar-saat-varsayilan')).toBeNull();
+            e.unmount();
+
+            const ana = await ac({ yer: 'ana' });
+            fireEvent.press(ana.getByTestId('duvar-sekme-yazi'));
+            expect(ana.queryByTestId('duvar-saat-bolumu')).toBeNull();
+            ana.unmount();
+
+            const ikisi = await ac({ yer: 'ikisi' });
+            fireEvent.press(ikisi.getByTestId('duvar-sekme-yazi'));
+            expect(ikisi.getByTestId('duvar-saat-bolumu')).toBeTruthy();
+            fireEvent.press(ikisi.getByTestId('duvar-ekran-ana'));
+            expect(ikisi.queryByTestId('duvar-saat-bolumu')).toBeNull();
+        });
+
+        it('ölçüm tamamsa alan taslağa girer, "Uygulayın" kaydeder; görüntü kopyalanmaz', async () => {
+            const e = await ac();
+            const sonuc = await olc(e);
+            expect(sonuc.props.accessibilityLabel).toBe('Saat alanı ölçüldü; kesikli alan güncellendi.');
+            expect(mockServis.kilitEkraniProfili).toHaveBeenCalledWith('file:///secici/kilit.png');
+            expect(mockSec).toHaveBeenCalledWith(expect.objectContaining({ mediaTypes: ['images'], allowsEditing: false }));
+            expect(mockKopyala).not.toHaveBeenCalled();
+            expect(e.getByText('Bu telefonda ölçüldü')).toBeTruthy();
+            expect(e.getByTestId('duvar-saat-varsayilan')).toBeTruthy();
+            fireEvent.press(e.getByTestId('duvar-uygula'));
+            await waitFor(() => expect(mockServis.duvarAyariKaydet).toHaveBeenCalled());
+            const beklenen = saatAlaniBul(SAATLI);
+            if (beklenen.sonuc !== 'tamam') throw new Error('profil saat vermeli');
+            expect(kaydedilen().saatAlani).toEqual(beklenen.alan);
+        });
+
+        it('görüntü eşleşmezse bilgi satırı çıkar ve kayıtlı alan korunur', async () => {
+            mockServis.kilitEkraniProfili.mockResolvedValue({ profil: Array.from({ length: 100 }, () => 0.5) });
+            const e = await ac({ saatAlani: [0.3, 0.5] });
+            const sonuc = await olc(e);
+            expect(sonuc.props.accessibilityLabel).toBe(
+                'Bu görüntü son uygulanan duvar kâğıdıyla eşleşmedi. Duvar kâğıdını uyguladıktan sonra alınmış bir kilit ekranı görüntüsü seçin.'
+            );
+            fireEvent.press(e.getByTestId('duvar-uygula'));
+            await waitFor(() => expect(mockServis.duvarAyariKaydet).toHaveBeenCalled());
+            expect(kaydedilen().saatAlani).toEqual([0.3, 0.5]);
+        });
+
+        it.each([
+            ['saat bulunamadı', { profil: Array.from({ length: 100 }, () => 0) }, 'android', 'Görüntüde saat bulunamadı; kenarları elle ayarlayabilirsiniz.'],
+            ['referans yok (Android)', { hata: 'referans-yok' }, 'android', 'Önce duvar kâğıdını uygulayın; ölçüm son uygulanan görselle yapılır.'],
+            ['referans yok (iPhone)', { hata: 'referans-yok' }, 'ios', 'Önce Kısayollar ile duvar kâğıdını bir kez uygulayın.'],
+            ['oran uymuyor', { hata: 'oran' }, 'android', 'Görüntü okunamadı. Kilit ekranının tam ekran görüntüsünü seçin.'],
+            ['okunamadı', { hata: 'okunamadi' }, 'ios', 'Görüntü okunamadı. Kilit ekranının tam ekran görüntüsünü seçin.'],
+        ])('%s: kibar sonuç satırı, alan değişmez', async (_ad, ham, platform, metin) => {
+            jest.replaceProperty(Platform, 'OS', platform as 'ios' | 'android');
+            mockServis.kilitEkraniProfili.mockResolvedValue(ham);
+            const e = await ac();
+            const sonuc = await olc(e);
+            expect(sonuc.props.accessibilityLabel).toBe(metin);
+            expect(e.getByText('Tahmini konum')).toBeTruthy();
+        });
+
+        it('seçici iptal edilirse pencere açık kalır, ölçülmez', async () => {
+            mockSec.mockResolvedValue({ canceled: true, assets: null });
+            const e = await ac();
+            fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
+            fireEvent.press(e.getByTestId('duvar-saat-olcun'));
+            fireEvent.press(e.getByText('Görüntüyü seçin'));
+            await waitFor(() => expect(mockSec).toHaveBeenCalled());
+            expect(mockServis.kilitEkraniProfili).not.toHaveBeenCalled();
+            expect(e.queryByTestId('duvar-saat-sonuc')).toBeNull();
+            expect(e.getByTestId('duvar-saat-adimlar')).toBeTruthy();
+        });
+
+        it('elle ayar: tuvalde sürüklenen kenar taşınır, ekran okuyucu kenarı adım adım ayarlar, "Uygulayın" kaydeder', async () => {
+            const e = await ac();
+            fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
+            fireEvent.press(e.getByTestId('duvar-saat-elle'));
+            expect(e.getByText('Kesikli alanın kenarlarını saatinize göre sürükleyin.')).toBeTruthy();
+            expect(e.getByTestId('duvar-saat-tutamak-ust', { includeHiddenElements: true })).toBeTruthy();
+
+            // Tuval 484 px: varsayılan alan %26–%64. Alt kenarın yakınına (%62) dokunup 48 px (≈%10) yukarı sürükleme.
+            const tuval = e.getByTestId('duvar-tuval');
+            const dokunus = (onceki: number, y: number, zaman: number) => ({
+                touchHistory: {
+                    numberActiveTouches: 1,
+                    indexOfSingleActiveTouch: 0,
+                    mostRecentTimeStamp: zaman,
+                    touchBank: [
+                        {
+                            touchActive: true,
+                            startPageX: 100,
+                            startPageY: 300,
+                            startTimeStamp: 0,
+                            currentPageX: 100,
+                            currentPageY: y,
+                            currentTimeStamp: zaman,
+                            previousPageX: 100,
+                            previousPageY: onceki,
+                            previousTimeStamp: zaman,
+                        },
+                    ],
+                },
+                nativeEvent: { locationY: 0.62 * 484, pageX: 100, pageY: y, touches: [{ pageX: 100, pageY: y }], changedTouches: [], identifier: 0, timestamp: zaman },
+            });
+            fireEvent(tuval, 'responderGrant', dokunus(300, 300, 1));
+            fireEvent(tuval, 'responderMove', dokunus(300, 252, 2));
+            fireEvent(tuval, 'responderRelease', dokunus(252, 252, 3));
+            expect(e.getByText('Bu telefonda ölçüldü')).toBeTruthy();
+            expect(e.getByTestId('duvar-saat-alt').props.accessibilityValue).toEqual({ text: '%54' });
+            expect(e.getByTestId('duvar-saat-ust').props.accessibilityValue).toEqual({ text: '%26' });
+
+            // Ekran okuyucu: üst kenar 2 adım aşağı.
+            fireEvent(e.getByTestId('duvar-saat-ust'), 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
+            fireEvent(e.getByTestId('duvar-saat-ust'), 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
+            expect(e.getByTestId('duvar-saat-ust').props.accessibilityValue).toEqual({ text: '%28' });
+
+            // Moddan çıkınca alan taslakta kalır; "Uygulayın" kaydeder.
+            fireEvent.press(e.getByTestId('duvar-saat-elle'));
+            expect(e.queryByTestId('duvar-saat-ust')).toBeNull();
+            fireEvent.press(e.getByTestId('duvar-uygula'));
+            await waitFor(() => expect(mockServis.duvarAyariKaydet).toHaveBeenCalled());
+            const [ust, alt] = kaydedilen().saatAlani as [number, number];
+            expect(ust).toBeCloseTo(0.28, 4);
+            expect(alt).toBeCloseTo(0.54, 2);
+        });
+
+        it('"Varsayılana dönün" alanı siler', async () => {
+            const e = await ac({ saatAlani: [0.3, 0.5] });
+            fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
+            expect(e.getByText('Bu telefonda ölçüldü')).toBeTruthy();
+            fireEvent.press(e.getByTestId('duvar-saat-varsayilan'));
+            expect(e.getByText('Tahmini konum')).toBeTruthy();
+            fireEvent.press(e.getByTestId('duvar-uygula'));
+            await waitFor(() => expect(mockServis.duvarAyariKaydet).toHaveBeenCalled());
+            expect(kaydedilen().saatAlani).toBeNull();
+        });
+
+        it('ölçülen alan yazının girebileceği bantları değiştirir', async () => {
+            // Alan %30–%50: yazı %52'ye taşınabilir (varsayılan alanda yasaktı).
+            const e = await ac({ saatAlani: [0.3, 0.5] });
+            olcBlok(e, 60);
+            const tuval = e.getByTestId('duvar-tuval');
+            for (let i = 0; i < 8; i++) fireEvent(tuval, 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
+            fireEvent.press(e.getByTestId('duvar-uygula'));
+            await waitFor(() => expect(mockServis.duvarAyariKaydet).toHaveBeenCalled());
+            const merkez = kaydedilen().yazi.kilitY as number;
+            const blok = 60 / 484;
+            expect(merkez - blok / 2).toBeGreaterThanOrEqual(0.5 - 1e-6);
+            expect(merkez - blok / 2).toBeLessThan(0.64);
+        });
     });
 
     it('sığmayan blok native gibi küçültülüp yeniden ölçülür; sığınca görünür', async () => {
