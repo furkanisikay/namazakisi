@@ -182,8 +182,11 @@ function SusKatmani({
   // Kemer saat alanına girerken solar: maske, `saatSolmasi`'nı kırılma noktalarında örnekleyen dikey geçiştir.
   const duraklar = saatSolmasiDuraklari(saatAlani);
   const yildizY = ust - m.yildiz.merkezUstu * g;
-  const yildizR = m.yildiz.disR * g;
-  const yildizVar = y > 0 && !saateDegiyor((yildizY - yildizR) / y, (yildizY + yildizR) / y, saatAlani);
+  // Kapsam çokgenin GERÇEK dikey aralığı (tepe köşe → en alt köşe; native ile aynı), sınır dairesi değil.
+  const kose = besKoseliYildiz(g / 2, yildizY, m.yildiz.disR * g, m.yildiz.icR * g)
+    .split(' ')
+    .map((n) => Number(n.split(',')[1]));
+  const yildizVar = y > 0 && !saateDegiyor(Math.min(...kose) / y, Math.max(...kose) / y, saatAlani);
   return (
     <>
       {duraklar ? (
@@ -205,7 +208,7 @@ function SusKatmani({
       {yildizVar ? (
         <Polygon
           testID="duvar-mihrap-yildiz"
-          points={besKoseliYildiz(g / 2, yildizY, yildizR, m.yildiz.icR * g)}
+          points={besKoseliYildiz(g / 2, yildizY, m.yildiz.disR * g, m.yildiz.icR * g)}
           fill={renk.metin}
           opacity={yuzde(m.yildiz.opaklik * carpan)}
         />

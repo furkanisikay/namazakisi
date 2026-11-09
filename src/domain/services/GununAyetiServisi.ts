@@ -167,7 +167,8 @@ export class GununAyetiServisi {
     if (typeof kopru?.kilitEkraniProfili !== 'function') return { hata: 'okunamadi' };
     try {
       const ham = await kopru.kilitEkraniProfili(uri);
-      if (ham && 'profil' in ham && Array.isArray(ham.profil)) return { profil: ham.profil };
+      if (ham && 'profil' in ham && Array.isArray(ham.profil) && ham.profil.every((v) => typeof v === 'number' && Number.isFinite(v)))
+        return { profil: ham.profil };
       if (ham && 'hata' in ham && (ham.hata === 'referans-yok' || ham.hata === 'oran')) return { hata: ham.hata };
       return { hata: 'okunamadi' };
     } catch (e) {

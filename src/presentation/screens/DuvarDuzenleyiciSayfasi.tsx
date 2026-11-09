@@ -29,8 +29,11 @@ import { useRenkler } from '../../core/theme';
 import { bicim } from '../../core/dil/aktifDil';
 import {
   VARSAYILAN_MERKEZ,
+  VARSAYILAN_SAAT_ALANI,
   saatAlaniBul,
   saatAlaniNormalize,
+  SAAT_ALANI_EN_AZ,
+  SAAT_ALANI_EN_COK,
   type DuvarEkrani,
   type DuvarPlatformu,
   type SaatAlani,
@@ -102,8 +105,18 @@ interface Baslangic {
 }
 
 /** Saat alanının bir kenarını `yeni`ye taşır; alan sözleşmeyle sınırlanır (en az/en çok yükseklik). */
-const kenariTasi = (alan: SaatAlani, kenar: 0 | 1, yeni: number): SaatAlani | null =>
-  saatAlaniNormalize(kenar === 0 ? [yeni, alan[1]] : [alan[0], yeni]);
+/** Yalnız tutulan kenar oynar: öteki kenarı sabit tutacak aralığa kıstırılır (normalize öteki kenarı itmesin). */
+/** Ölçüm penceresinin kapanma solması (BildirimModali `fade`); seçici bundan sonra açılır. */
+const PENCERE_SOLMA_MS = 350;
+
+const kenariTasi = (alan: SaatAlani, kenar: 0 | 1, yeni: number): SaatAlani | null => {
+  if (kenar === 0) {
+    const ust = Math.min(alan[1] - SAAT_ALANI_EN_AZ, Math.max(0, alan[1] - SAAT_ALANI_EN_COK, yeni));
+    return saatAlaniNormalize([ust, alan[1]]);
+  }
+  const alt = Math.max(alan[0] + SAAT_ALANI_EN_AZ, Math.min(0.95, alan[0] + SAAT_ALANI_EN_COK, yeni));
+  return saatAlaniNormalize([alan[0], alt]);
+};
 
 const mesafe = (e: GestureResponderEvent): number | null => {
   const t = e.nativeEvent.touches;
@@ -320,18 +333,24 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
 
   const vazgec = () => navigation.goBack();
 
-  /** Kilit ekranı görüntüsünü seçtirir, son uygulanan görselle ölçtürür; görüntü saklanmaz. */
+  /**
+   * Kilit ekranı görüntüsünü seçtirir, son uygulanan görselle ölçtürür; görüntü saklanmaz.
+   * Pencere ÖNCE kapanır, sistem seçicisi solma bittikten sonra açılır: iOS'ta açık bir RN
+   * Modal'ın üstünde (ya da kapanırken) sunulan seçici görünmeyebilir.
+   */
   const kilitEkraniniOlc = async () => {
     if (olcuyorRef.current) return;
     olcuyorRef.current = true;
+    setOlcumPenceresi(false);
+    let uri: string | null = null;
     try {
-      const uri = await kilitEkraniGoruntusuSec();
-      if (!uri) return; // vazgeçildi: pencere açık kalır
+      await new Promise<void>((tamam) => setTimeout(tamam, PENCERE_SOLMA_MS));
+      uri = await kilitEkraniGoruntusuSec();
+      if (!uri) return; // vazgeçildi
       const ham = await servis().kilitEkraniProfili(uri);
-      kilitEkraniGoruntusunuBirak(uri).catch(() => undefined);
       let sonuc: OlcumSonucu;
       if ('profil' in ham) {
-        const olcum = saatAlaniBul(ham.profil);
+        const olcum = saatAlaniBul(ham.profil, VARSAYILAN_SAAT_ALANI[platform]);
         if (olcum.sonuc === 'tamam') {
           guncelle((t) => ({ ...t, saatAlani: olcum.alan }));
           setSaatKaynagi('olcum');
@@ -341,12 +360,12 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
         sonuc = ham.hata === 'referans-yok' ? 'referans-yok' : 'okunamadi';
       }
       setOlcumSonucu(sonuc);
-      setOlcumPenceresi(false);
     } catch (e) {
       Logger.warn('DuvarDuzenleyici', 'Kilit ekranı ölçülemedi', e);
       setOlcumSonucu('okunamadi');
-      setOlcumPenceresi(false);
     } finally {
+      // Seçicinin geçici kopyası her yolda silinir ("Görüntü saklanmaz").
+      if (uri) kilitEkraniGoruntusunuBirak(uri).catch(() => undefined);
       olcuyorRef.current = false;
     }
   };

@@ -520,11 +520,14 @@ export const OLCUM_PAY = 0.01;
 export type SaatOlcumu = { sonuc: 'tamam'; alan: SaatAlani } | { sonuc: 'uyusmadi' } | { sonuc: 'bulunamadi' };
 
 /**
- * Satır profilinden saat alanı: dolu satırlar bölgelere ayrılır (yakınlar birleşir), ekranın
- * %5–%80 arasında ortalanan en yüksek bölge saattir (durum çubuğu ve alttaki kilit/fener dışarıda
- * kalır). Çok dolu profil = başka bir duvar kâğıdının görüntüsü.
+ * Satır profilinden saat alanı: dolu satırlar bölgelere ayrılır (yakınlar birleşir); ekranın
+ * %5–%80 arasında ortalanan bölgeler aday olur (durum çubuğu ve alttaki kilit/fener dışarıda kalır).
+ * `tercih` (platformun varsayılan saat alanı) verilirse onunla EN ÇOK örtüşen aday saattir (bildirim
+ * yığını saatten uzun olabilir: iPhone'da saatin altında, Android'de küçülen saatin altında); hiçbiri
+ * örtüşmüyorsa (saat taşınmış) ya da tercih yoksa en yüksek aday. Çok dolu profil = başka bir duvar
+ * kâğıdının görüntüsü.
  */
-export function saatAlaniBul(profil: readonly number[]): SaatOlcumu {
+export function saatAlaniBul(profil: readonly number[], tercih: SaatAlani | null = null): SaatOlcumu {
   const n = profil.length;
   if (n < 20) return { sonuc: 'bulunamadi' };
   const dolu = profil.map((v) => Number.isFinite(v) && v >= OLCUM_SATIR_ESIGI);
@@ -536,13 +539,21 @@ export function saatAlaniBul(profil: readonly number[]): SaatOlcumu {
     if (son && i - son[1] - 1 <= OLCUM_BIRLESTIRME * n) son[1] = i;
     else bolgeler.push([i, i]);
   }
-  let enIyi: [number, number] | null = null;
+  const adaylar: [number, number][] = [];
   for (const [b, s] of bolgeler) {
     const ust = b / n;
     const alt = (s + 1) / n;
     const orta = (ust + alt) / 2;
-    if (alt - ust < OLCUM_EN_KISA || orta < 0.05 || orta > 0.8) continue;
-    if (!enIyi || alt - ust > enIyi[1] - enIyi[0]) enIyi = [ust, alt];
+    if (alt - ust >= OLCUM_EN_KISA && orta >= 0.05 && orta <= 0.8) adaylar.push([ust, alt]);
+  }
+  const ortusme = (a: [number, number]) => (tercih ? Math.max(0, Math.min(a[1], tercih[1]) - Math.max(a[0], tercih[0])) : 0);
+  let enIyi: [number, number] | null = null;
+  for (const a of adaylar) {
+    if (!enIyi) enIyi = a;
+    else {
+      const fark = ortusme(a) - ortusme(enIyi);
+      if (fark > 1e-9 || (Math.abs(fark) <= 1e-9 && a[1] - a[0] > enIyi[1] - enIyi[0])) enIyi = a;
+    }
   }
   if (!enIyi) return { sonuc: 'bulunamadi' };
   const alan = saatAlaniNormalize([enIyi[0] - OLCUM_PAY, enIyi[1] + OLCUM_PAY]);

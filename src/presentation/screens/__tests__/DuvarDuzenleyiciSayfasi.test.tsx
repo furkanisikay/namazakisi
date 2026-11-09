@@ -277,7 +277,7 @@ describe('DuvarDuzenleyiciSayfasi', () => {
             expect(e.getByText('Tahmini konum')).toBeTruthy();
         });
 
-        it('seçici iptal edilirse pencere açık kalır, ölçülmez', async () => {
+        it("pencere seçiciden önce kapanır (iOS'ta Modal üstünde seçici sunulamaz); iptal edilirse ölçülmez", async () => {
             mockSec.mockResolvedValue({ canceled: true, assets: null });
             const e = await ac();
             fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
@@ -286,7 +286,7 @@ describe('DuvarDuzenleyiciSayfasi', () => {
             await waitFor(() => expect(mockSec).toHaveBeenCalled());
             expect(mockServis.kilitEkraniProfili).not.toHaveBeenCalled();
             expect(e.queryByTestId('duvar-saat-sonuc')).toBeNull();
-            expect(e.getByTestId('duvar-saat-adimlar')).toBeTruthy();
+            expect(e.queryByTestId('duvar-saat-adimlar')).toBeNull();
         });
 
         it('elle ayar: tuvalde sürüklenen kenar taşınır, ekran okuyucu kenarı adım adım ayarlar, "Uygulayın" kaydeder', async () => {

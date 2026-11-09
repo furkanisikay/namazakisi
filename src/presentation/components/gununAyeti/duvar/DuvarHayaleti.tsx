@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import Svg, { Circle, Line, Rect } from 'react-native-svg';
-import type { DuvarEkrani, DuvarPlatformu, SaatAlani } from '../../../../core/icerik/duvarTasarimi';
+import { IZINLI_BANTLAR, KILIT_DIS_SINIR, type DuvarEkrani, type DuvarPlatformu, type SaatAlani } from '../../../../core/icerik/duvarTasarimi';
 import { yasakBolgeler } from '../../../../core/icerik/duvarCizimi';
 
 interface Props {
@@ -65,8 +65,12 @@ export const DuvarHayaleti: React.FC<Props> = ({
   const bolgeler = yasakBolgeler(platform, ekran, ayarSaatAlani)
     .flatMap((b) => saatDisinda(b, saatBolgesi))
     .filter(([a, b]) => b - a >= EN_AZ_BOLGE);
-  const altBolge = bolgeler.find((b) => b[1] >= 0.99) ?? null;
-  const cerceveler: (readonly [number, number])[] = saatBolgesi ? [saatBolgesi, ...bolgeler] : bolgeler;
+  // Alttaki kilit/fener (ya da ana ekran dock) simgeleri saat alanından bağımsız SABİT yerdedir:
+  // saat alanı aşağı uzansa da (ör. elle [0,6, 0,95]) hayaletleri kaybolmaz.
+  const altSinir = ekran === 'kilit' ? KILIT_DIS_SINIR[platform][1] : IZINLI_BANTLAR[platform].ana.reduce((m, b) => Math.max(m, b[1]), 0);
+  const altBolge: readonly [number, number] = [altSinir, 1];
+  const ortusur = bolgeler.some((b) => b[0] <= altBolge[0] + 1e-6 && b[1] >= 0.99);
+  const cerceveler: (readonly [number, number])[] = [...(saatBolgesi ? [saatBolgesi] : []), ...bolgeler, ...(ortusur ? [] : [altBolge])];
   const pay = g * 0.07;
   const simgeSayisi = ekran === 'kilit' ? 2 : 4;
   const simgeR = g * 0.055;
@@ -105,7 +109,7 @@ export const DuvarHayaleti: React.FC<Props> = ({
               />
             ))
           : null}
-        {altBolge
+        {altBolge[1] - altBolge[0] > 0
           ? Array.from({ length: simgeSayisi }, (_, i) => (
               <Circle
                 key={i}

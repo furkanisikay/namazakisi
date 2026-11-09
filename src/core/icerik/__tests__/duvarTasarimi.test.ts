@@ -109,6 +109,10 @@ describe('duvar tasarım sözleşmesi', () => {
     const profil = (dolu: [number, number][]) => Array.from({ length: 200 }, (_, i) => (dolu.some(([a, b]) => i / 200 >= a && i / 200 < b) ? 0.3 : 0));
     expect(saatAlaniBul(profil([[0, 0.03], [0.3, 0.6], [0.88, 0.9]]))).toEqual({ sonuc: 'tamam', alan: [0.29, 0.61] });
     expect(saatAlaniBul(profil([[0, 0.8]])).sonuc).toBe('uyusmadi');
+    // iPhone: saat üstte, altında saatten UZUN bildirim yığını → tercihle örtüşen saat seçilir.
+    const bildirimli = profil([[0.09, 0.32], [0.45, 0.78]]);
+    expect(saatAlaniBul(bildirimli)).toEqual({ sonuc: 'tamam', alan: [0.44, 0.79] });
+    expect(saatAlaniBul(bildirimli, [0.08, 0.34])).toEqual({ sonuc: 'tamam', alan: [0.08, 0.33] });
     expect(saatAlaniBul(profil([])).sonuc).toBe('bulunamadi');
     expect(saatAlaniNormalize([0.5, 0.2])).toEqual([0.5, 0.54]);
     expect(saatAlaniNormalize('x')).toBeNull();
