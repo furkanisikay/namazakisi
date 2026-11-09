@@ -73,6 +73,21 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/68-duvar-duzenleyici-mihrap
+# Yazı sekmesi > "Kilit ekranındaki saat": elle ayar kipinde saat alanının kesikli çerçevesi ve tutamakları.
+- tapOn:
+    id: "duvar-sekme-yazi"
+- scrollUntilVisible:
+    element:
+      id: "duvar-saat-elle"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "duvar-saat-elle"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/69-duvar-saat-alani
+- tapOn:
+    id: "duvar-saat-elle"
 - tapOn:
     id: "duvar-uygula"
 # Uygulayın native'de yazar ve ayar sayfasına döner (yazım ~yüzlerce ms; fotoğrafsız).
