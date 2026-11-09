@@ -76,6 +76,12 @@ async function ac(ayar: Partial<DuvarKagidiAyari> = {}) {
     return e;
 }
 
+/** Önizlemenin görünmez ölçüm kopyası ölçülür (yerleşim native gibi ölçüden hesaplanır). */
+function olcBlok(e: Awaited<ReturnType<typeof ac>>, yukseklik: number) {
+    const olcum = e.getByTestId('duvar-yazi-olcum', { includeHiddenElements: true });
+    fireEvent(olcum, 'layout', { nativeEvent: { layout: { width: 200, height: yukseklik, x: 0, y: 0 } } });
+}
+
 describe('DuvarDuzenleyiciSayfasi', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -153,8 +159,7 @@ describe('DuvarDuzenleyiciSayfasi', () => {
     it('yazı taşınırken saat alanına girmez (Android kilit ekranı)', async () => {
         const e = await ac();
         // Blok yüksekliği: tuval 484 px; 60 px blok ≈ ekranın %12'si.
-        const yazi = e.getByTestId('duvar-yazi');
-        fireEvent(yazi, 'layout', { nativeEvent: { layout: { width: 200, height: 60, x: 0, y: 0 } } });
+        olcBlok(e, 60);
         const tuval = e.getByTestId('duvar-tuval');
         for (let i = 0; i < 40; i++) {
             fireEvent(tuval, 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
@@ -169,9 +174,21 @@ describe('DuvarDuzenleyiciSayfasi', () => {
         expect(alt <= 0.26 + 1e-6 || ust >= 0.64 - 1e-6).toBe(true);
     });
 
+    it('sığmayan blok native gibi küçültülüp yeniden ölçülür; sığınca görünür', async () => {
+        const e = await ac();
+        expect(e.queryByTestId('duvar-yazi')).toBeNull();
+        // 200 px ≈ %41: hiçbir banda sığmaz → bir sonraki küçültme adımı ölçülür (yazı henüz görünmez).
+        olcBlok(e, 200);
+        expect(e.queryByTestId('duvar-yazi')).toBeNull();
+        expect(e.getByTestId('duvar-yazi-olcum', { includeHiddenElements: true })).toBeTruthy();
+        olcBlok(e, 60);
+        expect(e.getByTestId('duvar-yazi')).toBeTruthy();
+        expect(e.queryByTestId('duvar-yazi-olcum', { includeHiddenElements: true })).toBeNull();
+    });
+
     it('"ikisi"nde kilit ve ana ekran ayrı düzenlenir', async () => {
         const e = await ac({ yer: 'ikisi' });
-        fireEvent(e.getByTestId('duvar-yazi'), 'layout', { nativeEvent: { layout: { width: 200, height: 60, x: 0, y: 0 } } });
+        olcBlok(e, 60);
         fireEvent.press(e.getByTestId('duvar-ekran-ana'));
         fireEvent(e.getByTestId('duvar-tuval'), 'accessibilityAction', { nativeEvent: { actionName: 'decrement' } });
         fireEvent.press(e.getByTestId('duvar-uygula'));

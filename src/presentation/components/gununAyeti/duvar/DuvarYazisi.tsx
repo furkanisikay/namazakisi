@@ -50,12 +50,17 @@ interface Props {
   renk: DuvarRenkleri;
   yaziTipleri: { arapca?: string; klasik?: string; zarif?: string };
   onLayout?: (e: LayoutChangeEvent) => void;
+  /** Sığdırma küçültmesi (`KUCULTME_ADIMLARI`); native gibi yazı boyunu küçültüp satırları yeniden kırar. */
+  carpan?: number;
+  /** Sığmayınca Arapça düşürülür (`false`); verilmezse ayar. */
+  arapca?: boolean;
+  testID?: string;
 }
 
-export const DuvarYazisi: React.FC<Props> = ({ ayet, ayar, genislik, renk, yaziTipleri, onLayout }) => {
+export const DuvarYazisi: React.FC<Props> = ({ ayet, ayar, genislik, renk, yaziTipleri, onLayout, carpan = 1, arapca, testID = 'duvar-yazi' }) => {
   const m = useMetin().gununAyeti;
-  const s = (genislik / YAZI_TASARIM_GENISLIGI) * ayar.yazi.olcek;
-  const arapcaGorunur = ayar.arapca || !ayet.meal;
+  const s = (genislik / YAZI_TASARIM_GENISLIGI) * ayar.yazi.olcek * carpan;
+  const arapcaGorunur = (arapca ?? ayar.arapca) || !ayet.meal;
   const rtl = sagdanSolaCiziliyor();
   const hiza = fizikselHiza(ayar.yazi.hiza, rtl);
   const arapcaHiza = ayar.yazi.hiza === 'orta' ? 'center' : fizikselHiza(ayar.yazi.hiza, true);
@@ -66,7 +71,7 @@ export const DuvarYazisi: React.FC<Props> = ({ ayet, ayar, genislik, renk, yaziT
   const mealBoyu = (arapcaGorunur ? YAZI_OLCULERI.mealArapcali : YAZI_OLCULERI.meal) * s;
 
   return (
-    <View testID="duvar-yazi" onLayout={onLayout} style={{ width: genislik * (1 - 2 * yaziYanPayi(ayar)) }}>
+    <View testID={testID} onLayout={onLayout} style={{ width: genislik * (1 - 2 * yaziYanPayi(ayar)) }}>
       {kucukYildiz ? (
         <View style={{ alignItems: yildizHizasi }}>
           <Svg width={yildizBoyu} height={yildizBoyu} viewBox="0 0 24 24">
@@ -120,7 +125,11 @@ export const DuvarYazisi: React.FC<Props> = ({ ayet, ayar, genislik, renk, yaziT
       {atif ? (
         <Text
           style={{
-            fontSize: YAZI_OLCULERI.atif * Math.max(YAZI_OLCULERI.atifEnAzOlcek, ayar.yazi.olcek) * (genislik / YAZI_TASARIM_GENISLIGI),
+            fontSize:
+              YAZI_OLCULERI.atif *
+              Math.max(YAZI_OLCULERI.atifEnAzOlcek, ayar.yazi.olcek) *
+              Math.max(YAZI_OLCULERI.atifEnAzOlcek, carpan) *
+              (genislik / YAZI_TASARIM_GENISLIGI),
             marginTop: YAZI_OLCULERI.atifUst * s,
             textAlign: hiza,
             color: renk.atif,

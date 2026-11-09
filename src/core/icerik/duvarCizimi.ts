@@ -282,6 +282,20 @@ export function duvarYazisiYeri(
   return { ust: enGenis[0], merkez: (enGenis[0] + enGenis[1]) / 2, kucultme };
 }
 
+/**
+ * Sığmayan blokta yazı boyu çarpanları, sırayla (native `DuvarKagidiCizici.duzenBul` ve iPhone
+ * `kucultmeAdimlari` ile aynı: ×1'den 0,06 adımla, 0,6'ya inene dek; son deneme 0,58). En küçükte de
+ * sığmazsa Arapça düşer ve dizi baştan denenir; yine sığmazsa son blok en geniş bandın üstüne yaslanır.
+ */
+export const KUCULTME_ADIMLARI: readonly number[] = (() => {
+  const adimlar: number[] = [];
+  for (let c = 1; ; c -= 0.06) {
+    adimlar.push(Math.round(c * 100) / 100);
+    if (c <= 0.6 + 1e-9) break;
+  }
+  return adimlar;
+})();
+
 /** Sürüklemede merkezin varsayılana oturma payı (ekran kesri). */
 export const MERKEZ_MIKNATISI = 0.015;
 /** Yatay sürüklemede hizanın değiştiği kayma (ekran genişliği kesri). */
