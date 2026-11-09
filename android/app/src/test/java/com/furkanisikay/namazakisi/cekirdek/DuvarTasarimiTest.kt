@@ -173,8 +173,8 @@ class DuvarTasarimiTest {
             is JSONObject -> {
                 assertTrue(yol, gercek is JSONObject)
                 val g = gercek as JSONObject
-                assertEquals(yol, beklenen.keySet(), g.keySet())
-                for (k in beklenen.keySet()) ayniMi(beklenen.get(k), g.get(k), "$yol.$k")
+                assertEquals(yol, beklenen.anahtarlar(), g.anahtarlar())
+                for (k in beklenen.anahtarlar()) ayniMi(beklenen.get(k), g.get(k), "$yol.$k")
             }
             is Number -> assertEquals(yol, beklenen.toDouble(), (gercek as Number).toDouble(), 1e-12)
             else -> assertEquals(yol, beklenen, gercek)
@@ -366,7 +366,7 @@ class DuvarTasarimiTest {
             "kunyeUst" to DuvarCizim.KUNYE_UST, "atifUst" to DuvarCizim.ATIF_UST, "atifEnAzOlcek" to DuvarCizim.ATIF_EN_AZ_OLCEK,
         )
         // Örnekteki her yazı ölçüsü native'de de var (yeni ölçü eklenirse bu test düşer).
-        assertEquals(y.keySet(), yazi.keys)
+        assertEquals(y.anahtarlar(), yazi.keys)
         for ((ad, deger) in yazi) esit(y.getDouble(ad), deger, "yazi.$ad")
 
         val m = c.getJSONObject("sus").getJSONObject("mihrap")
@@ -504,3 +504,6 @@ class DuvarTasarimiTest {
         assertFalse(DuvarTasarimi.zarifAmiriMi("归信的人们啊"))
     }
 }
+
+/** Android'in `org.json`'unda `keySet()` YOK (yalnız `keys()`); yerel org.json'da var, CI'da derlenmez. */
+private fun JSONObject.anahtarlar(): Set<String> = keys().asSequence().toSet()
