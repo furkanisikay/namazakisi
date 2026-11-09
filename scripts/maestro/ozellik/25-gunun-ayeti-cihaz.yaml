@@ -76,11 +76,15 @@ appId: com.furkanisikay.namazakisi
 # Yazı sekmesi > "Kilit ekranındaki saat": elle ayar kipinde saat alanının kesikli çerçevesi ve tutamakları.
 - tapOn:
     id: "duvar-sekme-yazi"
-- scrollUntilVisible:
-    element:
-      id: "duvar-saat-elle"
-    direction: DOWN
-    timeout: 10000
+# Kaydırma TEPSİDEN başlamalı: scrollUntilVisible ekranın ortasından kaydırır, orası tuvaldir
+# (tuval hareketi yazıyı taşır, tepsi kaymaz). Tepsi ekranın alt ~%45'idir (sekme çubuğunun üstü).
+- repeat:
+    times: 3
+    commands:
+      - swipe:
+          start: "50%, 84%"
+          end: "50%, 60%"
+          duration: 600
 - tapOn:
     id: "duvar-saat-elle"
 - waitForAnimationToEnd:
