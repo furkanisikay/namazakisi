@@ -458,7 +458,7 @@ object DuvarKagidiCizici {
      * Kilit ekranında ([saatAlani] dolu) kemer saate girerken solar: opaklık y boyunca
      * `saatSolmasi(y)` ile çarpılır. Fonksiyon parça parça doğrusal olduğundan kırılma noktalarında
      * (`saatSolmasiDuraklari`) örneklenmiş dikey `LinearGradient` onu BİREBİR verir. Yıldız saate
-     * değiyorsa (sınır dairesi, `saateDegiyor`) hiç çizilmez.
+     * değiyorsa (çokgenin tepe → en alt köşe aralığı, `saateDegiyor`) hiç çizilmez.
      */
     private fun mihrapCiz(t: Canvas, ust: Float, renk: Int, carpan: Double, saatAlani: SaatAlani?, w: Int, h: Int) {
         val wf = w.toDouble()
@@ -495,10 +495,11 @@ object DuvarKagidiCizici {
                 }
             })
         }
-        val yildizY = ust - DuvarCizim.MIHRAP_YILDIZ_UST * wf
-        val yildizR = DuvarCizim.MIHRAP_YILDIZ_DIS_R * wf
-        if (DuvarTasarimi.saateDegiyor((yildizY - yildizR) / h, (yildizY + yildizR) / h, saatAlani)) return
-        val noktalar = DuvarCizim.besKoseliYildiz(wf / 2, yildizY, yildizR, DuvarCizim.MIHRAP_YILDIZ_IC_R * wf)
+        val noktalar = DuvarCizim.besKoseliYildiz(
+            wf / 2, ust - DuvarCizim.MIHRAP_YILDIZ_UST * wf, DuvarCizim.MIHRAP_YILDIZ_DIS_R * wf, DuvarCizim.MIHRAP_YILDIZ_IC_R * wf,
+        )
+        // Kapsam = yıldız çokgeninin GERÇEK dikey uzanımı (tepe köşe → en alt köşe), sınır dairesi değil (iOS ile aynı).
+        if (DuvarTasarimi.saateDegiyor(noktalar.minOf { it.y } / h, noktalar.maxOf { it.y } / h, saatAlani)) return
         val yildiz = Path()
         noktalar.forEachIndexed { i, n -> if (i == 0) yildiz.moveTo(n.x.toFloat(), n.y.toFloat()) else yildiz.lineTo(n.x.toFloat(), n.y.toFloat()) }
         yildiz.close()

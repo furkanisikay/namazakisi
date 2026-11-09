@@ -49,7 +49,10 @@ object DuvarOlcumu {
         return Math.abs(a1 - a2) / a2 <= ORAN_TOLERANSI
     }
 
-    /** `ekran ≈ a·referans + b`, yalnız [dahil] pikselleri (null = hepsi). Referans düzse a = 0, b = ortalama. */
+    /**
+     * `ekran ≈ a·referans + b`, yalnız [dahil] pikselleri (null = hepsi). Referans düzse
+     * (`n·Σr² − (Σr)² ≤ 1e-12·n²` ya da n < 2) a = 0, b = dahil piksellerde ekranın ortalaması.
+     */
     private fun eslestir(ekran: DoubleArray, referans: DoubleArray, dahil: BooleanArray?): Pair<Double, Double> {
         var n = 0.0
         var sr = 0.0
@@ -82,10 +85,13 @@ object DuvarOlcumu {
         val n = ekran.size
         val (a1, b1) = eslestir(ekran, referans, null)
         val artik = DoubleArray(n) { Math.abs(ekran[it] - (a1 * referans[it] + b1)) }
-        // En büyük artıkların %20'si (saat, bildirim, simgeler) dışarıda: kalan en az iki piksel.
-        val kalan = maxOf(minOf(n, 2), n - (n * AYKIRI_ORANI).toInt())
-        val esik = artik.copyOf().also { it.sort() }[kalan - 1]
-        val (a, b) = eslestir(ekran, referans, BooleanArray(n) { artik[it] <= esik })
+        // En büyük artıkların %20'si (saat, bildirim, simgeler) dışarıda: |artık|'a göre artan sırala
+        // (eşitlikte küçük indeks önce; `sortedBy` kararlı), ilk n − floor(0,2·n) piksel kalır.
+        // iOS ikiziyle AYNI kural (eşik değeriyle süzmek eşitlikte fazla piksel bırakırdı).
+        val kalan = n - Math.floor(n * AYKIRI_ORANI).toInt()
+        val dahil = BooleanArray(n)
+        (0 until n).sortedBy { artik[it] }.take(kalan).forEach { dahil[it] = true }
+        val (a, b) = eslestir(ekran, referans, dahil)
         val satirlar = n / genislik
         return DoubleArray(satirlar) { s ->
             var degisen = 0
