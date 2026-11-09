@@ -1041,7 +1041,7 @@ public enum DuvarCizim {
     public static let atif = 10.0
     public static let yanBosluk = 30.0
     public static let kucukYildiz = 22.0
-    public static let arapcaSatir = 1.75
+    public static let arapcaSatir = 2.0
     public static let mealSatir = 1.4
     public static let kunyeHarfAraligi = 0.04
     public static let mealUstArapcali = 6.0

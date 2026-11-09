@@ -417,7 +417,7 @@ object DuvarCizim {
     const val ATIF = 10.0
     const val YAN_BOSLUK = 30.0
     const val KUCUK_YILDIZ = 22.0
-    const val ARAPCA_SATIR = 1.75
+    const val ARAPCA_SATIR = 2.0
     const val MEAL_SATIR = 1.4
     const val KUNYE_HARF_ARALIGI = 0.04
     const val MEAL_UST_ARAPCALI = 6.0

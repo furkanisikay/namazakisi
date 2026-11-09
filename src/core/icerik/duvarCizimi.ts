@@ -44,7 +44,8 @@ export const YAZI_OLCULERI = {
   /** Yıldız süsünde, Arapça yokken mealin üstündeki küçük sekiz köşeli yıldız. */
   kucukYildiz: 22,
   /** Satır yüksekliği (yazı boyunun katı, mutlak): Arapça ve meal; künye/atıf yazı tipinin kendi satırı. */
-  arapcaSatir: 1.75,
+  /** 2'nin altında Amiri Quran'da üst satırın harekesi alt satırınkine değer (1,75'te piksel çakışması ölçüldü). */
+  arapcaSatir: 2,
   mealSatir: 1.4,
   /** Künyenin harf aralığı (yazı boyunun katı). */
   kunyeHarfAraligi: 0.04,
