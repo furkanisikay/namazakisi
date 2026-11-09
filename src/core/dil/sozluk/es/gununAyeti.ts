@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Borde inferior de la zona del reloj',
       olcumBaslik: 'Medir la posición del reloj',
       olcumAciklama: 'La posición del reloj se obtiene de una captura de su pantalla de bloqueo. La captura no se guarda.',
-      adimAndroid: 'Aplique el fondo de pantalla con «Aplicar».',
+      adimAndroid: 'Active el fondo de pantalla y aplíquelo con «Aplicar».',
       adimIos: 'Ejecute el atajo una vez para poner el fondo de pantalla.',
-      adimGoruntu: 'Bloquee el teléfono y haga una captura de la pantalla de bloqueo.',
+      adimGoruntu: 'Borre las notificaciones, bloquee el teléfono y haga una captura de la pantalla de bloqueo.',
       adimSecin: 'Vuelva a la aplicación y elija esa captura.',
       goruntuSecin: 'Elegir captura',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Esta captura no coincide con el último fondo de pantalla aplicado. Elija una captura de la pantalla de bloqueo hecha después de aplicar el fondo.',
         bulunamadi: 'No se encontró ningún reloj en la captura; puede ajustar los bordes a mano.',
-        referansYokAndroid: 'Aplique primero el fondo de pantalla; la medición usa la última imagen aplicada.',
+        referansYokAndroid: 'Primero active el fondo de pantalla en los ajustes y aplíquelo; la medición usa la última imagen aplicada.',
         referansYokIos: 'Ponga primero el fondo de pantalla una vez con Atajos.',
         okunamadi: 'No se pudo leer la imagen. Elija una captura completa de la pantalla de bloqueo.',
       },

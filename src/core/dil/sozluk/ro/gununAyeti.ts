@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Marginea de jos a zonei ceasului',
       olcumBaslik: 'Măsurați poziția ceasului',
       olcumAciklama: 'Poziția ceasului se află dintr-o captură a ecranului dumneavoastră de blocare. Captura nu se păstrează.',
-      adimAndroid: 'Aplicați fundalul cu „Aplicați”.',
+      adimAndroid: 'Activați fundalul și aplicați-l cu „Aplicați”.',
       adimIos: 'Rulați comanda rapidă o dată, ca fundalul să fie setat.',
-      adimGoruntu: 'Blocați telefonul și faceți o captură a ecranului de blocare.',
+      adimGoruntu: 'Ștergeți notificările, blocați telefonul și faceți o captură a ecranului de blocare.',
       adimSecin: 'Reveniți în aplicație și alegeți acea captură.',
       goruntuSecin: 'Alegeți captura',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Această captură nu se potrivește cu ultimul fundal aplicat. Alegeți o captură a ecranului de blocare făcută după aplicarea fundalului.',
         bulunamadi: 'Nu s-a găsit niciun ceas în captură; puteți ajusta marginile manual.',
-        referansYokAndroid: 'Aplicați mai întâi fundalul; măsurarea se face cu ultima imagine aplicată.',
+        referansYokAndroid: 'Mai întâi activați fundalul din setări și aplicați-l; măsurarea se face cu ultima imagine aplicată.',
         referansYokIos: 'Setați mai întâi fundalul o dată cu Scurtături.',
         okunamadi: 'Imaginea nu a putut fi citită. Alegeți o captură completă a ecranului de blocare.',
       },

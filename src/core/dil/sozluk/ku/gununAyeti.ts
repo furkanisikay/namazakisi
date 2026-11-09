@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Keviya jêrîn a qada saetê',
       olcumBaslik: 'Cihê saetê bipîvin',
       olcumAciklama: 'Cihê saetê ji wêneya dîmena kilîtê ya we tê dîtin. Wêne nayê tomarkirin.',
-      adimAndroid: 'Wêneyê dîwêr bi "Bisepînin" bisepînin.',
+      adimAndroid: 'Wêneyê dîwêr vekin û bi "Bisepînin" bisepînin.',
       adimIos: 'Ji bo ku wêneyê dîwêr were danîn, kurteriyê carekê bixebitînin.',
-      adimGoruntu: 'Telefonê kilît bikin û wêneyekî dîmena kilîtê bigirin.',
+      adimGoruntu: 'Agahdariyan paqij bikin, telefonê kilît bikin û wêneyekî dîmena kilîtê bigirin.',
       adimSecin: 'Vegerin sepanê û wî wêneyî hilbijêrin.',
       goruntuSecin: 'Wêne hilbijêrin',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Ev wêne li gorî wêneyê dîwêr ê dawî yê hatî sepandin nayê. Wêneyekî dîmena kilîtê hilbijêrin ku piştî sepandina wêneyê dîwêr hatiye girtin.',
         bulunamadi: 'Di wêneyê de saet nehate dîtin; hûn dikarin keviyan bi destan eyar bikin.',
-        referansYokAndroid: 'Pêşî wêneyê dîwêr bisepînin; pîvan bi wêneyê dawî yê hatî sepandin tê kirin.',
+        referansYokAndroid: 'Pêşî di Mîhengê de wêneyê dîwêr vekin û bisepînin; pîvan bi wêneyê dawî yê hatî sepandin tê kirin.',
         referansYokIos: 'Pêşî bi Shortcuts carekê wêneyê dîwêr deynin.',
         okunamadi: 'Wêne nehate xwendin. Wêneyekî tevahî yê dîmena kilîtê hilbijêrin.',
       },

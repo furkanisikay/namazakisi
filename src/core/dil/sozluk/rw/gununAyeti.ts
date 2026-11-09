@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Uruhande rwo hasi rw’agace k’isaha',
       olcumBaslik: 'Gupima aho isaha iri',
       olcumAciklama: 'Aho isaha iri haboneka ku ifoto ya ekarani yawe ifunze. Iyo foto ntibikwa.',
-      adimAndroid: 'Shyiraho ifoto y’inyuma ukoresheje "Gushyiraho".',
+      adimAndroid: 'Fungura ifoto y’inyuma hanyuma uyishyireho ukoresheje "Gushyiraho".',
       adimIos: 'Koresha shortcut rimwe kugira ngo ifoto y’inyuma ishyirweho.',
-      adimGoruntu: 'Funga telefoni hanyuma ufate ifoto ya ekarani ifunze.',
+      adimGoruntu: 'Siba amamenyesha, funga telefoni hanyuma ufate ifoto ya ekarani ifunze.',
       adimSecin: 'Garuka muri porogaramu uhitemo iyo foto.',
       goruntuSecin: 'Guhitamo ifoto',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Iyi foto ntihura n’ifoto y’inyuma yashyizweho bwa nyuma. Hitamo ifoto ya ekarani ifunze yafashwe nyuma yo gushyiraho ifoto y’inyuma.',
         bulunamadi: 'Nta saha ibonetse ku ifoto; ushobora guhindura impande n’intoki.',
-        referansYokAndroid: 'Banza ushyireho ifoto y’inyuma; gupima bikoresha ifoto yashyizweho bwa nyuma.',
+        referansYokAndroid: 'Banza ufungure ifoto y’inyuma muri Igenamiterere hanyuma uyishyireho; gupima bikoresha ifoto yashyizweho bwa nyuma.',
         referansYokIos: 'Banza ushyireho ifoto y’inyuma rimwe ukoresheje Shortcuts.',
         okunamadi: 'Ifoto ntiyasomwe. Hitamo ifoto yuzuye ya ekarani ifunze.',
       },

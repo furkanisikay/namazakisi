@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Nsuka ya nsé ya esika ya ngonga',
       olcumBaslik: 'Bomeka esika ya ngonga',
       olcumAciklama: 'Esika ya ngonga emonanaka na foto ya ekran na bino ya kokanga. Foto yango ebombamaka te.',
-      adimAndroid: 'Botia elilingi ya ekran na "Kosalela".',
+      adimAndroid: 'Bofungola elilingi ya ekran mpe botia yango na "Kosalela".',
       adimIos: 'Bobimisa shortcut mbala moko mpo elilingi ya ekran etiama.',
-      adimGoruntu: 'Bokanga telefone mpe bozwa foto ya ekran ya kokanga.',
+      adimGoruntu: 'Bolongola mayebisi, bokanga telefone mpe bozwa foto ya ekran ya kokanga.',
       adimSecin: 'Bozonga na application mpe bopona foto yango.',
       goruntuSecin: 'Bopona foto',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Foto oyo ekokani te na elilingi ya ekran oyo etiamaki na nsuka. Bopona foto ya ekran ya kokanga oyo bozwaki nsima ya kotia elilingi.',
         bulunamadi: 'Ngonga emonani te na foto; bokoki kobongisa nsuka na loboko.',
-        referansYokAndroid: 'Liboso botia elilingi ya ekran; komeka esalelaka elilingi oyo etiamaki na nsuka.',
+        referansYokAndroid: 'Liboso bofungola elilingi ya ekran na Mibongiseli mpe botia yango; komeka esalelaka elilingi oyo etiamaki na nsuka.',
         referansYokIos: 'Liboso botia elilingi ya ekran mbala moko na Shortcuts.',
         okunamadi: 'Foto etángami te. Bopona foto mobimba ya ekran ya kokanga.',
       },

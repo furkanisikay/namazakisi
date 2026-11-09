@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Skaji i poshtëm i zonës së orës',
       olcumBaslik: 'Matni vendin e orës',
       olcumAciklama: 'Vendi i orës gjendet nga një pamje e ekranit të kyçjes suaj. Pamja nuk ruhet.',
-      adimAndroid: 'Zbatoni sfondin me "Zbatoni".',
+      adimAndroid: 'Aktivizoni sfondin dhe zbatojeni me "Zbatoni".',
       adimIos: 'Ekzekutoni shkurtoren një herë që të vendoset sfondi.',
-      adimGoruntu: 'Kyçni telefonin dhe bëni një pamje të ekranit të kyçjes.',
+      adimGoruntu: 'Pastroni njoftimet, kyçni telefonin dhe bëni një pamje të ekranit të kyçjes.',
       adimSecin: 'Kthehuni te aplikacioni dhe zgjidhni atë pamje.',
       goruntuSecin: 'Zgjidhni pamjen',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Kjo pamje nuk përputhet me sfondin e fundit të zbatuar. Zgjidhni një pamje të ekranit të kyçjes të bërë pasi zbatuat sfondin.',
         bulunamadi: 'Në pamje nuk u gjet ora; skajet mund t’i rregulloni me dorë.',
-        referansYokAndroid: 'Zbatoni fillimisht sfondin; matja bëhet me imazhin e fundit të zbatuar.',
+        referansYokAndroid: 'Fillimisht aktivizoni sfondin te cilësimet dhe zbatojeni; matja bëhet me imazhin e fundit të zbatuar.',
         referansYokIos: 'Vendosni fillimisht sfondin një herë me Shortcuts.',
         okunamadi: 'Imazhi nuk u lexua. Zgjidhni një pamje të plotë të ekranit të kyçjes.',
       },

@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Saha kpaŋa yaɣili gbinni noli',
       olcumBaslik: 'Maɣisimi saha kpaŋa shee',
       olcumAciklama: 'Bɛ nyɛri saha kpaŋa shee a kparibu yaɣili foto puuni. Bɛ bi gbibiri foto maa.',
-      adimAndroid: 'Zaŋmi yaɣili foto maa tum ni "Zaŋmi tum".',
+      adimAndroid: 'Yoomi yaɣili foto maa ka zaŋ li tum ni "Zaŋmi tum".',
       adimIos: 'Tummi shortcut maa yɛm yini ka yaɣili foto maa zani.',
-      adimGoruntu: 'Kpari telefon maa ka deemi kparibu yaɣili foto.',
+      adimGoruntu: 'Yihimi lahabaya maa, kpari telefon maa ka deemi kparibu yaɣili foto.',
       adimSecin: 'Labimi app maa ni ka gami foto maa.',
       goruntuSecin: 'Gami foto',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Foto ŋɔ bi saɣi yaɣili foto shɛli bɛ ni daa zaŋ tum naabo maa. Gami kparibu yaɣili foto shɛli bɛ ni deei yaɣili foto maa tumbu nyaaŋa.',
         bulunamadi: 'Bɛ bi nya saha kpaŋa foto maa puuni; a ni tooi mali noya maa ni nuu.',
-        referansYokAndroid: 'Piligimi n-zaŋ yaɣili foto tum; bɛ maɣisiri ni foto shɛli bɛ ni zaŋ tum naabo.',
+        referansYokAndroid: 'Piligimi n-yooi yaɣili foto Malizali ni ka zaŋ li tum; bɛ maɣisiri ni foto shɛli bɛ ni zaŋ tum naabo.',
         referansYokIos: 'Piligimi n-zaŋ yaɣili foto zali yɛm yini ni Shortcuts.',
         okunamadi: 'Bɛ bi tooi karim foto maa. Gami kparibu yaɣili foto shɛli din pali.',
       },

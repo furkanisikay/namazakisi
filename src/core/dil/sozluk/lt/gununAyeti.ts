@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Apatinis laikrodžio srities kraštas',
       olcumBaslik: 'Išmatuoti laikrodžio padėtį',
       olcumAciklama: 'Laikrodžio padėtis nustatoma iš jūsų užrakinimo ekrano kopijos. Ekrano kopija nesaugoma.',
-      adimAndroid: 'Pritaikykite ekrano foną mygtuku „Taikyti“.',
+      adimAndroid: 'Įjunkite ekrano foną ir pritaikykite jį mygtuku „Taikyti“.',
       adimIos: 'Vieną kartą paleiskite spartųjį klavišą, kad ekrano fonas būtų nustatytas.',
-      adimGoruntu: 'Užrakinkite telefoną ir padarykite užrakinimo ekrano kopiją.',
+      adimGoruntu: 'Išvalykite pranešimus, užrakinkite telefoną ir padarykite užrakinimo ekrano kopiją.',
       adimSecin: 'Grįžkite į programėlę ir pasirinkite tą ekrano kopiją.',
       goruntuSecin: 'Pasirinkti ekrano kopiją',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Ši ekrano kopija neatitinka paskutinio pritaikyto ekrano fono. Pasirinkite užrakinimo ekrano kopiją, padarytą pritaikius foną.',
         bulunamadi: 'Ekrano kopijoje laikrodis nerastas; kraštus galite sureguliuoti rankiniu būdu.',
-        referansYokAndroid: 'Pirmiausia pritaikykite ekrano foną; matuojama pagal paskutinį pritaikytą vaizdą.',
+        referansYokAndroid: 'Pirmiausia nustatymuose įjunkite ekrano foną ir jį pritaikykite; matuojama pagal paskutinį pritaikytą vaizdą.',
         referansYokIos: 'Pirmiausia vieną kartą nustatykite ekrano foną per „Spartieji klavišai“.',
         okunamadi: 'Vaizdo nepavyko nuskaityti. Pasirinkite viso užrakinimo ekrano kopiją.',
       },

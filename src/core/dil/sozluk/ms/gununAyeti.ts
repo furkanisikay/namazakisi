@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Tepi bawah kawasan jam',
       olcumBaslik: 'Ukur kedudukan jam',
       olcumAciklama: 'Kedudukan jam ditentukan daripada tangkapan skrin kunci anda. Tangkapan skrin tidak disimpan.',
-      adimAndroid: 'Pasang kertas dinding dengan "Gunakan".',
+      adimAndroid: 'Hidupkan kertas dinding dan pasang dengan "Gunakan".',
       adimIos: 'Jalankan pintasan sekali supaya kertas dinding dipasang.',
-      adimGoruntu: 'Kunci telefon dan ambil tangkapan skrin bagi skrin kunci.',
+      adimGoruntu: 'Kosongkan pemberitahuan, kunci telefon dan ambil tangkapan skrin bagi skrin kunci.',
       adimSecin: 'Kembali ke aplikasi dan pilih tangkapan skrin itu.',
       goruntuSecin: 'Pilih tangkapan skrin',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Tangkapan skrin ini tidak sepadan dengan kertas dinding terakhir yang dipasang. Pilih tangkapan skrin kunci yang diambil selepas kertas dinding dipasang.',
         bulunamadi: 'Jam tidak ditemui dalam tangkapan skrin; anda boleh melaraskan tepinya secara manual.',
-        referansYokAndroid: 'Pasang kertas dinding dahulu; pengukuran menggunakan imej terakhir yang dipasang.',
+        referansYokAndroid: 'Hidupkan dan pasang kertas dinding dalam tetapan dahulu; pengukuran menggunakan imej terakhir yang dipasang.',
         referansYokIos: 'Pasang kertas dinding sekali dahulu dengan Pintasan.',
         okunamadi: 'Imej tidak dapat dibaca. Pilih tangkapan skrin penuh bagi skrin kunci.',
       },

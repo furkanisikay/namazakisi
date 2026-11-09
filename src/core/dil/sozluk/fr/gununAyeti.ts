@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       olcumBaslik: 'Mesurer la position de l’horloge',
       olcumAciklama:
         'La position de l’horloge est déterminée à partir d’une capture de votre écran de verrouillage. La capture n’est pas conservée.',
-      adimAndroid: 'Appliquez le fond d’écran avec « Appliquer ».',
+      adimAndroid: 'Activez le fond d’écran et appliquez-le avec « Appliquer ».',
       adimIos: 'Exécutez le raccourci une fois pour définir le fond d’écran.',
-      adimGoruntu: 'Verrouillez le téléphone et faites une capture d’écran de l’écran de verrouillage.',
+      adimGoruntu: 'Effacez les notifications, verrouillez le téléphone et faites une capture d’écran de l’écran de verrouillage.',
       adimSecin: 'Revenez dans l’application et choisissez cette capture.',
       goruntuSecin: 'Choisir la capture',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Cette capture ne correspond pas au dernier fond d’écran appliqué. Choisissez une capture de l’écran de verrouillage prise après avoir appliqué le fond d’écran.',
         bulunamadi: 'Aucune horloge trouvée dans la capture ; vous pouvez ajuster les bords manuellement.',
-        referansYokAndroid: 'Appliquez d’abord le fond d’écran ; la mesure se fait avec la dernière image appliquée.',
+        referansYokAndroid: 'Activez d’abord le fond d’écran dans les réglages et appliquez-le ; la mesure se fait avec la dernière image appliquée.',
         referansYokIos: 'Définissez d’abord une fois le fond d’écran avec Raccourcis.',
         okunamadi: 'L’image n’a pas pu être lue. Choisissez une capture complète de l’écran de verrouillage.',
       },

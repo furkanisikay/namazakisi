@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Ceeɗe les nokku montoor',
       olcumBaslik: 'Betee nokku montoor',
       olcumAciklama: 'Nokku montoor ina heɓoo e natal yaynirde mon uddaande. Natal ngal danndetaake.',
-      adimAndroid: 'Huutoree natal yaynirde ngal e "Huutoree".',
+      adimAndroid: 'Huɓɓinee natal yaynirde ngal, huutoree ngal e "Huutoree".',
       adimIos: 'Huutoree shortcut oo laawol gootol ngam natal yaynirde ngal waɗee.',
-      adimGoruntu: 'Uddee telefon oo, ƴettee natal yaynirde uddaande.',
+      adimGoruntu: 'Momtee tintine ɗee, uddee telefon oo, ƴettee natal yaynirde uddaande.',
       adimSecin: 'Artee e jaaɓnirgal ngal, suɓee natal ngal.',
       goruntuSecin: 'Suɓo natal',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Ndee natal fotaani e natal yaynirde huutoraaɗo sakket. Suɓee natal yaynirde uddaande ƴettaaɗo ɓaawo huutoraade natal yaynirde.',
         bulunamadi: 'Montoor heɓaaka e natal ngal; on mbaawi moƴƴinde ceeɗe ɗe e juuɗe.',
-        referansYokAndroid: 'Adee huutorde natal yaynirde; betgol ngol ina huutoroo natal huutoraaɗo sakket.',
+        referansYokAndroid: 'Adee huɓɓinde natal yaynirde ngal e Teelte, huutoree ngal; betgol ngol ina huutoroo natal huutoraaɗo sakket.',
         referansYokIos: 'Adee waɗde natal yaynirde laawol gootol e Shortcuts.',
         okunamadi: 'Natal ngal janngaaki. Suɓee natal yaynirde uddaande timmuɗo.',
       },

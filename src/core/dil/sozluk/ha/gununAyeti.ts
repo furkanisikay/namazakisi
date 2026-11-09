@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Gefen ƙasa na yankin agogo',
       olcumBaslik: 'Auna wurin agogo',
       olcumAciklama: 'Ana gano wurin agogo daga hoton allon kulle naku. Ba a ajiye hoton ba.',
-      adimAndroid: 'Saka fuskar bango da maɓallin "Aiwatar".',
+      adimAndroid: 'Kunna fuskar bango, sannan ku saka ta da maɓallin "Aiwatar".',
       adimIos: 'Gudanar da gajeriyar hanyar sau ɗaya don a saka fuskar bango.',
-      adimGoruntu: 'Kulle wayar sannan ku ɗauki hoton allon kulle.',
+      adimGoruntu: 'Share sanarwa, kulle wayar sannan ku ɗauki hoton allon kulle.',
       adimSecin: 'Koma cikin manhajar ku zaɓi wannan hoton.',
       goruntuSecin: 'Zaɓi hoton',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Wannan hoton bai dace da fuskar bango da aka saka na ƙarshe ba. Zaɓi hoton allon kulle da aka ɗauka bayan an saka fuskar bango.',
         bulunamadi: 'Ba a sami agogo a hoton ba; kuna iya daidaita gefunan da hannu.',
-        referansYokAndroid: 'Ku fara saka fuskar bango; ana aunawa da hoton da aka saka na ƙarshe.',
+        referansYokAndroid: 'Ku fara kunna fuskar bango a Saituna ku saka ta; ana aunawa da hoton da aka saka na ƙarshe.',
         referansYokIos: 'Ku fara saka fuskar bango sau ɗaya ta Shortcuts.',
         okunamadi: 'Ba a iya karanta hoton ba. Zaɓi cikakken hoton allon kulle.',
       },

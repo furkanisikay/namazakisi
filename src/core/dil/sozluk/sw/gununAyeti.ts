@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Ukingo wa chini wa eneo la saa',
       olcumBaslik: 'Pima mahali pa saa',
       olcumAciklama: 'Mahali pa saa hupatikana kutoka kwenye picha ya skrini yako iliyofungwa. Picha hiyo haihifadhiwi.',
-      adimAndroid: 'Weka mandhari kwa kubonyeza "Tumia".',
+      adimAndroid: 'Washa mandhari kisha uiweke kwa kubonyeza "Tumia".',
       adimIos: 'Endesha njia ya mkato mara moja ili mandhari iwekwe.',
-      adimGoruntu: 'Funga simu kisha piga picha ya skrini iliyofungwa.',
+      adimGoruntu: 'Futa arifa, funga simu kisha piga picha ya skrini iliyofungwa.',
       adimSecin: 'Rudi kwenye programu na uchague picha hiyo.',
       goruntuSecin: 'Chagua picha ya skrini',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Picha hii hailingani na mandhari iliyowekwa mwisho. Chagua picha ya skrini iliyofungwa iliyopigwa baada ya kuweka mandhari.',
         bulunamadi: 'Saa haikupatikana kwenye picha; unaweza kurekebisha kingo mwenyewe.',
-        referansYokAndroid: 'Weka mandhari kwanza; upimaji hutumia picha iliyowekwa mwisho.',
+        referansYokAndroid: 'Kwanza washa mandhari kwenye Mipangilio na uiweke; upimaji hutumia picha iliyowekwa mwisho.',
         referansYokIos: 'Kwanza weka mandhari mara moja kwa Shortcuts.',
         okunamadi: 'Picha haikuweza kusomwa. Chagua picha kamili ya skrini iliyofungwa.',
       },

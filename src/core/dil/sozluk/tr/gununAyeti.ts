@@ -104,9 +104,9 @@ export const gununAyeti = {
       altKenar: 'Saat alanının alt kenarı',
       olcumBaslik: 'Saatin yerini ölçün',
       olcumAciklama: 'Saatin yeri kilit ekranınızın görüntüsünden bulunur. Görüntü saklanmaz.',
-      adimAndroid: 'Duvar kâğıdını "Uygulayın" ile uygulayın.',
+      adimAndroid: 'Duvar kâğıdını açın ve "Uygulayın" ile uygulayın.',
       adimIos: 'Duvar kâğıdının ayarlanması için kısayolu bir kez çalıştırın.',
-      adimGoruntu: 'Telefonu kilitleyin ve kilit ekranının ekran görüntüsünü alın.',
+      adimGoruntu: 'Bildirimleri temizleyin, telefonu kilitleyin ve kilit ekranının ekran görüntüsünü alın.',
       adimSecin: 'Uygulamaya dönün ve bu görüntüyü seçin.',
       goruntuSecin: 'Görüntüyü seçin',
       sonuc: {
@@ -114,7 +114,7 @@ export const gununAyeti = {
         uyusmadi:
           'Bu görüntü son uygulanan duvar kâğıdıyla eşleşmedi. Duvar kâğıdını uyguladıktan sonra alınmış bir kilit ekranı görüntüsü seçin.',
         bulunamadi: 'Görüntüde saat bulunamadı; kenarları elle ayarlayabilirsiniz.',
-        referansYokAndroid: 'Önce duvar kâğıdını uygulayın; ölçüm son uygulanan görselle yapılır.',
+        referansYokAndroid: 'Önce ayarlardan duvar kâğıdını açıp uygulayın; ölçüm son uygulanan görselle yapılır.',
         referansYokIos: 'Önce Kısayollar ile duvar kâğıdını bir kez uygulayın.',
         okunamadi: 'Görüntü okunamadı. Kilit ekranının tam ekran görüntüsünü seçin.',
       },

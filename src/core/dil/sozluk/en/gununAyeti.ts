@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Bottom edge of the clock area',
       olcumBaslik: 'Measure where the clock is',
       olcumAciklama: 'The clock\'s position is found from a screenshot of your lock screen. The screenshot isn\'t kept.',
-      adimAndroid: 'Set the wallpaper with "Apply".',
+      adimAndroid: 'Turn on the wallpaper and apply it with "Apply".',
       adimIos: 'Run the shortcut once so the wallpaper is set.',
-      adimGoruntu: 'Lock your phone and take a screenshot of the lock screen.',
+      adimGoruntu: 'Clear your notifications, lock your phone and take a screenshot of the lock screen.',
       adimSecin: 'Come back to the app and choose that screenshot.',
       goruntuSecin: 'Choose the screenshot',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'This screenshot doesn\'t match the last applied wallpaper. Choose a lock screen screenshot taken after applying the wallpaper.',
         bulunamadi: 'No clock was found in the screenshot; you can adjust the edges manually.',
-        referansYokAndroid: 'Apply the wallpaper first; the measurement uses the last applied image.',
+        referansYokAndroid: 'First turn on the wallpaper in settings and apply it; the measurement uses the last applied image.',
         referansYokIos: 'First set the wallpaper once with Shortcuts.',
         okunamadi: 'The image couldn\'t be read. Choose a full-screen screenshot of the lock screen.',
       },

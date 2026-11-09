@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Wakat-mak zĩigã tẽngr nora',
       olcumBaslik: 'Mak-y wakat-makã zĩigã',
       olcumAciklama: 'B nengdame wakat-makã zĩigã y pagr ekraanã foto pʋgẽ. B pa bãngd fotã ye.',
-      adimAndroid: 'Tʋm-y ne ekraan-fotã ne "Tʋm-y ne".',
+      adimAndroid: 'Pak-y ekraan-fotã la y tʋm-y ne-a ne "Tʋm-y ne".',
       adimIos: 'Tʋm-y ne shortcut-ã naoor a ye tɩ ekraan-fotã zĩnd.',
-      adimGoruntu: 'Pag-y telefõnã la y rɩk pagr ekraanã foto.',
+      adimGoruntu: 'Yik-y kibarã, pag-y telefõnã la y rɩk pagr ekraanã foto.',
       adimSecin: 'Lebg-y n kẽ app-ã pʋgẽ la y yãk fotã.',
       goruntuSecin: 'Yãk-y fotã',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Foto kãngã pa zems ne ekraan-foto b sẽn tʋm ne a yaoolem wã ye. Yãk-y pagr ekraanã foto b sẽn rɩk ekraan-fotã tʋmb poore.',
         bulunamadi: 'B pa yã wakat-mak fotã pʋgẽ ye; y tõe n maan noyã ne nugu.',
-        referansYokAndroid: 'Tʋm-y ne ekraan-fotã pipi; b makda ne foto b sẽn tʋm ne a yaoolem wã.',
+        referansYokAndroid: 'Pak-y ekraan-fotã Seglgã pʋgẽ pipi la y tʋm-y ne-a; b makda ne foto b sẽn tʋm ne a yaoolem wã.',
         referansYokIos: 'Rɩk-y Shortcuts n zĩnd ekraan-fotã naoor a ye pipi.',
         okunamadi: 'B pa tõe n karem fotã ye. Yãk-y pagr ekraanã foto sẽn pid.',
       },

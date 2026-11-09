@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Saat sahəsinin aşağı kənarı',
       olcumBaslik: 'Saatın yerini ölçün',
       olcumAciklama: 'Saatın yeri kilid ekranınızın ekran şəklindən tapılır. Ekran şəkli saxlanmır.',
-      adimAndroid: 'Divar kağızını "Tətbiq edin" ilə tətbiq edin.',
+      adimAndroid: 'Divar kağızını açın və "Tətbiq edin" ilə tətbiq edin.',
       adimIos: 'Divar kağızının qoyulması üçün qısayolu bir dəfə işə salın.',
-      adimGoruntu: 'Telefonu kilidləyin və kilid ekranının ekran şəklini çəkin.',
+      adimGoruntu: 'Bildirişləri təmizləyin, telefonu kilidləyin və kilid ekranının ekran şəklini çəkin.',
       adimSecin: 'Tətbiqə qayıdın və həmin ekran şəklini seçin.',
       goruntuSecin: 'Ekran şəklini seçin',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Bu ekran şəkli son tətbiq edilən divar kağızı ilə uyğun gəlmədi. Divar kağızını tətbiq etdikdən sonra çəkilmiş kilid ekranı şəklini seçin.',
         bulunamadi: 'Ekran şəklində saat tapılmadı; kənarları əl ilə tənzimləyə bilərsiniz.',
-        referansYokAndroid: 'Əvvəlcə divar kağızını tətbiq edin; ölçmə son tətbiq edilən şəkillə aparılır.',
+        referansYokAndroid: 'Əvvəlcə parametrlərdən divar kağızını açıb tətbiq edin; ölçmə son tətbiq edilən şəkillə aparılır.',
         referansYokIos: 'Əvvəlcə Shortcuts ilə divar kağızını bir dəfə qoyun.',
         okunamadi: 'Şəkil oxunmadı. Kilid ekranının tam ekran şəklini seçin.',
       },

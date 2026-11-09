@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Qarqara jalaa naannoo sa’aatii',
       olcumBaslik: 'Bakka sa’aatii safari',
       olcumAciklama: 'Bakki sa’aatii suuraa fuula cufaa keessanii irraa argama. Suuraan hin olkaa’amu.',
-      adimAndroid: 'Suuraa duubaa "Hojii irra oolchi" fayyadamaa hojii irra oolchaa.',
+      adimAndroid: 'Suuraa duubaa banaatii "Hojii irra oolchi" fayyadamaa hojii irra oolchaa.',
       adimIos: 'Akka suuraan duubaa kaa’amuuf karaa gabaabaa al tokko hojjechiisaa.',
-      adimGoruntu: 'Bilbila cufaatii suuraa fuula cufaa kaasaa.',
+      adimGoruntu: 'Beeksisa qulqulleessaa, bilbila cufaatii suuraa fuula cufaa kaasaa.',
       adimSecin: 'Gara appii deebi’aatii suuraa sana filadhaa.',
       goruntuSecin: 'Suuraa filadhu',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
           'Suuraan kun suuraa duubaa dhuma irratti hojii irra oole wajjin wal hin simne. Suuraa fuula cufaa erga suuraan duubaa hojii irra oolee booda kaafame filadhaa.',
         bulunamadi: 'Suuraa keessatti sa’aatiin hin argamne; qarqarota harkaan sirreessuu dandeessu.',
         referansYokAndroid:
-          'Duraan dursaa suuraa duubaa hojii irra oolchaa; safarri suuraa dhuma irratti hojii irra oole irratti hundaa’a.',
+          'Duraan dursaa Qindaa’ina keessatti suuraa duubaa banaatii hojii irra oolchaa; safarri suuraa dhuma irratti hojii irra oole irratti hundaa’a.',
         referansYokIos: 'Duraan dursaa Shortcuts fayyadamaa suuraa duubaa al tokko kaa’aa.',
         okunamadi: 'Suuraan dubbifamuu hin dandeenye. Suuraa fuula cufaa guutuu filadhaa.',
       },

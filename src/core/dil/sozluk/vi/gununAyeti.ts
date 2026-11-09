@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Cạnh dưới của vùng đồng hồ',
       olcumBaslik: 'Đo vị trí đồng hồ',
       olcumAciklama: 'Vị trí đồng hồ được xác định từ ảnh chụp màn hình khóa của bạn. Ảnh chụp không được lưu lại.',
-      adimAndroid: 'Áp dụng hình nền bằng nút "Áp dụng".',
+      adimAndroid: 'Bật hình nền rồi áp dụng bằng nút "Áp dụng".',
       adimIos: 'Chạy phím tắt một lần để đặt hình nền.',
-      adimGoruntu: 'Khóa điện thoại và chụp ảnh màn hình khóa.',
+      adimGoruntu: 'Xóa thông báo, khóa điện thoại và chụp ảnh màn hình khóa.',
       adimSecin: 'Quay lại ứng dụng và chọn ảnh chụp đó.',
       goruntuSecin: 'Chọn ảnh chụp',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Ảnh chụp này không khớp với hình nền được áp dụng gần nhất. Hãy chọn ảnh chụp màn hình khóa được chụp sau khi áp dụng hình nền.',
         bulunamadi: 'Không tìm thấy đồng hồ trong ảnh chụp; bạn có thể chỉnh các cạnh thủ công.',
-        referansYokAndroid: 'Hãy áp dụng hình nền trước; phép đo dùng hình được áp dụng gần nhất.',
+        referansYokAndroid: 'Hãy bật và áp dụng hình nền trong cài đặt trước; phép đo dùng hình được áp dụng gần nhất.',
         referansYokIos: 'Hãy đặt hình nền một lần bằng Phím tắt trước.',
         okunamadi: 'Không đọc được ảnh. Hãy chọn ảnh chụp toàn màn hình khóa.',
       },

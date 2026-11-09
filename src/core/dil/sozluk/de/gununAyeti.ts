@@ -95,9 +95,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       olcumBaslik: 'Position der Uhr messen',
       olcumAciklama:
         'Die Position der Uhr wird aus einem Bildschirmfoto Ihres Sperrbildschirms ermittelt. Das Bildschirmfoto wird nicht gespeichert.',
-      adimAndroid: 'Übernehmen Sie das Hintergrundbild mit „Übernehmen“.',
+      adimAndroid: 'Schalten Sie das Hintergrundbild ein und übernehmen Sie es mit „Übernehmen“.',
       adimIos: 'Führen Sie den Kurzbefehl einmal aus, damit das Hintergrundbild gesetzt wird.',
-      adimGoruntu: 'Sperren Sie das Telefon und erstellen Sie ein Bildschirmfoto des Sperrbildschirms.',
+      adimGoruntu: 'Löschen Sie die Benachrichtigungen, sperren Sie das Telefon und erstellen Sie ein Bildschirmfoto des Sperrbildschirms.',
       adimSecin: 'Kehren Sie zur App zurück und wählen Sie dieses Bildschirmfoto aus.',
       goruntuSecin: 'Bildschirmfoto auswählen',
       sonuc: {
@@ -105,7 +105,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Dieses Bildschirmfoto passt nicht zum zuletzt übernommenen Hintergrundbild. Wählen Sie ein Bildschirmfoto des Sperrbildschirms, das nach dem Übernehmen aufgenommen wurde.',
         bulunamadi: 'Im Bildschirmfoto wurde keine Uhr gefunden; Sie können die Ränder manuell anpassen.',
-        referansYokAndroid: 'Übernehmen Sie zuerst das Hintergrundbild; gemessen wird mit dem zuletzt übernommenen Bild.',
+        referansYokAndroid: 'Schalten Sie zuerst in den Einstellungen das Hintergrundbild ein und übernehmen Sie es; gemessen wird mit dem zuletzt übernommenen Bild.',
         referansYokIos: 'Setzen Sie das Hintergrundbild zuerst einmal mit Kurzbefehle.',
         okunamadi: 'Das Bild konnte nicht gelesen werden. Wählen Sie ein Bildschirmfoto des gesamten Sperrbildschirms.',
       },

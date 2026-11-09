@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Geeska hoose ee aagga saacadda',
       olcumBaslik: 'Cabbir meesha saacadda',
       olcumAciklama: 'Meesha saacadda waxaa laga helaa sawirka shaashadda qufulkaaga. Sawirka lama kaydiyo.',
-      adimAndroid: 'Ku dabaq sawirka asalka badhanka "Dabaq".',
+      adimAndroid: 'Shid sawirka asalka kadibna ku dabaq badhanka "Dabaq".',
       adimIos: 'Hal mar socodsii gaaban-waddada si sawirka asalka loo dhigo.',
-      adimGoruntu: 'Quful taleefanka kadibna sawir ka qaad shaashadda qufulka.',
+      adimGoruntu: 'Tirtir ogeysiisyada, quful taleefanka kadibna sawir ka qaad shaashadda qufulka.',
       adimSecin: 'Ku noqo app-ka oo dooro sawirkaas.',
       goruntuSecin: 'Dooro sawirka',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Sawirkani kuma habboona sawirka asalka ee ugu dambeeyay ee la dabaqay. Dooro sawir shaashadda qufulka ah oo la qaaday kadib markii la dabaqay sawirka asalka.',
         bulunamadi: 'Saacad lagama helin sawirka; geesaha gacanta ayaad ku hagaajin kartaa.',
-        referansYokAndroid: 'Marka hore dabaq sawirka asalka; cabbirku wuxuu adeegsadaa sawirkii ugu dambeeyay ee la dabaqay.',
+        referansYokAndroid: 'Marka hore Dejinta ka shid sawirka asalka oo dabaq; cabbirku wuxuu adeegsadaa sawirkii ugu dambeeyay ee la dabaqay.',
         referansYokIos: 'Marka hore hal mar ku dhig sawirka asalka "Shortcuts".',
         okunamadi: 'Sawirka lama akhrin karo. Dooro sawir buuxa oo shaashadda qufulka ah.',
       },

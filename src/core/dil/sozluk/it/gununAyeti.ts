@@ -95,9 +95,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       olcumBaslik: 'Misurare la posizione dell’orologio',
       olcumAciklama:
         'La posizione dell’orologio si ricava da uno screenshot della vostra schermata di blocco. Lo screenshot non viene conservato.',
-      adimAndroid: 'Applicate lo sfondo con «Applicare».',
+      adimAndroid: 'Attivate lo sfondo e applicatelo con «Applicare».',
       adimIos: 'Eseguite il comando una volta perché lo sfondo venga impostato.',
-      adimGoruntu: 'Bloccate il telefono e fate uno screenshot della schermata di blocco.',
+      adimGoruntu: 'Cancellate le notifiche, bloccate il telefono e fate uno screenshot della schermata di blocco.',
       adimSecin: 'Tornate all’app e scegliete quello screenshot.',
       goruntuSecin: 'Scegliere lo screenshot',
       sonuc: {
@@ -105,7 +105,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Questo screenshot non corrisponde all’ultimo sfondo applicato. Scegliete uno screenshot della schermata di blocco fatto dopo aver applicato lo sfondo.',
         bulunamadi: 'Nessun orologio trovato nello screenshot; potete regolare i bordi a mano.',
-        referansYokAndroid: 'Applicate prima lo sfondo; la misura usa l’ultima immagine applicata.',
+        referansYokAndroid: 'Prima attivate lo sfondo nelle impostazioni e applicatelo; la misura usa l’ultima immagine applicata.',
         referansYokIos: 'Impostate prima lo sfondo una volta con Comandi.',
         okunamadi: 'Impossibile leggere l’immagine. Scegliete uno screenshot completo della schermata di blocco.',
       },

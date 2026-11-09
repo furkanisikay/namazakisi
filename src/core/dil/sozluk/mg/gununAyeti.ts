@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Sisiny ambany amin’ny faritry ny famantaranandro',
       olcumBaslik: 'Refeso ny toeran’ny famantaranandro',
       olcumAciklama: 'Hita avy amin’ny sarin’ny efijery mihidinao ny toeran’ny famantaranandro. Tsy tehirizina ilay sary.',
-      adimAndroid: 'Ampiharo ny sary ambadika amin’ny "Ampiharo".',
+      adimAndroid: 'Alefaso ny sary ambadika ary ampiharo amin’ny "Ampiharo".',
       adimIos: 'Alefaso indray mandeha ny hitsin-dàlana mba hapetraka ny sary ambadika.',
-      adimGoruntu: 'Hidio ny telefaonina ary makà sarin’ny efijery mihidy.',
+      adimGoruntu: 'Fafao ny fampandrenesana, hidio ny telefaonina ary makà sarin’ny efijery mihidy.',
       adimSecin: 'Miverena any amin’ny fampiharana ary safidio io sary io.',
       goruntuSecin: 'Safidio ny sary',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Tsy mifanaraka amin’ny sary ambadika farany nampiharina ity sary ity. Safidio sarin’ny efijery mihidy nalaina taorian’ny nampiharana ny sary ambadika.',
         bulunamadi: 'Tsy nahitana famantaranandro tao amin’ny sary; azonao amboarina amin’ny tanana ny sisiny.',
-        referansYokAndroid: 'Ampiharo aloha ny sary ambadika; ny sary farany nampiharina no ampiasaina amin’ny fandrefesana.',
+        referansYokAndroid: 'Alefaso sy ampiharo aloha ao amin’ny Fikirana ny sary ambadika; ny sary farany nampiharina no ampiasaina amin’ny fandrefesana.',
         referansYokIos: 'Apetraho indray mandeha aloha ny sary ambadika amin’ny Shortcuts.',
         okunamadi: 'Tsy voavaky ilay sary. Safidio sarin’ny efijery mihidy feno.',
       },

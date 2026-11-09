@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Ibabang gilid ng lugar ng orasan',
       olcumBaslik: 'Sukatin ang posisyon ng orasan',
       olcumAciklama: 'Nakukuha ang posisyon ng orasan mula sa screenshot ng inyong lock screen. Hindi itinatabi ang screenshot.',
-      adimAndroid: 'Ilapat ang wallpaper gamit ang "Ilapat".',
+      adimAndroid: 'I-on ang wallpaper at ilapat ito gamit ang "Ilapat".',
       adimIos: 'Patakbuhin nang isang beses ang shortcut para maitakda ang wallpaper.',
-      adimGoruntu: 'I-lock ang telepono at kumuha ng screenshot ng lock screen.',
+      adimGoruntu: 'I-clear ang mga notification, i-lock ang telepono at kumuha ng screenshot ng lock screen.',
       adimSecin: 'Bumalik sa app at piliin ang screenshot na iyon.',
       goruntuSecin: 'Piliin ang screenshot',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Hindi tugma ang screenshot na ito sa huling inilapat na wallpaper. Pumili ng screenshot ng lock screen na kinuha pagkatapos ilapat ang wallpaper.',
         bulunamadi: 'Walang nakitang orasan sa screenshot; maaari ninyong ayusin nang manwal ang mga gilid.',
-        referansYokAndroid: 'Ilapat muna ang wallpaper; ginagamit sa pagsukat ang huling inilapat na larawan.',
+        referansYokAndroid: 'I-on muna ang wallpaper sa mga setting at ilapat ito; ginagamit sa pagsukat ang huling inilapat na larawan.',
         referansYokIos: 'Itakda muna nang isang beses ang wallpaper gamit ang Shortcuts.',
         okunamadi: 'Hindi mabasa ang larawan. Pumili ng buong screenshot ng lock screen.',
       },

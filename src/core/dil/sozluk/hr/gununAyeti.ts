@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Donji rub područja sata',
       olcumBaslik: 'Izmjerite položaj sata',
       olcumAciklama: 'Položaj sata određuje se iz snimke zaključanog zaslona. Snimka se ne čuva.',
-      adimAndroid: 'Primijenite pozadinu gumbom „Primijenite”.',
+      adimAndroid: 'Uključite pozadinu i primijenite je gumbom „Primijenite”.',
       adimIos: 'Pokrenite prečac jednom kako bi se pozadina postavila.',
-      adimGoruntu: 'Zaključajte telefon i snimite zaključani zaslon.',
+      adimGoruntu: 'Obrišite obavijesti, zaključajte telefon i snimite zaključani zaslon.',
       adimSecin: 'Vratite se u aplikaciju i odaberite tu snimku.',
       goruntuSecin: 'Odaberite snimku',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Ova snimka ne odgovara posljednjoj primijenjenoj pozadini. Odaberite snimku zaključanog zaslona napravljenu nakon primjene pozadine.',
         bulunamadi: 'Na snimci nije pronađen sat; rubove možete prilagoditi ručno.',
-        referansYokAndroid: 'Najprije primijenite pozadinu; mjeri se prema posljednjoj primijenjenoj slici.',
+        referansYokAndroid: 'Najprije u postavkama uključite pozadinu i primijenite je; mjeri se prema posljednjoj primijenjenoj slici.',
         referansYokIos: 'Najprije jednom postavite pozadinu pomoću Prečaca.',
         okunamadi: 'Slika se ne može pročitati. Odaberite snimku cijelog zaključanog zaslona.',
       },

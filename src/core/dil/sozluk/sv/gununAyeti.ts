@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Nedre kanten av klockområdet',
       olcumBaslik: 'Mät klockans position',
       olcumAciklama: 'Klockans position hittas i en skärmbild av låsskärmen. Skärmbilden sparas inte.',
-      adimAndroid: 'Använd bakgrundsbilden med ”Använd”.',
+      adimAndroid: 'Slå på bakgrundsbilden och använd den med ”Använd”.',
       adimIos: 'Kör genvägen en gång så att bakgrundsbilden ställs in.',
-      adimGoruntu: 'Lås telefonen och ta en skärmbild av låsskärmen.',
+      adimGoruntu: 'Rensa aviseringarna, lås telefonen och ta en skärmbild av låsskärmen.',
       adimSecin: 'Gå tillbaka till appen och välj den skärmbilden.',
       goruntuSecin: 'Välj skärmbild',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Skärmbilden matchar inte den senast använda bakgrundsbilden. Välj en skärmbild av låsskärmen som togs efter att bakgrundsbilden använts.',
         bulunamadi: 'Ingen klocka hittades i skärmbilden; kanterna kan justeras manuellt.',
-        referansYokAndroid: 'Använd bakgrundsbilden först; mätningen görs med den senast använda bilden.',
+        referansYokAndroid: 'Slå först på bakgrundsbilden i inställningarna och använd den; mätningen görs med den senast använda bilden.',
         referansYokIos: 'Ställ först in bakgrundsbilden en gång med Genvägar.',
         okunamadi: 'Bilden kunde inte läsas. Välj en skärmbild av hela låsskärmen.',
       },

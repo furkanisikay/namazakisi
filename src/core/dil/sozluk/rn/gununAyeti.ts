@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Impera yo hepfo y’akarere k’isaha',
       olcumBaslik: 'Mupime aho isaha iri',
       olcumAciklama: 'Aho isaha iri haboneka ku ifoto y’urupapuro rwanyu rwo kwugara. Iyo foto ntibikwa.',
-      adimAndroid: 'Mushireho ishusho y’inyuma mukoresheje "Mushireho".',
+      adimAndroid: 'Mufungure ishusho y’inyuma maze muyishireho mukoresheje "Mushireho".',
       adimIos: 'Mukoreshe shortcut rimwe kugira ishusho y’inyuma ishirweho.',
-      adimGoruntu: 'Mwugare terefone maze mufate ifoto y’urupapuro rwo kwugara.',
+      adimGoruntu: 'Mufute amamenyesha, mwugare terefone maze mufate ifoto y’urupapuro rwo kwugara.',
       adimSecin: 'Musubire muri porogarama muhitemwo iyo foto.',
       goruntuSecin: 'Muhitemwo ifoto',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Iyi foto ntihuye n’ishusho y’inyuma yashizweho ubwa nyuma. Muhitemwo ifoto y’urupapuro rwo kwugara yafashwe inyuma yo gushiraho ishusho y’inyuma.',
         bulunamadi: 'Nta saha yabonetse ku ifoto; mushobora guhindura impera n’amaboko.',
-        referansYokAndroid: 'Mubanze mushireho ishusho y’inyuma; gupima bikoresha ishusho yashizweho ubwa nyuma.',
+        referansYokAndroid: 'Mubanze mufungure ishusho y’inyuma mu Mahitamwo maze muyishireho; gupima bikoresha ishusho yashizweho ubwa nyuma.',
         referansYokIos: 'Mubanze mushireho ishusho y’inyuma rimwe mukoresheje Shortcuts.',
         okunamadi: 'Ifoto ntiyasomwe. Muhitemwo ifoto yuzuye y’urupapuro rwo kwugara.',
       },

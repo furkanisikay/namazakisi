@@ -98,9 +98,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Sagat meýdançasynyň aşaky gyrasy',
       olcumBaslik: 'Sagadyň ýerini ölçäň',
       olcumAciklama: 'Sagadyň ýeri gulp ekranyňyzyň skrinşotyndan tapylýar. Skrinşot saklanmaýar.',
-      adimAndroid: 'Diwar kagyzyny "Ulanyň" bilen ulanyň.',
+      adimAndroid: 'Diwar kagyzyny açyň we "Ulanyň" bilen ulanyň.',
       adimIos: 'Diwar kagyzy goýular ýaly gysga ýoly bir gezek işlediň.',
-      adimGoruntu: 'Telefony gulplaň we gulp ekranynyň skrinşotyny alyň.',
+      adimGoruntu: 'Habarnamalary arassalaň, telefony gulplaň we gulp ekranynyň skrinşotyny alyň.',
       adimSecin: 'Programma gaýdyp geliň we şol skrinşoty saýlaň.',
       goruntuSecin: 'Skrinşoty saýlaň',
       sonuc: {
@@ -108,7 +108,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Bu skrinşot iň soňky ulanylan diwar kagyzyna gabat gelmedi. Diwar kagyzyny ulanandan soň alnan gulp ekranynyň skrinşotyny saýlaň.',
         bulunamadi: 'Skrinşotda sagat tapylmady; gyralaryny el bilen sazlap bilersiňiz.',
-        referansYokAndroid: 'Ilki diwar kagyzyny ulanyň; ölçeg iň soňky ulanylan surat bilen geçirilýär.',
+        referansYokAndroid: 'Ilki sazlamalarda diwar kagyzyny açyp ulanyň; ölçeg iň soňky ulanylan surat bilen geçirilýär.',
         referansYokIos: 'Ilki Gysga ýollar arkaly diwar kagyzyny bir gezek goýuň.',
         okunamadi: 'Surat okalmady. Gulp ekranynyň doly skrinşotyny saýlaň.',
       },

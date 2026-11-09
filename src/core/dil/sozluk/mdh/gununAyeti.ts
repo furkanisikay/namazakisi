@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Pinggir sa lalam na lugar na orasan',
       olcumBaslik: 'Sukata su darpa na orasan',
       olcumAciklama: 'Matuntut su darpa na orasan ebpun sa screenshot na lock screen nengka. Di matagu su screenshot.',
-      adimAndroid: 'Gamita su wallpaper sa "Gamitin".',
+      adimAndroid: 'I-on su wallpaper andu gamita sa "Gamitin".',
       adimIos: 'Pagandaga su shortcut sa sabad bu ka mapakapedtug su wallpaper.',
-      adimGoruntu: 'I-lock su telepono andu kuwa sa screenshot na lock screen.',
+      adimGoruntu: 'Kwaan su manga notification, i-lock su telepono andu kuwa sa screenshot na lock screen.',
       adimSecin: 'Kambalingan sa app andu pilia su screenshot a nan.',
       goruntuSecin: 'Pilia su screenshot',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Di makaumbit su screenshot a nya sa wallpaper a ulyan a ginamit. Pilia su screenshot na lock screen a kinuwa ulyan na kinagamit sa wallpaper.',
         bulunamadi: 'Dala nakita a orasan sa screenshot; ka-ayusan nengka su mga pinggir sa lima.',
-        referansYokAndroid: 'Gamita pan su wallpaper; su ulyan a ginamit a litrato i ipagsukat.',
+        referansYokAndroid: 'I-on pan su wallpaper sa Manga setting andu gamita; su ulyan a ginamit a litrato i ipagsukat.',
         referansYokIos: 'Pedtuga pan sa sabad su wallpaper sa Shortcuts.',
         okunamadi: 'Di nabatya su litrato. Pilia su sangat a screenshot na lock screen.',
       },

@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Ubos nga ngilit sa lugar sa orasan',
       olcumBaslik: 'Sukda ang posisyon sa orasan',
       olcumAciklama: 'Ang posisyon sa orasan makita gikan sa screenshot sa inyong lock screen. Dili tipigan ang screenshot.',
-      adimAndroid: 'Gamita ang wallpaper pinaagi sa "Gamita".',
+      adimAndroid: 'I-on ang wallpaper ug gamita kini pinaagi sa "Gamita".',
       adimIos: 'Padagana ang shortcut makausa aron mabutang ang wallpaper.',
-      adimGoruntu: 'I-lock ang telepono ug pagkuha og screenshot sa lock screen.',
+      adimGoruntu: 'Limpyohi ang mga pahibalo, i-lock ang telepono ug pagkuha og screenshot sa lock screen.',
       adimSecin: 'Balik sa app ug pilia kana nga screenshot.',
       goruntuSecin: 'Pilia ang screenshot',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Kini nga screenshot dili mohaum sa wallpaper nga kataposang gigamit. Pilia ang screenshot sa lock screen nga gikuha human gamita ang wallpaper.',
         bulunamadi: 'Walay orasan nga nakit-an sa screenshot; mahimo ninyong i-adjust nga mano-mano ang mga ngilit.',
-        referansYokAndroid: 'Gamita una ang wallpaper; ang pagsukod mogamit sa kataposang gigamit nga hulagway.',
+        referansYokAndroid: 'Una, i-on ang wallpaper sa mga setting ug gamita kini; ang pagsukod mogamit sa kataposang gigamit nga hulagway.',
         referansYokIos: 'Ibutang una makausa ang wallpaper gamit ang Shortcuts.',
         okunamadi: 'Dili mabasa ang hulagway. Pilia ang bug-os nga screenshot sa lock screen.',
       },

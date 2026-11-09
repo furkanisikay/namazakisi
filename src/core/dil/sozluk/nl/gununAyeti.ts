@@ -94,9 +94,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       olcumBaslik: 'Positie van de klok meten',
       olcumAciklama:
         'De positie van de klok wordt bepaald uit een schermafbeelding van uw vergrendelscherm. De schermafbeelding wordt niet bewaard.',
-      adimAndroid: 'Pas de achtergrond toe met ‘Toepassen’.',
+      adimAndroid: 'Zet de achtergrond aan en pas hem toe met ‘Toepassen’.',
       adimIos: 'Voer de opdracht één keer uit zodat de achtergrond wordt ingesteld.',
-      adimGoruntu: 'Vergrendel de telefoon en maak een schermafbeelding van het vergrendelscherm.',
+      adimGoruntu: 'Wis de meldingen, vergrendel de telefoon en maak een schermafbeelding van het vergrendelscherm.',
       adimSecin: 'Ga terug naar de app en kies die schermafbeelding.',
       goruntuSecin: 'Schermafbeelding kiezen',
       sonuc: {
@@ -104,7 +104,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Deze schermafbeelding past niet bij de laatst toegepaste achtergrond. Kies een schermafbeelding van het vergrendelscherm die na het toepassen is gemaakt.',
         bulunamadi: 'Geen klok gevonden in de schermafbeelding; u kunt de randen handmatig aanpassen.',
-        referansYokAndroid: 'Pas eerst de achtergrond toe; er wordt gemeten met de laatst toegepaste afbeelding.',
+        referansYokAndroid: 'Zet eerst de achtergrond aan in de instellingen en pas hem toe; er wordt gemeten met de laatst toegepaste afbeelding.',
         referansYokIos: 'Stel de achtergrond eerst één keer in met Opdrachten.',
         okunamadi: 'De afbeelding kon niet worden gelezen. Kies een volledige schermafbeelding van het vergrendelscherm.',
       },

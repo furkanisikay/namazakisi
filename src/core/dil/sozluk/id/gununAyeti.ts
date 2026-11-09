@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Tepi bawah area jam',
       olcumBaslik: 'Ukur posisi jam',
       olcumAciklama: 'Posisi jam ditemukan dari tangkapan layar kunci Anda. Tangkapan layar tidak disimpan.',
-      adimAndroid: 'Terapkan wallpaper dengan "Terapkan".',
+      adimAndroid: 'Aktifkan wallpaper lalu terapkan dengan "Terapkan".',
       adimIos: 'Jalankan pintasan sekali agar wallpaper terpasang.',
-      adimGoruntu: 'Kunci ponsel lalu ambil tangkapan layar dari layar kunci.',
+      adimGoruntu: 'Hapus notifikasi, kunci ponsel, lalu ambil tangkapan layar dari layar kunci.',
       adimSecin: 'Kembali ke aplikasi dan pilih tangkapan layar tersebut.',
       goruntuSecin: 'Pilih tangkapan layar',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Tangkapan layar ini tidak cocok dengan wallpaper yang terakhir diterapkan. Pilih tangkapan layar kunci yang diambil setelah wallpaper diterapkan.',
         bulunamadi: 'Jam tidak ditemukan di tangkapan layar; Anda dapat mengatur tepinya secara manual.',
-        referansYokAndroid: 'Terapkan wallpaper terlebih dahulu; pengukuran memakai gambar yang terakhir diterapkan.',
+        referansYokAndroid: 'Aktifkan dan terapkan wallpaper di pengaturan terlebih dahulu; pengukuran memakai gambar yang terakhir diterapkan.',
         referansYokIos: 'Terapkan wallpaper sekali terlebih dahulu dengan Pintasan.',
         okunamadi: 'Gambar tidak dapat dibaca. Pilih tangkapan layar penuh dari layar kunci.',
       },

@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Margem inferior da zona do relógio',
       olcumBaslik: 'Medir a posição do relógio',
       olcumAciklama: 'A posição do relógio é obtida a partir de uma captura do seu ecrã de bloqueio. A captura não é guardada.',
-      adimAndroid: 'Aplique o papel de parede com «Aplicar».',
+      adimAndroid: 'Ative o papel de parede e aplique-o com «Aplicar».',
       adimIos: 'Execute o atalho uma vez para definir o papel de parede.',
-      adimGoruntu: 'Bloqueie o telemóvel e faça uma captura do ecrã de bloqueio.',
+      adimGoruntu: 'Limpe as notificações, bloqueie o telemóvel e faça uma captura do ecrã de bloqueio.',
       adimSecin: 'Volte à aplicação e escolha essa captura.',
       goruntuSecin: 'Escolher captura',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Esta captura não corresponde ao último papel de parede aplicado. Escolha uma captura do ecrã de bloqueio feita depois de aplicar o papel de parede.',
         bulunamadi: 'Não foi encontrado nenhum relógio na captura; pode ajustar as margens manualmente.',
-        referansYokAndroid: 'Aplique primeiro o papel de parede; a medição usa a última imagem aplicada.',
+        referansYokAndroid: 'Primeiro ative o papel de parede nas definições e aplique-o; a medição usa a última imagem aplicada.',
         referansYokIos: 'Defina primeiro o papel de parede uma vez com Atalhos.',
         okunamadi: 'Não foi possível ler a imagem. Escolha uma captura completa do ecrã de bloqueio.',
       },

@@ -93,9 +93,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       altKenar: 'Olubiriizi olw’wansi olw’ekitundu ky’essaawa',
       olcumBaslik: 'Pima ekifo ky’essaawa',
       olcumAciklama: 'Ekifo ky’essaawa kizuulibwa okuva mu kifaananyi ky’olupapula lwo olw’okusiba. Ekifaananyi tekiterekebwa.',
-      adimAndroid: 'Teeka ekifaananyi ky’emabega ng’okozesa "Kozesa".',
+      adimAndroid: 'Teekako ekifaananyi ky’emabega, oluvannyuma okiteeke ng’okozesa "Kozesa".',
       adimIos: 'Dduukanya shortcut omulundi gumu ekifaananyi ky’emabega kiteekebwe.',
-      adimGoruntu: 'Siba essimu era okwate ekifaananyi ky’olupapula lw’okusiba.',
+      adimGoruntu: 'Sangula obubaka, siba essimu era okwate ekifaananyi ky’olupapula lw’okusiba.',
       adimSecin: 'Ddayo mu app olonde ekifaananyi ekyo.',
       goruntuSecin: 'Londa ekifaananyi',
       sonuc: {
@@ -103,7 +103,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
         uyusmadi:
           'Ekifaananyi kino tekikwatagana n’ekifaananyi ky’emabega ekyasembyeyo okuteekebwako. Londa ekifaananyi ky’olupapula lw’okusiba ekyakwatibwa oluvannyuma lw’okuteeka ekifaananyi ky’emabega.',
         bulunamadi: 'Essaawa tezuuliddwa mu kifaananyi; osobola okuteekateeka embiriizi n’omukono.',
-        referansYokAndroid: 'Sooka oteeke ekifaananyi ky’emabega; okupima kukozesa ekifaananyi ekyasembyeyo okuteekebwako.',
+        referansYokAndroid: 'Sooka oteekeko ekifaananyi ky’emabega mu Entegeka era okiteeke; okupima kukozesa ekifaananyi ekyasembyeyo okuteekebwako.',
         referansYokIos: 'Sooka oteeke ekifaananyi ky’emabega omulundi gumu ng’okozesa Shortcuts.',
         okunamadi: 'Ekifaananyi tekisobodde kusomebwa. Londa ekifaananyi ekijjuvu eky’olupapula lw’okusiba.',
       },

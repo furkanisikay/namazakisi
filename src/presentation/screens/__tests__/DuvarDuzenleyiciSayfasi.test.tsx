@@ -264,7 +264,7 @@ describe('DuvarDuzenleyiciSayfasi', () => {
 
         it.each([
             ['saat bulunamadı', { profil: Array.from({ length: 100 }, () => 0) }, 'android', 'Görüntüde saat bulunamadı; kenarları elle ayarlayabilirsiniz.'],
-            ['referans yok (Android)', { hata: 'referans-yok' }, 'android', 'Önce duvar kâğıdını uygulayın; ölçüm son uygulanan görselle yapılır.'],
+            ['referans yok (Android)', { hata: 'referans-yok' }, 'android', 'Önce ayarlardan duvar kâğıdını açıp uygulayın; ölçüm son uygulanan görselle yapılır.'],
             ['referans yok (iPhone)', { hata: 'referans-yok' }, 'ios', 'Önce Kısayollar ile duvar kâğıdını bir kez uygulayın.'],
             ['oran uymuyor', { hata: 'oran' }, 'android', 'Görüntü okunamadı. Kilit ekranının tam ekran görüntüsünü seçin.'],
             ['okunamadı', { hata: 'okunamadi' }, 'ios', 'Görüntü okunamadı. Kilit ekranının tam ekran görüntüsünü seçin.'],
