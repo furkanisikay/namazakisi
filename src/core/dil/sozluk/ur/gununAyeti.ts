@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'لاک اسکرین پر گھڑی',
       tahmini: 'اندازاً جگہ',
       olculdu: 'اس فون پر ناپا گیا',
+      elleAyarlandi: 'خود سیٹ کیا گیا',
       olcun: 'میری لاک اسکرین ناپیں',
       elle: 'خود سیٹ کریں',
       varsayilan: 'ڈیفالٹ پر واپس جائیں',

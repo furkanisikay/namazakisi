@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Klockan på låsskärmen',
       tahmini: 'Uppskattad position',
       olculdu: 'Uppmätt på den här telefonen',
+      elleAyarlandi: 'Manuellt justerad',
       olcun: 'Mät min låsskärm',
       elle: 'Justera manuellt',
       varsayilan: 'Återställ standard',

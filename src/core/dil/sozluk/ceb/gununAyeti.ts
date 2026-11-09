@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Orasan sa lock screen',
       tahmini: 'Gibanabana nga posisyon',
       olculdu: 'Nasukod niining telepono',
+      elleAyarlandi: 'Gi-adjust nga mano-mano',
       olcun: 'Sukda ang akong lock screen',
       elle: 'I-adjust nga mano-mano',
       varsayilan: 'Ibalik sa default',

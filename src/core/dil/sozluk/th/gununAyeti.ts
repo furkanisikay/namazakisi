@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'นาฬิกาบนหน้าจอล็อก',
       tahmini: 'ตำแหน่งโดยประมาณ',
       olculdu: 'วัดบนโทรศัพท์เครื่องนี้แล้ว',
+      elleAyarlandi: 'ปรับเองแล้ว',
       olcun: 'วัดหน้าจอล็อกของฉัน',
       elle: 'ปรับเอง',
       varsayilan: 'กลับเป็นค่าเริ่มต้น',

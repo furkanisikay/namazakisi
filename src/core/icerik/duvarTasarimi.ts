@@ -358,6 +358,12 @@ export const IZINLI_BANTLAR: Readonly<Record<DuvarPlatformu, Readonly<Record<Duv
 /** Kilit ekranında saatin (tarihle birlikte) kapladığı dikey aralık [üst, alt], ekran kesri. */
 export type SaatAlani = readonly [number, number];
 
+/**
+ * Saat alanının nereden geldiği: görüntüden ölçüldü mü, kenarları elle mi ayarlandı. Yalnız
+ * düzenleyicinin durum satırı içindir (yük ve `DuvarKagidiAyari` taşımaz, cihaza özgü ayrı anahtar).
+ */
+export type SaatAlaniKaynagi = 'olcum' | 'elle';
+
 /** Ölçülmemişse: Android 14+ büyük saat (emülatör karesi 66), iPhone saati üstte. */
 export const VARSAYILAN_SAAT_ALANI: Readonly<Record<DuvarPlatformu, SaatAlani>> = {
   android: [0.26, 0.64],

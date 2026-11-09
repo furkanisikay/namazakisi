@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Alifo fooca saaqat',
       tahmini: 'Qinbisime arac',
       olculdu: 'Ta silkiyyal maaqisime',
+      elleAyarlandi: 'Gabak massosime',
       olcun: 'Yi alifo fooca maaqis',
       elle: 'Gabak massos',
       varsayilan: 'Usuk duddah gacis',

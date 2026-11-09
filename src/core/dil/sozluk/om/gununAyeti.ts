@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Sa’aatii fuula cufaa irratti',
       tahmini: 'Bakka tilmaamame',
       olculdu: 'Bilbila kana irratti safarame',
+      elleAyarlandi: 'Harkaan sirreeffame',
       olcun: 'Fuula cufaa koo safari',
       elle: 'Harkaan sirreessi',
       varsayilan: 'Gara durtiitti deebisi',

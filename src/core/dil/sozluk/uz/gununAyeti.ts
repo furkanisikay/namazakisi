@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Қулф экранидаги соат',
       tahmini: 'Тахминий жойлашув',
       olculdu: 'Шу телефонда ўлчанган',
+      elleAyarlandi: 'Қўлда созланган',
       olcun: 'Қулф экранимни ўлчаш',
       elle: 'Қўлда созлаш',
       varsayilan: 'Асл ҳолатга қайтариш',

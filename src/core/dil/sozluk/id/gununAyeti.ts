@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Jam di layar kunci',
       tahmini: 'Perkiraan posisi',
       olculdu: 'Diukur di ponsel ini',
+      elleAyarlandi: 'Diatur manual',
       olcun: 'Ukur layar kunci saya',
       elle: 'Atur manual',
       varsayilan: 'Kembalikan ke bawaan',

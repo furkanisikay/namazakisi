@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'በመቆለፊያ ገጽ ላይ ያለው ሰዓት',
       tahmini: 'የተገመተ ቦታ',
       olculdu: 'በዚህ ስልክ ላይ ተለክቷል',
+      elleAyarlandi: 'በእጅ ተስተካክሏል',
       olcun: 'የመቆለፊያ ገጼን ለካ',
       elle: 'በእጅ አስተካክል',
       varsayilan: 'ወደ ነባሪ መልስ',

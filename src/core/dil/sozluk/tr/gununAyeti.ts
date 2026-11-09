@@ -95,6 +95,7 @@ export const gununAyeti = {
       baslik: 'Kilit ekranındaki saat',
       tahmini: 'Tahmini konum',
       olculdu: 'Bu telefonda ölçüldü',
+      elleAyarlandi: 'Elle ayarlandı',
       olcun: 'Kilit ekranımı ölçün',
       elle: 'Elle ayarlayın',
       varsayilan: 'Varsayılana dönün',

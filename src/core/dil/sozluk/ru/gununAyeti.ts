@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Часы на экране блокировки',
       tahmini: 'Примерное положение',
       olculdu: 'Измерено на этом телефоне',
+      elleAyarlandi: 'Настроено вручную',
       olcun: 'Измерить мой экран блокировки',
       elle: 'Настроить вручную',
       varsayilan: 'Вернуть по умолчанию',

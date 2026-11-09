@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Horloge de l’écran de verrouillage',
       tahmini: 'Position estimée',
       olculdu: 'Mesurée sur ce téléphone',
+      elleAyarlandi: 'Ajustée manuellement',
       olcun: 'Mesurer mon écran de verrouillage',
       elle: 'Ajuster manuellement',
       varsayilan: 'Revenir au réglage par défaut',

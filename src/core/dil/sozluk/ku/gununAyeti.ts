@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Saet li ser dîmena kilîtê',
       tahmini: 'Cihê texmînî',
       olculdu: 'Li ser vê telefonê hate pîvan',
+      elleAyarlandi: 'Bi destan hate eyarkirin',
       olcun: 'Dîmena kilîtê ya min bipîvin',
       elle: 'Bi destan eyar bikin',
       varsayilan: 'Vegerînin ser standard',

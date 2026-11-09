@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Orologio nella schermata di blocco',
       tahmini: 'Posizione stimata',
       olculdu: 'Misurato su questo telefono',
+      elleAyarlandi: 'Regolato a mano',
       olcun: 'Misurare la mia schermata di blocco',
       elle: 'Regolare a mano',
       varsayilan: 'Ripristinare il predefinito',

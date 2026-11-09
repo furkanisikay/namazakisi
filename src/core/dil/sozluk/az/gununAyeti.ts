@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Kilid ekranındakı saat',
       tahmini: 'Təxmini mövqe',
       olculdu: 'Bu telefonda ölçülüb',
+      elleAyarlandi: 'Əl ilə tənzimlənib',
       olcun: 'Kilid ekranımı ölçün',
       elle: 'Əl ilə tənzimləyin',
       varsayilan: 'Standarta qaytarın',

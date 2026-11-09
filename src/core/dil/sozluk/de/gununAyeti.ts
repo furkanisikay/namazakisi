@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Uhr auf dem Sperrbildschirm',
       tahmini: 'Geschätzte Position',
       olculdu: 'Auf diesem Telefon gemessen',
+      elleAyarlandi: 'Manuell angepasst',
       olcun: 'Meinen Sperrbildschirm messen',
       elle: 'Manuell anpassen',
       varsayilan: 'Auf Standard zurücksetzen',

@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Famantaranandro amin’ny efijery mihidy',
       tahmini: 'Toerana tombanana',
       olculdu: 'Norefesina tamin’ity telefaonina ity',
+      elleAyarlandi: 'Namboarina tamin’ny tanana',
       olcun: 'Refeso ny efijery mihidiko',
       elle: 'Amboary amin’ny tanana',
       varsayilan: 'Avereno amin’ny tany am-boalohany',

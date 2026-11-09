@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'ലോക്ക് സ്ക്രീനിലെ ഘടികാരം',
       tahmini: 'ഏകദേശ സ്ഥാനം',
       olculdu: 'ഈ ഫോണിൽ അളന്നത്',
+      elleAyarlandi: 'സ്വയം ക്രമീകരിച്ചത്',
       olcun: 'എന്റെ ലോക്ക് സ്ക്രീൻ അളക്കുക',
       elle: 'സ്വയം ക്രമീകരിക്കുക',
       varsayilan: 'ഡിഫോൾട്ടിലേക്ക് മടങ്ങുക',

@@ -89,6 +89,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'لاڪ اسڪرين تي گهڙيال',
       tahmini: 'اندازي واري جاءِ',
       olculdu: 'هن فون تي ماپيو ويو',
+      elleAyarlandi: 'پاڻ سيٽ ڪيو ويو',
       olcun: 'منهنجي لاڪ اسڪرين ماپيو',
       elle: 'پاڻ سيٽ ڪريو',
       varsayilan: 'ڊيفالٽ تي موٽايو',

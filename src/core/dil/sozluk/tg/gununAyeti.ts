@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Соат дар экрани қулф',
       tahmini: 'Ҷойи тахминӣ',
       olculdu: 'Дар ҳамин телефон чен карда шуд',
+      elleAyarlandi: 'Дастӣ танзим карда шуд',
       olcun: 'Экрани қулфамро чен кунед',
       elle: 'Дастӣ танзим кунед',
       varsayilan: 'Ба пешфарз баргардонед',

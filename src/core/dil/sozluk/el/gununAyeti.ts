@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Ρολόι στην οθόνη κλειδώματος',
       tahmini: 'Εκτιμώμενη θέση',
       olculdu: 'Μετρήθηκε σε αυτό το τηλέφωνο',
+      elleAyarlandi: 'Ρυθμίστηκε χειροκίνητα',
       olcun: 'Μέτρηση της οθόνης κλειδώματος',
       elle: 'Χειροκίνητη ρύθμιση',
       varsayilan: 'Επαναφορά προεπιλογής',

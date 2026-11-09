@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: '锁屏上的时钟',
       tahmini: '估计位置',
       olculdu: '已在本机测量',
+      elleAyarlandi: '已手动调整',
       olcun: '测量我的锁屏',
       elle: '手动调整',
       varsayilan: '恢复默认',

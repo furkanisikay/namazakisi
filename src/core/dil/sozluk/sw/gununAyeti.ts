@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Saa kwenye skrini iliyofungwa',
       tahmini: 'Mahali pa kukadiria',
       olculdu: 'Imepimwa kwenye simu hii',
+      elleAyarlandi: 'Imerekebishwa kwa mkono',
       olcun: 'Pima skrini yangu iliyofungwa',
       elle: 'Rekebisha mwenyewe',
       varsayilan: 'Rudisha chaguo-msingi',

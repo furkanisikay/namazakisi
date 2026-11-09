@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Agogo a allon kulle',
       tahmini: 'Wurin da aka kiyasta',
       olculdu: 'An auna a wannan wayar',
+      elleAyarlandi: 'An daidaita da hannu',
       olcun: 'Auna allon kulle na',
       elle: 'Daidaita da hannu',
       varsayilan: 'Koma zuwa na asali',

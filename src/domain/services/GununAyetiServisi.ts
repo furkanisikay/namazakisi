@@ -19,6 +19,7 @@ import {
   koordinatVakitKaynagi,
   type DuvarKagidiAyari,
 } from '../../core/icerik/gununAyetiYuku';
+import type { SaatAlaniKaynagi } from '../../core/icerik/duvarTasarimi';
 import { Logger } from '../../core/utils/Logger';
 import { Depolama } from '../../data/local/Depolama';
 
@@ -85,6 +86,22 @@ export class GununAyetiServisi {
   public async duvarAyariKaydet(ayar: DuvarKagidiAyari): Promise<void> {
     await Depolama.yaz(DEPOLAMA_ANAHTARLARI.GUNUN_AYETI_DUVAR, ayar);
     await this.yaz(this.sonKoordinat);
+  }
+
+  /** Kilit ekranı saat alanının kaynağı; yoksa, bozuksa ya da okunamazsa `null`. ASLA reddetmez. */
+  public async saatAlaniKaynagiOku(): Promise<SaatAlaniKaynagi | null> {
+    try {
+      const ham = await Depolama.ham(DEPOLAMA_ANAHTARLARI.GUNUN_AYETI_SAAT_KAYNAGI);
+      return ham === 'olcum' || ham === 'elle' ? ham : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Kaynağı yazar; `null` anahtarı siler (alan varsayılana döndü). */
+  public async saatAlaniKaynagiKaydet(kaynak: SaatAlaniKaynagi | null): Promise<void> {
+    if (kaynak) await Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.GUNUN_AYETI_SAAT_KAYNAGI, kaynak);
+    else await Depolama.sil(DEPOLAMA_ANAHTARLARI.GUNUN_AYETI_SAAT_KAYNAGI);
   }
 
   /**

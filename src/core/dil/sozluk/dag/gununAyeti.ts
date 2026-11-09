@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Saha kpaŋa kparibu yaɣili zuɣu',
       tahmini: 'Shee din mali zaŋ',
       olculdu: 'Bɛ maɣisi li telefon ŋɔ zuɣu',
+      elleAyarlandi: 'Bɛ malila li ni nuu',
       olcun: 'Maɣisimi n kparibu yaɣili',
       elle: 'Malimi li ni nuu',
       varsayilan: 'Labisimi li yaɣa shɛli din daa be',

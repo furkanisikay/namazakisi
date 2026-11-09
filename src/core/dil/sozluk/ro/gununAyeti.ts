@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Ceasul de pe ecranul de blocare',
       tahmini: 'Poziție estimată',
       olculdu: 'Măsurat pe acest telefon',
+      elleAyarlandi: 'Ajustat manual',
       olcun: 'Măsurați ecranul de blocare',
       elle: 'Ajustați manual',
       varsayilan: 'Reveniți la implicit',

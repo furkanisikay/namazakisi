@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Isaha ku rupapuro rwo kwugara',
       tahmini: 'Ikibanza c’agereranyo',
       olculdu: 'Vyapimiwe kuri iyi terefone',
+      elleAyarlandi: 'Vyahinduwe n’amaboko',
       olcun: 'Mupime urupapuro rwanje rwo kwugara',
       elle: 'Muhindure n’amaboko',
       varsayilan: 'Musubize ku vyisanzwe',

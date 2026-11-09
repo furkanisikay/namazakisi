@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: '잠금 화면의 시계',
       tahmini: '추정 위치',
       olculdu: '이 휴대전화에서 측정됨',
+      elleAyarlandi: '직접 조정됨',
       olcun: '내 잠금 화면 측정',
       elle: '직접 조정',
       varsayilan: '기본값으로 되돌리기',

@@ -19,6 +19,8 @@ const mockServis = {
     duvarAyariKaydet: jest.fn(),
     duvarKagidiniSimdiUygula: jest.fn(),
     kilitEkraniProfili: jest.fn(),
+    saatAlaniKaynagiOku: jest.fn(),
+    saatAlaniKaynagiKaydet: jest.fn(),
 };
 jest.mock('../../../domain/services/GununAyetiServisi', () => ({ GununAyetiServisi: { getInstance: () => mockServis } }));
 
@@ -89,6 +91,8 @@ describe('DuvarDuzenleyiciSayfasi', () => {
         mockParametreler = undefined;
         mockServis.duvarAyariKaydet.mockResolvedValue(undefined);
         mockServis.duvarKagidiniSimdiUygula.mockResolvedValue(true);
+        mockServis.saatAlaniKaynagiOku.mockResolvedValue(null);
+        mockServis.saatAlaniKaynagiKaydet.mockResolvedValue(undefined);
         mockSec.mockResolvedValue({ canceled: true, assets: null });
         mockKopyala.mockResolvedValue(undefined);
         mockSil.mockResolvedValue(undefined);
@@ -230,6 +234,20 @@ describe('DuvarDuzenleyiciSayfasi', () => {
             const beklenen = saatAlaniBul(SAATLI);
             if (beklenen.sonuc !== 'tamam') throw new Error('profil saat vermeli');
             expect(kaydedilen().saatAlani).toEqual(beklenen.alan);
+            // Kaynak ayrı, cihaza özgü anahtara yazılır; yeniden açılınca "ölçüldü" kalır.
+            await waitFor(() => expect(mockServis.saatAlaniKaynagiKaydet).toHaveBeenCalledWith('olcum'));
+            e.unmount();
+            mockServis.saatAlaniKaynagiOku.mockResolvedValue('olcum');
+            const yeniden = await ac({ saatAlani: beklenen.alan });
+            fireEvent.press(yeniden.getByTestId('duvar-sekme-yazi'));
+            expect(yeniden.getByText('Bu telefonda ölçüldü')).toBeTruthy();
+        });
+
+        it('kaynağı bilinmeyen kayıtlı alan "Elle ayarlandı" gösterir ("ölçüldü" demez)', async () => {
+            const e = await ac({ saatAlani: [0.3, 0.5] });
+            fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
+            expect(e.getByText('Elle ayarlandı')).toBeTruthy();
+            expect(e.queryByText('Bu telefonda ölçüldü')).toBeNull();
         });
 
         it('görüntü eşleşmezse bilgi satırı çıkar ve kayıtlı alan korunur', async () => {
@@ -305,7 +323,8 @@ describe('DuvarDuzenleyiciSayfasi', () => {
             fireEvent(tuval, 'responderGrant', dokunus(300, 300, 1));
             fireEvent(tuval, 'responderMove', dokunus(300, 252, 2));
             fireEvent(tuval, 'responderRelease', dokunus(252, 252, 3));
-            expect(e.getByText('Bu telefonda ölçüldü')).toBeTruthy();
+            expect(e.getByText('Elle ayarlandı')).toBeTruthy();
+            expect(e.queryByText('Bu telefonda ölçüldü')).toBeNull();
             expect(e.getByTestId('duvar-saat-alt').props.accessibilityValue).toEqual({ text: '%54' });
             expect(e.getByTestId('duvar-saat-ust').props.accessibilityValue).toEqual({ text: '%26' });
 
@@ -322,9 +341,31 @@ describe('DuvarDuzenleyiciSayfasi', () => {
             const [ust, alt] = kaydedilen().saatAlani as [number, number];
             expect(ust).toBeCloseTo(0.28, 4);
             expect(alt).toBeCloseTo(0.54, 2);
+
+            // Kaynak "elle" kaydedilir; yeniden açılınca "Elle ayarlandı" kalır.
+            await waitFor(() => expect(mockServis.saatAlaniKaynagiKaydet).toHaveBeenCalledWith('elle'));
+            e.unmount();
+            mockServis.saatAlaniKaynagiOku.mockResolvedValue('elle');
+            const yeniden = await ac({ saatAlani: [ust, alt] });
+            fireEvent.press(yeniden.getByTestId('duvar-sekme-yazi'));
+            expect(yeniden.getByText('Elle ayarlandı')).toBeTruthy();
         });
 
-        it('"Varsayılana dönün" alanı siler', async () => {
+        it('ölçülen alan ekran okuyucuyla kaydırılınca "Elle ayarlandı" olur', async () => {
+            mockServis.saatAlaniKaynagiOku.mockResolvedValue('olcum');
+            const e = await ac({ saatAlani: [0.3, 0.5] });
+            fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
+            expect(e.getByText('Bu telefonda ölçüldü')).toBeTruthy();
+            fireEvent.press(e.getByTestId('duvar-saat-elle'));
+            fireEvent(e.getByTestId('duvar-saat-alt'), 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
+            expect(e.getByText('Elle ayarlandı')).toBeTruthy();
+            // Vazgeçilirse kaynak yazılmaz (taslak).
+            fireEvent.press(e.getByTestId('duvar-vazgec'));
+            expect(mockServis.saatAlaniKaynagiKaydet).not.toHaveBeenCalled();
+        });
+
+        it('"Varsayılana dönün" alanı ve kaynağı siler', async () => {
+            mockServis.saatAlaniKaynagiOku.mockResolvedValue('olcum');
             const e = await ac({ saatAlani: [0.3, 0.5] });
             fireEvent.press(e.getByTestId('duvar-sekme-yazi'));
             expect(e.getByText('Bu telefonda ölçüldü')).toBeTruthy();
@@ -333,6 +374,7 @@ describe('DuvarDuzenleyiciSayfasi', () => {
             fireEvent.press(e.getByTestId('duvar-uygula'));
             await waitFor(() => expect(mockServis.duvarAyariKaydet).toHaveBeenCalled());
             expect(kaydedilen().saatAlani).toBeNull();
+            await waitFor(() => expect(mockServis.saatAlaniKaynagiKaydet).toHaveBeenCalledWith(null));
         });
 
         it('ölçülen alan yazının girebileceği bantları değiştirir', async () => {

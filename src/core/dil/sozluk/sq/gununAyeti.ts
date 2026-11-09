@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Ora në ekranin e kyçjes',
       tahmini: 'Pozicion i përafërt',
       olculdu: 'Matur në këtë telefon',
+      elleAyarlandi: 'Rregulluar me dorë',
       olcun: 'Matni ekranin e kyçjes',
       elle: 'Rregulloni me dorë',
       varsayilan: 'Kthehuni te parazgjedhja',

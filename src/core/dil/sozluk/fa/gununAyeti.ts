@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'ساعت روی صفحهٔ قفل',
       tahmini: 'جای تخمینی',
       olculdu: 'در همین گوشی اندازه‌گیری شد',
+      elleAyarlandi: 'به‌صورت دستی تنظیم شد',
       olcun: 'اندازه‌گیری صفحهٔ قفل',
       elle: 'تنظیم دستی',
       varsayilan: 'بازگشت به پیش‌فرض',

@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Laikrodis užrakinimo ekrane',
       tahmini: 'Apytikslė padėtis',
       olculdu: 'Išmatuota šiame telefone',
+      elleAyarlandi: 'Sureguliuota rankiniu būdu',
       olcun: 'Išmatuoti mano užrakinimo ekraną',
       elle: 'Reguliuoti rankiniu būdu',
       varsayilan: 'Grąžinti numatytąją',

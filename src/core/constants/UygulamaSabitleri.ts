@@ -271,6 +271,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Günün ayeti duvar kâğıdı (#381). CİHAZA ÖZGÜ, YEDEKLENMEZ: duvar kâğıdını değiştirmek o
   // cihazda verilen açık onaya bağlı (`core/icerik/gununAyetiYuku.ts`).
   GUNUN_AYETI_DUVAR: 'gunun_ayeti_duvar',
+  // Kilit ekranı saat alanının kaynağı ('olcum' | 'elle'; yoksa alan tahminidir). Yalnız düzenleyicinin
+  // durum satırı içindir, yüke/`DuvarKagidiAyari`'na girmez. CİHAZA ÖZGÜ, YEDEKLENMEZ.
+  GUNUN_AYETI_SAAT_KAYNAGI: '@namaz_akisi/gunun_ayeti_saat_kaynagi',
   // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
   // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
   KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',

@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Essaawa ku lupapula lw’okusiba',
       tahmini: 'Ekifo ekiteeberezebwa',
       olculdu: 'Kipimiddwa ku ssimu eno',
+      elleAyarlandi: 'Kitereezeddwa n’omukono',
       olcun: 'Pima olupapula lwange olw’okusiba',
       elle: 'Teekateeka n’omukono',
       varsayilan: 'Ddayo ku kya bulijjo',

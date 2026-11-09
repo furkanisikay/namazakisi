@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'قۇلۇپ ئېكرانىدىكى سائەت',
       tahmini: 'مۆلچەردىكى ئورۇن',
       olculdu: 'بۇ تېلېفوندا ئۆلچەندى',
+      elleAyarlandi: 'قولدا تەڭشەلدى',
       olcun: 'قۇلۇپ ئېكرانىمنى ئۆلچەڭ',
       elle: 'قولدا تەڭشەڭ',
       varsayilan: 'سۈكۈتتىكىگە قايتۇرۇڭ',

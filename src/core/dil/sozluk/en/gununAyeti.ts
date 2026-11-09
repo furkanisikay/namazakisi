@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Clock on the lock screen',
       tahmini: 'Estimated position',
       olculdu: 'Measured on this phone',
+      elleAyarlandi: 'Adjusted manually',
       olcun: 'Measure my lock screen',
       elle: 'Adjust manually',
       varsayilan: 'Reset to default',

@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Klok op het vergrendelscherm',
       tahmini: 'Geschatte positie',
       olculdu: 'Gemeten op deze telefoon',
+      elleAyarlandi: 'Handmatig aangepast',
       olcun: 'Mijn vergrendelscherm meten',
       elle: 'Handmatig aanpassen',
       varsayilan: 'Standaard herstellen',

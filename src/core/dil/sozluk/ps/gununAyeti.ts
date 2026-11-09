@@ -89,6 +89,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'د قلف سکرین ساعت',
       tahmini: 'اټکلي ځای',
       olculdu: 'په دې تلیفون اندازه شو',
+      elleAyarlandi: 'په لاس برابر شو',
       olcun: 'زما د قلف سکرین اندازه کړئ',
       elle: 'په لاس یې برابر کړئ',
       varsayilan: 'اصلي حالت ته ستانه شئ',

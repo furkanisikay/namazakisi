@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'ߘߊߕߎߜߎ ߢߍ߫ ߕߎߡߊߟߊ߲',
       tahmini: 'ߦߙߐ ߡߊߛߐ߬ߘߐ߲߬ߣߍ߲',
       olculdu: 'ߊ߬ ߛߎߡߊ߫ ߘߊ߫ ߕߍߟߋߝߏߣߌ߫ ߣߌ߲߬ ߞߊ߲߬',
+      elleAyarlandi: 'ߊ߬ ߘߐߓߍ߲߬ ߘߊ߫ ߓߟߏ߫ ߟߊ߫',
       olcun: 'ߒ ߠߊ߫ ߘߊߕߎߜߎ ߢߍ߫ ߛߎߡߊ߫',
       elle: 'ߊ߬ ߘߐߓߍ߲߬ ߓߟߏ߫ ߟߊ߫',
       varsayilan: 'ߊ߬ ߟߊߛߊ߬ߦߌ߬ ߝߟߐ ߡߊ߬',

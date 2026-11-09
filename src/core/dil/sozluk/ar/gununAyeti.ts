@@ -89,6 +89,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'الساعة على شاشة القفل',
       tahmini: 'موضع تقديري',
       olculdu: 'تم القياس على هذا الهاتف',
+      elleAyarlandi: 'تم الضبط يدويًا',
       olcun: 'قياس شاشة القفل',
       elle: 'ضبط يدوي',
       varsayilan: 'العودة إلى الافتراضي',

@@ -85,6 +85,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'საათი ჩაკეტილ ეკრანზე',
       tahmini: 'სავარაუდო მდებარეობა',
       olculdu: 'გაზომილია ამ ტელეფონზე',
+      elleAyarlandi: 'ხელით მორგებულია',
       olcun: 'ჩემი ჩაკეტილი ეკრანის გაზომვა',
       elle: 'ხელით მორგება',
       varsayilan: 'ნაგულისხმევზე დაბრუნება',

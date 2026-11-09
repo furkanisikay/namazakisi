@@ -34,6 +34,7 @@ import {
   type DuvarEkrani,
   type DuvarPlatformu,
   type SaatAlani,
+  type SaatAlaniKaynagi,
   type SusTuru,
   type YaziHizasi,
   type YaziTipi,
@@ -136,6 +137,8 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
   const [saatKipi, setSaatKipi] = useState(false);
   const [olcumPenceresi, setOlcumPenceresi] = useState(false);
   const [olcumSonucu, setOlcumSonucu] = useState<OlcumSonucu | null>(null);
+  // Saat alanının kaynağı (taslak): durum satırı için; "Uygulayın" ile cihaza özgü anahtara yazılır.
+  const [saatKaynagi, setSaatKaynagi] = useState<SaatAlaniKaynagi | null>(null);
   const olcuyorRef = useRef(false);
   const blok = useRef(0);
   const geciciDosyalar = useRef(new Set<string>());
@@ -168,13 +171,13 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
 
   useEffect(() => {
     let iptal = false;
-    servis()
-      .duvarAyariOku()
-      .catch(() => VARSAYILAN_DUVAR_AYARI)
-      .then((a) => {
+    const sv = servis();
+    Promise.all([sv.duvarAyariOku().catch(() => VARSAYILAN_DUVAR_AYARI), sv.saatAlaniKaynagiOku().catch(() => null)])
+      .then(([a, kaynak]) => {
         if (iptal) return;
         kayitliRef.current = a;
         setKayitli(a);
+        setSaatKaynagi(kaynak);
         setTaslak(hazir && hazir !== 'foto' ? hazirUygula(a, hazir) : a);
         // Seçici geçiş animasyonu bitince açılır (iOS'ta geçiş sürerken sunulan seçici görünmeyebilir).
         if (hazir === 'foto') {
@@ -250,7 +253,10 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
           if (mesafe(e) !== null) return; // iki parmak: saat ayarında yok
           const { kenar, alan } = b.saat;
           const yeni = kenariTasi(alan, kenar, alan[kenar] + g.dy / a.tuvalY);
-          if (yeni) setTaslak((t) => (t ? { ...t, saatAlani: yeni } : t));
+          if (yeni) {
+            setTaslak((t) => (t ? { ...t, saatAlani: yeni } : t));
+            setSaatKaynagi('elle');
+          }
           return;
         }
         const fotoKipi = a.sekme === 'zemin' && a.taslak.zemin === 'foto' && a.foto !== null;
@@ -326,7 +332,10 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
       let sonuc: OlcumSonucu;
       if ('profil' in ham) {
         const olcum = saatAlaniBul(ham.profil);
-        if (olcum.sonuc === 'tamam') guncelle((t) => ({ ...t, saatAlani: olcum.alan }));
+        if (olcum.sonuc === 'tamam') {
+          guncelle((t) => ({ ...t, saatAlani: olcum.alan }));
+          setSaatKaynagi('olcum');
+        }
         sonuc = olcum.sonuc;
       } else {
         sonuc = ham.hata === 'referans-yok' ? 'referans-yok' : 'okunamadi';
@@ -350,6 +359,10 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
       const sv = servis();
       await sv.duvarAyariKaydet(taslak);
       uygulandi.current = true;
+      // Kaynak yalnız durum satırı içindir: yazılamazsa kayıt yine başarılıdır.
+      await sv.saatAlaniKaynagiKaydet(taslak.saatAlani ? saatKaynagi : null).catch((e: unknown) => {
+        Logger.warn('DuvarDuzenleyici', 'Saat alanı kaynağı kaydedilemedi', e);
+      });
       // Değiştirilen ve kullanılmayan kopyalar silinir (yeni kopya kaydedildikten SONRA).
       const silinecek = new Set([...geciciDosyalar.current, kayitli.foto.dosya]);
       silinecek.delete(taslak.foto.dosya);
@@ -546,6 +559,7 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
               {ekran === 'kilit' ? (
                 <SaatAlaniBolumu
                   taslak={taslak}
+                  kaynak={saatKaynagi}
                   platform={platform}
                   saatKipi={saatKipiEtkin}
                   sonuc={olcumSonucu}
@@ -556,8 +570,10 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
                   }}
                   onVarsayilan={() => {
                     setOlcumSonucu(null);
+                    setSaatKaynagi(null);
                     guncelle((t) => ({ ...t, saatAlani: null }));
                   }}
+                  onElle={() => setSaatKaynagi('elle')}
                   guncelle={guncelle}
                 />
               ) : null}
@@ -882,17 +898,22 @@ const KenarSatiri: React.FC<{ etiket: string; deger: number; testID: string; onA
   );
 };
 
-/** Yazı sekmesi, kilit ekranı: saatin kapladığı alan (tahmini/ölçülmüş), ölçüm, elle ayar, varsayılan. */
+/**
+ * Yazı sekmesi, kilit ekranı: saatin kapladığı alan (tahmini/ölçülmüş/elle), ölçüm, elle ayar, varsayılan.
+ * Alan varken kaynağı bilinmiyorsa (eski kayıt) "Elle ayarlandı" denir: "ölçüldü" yanıltırdı.
+ */
 const SaatAlaniBolumu: React.FC<{
   taslak: DuvarKagidiAyari;
+  kaynak: SaatAlaniKaynagi | null;
   platform: DuvarPlatformu;
   saatKipi: boolean;
   sonuc: OlcumSonucu | null;
   onOlcun: () => void;
   onSaatKipi: () => void;
   onVarsayilan: () => void;
+  onElle: () => void;
   guncelle: Guncelle;
-}> = ({ taslak, platform, saatKipi, sonuc, onOlcun, onSaatKipi, onVarsayilan, guncelle }) => {
+}> = ({ taslak, kaynak, platform, saatKipi, sonuc, onOlcun, onSaatKipi, onVarsayilan, onElle, guncelle }) => {
   const renkler = useRenkler();
   const sa = useMetin().gununAyeti.duvar.saatAlani;
   const alan = etkinSaatAlani(taslak, 'kilit', platform) as SaatAlani;
@@ -903,11 +924,14 @@ const SaatAlaniBolumu: React.FC<{
     'referans-yok': platform === 'ios' ? sa.sonuc.referansYokIos : sa.sonuc.referansYokAndroid,
     okunamadi: sa.sonuc.okunamadi,
   };
-  const kenarAdimi = (kenar: 0 | 1) => (yon: 1 | -1) =>
+  const kenarAdimi = (kenar: 0 | 1) => (yon: 1 | -1) => {
     guncelle((t) => {
       const mevcut = etkinSaatAlani(t, 'kilit', platform) as SaatAlani;
       return { ...t, saatAlani: kenariTasi(mevcut, kenar, mevcut[kenar] + yon * KENAR_ADIMI) ?? t.saatAlani };
     });
+    onElle();
+  };
+  const durum = !taslak.saatAlani ? sa.tahmini : kaynak === 'olcum' ? sa.olculdu : sa.elleAyarlandi;
   const ikincilStil = {
     flex: 1,
     minHeight: 44,
@@ -927,7 +951,7 @@ const SaatAlaniBolumu: React.FC<{
         <View style={{ flex: 1, marginStart: 12 }}>
           <Text style={{ fontSize: 15, fontWeight: '600', color: renkler.metin }}>{sa.baslik}</Text>
           <Text testID="duvar-saat-durum" style={{ fontSize: 13, marginTop: 2, color: renkler.metinIkincil }}>
-            {taslak.saatAlani ? sa.olculdu : sa.tahmini}
+            {durum}
           </Text>
         </View>
       </View>

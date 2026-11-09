@@ -84,6 +84,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       baslik: 'Сат на закључаном екрану',
       tahmini: 'Процењени положај',
       olculdu: 'Измерено на овом телефону',
+      elleAyarlandi: 'Подешено ручно',
       olcun: 'Измерите закључани екран',
       elle: 'Подесите ручно',
       varsayilan: 'Вратите на подразумевано',
