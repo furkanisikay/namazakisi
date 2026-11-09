@@ -17,7 +17,6 @@ const mockServis = {
     duvarAyariKaydet: jest.fn(),
     duvarKagidiDurumu: jest.fn(),
     duvarKagidiniSimdiUygula: jest.fn(),
-    duvarOnizlemesi: jest.fn(),
     widgetSabitlenebilirMi: jest.fn(),
     widgetiSabitle: jest.fn(),
 };
@@ -78,7 +77,6 @@ describe('GununAyetiAyarlariSayfasi', () => {
         mockServis.duvarAyariKaydet.mockResolvedValue(undefined);
         mockServis.duvarKagidiDurumu.mockResolvedValue(durum());
         mockServis.duvarKagidiniSimdiUygula.mockResolvedValue(true);
-        mockServis.duvarOnizlemesi.mockResolvedValue(null);
         mockServis.widgetSabitlenebilirMi.mockResolvedValue(false);
         mockServis.widgetiSabitle.mockResolvedValue(true);
     });

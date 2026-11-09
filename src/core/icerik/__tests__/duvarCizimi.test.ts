@@ -117,7 +117,9 @@ describe('hazır görünümler', () => {
     const ayar = { ...VARSAYILAN_DUVAR_AYARI, acik: true, yer: 'ikisi' as const, arapca: true };
     expect(hazirUygula(ayar, 'sade')).toMatchObject({ zemin: 'kagit', yazi: { tip: 'sade' }, sus: { tur: 'yok' }, yer: 'ikisi', arapca: true, acik: true });
     expect(hazirUygula(ayar, 'mihrap')).toMatchObject({ zemin: 'ikindi', yazi: { tip: 'klasik' }, sus: { tur: 'mihrap' } });
-    expect(hazirUygula(ayar, 'gece')).toMatchObject({ zemin: 'yatsi', sus: { tur: 'girih' } });
+    // "Gece" gün içinde başka göğe dönmesin: vakte uyma kapanır.
+    expect(hazirUygula(ayar, 'gece')).toMatchObject({ zemin: 'yatsi', vakteUysun: false, sus: { tur: 'girih' } });
+    expect(hazirUygula(ayar, 'mihrap').vakteUysun).toBe(ayar.vakteUysun);
     // Fotoğraf seçilmemişse zemin değişmez (seçimi düzenleyici yapar).
     expect(hazirUygula(ayar, 'foto')).toBe(ayar);
     const fotolu = { ...ayar, foto: { ...ayar.foto, dosya: 'duvar-foto-12345678.jpg' } };

@@ -52,7 +52,12 @@ object DuvarKagidiCizici {
     private const val EN_KUCUK_CARPAN = 0.6f
     private const val CARPAN_ADIMI = 0.06f
 
-    /** Görseli çizer. Çağıran `recycle()` eder. [simdiMs] vakte uyan göğün anı. */
+    /**
+     * Görseli çizer. Çağıran `recycle()` eder. [simdiMs] vakte uyan göğün anı.
+     * [hazirFoto]: aynı boyutta birden çok ekran çizilecekse fotoğraf zemini BİR KEZ
+     * `DuvarFotoZemini.hazirla` ile hazırlanıp verilir (sahibi çağırandır, burada `recycle` edilmez);
+     * verilmezse burada hazırlanıp burada bırakılır.
+     */
     fun ciz(
         context: Context,
         yuk: GununAyetiYuku,
@@ -61,13 +66,15 @@ object DuvarKagidiCizici {
         genislik: Int,
         yukseklik: Int,
         simdiMs: Long = System.currentTimeMillis(),
+        hazirFoto: Bitmap? = null,
     ): Bitmap {
         val w = genislik
         val h = yukseklik
         val ayar = yuk.duvar
         val gok = GununAyetiKurallari.etkinGok(ayar, kayit, simdiMs)
         val sahne = gok?.let { yuk.sahneler[it] }
-        val foto = if (ayar.zemin == DuvarZemini.FOTO) DuvarFotoZemini.hazirla(context, ayar, w, h) else null
+        val kendiFotosu = hazirFoto == null
+        val foto = hazirFoto ?: if (ayar.zemin == DuvarZemini.FOTO) DuvarFotoZemini.hazirla(context, ayar, w, h) else null
         try {
             val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
             val tuval = Canvas(bmp)
@@ -116,7 +123,7 @@ object DuvarKagidiCizici {
             blok.ciz(tuval, x, duzen.ustPx, icGenislik)
             return bmp
         } finally {
-            foto?.recycle()
+            if (kendiFotosu) foto?.recycle()
         }
     }
 

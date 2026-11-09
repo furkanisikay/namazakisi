@@ -7,35 +7,45 @@ import { Image } from 'react-native';
 import type { FotoKaynagi } from './DuvarSahnesi';
 import { fotoAdresi } from './duvarFotografi';
 
-export function useFotoKaynagi(dosya: string | null, bilinen?: FotoKaynagi | null): FotoKaynagi | null {
-  const [kaynak, setKaynak] = React.useState<FotoKaynagi | null>(bilinen ?? null);
+export interface FotoKaynagiDurumu {
+  kaynak: FotoKaynagi | null;
+  /** Dosya var ama okunamadı (silinmiş, başka cihazdan gelmiş). Okuma sürerken `false`. */
+  okunamadi: boolean;
+}
+
+export function useFotoKaynagiDurumu(dosya: string | null, bilinen?: FotoKaynagi | null): FotoKaynagiDurumu {
+  const [durum, setDurum] = React.useState<FotoKaynagiDurumu>({ kaynak: bilinen ?? null, okunamadi: false });
   React.useEffect(() => {
     if (!dosya) {
-      setKaynak(null);
+      setDurum({ kaynak: null, okunamadi: false });
       return;
     }
     const uri = fotoAdresi(dosya);
     if (!uri) {
-      setKaynak(null);
+      setDurum({ kaynak: null, okunamadi: true });
       return;
     }
     if (bilinen && bilinen.uri === uri) {
-      setKaynak(bilinen);
+      setDurum({ kaynak: bilinen, okunamadi: false });
       return;
     }
     let iptal = false;
     Image.getSize(
       uri,
       (genislik, yukseklik) => {
-        if (!iptal) setKaynak({ uri, genislik, yukseklik });
+        if (!iptal) setDurum({ kaynak: { uri, genislik, yukseklik }, okunamadi: false });
       },
       () => {
-        if (!iptal) setKaynak(null);
+        if (!iptal) setDurum({ kaynak: null, okunamadi: true });
       }
     );
     return () => {
       iptal = true;
     };
   }, [dosya, bilinen]);
-  return kaynak;
+  return durum;
+}
+
+export function useFotoKaynagi(dosya: string | null, bilinen?: FotoKaynagi | null): FotoKaynagi | null {
+  return useFotoKaynagiDurumu(dosya, bilinen).kaynak;
 }

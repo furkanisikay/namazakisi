@@ -25,7 +25,15 @@ const mockGoBack = jest.fn();
 let mockParametreler: Record<string, unknown> | undefined;
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => ({ goBack: mockGoBack, navigate: jest.fn(), addListener: () => () => undefined }),
+    // Geçiş sonu (`transitionEnd`) hemen yayılır: düzenleyici "Fotoğraf" hazırında seçiciyi ancak ondan sonra açar.
+    useNavigation: () => ({
+        goBack: mockGoBack,
+        navigate: jest.fn(),
+        addListener: (olay: string, dinleyici: (e: { data?: { closing?: boolean } }) => void) => {
+            if (olay === 'transitionEnd') setTimeout(() => dinleyici({ data: { closing: false } }), 0);
+            return () => undefined;
+        },
+    }),
     useRoute: () => ({ params: mockParametreler }),
 }));
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }) }));
@@ -227,6 +235,9 @@ describe('DuvarDuzenleyiciSayfasi', () => {
             const e = await ac();
             fireEvent.press(e.getByTestId('duvar-zemin-foto'));
             expect(await e.findByTestId('duvar-foto-ios')).toBeTruthy();
+            // Kısayollar görmeyeceği fotoğraf kullanılmaz: kopya silinir, zemin değişmez.
+            await waitFor(() => expect(mockSil).toHaveBeenCalledWith(`file:///belge/duvar/${YENI_DOSYA}`, { idempotent: true }));
+            expect(e.queryByText('Fotoğrafınız')).toBeNull();
             // iPhone'da "Vakte uysun" açıklamasında Android'e özgü cümle yok.
             fireEvent.press(e.getByTestId('duvar-zemin-imsak'));
             expect(e.queryByText(/Her vakit girdiğinde/)).toBeNull();

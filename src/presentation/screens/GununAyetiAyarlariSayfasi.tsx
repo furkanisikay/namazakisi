@@ -11,7 +11,7 @@
  * Duvar ayarı cihaza özgüdür, yedeklenmez (`GUNUN_AYETI_DUVAR`).
  */
 import * as React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
@@ -35,6 +35,7 @@ import { DuvarOnizleme } from '../components/gununAyeti/duvar/DuvarOnizleme';
 import { useDuvarYaziTipleri } from '../components/gununAyeti/duvar/DuvarYazisi';
 import { useFotoKaynagi } from '../components/gununAyeti/duvar/useFotoKaynagi';
 import { useBugununAyeti } from '../components/gununAyeti/duvar/useBugununAyeti';
+import { useAnlikDuvarAyari } from '../components/gununAyeti/duvar/useAnlikDuvarAyari';
 
 /** Native köprüyü (siri modülü) jest'te ve açılışta yüklememek için tembel. */
 const servis = (): ServisTipi =>
@@ -155,6 +156,8 @@ const DuvarKagidiBolumu: React.FC = () => {
   const ayet = useBugununAyeti();
   const yaziTipleri = useDuvarYaziTipleri();
   const foto = useFotoKaynagi(ayar?.foto.dosya ?? null);
+  // Önizleme kilit ekranında ŞU AN çizileni gösterir ("vakte uysun"da o anın göğü).
+  const anlikAyar = useAnlikDuvarAyari(ayar);
 
   const yukle = useCallback(() => {
     const sv = servis();
@@ -252,7 +255,7 @@ const DuvarKagidiBolumu: React.FC = () => {
                 <DuvarOnizleme
                   genislik={onizlemeG}
                   yukseklik={ONIZLEME_YUKSEKLIGI}
-                  ayar={ayar}
+                  ayar={anlikAyar ?? ayar}
                   ayet={ayet}
                   ekran={ekran}
                   platform={platform}
@@ -330,7 +333,7 @@ const DuvarKagidiBolumu: React.FC = () => {
       {android && ayar.acik && !engelli ? <NotSatiri metin={m.ayar.kapatNotu} style={{ marginTop: 16 }} /> : null}
       {android ? null : (
         <View style={{ marginTop: 24 }}>
-          <IosKisayolRehberi vakteUysun={ayar.vakteUysun && gokMu(ayar.zemin)} ayar={ayar} foto={foto} yaziTipleri={yaziTipleri} />
+          <IosKisayolRehberi vakteUysun={ayar.vakteUysun && gokMu(ayar.zemin)} ayar={anlikAyar ?? ayar} foto={foto} yaziTipleri={yaziTipleri} />
         </View>
       )}
 
@@ -369,7 +372,24 @@ const IosKisayolRehberi: React.FC<{
   const gorselRef = useRef<View>(null);
   const [kaydediliyor, setKaydediliyor] = useState(false);
   const ayet = useBugununAyeti();
-  const ekranBoyutu = Dimensions.get('screen');
+  const { width: ekranG, height: ekranY } = Dimensions.get('screen');
+  // Ekran dışındaki tam boy sahne yalnız girdisi değişince yeniden çizilir (sayfanın her durumunda değil).
+  const gizliGorsel = useMemo(
+    () => (
+      <DuvarOnizleme
+        genislik={ekranG}
+        yukseklik={ekranY}
+        ayar={ayar}
+        ayet={ayet}
+        ekran={ayar.yer === 'ana' ? 'ana' : 'kilit'}
+        platform="ios"
+        foto={foto}
+        yaziTipleri={yaziTipleri}
+        kimlik="ios-kaydet"
+      />
+    ),
+    [ekranG, ekranY, ayar, ayet, foto, yaziTipleri]
+  );
 
   const kaydet = async () => {
     setKaydediliyor(true);
@@ -388,17 +408,7 @@ const IosKisayolRehberi: React.FC<{
     <View>
       <View style={{ position: 'absolute', left: -10000, top: 0 }} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
         <View ref={gorselRef} collapsable={false}>
-          <DuvarOnizleme
-            genislik={ekranBoyutu.width}
-            yukseklik={ekranBoyutu.height}
-            ayar={ayar}
-            ayet={ayet}
-            ekran={ayar.yer === 'ana' ? 'ana' : 'kilit'}
-            platform="ios"
-            foto={foto}
-            yaziTipleri={yaziTipleri}
-            kimlik="ios-kaydet"
-          />
+          {gizliGorsel}
         </View>
       </View>
       <View style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, padding: 16 }}>

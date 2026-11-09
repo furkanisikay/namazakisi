@@ -14,7 +14,7 @@ import {
   type GunVakitleri,
 } from '../duvarTasarimi';
 import { duvarTasarimOrnegi } from '../duvarTasarimOrnegi';
-import { duvarAyariNormalize, gununAyetiYukuOlustur, VARSAYILAN_DUVAR_AYARI } from '../gununAyetiYuku';
+import { anlikDuvarAyari, duvarAyariNormalize, gununAyetiYukuOlustur, VARSAYILAN_DUVAR_AYARI } from '../gununAyetiYuku';
 
 const ORNEK = path.join(__dirname, '../../../../android/app/src/test/resources/duvar-tasarim-ornek.json');
 
@@ -63,6 +63,18 @@ describe('duvar tasarım sözleşmesi', () => {
     expect(a.sus.tur).toBe('yildiz');
     expect(duvarAyariNormalize({ zemin: 'foto', foto: { dosya: '../x.jpg' } }).foto.dosya).toBeNull();
     expect(duvarAyariNormalize({ foto: { dosya: 'duvar-foto-ab12cd34.jpg' } }).foto.dosya).toBe('duvar-foto-ab12cd34.jpg');
+  });
+
+  it('önizlemenin anlık ayarı: vakte uyan gökte o anın göğü, kapalıysa ya da konum yoksa seçilen gök', () => {
+    const t = (s: number, d = 0) => new Date(2026, 10, 7, s, d).getTime();
+    const vakitler = () => [t(6), t(7, 30), t(15), t(17, 30), t(19)] as const;
+    const imsak = (g: Date) => new Date(g.getFullYear(), g.getMonth(), g.getDate(), 6);
+    const ayar = { ...VARSAYILAN_DUVAR_AYARI, zemin: 'imsak' as const, vakteUysun: true };
+    expect(anlikDuvarAyari(ayar, new Date(t(13)), imsak, vakitler).zemin).toBe('kusluk');
+    expect(anlikDuvarAyari({ ...ayar, vakteUysun: false }, new Date(t(13)), imsak, vakitler).zemin).toBe('imsak');
+    expect(anlikDuvarAyari(ayar, new Date(t(13)), imsak, () => null).zemin).toBe('imsak');
+    // Düz zemin ve fotoğraf hiç değişmez.
+    expect(anlikDuvarAyari({ ...ayar, zemin: 'kagit' }, new Date(t(13)), imsak, vakitler).zemin).toBe('kagit');
   });
 
   it('yük gökleri ve (konum varsa) günün vakitlerini taşır', () => {

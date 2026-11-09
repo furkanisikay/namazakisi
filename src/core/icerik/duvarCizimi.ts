@@ -332,8 +332,8 @@ export type DuvarHazirAdi = 'sade' | 'mihrap' | 'gece' | 'foto';
 export const DUVAR_HAZIRLARI: readonly DuvarHazirAdi[] = ['sade', 'mihrap', 'gece', 'foto'];
 
 /**
- * Hazır görünüm yalnız zemin, yazı tipi ve süsü değiştirir; yer, Arapça, yazının konumu ve
- * boyutu, vakte uyma ve fotoğraf ayarı kalır. `foto` fotoğraf seçilmişse zemini fotoğrafa
+ * Hazır görünüm yalnız zemin, yazı tipi ve süsü değiştirir ("Gece" ayrıca vakte uymayı kapatır);
+ * yer, Arapça, yazının konumu ve boyutu ve fotoğraf ayarı kalır. `foto` fotoğraf seçilmişse zemini fotoğrafa
  * çevirir (seçimi düzenleyici yapar).
  */
 export function hazirUygula(ayar: DuvarKagidiAyari, ad: DuvarHazirAdi): DuvarKagidiAyari {
@@ -343,7 +343,8 @@ export function hazirUygula(ayar: DuvarKagidiAyari, ad: DuvarHazirAdi): DuvarKag
     case 'mihrap':
       return { ...ayar, zemin: 'ikindi', yazi: { ...ayar.yazi, tip: 'klasik' }, sus: { ...ayar.sus, tur: 'mihrap' } };
     case 'gece':
-      return { ...ayar, zemin: 'yatsi', sus: { ...ayar.sus, tur: 'girih' } };
+      // Adı gece: gün içinde vakte göre başka göğe dönmesin.
+      return { ...ayar, zemin: 'yatsi', vakteUysun: false, sus: { ...ayar.sus, tur: 'girih' } };
     case 'foto':
       return ayar.foto.dosya ? { ...ayar, zemin: 'foto' } : ayar;
   }

@@ -15,7 +15,7 @@
  */
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, InteractionManager, PanResponder, Platform, ScrollView, Text, TouchableOpacity, View, type GestureResponderEvent } from 'react-native';
+import { ActivityIndicator, Dimensions, PanResponder, Platform, ScrollView, Text, TouchableOpacity, View, type GestureResponderEvent } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -50,7 +50,7 @@ import { DuvarHayaleti } from '../components/gununAyeti/duvar/DuvarHayaleti';
 import { Kaydirici } from '../components/gununAyeti/duvar/Kaydirici';
 import { fizikselHiza, useDuvarYaziTipleri, yaziTipiAdi } from '../components/gununAyeti/duvar/DuvarYazisi';
 import { fotografSecVeKopyala, fotografiSil } from '../components/gununAyeti/duvar/duvarFotografi';
-import { useFotoKaynagi } from '../components/gununAyeti/duvar/useFotoKaynagi';
+import { useFotoKaynagiDurumu } from '../components/gununAyeti/duvar/useFotoKaynagi';
 import { useBugununAyeti } from '../components/gununAyeti/duvar/useBugununAyeti';
 import { ZEMIN_SIRASI, zeminEtiketi } from '../components/gununAyeti/duvar/duvarEtiketleri';
 
@@ -110,15 +110,23 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
   const geciciDosyalar = useRef(new Set<string>());
   const kayitliRef = useRef<DuvarKagidiAyari | null>(null);
   const uygulandi = useRef(false);
+  // Çift dokunuş kapısı eşzamanlı olmalı: state yeniden çizimden önce güncellenmez.
+  const kaydediliyorRef = useRef(false);
 
   const fotoSec = useCallback(async () => {
     setFotoHatasi(false);
     try {
       const f = await fotografSecVeKopyala();
       if (!f) return;
+      // iPhone'da Kısayollar görseli fotoğrafı göremiyorsa kullanılmaz: önizleme fotoğraf gösterirken
+      // kilit ekranı gece zeminine düşerdi (sessiz sapma). Kopya silinir, uyarı satırı kalır.
+      setIosAktarilamadi(f.iosAktarilamadi);
+      if (f.iosAktarilamadi) {
+        await fotografiSil(f.dosya);
+        return;
+      }
       geciciDosyalar.current.add(f.dosya);
       setYeniFoto({ uri: f.uri, genislik: f.genislik, yukseklik: f.yukseklik });
-      setIosAktarilamadi(f.iosAktarilamadi);
       setTaslak((t) => (t ? { ...t, zemin: 'foto', foto: { ...t.foto, dosya: f.dosya, x: 0.5, y: 0.5, yakinlik: 1 } } : t));
       setSekme('zemin');
     } catch (e) {
@@ -138,10 +146,13 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
         setKayitli(a);
         setTaslak(hazir && hazir !== 'foto' ? hazirUygula(a, hazir) : a);
         // Seçici geçiş animasyonu bitince açılır (iOS'ta geçiş sürerken sunulan seçici görünmeyebilir).
-        if (hazir === 'foto')
-          InteractionManager.runAfterInteractions(() => {
+        if (hazir === 'foto') {
+          const kaldir = navigation.addListener('transitionEnd', (olay) => {
+            if (olay.data?.closing) return;
+            kaldir();
             if (!iptal) fotoSec().catch(() => undefined);
           });
+        }
       });
     return () => {
       iptal = true;
@@ -162,7 +173,7 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
     []
   );
 
-  const foto = useFotoKaynagi(taslak?.foto.dosya ?? null, yeniFoto);
+  const { kaynak: foto, okunamadi: fotoOkunamadi } = useFotoKaynagiDurumu(taslak?.foto.dosya ?? null, yeniFoto);
   const ekran: DuvarEkrani = !taslak || taslak.yer === 'ikisi' ? ekranSecimi : taslak.yer;
 
   // Tuval: ekran oranında, tepsinin üstündeki alana sığar.
@@ -245,7 +256,8 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
   const zeminSec = (zemin: DuvarZemini) => {
     if (zemin === 'foto') {
       // Kayıtlı kopya okunamıyorsa (silinmiş, başka cihazdan) yeniden seçtirilir; yoksa kullanıcı takılırdı.
-      if (taslak?.foto.dosya && foto) guncelle((t) => ({ ...t, zemin }));
+      // Boyut okuması sürerken (açılış) kayıtlı fotoğrafa dönülür; yalnız okunamadıysa seçici açılır.
+      if (taslak?.foto.dosya && !fotoOkunamadi) guncelle((t) => ({ ...t, zemin }));
       else fotoSec().catch(() => undefined);
       return;
     }
@@ -255,7 +267,8 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
   const vazgec = () => navigation.goBack();
 
   const uygula = async () => {
-    if (!taslak || !kayitli || kaydediliyor) return;
+    if (!taslak || !kayitli || kaydediliyorRef.current) return;
+    kaydediliyorRef.current = true;
     setKaydediliyor(true);
     try {
       const sv = servis();
@@ -274,6 +287,7 @@ export const DuvarDuzenleyiciSayfasi: React.FC = () => {
       navigation.goBack();
     } catch (e) {
       Logger.warn('DuvarDuzenleyici', 'Görünüm kaydedilemedi', e);
+      kaydediliyorRef.current = false;
       setKaydediliyor(false);
     }
   };
@@ -554,6 +568,7 @@ const ZeminSekmesi: React.FC<{
         })}
       </ScrollView>
       {fotoHatasi ? <NotSatiri testID="duvar-foto-hata" metin={d.fotoKaydedilemedi} tip="uyari" style={{ marginTop: 12 }} /> : null}
+      {iosAktarilamadi ? <NotSatiri testID="duvar-foto-ios" metin={d.fotoAktarilamadi} tip="uyari" style={{ marginTop: 12 }} /> : null}
 
       {taslak.zemin === 'foto' && foto ? (
         <View style={{ marginTop: 14 }}>
@@ -569,7 +584,6 @@ const ZeminSekmesi: React.FC<{
               <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>{d.degistirin}</Text>
             </TouchableOpacity>
           </View>
-          {iosAktarilamadi ? <NotSatiri testID="duvar-foto-ios" metin={d.fotoAktarilamadi} style={{ marginTop: 10 }} /> : null}
           <View style={{ marginTop: 8 }}>
             <Kaydirici
               testID="duvar-karartma"

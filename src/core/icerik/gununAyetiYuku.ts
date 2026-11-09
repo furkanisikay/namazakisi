@@ -8,7 +8,7 @@ import { Coordinates } from 'adhan';
 import { aktifDil, sozluk } from '../dil/aktifDil';
 import type { DilKodu } from '../dil/diller';
 import { aktifPrayerTimes } from '../vakit/aktifHesap';
-import { gununAyetiPlani, type GununAyetiPlanKaydi, type ImsakKaynagi } from './gununAyeti';
+import { aktifNamazGunu, gununAyetiPlani, type GununAyetiPlanKaydi, type ImsakKaynagi } from './gununAyeti';
 import {
   DUVAR_GOKLERI,
   fotoAyariNormalize,
@@ -24,6 +24,7 @@ import {
   type DuvarYaziAyari,
   type GokSahnesi,
   type GunVakitleri,
+  vaktinGogu,
 } from './duvarTasarimi';
 
 export type DuvarYeri = 'kilit' | 'ana' | 'ikisi';
@@ -81,9 +82,6 @@ export function duvarAyariNormalize(ham: unknown): DuvarKagidiAyari {
   };
 }
 
-/** Fotoğraf zemini dosyası yoksa (silinmiş, başka cihazdan) çizici gece zeminine düşer. */
-export const fotoZeminiGecerliMi = (a: DuvarKagidiAyari): boolean => a.zemin !== 'foto' || a.foto.dosya !== null;
-
 export interface GununAyetiYuku {
   v: 1;
   dil: DilKodu;
@@ -112,6 +110,20 @@ export function koordinatVakitKaynagi(koordinat: { lat: number; lng: number } | 
     const p = aktifPrayerTimes(c, tarih);
     return [p.fajr.getTime(), p.sunrise.getTime(), p.asr.getTime(), p.maghrib.getTime(), p.isha.getTime()];
   };
+}
+
+/**
+ * O an çizilen ayar: "vakte uysun" açık ve zemin bir gökse, gök o anın vaktine göre seçilir
+ * (native `etkinGok` ile aynı: aktif namaz gününün vakitleri; konum yoksa seçilen gök kalır).
+ * Ayar sayfasındaki önizleme ve iPhone'da elle kaydedilen görsel bunu çizer.
+ */
+export function anlikDuvarAyari(ayar: DuvarKagidiAyari, simdi: Date, imsak: ImsakKaynagi, vakitler: VakitKaynagi): DuvarKagidiAyari {
+  if (!ayar.vakteUysun || !(DUVAR_GOKLERI as readonly string[]).includes(ayar.zemin)) return ayar;
+  const gun = aktifNamazGunu(simdi, imsak);
+  const v = vakitler(new Date(gun.getFullYear(), gun.getMonth(), gun.getDate(), 12));
+  if (!v) return ayar;
+  const gok = vaktinGogu(simdi.getTime(), v);
+  return gok === ayar.zemin ? ayar : { ...ayar, zemin: gok };
 }
 
 export function gununAyetiYukuOlustur(

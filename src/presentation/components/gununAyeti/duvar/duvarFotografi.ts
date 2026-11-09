@@ -37,7 +37,10 @@ export interface SecilenFoto {
 }
 
 /** iPhone köprüsü (`modules/expo-siri-kisayollari`); yöntem eski ikilide yok. */
-type SiriFotoKoprusu = { duvarFotografiniYaz?: (uri: string, dosya: string) => Promise<boolean> | boolean };
+type SiriFotoKoprusu = {
+  duvarFotografiniYaz?: (uri: string, dosya: string) => Promise<boolean> | boolean;
+  duvarFotografiniSil?: (dosya: string) => Promise<void> | void;
+};
 
 async function iosKopyala(uri: string, dosya: string): Promise<boolean> {
   try {
@@ -70,13 +73,22 @@ export async function fotografSecVeKopyala(): Promise<SecilenFoto | null> {
   return { dosya, uri: hedef, genislik: varlik.width, yukseklik: varlik.height, iosAktarilamadi };
 }
 
-/** Uygulama kopyasını siler (yoksa sessiz). */
+/** Uygulama kopyasını (iPhone'da ayrıca App Group kopyasını) siler; yoksa sessiz. */
 export async function fotografiSil(dosya: string | null): Promise<void> {
-  const adres = dosya ? fotoAdresi(dosya) : null;
-  if (!adres) return;
+  if (!dosya) return;
+  const adres = fotoAdresi(dosya);
+  if (adres) {
+    try {
+      await dosyaSistemi().deleteAsync(adres, { idempotent: true });
+    } catch (e) {
+      Logger.warn('DuvarFotografi', 'Eski fotoğraf silinemedi', e);
+    }
+  }
+  if (Platform.OS !== 'ios') return;
   try {
-    await dosyaSistemi().deleteAsync(adres, { idempotent: true });
+    const modul = require('../../../../../modules/expo-siri-kisayollari/src') as SiriFotoKoprusu;
+    if (typeof modul.duvarFotografiniSil === 'function') await modul.duvarFotografiniSil(dosya);
   } catch (e) {
-    Logger.warn('DuvarFotografi', 'Eski fotoğraf silinemedi', e);
+    Logger.warn('DuvarFotografi', 'Kısayollar kopyası silinemedi', e);
   }
 }

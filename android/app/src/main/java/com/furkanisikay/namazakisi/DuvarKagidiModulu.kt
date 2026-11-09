@@ -1,6 +1,5 @@
 package com.furkanisikay.namazakisi
 
-import android.net.Uri
 import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
@@ -17,7 +16,6 @@ import com.furkanisikay.namazakisi.widget.GununAyetiDeposu
  * - `durum()` → `{ izinli, sonHata }`: `izinli` = cihaz destekliyor VE yönetim izin veriyor;
  *   false ise ekran "Kullanılamıyor" der (sessiz sapma yok). `sonHata` = "yazilamadi" ya da null.
  * - `simdiUygula()` → gerekirse yazar (imza aynıysa yazmaz) ve sonucu bildirir, true/false.
- * - `onizlemeUret(g, y)` → mevcut ayarla PNG (önbellek), `file://` adresi; yük yoksa null.
  */
 class DuvarKagidiModulu(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
@@ -46,18 +44,6 @@ class DuvarKagidiModulu(reactContext: ReactApplicationContext) :
         } catch (e: Throwable) {
             Log.w(TAG, "Duvar kagidi uygulanamadi", e)
             promise.resolve(false)
-        }
-    }
-
-    @ReactMethod
-    fun onizlemeUret(genislik: Int, yukseklik: Int, promise: Promise) {
-        try {
-            DuvarKagidiUygulayici.arkaPlandaOnizleme(reactApplicationContext, genislik, yukseklik) { dosya ->
-                promise.resolve(dosya?.let { Uri.fromFile(it).toString() })
-            }
-        } catch (e: Throwable) {
-            Log.w(TAG, "Onizleme uretilemedi", e)
-            promise.resolve(null)
         }
     }
 

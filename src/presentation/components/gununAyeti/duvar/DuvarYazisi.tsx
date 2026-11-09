@@ -19,13 +19,17 @@ import { sagdanSolaCiziliyor } from '../../common/yon';
 import { ARAPCA_YAZI_TIPI } from '../AyetGorseli';
 
 /** Duvar kâğıdı yazı tipleri (OFL 1.1, `assets/fonts/OFL.txt`); yüklenmeyen sistem yazı tipine düşer. */
+const YUKLU_YAZI_TIPLERI = { arapca: ARAPCA_YAZI_TIPI, klasik: 'NotoSerif', zarif: 'Amiri' };
+const YUKLENMEMIS: { arapca?: string; klasik?: string; zarif?: string } = {};
+
 export function useDuvarYaziTipleri(): { arapca?: string; klasik?: string; zarif?: string } {
   const [yuklendi] = useFonts({
     [ARAPCA_YAZI_TIPI]: require('../../../../../assets/fonts/AmiriQuran-Regular.ttf'),
     NotoSerif: require('../../../../../assets/fonts/NotoSerif-Regular.ttf'),
     Amiri: require('../../../../../assets/fonts/Amiri-Regular.ttf'),
   });
-  return yuklendi ? { arapca: ARAPCA_YAZI_TIPI, klasik: 'NotoSerif', zarif: 'Amiri' } : {};
+  // Sabit referans: önizlemeler memo'lu (yeni nesne her çizimde onları yeniden çizdirirdi).
+  return yuklendi ? YUKLU_YAZI_TIPLERI : YUKLENMEMIS;
 }
 
 export const yaziTipiAdi = (tip: YaziTipi, f: { klasik?: string; zarif?: string }): string | undefined =>

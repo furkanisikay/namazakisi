@@ -39,7 +39,6 @@ const widgetKoprusu = (): WidgetSabitleyici | null =>
 interface DuvarKagidiModulu {
   durum(): Promise<{ izinli: boolean; sonHata?: string | null }>;
   simdiUygula(): Promise<boolean>;
-  onizlemeUret(genislik: number, yukseklik: number): Promise<string>;
 }
 
 export interface DuvarKagidiDurumu {
@@ -146,18 +145,6 @@ export class GununAyetiServisi {
     } catch (e) {
       Logger.warn('GununAyetiServisi', 'Widget sabitlenemedi', e);
       return false;
-    }
-  }
-
-  /** Bugünün görselinin önizlemesi (yerel dosya adresi); üretilemezse `null`. */
-  public async duvarOnizlemesi(genislik: number, yukseklik: number): Promise<string | null> {
-    const modul = duvarModulu();
-    if (!modul) return null;
-    await this.yaz();
-    try {
-      return await modul.onizlemeUret(Math.round(genislik), Math.round(yukseklik));
-    } catch {
-      return null;
     }
   }
 }
