@@ -890,12 +890,13 @@ public enum DuvarTasarimi {
     private static let acikZeminMetni: UInt32 = 0xF1F8E9
     private static let koyuZeminMetni: UInt32 = 0x1F2A22
 
-    /// a → b dogrusal karisim (kanal basina, Kotlin `Math.round` = floor(x + 0,5)).
+    /// a → b dogrusal karisim, JS `duvarCizimi.karistir` ile BIREBIR: round(a·(1−t) + b·t)
+    /// (`Math.round` = floor(x + 0,5); eslik ornegi `cizim.renkler`).
     public static func karistir(_ a: UInt32, _ b: UInt32, _ oran: Double) -> UInt32 {
         func kanal(_ kaydir: UInt32) -> UInt32 {
             let x = Double((a >> kaydir) & 0xFF)
             let y = Double((b >> kaydir) & 0xFF)
-            return UInt32(min(255, max(0, (x + (y - x) * oran + 0.5).rounded(.down))))
+            return UInt32(min(255, max(0, (x * (1 - oran) + y * oran + 0.5).rounded(.down))))
         }
         return (kanal(16) << 16) | (kanal(8) << 8) | kanal(0)
     }
@@ -910,7 +911,7 @@ public enum DuvarTasarimi {
         for _ in 0 ..< 10 {
             let enIyi = max(kontrastOrani(acikZeminMetni, zemin), kontrastOrani(koyuZeminMetni, zemin))
             if enIyi >= 4.5 { return zemin }
-            zemin = karistir(zemin, 0x000000, 0.10)
+            zemin = karistir(zemin, 0x000000, 0.1)
         }
         return zemin
     }
@@ -919,13 +920,13 @@ public enum DuvarTasarimi {
         kontrastOrani(acikZeminMetni, zemin) >= kontrastOrani(koyuZeminMetni, zemin)
     }
 
-    /// Metni zemine dogru en cok %35 karistirir; 4,5:1 altina dusmeden durur.
+    /// Metni zemine dogru en cok %35 karistirir; 4,5:1 altina dusmeden durur (adim JS gibi yuvarlanir).
     public static func ikincilTon(_ metin: UInt32, _ zemin: UInt32) -> UInt32 {
         var oran = 0.35
         while oran > 0 {
             let aday = karistir(metin, zemin, oran)
             if kontrastOrani(aday, zemin) >= 4.5 { return aday }
-            oran -= 0.05
+            oran = (((oran - 0.05) * 100) + 0.5).rounded(.down) / 100
         }
         return metin
     }
@@ -947,18 +948,6 @@ public enum DuvarTasarimi {
             return DuvarZeminRenkleri(zemin: 0x14211A, metin: 0xF1F8E9, kunye: 0xA5D6A7, atif: 0x81C784, sus: 0xFFFFFF, susOpakligi: 0.08)
         }
     }
-
-    /// Yildiz susunun merkezi (ekran kesri): kagit sol, palet sag, gece/gok/foto sag alt.
-    public static func yildizKonumu(_ zemin: String) -> [Double] {
-        switch zemin {
-        case "kagit": return [0.097, 0.64]
-        case "palet": return [0.903, 0.693]
-        default: return [0.855, 0.878]
-        }
-    }
-
-    /// Sus opakligi carpani: belirginlik 0,5 (varsayilan) bugunku gorunum (×1).
-    public static func susCarpani(_ belirginlik: Double) -> Double { 0.5 + min(1, max(0, belirginlik)) }
 
     // --- Yazi ---------------------------------------------------------------------------
 
@@ -1023,5 +1012,127 @@ public enum DuvarTasarimi {
     /// Bulaniklik yaricapi (piksel): kisa kenarin bulaniklik × %4'u.
     public static func bulaniklikYaricapi(_ bulaniklik: Double, genislik: Double, yukseklik: Double) -> Double {
         min(1, max(0, bulaniklik)) * 0.04 * min(genislik, yukseklik)
+    }
+}
+
+/// Mihrap kemeri (genislik kesri): bacaklar `yanPay`'dan ekranin altina iner, yarim daire merkezi
+/// yazi kutusu ustunun `merkezAlti` altinda.
+public struct DuvarKemeri: Equatable, Sendable {
+    public let yanPay: Double
+    public let r: Double
+    public let merkezAlti: Double
+    public let kalinlik: Double
+    public let opaklik: Double
+}
+
+/// Duvar kagidi CIZIM SAYILARI — tek kaynak JS `src/core/icerik/duvarCizimi.ts` (uygulamadaki
+/// duzenleyicinin onizlemesi = sahip onayli taslak 2; Kotlin ikizi `DuvarCizim`). Burada YENIDEN
+/// TASARLANMAZ: her sayi ornek dosyanin `cizim` bolumuyle birebir denetlenir (test §14). Birimler:
+/// sus/perde genislik kesri (tuval 330), yazi 412 tasarim pikseli (× ekran genisligi / 412).
+public enum DuvarCizim {
+    public static let tasarimGenisligi = 412.0
+    static let tuval = 330.0
+
+    // --- Yazi (412 tasarim px; satir yuksekligi ve harf araligi yazi boyunun kati) ---------
+    public static let meal = 24.0
+    public static let mealArapcali = 17.0
+    public static let arapca = 28.0
+    public static let kunye = 12.0
+    public static let atif = 10.0
+    public static let yanBosluk = 30.0
+    public static let kucukYildiz = 22.0
+    public static let arapcaSatir = 1.75
+    public static let mealSatir = 1.4
+    public static let kunyeHarfAraligi = 0.04
+    public static let mealUstArapcali = 6.0
+    public static let mealUstYildizli = 10.0
+    public static let kunyeUstArapcali = 14.0
+    public static let kunyeUst = 18.0
+    public static let atifUst = 6.0
+    public static let atifEnAzOlcek = 0.9
+
+    // --- Sus --------------------------------------------------------------------------------
+    public static let mihrapYaziYanPayi = 84.0 / tuval
+    public static let mihrapDis = DuvarKemeri(yanPay: 58.0 / tuval, r: 107.0 / tuval, merkezAlti: 54.0 / tuval, kalinlik: 2.2 / tuval, opaklik: 0.28)
+    public static let mihrapIc = DuvarKemeri(yanPay: 74.0 / tuval, r: 91.0 / tuval, merkezAlti: 58.0 / tuval, kalinlik: 1.3 / tuval, opaklik: 0.14)
+    /// Kemer tepesindeki DOLU bes koseli yildiz: merkez kutu ustunun `mihrapYildizUst` yukarisinda.
+    public static let mihrapYildizUst = 36.0 / tuval
+    public static let mihrapYildizDisR = 14.0 / tuval
+    public static let mihrapYildizIcR = 6.5 / tuval
+    public static let mihrapYildizOpaklik = 0.3
+
+    /// Girih: ekranin sol ustunden dosenen karo; karo icinde 48 birimlik dort koseli yildiz + daire.
+    public static let girihKaro = 48.0 / tuval
+    public static let girihYol = "M24 0l6 18 18 6-18 6-6 18-6-18-18-6 18-6z"
+    public static let girihDaireR = 5.0
+    public static let girihYildizKalinlik = 0.9
+    public static let girihDaireKalinlik = 0.7
+    public static let girihOpaklik = 0.06
+
+    /// Buyuk silik yildiz: 24 birimlik cerceve (iki kare + daire), birim = genislik × `yildizBirim`.
+    public static let yildizBirim = 420.0 / tasarimGenisligi / 24
+    public static let yildizYariKenar = 7.0
+    public static let yildizKosegen = 9.9
+    public static let yildizDaireR = 4.2
+    public static let yildizKalinlik = 0.12
+    public static let yildizOpaklik = 0.08
+    public static let kucukYildizKalinlik = 1.6
+
+    /// Gok ve fotograf zemininde kunye ve atif: yazi renginin %72 ve %55'i.
+    public static let kunyeOpakligi = 0.72
+    public static let atifOpakligi = 0.55
+
+    /// Fotograf okunurluk perdesi: yazi kutusunun her yanindan tasma ve kose yaricapi; kesin kenarli.
+    public static let perdePay = 12.0 / tuval
+    public static let perdeYaricap = 18.0 / tuval
+
+    /// Sus opaklik carpani: belirginlik 0,5'te 1, 0'da gorunmez, 1'de iki kat.
+    public static func susCarpani(_ belirginlik: Double) -> Double { max(0, belirginlik) / 0.5 }
+
+    /// Yazi blogunun yan payi (genislik kesri): mihrapta kemerin icine daralir.
+    public static func yaziYanPayi(_ susTuru: String) -> Double {
+        susTuru == "mihrap" ? mihrapYaziYanPayi : yanBosluk / tasarimGenisligi
+    }
+
+    /// Buyuk yildizin merkezi (ekran kesri): kagit sol, palet sag; gece, gok ve fotograf sag alt.
+    public static func yildizKonumu(_ zemin: String) -> [Double] {
+        switch zemin {
+        case "kagit": return [0.097, 0.64]
+        case "palet": return [0.903, 0.693]
+        default: return [0.855, 0.878]
+        }
+    }
+
+    /// Bes koseli yildizin 10 kosesi ([x, y]; dis/ic sirayla, ilk kose tepede). JS `besKoseliYildiz`.
+    public static func besKoseliYildiz(cx: Double, cy: Double, dis: Double, ic: Double) -> [[Double]] {
+        (0 ..< 10).map { i -> [Double] in
+            let r = i % 2 == 0 ? dis : ic
+            let a = -Double.pi / 2 + Double(i) * Double.pi / 5
+            return [cx + r * cos(a), cy + r * sin(a)]
+        }
+    }
+
+    /// `girihYol`'un koseleri (karo birimi, [x, y]): ilk cift mutlak (`M`), sonrakiler goreli (`l`).
+    public static func girihNoktalari() -> [[Double]] {
+        var sayilar: [Double] = []
+        var parca = ""
+        for c in girihYol {
+            if c == "-" || !(c.isNumber || c == ".") {
+                if let d = Double(parca) { sayilar.append(d) }
+                parca = c == "-" ? "-" : ""
+            } else {
+                parca.append(c)
+            }
+        }
+        if let d = Double(parca) { sayilar.append(d) }
+        var noktalar: [[Double]] = []
+        var x = 0.0
+        var y = 0.0
+        for i in 0 ..< sayilar.count / 2 {
+            x = i == 0 ? sayilar[0] : x + sayilar[2 * i]
+            y = i == 0 ? sayilar[1] : y + sayilar[2 * i + 1]
+            noktalar.append([x, y])
+        }
+        return noktalar
     }
 }

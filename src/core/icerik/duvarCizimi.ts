@@ -4,8 +4,10 @@
  *
  * Kurallar sözleşmeden (`duvarTasarimi.ts`) gelir ve burada YENİDEN YAZILMAZ: yerleşim
  * `yaziYerlesimi` + `IZINLI_BANTLAR` + `VARSAYILAN_MERKEZ`, okunurluk `okunurlukKarari`.
- * Bu dosya uygulamadaki düzenleyicinin (ve önizlemelerin) çizim sayılarını tek yerde tutar;
- * Android çizicisi ve iPhone Kısayollar görseli aynı sayıları kullanır
+ * Bu dosya uygulamadaki düzenleyicinin (ve önizlemelerin) çizim sayılarını tek yerde tutar
+ * (sahip onaylı taslak 2'nin görünümü). Android çizicisi (`cekirdek/DuvarTasarimi.kt` >
+ * `DuvarCizim`) ve iPhone Kısayollar görseli (`WidgetKarari.swift` > `DuvarCizim`) aynı sayıları
+ * taşır; eşlik `duvarTasarimOrnegi` > `cizim` ile denetlenir
  * (`docs/ajan/gunun-ayeti.md > Duvar kâğıdı kişiselleştirme`).
  *
  * Birimler: süs ve fotoğraf geometrisi ekran GENİŞLİĞİNİN kesri (taslak 2 tuvali 330 geniş);
@@ -41,6 +43,21 @@ export const YAZI_OLCULERI = {
   yanBosluk: 30,
   /** Yıldız süsünde, Arapça yokken mealin üstündeki küçük sekiz köşeli yıldız. */
   kucukYildiz: 22,
+  /** Satır yüksekliği (yazı boyunun katı, mutlak): Arapça ve meal; künye/atıf yazı tipinin kendi satırı. */
+  arapcaSatir: 1.75,
+  mealSatir: 1.4,
+  /** Künyenin harf aralığı (yazı boyunun katı). */
+  kunyeHarfAraligi: 0.04,
+  /** Parçalar arası boşluk (412 tasarım px × ölçek): Arapça → meal, küçük yıldız → meal. Başka durumda meal 0. */
+  mealUstArapcali: 6,
+  mealUstYildizli: 10,
+  /** Meal (ya da Arapça) → künye: Arapça varken 14, yokken 18. */
+  kunyeUstArapcali: 14,
+  kunyeUst: 18,
+  /** Künye → atıf. */
+  atifUst: 6,
+  /** Atıf zorunlu ve okunur: kullanıcının yazı ölçeği bunun altına indirmez. */
+  atifEnAzOlcek: 0.9,
 } as const;
 
 // --- Süs geometrisi (taslak 2, sahip onaylı) ---------------------------------------------
@@ -88,6 +105,13 @@ export const SUS_GEOMETRISI = {
     kucukKalinlik: 1.6,
   },
 } as const;
+
+/** Fotoğrafta okunurluk perdesi: yazı kutusunun her yanından `pay` taşan, köşesi `yaricap` dolgu (kesin kenarlı). */
+export const PERDE_GEOMETRISI = { pay: T(12), yaricap: T(18) } as const;
+
+/** Yazı bloğunun yan payı (genişlik kesri): mihrapta kemerin içine daralır. */
+export const yaziYanPayiKesri = (susTuru: DuvarKagidiAyari['sus']['tur']): number =>
+  susTuru === 'mihrap' ? SUS_GEOMETRISI.mihrap.yaziYanPayi : YAZI_OLCULERI.yanBosluk / YAZI_TASARIM_GENISLIGI;
 
 /** Süs opaklık çarpanı: varsayılan belirginlikte 1, 0'da görünmez, 1'de iki kat. */
 export const susCarpani = (belirginlik: number): number => Math.max(0, belirginlik) / VARSAYILAN_SUS.belirginlik;

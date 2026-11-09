@@ -970,8 +970,116 @@ struct DuvarOrnekNormalize: Decodable {
     let beklenen: DuvarOrnekAyar
 }
 
+/// Cizim sayilari (`cizim`): JS `duvarCizimi.ts` (duzenleyici onizlemesi) = `DuvarCizim` sabitleri.
+struct DuvarOrnekKemer: Decodable {
+    let yanPay: Double
+    let r: Double
+    let merkezAlti: Double
+    let kalinlik: Double
+    let opaklik: Double
+}
+
+struct DuvarOrnekCizim: Decodable {
+    struct MihrapYildizi: Decodable {
+        let merkezUstu: Double
+        let disR: Double
+        let icR: Double
+        let opaklik: Double
+    }
+    struct Mihrap: Decodable {
+        let yaziYanPayi: Double
+        let dis: DuvarOrnekKemer
+        let ic: DuvarOrnekKemer
+        let yildiz: MihrapYildizi
+    }
+    struct Girih: Decodable {
+        let karo: Double
+        let yol: String
+        let daireR: Double
+        let yildizKalinlik: Double
+        let daireKalinlik: Double
+        let opaklik: Double
+    }
+    struct Yildiz: Decodable {
+        let birim: Double
+        let yariKenar: Double
+        let kosegen: Double
+        let daireR: Double
+        let kalinlik: Double
+        let konum: [String: [Double]]
+        let opaklik: Double
+        let kucukKalinlik: Double
+    }
+    struct Sus: Decodable {
+        let mihrap: Mihrap
+        let girih: Girih
+        let yildiz: Yildiz
+    }
+    struct Perde: Decodable {
+        let pay: Double
+        let yaricap: Double
+    }
+    struct YanPay: Decodable {
+        let mihrap: Double
+        let diger: Double
+    }
+    struct Carpan: Decodable {
+        let belirginlik: Double
+        let beklenen: Double
+    }
+    struct BesKose: Decodable {
+        let cx: Double
+        let cy: Double
+        let dis: Double
+        let ic: Double
+        let beklenen: [[Double]]
+    }
+    struct RenkSonucu: Decodable {
+        let zemin: String?
+        let metin: String
+        let kunye: String
+        let kunyeOpaklik: Double
+        let atif: String
+        let atifOpaklik: Double
+        let sus: String
+        let susOpaklik: Double
+    }
+    struct Renk: Decodable {
+        let zemin: String
+        let paletRenk: String
+        let beklenen: RenkSonucu
+    }
+    struct FotoGirdisi: Decodable {
+        let x: Double
+        let y: Double
+        let yakinlik: Double
+    }
+    struct FotoSonucu: Decodable {
+        let sol: Double
+        let ust: Double
+        let genislik: Double
+        let yukseklik: Double
+    }
+    struct Foto: Decodable {
+        let ekran: [Double]
+        let gorsel: [Double]
+        let foto: FotoGirdisi
+        let beklenen: FotoSonucu
+    }
+    let tasarimGenisligi: Double
+    let yazi: [String: Double]
+    let sus: Sus
+    let perde: Perde
+    let yanPay: YanPay
+    let susCarpani: [Carpan]
+    let besKoseliYildiz: BesKose
+    let renkler: [Renk]
+    let foto: [Foto]
+}
+
 struct DuvarOrnek: Decodable {
     let surum: Int
+    let cizim: DuvarOrnekCizim
     let sahneler: [String: DuvarGokSahnesi]
     let izinliBantlar: [String: [String: [[Double]]]]
     let varsayilanMerkez: [String: [String: Double]]
@@ -1155,8 +1263,108 @@ let paletRenkleri = DuvarTasarimi.zeminRenkleri("palet", paletRenk: "#2E7D32")
 esitMi(paletRenkleri.metin, 0xF1F8E9, "duvar: yesil palette acik metin")
 esitMi(DuvarTasarimi.kontrastOrani(paletRenkleri.kunye, paletRenkleri.zemin) >= 4.5, true, "duvar: palet kunyesi 4,5:1")
 esitMi(DuvarTasarimi.karistir(0x000000, 0xFFFFFF, 0.5), 0x808080, "duvar: karisim (yarim yukari yuvarlanir)")
-esitMi(DuvarTasarimi.yildizKonumu("aksam"), [0.855, 0.878], "duvar: gokte yildiz sag altta")
-esitMi(DuvarTasarimi.susCarpani(0.5), 1, "duvar: varsayilan belirginlik bugunku gorunum")
+esitMi(DuvarCizim.yildizKonumu("aksam"), [0.855, 0.878], "duvar: gokte yildiz sag altta")
+
+// Cizim sayilari (`cizim`): native sabitler JS `duvarCizimi.ts` (duzenleyici onizlemesi) ile BIREBIR.
+let cz = duvarOrnek.cizim
+yakinMi(DuvarCizim.tasarimGenisligi, cz.tasarimGenisligi, "cizim: tasarim genisligi", tolerans: 1e-12)
+let yaziSabitleri: [String: Double] = [
+    "meal": DuvarCizim.meal, "mealArapcali": DuvarCizim.mealArapcali, "arapca": DuvarCizim.arapca, "kunye": DuvarCizim.kunye,
+    "atif": DuvarCizim.atif, "yanBosluk": DuvarCizim.yanBosluk, "kucukYildiz": DuvarCizim.kucukYildiz,
+    "arapcaSatir": DuvarCizim.arapcaSatir, "mealSatir": DuvarCizim.mealSatir, "kunyeHarfAraligi": DuvarCizim.kunyeHarfAraligi,
+    "mealUstArapcali": DuvarCizim.mealUstArapcali, "mealUstYildizli": DuvarCizim.mealUstYildizli,
+    "kunyeUstArapcali": DuvarCizim.kunyeUstArapcali, "kunyeUst": DuvarCizim.kunyeUst, "atifUst": DuvarCizim.atifUst,
+    "atifEnAzOlcek": DuvarCizim.atifEnAzOlcek,
+]
+// Ornekteki her yazi olcusu native'de de var (yeni olcu eklenirse bu kontrol duser).
+esitMi(Set(yaziSabitleri.keys), Set(cz.yazi.keys), "cizim: yazi olcusu adlari")
+for (ad, deger) in cz.yazi.sorted(by: { $0.key < $1.key }) {
+    yakinMi(yaziSabitleri[ad] ?? .nan, deger, "cizim: yazi.\(ad)", tolerans: 1e-12)
+}
+func kemerAyniMi(_ k: DuvarKemeri, _ e: DuvarOrnekKemer, _ ad: String) {
+    yakinMi(k.yanPay, e.yanPay, "\(ad).yanPay", tolerans: 1e-12)
+    yakinMi(k.r, e.r, "\(ad).r", tolerans: 1e-12)
+    yakinMi(k.merkezAlti, e.merkezAlti, "\(ad).merkezAlti", tolerans: 1e-12)
+    yakinMi(k.kalinlik, e.kalinlik, "\(ad).kalinlik", tolerans: 1e-12)
+    yakinMi(k.opaklik, e.opaklik, "\(ad).opaklik", tolerans: 1e-12)
+}
+yakinMi(DuvarCizim.mihrapYaziYanPayi, cz.sus.mihrap.yaziYanPayi, "cizim: mihrap yazi yan payi", tolerans: 1e-12)
+kemerAyniMi(DuvarCizim.mihrapDis, cz.sus.mihrap.dis, "cizim: mihrap dis")
+kemerAyniMi(DuvarCizim.mihrapIc, cz.sus.mihrap.ic, "cizim: mihrap ic")
+yakinMi(DuvarCizim.mihrapYildizUst, cz.sus.mihrap.yildiz.merkezUstu, "cizim: mihrap yildiz ust", tolerans: 1e-12)
+yakinMi(DuvarCizim.mihrapYildizDisR, cz.sus.mihrap.yildiz.disR, "cizim: mihrap yildiz disR", tolerans: 1e-12)
+yakinMi(DuvarCizim.mihrapYildizIcR, cz.sus.mihrap.yildiz.icR, "cizim: mihrap yildiz icR", tolerans: 1e-12)
+yakinMi(DuvarCizim.mihrapYildizOpaklik, cz.sus.mihrap.yildiz.opaklik, "cizim: mihrap yildiz opaklik", tolerans: 1e-12)
+yakinMi(DuvarCizim.girihKaro, cz.sus.girih.karo, "cizim: girih karo", tolerans: 1e-12)
+esitMi(DuvarCizim.girihYol, cz.sus.girih.yol, "cizim: girih yolu")
+esitMi(
+    DuvarCizim.girihNoktalari(), [[24, 0], [30, 18], [48, 24], [30, 30], [24, 48], [18, 30], [0, 24], [18, 18]],
+    "cizim: girih yolu dort koseli yildiz"
+)
+yakinMi(DuvarCizim.girihDaireR, cz.sus.girih.daireR, "cizim: girih daire", tolerans: 1e-12)
+yakinMi(DuvarCizim.girihYildizKalinlik, cz.sus.girih.yildizKalinlik, "cizim: girih yildiz cizgisi", tolerans: 1e-12)
+yakinMi(DuvarCizim.girihDaireKalinlik, cz.sus.girih.daireKalinlik, "cizim: girih daire cizgisi", tolerans: 1e-12)
+yakinMi(DuvarCizim.girihOpaklik, cz.sus.girih.opaklik, "cizim: girih opaklik", tolerans: 1e-12)
+yakinMi(DuvarCizim.yildizBirim, cz.sus.yildiz.birim, "cizim: yildiz birim", tolerans: 1e-12)
+yakinMi(DuvarCizim.yildizYariKenar, cz.sus.yildiz.yariKenar, "cizim: yildiz yari kenar", tolerans: 1e-12)
+yakinMi(DuvarCizim.yildizKosegen, cz.sus.yildiz.kosegen, "cizim: yildiz kosegen", tolerans: 1e-12)
+yakinMi(DuvarCizim.yildizDaireR, cz.sus.yildiz.daireR, "cizim: yildiz daire", tolerans: 1e-12)
+yakinMi(DuvarCizim.yildizKalinlik, cz.sus.yildiz.kalinlik, "cizim: yildiz cizgi", tolerans: 1e-12)
+yakinMi(DuvarCizim.yildizOpaklik, cz.sus.yildiz.opaklik, "cizim: yildiz opaklik", tolerans: 1e-12)
+yakinMi(DuvarCizim.kucukYildizKalinlik, cz.sus.yildiz.kucukKalinlik, "cizim: kucuk yildiz cizgi", tolerans: 1e-12)
+for (zemin, anahtar) in [("gece", "gece"), ("kagit", "kagit"), ("palet", "palet"), ("aksam", "diger"), ("foto", "diger")] {
+    esitMi(DuvarCizim.yildizKonumu(zemin), cz.sus.yildiz.konum[anahtar] ?? [], "cizim: yildiz konumu \(zemin)")
+}
+yakinMi(DuvarCizim.perdePay, cz.perde.pay, "cizim: perde payi", tolerans: 1e-12)
+yakinMi(DuvarCizim.perdeYaricap, cz.perde.yaricap, "cizim: perde yaricapi", tolerans: 1e-12)
+yakinMi(DuvarCizim.yaziYanPayi("mihrap"), cz.yanPay.mihrap, "cizim: mihrap yan payi", tolerans: 1e-12)
+for tur in ["yildiz", "girih", "yok"] {
+    yakinMi(DuvarCizim.yaziYanPayi(tur), cz.yanPay.diger, "cizim: \(tur) yan payi", tolerans: 1e-12)
+}
+for o in cz.susCarpani {
+    yakinMi(DuvarCizim.susCarpani(o.belirginlik), o.beklenen, "cizim: susCarpani(\(o.belirginlik))", tolerans: 1e-12)
+}
+let besKose = DuvarCizim.besKoseliYildiz(cx: cz.besKoseliYildiz.cx, cy: cz.besKoseliYildiz.cy, dis: cz.besKoseliYildiz.dis, ic: cz.besKoseliYildiz.ic)
+esitMi(besKose.count, cz.besKoseliYildiz.beklenen.count, "cizim: bes koseli yildiz kose sayisi")
+// JS iki ondaliga yuvarlar (SVG noktasi).
+for (i, n) in zip(besKose, cz.besKoseliYildiz.beklenen).enumerated() {
+    yakinMi(n.0[0], n.1[0], "cizim: bes koseli yildiz x\(i)", tolerans: 0.006)
+    yakinMi(n.0[1], n.1[1], "cizim: bes koseli yildiz y\(i)", tolerans: 0.006)
+}
+for o in cz.renkler {
+    let ad = "cizim: renkler \(o.zemin) \(o.paletRenk)"
+    let e = o.beklenen
+    if ["gece", "kagit", "palet"].contains(o.zemin) {
+        let r = DuvarTasarimi.zeminRenkleri(o.zemin, paletRenk: o.paletRenk)
+        esitMi(r.zemin, DuvarTasarimi.rgb(e.zemin ?? "") ?? 1 << 24, "\(ad) zemin")
+        esitMi(r.metin, DuvarTasarimi.rgb(e.metin) ?? 1 << 24, "\(ad) metin")
+        esitMi(r.kunye, DuvarTasarimi.rgb(e.kunye) ?? 1 << 24, "\(ad) kunye")
+        esitMi(r.atif, DuvarTasarimi.rgb(e.atif) ?? 1 << 24, "\(ad) atif")
+        esitMi(r.sus, DuvarTasarimi.rgb(e.sus) ?? 1 << 24, "\(ad) sus")
+        esitMi(e.kunyeOpaklik, 1, "\(ad) kunye opak")
+        esitMi(e.atifOpaklik, 1, "\(ad) atif opak")
+        yakinMi(r.susOpakligi, e.susOpaklik, "\(ad) sus opakligi", tolerans: 1e-12)
+    } else {
+        // Gok: yazi sahnenin rengi, kunye/atif/sus ayni rengin sabit opakliklari.
+        esitMi(e.zemin, nil, "\(ad) zemin yok")
+        esitMi(duvarOrnek.sahneler[o.zemin]?.metin, e.metin, "\(ad) metin")
+        yakinMi(DuvarCizim.kunyeOpakligi, e.kunyeOpaklik, "\(ad) kunye opakligi", tolerans: 1e-12)
+        yakinMi(DuvarCizim.atifOpakligi, e.atifOpaklik, "\(ad) atif opakligi", tolerans: 1e-12)
+        yakinMi(DuvarCizim.yildizOpaklik, e.susOpaklik, "\(ad) sus opakligi", tolerans: 1e-12)
+    }
+}
+// Fotograf: JS ekrandaki gorsel yerini verir; native gorsel pikselinde kirpar (olcek = ekrandaki genislik / gorsel genisligi).
+for (i, o) in cz.foto.enumerated() {
+    let k = DuvarTasarimi.fotoKirpmasi(
+        gorselG: o.gorsel[0], gorselY: o.gorsel[1], hedefG: o.ekran[0], hedefY: o.ekran[1], x: o.foto.x, y: o.foto.y, yakinlik: o.foto.yakinlik
+    )
+    let olcek = o.beklenen.genislik / o.gorsel[0]
+    yakinMi(-k.x * olcek, o.beklenen.sol, "cizim: foto[\(i)] sol")
+    yakinMi(-k.y * olcek, o.beklenen.ust, "cizim: foto[\(i)] ust")
+    yakinMi(k.genislik * olcek, o.ekran[0], "cizim: foto[\(i)] genislik")
+    yakinMi(k.yukseklik * olcek, o.ekran[1], "cizim: foto[\(i)] yukseklik")
+    yakinMi(o.gorsel[1] * olcek, o.beklenen.yukseklik, "cizim: foto[\(i)] gorsel yuksekligi")
+}
 
 // Fotograf: en-boy dolduran kirpma + parlaklik.
 esitMi(

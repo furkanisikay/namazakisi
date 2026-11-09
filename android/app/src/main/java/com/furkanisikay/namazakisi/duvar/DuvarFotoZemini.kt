@@ -10,6 +10,7 @@ import android.graphics.Rect
 import android.media.ExifInterface
 import android.util.Log
 import com.furkanisikay.namazakisi.cekirdek.DuvarAyari
+import com.furkanisikay.namazakisi.cekirdek.DuvarCizim
 import com.furkanisikay.namazakisi.cekirdek.DuvarFotoAyari
 import com.furkanisikay.namazakisi.cekirdek.DuvarTasarimi
 import com.furkanisikay.namazakisi.cekirdek.DuvarZemini
@@ -79,14 +80,13 @@ object DuvarFotoZemini {
         ) ?: return null
         val yonlu = yonUygula(ham, yon)
         try {
-            val o2 = maxOf(w.toDouble() / yonlu.width, h.toDouble() / yonlu.height) * a.yakinlik
-            val bw = (w / o2).coerceAtMost(yonlu.width.toDouble())
-            val bh = (h / o2).coerceAtMost(yonlu.height.toDouble())
-            val sol = (a.x * yonlu.width - bw / 2).coerceIn(0.0, yonlu.width - bw)
-            val ust = (a.y * yonlu.height - bh / 2).coerceIn(0.0, yonlu.height - bh)
+            // Kırpma JS `fotoYerlesimi` ile aynı (eşlik: DuvarTasarimiTest.fotoKirpmasiOrnekle).
+            val k = DuvarCizim.fotoKirpmasi(
+                yonlu.width.toDouble(), yonlu.height.toDouble(), w.toDouble(), h.toDouble(), a.x, a.y, a.yakinlik,
+            )
             val kaynak = Rect(
-                Math.round(sol).toInt(), Math.round(ust).toInt(),
-                Math.round(sol + bw).toInt().coerceAtMost(yonlu.width), Math.round(ust + bh).toInt().coerceAtMost(yonlu.height),
+                Math.round(k.x).toInt(), Math.round(k.y).toInt(),
+                Math.round(k.x + k.genislik).toInt().coerceAtMost(yonlu.width), Math.round(k.y + k.yukseklik).toInt().coerceAtMost(yonlu.height),
             )
             val ekran = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
             Canvas(ekran).drawBitmap(yonlu, kaynak, Rect(0, 0, w, h), Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG))

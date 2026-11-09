@@ -10,7 +10,7 @@ import { Text, View, type LayoutChangeEvent } from 'react-native';
 import { useFonts } from 'expo-font';
 import Svg, { Polygon, Rect } from 'react-native-svg';
 import type { GununAyetiGorunumu } from '../../../../core/icerik/gununAyeti';
-import { SUS_GEOMETRISI, YAZI_OLCULERI, YAZI_TASARIM_GENISLIGI, type DuvarRenkleri } from '../../../../core/icerik/duvarCizimi';
+import { SUS_GEOMETRISI, YAZI_OLCULERI, YAZI_TASARIM_GENISLIGI, yaziYanPayiKesri, type DuvarRenkleri } from '../../../../core/icerik/duvarCizimi';
 import type { DuvarKagidiAyari } from '../../../../core/icerik/gununAyetiYuku';
 import type { YaziHizasi, YaziTipi } from '../../../../core/icerik/duvarTasarimi';
 import { useMetin } from '../../../hooks/useMetin';
@@ -36,8 +36,7 @@ export const fizikselHiza = (hiza: YaziHizasi, sagdanSola: boolean): 'left' | 'c
   hiza === 'orta' ? 'center' : (hiza === 'bas') !== sagdanSola ? 'left' : 'right';
 
 /** Yazı bloğunun yan payı (genişlik kesri). */
-export const yaziYanPayi = (ayar: Pick<DuvarKagidiAyari, 'sus'>): number =>
-  ayar.sus.tur === 'mihrap' ? SUS_GEOMETRISI.mihrap.yaziYanPayi : YAZI_OLCULERI.yanBosluk / YAZI_TASARIM_GENISLIGI;
+export const yaziYanPayi = (ayar: Pick<DuvarKagidiAyari, 'sus'>): number => yaziYanPayiKesri(ayar.sus.tur);
 
 interface Props {
   ayet: GununAyetiGorunumu;
@@ -79,7 +78,7 @@ export const DuvarYazisi: React.FC<Props> = ({ ayet, ayar, genislik, renk, yaziT
           style={{
             fontFamily: yaziTipleri.arapca,
             fontSize: YAZI_OLCULERI.arapca * s,
-            lineHeight: YAZI_OLCULERI.arapca * s * 1.75,
+            lineHeight: YAZI_OLCULERI.arapca * s * YAZI_OLCULERI.arapcaSatir,
             textAlign: arapcaHiza,
             writingDirection: 'rtl',
             color: renk.metin,
@@ -93,8 +92,8 @@ export const DuvarYazisi: React.FC<Props> = ({ ayet, ayar, genislik, renk, yaziT
           style={{
             fontFamily: yaziTipiAdi(ayar.yazi.tip, yaziTipleri),
             fontSize: mealBoyu,
-            lineHeight: mealBoyu * 1.4,
-            marginTop: arapcaGorunur ? 6 * s : kucukYildiz ? 10 * s : 0,
+            lineHeight: mealBoyu * YAZI_OLCULERI.mealSatir,
+            marginTop: arapcaGorunur ? YAZI_OLCULERI.mealUstArapcali * s : kucukYildiz ? YAZI_OLCULERI.mealUstYildizli * s : 0,
             textAlign: hiza,
             color: renk.metin,
           }}
@@ -105,8 +104,8 @@ export const DuvarYazisi: React.FC<Props> = ({ ayet, ayar, genislik, renk, yaziT
       <Text
         style={{
           fontSize: YAZI_OLCULERI.kunye * s,
-          letterSpacing: YAZI_OLCULERI.kunye * s * 0.04,
-          marginTop: (arapcaGorunur ? 14 : 18) * s,
+          letterSpacing: YAZI_OLCULERI.kunye * s * YAZI_OLCULERI.kunyeHarfAraligi,
+          marginTop: (arapcaGorunur ? YAZI_OLCULERI.kunyeUstArapcali : YAZI_OLCULERI.kunyeUst) * s,
           textAlign: hiza,
           color: renk.kunye,
           opacity: renk.kunyeOpaklik,
@@ -117,8 +116,8 @@ export const DuvarYazisi: React.FC<Props> = ({ ayet, ayar, genislik, renk, yaziT
       {atif ? (
         <Text
           style={{
-            fontSize: YAZI_OLCULERI.atif * Math.max(0.9, ayar.yazi.olcek) * (genislik / YAZI_TASARIM_GENISLIGI),
-            marginTop: 6 * s,
+            fontSize: YAZI_OLCULERI.atif * Math.max(YAZI_OLCULERI.atifEnAzOlcek, ayar.yazi.olcek) * (genislik / YAZI_TASARIM_GENISLIGI),
+            marginTop: YAZI_OLCULERI.atifUst * s,
             textAlign: hiza,
             color: renk.atif,
             opacity: renk.atifOpaklik,

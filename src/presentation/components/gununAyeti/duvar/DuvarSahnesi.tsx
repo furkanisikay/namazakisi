@@ -10,6 +10,7 @@ import { Image, View } from 'react-native';
 import Svg, { Circle, Defs, G, Line, LinearGradient, Mask, Path, Pattern, Polygon, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { GOK_SAHNELERI, cisimKonumuSec, type GokSahnesi } from '../../../../core/icerik/duvarTasarimi';
 import {
+  PERDE_GEOMETRISI,
   SUS_GEOMETRISI,
   besKoseliYildiz,
   duvarRenkleri,
@@ -175,7 +176,7 @@ export const DuvarSahnesi: React.FC<Props> = React.memo(({ genislik: g, yuksekli
   const etkin: DuvarKagidiAyari = ayar.zemin === 'foto' && !foto ? { ...ayar, zemin: 'gece' } : ayar;
   const renk = duvarRenkleri(etkin);
   const fotoYeri = etkin.zemin === 'foto' && foto ? fotoYerlesimi(g, y, foto.genislik, foto.yukseklik, etkin.foto) : null;
-  const pay = 12 * (g / 330);
+  const pay = PERDE_GEOMETRISI.pay * g;
   return (
     <View style={[SOLDAN_SAGA, { width: g, height: y, overflow: 'hidden', backgroundColor: renk.zemin ?? '#000000' }]} pointerEvents="none">
       {fotoYeri && foto ? (
@@ -197,7 +198,7 @@ export const DuvarSahnesi: React.FC<Props> = React.memo(({ genislik: g, yuksekli
             y={kutu[1] * y - pay}
             width={(kutu[2] - kutu[0]) * g + 2 * pay}
             height={(kutu[3] - kutu[1]) * y + 2 * pay}
-            rx={pay * 1.5}
+            rx={PERDE_GEOMETRISI.yaricap * g}
             fill={renk.perde.renk}
             opacity={renk.perde.opaklik}
           />

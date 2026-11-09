@@ -15,7 +15,9 @@ internal import ExpoSiriKisayollari
 // (`SiriDeposu.gununAyeti`); kayit secimi widget'la AYNI saf karardan
 // (`GununAyetiKarari.gecerliKayit`). Uygulama acilmaz.
 //
-// TASARIM Android cizicisiyle (`duvar/DuvarKagidiCizici`) AYNI sozlesmedir (`src/core/icerik/duvarTasarimi.ts`):
+// GORUNUM uygulamadaki duzenleyicinin onizlemesidir (sahip onayli taslak 2); butun cizim sayilari
+// `DuvarCizim`'dedir (WidgetKarari.swift; JS `duvarCizimi.ts` ikizi, test §14 eslik ornegiyle denetler),
+// burada sayi YAZILMAZ. Android cizicisiyle (`duvar/DuvarKagidiCizici`) AYNI sozlesme (`src/core/icerik/duvarTasarimi.ts`):
 // zemin (gece/kagit/palet, yukle gelen vakit gokleri, kullanicinin fotografi), yazi yerlesimi
 // (`DuvarTasarimi.yaziYerlesimi`, iPhone bantlari), gok cismi yeri, okunurluk, sus (yildiz/mihrap/
 // girih). Kurallar SAF Swift'tedir (`WidgetKarari.swift` > `DuvarTasarimi`, Linux testi §14);
@@ -184,9 +186,10 @@ private struct DuvarCizici {
     private var ayar: DuvarAyari { ek.duvar }
     private var W: CGFloat { boyut.width }
     private var H: CGFloat { boyut.height }
-    /// Olculer Android tasarim tuvali gibi 412 genislige gore (`DuvarKagidiKurallari.TASARIM_GENISLIGI`).
-    private var s: CGFloat { W / 412 }
-    private var yanBosluk: CGFloat { 30 * s }
+    /// Yazi olculeri 412 tasarim genisligine gore (`DuvarCizim.tasarimGenisligi`).
+    private var s: CGFloat { W / CGFloat(DuvarCizim.tasarimGenisligi) }
+    /// Yazi sutununun yan payi: mihrapta kemerin icine daralir (onizlemeyle ayni).
+    private var yanBosluk: CGFloat { CGFloat(DuvarCizim.yaziYanPayi(ayar.sus.tur)) * W }
     private var icGenislik: CGFloat { max(1, W - 2 * yanBosluk) }
     private var ekranAdi: String { DuvarTasarimi.ekran(ayar.yer) }
 
@@ -214,17 +217,16 @@ private struct DuvarCizici {
         /// Gok ve fotograf: tek yazi rengi; kunye %72, atif %55; sus yazi renginde.
         init(tek: UIColor) {
             metin = tek
-            kunye = tek.withAlphaComponent(0.72)
-            atif = tek.withAlphaComponent(0.55)
+            kunye = tek.withAlphaComponent(CGFloat(DuvarCizim.kunyeOpakligi))
+            atif = tek.withAlphaComponent(CGFloat(DuvarCizim.atifOpakligi))
             sus = tek
-            susOpakligi = 0.08
+            susOpakligi = DuvarCizim.yildizOpaklik
         }
     }
 
     private enum ParcaTuru {
         case metin(NSAttributedString)
         case yildiz
-        case cizgi
     }
 
     private struct Parca {
@@ -283,9 +285,10 @@ private struct DuvarCizici {
             zeminCiz(ctx, zemin, kutuKesri: kutuKesri)
             susCiz(ctx, zemin: zemin, renk: renkler, kutu: kutu)
             if let perde {
-                // Fotografta okunurluk perdesi: yazi kutusunun biraz disina tasan yuvarlak koseli dolgu.
+                // Fotografta okunurluk perdesi: yazi kutusunun her yanindan `perdePay` tasan, kesin kenarli dolgu.
+                let pay = CGFloat(DuvarCizim.perdePay) * W
                 perde.setFill()
-                UIBezierPath(roundedRect: kutu.insetBy(dx: -0.04 * W, dy: -0.02 * H), cornerRadius: 0.04 * W).fill()
+                UIBezierPath(roundedRect: kutu.insetBy(dx: -pay, dy: -pay), cornerRadius: CGFloat(DuvarCizim.perdeYaricap) * W).fill()
             }
             blokCiz(ctx, blok, ust: kutu.minY, renk: renkler)
         }
@@ -309,65 +312,77 @@ private struct DuvarCizici {
         }
     }
 
-    // MARK: Yazi blogu (Android `DuvarKagidiCizici.blokKur` olculeri)
+    // MARK: Yazi blogu (onizlemenin `DuvarYazisi` olculeri, `DuvarCizim`)
 
-    /// Mealin (yoksa Arapcanin) yonu: kunye, atif, yildiz ve cizgi buna gore hizalanir.
+    /// Mealin (yoksa Arapcanin) yonu: kunye, atif ve kucuk yildiz buna gore hizalanir.
     private var sagdanSola: Bool { DuvarTasarimi.sagdanSolaMi(kayit.meal ?? kayit.ar) }
 
+    /// (Arapca | yildiz susunde kucuk yildiz) + meal + kunye + atif; olculer 412 tasarim px × `s` ×
+    /// kullanici olcegi × kucultme `carpan`.
     private func blokKur(arapca: Bool, carpan: CGFloat, renk: Renkler) -> Blok {
-        let ekranOlcegi: CGFloat = ekranAdi == "ana" ? 0.75 : 1
-        let o = s * ekranOlcegi * CGFloat(ayar.yazi.olcek) * carpan
+        let c = DuvarCizim.self
+        let o = s * CGFloat(ayar.yazi.olcek) * carpan
         var parcalar: [Parca] = []
+        let kucukYildiz = !arapca && ayar.sus.tur == "yildiz"
         if arapca {
-            let ar = metinParcasi(kayit.ar, yazitipi: DuvarYazitipleri.arapca(28 * o), renk: renk.metin, sagdanSola: true)
+            let boy = CGFloat(c.arapca) * o
+            let ar = metinParcasi(
+                kayit.ar, yazitipi: DuvarYazitipleri.arapca(boy), renk: renk.metin, sagdanSola: true, satir: boy * CGFloat(c.arapcaSatir)
+            )
             parcalar.append(Parca(ustBosluk: 0, yukseklik: ar.1, tur: .metin(ar.0)))
-            if kayit.meal != nil {
-                parcalar.append(Parca(ustBosluk: 14 * o, yukseklik: max(1, s), tur: .cizgi))
-            }
-        } else {
-            // Mealin ustunde kucuk sekiz koseli yildiz (yalniz Arapca yokken; tasarim).
-            parcalar.append(Parca(ustBosluk: 0, yukseklik: 22 * o, tur: .yildiz))
+        } else if kucukYildiz {
+            // Yildiz susunde, Arapca yokken mealin ustunde kucuk sekiz koseli yildiz (daire yok).
+            parcalar.append(Parca(ustBosluk: 0, yukseklik: CGFloat(c.kucukYildiz) * o, tur: .yildiz))
         }
-        let bosluk = (arapca ? 14 : 18) * o
         if let meal = kayit.meal {
+            let boy = CGFloat(arapca ? c.mealArapcali : c.meal) * o
             let tip = DuvarTasarimi.mealYazitipi(ayar.yazi.tip, meal: meal)
             let m = metinParcasi(
-                meal, yazitipi: DuvarYazitipleri.meal(tip, (arapca ? 17 : 24) * o), renk: renk.metin,
-                sagdanSola: sagdanSola, satirCarpani: 1.1
+                meal, yazitipi: DuvarYazitipleri.meal(tip, boy), renk: renk.metin, sagdanSola: sagdanSola, satir: boy * CGFloat(c.mealSatir)
             )
-            parcalar.append(Parca(ustBosluk: bosluk, yukseklik: m.1, tur: .metin(m.0)))
+            let ust = arapca ? c.mealUstArapcali : (kucukYildiz ? c.mealUstYildizli : 0)
+            parcalar.append(Parca(ustBosluk: CGFloat(ust) * o, yukseklik: m.1, tur: .metin(m.0)))
         }
-        let kunyeBoyu = 12 * o
+        let kunyeBoyu = CGFloat(c.kunye) * o
         let kunye = metinParcasi(
             kayit.kisaKunye, yazitipi: UIFont.systemFont(ofSize: kunyeBoyu), renk: renk.kunye,
-            sagdanSola: sagdanSola, harfAraligi: 0.04 * kunyeBoyu
+            sagdanSola: sagdanSola, harfAraligi: CGFloat(c.kunyeHarfAraligi) * kunyeBoyu
         )
-        parcalar.append(Parca(ustBosluk: bosluk, yukseklik: kunye.1, tur: .metin(kunye.0)))
+        parcalar.append(Parca(ustBosluk: CGFloat(arapca ? c.kunyeUstArapcali : c.kunyeUst) * o, yukseklik: kunye.1, tur: .metin(kunye.0)))
         let atifMetni = GununAyetiKarari.atifSatiri(kayit, metin: metin, arapcaGorunuyor: arapca)
         if !atifMetni.isEmpty {
-            let atif = metinParcasi(
-                atifMetni, yazitipi: UIFont.systemFont(ofSize: 10 * s * max(carpan, 0.9)), renk: renk.atif, sagdanSola: sagdanSola
-            )
-            parcalar.append(Parca(ustBosluk: 12 * s, yukseklik: atif.1, tur: .metin(atif.0)))
+            // Atif zorunlu ve okunur: kullanici olcegi ×0,9'un altina indirmez; kucultme de ×0,9'da durur.
+            let enAz = CGFloat(c.atifEnAzOlcek)
+            let atifBoyu = CGFloat(c.atif) * s * max(enAz, CGFloat(ayar.yazi.olcek)) * max(enAz, carpan)
+            let atif = metinParcasi(atifMetni, yazitipi: UIFont.systemFont(ofSize: atifBoyu), renk: renk.atif, sagdanSola: sagdanSola)
+            parcalar.append(Parca(ustBosluk: CGFloat(c.atifUst) * o, yukseklik: atif.1, tur: .metin(atif.0)))
         }
         return Blok(parcalar: parcalar, arapca: arapca, carpan: carpan)
     }
 
+    /// Olculmus metin. `satir` verilirse her satir o MUTLAK yukseklikte (onizlemenin `lineHeight`'i):
+    /// satir yuksekligi sabitlenir, glifler satirin ortasina kaydirilir (`baselineOffset`); yukseklik
+    /// kaydirmasiz kopyadan olculur. Verilmezse yazi tipinin dogal satiri.
     private func metinParcasi(
-        _ yazi: String, yazitipi: UIFont, renk: UIColor, sagdanSola: Bool, satirCarpani: CGFloat = 1, harfAraligi: CGFloat = 0
+        _ yazi: String, yazitipi: UIFont, renk: UIColor, sagdanSola: Bool, satir: CGFloat? = nil, harfAraligi: CGFloat = 0
     ) -> (NSAttributedString, CGFloat) {
         let paragraf = NSMutableParagraphStyle()
         paragraf.alignment = nsHiza(DuvarTasarimi.hiza(ayar.yazi.hiza, sagdanSola: sagdanSola))
         paragraf.baseWritingDirection = sagdanSola ? .rightToLeft : .leftToRight
-        paragraf.lineHeightMultiple = satirCarpani
         paragraf.lineBreakMode = .byWordWrapping
+        if let satir {
+            paragraf.minimumLineHeight = satir
+            paragraf.maximumLineHeight = satir
+        }
         var nitelikler: [NSAttributedString.Key: Any] = [.font: yazitipi, .foregroundColor: renk, .paragraphStyle: paragraf]
         if harfAraligi != 0 { nitelikler[.kern] = harfAraligi }
-        let dizgi = NSAttributedString(string: yazi, attributes: nitelikler)
-        let olcu = dizgi.boundingRect(
+        let olculen = NSAttributedString(string: yazi, attributes: nitelikler)
+        let olcu = olculen.boundingRect(
             with: CGSize(width: icGenislik, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil
         )
-        return (dizgi, ceil(olcu.height))
+        guard let satir else { return (olculen, ceil(olcu.height)) }
+        nitelikler[.baselineOffset] = (satir - (yazitipi.ascender - yazitipi.descender)) / 2
+        return (NSAttributedString(string: yazi, attributes: nitelikler), ceil(olcu.height))
     }
 
     private func nsHiza(_ h: DuvarHizasi) -> NSTextAlignment {
@@ -422,12 +437,8 @@ private struct DuvarCizici {
                 let birim = p.yukseklik / 24
                 yildizCiz(
                     ctx, merkez: CGPoint(x: yatayMerkez(genislik: p.yukseklik), y: y + p.yukseklik / 2), birim: birim,
-                    renk: renk.kunye, opaklik: 1, cizgi: 1.6 * birim, daire: false
+                    renk: renk.kunye, opaklik: 1, cizgi: CGFloat(DuvarCizim.kucukYildizKalinlik) * birim, daire: false
                 )
-            case .cizgi:
-                let orta = yatayMerkez(genislik: 36 * s)
-                renk.kunye.setFill()
-                ctx.fill(CGRect(x: orta - 18 * s, y: y, width: 36 * s, height: p.yukseklik))
             }
             y += p.yukseklik
         }
@@ -450,7 +461,7 @@ private struct DuvarCizici {
         }
     }
 
-    /// Gok ilkelleri (sira: renk gecisi → yildizlar → isima → cisim → huzmeler → ufuk cokgenleri).
+    /// Gok ilkelleri (onizlemeyle ayni sira: renk gecisi → yildizlar → isima → huzmeler → cisim → ufuk cokgenleri).
     private func gokCiz(_ ctx: CGContext, _ g: DuvarGokSahnesi, kutuKesri: [Double]) {
         let tum = CGRect(origin: .zero, size: boyut)
         let renkler = g.gradyan.map { cgRenk($0.renk, 1) }
@@ -466,7 +477,7 @@ private struct DuvarCizici {
         }
 
         for yildiz in g.yildizlar {
-            let r = CGFloat(yildiz.r) * W
+            let r = max(0.4, CGFloat(yildiz.r) * W)
             ctx.setFillColor(cgRenk("#FFFFFF", yildiz.opaklik))
             ctx.fillEllipse(in: CGRect(x: CGFloat(yildiz.x) * W - r, y: CGFloat(yildiz.y) * H - r, width: 2 * r, height: 2 * r))
         }
@@ -475,7 +486,8 @@ private struct DuvarCizici {
         // cismin merkezidir) cizilmez.
         if let cisim = g.cisim, let k = DuvarTasarimi.cisimKonumuSec(cisim, kutu: kutuKesri, oran: Double(H / W)) {
             let merkez = CGPoint(x: CGFloat(k[0]) * W, y: CGFloat(k[1]) * H)
-            if let isimaR = cisim.isimaR, let isimaRenk = cisim.isimaRenk {
+            if let isimaR = cisim.isimaR, isimaR > 0 {
+                let isimaRenk = cisim.isimaRenk ?? cisim.renk
                 let opaklik = cisim.isimaOpaklik ?? 1
                 if let isima = CGGradient(
                     colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
@@ -485,6 +497,16 @@ private struct DuvarCizici {
                         isima, startCenter: merkez, startRadius: 0, endCenter: merkez, endRadius: CGFloat(isimaR) * W, options: []
                     )
                 }
+            }
+            for huzme in g.huzmeler {
+                ctx.saveGState()
+                ctx.setStrokeColor(cgRenk(huzme.renk, huzme.opaklik))
+                ctx.setLineWidth(CGFloat(huzme.kalinlik) * W)
+                ctx.setLineCap(.butt)
+                ctx.move(to: merkez)
+                ctx.addLine(to: CGPoint(x: CGFloat(huzme.x) * W, y: CGFloat(huzme.y) * H))
+                ctx.strokePath()
+                ctx.restoreGState()
             }
             let r = CGFloat(cisim.r) * W
             let dis = CGRect(x: merkez.x - r, y: merkez.y - r, width: 2 * r, height: 2 * r)
@@ -501,17 +523,6 @@ private struct DuvarCizici {
             ctx.setFillColor(cgRenk(cisim.renk, cisim.opaklik))
             ctx.fillEllipse(in: dis)
             ctx.restoreGState()
-
-            for huzme in g.huzmeler {
-                ctx.saveGState()
-                ctx.setStrokeColor(cgRenk(huzme.renk, huzme.opaklik))
-                ctx.setLineWidth(CGFloat(huzme.kalinlik) * W)
-                ctx.setLineCap(.butt)
-                ctx.move(to: merkez)
-                ctx.addLine(to: CGPoint(x: CGFloat(huzme.x) * W, y: CGFloat(huzme.y) * H))
-                ctx.strokePath()
-                ctx.restoreGState()
-            }
         }
 
         for cokgen in g.ufuk {
@@ -524,103 +535,101 @@ private struct DuvarCizici {
         }
     }
 
-    // MARK: Sus
+    // MARK: Sus (onizlemenin `SusKatmani`, sayilar `DuvarCizim`)
 
     private func susCiz(_ ctx: CGContext, zemin: Zemin, renk: Renkler, kutu: CGRect) {
-        let b = ayar.sus.belirginlik
+        let carpan = DuvarCizim.susCarpani(ayar.sus.belirginlik)
+        guard ayar.sus.tur != "yok", carpan > 0 else { return }
         switch ayar.sus.tur {
-        case "yok":
-            return
         case "mihrap":
-            mihrapCiz(ctx, kutu: kutu, renk: renk.metin, carpan: DuvarTasarimi.susCarpani(b))
+            mihrapCiz(ctx, ust: kutu.minY, renk: renk.metin, carpan: carpan)
         case "girih":
-            girihCiz(ctx, renk: renk.metin, opaklik: 0.04 + 0.10 * b)
+            girihCiz(ctx, renk: renk.metin, carpan: carpan)
         default:
-            // Android'in silik buyuk yildizi (iki kare + daire), konumu zemine gore.
+            // Silik buyuk yildiz (iki kare + daire); duz zeminde kendi yeri, gok ve fotografta gecenin yeri.
             let zeminAdi: String
             if case let .duz(ad, _) = zemin { zeminAdi = ad } else { zeminAdi = "gece" }
-            let konum = DuvarTasarimi.yildizKonumu(zeminAdi)
-            let birim = 420 * s / 24
+            let konum = DuvarCizim.yildizKonumu(zeminAdi)
+            let birim = CGFloat(DuvarCizim.yildizBirim) * W
             yildizCiz(
                 ctx, merkez: CGPoint(x: CGFloat(konum[0]) * W, y: CGFloat(konum[1]) * H), birim: birim, renk: renk.sus,
-                opaklik: renk.susOpakligi * DuvarTasarimi.susCarpani(b), cizgi: 0.12 * birim, daire: true
+                opaklik: renk.susOpakligi * carpan, cizgi: CGFloat(DuvarCizim.yildizKalinlik) * birim, daire: true
             )
         }
     }
 
-    /// Yazi kutusunu saran kemer: dis kemer kutunun 0,06G disinda, tepesi kutunun 0,04Y ustunde
-    /// (yarim daire), ayaklar kutunun ALT kenarina iner; ic kemer 0,05G iceride. Tepede kucuk yildiz.
-    private func mihrapCiz(_ ctx: CGContext, kutu: CGRect, renk: UIColor, carpan: Double) {
-        let cizgi = 0.0067 * W
-        let tepeY = kutu.minY - 0.04 * H
-        func kemer(_ ic: CGFloat) -> CGPath {
-            let sol = kutu.minX - 0.06 * W + ic
-            let sag = kutu.maxX + 0.06 * W - ic
-            let r = max(1, (sag - sol) / 2)
-            let merkezY = tepeY + ic + r
-            let alt = max(kutu.maxY, merkezY)
+    /// Mihrap: iki kemer (dis + ic) bacaklari ekranin altindan yukselir, yarim daireleri yazi kutusunun
+    /// ustunden doner (merkez kutu ustunun `merkezAlti` altinda); tepede DOLU bes koseli yildiz. Kemer
+    /// yatayda ekrana goredir (yazi sutunu `mihrapYaziYanPayi` ile icinde kalir).
+    private func mihrapCiz(_ ctx: CGContext, ust: CGFloat, renk: UIColor, carpan: Double) {
+        for k in [DuvarCizim.mihrapDis, DuvarCizim.mihrapIc] {
+            let sol = CGFloat(k.yanPay) * W
+            let sag = W - sol
+            let r = CGFloat(k.r) * W
+            let merkezY = ust + CGFloat(k.merkezAlti) * W
             let yol = CGMutablePath()
-            yol.move(to: CGPoint(x: sol, y: alt))
+            yol.move(to: CGPoint(x: sol, y: H))
             yol.addLine(to: CGPoint(x: sol, y: merkezY))
             // Aci artarak π → 2π: asagi yonlu (UIKit) koordinatta tepeden gecer.
             yol.addArc(center: CGPoint(x: (sol + sag) / 2, y: merkezY), radius: r, startAngle: .pi, endAngle: 0, clockwise: false)
-            yol.addLine(to: CGPoint(x: sag, y: alt))
-            return yol
-        }
-        for (ic, opaklik) in [(CGFloat(0), 0.28 * carpan), (0.05 * W, 0.14 * carpan)] {
+            yol.addLine(to: CGPoint(x: sag, y: H))
             ctx.saveGState()
-            ctx.setStrokeColor(renk.withAlphaComponent(CGFloat(min(1, opaklik))).cgColor)
-            ctx.setLineWidth(cizgi)
-            ctx.setLineJoin(.round)
-            ctx.addPath(kemer(ic))
+            ctx.setStrokeColor(renk.withAlphaComponent(CGFloat(min(1, k.opaklik * carpan))).cgColor)
+            ctx.setLineWidth(CGFloat(k.kalinlik) * W)
+            ctx.addPath(yol)
             ctx.strokePath()
             ctx.restoreGState()
         }
-        let birim = 0.025 * W / 9.9
-        yildizCiz(
-            ctx, merkez: CGPoint(x: kutu.midX, y: tepeY), birim: birim, renk: renk, opaklik: 0.28 * carpan, cizgi: cizgi, daire: false
-        )
-    }
-
-    /// Doseme desen: her karede (48/330 G) sekiz koseli yildiz (karo kenar ortalarina degen) + daire.
-    private func girihCiz(_ ctx: CGContext, renk: UIColor, opaklik: Double) {
-        let karo = 48.0 / 330 * W
-        let daireR = 5.0 / 330 * W
-        let kare = karo / (2 * CGFloat(2).squareRoot())
-        let yol = CGMutablePath()
-        let x0 = (W.truncatingRemainder(dividingBy: karo) - karo) / 2
-        let y0 = (H.truncatingRemainder(dividingBy: karo) - karo) / 2
-        var y = y0
-        while y < H {
-            var x = x0
-            while x < W {
-                let c = CGPoint(x: x + karo / 2, y: y + karo / 2)
-                yol.addRect(CGRect(x: c.x - kare, y: c.y - kare, width: 2 * kare, height: 2 * kare))
-                yol.addLines(between: [
-                    CGPoint(x: c.x, y: c.y - karo / 2), CGPoint(x: c.x + karo / 2, y: c.y),
-                    CGPoint(x: c.x, y: c.y + karo / 2), CGPoint(x: c.x - karo / 2, y: c.y),
-                ])
-                yol.closeSubpath()
-                yol.addEllipse(in: CGRect(x: c.x - daireR, y: c.y - daireR, width: 2 * daireR, height: 2 * daireR))
-                x += karo
-            }
-            y += karo
-        }
+        let w = Double(W)
+        let koseler = DuvarCizim.besKoseliYildiz(
+            cx: w / 2, cy: Double(ust) - DuvarCizim.mihrapYildizUst * w, dis: DuvarCizim.mihrapYildizDisR * w, ic: DuvarCizim.mihrapYildizIcR * w
+        ).map { CGPoint(x: CGFloat($0[0]), y: CGFloat($0[1])) }
         ctx.saveGState()
-        ctx.setStrokeColor(renk.withAlphaComponent(CGFloat(min(1, opaklik))).cgColor)
-        ctx.setLineWidth(0.9 / 330 * W)
-        ctx.setLineJoin(.round)
-        ctx.addPath(yol)
-        ctx.strokePath()
+        ctx.setFillColor(renk.withAlphaComponent(CGFloat(min(1, DuvarCizim.mihrapYildizOpaklik * carpan))).cgColor)
+        ctx.addLines(between: koseler)
+        ctx.closePath()
+        ctx.fillPath()
         ctx.restoreGState()
     }
 
-    /// Android `yildizCiz`: 24 birimlik cercevede iki kareden sekiz koseli yildiz (+ r=4,2 daire).
+    /// Girih: sol ustten dosenen karo; her karoda dort koseli yildiz (`girihYol`) + ortada daire.
+    private func girihCiz(_ ctx: CGContext, renk: UIColor, carpan: Double) {
+        let karo = CGFloat(DuvarCizim.girihKaro) * W
+        guard karo >= 4 else { return }
+        let birim = karo / 48
+        let noktalar = DuvarCizim.girihNoktalari()
+        let daireR = CGFloat(DuvarCizim.girihDaireR) * birim
+        let yildiz = CGMutablePath()
+        let daire = CGMutablePath()
+        var ty: CGFloat = 0
+        while ty < H {
+            var tx: CGFloat = 0
+            while tx < W {
+                yildiz.addLines(between: noktalar.map { CGPoint(x: tx + CGFloat($0[0]) * birim, y: ty + CGFloat($0[1]) * birim) })
+                yildiz.closeSubpath()
+                daire.addEllipse(in: CGRect(x: tx + 24 * birim - daireR, y: ty + 24 * birim - daireR, width: 2 * daireR, height: 2 * daireR))
+                tx += karo
+            }
+            ty += karo
+        }
+        let renkli = renk.withAlphaComponent(CGFloat(min(1, DuvarCizim.girihOpaklik * carpan))).cgColor
+        for (yol, kalinlik) in [(yildiz, DuvarCizim.girihYildizKalinlik), (daire, DuvarCizim.girihDaireKalinlik)] {
+            ctx.saveGState()
+            ctx.setStrokeColor(renkli)
+            ctx.setLineWidth(CGFloat(kalinlik) * birim)
+            ctx.addPath(yol)
+            ctx.strokePath()
+            ctx.restoreGState()
+        }
+    }
+
+    /// 24 birimlik cercevede iki kareden sekiz koseli yildiz (+ istege bagli daire). Tek yol olarak
+    /// cizilir: kesisimlerde opaklik katlanmaz (onizlemedeki grup opakligi gibi).
     private func yildizCiz(
         _ ctx: CGContext, merkez: CGPoint, birim: CGFloat, renk: UIColor, opaklik: Double, cizgi: CGFloat, daire: Bool
     ) {
-        let yari = 7 * birim
-        let kosegen = 9.9 * birim
+        let yari = CGFloat(DuvarCizim.yildizYariKenar) * birim
+        let kosegen = CGFloat(DuvarCizim.yildizKosegen) * birim
         let yol = CGMutablePath()
         yol.addRect(CGRect(x: merkez.x - yari, y: merkez.y - yari, width: 2 * yari, height: 2 * yari))
         yol.addLines(between: [
@@ -629,7 +638,7 @@ private struct DuvarCizici {
         ])
         yol.closeSubpath()
         if daire {
-            let r = 4.2 * birim
+            let r = CGFloat(DuvarCizim.yildizDaireR) * birim
             yol.addEllipse(in: CGRect(x: merkez.x - r, y: merkez.y - r, width: 2 * r, height: 2 * r))
         }
         ctx.saveGState()

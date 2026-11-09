@@ -2,7 +2,6 @@ package com.furkanisikay.namazakisi.duvar
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -19,6 +18,7 @@ import android.text.TextDirectionHeuristics
 import android.text.TextPaint
 import com.furkanisikay.namazakisi.cekirdek.AyetKaydi
 import com.furkanisikay.namazakisi.cekirdek.CisimTuru
+import com.furkanisikay.namazakisi.cekirdek.DuvarCizim
 import com.furkanisikay.namazakisi.cekirdek.DuvarEkrani
 import com.furkanisikay.namazakisi.cekirdek.DuvarKagidiKurallari
 import com.furkanisikay.namazakisi.cekirdek.DuvarRenkleri
@@ -37,25 +37,20 @@ import com.furkanisikay.namazakisi.widget.AyetYazitipleri
 /**
  * Günün ayeti duvar kâğıdı çizicisi (#381) — ekran çözünürlüğünde tek `Bitmap`.
  *
- * Sıra: yazı yerleşimi ÖNCE hesaplanır (gök cismi ve fotoğraf okunurluğu yazı kutusuna bakar),
- * sonra zemin (düz renk / vakit göğü / fotoğraf + karartma) → süs → (fotoğrafta yazı arkası perde)
- * → yazı. Yazı bloğu (gövde + atıf) `DuvarTasarimi.yaziYerlesimi` ile izinli banda konur: merkez
- * `duvar.yazi.kilitY/anaY` ya da `VARSAYILAN_MERKEZ`; hiçbir banda sığmazsa yazı %6 adımlarla
- * ×0,6'ya kadar küçülür, yine sığmazsa Arapça düşer ve küçültme baştan dener. Meal kesilmez;
+ * GÖRÜNÜM uygulamadaki düzenleyicinin önizlemesidir (sahip onaylı taslak 2): bütün çizim sayıları
+ * `DuvarCizim`'dedir (JS `duvarCizimi.ts` ikizi, eşlik örneğiyle denetlenir); burada sayı YAZILMAZ.
+ *
+ * Sıra: yazı yerleşimi ÖNCE hesaplanır (gök cismi, mihrap ve fotoğraf okunurluğu yazı kutusuna
+ * bakar), sonra zemin (düz renk / vakit göğü / fotoğraf + karartma) → süs → (fotoğrafta yazı arkası
+ * perde) → yazı. Yazı kutusu = yazı sütunu (yan paylar arası) × bloğun tam yüksekliği (önizlemeyle
+ * aynı). Blok `DuvarTasarimi.yaziYerlesimi` ile izinli banda konur: merkez `duvar.yazi.kilitY/anaY`
+ * ya da `VARSAYILAN_MERKEZ`; hiçbir banda sığmazsa yazı %6 adımlarla ×0,6'ya kadar küçülür, yine
+ * sığmazsa Arapça düşer ve küçültme baştan dener (önizleme bunu yaklaşık gösterir). Meal kesilmez;
  * künye `kisaKunye` OLDUĞU GİBİ (büyük harfe ÇEVRİLMEZ), ATIF satırı her görselde ZORUNLU.
- * Tasarım tuvali 412 px genişliğe göre ölçeklenir (gök/süs ölçüleri ekran kesri, tuval 330).
  */
 object DuvarKagidiCizici {
-    private const val YILDIZ_BOYUTU = 22f
-    private const val SUS_BOYUTU = 420f
-    private const val YAN_BOSLUK = 30f
     private const val EN_KUCUK_CARPAN = 0.6f
     private const val CARPAN_ADIMI = 0.06f
-    /** Gök ve süs ölçülerinin tasarım tuvali genişliği (sözleşme 330×700). */
-    private const val TUVAL = 330f
-    /** Gök ve fotoğraf zemininde yıldız süsünün yeri (gece zemininin yeri). */
-    private const val GOK_YILDIZ_X = 0.855f
-    private const val GOK_YILDIZ_Y = 0.878f
 
     /** Görseli çizer. Çağıran `recycle()` eder. [simdiMs] vakte uyan göğün anı. */
     fun ciz(
@@ -76,9 +71,10 @@ object DuvarKagidiCizici {
         try {
             val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
             val tuval = Canvas(bmp)
-            val s = w / DuvarKagidiKurallari.TASARIM_GENISLIGI
-            val icGenislik = maxOf(1, Math.round(w - 2 * YAN_BOSLUK * s))
-            val x = (w - icGenislik) / 2f
+            val s = (w / DuvarCizim.TASARIM_GENISLIGI).toFloat()
+            // Yan pay: mihrapta yazı kemerin içinde kalır.
+            val x = (DuvarCizim.yaziYanPayi(ayar.sus.tur) * w).toFloat()
+            val icGenislik = maxOf(1, Math.round(w - 2 * x))
 
             // 1) Yerleşim (renkten bağımsız ölçüm).
             val duzZemin = if (ayar.zemin.duzMu) ayar.zemin else DuvarZemini.GECE
@@ -88,7 +84,7 @@ object DuvarKagidiCizici {
                 else -> DuvarKagidiKurallari.renkler(ayar.copy(zemin = duzZemin))
             }
             val duzen = duzenBul(context, yuk, kayit, ekran, h, s, icGenislik, renk)
-            val kutu = duzen.blok.kutu(x, duzen.ustPx, icGenislik)
+            val kutu = RectF(x, duzen.ustPx, x + icGenislik, duzen.ustPx + duzen.blok.yukseklik)
 
             // 2) Zemin.
             when {
@@ -112,11 +108,11 @@ object DuvarKagidiCizici {
 
             // 4) Süs (yazı renginde; yıldız düz zeminde kendi süs renginde).
             val zeminTuru = if (sahne != null || foto != null) null else duzZemin
-            susCiz(tuval, ayar.sus.tur, ayar.sus.belirginlik.toFloat(), renk, zeminTuru, kutu, w, h, s)
+            susCiz(tuval, ayar.sus.tur, ayar.sus.belirginlik, renk, zeminTuru, kutu, w, h)
 
             // 5) Perde ve yazı.
             perde?.let { (p, o) -> perdeCiz(tuval, kutu, p, o, w) }
-            val blok = blokKur(context, yuk, kayit, renk, duzen.arapca, duzen.olcek, s, icGenislik, duzen.carpan)
+            val blok = blokKur(context, yuk, kayit, renk, duzen.arapca, s, icGenislik, duzen.carpan)
             blok.ciz(tuval, x, duzen.ustPx, icGenislik)
             return bmp
         } finally {
@@ -126,7 +122,7 @@ object DuvarKagidiCizici {
 
     // --- Yerleşim ------------------------------------------------------------------------------
 
-    private class Duzen(val blok: Blok, val arapca: Boolean, val carpan: Float, val olcek: Float, val ustPx: Float)
+    private class Duzen(val blok: Blok, val arapca: Boolean, val carpan: Float, val ustPx: Float)
 
     private fun duzenBul(
         context: Context,
@@ -139,7 +135,6 @@ object DuvarKagidiCizici {
         renk: DuvarRenkleri,
     ): Duzen {
         val yazi = yuk.duvar.yazi
-        val olcek = s * DuvarKagidiKurallari.yaziOlcegi(ekran) * yazi.olcek.toFloat()
         val bantlar = DuvarTasarimi.IZINLI_BANTLAR.getValue(ekran)
         val merkez = (if (ekran == DuvarEkrani.KILIT) yazi.kilitY else yazi.anaY)
             ?: DuvarTasarimi.VARSAYILAN_MERKEZ.getValue(ekran)
@@ -152,10 +147,10 @@ object DuvarKagidiCizici {
         fun yerlestir(arapcaIle: Boolean): Duzen? {
             var carpan = 1f
             while (true) {
-                val b = blokKur(context, yuk, kayit, renk, arapcaIle, olcek, s, icGenislik, carpan)
+                val b = blokKur(context, yuk, kayit, renk, arapcaIle, s, icGenislik, carpan)
                 val yer = DuvarTasarimi.yaziYerlesimi(merkez, b.yukseklik.toDouble() / h, bantlar)
-                if (yer != null) return Duzen(b, arapcaIle, carpan, olcek, (yer.ust * h).toFloat())
-                son = Duzen(b, arapcaIle, carpan, olcek, (genis.ust * h).toFloat())
+                if (yer != null) return Duzen(b, arapcaIle, carpan, (yer.ust * h).toFloat())
+                son = Duzen(b, arapcaIle, carpan, (genis.ust * h).toFloat())
                 if (carpan <= EN_KUCUK_CARPAN) return null
                 carpan -= CARPAN_ADIMI
             }
@@ -166,18 +161,22 @@ object DuvarKagidiCizici {
 
     // --- Blok ----------------------------------------------------------------------------------
 
-    private class Parca(
-        val ustBosluk: Float,
-        val yukseklik: Float,
-        val yerlesim: StaticLayout?,
-        val ciz: (Canvas, Float, Float, Int) -> Unit,
-    )
+    private class Parca(val ustBosluk: Float, val yukseklik: Float, val ciz: (Canvas, Float, Float, Int) -> Unit)
 
-    private class Blok(val parcalar: List<Parca>, val atif: StaticLayout, val atifBoslugu: Float) {
-        val govdeYuksekligi: Float = parcalar.sumOf { (it.ustBosluk + it.yukseklik).toDouble() }.toFloat()
-        val yukseklik: Float = govdeYuksekligi + atifBoslugu + atif.height
+    /** Ölçülmüş metin: [kayma] satırları kendi yüksekliklerinin ortasına oturtur (mutlak satır yüksekliği). */
+    private class Metin(val yerlesim: StaticLayout, val yukseklik: Float, val kayma: Float) {
+        fun ciz(tuval: Canvas, x: Float, ust: Float) {
+            tuval.save()
+            tuval.translate(x, ust + kayma)
+            yerlesim.draw(tuval)
+            tuval.restore()
+        }
+    }
 
-        /** Gövde, hemen altında atıf; [ust] bloğun üst kenarı (px). */
+    private class Blok(val parcalar: List<Parca>) {
+        val yukseklik: Float = parcalar.sumOf { (it.ustBosluk + it.yukseklik).toDouble() }.toFloat()
+
+        /** [ust] bloğun üst kenarı (px). */
         fun ciz(tuval: Canvas, x: Float, ust: Float, genislik: Int) {
             var y = ust
             for (parca in parcalar) {
@@ -185,27 +184,6 @@ object DuvarKagidiCizici {
                 parca.ciz(tuval, x, y, genislik)
                 y += parca.yukseklik
             }
-            yerlesimCiz(tuval, atif, x, y + atifBoslugu)
-        }
-
-        /** Yazı kutusu (px): satırların gerçek yatay sınırları, bloğun tam yüksekliği. */
-        fun kutu(x: Float, ust: Float, genislik: Int): RectF {
-            var sol = Float.MAX_VALUE
-            var sag = -Float.MAX_VALUE
-            fun ekle(l: StaticLayout) {
-                for (i in 0 until l.lineCount) {
-                    if (l.getLineRight(i) <= l.getLineLeft(i)) continue
-                    sol = minOf(sol, x + l.getLineLeft(i))
-                    sag = maxOf(sag, x + l.getLineRight(i))
-                }
-            }
-            parcalar.forEach { p -> p.yerlesim?.let { ekle(it) } }
-            ekle(atif)
-            if (sol > sag) {
-                sol = x
-                sag = x + genislik
-            }
-            return RectF(sol, ust, sag, ust + yukseklik)
         }
     }
 
@@ -215,26 +193,29 @@ object DuvarKagidiCizici {
         YaziHizasi.SON -> Layout.Alignment.ALIGN_OPPOSITE
     }
 
+    /**
+     * (Arapça | yıldız süsünde küçük yıldız) + meal + künye + atıf. Ölçüler `DuvarCizim` (412 tasarım
+     * px) × [s] × kullanıcı ölçeği × küçültme [carpan]; boşluklar önizlemedeki gibi.
+     */
     private fun blokKur(
         context: Context,
         yuk: GununAyetiYuku,
         kayit: AyetKaydi,
         renk: DuvarRenkleri,
         arapca: Boolean,
-        olcek: Float,
         s: Float,
         genislik: Int,
         carpan: Float,
     ): Blok {
-        val o = olcek * carpan
         val yazi = yuk.duvar.yazi
+        val o = s * yazi.olcek.toFloat() * carpan
         val hiza = hizalama(yazi.hiza)
         val parcalar = ArrayList<Parca>()
         // Meal ve künye seçilen rakamla (Arapçada "arab" → ٠-٩); Arapça ayet ve atıf satırı
         // (kaynak/sürüm) birebir kalır.
         val sifir = context.rakamSifiri()
         val meal = kayit.meal?.rakamla(sifir)
-        // Küçük süsler (yıldız, ayraç çizgisi) mealin hizasında: başı mealin yazı yönüne göre.
+        // Küçük yıldız mealin hizasında: başı mealin yazı yönüne göre.
         val mealRtl = meal != null && TextDirectionHeuristics.FIRSTSTRONG_LTR.isRtl(meal, 0, meal.length)
         fun susX(x: Float, g: Int, yari: Float): Float = when (yazi.hiza) {
             YaziHizasi.ORTA -> x + g / 2f
@@ -253,38 +234,44 @@ object DuvarKagidiCizici {
                 else -> hiza
             }
         }
+        val kucukYildiz = !arapca && yuk.duvar.sus.tur == SusTuru.YILDIZ
         if (arapca) {
-            val ar = yerlesim(kayit.ar, boya(AyetYazitipleri.arapca(context), 28f * o, renk.metin), genislik, 1f, hiza, rtl = true)
-            parcalar += Parca(0f, ar.height.toFloat(), ar) { t, x, y, _ -> yerlesimCiz(t, ar, x, y) }
-            if (meal != null) {
-                val cizgiKalinligi = maxOf(1f, s)
-                parcalar += Parca(14f * o, cizgiKalinligi, null) { t, x, y, g ->
-                    val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = renk.kunye }
-                    val orta = susX(x, g, 18f * s)
-                    t.drawRect(orta - 18f * s, y, orta + 18f * s, y + cizgiKalinligi, p)
-                }
-            }
-        } else {
-            // Mealin üstünde küçük sekiz köşeli yıldız (yalnız Arapça yokken; tasarım).
-            val boyut = YILDIZ_BOYUTU * o
-            parcalar += Parca(0f, boyut, null) { t, x, y, g ->
-                yildizCiz(t, susX(x, g, boyut / 2f), y + boyut / 2f, boyut / 24f, renk.kunye, 1f, 1.6f, daire = false)
+            val boyut = DuvarCizim.ARAPCA.toFloat() * o
+            val ar = yerlesim(kayit.ar, boya(AyetYazitipleri.arapca(context), boyut, renk.metin), genislik, hiza, rtl = true, satir = boyut * DuvarCizim.ARAPCA_SATIR.toFloat())
+            parcalar += Parca(0f, ar.yukseklik) { t, x, y, _ -> ar.ciz(t, x, y) }
+        } else if (kucukYildiz) {
+            // Yıldız süsünde, Arapça yokken mealin üstünde küçük sekiz köşeli yıldız (daire yok).
+            val boyut = DuvarCizim.KUCUK_YILDIZ.toFloat() * o
+            parcalar += Parca(0f, boyut) { t, x, y, g ->
+                yildizCiz(t, susX(x, g, boyut / 2f), y + boyut / 2f, boyut / 24f, renk.kunye, 1f, DuvarCizim.KUCUK_YILDIZ_KALINLIK.toFloat(), daire = false)
             }
         }
         if (meal != null) {
+            val boyut = (if (arapca) DuvarCizim.MEAL_ARAPCALI else DuvarCizim.MEAL).toFloat() * o
             val yazitipi = AyetYazitipleri.duvarMeali(context, meal, yazi.tip)
-            val m = yerlesim(meal, boya(yazitipi, (if (arapca) 17f else 24f) * o, renk.metin), genislik, 1.1f, hiza)
-            parcalar += Parca((if (arapca) 14f else 18f) * o, m.height.toFloat(), m) { t, x, y, _ -> yerlesimCiz(t, m, x, y) }
+            val m = yerlesim(meal, boya(yazitipi, boyut, renk.metin), genislik, hiza, satir = boyut * DuvarCizim.MEAL_SATIR.toFloat())
+            val ust = when {
+                arapca -> DuvarCizim.MEAL_UST_ARAPCALI
+                kucukYildiz -> DuvarCizim.MEAL_UST_YILDIZLI
+                else -> 0.0
+            }
+            parcalar += Parca(ust.toFloat() * o, m.yukseklik) { t, x, y, _ -> m.ciz(t, x, y) }
         }
-        val kunyeBoyasi = boya(Typeface.create("sans-serif", Typeface.NORMAL), 12f * o, renk.kunye).apply { letterSpacing = 0.04f }
+        val kunyeBoyasi = boya(Typeface.create("sans-serif", Typeface.NORMAL), DuvarCizim.KUNYE.toFloat() * o, renk.kunye)
+            .apply { letterSpacing = DuvarCizim.KUNYE_HARF_ARALIGI.toFloat() }
         val kunyeMetni = kayit.kisaKunye.rakamla(sifir)
-        val kunye = yerlesim(kunyeMetni, kunyeBoyasi, genislik, 1f, satirHizasi(kunyeMetni))
-        parcalar += Parca((if (arapca) 14f else 18f) * o, kunye.height.toFloat(), kunye) { t, x, y, _ -> yerlesimCiz(t, kunye, x, y) }
+        val kunye = yerlesim(kunyeMetni, kunyeBoyasi, genislik, satirHizasi(kunyeMetni))
+        val kunyeUst = if (arapca) DuvarCizim.KUNYE_UST_ARAPCALI else DuvarCizim.KUNYE_UST
+        parcalar += Parca(kunyeUst.toFloat() * o, kunye.yukseklik) { t, x, y, _ -> kunye.ciz(t, x, y) }
 
-        // Atıf zorunludur ve okunur kalmalı: kullanıcının yazı boyutundan bağımsız, en az ×0,9.
+        // Atıf zorunludur ve okunur kalmalı: kullanıcı ölçeği ×0,9'un altına indirmez (önizleme);
+        // native küçültme de ×0,9'da durur.
         val atifMetni = GununAyetiKurallari.atifSatiri(kayit, yuk.metin, arapca)
-        val atif = yerlesim(atifMetni, boya(Typeface.create("sans-serif", Typeface.NORMAL), 10f * s * carpan.coerceAtLeast(0.9f), renk.atif), genislik, 1f, satirHizasi(atifMetni))
-        return Blok(parcalar, atif, 12f * s)
+        val enAz = DuvarCizim.ATIF_EN_AZ_OLCEK.toFloat()
+        val atifBoyu = DuvarCizim.ATIF.toFloat() * s * maxOf(enAz, yazi.olcek.toFloat()) * maxOf(enAz, carpan)
+        val atif = yerlesim(atifMetni, boya(Typeface.create("sans-serif", Typeface.NORMAL), atifBoyu, renk.atif), genislik, satirHizasi(atifMetni))
+        parcalar += Parca(DuvarCizim.ATIF_UST.toFloat() * o, atif.yukseklik) { t, x, y, _ -> atif.ciz(t, x, y) }
+        return Blok(parcalar)
     }
 
     private fun boya(yazitipi: Typeface, boyutPx: Float, renk: Int) = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -293,29 +280,30 @@ object DuvarKagidiCizici {
         color = renk
     }
 
-    /** `ALIGN_NORMAL`/`OPPOSITE` paragraf yönüne göre çözülür: Arapça (RTL) "baş"ta sağa yaslanır. */
+    /**
+     * `ALIGN_NORMAL`/`OPPOSITE` paragraf yönüne göre çözülür: Arapça (RTL) "baş"ta sağa yaslanır.
+     * [satir] verilirse her satır o MUTLAK yükseklikte (önizlemenin `lineHeight`'ı): yazı tipinin
+     * doğal satırına fark eklenir, glifler satırın ortasına kaydırılır; verilmezse doğal satır.
+     */
     private fun yerlesim(
         metin: String,
         boya: TextPaint,
         genislik: Int,
-        satirCarpani: Float,
         hiza: Layout.Alignment,
         rtl: Boolean = false,
-    ): StaticLayout =
-        StaticLayout.Builder.obtain(metin, 0, metin.length, boya, genislik)
+        satir: Float? = null,
+    ): Metin {
+        val fm = boya.fontMetrics
+        val ek = if (satir != null) satir - (fm.descent - fm.ascent) else 0f
+        val l = StaticLayout.Builder.obtain(metin, 0, metin.length, boya, genislik)
             .setAlignment(hiza)
             .setTextDirection(if (rtl) TextDirectionHeuristics.RTL else TextDirectionHeuristics.FIRSTSTRONG_LTR)
-            .setIncludePad(true)
-            .setLineSpacing(0f, satirCarpani)
+            .setIncludePad(satir == null)
+            .setLineSpacing(ek, 1f)
             .setBreakStrategy(Layout.BREAK_STRATEGY_HIGH_QUALITY)
             .setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE)
             .build()
-
-    private fun yerlesimCiz(tuval: Canvas, y: StaticLayout, x: Float, ust: Float) {
-        tuval.save()
-        tuval.translate(x, ust)
-        y.draw(tuval)
-        tuval.restore()
+        return if (satir != null) Metin(l, l.lineCount * satir, ek / 2f) else Metin(l, l.height.toFloat(), 0f)
     }
 
     // --- Gök --------------------------------------------------------------------------------
@@ -350,7 +338,7 @@ object DuvarKagidiCizici {
         val yildiz = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE }
         for (y in sahne.yildizlar) {
             yildiz.alpha = alfa(y.opaklik)
-            t.drawCircle((y.x * wf).toFloat(), (y.y * hf).toFloat(), maxOf(0.5f, (y.r * wf).toFloat()), yildiz)
+            t.drawCircle((y.x * wf).toFloat(), (y.y * hf).toFloat(), maxOf(0.4f, (y.r * wf).toFloat()), yildiz)
         }
 
         val cisim = sahne.cisim
@@ -360,8 +348,8 @@ object DuvarKagidiCizici {
             val cx = (konum.x * wf).toFloat()
             val cy = (konum.y * hf).toFloat()
             val isimaR = cisim.isimaR
-            val isimaRenk = cisim.isimaRenk
-            if (isimaR != null && isimaR > 0 && isimaRenk != null) {
+            val isimaRenk = cisim.isimaRenk ?: cisim.renk
+            if (isimaR != null && isimaR > 0) {
                 val r = (isimaR * wf).toFloat()
                 val ic = (isimaRenk and 0x00FFFFFF) or (alfa(cisim.isimaOpaklik ?: 1.0) shl 24)
                 val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -407,122 +395,124 @@ object DuvarKagidiCizici {
         }
     }
 
-    /** Fotoğrafta yazı arkası yumuşak kenarlı perde; çekirdeği yazı kutusunu tam opaklıkla örter. */
+    /** Fotoğrafta yazı arkası perde: kutunun her yanından `PERDE_PAY` taşan, kesin kenarlı yuvarlak dolgu. */
     private fun perdeCiz(t: Canvas, kutu: RectF, renk: Int, opaklik: Double, w: Int) {
-        val yumusak = 0.03f * w
-        val pay = 2 * yumusak
+        val pay = (DuvarCizim.PERDE_PAY * w).toFloat()
+        val r = (DuvarCizim.PERDE_YARICAP * w).toFloat()
         val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = renk
             alpha = alfa(opaklik)
-            maskFilter = BlurMaskFilter(yumusak, BlurMaskFilter.Blur.NORMAL)
         }
-        t.drawRoundRect(RectF(kutu.left - pay, kutu.top - pay, kutu.right + pay, kutu.bottom + pay), yumusak, yumusak, p)
+        t.drawRoundRect(RectF(kutu.left - pay, kutu.top - pay, kutu.right + pay, kutu.bottom + pay), r, r, p)
     }
 
     // --- Süsleme ------------------------------------------------------------------------------
 
     /**
-     * Süs (metin değil): `yildiz` silik büyük yıldız (düz zeminde bugünkü yerinde ve renginde),
-     * `mihrap` yazı kutusunu çevreleyen kemer, `girih` döşeme desen, `yok` hiçbiri. Opaklık
-     * `belirginlik`le ölçeklenir (0,5 = bugünkü görünüm).
+     * Süs (metin değil): `yildiz` silik büyük yıldız (düz zeminde kendi yeri ve renginde), `mihrap`
+     * yazı kutusunun üstünden dönen kemer, `girih` döşeme desen, `yok` hiçbiri. Opaklık
+     * `DuvarCizim.susCarpani(belirginlik)` ile çarpılır (0,5 = ×1, 0 = görünmez).
      */
     private fun susCiz(
         t: Canvas,
         tur: SusTuru,
-        belirginlik: Float,
+        belirginlik: Double,
         renk: DuvarRenkleri,
         duzZemin: DuvarZemini?,
         kutu: RectF,
         w: Int,
         h: Int,
-        s: Float,
     ) {
-        val carpan = 0.5f + belirginlik
+        val carpan = DuvarCizim.susCarpani(belirginlik)
+        if (tur == SusTuru.YOK || carpan <= 0) return
         when (tur) {
             SusTuru.YOK -> Unit
             SusTuru.YILDIZ -> {
-                val (ox, oy) = when (duzZemin) {
-                    DuvarZemini.KAGIT -> 0.097f to 0.64f
-                    DuvarZemini.PALET -> 0.903f to 0.693f
-                    else -> GOK_YILDIZ_X to GOK_YILDIZ_Y
-                }
-                val birim = SUS_BOYUTU * s / 24f
-                yildizCiz(t, w * ox, h * oy, birim, renk.sus, (renk.susOpakligi * carpan).coerceAtMost(1f), 0.12f, daire = true)
+                val k = DuvarCizim.yildizKonumu(duzZemin)
+                val birim = (DuvarCizim.YILDIZ_BIRIM * w).toFloat()
+                val opaklik = (renk.susOpakligi * carpan).toFloat().coerceIn(0f, 1f)
+                yildizCiz(t, (w * k.x).toFloat(), (h * k.y).toFloat(), birim, renk.sus, opaklik, DuvarCizim.YILDIZ_KALINLIK.toFloat(), daire = true)
             }
-            SusTuru.MIHRAP -> mihrapCiz(t, kutu, renk.metin, carpan, w, h)
-            SusTuru.GIRIH -> girihCiz(t, renk.metin, 0.04f + 0.10f * belirginlik, w, h)
+            SusTuru.MIHRAP -> mihrapCiz(t, kutu.top, renk.metin, carpan, w, h)
+            SusTuru.GIRIH -> girihCiz(t, renk.metin, carpan, w, h)
         }
     }
 
     /**
-     * Yazı kutusunu çerçeveleyen kemer: dış kemer kutunun 0,06 w dışından, yarım daire tepesi kutunun
-     * 0,04 h üstünde, ayaklar ekranın altına iner; iç kemer 0,05 w içeride; tepede küçük yıldız.
+     * Mihrap: iki kemer (dış + iç) bacakları ekranın altından yükselir, yarım daireleri yazı kutusunun
+     * üstünden döner (merkez kutu üstünün `merkezAlti` altında); tepede dolu beş köşeli yıldız. Kemer
+     * yatayda ekrana göredir (yazı sütunu `MIHRAP_YAZI_YAN_PAYI` ile içinde kalır).
      */
-    private fun mihrapCiz(t: Canvas, kutu: RectF, renk: Int, carpan: Float, w: Int, h: Int) {
-        val kalinlik = 0.0067f * w
-        fun kemer(sol: Float, sag: Float, tepe: Float, opaklik: Float) {
-            val r = (sag - sol) / 2f
+    private fun mihrapCiz(t: Canvas, ust: Float, renk: Int, carpan: Double, w: Int, h: Int) {
+        val wf = w.toDouble()
+        for (k in listOf(DuvarCizim.MIHRAP_DIS, DuvarCizim.MIHRAP_IC)) {
+            val sol = (k.yanPay * wf).toFloat()
+            val sag = (wf - k.yanPay * wf).toFloat()
+            val r = (k.r * wf).toFloat()
+            val my = ust + (k.merkezAlti * wf).toFloat()
+            val cx = (sol + sag) / 2f
             val yol = Path().apply {
                 moveTo(sol, h.toFloat())
-                lineTo(sol, tepe + r)
-                arcTo(RectF(sol, tepe, sag, tepe + 2 * r), 180f, 180f, false)
+                lineTo(sol, my)
+                arcTo(RectF(cx - r, my - r, cx + r, my + r), 180f, 180f, false)
                 lineTo(sag, h.toFloat())
             }
             t.drawPath(yol, Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 style = Paint.Style.STROKE
                 color = renk
-                alpha = Math.round(255 * opaklik.coerceIn(0f, 1f))
-                strokeWidth = kalinlik
-                strokeJoin = Paint.Join.ROUND
+                alpha = alfa(k.opaklik * carpan)
+                strokeWidth = (k.kalinlik * wf).toFloat()
             })
         }
-        val sol = kutu.left - 0.06f * w
-        val sag = kutu.right + 0.06f * w
-        val tepe = kutu.top - 0.04f * h
-        val dis = 0.28f * carpan
-        kemer(sol, sag, tepe, dis)
-        val ic = 0.05f * w
-        if (sag - sol > 2 * ic) kemer(sol + ic, sag - ic, tepe + ic, 0.14f * carpan)
-        val birim = 0.003f * w
-        yildizCiz(t, (sol + sag) / 2f, tepe, birim, renk, dis.coerceAtMost(1f), kalinlik / birim, daire = false)
-    }
-
-    /** Döşeme girih deseni: 48/330 w karo, her karoda sekiz köşeli yıldız + küçük daire. */
-    private fun girihCiz(t: Canvas, renk: Int, opaklik: Float, w: Int, h: Int) {
-        val karo = 48f / TUVAL * w
-        if (karo < 4f) return
-        val birim = karo / 24f
-        val yari = 7f * birim
-        val kosegen = 9.9f * birim
-        val daireR = 5f / TUVAL * w
-        val yol = Path()
-        var cy = karo / 2f
-        while (cy - karo / 2f < h) {
-            var cx = karo / 2f
-            while (cx - karo / 2f < w) {
-                yol.addRect(cx - yari, cy - yari, cx + yari, cy + yari, Path.Direction.CW)
-                yol.moveTo(cx, cy - kosegen)
-                yol.lineTo(cx + kosegen, cy)
-                yol.lineTo(cx, cy + kosegen)
-                yol.lineTo(cx - kosegen, cy)
-                yol.close()
-                yol.addCircle(cx, cy, daireR, Path.Direction.CW)
-                cx += karo
-            }
-            cy += karo
-        }
-        t.drawPath(yol, Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
+        val noktalar = DuvarCizim.besKoseliYildiz(
+            wf / 2, ust - DuvarCizim.MIHRAP_YILDIZ_UST * wf, DuvarCizim.MIHRAP_YILDIZ_DIS_R * wf, DuvarCizim.MIHRAP_YILDIZ_IC_R * wf,
+        )
+        val yildiz = Path()
+        noktalar.forEachIndexed { i, n -> if (i == 0) yildiz.moveTo(n.x.toFloat(), n.y.toFloat()) else yildiz.lineTo(n.x.toFloat(), n.y.toFloat()) }
+        yildiz.close()
+        t.drawPath(yildiz, Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = renk
-            alpha = Math.round(255 * opaklik.coerceIn(0f, 1f))
-            strokeWidth = 0.9f / TUVAL * w
-            strokeJoin = Paint.Join.ROUND
+            alpha = alfa(DuvarCizim.MIHRAP_YILDIZ_OPAKLIK * carpan)
         })
     }
 
+    /** Girih: sol üstten döşenen karo; her karoda dört köşeli yıldız (`GIRIH_YOL`) + ortada daire. */
+    private fun girihCiz(t: Canvas, renk: Int, carpan: Double, w: Int, h: Int) {
+        val karo = (DuvarCizim.GIRIH_KARO * w).toFloat()
+        if (karo < 4f) return
+        val birim = karo / 48f
+        val noktalar = DuvarCizim.girihNoktalari()
+        val yildiz = Path()
+        val daire = Path()
+        var ty = 0f
+        while (ty < h) {
+            var tx = 0f
+            while (tx < w) {
+                noktalar.forEachIndexed { i, n ->
+                    val px = tx + n.x.toFloat() * birim
+                    val py = ty + n.y.toFloat() * birim
+                    if (i == 0) yildiz.moveTo(px, py) else yildiz.lineTo(px, py)
+                }
+                yildiz.close()
+                daire.addCircle(tx + 24f * birim, ty + 24f * birim, DuvarCizim.GIRIH_DAIRE_R.toFloat() * birim, Path.Direction.CW)
+                tx += karo
+            }
+            ty += karo
+        }
+        fun kalem(kalinlik: Double) = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            color = renk
+            alpha = alfa(DuvarCizim.GIRIH_OPAKLIK * carpan)
+            strokeWidth = kalinlik.toFloat() * birim
+        }
+        t.drawPath(yildiz, kalem(DuvarCizim.GIRIH_YILDIZ_KALINLIK))
+        t.drawPath(daire, kalem(DuvarCizim.GIRIH_DAIRE_KALINLIK))
+    }
+
     /**
-     * 24 birimlik çerçevede iki kareden sekiz köşeli yıldız (+ isteğe bağlı r=4.2 daire),
-     * merkez ([cx], [cy]), birim [birim] px.
+     * 24 birimlik çerçevede iki kareden sekiz köşeli yıldız (+ isteğe bağlı daire), merkez ([cx], [cy]),
+     * birim [birim] px, çizgi [kalinlik] birim. TEK yol olarak çizilir: kesişimlerde opaklık katlanmaz
+     * (önizlemedeki grup opaklığı gibi).
      */
     private fun yildizCiz(tuval: Canvas, cx: Float, cy: Float, birim: Float, renk: Int, opaklik: Float, kalinlik: Float, daire: Boolean) {
         val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -532,17 +522,17 @@ object DuvarKagidiCizici {
             strokeWidth = kalinlik * birim
             strokeJoin = Paint.Join.ROUND
         }
-        val yari = 7f * birim
-        tuval.drawRect(cx - yari, cy - yari, cx + yari, cy + yari, p)
-        val kosegen = 9.9f * birim
+        val yari = DuvarCizim.YILDIZ_YARI_KENAR.toFloat() * birim
+        val kosegen = DuvarCizim.YILDIZ_KOSEGEN.toFloat() * birim
         val yol = Path().apply {
+            addRect(cx - yari, cy - yari, cx + yari, cy + yari, Path.Direction.CW)
             moveTo(cx, cy - kosegen)
             lineTo(cx + kosegen, cy)
             lineTo(cx, cy + kosegen)
             lineTo(cx - kosegen, cy)
             close()
+            if (daire) addCircle(cx, cy, DuvarCizim.YILDIZ_DAIRE_R.toFloat() * birim, Path.Direction.CW)
         }
         tuval.drawPath(yol, p)
-        if (daire) tuval.drawCircle(cx, cy, 4.2f * birim, p)
     }
 }

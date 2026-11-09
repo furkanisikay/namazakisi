@@ -489,17 +489,11 @@ object DuvarKagidiKurallari {
     /** Tasarım tuvali 412 px genişlikte çizildi; ölçüler bu genişliğe göre ölçeklenir. */
     const val TASARIM_GENISLIGI = 412f
 
-    /**
-     * Ana ekranda yazı kilit ekranındakinin bu oranıdır. Yazının girebileceği bantlar ve varsayılan
-     * merkez `DuvarTasarimi.IZINLI_BANTLAR` / `VARSAYILAN_MERKEZ`'dedir.
-     */
-    fun yaziOlcegi(ekran: DuvarEkrani): Float = if (ekran == DuvarEkrani.ANA) 0.75f else 1f
-
     /** Gök ve fotoğraf zemininde künye ve atıf: yazı renginin %72 ve %55 opaklığı (sözleşme). */
     const val KUNYE_OPAKLIGI = 0.72f
     const val ATIF_OPAKLIGI = 0.55f
-    /** Gök ve fotoğraf zemininde silik yıldız süsünün opaklığı (belirginlik 0,5'te). */
-    const val GOK_SUS_OPAKLIGI = 0.08f
+    /** Gök ve fotoğraf zemininde silik yıldız süsünün opaklığı (belirginlik 0,5'te; JS `SUS_GEOMETRISI.yildiz.opaklik`). */
+    const val GOK_SUS_OPAKLIGI = DuvarCizim.YILDIZ_OPAKLIK.toFloat()
 
     /** ARGB rengin alfasını [opaklik] yapar. */
     fun opaklastir(renk: Int, opaklik: Float): Int =
@@ -544,7 +538,7 @@ object DuvarKagidiKurallari {
         repeat(10) {
             val enIyi = maxOf(kontrastOrani(0xFFF1F8E9.toInt(), zemin), kontrastOrani(0xFF1F2A22.toInt(), zemin))
             if (enIyi >= 4.5) return zemin
-            zemin = karistir(zemin, 0xFF000000.toInt(), 0.10f)
+            zemin = karistirJs(zemin, 0xFF000000.toInt(), 0.1)
         }
         return zemin
     }
@@ -553,15 +547,25 @@ object DuvarKagidiKurallari {
     fun acikMetinSecilsinMi(zemin: Int): Boolean =
         kontrastOrani(0xFFF1F8E9.toInt(), zemin) >= kontrastOrani(0xFF1F2A22.toInt(), zemin)
 
-    /** Metni zemine doğru en çok %35 karıştırır; 4.5:1 altına düşmeden durur. */
+    /** Metni zemine doğru en çok %35 karıştırır; 4.5:1 altına düşmeden durur (adım JS gibi yuvarlanır). */
     fun ikincilTon(metin: Int, zemin: Int): Int {
-        var oran = 0.35f
-        while (oran > 0f) {
-            val aday = karistir(metin, zemin, oran)
+        var oran = 0.35
+        while (oran > 0) {
+            val aday = karistirJs(metin, zemin, oran)
             if (kontrastOrani(aday, zemin) >= 4.5) return aday
-            oran -= 0.05f
+            oran = Math.round((oran - 0.05) * 100) / 100.0
         }
         return metin
+    }
+
+    /**
+     * Duvar renklerinin karışımı JS `duvarCizimi.karistir` ile BİREBİR: `round(a·(1−t) + b·t)` çift
+     * duyarlıkla (Float adım ½ sınırında bir birim kayar; eşlik örneği `cizim.renkler`).
+     */
+    fun karistirJs(a: Int, b: Int, oran: Double): Int {
+        fun kanal(kaydir: Int): Int =
+            Math.round(((a shr kaydir) and 0xFF) * (1 - oran) + ((b shr kaydir) and 0xFF) * oran).toInt().coerceIn(0, 255)
+        return (0xFF shl 24) or (kanal(16) shl 16) or (kanal(8) shl 8) or kanal(0)
     }
 
     /** Widget'ın palet zemini: palet renginin AÇIK tonu (beyazla %78 karışım; koyu metin okunur). */

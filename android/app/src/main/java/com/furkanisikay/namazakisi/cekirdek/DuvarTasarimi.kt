@@ -392,3 +392,118 @@ object DuvarTasarimi {
      */
     fun zarifAmiriMi(metin: String): Boolean = metin.all { c -> AMIRI_ARALIKLARI.any { c.code in it } }
 }
+
+/** Görselin ekrandaki yeri ya da görselden kırpılan bölge (sol, üst, genişlik, yükseklik). */
+data class Dikdortgen(val x: Double, val y: Double, val genislik: Double, val yukseklik: Double)
+
+/** Mihrap kemeri (genişlik kesri): bacaklar `yanPay`'dan ekranın altına iner, yarım daire merkezi kutu üstünün `merkezAlti` altında. */
+data class MihrapKemeri(val yanPay: Double, val r: Double, val merkezAlti: Double, val kalinlik: Double, val opaklik: Double)
+
+/**
+ * Duvar kâğıdı ÇİZİM SAYILARI — tek kaynak JS `src/core/icerik/duvarCizimi.ts` (uygulamadaki
+ * düzenleyicinin önizlemesi = sahip onaylı taslak 2). Burada YENİDEN TASARLANMAZ: her sayı örnek
+ * dosyanın `cizim` bölümüyle birebir denetlenir (`DuvarTasarimiTest.cizimSabitleriOrnekleAyni`).
+ * Birimler: süs/perde genişlik kesri (tuval 330), yazı 412 tasarım px'i (× ekran genişliği / 412).
+ */
+object DuvarCizim {
+    const val TASARIM_GENISLIGI = 412.0
+    private const val TUVAL = 330.0
+
+    // --- Yazı (412 tasarım px; satır yüksekliği ve harf aralığı yazı boyunun katı) -----------
+    const val MEAL = 24.0
+    const val MEAL_ARAPCALI = 17.0
+    const val ARAPCA = 28.0
+    const val KUNYE = 12.0
+    const val ATIF = 10.0
+    const val YAN_BOSLUK = 30.0
+    const val KUCUK_YILDIZ = 22.0
+    const val ARAPCA_SATIR = 1.75
+    const val MEAL_SATIR = 1.4
+    const val KUNYE_HARF_ARALIGI = 0.04
+    const val MEAL_UST_ARAPCALI = 6.0
+    const val MEAL_UST_YILDIZLI = 10.0
+    const val KUNYE_UST_ARAPCALI = 14.0
+    const val KUNYE_UST = 18.0
+    const val ATIF_UST = 6.0
+    const val ATIF_EN_AZ_OLCEK = 0.9
+
+    // --- Süs ------------------------------------------------------------------------------
+    val MIHRAP_YAZI_YAN_PAYI = 84.0 / TUVAL
+    val MIHRAP_DIS = MihrapKemeri(58.0 / TUVAL, 107.0 / TUVAL, 54.0 / TUVAL, 2.2 / TUVAL, 0.28)
+    val MIHRAP_IC = MihrapKemeri(74.0 / TUVAL, 91.0 / TUVAL, 58.0 / TUVAL, 1.3 / TUVAL, 0.14)
+    /** Kemer tepesindeki DOLU beş köşeli yıldız: merkez kutu üstünün `MIHRAP_YILDIZ_UST` yukarısında. */
+    val MIHRAP_YILDIZ_UST = 36.0 / TUVAL
+    val MIHRAP_YILDIZ_DIS_R = 14.0 / TUVAL
+    val MIHRAP_YILDIZ_IC_R = 6.5 / TUVAL
+    const val MIHRAP_YILDIZ_OPAKLIK = 0.3
+
+    /** Girih: ekranın sol üstünden döşenen karo; karo içinde 48 birimlik dört köşeli yıldız + daire. */
+    val GIRIH_KARO = 48.0 / TUVAL
+    const val GIRIH_YOL = "M24 0l6 18 18 6-18 6-6 18-6-18-18-6 18-6z"
+    const val GIRIH_DAIRE_R = 5.0
+    const val GIRIH_YILDIZ_KALINLIK = 0.9
+    const val GIRIH_DAIRE_KALINLIK = 0.7
+    const val GIRIH_OPAKLIK = 0.06
+
+    /** Büyük silik yıldız: 24 birimlik çerçeve (iki kare + daire), birim = genişlik × [YILDIZ_BIRIM]. */
+    val YILDIZ_BIRIM = 420.0 / TASARIM_GENISLIGI / 24
+    const val YILDIZ_YARI_KENAR = 7.0
+    const val YILDIZ_KOSEGEN = 9.9
+    const val YILDIZ_DAIRE_R = 4.2
+    const val YILDIZ_KALINLIK = 0.12
+    const val YILDIZ_OPAKLIK = 0.08
+    const val KUCUK_YILDIZ_KALINLIK = 1.6
+
+    /** Fotoğraf okunurluk perdesi: yazı kutusunun her yanından taşma ve köşe yarıçapı; kesin kenarlı. */
+    val PERDE_PAY = 12.0 / TUVAL
+    val PERDE_YARICAP = 18.0 / TUVAL
+
+    /** Süs opaklık çarpanı: belirginlik 0,5'te 1, 0'da görünmez, 1'de iki kat. */
+    fun susCarpani(belirginlik: Double): Double = maxOf(0.0, belirginlik) / 0.5
+
+    /** Yazı bloğunun yan payı (genişlik kesri): mihrapta kemerin içine daralır. */
+    fun yaziYanPayi(tur: SusTuru): Double = if (tur == SusTuru.MIHRAP) MIHRAP_YAZI_YAN_PAYI else YAN_BOSLUK / TASARIM_GENISLIGI
+
+    /** Büyük yıldızın merkezi (ekran kesri): düz zeminlerde kendi yeri; gök ve fotoğrafta ([zemin] `null`) gecenin yeri. */
+    fun yildizKonumu(zemin: DuvarZemini?): Nokta = when (zemin) {
+        DuvarZemini.KAGIT -> Nokta(0.097, 0.64)
+        DuvarZemini.PALET -> Nokta(0.903, 0.693)
+        else -> Nokta(0.855, 0.878)
+    }
+
+    /** Beş köşeli yıldızın 10 köşesi (dış/iç sırayla, ilk köşe tepede). JS `besKoseliYildiz`. */
+    fun besKoseliYildiz(cx: Double, cy: Double, dis: Double, ic: Double): List<Nokta> = (0 until 10).map { i ->
+        val r = if (i % 2 == 0) dis else ic
+        val a = -Math.PI / 2 + i * Math.PI / 5
+        Nokta(cx + r * Math.cos(a), cy + r * Math.sin(a))
+    }
+
+    /** [GIRIH_YOL]'un köşeleri (karo birimi): ilk çift mutlak (`M`), sonrakiler göreli (`l`). */
+    fun girihNoktalari(): List<Nokta> {
+        val sayilar = Regex("-?\\d+(?:\\.\\d+)?").findAll(GIRIH_YOL).map { it.value.toDouble() }.toList()
+        val noktalar = ArrayList<Nokta>()
+        var x = 0.0
+        var y = 0.0
+        for (i in 0 until sayilar.size / 2) {
+            x = if (i == 0) sayilar[0] else x + sayilar[2 * i]
+            y = if (i == 0) sayilar[1] else y + sayilar[2 * i + 1]
+            noktalar += Nokta(x, y)
+        }
+        return noktalar
+    }
+
+    /**
+     * Fotoğrafın ekranı KAPLAYAN kırpması (görsel pikseli, sol üst köken): ölçek = max(G/g, Y/y) ×
+     * yakınlık, merkez (x·g, y·y), görselin içinde kalacak şekilde kaydırılır. JS `fotoYerlesimi`'nin
+     * görsel uzayındaki karşılığı.
+     */
+    fun fotoKirpmasi(gorselG: Double, gorselY: Double, hedefG: Double, hedefY: Double, x: Double, y: Double, yakinlik: Double): Dikdortgen {
+        if (gorselG <= 0 || gorselY <= 0 || hedefG <= 0 || hedefY <= 0) return Dikdortgen(0.0, 0.0, maxOf(0.0, gorselG), maxOf(0.0, gorselY))
+        val olcek = maxOf(hedefG / gorselG, hedefY / gorselY) * maxOf(1.0, yakinlik)
+        val g = minOf(gorselG, hedefG / olcek)
+        val h = minOf(gorselY, hedefY / olcek)
+        val sol = minOf(gorselG - g, maxOf(0.0, x * gorselG - g / 2))
+        val ust = minOf(gorselY - h, maxOf(0.0, y * gorselY - h / 2))
+        return Dikdortgen(sol, ust, g, h)
+    }
+}

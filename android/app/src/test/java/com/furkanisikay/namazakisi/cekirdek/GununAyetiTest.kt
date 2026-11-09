@@ -367,7 +367,6 @@ class GununAyetiTest {
             assertTrue(b.toString(), b.alt <= 0.28 || b.ust >= 0.62)
             assertTrue(b.toString(), b.alt <= 0.84)
         }
-        assertTrue(DuvarKagidiKurallari.yaziOlcegi(DuvarEkrani.ANA) < 1f)
     }
 
     @Test

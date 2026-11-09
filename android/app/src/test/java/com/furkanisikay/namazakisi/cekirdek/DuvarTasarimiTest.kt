@@ -338,6 +338,156 @@ class DuvarTasarimiTest {
         assertNotEquals(SAHNE_OZETI, DuvarTasarimi.sahneOzeti(s.copy(cisim = s.cisim!!.copy(tur = CisimTuru.GUNES))))
     }
 
+    // --- Çizim sayıları (JS `duvarCizimi.ts` = düzenleyici önizlemesi) ---------------------------
+
+    private val cizim: JSONObject get() = ornek.getJSONObject("cizim")
+
+    private fun esit(beklenen: Double, gercek: Double, ad: String) = assertEquals(ad, beklenen, gercek, 1e-12)
+
+    private fun kemer(o: JSONObject, k: MihrapKemeri, ad: String) {
+        esit(o.getDouble("yanPay"), k.yanPay, "$ad.yanPay")
+        esit(o.getDouble("r"), k.r, "$ad.r")
+        esit(o.getDouble("merkezAlti"), k.merkezAlti, "$ad.merkezAlti")
+        esit(o.getDouble("kalinlik"), k.kalinlik, "$ad.kalinlik")
+        esit(o.getDouble("opaklik"), k.opaklik, "$ad.opaklik")
+    }
+
+    @Test
+    fun cizimSabitleriOrnekleAyni() {
+        val c = cizim
+        esit(c.getDouble("tasarimGenisligi"), DuvarCizim.TASARIM_GENISLIGI, "tasarimGenisligi")
+        val y = c.getJSONObject("yazi")
+        val yazi = mapOf(
+            "meal" to DuvarCizim.MEAL, "mealArapcali" to DuvarCizim.MEAL_ARAPCALI, "arapca" to DuvarCizim.ARAPCA,
+            "kunye" to DuvarCizim.KUNYE, "atif" to DuvarCizim.ATIF, "yanBosluk" to DuvarCizim.YAN_BOSLUK,
+            "kucukYildiz" to DuvarCizim.KUCUK_YILDIZ, "arapcaSatir" to DuvarCizim.ARAPCA_SATIR, "mealSatir" to DuvarCizim.MEAL_SATIR,
+            "kunyeHarfAraligi" to DuvarCizim.KUNYE_HARF_ARALIGI, "mealUstArapcali" to DuvarCizim.MEAL_UST_ARAPCALI,
+            "mealUstYildizli" to DuvarCizim.MEAL_UST_YILDIZLI, "kunyeUstArapcali" to DuvarCizim.KUNYE_UST_ARAPCALI,
+            "kunyeUst" to DuvarCizim.KUNYE_UST, "atifUst" to DuvarCizim.ATIF_UST, "atifEnAzOlcek" to DuvarCizim.ATIF_EN_AZ_OLCEK,
+        )
+        // Örnekteki her yazı ölçüsü native'de de var (yeni ölçü eklenirse bu test düşer).
+        assertEquals(y.keySet(), yazi.keys)
+        for ((ad, deger) in yazi) esit(y.getDouble(ad), deger, "yazi.$ad")
+
+        val m = c.getJSONObject("sus").getJSONObject("mihrap")
+        esit(m.getDouble("yaziYanPayi"), DuvarCizim.MIHRAP_YAZI_YAN_PAYI, "mihrap.yaziYanPayi")
+        kemer(m.getJSONObject("dis"), DuvarCizim.MIHRAP_DIS, "mihrap.dis")
+        kemer(m.getJSONObject("ic"), DuvarCizim.MIHRAP_IC, "mihrap.ic")
+        val my = m.getJSONObject("yildiz")
+        esit(my.getDouble("merkezUstu"), DuvarCizim.MIHRAP_YILDIZ_UST, "mihrap.yildiz.merkezUstu")
+        esit(my.getDouble("disR"), DuvarCizim.MIHRAP_YILDIZ_DIS_R, "mihrap.yildiz.disR")
+        esit(my.getDouble("icR"), DuvarCizim.MIHRAP_YILDIZ_IC_R, "mihrap.yildiz.icR")
+        esit(my.getDouble("opaklik"), DuvarCizim.MIHRAP_YILDIZ_OPAKLIK, "mihrap.yildiz.opaklik")
+
+        val g = c.getJSONObject("sus").getJSONObject("girih")
+        esit(g.getDouble("karo"), DuvarCizim.GIRIH_KARO, "girih.karo")
+        assertEquals(g.getString("yol"), DuvarCizim.GIRIH_YOL)
+        esit(g.getDouble("daireR"), DuvarCizim.GIRIH_DAIRE_R, "girih.daireR")
+        esit(g.getDouble("yildizKalinlik"), DuvarCizim.GIRIH_YILDIZ_KALINLIK, "girih.yildizKalinlik")
+        esit(g.getDouble("daireKalinlik"), DuvarCizim.GIRIH_DAIRE_KALINLIK, "girih.daireKalinlik")
+        esit(g.getDouble("opaklik"), DuvarCizim.GIRIH_OPAKLIK, "girih.opaklik")
+        assertEquals(
+            listOf(24 to 0, 30 to 18, 48 to 24, 30 to 30, 24 to 48, 18 to 30, 0 to 24, 18 to 18).map { Nokta(it.first.toDouble(), it.second.toDouble()) },
+            DuvarCizim.girihNoktalari(),
+        )
+
+        val yi = c.getJSONObject("sus").getJSONObject("yildiz")
+        esit(yi.getDouble("birim"), DuvarCizim.YILDIZ_BIRIM, "yildiz.birim")
+        esit(yi.getDouble("yariKenar"), DuvarCizim.YILDIZ_YARI_KENAR, "yildiz.yariKenar")
+        esit(yi.getDouble("kosegen"), DuvarCizim.YILDIZ_KOSEGEN, "yildiz.kosegen")
+        esit(yi.getDouble("daireR"), DuvarCizim.YILDIZ_DAIRE_R, "yildiz.daireR")
+        esit(yi.getDouble("kalinlik"), DuvarCizim.YILDIZ_KALINLIK, "yildiz.kalinlik")
+        esit(yi.getDouble("opaklik"), DuvarCizim.YILDIZ_OPAKLIK, "yildiz.opaklik")
+        esit(yi.getDouble("kucukKalinlik"), DuvarCizim.KUCUK_YILDIZ_KALINLIK, "yildiz.kucukKalinlik")
+        val konum = yi.getJSONObject("konum")
+        fun nokta(ad: String) = konum.getJSONArray(ad).let { Nokta(it.getDouble(0), it.getDouble(1)) }
+        assertEquals(nokta("gece"), DuvarCizim.yildizKonumu(DuvarZemini.GECE))
+        assertEquals(nokta("kagit"), DuvarCizim.yildizKonumu(DuvarZemini.KAGIT))
+        assertEquals(nokta("palet"), DuvarCizim.yildizKonumu(DuvarZemini.PALET))
+        assertEquals(nokta("diger"), DuvarCizim.yildizKonumu(null))
+
+        val p = c.getJSONObject("perde")
+        esit(p.getDouble("pay"), DuvarCizim.PERDE_PAY, "perde.pay")
+        esit(p.getDouble("yaricap"), DuvarCizim.PERDE_YARICAP, "perde.yaricap")
+        val yp = c.getJSONObject("yanPay")
+        esit(yp.getDouble("mihrap"), DuvarCizim.yaziYanPayi(SusTuru.MIHRAP), "yanPay.mihrap")
+        for (t in listOf(SusTuru.YILDIZ, SusTuru.GIRIH, SusTuru.YOK)) esit(yp.getDouble("diger"), DuvarCizim.yaziYanPayi(t), "yanPay.$t")
+    }
+
+    @Test
+    fun susCarpaniVeBesKoseliYildizOrnekle() {
+        val dizi = cizim.getJSONArray("susCarpani")
+        for (i in 0 until dizi.length()) {
+            val o = dizi.getJSONObject(i)
+            esit(o.getDouble("beklenen"), DuvarCizim.susCarpani(o.getDouble("belirginlik")), "susCarpani ${o.getDouble("belirginlik")}")
+        }
+        val b = cizim.getJSONObject("besKoseliYildiz")
+        val noktalar = DuvarCizim.besKoseliYildiz(b.getDouble("cx"), b.getDouble("cy"), b.getDouble("dis"), b.getDouble("ic"))
+        val beklenen = b.getJSONArray("beklenen")
+        assertEquals(beklenen.length(), noktalar.size)
+        // JS iki ondalığa yuvarlar (SVG noktası).
+        for (i in noktalar.indices) {
+            assertEquals("x$i", beklenen.getJSONArray(i).getDouble(0), noktalar[i].x, 0.006)
+            assertEquals("y$i", beklenen.getJSONArray(i).getDouble(1), noktalar[i].y, 0.006)
+        }
+    }
+
+    @Test
+    fun zeminRenkleriOrnekleAyni() {
+        val dizi = cizim.getJSONArray("renkler")
+        fun rgb(v: String) = requireNotNull(GununAyetiKurallari.renkCoz(v)) and 0xFFFFFF
+        for (i in 0 until dizi.length()) {
+            val o = dizi.getJSONObject(i)
+            val e = o.getJSONObject("beklenen")
+            val zemin = DuvarZemini.coz(o.getString("zemin"))
+            val ad = o.toString()
+            if (zemin.duzMu) {
+                val r = DuvarKagidiKurallari.renkler(DuvarAyari(zemin = zemin, paletRenk = requireNotNull(GununAyetiKurallari.renkCoz(o.getString("paletRenk")))))
+                assertEquals(ad, rgb(e.getString("zemin")), r.zemin and 0xFFFFFF)
+                assertEquals(ad, rgb(e.getString("metin")), r.metin and 0xFFFFFF)
+                assertEquals(ad, rgb(e.getString("kunye")), r.kunye and 0xFFFFFF)
+                assertEquals(ad, rgb(e.getString("atif")), r.atif and 0xFFFFFF)
+                assertEquals(ad, rgb(e.getString("sus")), r.sus and 0xFFFFFF)
+                assertEquals(ad, 1.0, e.getDouble("kunyeOpaklik"), 0.0)
+                assertEquals(ad, 1.0, e.getDouble("atifOpaklik"), 0.0)
+                assertEquals(ad, e.getDouble("susOpaklik"), r.susOpakligi.toDouble(), 1e-6)
+            } else {
+                // Gök: yazı sahnenin rengi, künye/atıf/süs aynı rengin sabit opaklıkları.
+                val sahne = sahneler.getValue(requireNotNull(zemin.gok))
+                assertTrue(ad, e.isNull("zemin"))
+                assertEquals(ad, rgb(e.getString("metin")), sahne.metin and 0xFFFFFF)
+                assertEquals(ad, e.getDouble("kunyeOpaklik"), DuvarKagidiKurallari.KUNYE_OPAKLIGI.toDouble(), 1e-6)
+                assertEquals(ad, e.getDouble("atifOpaklik"), DuvarKagidiKurallari.ATIF_OPAKLIGI.toDouble(), 1e-6)
+                assertEquals(ad, e.getDouble("susOpaklik"), DuvarKagidiKurallari.GOK_SUS_OPAKLIGI.toDouble(), 1e-6)
+            }
+        }
+    }
+
+    @Test
+    fun fotoKirpmasiOrnekle() {
+        val dizi = cizim.getJSONArray("foto")
+        assertTrue(dizi.length() >= 4)
+        for (i in 0 until dizi.length()) {
+            val o = dizi.getJSONObject(i)
+            val ekran = o.getJSONArray("ekran")
+            val gorsel = o.getJSONArray("gorsel")
+            val f = o.getJSONObject("foto")
+            val e = o.getJSONObject("beklenen")
+            val k = DuvarCizim.fotoKirpmasi(
+                gorsel.getDouble(0), gorsel.getDouble(1), ekran.getDouble(0), ekran.getDouble(1),
+                f.getDouble("x"), f.getDouble("y"), f.getDouble("yakinlik"),
+            )
+            // JS ekrandaki görsel yerini verir; görsel pikseli → ekran: ölçek = görselin ekrandaki genişliği / görsel genişliği.
+            val olcek = e.getDouble("genislik") / gorsel.getDouble(0)
+            val ad = o.toString()
+            assertEquals(ad, e.getDouble("sol"), -k.x * olcek, 1e-6)
+            assertEquals(ad, e.getDouble("ust"), -k.y * olcek, 1e-6)
+            assertEquals(ad, ekran.getDouble(0), k.genislik * olcek, 1e-6)
+            assertEquals(ad, ekran.getDouble(1), k.yukseklik * olcek, 1e-6)
+            assertEquals(ad, e.getDouble("yukseklik"), gorsel.getDouble(1) * olcek, 1e-6)
+        }
+    }
+
     // --- Zarif yazı tipi ----------------------------------------------------------------------
 
     @Test
