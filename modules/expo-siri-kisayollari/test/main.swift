@@ -920,6 +920,12 @@ struct DuvarOrnekOkunurluk: Decodable {
     let beklenen: DuvarOrnekOkunurlukSonucu
 }
 
+/// Ornekteki [ust, alt] → `DuvarBandi` (null/bozuk → nil).
+func duvarBandi(_ d: [Double]?) -> DuvarBandi? {
+    guard let d, d.count == 2 else { return nil }
+    return DuvarBandi(ust: d[0], alt: d[1])
+}
+
 /// Beklenen ayar KATI cozulur (hosgorulu normalize ile karsilastirilirsa ikisi ayni hatayi saklardi).
 struct DuvarOrnekAyar: Decodable {
     struct Yazi: Decodable {
@@ -951,6 +957,7 @@ struct DuvarOrnekAyar: Decodable {
     let yazi: Yazi
     let sus: Sus
     let foto: Foto
+    let saatAlani: [Double]?
 
     var ayar: DuvarAyari {
         DuvarAyari(
@@ -960,9 +967,48 @@ struct DuvarOrnekAyar: Decodable {
             foto: DuvarFotoAyari(
                 dosya: foto.dosya, karartma: foto.karartma, bulaniklik: foto.bulaniklik, x: foto.x, y: foto.y,
                 yakinlik: foto.yakinlik, okunurluk: foto.okunurluk
-            )
+            ),
+            saatAlani: duvarBandi(saatAlani)
         )
     }
+}
+
+/// Kilit ekrani saat alani (`saat`): bantlar, cisim kacisi, sus solmasi, yildiz degmesi, normalize.
+struct DuvarOrnekSaat: Decodable {
+    struct Bant: Decodable {
+        let platform: String
+        let alan: [Double]?
+        let beklenen: [[Double]]
+    }
+    struct Cisim: Decodable {
+        let gok: String
+        let kutu: [Double]?
+        let alan: [Double]?
+        let oran: Double
+        let beklenen: [Double]?
+    }
+    struct Solma: Decodable {
+        let y: Double
+        let alan: [Double]?
+        let beklenen: Double
+    }
+    struct Degme: Decodable {
+        let y1: Double
+        let y2: Double
+        let alan: [Double]?
+        let beklenen: Bool
+    }
+    struct Normalize: Decodable {
+        let ham: DuvarJson?
+        let beklenen: [Double]?
+    }
+    let varsayilan: [String: [Double]]
+    let disSinir: [String: [Double]]
+    let bantlar: [Bant]
+    let cisim: [Cisim]
+    let solma: [Solma]
+    let degme: [Degme]
+    let normalize: [Normalize]
 }
 
 struct DuvarOrnekNormalize: Decodable {
@@ -1088,6 +1134,7 @@ struct DuvarOrnek: Decodable {
     let cisim: [DuvarOrnekCisim]
     let okunurluk: [DuvarOrnekOkunurluk]
     let normalize: [DuvarOrnekNormalize]
+    let saat: DuvarOrnekSaat
 }
 
 func yakinMi(_ a: Double, _ b: Double, _ ad: String, tolerans: Double = 1e-6) {
@@ -1163,6 +1210,125 @@ for o in duvarOrnek.okunurluk {
 for (i, o) in duvarOrnek.normalize.enumerated() {
     esitMi(DuvarAyari.normalize(o.ham), o.beklenen.ayar, "duvar: normalize[\(i)] (eski kayit / bozuk alanlar)")
 }
+
+// Kilit ekrani saat alani (`saat`): JS `duvarTasarimi.ts` > "Kilit ekrani saat alani" ile BIREBIR.
+let so = duvarOrnek.saat
+for (platform, alan) in so.varsayilan {
+    esitMi(DuvarTasarimi.varsayilanSaatAlani[platform], duvarBandi(alan), "saat: varsayilan alan \(platform)")
+}
+for (platform, alan) in so.disSinir {
+    esitMi(DuvarTasarimi.kilitDisSinir[platform], duvarBandi(alan), "saat: dis sinir \(platform)")
+}
+esitMi(so.bantlar.contains { $0.platform == "ios" }, true, "saat: ornekte iPhone bantlari var")
+for o in so.bantlar {
+    esitMi(
+        DuvarTasarimi.bantlar(o.platform, "kilit", saatAlani: duvarBandi(o.alan)),
+        o.beklenen.map { DuvarBandi(ust: $0[0], alt: $0[1]) },
+        "saat: bantlar \(o.platform) alan=\(String(describing: o.alan))"
+    )
+}
+// Olculmemis kilit = sabit tablo; ana ekran saat alanindan etkilenmez.
+for platform in ["android", "ios"] {
+    esitMi(
+        DuvarTasarimi.bantlar(platform, "kilit", saatAlani: nil), DuvarTasarimi.izinliBantlar[platform]?["kilit"] ?? [],
+        "saat: olculmemis kilit bantlari tabloyla ayni \(platform)"
+    )
+    esitMi(
+        DuvarTasarimi.bantlar(platform, "ana", saatAlani: DuvarBandi(ust: 0.3, alt: 0.5)), DuvarTasarimi.izinliBantlar[platform]?["ana"] ?? [],
+        "saat: ana ekran bantlari sabit \(platform)"
+    )
+}
+for o in so.cisim {
+    guard let cisim = duvarOrnek.sahneler[o.gok]?.cisim else {
+        hatalar.append("saat: \(o.gok) cismi ornekte yok")
+        continue
+    }
+    esitMi(
+        DuvarTasarimi.cisimKonumuSec(cisim, kutu: o.kutu, oran: o.oran, saatAlani: duvarBandi(o.alan)), o.beklenen,
+        "saat: cisimKonumuSec \(o.gok) kutu=\(String(describing: o.kutu)) alan=\(String(describing: o.alan))"
+    )
+}
+for o in so.solma {
+    yakinMi(DuvarTasarimi.saatSolmasi(o.y, duvarBandi(o.alan)), o.beklenen, "saat: saatSolmasi(\(o.y))")
+}
+yakinMi(DuvarTasarimi.saatSolmasi(0.5, nil), 1, "saat: alan yoksa solma yok", tolerans: 0)
+for o in so.degme {
+    esitMi(DuvarTasarimi.saateDegiyor(o.y1, o.y2, duvarBandi(o.alan)), o.beklenen, "saat: saateDegiyor(\(o.y1), \(o.y2))")
+}
+esitMi(DuvarTasarimi.saateDegiyor(0, 1, nil), false, "saat: alan yoksa degme yok")
+for (i, o) in so.normalize.enumerated() {
+    esitMi(DuvarTasarimi.saatAlaniNormalize(o.ham), duvarBandi(o.beklenen), "saat: saatAlaniNormalize[\(i)]")
+}
+esitMi(DuvarTasarimi.saatAlaniNormalize(nil), nil, "saat: normalize yok → nil")
+// Elle: JSON true sayi degil; 3 elemanli dizi bozuk.
+let saatBozuk = try? JSONDecoder().decode(DuvarJson.self, from: Data(#"[[true,0.5],[0.1,0.2,0.3]]"#.utf8))
+esitMi(DuvarTasarimi.saatAlaniNormalize(saatBozuk?.dizi?[0]), nil, "saat: true sayi degil")
+esitMi(DuvarTasarimi.saatAlaniNormalize(saatBozuk?.dizi?[1]), nil, "saat: uc elemanli dizi bozuk")
+// Etkin alan: kilit (ve ikisi) ayardaki ya da varsayilan; ana nil.
+var saatAyari = DuvarAyari.normalize(nil)
+esitMi(DuvarTasarimi.etkinSaatAlani(saatAyari, ekran: "kilit"), DuvarBandi(ust: 0.08, alt: 0.34), "saat: etkin alan varsayilan iPhone")
+esitMi(DuvarTasarimi.etkinSaatAlani(saatAyari, ekran: DuvarTasarimi.ekran("ana")), nil, "saat: ana ekranda alan yok")
+saatAyari.saatAlani = DuvarBandi(ust: 0.2, alt: 0.4)
+esitMi(DuvarTasarimi.etkinSaatAlani(saatAyari, ekran: DuvarTasarimi.ekran("ikisi")), DuvarBandi(ust: 0.2, alt: 0.4), "saat: ikisi ayardaki alan")
+
+// Solma duraklari: dogrusal ara degerleme `saatSolmasi`'ni birebir verir (cizicinin maskesi).
+func duraktanSolma(_ duraklar: [[Double]], _ y: Double) -> Double {
+    guard let ilk = duraklar.first, let son = duraklar.last else { return 1 }
+    if y <= ilk[0] { return ilk[1] }
+    if y >= son[0] { return son[1] }
+    for i in 1 ..< duraklar.count where y <= duraklar[i][0] {
+        let a = duraklar[i - 1]
+        let b = duraklar[i]
+        return a[1] + (b[1] - a[1]) * (y - a[0]) / (b[0] - a[0])
+    }
+    return son[1]
+}
+for alan in [DuvarBandi(ust: 0.26, alt: 0.64), DuvarBandi(ust: 0.08, alt: 0.34), DuvarBandi(ust: 0.3, alt: 0.36), DuvarBandi(ust: 0, alt: 0.6)] {
+    let duraklar = DuvarTasarimi.solmaDuraklari(alan)
+    esitMi(duraklar.first?[0], 0, "saat: solma duraklari 0'dan baslar \(alan)")
+    esitMi(duraklar.last?[0], 1, "saat: solma duraklari 1'de biter \(alan)")
+    esitMi(zip(duraklar, duraklar.dropFirst()).allSatisfy { $0.0[0] < $0.1[0] }, true, "saat: solma duraklari artan \(alan)")
+    for i in 0 ... 400 {
+        let y = Double(i) / 400
+        yakinMi(duraktanSolma(duraklar, y), DuvarTasarimi.saatSolmasi(y, alan), "saat: solma duragi y=\(y) \(alan)", tolerans: 1e-9)
+    }
+}
+for o in so.solma {
+    yakinMi(duraktanSolma(DuvarTasarimi.solmaDuraklari(duvarBandi(o.alan)), o.y), o.beklenen, "saat: solma duragi ornek y=\(o.y)")
+}
+esitMi(DuvarTasarimi.solmaDuraklari(nil).isEmpty, true, "saat: alan yoksa durak yok")
+
+// Kilit ekrani olcumu: satir profili (saf). Referans 12×40 desen; ekran = referans, karartilmis, ustune saat.
+let olcG = 12
+let olcY = 40
+let olcRef: [Double] = (0 ..< olcG * olcY).map { i in 0.1 + 0.5 * (0.5 + 0.5 * sin(Double(i) * 0.37) * cos(Double(i / olcG) * 0.21)) }
+let ayniProfil = DuvarTasarimi.kilitProfili(ekran: olcRef, referans: olcRef, genislik: olcG, yukseklik: olcY)
+esitMi(ayniProfil.count, olcY, "olcum: satir sayisi")
+esitMi(ayniProfil.allSatisfy { $0 < 0.001 }, true, "olcum: ayni gorsel → degisen yok")
+let karartilmis = olcRef.map { $0 * 0.8 + 0.02 }
+esitMi(
+    DuvarTasarimi.kilitProfili(ekran: karartilmis, referans: olcRef, genislik: olcG, yukseklik: olcY).allSatisfy { $0 < 0.001 }, true,
+    "olcum: kilit ekrani karartmasi (×0,8 + 0,02) degisiklik sayilmaz"
+)
+// Satir 6–10 (5/40 = %12,5) beyaz saat.
+let saatliEkran = karartilmis.enumerated().map { i, v in (6 ... 10).contains(i / olcG) ? 1.0 : v }
+let saatliProfil = DuvarTasarimi.kilitProfili(ekran: saatliEkran, referans: olcRef, genislik: olcG, yukseklik: olcY)
+for satir in 0 ..< olcY {
+    if (6 ... 10).contains(satir) {
+        esitMi(saatliProfil[satir] > 0.9, true, "olcum: saat satiri \(satir) dolu")
+    } else {
+        esitMi(saatliProfil[satir] < 0.001, true, "olcum: saat disi satir \(satir) bos")
+    }
+}
+esitMi(DuvarTasarimi.kilitProfili(ekran: [0.5], referans: olcRef, genislik: olcG, yukseklik: olcY), [], "olcum: eksik dizi → bos")
+yakinMi(DuvarTasarimi.parlakliklar(rgba: [255, 255, 255, 255, 0, 0, 0, 255])[0], 1, "olcum: beyaz parlaklik 1", tolerans: 1e-9)
+yakinMi(DuvarTasarimi.parlakliklar(rgba: [0, 255, 0, 255])[0], 0.7152, "olcum: yesil agirligi", tolerans: 1e-9)
+esitMi(DuvarTasarimi.parlakliklar(rgba: [1, 2, 3]).count, 0, "olcum: eksik piksel atlanir")
+esitMi(DuvarTasarimi.olcumYuksekligi(genislik: 1179, yukseklik: 2556), 234, "olcum: 108 genislikte yukseklik (iPhone 15)")
+esitMi(DuvarTasarimi.olcumYuksekligi(genislik: 270, yukseklik: 585), 234, "olcum: referans kopyasinda ayni yukseklik")
+esitMi(DuvarTasarimi.olcumOranlariUyumlu(ekranG: 1179, ekranY: 2556, refG: 270, refY: 585), true, "olcum: ayni oran")
+esitMi(DuvarTasarimi.olcumOranlariUyumlu(ekranG: 1179, ekranY: 2556, refG: 270, refY: 540), false, "olcum: %8 farkli oran")
+esitMi(DuvarTasarimi.olcumOranlariUyumlu(ekranG: 0, ekranY: 2556, refG: 270, refY: 585), false, "olcum: sifir boyut")
 
 // Elle: JS `typeof` ayrimi — JSON true sayi DEGIL, 1 mantik DEGIL; vakteUysun/okunurluk yalniz false ile kapanir.
 func duvarAyariCoz(_ json: String) -> DuvarAyari {

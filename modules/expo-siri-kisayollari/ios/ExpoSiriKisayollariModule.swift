@@ -105,6 +105,13 @@ public class ExpoSiriKisayollariModule: Module {
             DuvarFotografi.sil(dosya)
         }
 
+        /// Kilit ekrani goruntusunden saat alani olcumu: Kisayollar gorselinin son kilit kopyasina gore
+        /// satir profili (`{profil}`) ya da `{hata: referans-yok|okunamadi|oran}`; karar JS `saatAlaniBul`.
+        /// AsyncFunction: gorsel cozme JS thread'ini bekletmesin (ANR).
+        AsyncFunction("kilitEkraniProfili") { (uri: String) -> [String: Any] in
+            return DuvarFotografi.kilitEkraniProfili(uri: uri)
+        }
+
         AsyncFunction("bekleyenleriAl") { () -> String in
             return SiriDeposu.varsayilan.bekleyenleriJson()
         }

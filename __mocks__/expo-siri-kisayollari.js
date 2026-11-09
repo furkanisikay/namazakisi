@@ -32,10 +32,13 @@ const iosDinleyici = jest.fn().mockReturnValue(null);
 // Duvar kâğıdı fotoğrafı: varsayılan köprü YOK (yazılamadı).
 const duvarFotografiniYaz = jest.fn().mockResolvedValue(false);
 const duvarFotografiniSil = jest.fn().mockResolvedValue(undefined);
+// Kilit ekranı ölçümü: varsayılan köprü YOK.
+const kilitEkraniProfili = jest.fn().mockResolvedValue({ hata: 'okunamadi' });
 
 module.exports = {
   duvarFotografiniYaz,
   duvarFotografiniSil,
+  kilitEkraniProfili,
   saatUygulamasiDestekli,
   saatKoprusu,
   saatUyandirmaDurumlariniOku,

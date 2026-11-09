@@ -37,6 +37,8 @@ interface SiriNativeModule {
     /** Duvar kâğıdı fotoğraf zemini (App Group `duvar/<dosya>`) — eski ikilide yok (opsiyonel). */
     duvarFotografiniYaz?(kaynakUri: string, dosya: string): Promise<boolean>;
     duvarFotografiniSil?(dosya: string): Promise<void>;
+    /** Kilit ekranı görüntüsünün satır profili (son kilit kopyasına göre) — eski ikilide yok (opsiyonel). */
+    kilitEkraniProfili?(uri: string): Promise<{ profil?: unknown; hata?: unknown } | null>;
     /** #295 — eski ikilide yok (opsiyonel). */
     /** Arayüz dili (App Group) — eski ikilide yok (opsiyonel). */
     arayuzDiliniAyarla?(kod: string): void;
@@ -173,6 +175,30 @@ export async function duvarFotografiniSil(dosya: string): Promise<void> {
         await m.duvarFotografiniSil(dosya);
     } catch {
         // Eski ikili ya da dosya sistemi hatası: kalan dosya bir sonraki silmede gider.
+    }
+}
+
+/**
+ * Kilit ekranı ölçümü sonucu: satır profili (yukarıdan aşağı, satır başına değişen piksel oranı 0–1;
+ * karar `saatAlaniBul`) ya da hata — `referans-yok` (Kısayollar görseli henüz kilit görseli üretmedi),
+ * `okunamadi` (görüntü/köprü yok), `oran` (görüntü bu ekranın en-boyunda değil).
+ */
+export type KilitEkraniProfili = { profil: number[] } | { hata: string };
+
+/** Kilit ekranı görüntüsünü (seçicinin `file://` URI'si) son kilit görseliyle karşılaştırır. Köprü yoksa `{ hata: 'okunamadi' }`. Asla reddetmez. */
+export async function kilitEkraniProfili(uri: string): Promise<KilitEkraniProfili> {
+    const m = modul();
+    if (!m || typeof m.kilitEkraniProfili !== 'function') return { hata: 'okunamadi' };
+    try {
+        const sonuc = await m.kilitEkraniProfili(uri);
+        const profil = sonuc?.profil;
+        if (Array.isArray(profil) && profil.every((v) => typeof v === 'number' && Number.isFinite(v))) {
+            return { profil: profil as number[] };
+        }
+        if (typeof sonuc?.hata === 'string') return { hata: sonuc.hata };
+        return { hata: 'okunamadi' };
+    } catch {
+        return { hata: 'okunamadi' };
     }
 }
 
