@@ -1,7 +1,8 @@
 /**
  * Bir ekranın (kilit/ana) duvar kâğıdı önizlemesi: sahne + yazı. Yerleşim native çiziciyle AYNI
  * kuralla (`DuvarKagidiCizici.duzenBul`): blok ölçülür, `yaziYerlesimi` ile istenen merkeze en yakın
- * izinli banda oturur; sığmazsa yazı boyu `KUCULTME_ADIMLARI` ile küçültülüp satırlar YENİDEN kırılır,
+ * izinli banda (`izinliBantlar`: kilit ekranında ayardaki saat alanına göre) oturur; sığmazsa
+ * yazı boyu `KUCULTME_ADIMLARI` ile küçültülüp satırlar YENİDEN kırılır,
  * en küçükte de sığmazsa Arapça düşer ve küçültme baştan denenir; yine sığmazsa son blok en geniş
  * bandın üstüne yaslanır. Ölçüm görünmeyen bir kopyada yapılır (görünen yazı denemeler sırasında
  * yanıp sönmez). Ayar sayfasındaki küçük önizlemeler ve düzenleyicinin tuvali aynı bileşendir.
@@ -9,8 +10,8 @@
 import * as React from 'react';
 import { View, type LayoutChangeEvent } from 'react-native';
 import type { GununAyetiGorunumu } from '../../../../core/icerik/gununAyeti';
-import { IZINLI_BANTLAR, yaziYerlesimi, type DuvarEkrani, type DuvarPlatformu } from '../../../../core/icerik/duvarTasarimi';
-import { duvarRenkleri, istenenMerkez, KUCULTME_ADIMLARI } from '../../../../core/icerik/duvarCizimi';
+import { izinliBantlar, yaziYerlesimi, type DuvarEkrani, type DuvarPlatformu } from '../../../../core/icerik/duvarTasarimi';
+import { duvarRenkleri, etkinSaatAlani, istenenMerkez, KUCULTME_ADIMLARI } from '../../../../core/icerik/duvarCizimi';
 import type { DuvarKagidiAyari } from '../../../../core/icerik/gununAyetiYuku';
 import { SOLDAN_SAGA } from '../../common/yon';
 import { DuvarSahnesi, type FotoKaynagi, type YaziKutusu } from './DuvarSahnesi';
@@ -54,7 +55,8 @@ export const DuvarOnizleme: React.FC<DuvarOnizlemeProps> = ({
   const etkin: DuvarKagidiAyari = ayar.zemin === 'foto' && !foto ? { ...ayar, zemin: 'gece' } : ayar;
   const renk = duvarRenkleri(etkin);
   const merkez = istenenMerkez(ayar, ekran, platform);
-  const bantlar = IZINLI_BANTLAR[platform][ekran];
+  const bantlar = izinliBantlar(platform, ekran, ayar.saatAlani);
+  const saatAlani = etkinSaatAlani(ayar, ekran, platform);
   const ilkArapca = ayar.arapca || !ayet.meal;
 
   // Native sırası: önce seçili Arapça ile her küçültme adımı, sonra (mealliyse) Arapçasız aynı dizi.
@@ -117,7 +119,7 @@ export const DuvarOnizleme: React.FC<DuvarOnizlemeProps> = ({
 
   return (
     <View style={[SOLDAN_SAGA, { width: g, height: y, overflow: 'hidden' }]}>
-      <DuvarSahnesi genislik={g} yukseklik={y} ayar={ayar} kutu={kutu} foto={foto} kimlik={kimlik} />
+      <DuvarSahnesi genislik={g} yukseklik={y} ayar={ayar} kutu={kutu} foto={foto} kimlik={kimlik} saatAlani={saatAlani} />
       {/* Ölçüm kopyası: görünmez; her aday için yeniden kurulur (anahtar), böylece onLayout hep gelir. */}
       {olculecek ? (
         <View

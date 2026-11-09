@@ -1,14 +1,16 @@
 /**
  * Duvar kâğıdının ZEMİNİ ve SÜSÜ: vakit göğü (`GOK_SAHNELERI` verisinden), düz zemin ya da
  * kullanıcının fotoğrafı; üstüne süs (mihrap, yıldız, girih). Yazı ayrı katmandır
- * (`DuvarYazisi`); gök cismi yazı kutusuna değmeyen ilk adaya konur (`cisimKonumuSec`).
+ * (`DuvarYazisi`); gök cismi yazı kutusuna ve kilit ekranının saat alanına değmeyen ilk adaya konur
+ * (`cisimKonumuSec`). Mihrap kemeri saat alanında `saatSolmasi` ile solar (dikey geçiş maskesi),
+ * kemerin yıldızı saat alanına değiyorsa çizilmez (`saateDegiyor`).
  *
  * Sahne fiziksel bir resimdir: sağdan sola arayüzde aynalanmaz (`SOLDAN_SAGA`).
  */
 import * as React from 'react';
 import { Image, View } from 'react-native';
 import Svg, { Circle, Defs, G, Line, LinearGradient, Mask, Path, Pattern, Polygon, RadialGradient, Rect, Stop } from 'react-native-svg';
-import { GOK_SAHNELERI, cisimKonumuSec, type GokSahnesi } from '../../../../core/icerik/duvarTasarimi';
+import { GOK_SAHNELERI, cisimKonumuSec, saateDegiyor, type GokSahnesi, type SaatAlani } from '../../../../core/icerik/duvarTasarimi';
 import {
   PERDE_GEOMETRISI,
   SUS_GEOMETRISI,
@@ -16,6 +18,7 @@ import {
   duvarRenkleri,
   fotoYerlesimi,
   gokMu,
+  saatSolmasiDuraklari,
   susCarpani,
   type DuvarRenkleri,
 } from '../../../../core/icerik/duvarCizimi';
@@ -43,12 +46,28 @@ interface Props {
   susGoster?: boolean;
   /** Ayrı tanımlar (aynı ekranda birden çok sahne varsa çakışmasın). */
   kimlik: string;
+  /** Kilit ekranının saat alanı (`etkinSaatAlani`); `null` = saat yok (ana ekran, küçük kareler). */
+  saatAlani?: SaatAlani | null;
 }
 
 const yuzde = (v: number) => Math.min(1, Math.max(0, v));
 
-function GokKatmani({ sahne, g, y, kutu, kimlik }: { sahne: GokSahnesi; g: number; y: number; kutu: YaziKutusu | null; kimlik: string }) {
-  const konum = sahne.cisim ? cisimKonumuSec(sahne.cisim, kutu, y / Math.max(1, g)) : null;
+function GokKatmani({
+  sahne,
+  g,
+  y,
+  kutu,
+  kimlik,
+  saatAlani,
+}: {
+  sahne: GokSahnesi;
+  g: number;
+  y: number;
+  kutu: YaziKutusu | null;
+  kimlik: string;
+  saatAlani: SaatAlani | null;
+}) {
+  const konum = sahne.cisim ? cisimKonumuSec(sahne.cisim, kutu, y / Math.max(1, g), saatAlani) : null;
   const c = sahne.cisim;
   const cx = konum ? konum[0] * g : 0;
   const cy = konum ? konum[1] * y : 0;
@@ -105,6 +124,7 @@ function SusKatmani({
   y,
   kutu,
   kimlik,
+  saatAlani,
 }: {
   ayar: DuvarKagidiAyari;
   renk: DuvarRenkleri;
@@ -112,6 +132,7 @@ function SusKatmani({
   y: number;
   kutu: YaziKutusu | null;
   kimlik: string;
+  saatAlani: SaatAlani | null;
 }) {
   const carpan = susCarpani(ayar.sus.belirginlik);
   const tur = ayar.sus.tur;
@@ -158,20 +179,42 @@ function SusKatmani({
     const my = ust + k.merkezAlti * g;
     return `M${sol} ${y} V${my} A${k.r * g} ${k.r * g} 0 0 1 ${sag} ${my} V${y}`;
   };
+  // Kemer saat alanına girerken solar: maske, `saatSolmasi`'nı kırılma noktalarında örnekleyen dikey geçiştir.
+  const duraklar = saatSolmasiDuraklari(saatAlani);
+  const yildizY = ust - m.yildiz.merkezUstu * g;
+  const yildizR = m.yildiz.disR * g;
+  const yildizVar = y > 0 && !saateDegiyor((yildizY - yildizR) / y, (yildizY + yildizR) / y, saatAlani);
   return (
     <>
-      <Path d={kemer(m.dis)} fill="none" stroke={renk.metin} strokeOpacity={yuzde(m.dis.opaklik * carpan)} strokeWidth={m.dis.kalinlik * g} />
-      <Path d={kemer(m.ic)} fill="none" stroke={renk.metin} strokeOpacity={yuzde(m.ic.opaklik * carpan)} strokeWidth={m.ic.kalinlik * g} />
-      <Polygon
-        points={besKoseliYildiz(g / 2, ust - m.yildiz.merkezUstu * g, m.yildiz.disR * g, m.yildiz.icR * g)}
-        fill={renk.metin}
-        opacity={yuzde(m.yildiz.opaklik * carpan)}
-      />
+      {duraklar ? (
+        <Defs>
+          <LinearGradient id={`${kimlik}-solma`} x1={0} y1={0} x2={0} y2={y} gradientUnits="userSpaceOnUse">
+            {duraklar.map((d) => (
+              <Stop key={d.konum} offset={d.konum} stopColor="#FFFFFF" stopOpacity={d.opaklik} />
+            ))}
+          </LinearGradient>
+          <Mask id={`${kimlik}-saat`} maskUnits="userSpaceOnUse" x={0} y={0} width={g} height={y}>
+            <Rect x={0} y={0} width={g} height={y} fill={`url(#${kimlik}-solma)`} />
+          </Mask>
+        </Defs>
+      ) : null}
+      <G mask={duraklar ? `url(#${kimlik}-saat)` : undefined} testID="duvar-mihrap-kemer">
+        <Path d={kemer(m.dis)} fill="none" stroke={renk.metin} strokeOpacity={yuzde(m.dis.opaklik * carpan)} strokeWidth={m.dis.kalinlik * g} />
+        <Path d={kemer(m.ic)} fill="none" stroke={renk.metin} strokeOpacity={yuzde(m.ic.opaklik * carpan)} strokeWidth={m.ic.kalinlik * g} />
+      </G>
+      {yildizVar ? (
+        <Polygon
+          testID="duvar-mihrap-yildiz"
+          points={besKoseliYildiz(g / 2, yildizY, yildizR, m.yildiz.icR * g)}
+          fill={renk.metin}
+          opacity={yuzde(m.yildiz.opaklik * carpan)}
+        />
+      ) : null}
     </>
   );
 }
 
-export const DuvarSahnesi: React.FC<Props> = React.memo(({ genislik: g, yukseklik: y, ayar, kutu, foto, susGoster = true, kimlik }) => {
+export const DuvarSahnesi: React.FC<Props> = React.memo(({ genislik: g, yukseklik: y, ayar, kutu, foto, susGoster = true, kimlik, saatAlani = null }) => {
   // Fotoğraf dosyası yoksa (silinmiş, başka cihazdan) native gibi gece zeminine düşülür.
   const etkin: DuvarKagidiAyari = ayar.zemin === 'foto' && !foto ? { ...ayar, zemin: 'gece' } : ayar;
   const renk = duvarRenkleri(etkin);
@@ -190,8 +233,8 @@ export const DuvarSahnesi: React.FC<Props> = React.memo(({ genislik: g, yuksekli
         </>
       ) : null}
       <Svg width={g} height={y} style={{ position: 'absolute', left: 0, top: 0 }}>
-        {gokMu(etkin.zemin) ? <GokKatmani sahne={GOK_SAHNELERI[etkin.zemin]} g={g} y={y} kutu={kutu} kimlik={kimlik} /> : null}
-        {susGoster ? <SusKatmani ayar={etkin} renk={renk} g={g} y={y} kutu={kutu} kimlik={kimlik} /> : null}
+        {gokMu(etkin.zemin) ? <GokKatmani sahne={GOK_SAHNELERI[etkin.zemin]} g={g} y={y} kutu={kutu} kimlik={kimlik} saatAlani={saatAlani} /> : null}
+        {susGoster ? <SusKatmani ayar={etkin} renk={renk} g={g} y={y} kutu={kutu} kimlik={kimlik} saatAlani={saatAlani} /> : null}
         {renk.perde && kutu ? (
           <Rect
             x={kutu[0] * g - pay}

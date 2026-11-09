@@ -3,7 +3,8 @@
  * fotoğraf kırpması, yazı yerleşimi ve hazır görünümler.
  *
  * Kurallar sözleşmeden (`duvarTasarimi.ts`) gelir ve burada YENİDEN YAZILMAZ: yerleşim
- * `yaziYerlesimi` + `IZINLI_BANTLAR` + `VARSAYILAN_MERKEZ`, okunurluk `okunurlukKarari`.
+ * `yaziYerlesimi` + `izinliBantlar` (kilit ekranında saat alanına göre) + `VARSAYILAN_MERKEZ`,
+ * okunurluk `okunurlukKarari`.
  * Bu dosya uygulamadaki düzenleyicinin (ve önizlemelerin) çizim sayılarını tek yerde tutar
  * (sahip onaylı taslak 2'nin görünümü). Android çizicisi (`cekirdek/DuvarTasarimi.kt` >
  * `DuvarCizim`) ve iPhone Kısayollar görseli (`WidgetKarari.swift` > `DuvarCizim`) aynı sayıları
@@ -16,15 +17,20 @@
 import { kontrastOrani } from '../utils/kontrastOrani';
 import {
   GOK_SAHNELERI,
-  IZINLI_BANTLAR,
+  SOLMA_DIS,
+  SOLMA_IC,
   VARSAYILAN_MERKEZ,
+  VARSAYILAN_SAAT_ALANI,
   VARSAYILAN_SUS,
+  izinliBantlar,
   okunurlukKarari,
+  saatSolmasi,
   yaziYerlesimi,
   type DuvarEkrani,
   type DuvarFotoAyari,
   type DuvarGogu,
   type DuvarPlatformu,
+  type SaatAlani,
   type YaziHizasi,
 } from './duvarTasarimi';
 import type { DuvarKagidiAyari, DuvarYeri } from './gununAyetiYuku';
@@ -116,6 +122,23 @@ export const yaziYanPayiKesri = (susTuru: DuvarKagidiAyari['sus']['tur']): numbe
 
 /** Süs opaklık çarpanı: varsayılan belirginlikte 1, 0'da görünmez, 1'de iki kat. */
 export const susCarpani = (belirginlik: number): number => Math.max(0, belirginlik) / VARSAYILAN_SUS.belirginlik;
+
+/**
+ * Mihrap kemerinin saat alanındaki solmasını (`saatSolmasi`) birebir veren dikey geçiş durakları
+ * (konum = ekran kesri, opaklık 0–1). `saatSolmasi` parçalı doğrusaldır; kırılma noktaları alanın
+ * kenarlarından `SOLMA_DIS` dışarıda, `SOLMA_IC` içeride ve alanın ortasıdır (alan 2 × `SOLMA_IC`'ten
+ * darsa iki iç nokta kesişir, dip ortadadır). Bu noktalarda örneklenen doğrusal geçiş fonksiyonun
+ * kendisidir. Saat alanı yoksa `null` (solma yok).
+ */
+export function saatSolmasiDuraklari(saatAlani: SaatAlani | null): { konum: number; opaklik: number }[] | null {
+  if (!saatAlani) return null;
+  const [u, a] = saatAlani;
+  const noktalar = [0, 1, u - SOLMA_DIS, u + SOLMA_IC, (u + a) / 2, a - SOLMA_IC, a + SOLMA_DIS]
+    .map((v) => Math.min(1, Math.max(0, v)))
+    .sort((p, q) => p - q)
+    .filter((v, i, d) => i === 0 || v - d[i - 1] > 1e-9);
+  return noktalar.map((konum) => ({ konum, opaklik: saatSolmasi(konum, saatAlani) }));
+}
 
 /** Beş köşeli yıldızın köşe noktaları (merkez cx, cy; dış/iç yarıçap). */
 export function besKoseliYildiz(cx: number, cy: number, dis: number, ic: number): string {
@@ -260,6 +283,14 @@ export function fotoKaydir(
 /** Ayarın ekranı: `ikisi`'nde düzenlenen ekran ayrıca seçilir. */
 export const yerEkranlari = (yer: DuvarYeri): DuvarEkrani[] => (yer === 'ikisi' ? ['kilit', 'ana'] : [yer]);
 
+/**
+ * Çizimde kullanılan saat alanı: kilit ekranında ölçülen/ayarlanan alan, yoksa platform varsayılanı;
+ * ana ekranda `null` (saat yok). Gök cismi, mihrap solması ve yıldızı bununla karar verir. Bantlar
+ * (`izinliBantlar`) ise HAM `ayar.saatAlani`'yı alır (varsayılanı kendisi çözer).
+ */
+export const etkinSaatAlani = (ayar: Pick<DuvarKagidiAyari, 'saatAlani'>, ekran: DuvarEkrani, platform: DuvarPlatformu): SaatAlani | null =>
+  ekran === 'kilit' ? (ayar.saatAlani ?? VARSAYILAN_SAAT_ALANI[platform]) : null;
+
 export const istenenMerkez = (ayar: Pick<DuvarKagidiAyari, 'yazi'>, ekran: DuvarEkrani, platform: DuvarPlatformu): number =>
   (ekran === 'kilit' ? ayar.yazi.kilitY : ayar.yazi.anaY) ?? VARSAYILAN_MERKEZ[platform][ekran];
 
@@ -267,14 +298,16 @@ export const istenenMerkez = (ayar: Pick<DuvarKagidiAyari, 'yazi'>, ekran: Duvar
  * Bloğun ekrandaki yeri. `yaziYerlesimi` bloğu sığdırabiliyorsa onun sonucu (küçültme 1);
  * hiçbir banda sığmıyorsa en geniş bandın üstüne oturur ve blok o banda sığacak kadar
  * küçültülür (önizleme; native çizici yazıyı küçültüp gerekirse Arapçayı düşürür).
+ * `saatAlani` HAM ayardır (`null` = platform varsayılanı; ana ekranda yok sayılır).
  */
 export function duvarYazisiYeri(
   merkez: number,
   blokYuksekligi: number,
   platform: DuvarPlatformu,
-  ekran: DuvarEkrani
+  ekran: DuvarEkrani,
+  saatAlani: SaatAlani | null
 ): { ust: number; merkez: number; kucultme: number } {
-  const bantlar = IZINLI_BANTLAR[platform][ekran];
+  const bantlar = izinliBantlar(platform, ekran, saatAlani);
   const sonuc = yaziYerlesimi(merkez, blokYuksekligi, bantlar);
   if (sonuc) return { ust: sonuc.ust, merkez: sonuc.ust + blokYuksekligi / 2, kucultme: 1 };
   const enGenis = bantlar.reduce((a, b) => (b[1] - b[0] > a[1] - a[0] ? b : a));
@@ -309,11 +342,12 @@ export function surukleMerkezi(
   parmakMerkezi: number,
   blokYuksekligi: number,
   platform: DuvarPlatformu,
-  ekran: DuvarEkrani
+  ekran: DuvarEkrani,
+  saatAlani: SaatAlani | null
 ): { merkez: number; oturdu: boolean } {
   const varsayilan = VARSAYILAN_MERKEZ[platform][ekran];
   const oturdu = Math.abs(parmakMerkezi - varsayilan) < MERKEZ_MIKNATISI;
-  const yer = duvarYazisiYeri(oturdu ? varsayilan : parmakMerkezi, blokYuksekligi, platform, ekran);
+  const yer = duvarYazisiYeri(oturdu ? varsayilan : parmakMerkezi, blokYuksekligi, platform, ekran, saatAlani);
   return { merkez: Math.round(yer.merkez * 10000) / 10000, oturdu: oturdu && Math.abs(yer.merkez - varsayilan) < 1e-6 };
 }
 
@@ -327,9 +361,9 @@ export function hizaSec(kayma: number, sagdanSola: boolean): YaziHizasi {
   return sola !== sagdanSola ? 'bas' : 'son';
 }
 
-/** Yazının izinli bantlar DIŞINDA kalan dikey bölgeler (saat, alt simgeler, durum çubuğu). */
-export function yasakBolgeler(platform: DuvarPlatformu, ekran: DuvarEkrani): [number, number][] {
-  const sirali = [...IZINLI_BANTLAR[platform][ekran]].sort((a, b) => a[0] - b[0]);
+/** Yazının izinli bantlar DIŞINDA kalan dikey bölgeler (saat, alt simgeler, durum çubuğu); `saatAlani` HAM ayar. */
+export function yasakBolgeler(platform: DuvarPlatformu, ekran: DuvarEkrani, saatAlani: SaatAlani | null): [number, number][] {
+  const sirali = [...izinliBantlar(platform, ekran, saatAlani)].sort((a, b) => a[0] - b[0]);
   const sonuc: [number, number][] = [];
   let onceki = 0;
   for (const b of sirali) {

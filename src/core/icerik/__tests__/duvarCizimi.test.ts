@@ -6,18 +6,30 @@
 import { DILLER } from '../../dil/diller';
 import { sozluk } from '../../dil/aktifDil';
 import { kontrastOrani } from '../../utils/kontrastOrani';
-import { IZINLI_BANTLAR, VARSAYILAN_MERKEZ, fotoAyariNormalize, type DuvarEkrani, type DuvarPlatformu } from '../duvarTasarimi';
+import {
+  IZINLI_BANTLAR,
+  VARSAYILAN_MERKEZ,
+  VARSAYILAN_SAAT_ALANI,
+  fotoAyariNormalize,
+  izinliBantlar,
+  saatSolmasi,
+  type DuvarEkrani,
+  type DuvarPlatformu,
+  type SaatAlani,
+} from '../duvarTasarimi';
 import { VARSAYILAN_DUVAR_AYARI } from '../gununAyetiYuku';
 import {
   DUVAR_HAZIRLARI,
   duvarRenkleri,
   duvarYazisiYeri,
+  etkinSaatAlani,
   fotoDosyaAdi,
   fotoKaydir,
   fotoYerlesimi,
   hazirUygula,
   hizaSec,
   okunurPaletZemini,
+  saatSolmasiDuraklari,
   surukleMerkezi,
   yasakBolgeler,
 } from '../duvarCizimi';
@@ -36,7 +48,7 @@ describe('duvarYazisiYeri / surukleMerkezi', () => {
   it.each(EKRANLAR)('%s %s: hangi merkez istenirse istensin blok izinli bandın içinde kalır', (p, e) => {
     for (const blok of [0.05, 0.12, 0.18]) {
       for (let istenen = 0; istenen <= 1; istenen += 0.01) {
-        const yer = duvarYazisiYeri(istenen, blok, p, e);
+        const yer = duvarYazisiYeri(istenen, blok, p, e, null);
         expect(yer.kucultme).toBe(1);
         expect(bantIcinde(yer.ust, yer.ust + blok, p, e)).toBe(true);
       }
@@ -44,14 +56,14 @@ describe('duvarYazisiYeri / surukleMerkezi', () => {
   });
 
   it('Android kilit ekranında saat alanına (%26–%64) sürüklenen yazı en yakın banda kıstırılır', () => {
-    const ust = surukleMerkezi(0.4, 0.1, 'android', 'kilit').merkez;
+    const ust = surukleMerkezi(0.4, 0.1, 'android', 'kilit', null).merkez;
     expect(ust).toBeCloseTo(0.21, 5); // üst bant [0.08, 0.26]: blok 0.16–0.26
-    const alt = surukleMerkezi(0.5, 0.1, 'android', 'kilit').merkez;
+    const alt = surukleMerkezi(0.5, 0.1, 'android', 'kilit', null).merkez;
     expect(alt).toBeCloseTo(0.69, 5); // alt bant [0.64, 0.84]: blok 0.64–0.74
   });
 
   it('hiçbir banda sığmayan blok en geniş banda oturur ve küçülür', () => {
-    const yer = duvarYazisiYeri(0.5, 0.4, 'android', 'kilit');
+    const yer = duvarYazisiYeri(0.5, 0.4, 'android', 'kilit', null);
     expect(yer.ust).toBeCloseTo(0.64, 5);
     expect(yer.kucultme).toBeCloseTo(0.5, 5);
     expect(bantIcinde(yer.ust, yer.ust + 0.4 * yer.kucultme, 'android', 'kilit')).toBe(true);
@@ -59,20 +71,79 @@ describe('duvarYazisiYeri / surukleMerkezi', () => {
 
   it('varsayılan merkeze yakın sürükleme oraya oturur', () => {
     const v = VARSAYILAN_MERKEZ.android.kilit;
-    expect(surukleMerkezi(v + 0.01, 0.1, 'android', 'kilit')).toEqual({ merkez: v, oturdu: true });
-    expect(surukleMerkezi(v + 0.05, 0.1, 'android', 'kilit').oturdu).toBe(false);
+    expect(surukleMerkezi(v + 0.01, 0.1, 'android', 'kilit', null)).toEqual({ merkez: v, oturdu: true });
+    expect(surukleMerkezi(v + 0.05, 0.1, 'android', 'kilit', null).oturdu).toBe(false);
   });
 
   it('yasak bölgeler bantların tümleyenidir', () => {
-    expect(yasakBolgeler('android', 'kilit')).toEqual([
+    expect(yasakBolgeler('android', 'kilit', null)).toEqual([
       [0, 0.08],
       [0.26, 0.64],
       [0.84, 1],
     ]);
-    expect(yasakBolgeler('ios', 'kilit')).toEqual([
+    expect(yasakBolgeler('ios', 'kilit', null)).toEqual([
       [0, 0.34],
       [0.85, 1],
     ]);
+  });
+});
+
+describe('kilit ekranı saat alanı (ölçülen/elle ayarlanan)', () => {
+  const ALAN: SaatAlani = [0.3, 0.5];
+
+  it('yazı ölçülen saat alanına girmez; ana ekran saat alanını yok sayar', () => {
+    for (let istenen = 0; istenen <= 1; istenen += 0.01) {
+      const yer = duvarYazisiYeri(istenen, 0.1, 'android', 'kilit', ALAN);
+      expect(yer.ust + 0.1 <= ALAN[0] + 1e-9 || yer.ust >= ALAN[1] - 1e-9).toBe(true);
+      expect(izinliBantlar('android', 'kilit', ALAN).some(([a, b]) => yer.ust >= a - 1e-9 && yer.ust + 0.1 <= b + 1e-9)).toBe(true);
+    }
+    // Varsayılan alanın (%26–%64) içindeki %55, ölçülen alan %50'de bittiği için artık serbest.
+    expect(surukleMerkezi(0.6, 0.1, 'android', 'kilit', ALAN).merkez).toBeCloseTo(0.6, 5);
+    expect(surukleMerkezi(0.42, 0.1, 'android', 'kilit', ALAN).merkez).toBeCloseTo(0.55, 5);
+    expect(surukleMerkezi(0.38, 0.1, 'android', 'kilit', ALAN).merkez).toBeCloseTo(0.25, 5);
+    expect(duvarYazisiYeri(0.4, 0.1, 'android', 'ana', ALAN)).toEqual(duvarYazisiYeri(0.4, 0.1, 'android', 'ana', null));
+  });
+
+  it('yasak bölgeler saat alanıyla kayar', () => {
+    expect(yasakBolgeler('android', 'kilit', ALAN)).toEqual([
+      [0, 0.08],
+      [0.3, 0.5],
+      [0.84, 1],
+    ]);
+    expect(yasakBolgeler('ios', 'kilit', [0.1, 0.42])).toEqual([
+      [0, 0.42],
+      [0.85, 1],
+    ]);
+  });
+
+  it('etkin saat alanı: kilitte ayar ya da platform varsayılanı, anada yok', () => {
+    expect(etkinSaatAlani({ saatAlani: null }, 'kilit', 'android')).toEqual(VARSAYILAN_SAAT_ALANI.android);
+    expect(etkinSaatAlani({ saatAlani: null }, 'kilit', 'ios')).toEqual(VARSAYILAN_SAAT_ALANI.ios);
+    expect(etkinSaatAlani({ saatAlani: ALAN }, 'kilit', 'ios')).toBe(ALAN);
+    expect(etkinSaatAlani({ saatAlani: ALAN }, 'ana', 'android')).toBeNull();
+  });
+
+  it.each<[string, SaatAlani]>([
+    ['geniş alan', [0.26, 0.64]],
+    ['dar alan (iç noktalar kesişir)', [0.4, 0.44]],
+    ['üste yaslı alan', [0, 0.3]],
+    ['alta yaslı alan', [0.55, 0.95]],
+  ])('mihrap solma durakları saatSolmasi ile birebir (%s)', (_ad, alan) => {
+    const d = saatSolmasiDuraklari(alan);
+    if (!d) throw new Error('durak yok');
+    expect(d[0].konum).toBe(0);
+    expect(d[d.length - 1].konum).toBe(1);
+    // Duraklar arası doğrusal geçiş, fonksiyonun kendisidir.
+    for (let y = 0; y <= 1; y += 0.0025) {
+      const i = Math.max(1, d.findIndex((n) => n.konum >= y));
+      const [a, b] = [d[i - 1], d[i]];
+      const t = b.konum === a.konum ? 0 : (y - a.konum) / (b.konum - a.konum);
+      expect(a.opaklik + (b.opaklik - a.opaklik) * t).toBeCloseTo(saatSolmasi(y, alan), 9);
+    }
+  });
+
+  it('saat alanı yoksa solma durağı yok', () => {
+    expect(saatSolmasiDuraklari(null)).toBeNull();
   });
 });
 

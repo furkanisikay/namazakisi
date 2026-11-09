@@ -35,8 +35,16 @@ interface WidgetSabitleyici {
 const widgetKoprusu = (): WidgetSabitleyici | null =>
   Platform.OS === 'android' ? ((NativeModules.WidgetVeri as WidgetSabitleyici | undefined) ?? null) : null;
 
+/**
+ * Kilit ekranı görüntüsünün son uygulanan kilit görseliyle karşılaştırması (native): satır başına
+ * farklı piksel oranı ya da neden ölçülemediği. Android `DuvarKagidi` ve iOS siri modülü aynı şekli
+ * döner; eski ikilide yöntem yoktur.
+ */
+export type KilitEkraniProfili = { profil: number[] } | { hata: 'referans-yok' | 'okunamadi' | 'oran' };
+type KilitProfiliKoprusu = { kilitEkraniProfili?: (uri: string) => Promise<KilitEkraniProfili> };
+
 /** Android `DuvarKagidi` native modülü (iOS'ta yok). */
-interface DuvarKagidiModulu {
+interface DuvarKagidiModulu extends KilitProfiliKoprusu {
   durum(): Promise<{ izinli: boolean; sonHata?: string | null }>;
   simdiUygula(): Promise<boolean>;
 }
@@ -121,6 +129,33 @@ export class GununAyetiServisi {
     } catch (e) {
       Logger.warn('GununAyetiServisi', 'Duvar kâğıdı uygulanamadı', e);
       return false;
+    }
+  }
+
+  /**
+   * Kullanıcının seçtiği kilit ekranı görüntüsünün satır profili (karar `saatAlaniBul`'da). Görüntü
+   * yalnız okunur, kopyalanmaz. Köprü yoksa (eski ikili), reddederse ya da bozuk dönerse
+   * `{ hata: 'okunamadi' }`; ASLA reddetmez.
+   */
+  public async kilitEkraniProfili(uri: string): Promise<KilitEkraniProfili> {
+    let kopru: KilitProfiliKoprusu | null = null;
+    if (Platform.OS === 'android') kopru = duvarModulu();
+    else if (Platform.OS === 'ios') {
+      try {
+        kopru = require('../../../modules/expo-siri-kisayollari/src') as KilitProfiliKoprusu;
+      } catch {
+        kopru = null;
+      }
+    }
+    if (typeof kopru?.kilitEkraniProfili !== 'function') return { hata: 'okunamadi' };
+    try {
+      const ham = await kopru.kilitEkraniProfili(uri);
+      if (ham && 'profil' in ham && Array.isArray(ham.profil)) return { profil: ham.profil };
+      if (ham && 'hata' in ham && (ham.hata === 'referans-yok' || ham.hata === 'oran')) return { hata: ham.hata };
+      return { hata: 'okunamadi' };
+    } catch (e) {
+      Logger.warn('GununAyetiServisi', 'Kilit ekranı görüntüsü ölçülemedi', e);
+      return { hata: 'okunamadi' };
     }
   }
 

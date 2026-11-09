@@ -1,12 +1,14 @@
 /**
  * Düzenleyicide tuvalin üstündeki yol gösterici katman (görsele GİRMEZ): telefonun kilit
  * saati/tarihi ve alt simgelerin silik hayaleti, yazının giremeyeceği bölgeler (kesik çizgi,
- * `IZINLI_BANTLAR` dışı) ve sürüklemede ortalama kılavuzları. Ekran okuyucudan gizlidir.
+ * izinli bantların dışı; kilit ekranında saat alanı ayrı çerçevedir) ve sürüklemede ortalama
+ * kılavuzları. Saat alanı elle ayarlanırken iki kenarında tutamak çizilir. Ekran okuyucudan
+ * gizlidir (kenarların erişilebilir ayarı düzenleyicinin tepsisindedir).
  */
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import Svg, { Circle, Line, Rect } from 'react-native-svg';
-import type { DuvarEkrani, DuvarPlatformu } from '../../../../core/icerik/duvarTasarimi';
+import type { DuvarEkrani, DuvarPlatformu, SaatAlani } from '../../../../core/icerik/duvarTasarimi';
 import { yasakBolgeler } from '../../../../core/icerik/duvarCizimi';
 
 interface Props {
@@ -14,6 +16,12 @@ interface Props {
   yukseklik: number;
   platform: DuvarPlatformu;
   ekran: DuvarEkrani;
+  /** Ayardaki HAM saat alanı (`null` = platform varsayılanı); bantlar bununla. */
+  ayarSaatAlani: SaatAlani | null;
+  /** Çizilen saat alanı (`etkinSaatAlani`; ana ekranda `null`). */
+  saatAlani: SaatAlani | null;
+  /** Saat alanının kenarları elle ayarlanıyor (tutamaklar görünür). */
+  saatKipi: boolean;
   /** Hayaletin rengi (zeminin yazı rengi). */
   renk: string;
   saat: string;
@@ -28,11 +36,37 @@ interface Props {
 /** Durum çubuğu gibi ince bölgeler kesik çizgiyle gösterilmez. */
 const EN_AZ_BOLGE = 0.09;
 
-export const DuvarHayaleti: React.FC<Props> = ({ genislik: g, yukseklik: y, platform, ekran, renk, saat, tarih, saatEtiketi, dikeyKilavuz, yatayKilavuz }) => {
-  const bolgeler = yasakBolgeler(platform, ekran).filter(([a, b]) => b - a >= EN_AZ_BOLGE);
-  // Kilit ekranında saat en büyük yasak bölgededir; alt bölge simgelerindir.
-  const saatBolgesi = ekran === 'kilit' ? bolgeler.filter((b) => b[1] < 0.99).sort((a, b) => b[1] - b[0] - (a[1] - a[0]))[0] ?? null : null;
+/** [a, b] aralığından saat alanını çıkarır (kalan parçalar). */
+const saatDisinda = ([a, b]: [number, number], alan: SaatAlani | null): [number, number][] => {
+  if (!alan || alan[1] <= a || alan[0] >= b) return [[a, b]];
+  const kalan: [number, number][] = [];
+  if (alan[0] > a) kalan.push([a, alan[0]]);
+  if (alan[1] < b) kalan.push([alan[1], b]);
+  return kalan;
+};
+
+export const DuvarHayaleti: React.FC<Props> = ({
+  genislik: g,
+  yukseklik: y,
+  platform,
+  ekran,
+  ayarSaatAlani,
+  saatAlani,
+  saatKipi,
+  renk,
+  saat,
+  tarih,
+  saatEtiketi,
+  dikeyKilavuz,
+  yatayKilavuz,
+}) => {
+  // Kilit ekranında saat alanı kendi çerçevesidir (ölçülen/ayarlanan); kalan yasak bölgeler ayrı.
+  const saatBolgesi: SaatAlani | null = ekran === 'kilit' && saatAlani ? [Math.max(0, saatAlani[0]), Math.min(1, saatAlani[1])] : null;
+  const bolgeler = yasakBolgeler(platform, ekran, ayarSaatAlani)
+    .flatMap((b) => saatDisinda(b, saatBolgesi))
+    .filter(([a, b]) => b - a >= EN_AZ_BOLGE);
   const altBolge = bolgeler.find((b) => b[1] >= 0.99) ?? null;
+  const cerceveler: (readonly [number, number])[] = saatBolgesi ? [saatBolgesi, ...bolgeler] : bolgeler;
   const pay = g * 0.07;
   const simgeSayisi = ekran === 'kilit' ? 2 : 4;
   const simgeR = g * 0.055;
@@ -41,21 +75,36 @@ export const DuvarHayaleti: React.FC<Props> = ({ genislik: g, yukseklik: y, plat
   return (
     <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{ position: 'absolute', left: 0, top: 0, width: g, height: y }}>
       <Svg width={g} height={y} style={{ position: 'absolute', left: 0, top: 0 }}>
-        {bolgeler.map(([a, b]) => (
+        {cerceveler.map(([a, b], i) => (
           <Rect
             key={`${a}-${b}`}
             x={pay * 0.6}
             y={a * y + 4}
             width={g - pay * 1.2}
-            height={(b - a) * y - 8}
+            height={Math.max(0, (b - a) * y - 8)}
             rx={14}
             fill="none"
             stroke={renk}
-            strokeOpacity={0.55}
-            strokeWidth={1.2}
+            strokeOpacity={saatKipi && i === 0 && saatBolgesi ? 0.95 : 0.55}
+            strokeWidth={saatKipi && i === 0 && saatBolgesi ? 2 : 1.2}
             strokeDasharray="5 4"
           />
         ))}
+        {saatKipi && saatBolgesi
+          ? saatBolgesi.map((kenar, i) => (
+              <Rect
+                key={`tutamak-${i}`}
+                testID={`duvar-saat-tutamak-${i === 0 ? 'ust' : 'alt'}`}
+                x={g / 2 - g * 0.09}
+                y={(i === 0 ? kenar * y + 4 : kenar * y - 4) - 4}
+                width={g * 0.18}
+                height={8}
+                rx={4}
+                fill={renk}
+                opacity={0.95}
+              />
+            ))
+          : null}
         {altBolge
           ? Array.from({ length: simgeSayisi }, (_, i) => (
               <Circle
