@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: '직접 선택한 소리',
     dokunarak: '탭하여 변경',
     seciliDinle: '선택한 알림 소리 듣기',
+    paket: {
+      zil: '부드러운 종소리',
+      ikiton: '두 음',
+      damla: '물방울',
+      sabah: '아침',
+    },
+    silErisim: '{ad} 소리 삭제',
+    ornekDinleErisim: '듣기: {ad}',
+    uzunlukNotu: '알림 소리는 최대 30초 동안 재생됩니다. 더 긴 파일은 처음 30초가 사용됩니다.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

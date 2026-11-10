@@ -330,6 +330,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'നിങ്ങൾ തിരഞ്ഞെടുത്ത ശബ്ദം',
     dokunarak: 'മാറ്റാൻ ടാപ്പ് ചെയ്യുക',
     seciliDinle: 'തിരഞ്ഞെടുത്ത അറിയിപ്പ് ശബ്ദം കേൾക്കുക',
+    paket: {
+      zil: 'മൃദുവായ മണി',
+      ikiton: 'രണ്ട് സ്വരങ്ങൾ',
+      damla: 'തുള്ളികൾ',
+      sabah: 'പ്രഭാതം',
+    },
+    silErisim: '{ad} എന്ന ശബ്ദം ഇല്ലാതാക്കുക',
+    ornekDinleErisim: 'കേൾക്കുക: {ad}',
+    uzunlukNotu: 'അറിയിപ്പ് ശബ്ദം പരമാവധി 30 സെക്കൻഡ് മുഴങ്ങും; നീളമുള്ള ഫയലിന്റെ ആദ്യ 30 സെക്കൻഡ് ഉപയോഗിക്കും.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

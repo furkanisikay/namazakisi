@@ -61,7 +61,8 @@ const ALARMKIT_KOPYALARI = ['NamazAlarmVerisi.swift'];
  * Uzantinin paketledigi yazi tipleri (ad → kaynak dosya). Resources fazina girer ve Info.plist
  * `UIAppFonts` ile kaydedilir; ana uygulamaya EKLENMEZ.
  *   - Amiri Quran (OFL 1.1; lisans `targets/widget/fontlar/OFL.txt`): gunun ayeti widget'inin
- *     Arapcasi. "Gunun ayeti gorseli" intent'i Arapca cizmez (iOS duvar kagidinda Arapca yok).
+ *     Arapcasi. "Gunun ayeti gorseli" intent'i ANA uygulamada calisir; onun fontlarini
+ *     `withSiriKisayollari` ekler (`assets/fonts/`).
  *   - Noto Sans NKo (OFL 1.1; lisans `assets/fonts/OFL.txt`): iOS'ta sistem N'Ko yazi tipi YOK ve
  *     kaydedilen yazi tipi sistemin yedek listesine girmez → N'Ko arayuzde metin `YaziTipi`
  *     kapisindan bu yazi tipiyle cizilir. Tek kaynak ana uygulamanin dosyasi (kopya tutulmaz).

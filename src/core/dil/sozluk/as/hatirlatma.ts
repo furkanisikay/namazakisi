@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'আপুনি বাছনি কৰা ধ্বনি',
     dokunarak: 'সলনি কৰিবলৈ টিপক',
     seciliDinle: 'বাছনি কৰা জাননীৰ ধ্বনি শুনক',
+    paket: {
+      zil: 'কোমল ঘণ্টি',
+      ikiton: 'দুটা সুৰ',
+      damla: 'টোপাল',
+      sabah: 'পুৱা',
+    },
+    silErisim: '{ad} ধ্বনিটো মচক',
+    ornekDinleErisim: 'শুনক: {ad}',
+    uzunlukNotu: 'জাননীৰ ধ্বনি বেছি হলে 30 ছেকেণ্ড বাজে; দীঘল ফাইলৰ প্ৰথম 30 ছেকেণ্ডহে ব্যৱহাৰ কৰা হয়।',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

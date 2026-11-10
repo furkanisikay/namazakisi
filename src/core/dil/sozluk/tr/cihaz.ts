@@ -80,6 +80,11 @@ export const cihaz = {
     digerCihazlar: 'Diğer cihazlar',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} telefon',
+    tablet: '{marka} tablet',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Ayar kaydedilemedi. Lütfen yeniden deneyin.',
     kaldirildi: '{ad} kaldırıldı.',
@@ -95,6 +100,7 @@ export const cihaz = {
       "Android TV'ye Namaz Akışı'nı kurun, ekrandaki kare kodu bu telefonla okutun. Vakitler ve Ramazan sayacı evin büyük ekranında görünür.",
     tabletVeTelefonlar: 'Tablet ve telefonlar',
     esYok: 'Tabletinizi ya da ikinci telefonunuzu ekleyin: birinde işaretlediğiniz namaz öbürüne geçer.',
+    kayipEslesmeler: 'Önceki eşleştirmeler okunamadı ({adlar}). Telefonun güvenli deposu sıfırlanmış olabilir; cihazları yeniden ekleyin.',
     cihaziKaldirinErisim: '{ad} cihazını kaldırın',
     tabletEkleyin: 'Tablet ya da telefon ekleyin',
     saat: 'Saat',

@@ -58,6 +58,8 @@ export function acikOzetKanallari(kanallar: SeviyeAyari['kanallar'] | undefined)
 export interface OzetBaglami {
   kardesler?: SeviyeAyari[];
   pencereUzunluguDk?: number;
+  /** Yüzeyin varsayılan sesinin adı (iPhone ek yüzeyleri telefonun sesini çalar); yoksa "Uygulama sesi". */
+  varsayilanSesAdi?: string;
 }
 
 export function adimOzetiOlustur(
@@ -68,7 +70,9 @@ export function adimOzetiOlustur(
   const kapali = adimKapaliMi(seviye.kanallar);
   const kanallar = kapali ? [] : acikOzetKanallari(seviye.kanallar);
   const ozet: AdimOzeti = { kapali, zaman: esikIfadesi(seviye.esikDk, yon), kanallar, kademe: seviye.kademe };
-  if (kanallar.includes('bildirim')) ozet.sesAdi = sesGorunenAdi(seviye.bildirimSesi, seviye.sesAdi);
+  if (kanallar.includes('bildirim')) {
+    ozet.sesAdi = sesGorunenAdi(seviye.bildirimSesi, seviye.sesAdi, baglam.varsayilanSesAdi);
+  }
   // Rozet yalnız GERÇEK tekrarda: aralık segmentten küçük değilse ikinci tetik hiç doğmaz
   // (hazır düzeylerin 'birkez' türevi herDk = esikDk böyledir).
   const tekrar = kapali

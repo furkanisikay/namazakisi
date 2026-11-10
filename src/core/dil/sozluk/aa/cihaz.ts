@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Aka aalat',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} telefoon',
+    tablet: '{marka} tablet',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Massossiyya dacrisime wee. Kaadu mokkora.',
     kaldirildi: '{ad} kalime.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Sinni Android TVl Namaz Akışı ossaay foocal tan QR kood ama telefoonat ikriya. Salat wakti kee Ramadaan loowiyya buxal kaxxa foocal ubbulta.',
     tabletVeTelefonlar: 'Tablet kee telefoon',
     esYok: 'Sinni tablet hinnay lammay hayto telefoon ossa: inkil calaamisseen salat akkel gexa.',
+    kayipEslesmeler: 'Kaxxa abinaanih tan fanteyna ma yakriyimta ({adlar}). Ta telefoonih dacrisame kuusaa qusbah qimbisime takkek; qalabtaa qusbah oson.',
     cihaziKaldirinErisim: '{ad} kala',
     tabletEkleyin: 'Tablet hinnay telefoon ossa',
     saat: 'Gaba saaqat',

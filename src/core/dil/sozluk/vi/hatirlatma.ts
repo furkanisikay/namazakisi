@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Âm thanh bạn đã chọn',
     dokunarak: 'Chạm để đổi',
     seciliDinle: 'Nghe âm thanh thông báo đã chọn',
+    paket: {
+      zil: 'Chuông êm',
+      ikiton: 'Hai tông',
+      damla: 'Giọt nước',
+      sabah: 'Buổi sáng',
+    },
+    silErisim: 'Xóa âm thanh {ad}',
+    ornekDinleErisim: 'Nghe: {ad}',
+    uzunlukNotu: 'Âm thanh thông báo phát tối đa 30 giây; với tệp dài hơn, 30 giây đầu tiên được dùng.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

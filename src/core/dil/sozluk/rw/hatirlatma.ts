@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Ijwi mwahisemo',
     dokunarak: 'Mukande muhindure',
     seciliDinle: 'Kumva ijwi ry’imenyesha ryatoranyijwe',
+    paket: {
+      zil: 'Inzogera ituje',
+      ikiton: 'Amajwi abiri',
+      damla: 'Ibitonyanga',
+      sabah: 'Mu gitondo',
+    },
+    silErisim: 'Gusiba ijwi {ad}',
+    ornekDinleErisim: 'Kumva: {ad}',
+    uzunlukNotu: 'Ijwi ry’imenyesha rivuga amasegonda 30 gusa; ku idosiye ndende, hakoreshwa amasegonda 30 ya mbere.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

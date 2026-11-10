@@ -77,6 +77,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Fitaovana hafa',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Finday {marka}',
+    tablet: 'Takelaka {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Tsy voatahiry ny fikirana. Andramo indray.',
     kaldirildi: 'Nesorina ny {ad}.',
@@ -92,6 +97,7 @@ export const cihaz: Sozluk['cihaz'] = {
       "Apetraho ao amin'ny Android TV-nao ny Namaz Akışı ary vakio amin'ity finday ity ny kaody QR eo amin'ny efijery. Miseho eo amin'ny efijery lehibe ao an-trano ny fotoanan'ny soalat sy ny fanisana mihemotra Ramadany.",
     tabletVeTelefonlar: 'Takelaka sy finday',
     esYok: "Ampio ny takelakao na ny finday faharoa: ny soalat marihinao amin'ny iray dia mifindra any amin'ny iray hafa.",
+    kayipEslesmeler: 'Tsy voavaky ny fampifandraisana teo aloha ({adlar}). Mety ho naverina tamin\'ny laoniny ny fitahirizana azo antoka amin\'ity finday ity; ampidiro indray ireo fitaovana.',
     cihaziKaldirinErisim: 'Esory ny {ad}',
     tabletEkleyin: 'Hanampy takelaka na finday',
     saat: 'Famantaranandro',

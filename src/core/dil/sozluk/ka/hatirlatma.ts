@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'თქვენ მიერ არჩეული ხმა',
     dokunarak: 'შეეხეთ შესაცვლელად',
     seciliDinle: 'არჩეული შეტყობინების ხმის მოსმენა',
+    paket: {
+      zil: 'რბილი ზარი',
+      ikiton: 'ორი ტონი',
+      damla: 'წვეთები',
+      sabah: 'დილა',
+    },
+    silErisim: 'ხმის წაშლა: {ad}',
+    ornekDinleErisim: 'მოსმენა: {ad}',
+    uzunlukNotu: 'შეტყობინების ხმა მაქსიმუმ 30 წამს ჟღერს; უფრო გრძელი ფაილიდან პირველი 30 წამი გამოიყენება.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

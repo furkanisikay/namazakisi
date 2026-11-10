@@ -205,14 +205,17 @@ export class CihazEsServisi {
 
     // ---------------- Gönderim (eşlere) ----------------
 
-    /** Tüm çift yönlü eşlerle eşitler (sıralı). Ağ/eş yoksa sessiz. */
-    esitle(): Promise<Record<string, 'tamam' | 'ulasilamadi' | 'reddedildi'>> {
-        const tur = this.zincir.then(() => this.esitleTuru());
+    /**
+     * Tüm çift yönlü eşlerle eşitler (sıralı). Ağ/eş yoksa sessiz. `zorla`: geri çekilmeyi atla
+     * (kullanıcı Cihazlarım'ı açtı; yoksa ulaşılamayan eş bir saate kadar eski durumda görünür).
+     */
+    esitle(zorla = false): Promise<Record<string, 'tamam' | 'ulasilamadi' | 'reddedildi'>> {
+        const tur = this.zincir.then(() => this.esitleTuru(zorla));
         this.zincir = tur.catch(() => undefined);
         return tur;
     }
 
-    private async esitleTuru(): Promise<Record<string, 'tamam' | 'ulasilamadi' | 'reddedildi'>> {
+    private async esitleTuru(zorla: boolean): Promise<Record<string, 'tamam' | 'ulasilamadi' | 'reddedildi'>> {
         const sonuc: Record<string, 'tamam' | 'ulasilamadi' | 'reddedildi'> = {};
         const esler = (await CihazAgiDeposu.liste().catch(() => [] as CihazUyeligi[])).filter(
             (u) => (u.tur === 'tablet' || u.tur === 'telefon') && u.durum !== 'reddedildi',
@@ -223,7 +226,7 @@ export class CihazEsServisi {
         if (!(await yerelAgVarMi())) return sonuc;
         for (const e of esler) {
             // Üstel geri çekilme (TV ile aynı kural): ulaşılamayan eş bekleme süresince denenmez.
-            if (e.sonHataMs && Date.now() < e.sonHataMs + geriCekilmeMs(e.hataSayisi ?? 0)) {
+            if (!zorla && e.sonHataMs && Date.now() < e.sonHataMs + geriCekilmeMs(e.hataSayisi ?? 0)) {
                 sonuc[e.aliciKimlik] = 'ulasilamadi';
                 continue;
             }
@@ -232,7 +235,8 @@ export class CihazEsServisi {
             } catch (hata) {
                 Logger.info('CihazEs', 'Eşe ulaşılamadı', { hata: String(hata) });
                 sonuc[e.aliciKimlik] = 'ulasilamadi';
-                await CihazAgiDeposu.guncelle(e.aliciKimlik, { durum: 'ulasilamadi', sonHataMs: Date.now(), hataSayisi: (e.hataSayisi ?? 0) + 1 });
+                // Zorla deneme (kullanıcı sayfayı açtı) geri çekilmeyi uzatmaz; yalnız zamanı yazar.
+                await CihazAgiDeposu.guncelle(e.aliciKimlik, { durum: 'ulasilamadi', sonHataMs: Date.now(), hataSayisi: (e.hataSayisi ?? 0) + (zorla ? 0 : 1) });
             }
         }
         return sonuc;

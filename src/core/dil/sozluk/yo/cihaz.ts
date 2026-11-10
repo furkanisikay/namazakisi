@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Àwọn ẹ̀rọ mìíràn',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Fóònù {marka}',
+    tablet: 'Tábúlẹ́ẹ̀tì {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'A kò lè fi ètò náà pamọ́. Ẹ gbìyànjú lẹ́ẹ̀kan sí i.',
     kaldirildi: 'A ti yọ {ad} kúrò.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Ẹ fi Namaz Akışı sórí Android TV yín, kí ẹ sì fi fóònù yìí ṣàyẹ̀wò kóòdù QR tó wà lójú ìbòjú. Àwọn àkókò ìrun àti ìkàsẹ̀yìn Rọmọdọ̄n yóò hàn lórí ojú-ìbòjú ńlá nílé.',
     tabletVeTelefonlar: 'Tablẹ́ẹ̀tì àti fóònù',
     esYok: 'Ẹ fi tablẹ́ẹ̀tì tàbí fóònù kejì yín kún un: ìrun tí ẹ sàmì sí lórí ọ̀kan yóò lọ sí èkejì.',
+    kayipEslesmeler: 'A kò lè ka àwọn ìsopọ̀ tẹ́lẹ̀ ({adlar}). Ó ṣeé ṣe kí ibi ìpamọ́ àbò fóònù yìí ti di títúntò; ẹ tún àwọn ẹ̀rọ náà kún un.',
     cihaziKaldirinErisim: 'Yọ {ad} kúrò',
     tabletEkleyin: 'Fi tablẹ́ẹ̀tì tàbí fóònù kún un',
     saat: 'Aago ọwọ́',

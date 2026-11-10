@@ -21,7 +21,7 @@ import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { BagHaritasi, type HaritaDugumu } from '../components/cihazlar/BagHaritasi';
 import { alaniOku } from '../../domain/services/CihazDurumOkuyucu';
 import { AZAMI_DUGUM } from '../../core/cihazAgi/bagHaritasi';
-import { CihazAgiDeposu, type CihazUyeligi } from '../../data/local/CihazAgiDeposu';
+import { CihazAgiDeposu, type CihazUyeligi, type GolgeKaydi } from '../../data/local/CihazAgiDeposu';
 import { TvSenkronServisi } from '../../domain/services/TvSenkronServisi';
 import { CihazEsServisi, buCihazinTuru, cihazAgiDinleyicisiVarMi } from '../../domain/services/CihazEsServisi';
 import { esitlemeVaadi, haritaRozeti, saatDurumMetni, uyelikDurumMetni, type SaatDurumu } from '../../core/cihazAgi/cihazlarimMetni';
@@ -34,7 +34,9 @@ const kartStili = (r: Renkler) => ({ backgroundColor: r.kartArkaplan, borderRadi
 
 export const CihazlarimSayfasi: React.FC = () => {
     const renkler = useRenkler();
-    const cm = useMetin().cihaz;
+    const metinler = useMetin();
+    const cm = metinler.cihaz;
+    const ortak = metinler.ortak;
     const mt = cm.cihazlarim;
     const rozetBagli = cm.uyelik.rozetBagli;
     const navigation = useNavigation() as unknown as { navigate: (ekran: string) => void };
@@ -44,18 +46,26 @@ export const CihazlarimSayfasi: React.FC = () => {
     const [kaldirilacakEs, setKaldirilacakEs] = React.useState<CihazUyeligi | null>(null);
     const [simdi, setSimdi] = React.useState(() => Date.now());
     const [kaldirilacak, setKaldirilacak] = React.useState<CihazUyeligi | null>(null);
+    const [kayiplar, setKayiplar] = React.useState<GolgeKaydi[]>([]);
+    const kayiplariKapat = React.useCallback(() => {
+        setKayiplar([]);
+        void CihazAgiDeposu.kayiplariUnut().catch(() => undefined);
+    }, []);
     // Saat durumu GERÇEK okumadır (Wear Data Layer bağlı düğüm): "saatiniz eşleşir" cümlesi
     // saati olmayana söylenmesin. iOS'ta ve okunamazsa null → genel metin.
     const [saat, setSaat] = React.useState<SaatDurumu | null>(null);
 
     const oku = React.useCallback(async () => {
+        // Güvenli depo sessizce boşaldıysa (Keystore sıfırlanması) boş liste yerine bunu söyle.
+        setKayiplar(await CihazAgiDeposu.kayiplar().catch(() => [] as GolgeKaydi[]));
         const l = await CihazAgiDeposu.liste().catch(() => [] as CihazUyeligi[]);
         setListe(l.filter((u) => u.tur === 'tv').sort((a, b) => a.eklenmeMs - b.eklenmeMs));
         setEsler(l.filter((u) => u.tur === 'tablet' || u.tur === 'telefon').sort((a, b) => a.eklenmeMs - b.eklenmeMs));
         setSimdi(Date.now());
     }, []);
 
-    // Her odakta oku; ardından bir eşitleme turu (yalnız içerik değiştiyse gönderir) ve tazele.
+    // Her odakta oku; ardından ZORLA bir eşitleme turu ve tazele. Zorla: geri çekilme atlanır —
+    // kullanıcı TV'yi/tableti açıp bu sayfaya geldiyse durum bir saate kadar eski kalmasın.
     useFocusEffect(
         React.useCallback(() => {
             let iptal = false;
@@ -66,13 +76,13 @@ export const CihazlarimSayfasi: React.FC = () => {
                 })
                 .catch(() => undefined);
             TvSenkronServisi.getInstance()
-                .gonder()
+                .gonder(true)
                 .then(() => {
                     if (!iptal) void oku();
                 })
                 .catch(() => undefined);
             CihazEsServisi.getInstance()
-                .esitle()
+                .esitle(true)
                 .then(() => {
                     if (!iptal) void oku();
                 })
@@ -144,6 +154,31 @@ export const CihazlarimSayfasi: React.FC = () => {
             <Text testID="cihazlarim-vaat" className="text-sm mt-3 mb-6 px-1" style={{ color: renkler.metinIkincil, lineHeight: 20 }}>
                 {esitlemeVaadi(Platform.OS)}
             </Text>
+
+            {kayiplar.length > 0 && (
+                <View
+                    testID="cihazlarim-kayip"
+                    className="flex-row items-start p-4 mb-6"
+                    style={{ ...kartStili(renkler), borderColor: renkler.durum.dikkat }}
+                    accessibilityRole="alert"
+                >
+                    <View className="w-9 h-9 rounded-full items-center justify-center mr-3" style={{ backgroundColor: renkler.durum.dikkat + '20' }}>
+                        <FontAwesome5 name="unlink" size={14} color={renkler.durum.dikkat} />
+                    </View>
+                    <Text className="flex-1 text-sm" style={{ color: renkler.metin, lineHeight: 20 }}>
+                        {bicim(mt.kayipEslesmeler, { adlar: kayiplar.map((k) => k.ad).join(', ') })}
+                    </Text>
+                    <TouchableOpacity
+                        testID="cihazlarim-kayip-kapat"
+                        className="w-11 h-11 items-center justify-center -mr-2 -mt-2"
+                        onPress={kayiplariKapat}
+                        accessibilityRole="button"
+                        accessibilityLabel={ortak.kapatin}
+                    >
+                        <FontAwesome5 name="times" size={14} color={renkler.metinIkincil} />
+                    </TouchableOpacity>
+                </View>
+            )}
 
             <Text className="text-lg font-bold mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
                 {mt.televizyonlar}

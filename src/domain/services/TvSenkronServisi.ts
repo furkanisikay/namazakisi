@@ -143,7 +143,7 @@ export class TvSenkronServisi {
                 continue;
             }
             try {
-                sonuc[u.aliciKimlik] = await this.zarfGonder(u, duz);
+                sonuc[u.aliciKimlik] = await this.zarfGonder(u, duz, !zorla);
                 if (sonuc[u.aliciKimlik] === 'tamam') await this.ozetYaz(u.aliciKimlik, ozet);
             } catch (e) {
                 Logger.warn('TvSenkron', 'TV durumu gönderilemedi', { hata: String(e) });
@@ -172,7 +172,8 @@ export class TvSenkronServisi {
         await AsyncStorage.setItem(OZET_ANAHTARI, JSON.stringify(Object.fromEntries(m))).catch(() => undefined);
     }
 
-    private async zarfGonder(u: CihazUyeligi, duz: string): Promise<GonderimSonucu> {
+    /** `geriCekilmeyiArtir: false` (zorla deneme): başarısızlık geri çekilmeyi uzatmaz, yalnız zamanı yazar. */
+    private async zarfGonder(u: CihazUyeligi, duz: string, geriCekilmeyiArtir = true): Promise<GonderimSonucu> {
         const dene = async (adres: string, port: number): Promise<GonderimSonucu> => {
             const n = await CihazAgiDeposu.sonrakiN(u.aliciKimlik);
             if (n == null) return 'reddedildi';
@@ -205,7 +206,7 @@ export class TvSenkronServisi {
         await CihazAgiDeposu.guncelle(u.aliciKimlik, {
             durum: sonuc === 'reddedildi' ? 'reddedildi' : sonuc === 'tamam' ? 'tamam' : 'ulasilamadi',
             ...(sonuc === 'tamam' ? { sonEsitlemeMs: simdi, sonHataMs: 0, hataSayisi: 0 } : {}),
-            ...(sonuc === 'ulasilamadi' ? { sonHataMs: simdi, hataSayisi: (u.hataSayisi ?? 0) + 1 } : {}),
+            ...(sonuc === 'ulasilamadi' ? { sonHataMs: simdi, hataSayisi: (u.hataSayisi ?? 0) + (geriCekilmeyiArtir ? 1 : 0) } : {}),
         });
         return sonuc;
     }

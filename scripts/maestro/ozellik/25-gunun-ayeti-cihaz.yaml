@@ -2,8 +2,8 @@
 # hazirlik: gunun-ayeti-cihaz
 # profil: telefon
 # Günün ayeti cihaz yüzeyleri (#380, #381): ayar sayfasından widget ana ekrana eklenir
-# (başlatıcının "ana ekrana ekle" penceresi), duvar kâğıdı onayla açılır, önizleme çekilir,
-# ana ekrana dönülür. Kilit ekranı karesi (66) hazirlik_bitir'de adb ile çekilir.
+# (başlatıcının "ana ekrana ekle" penceresi), duvar kâğıdı onayla açılır, ayar kartı ve düzenleyici
+# çekilir, ikindi göğü + mihrap uygulanır, ana ekrana dönülür. Kilit ekranı karesi (66) hazirlik_bitir'de adb ile çekilir.
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _ayarlar.yaml
@@ -44,22 +44,63 @@ appId: com.furkanisikay.namazakisi
     id: "gunun-ayeti-duvar-anahtar"
 - tapOn:
     text: "(Açın|Turn on)"
-# Önizleme duvar kâğıdıyla aynı sıralı kuyruktan geçer: görününce duvar kâğıdı da yazılmıştır.
-# Görünür bekleme KAYDIRARAK: uzun metinli dilde (Fula) düğme ekranın altında kalır.
+# Ayar kartının küçük önizlemeleri (kilit + ana) = kilit ekranında şu an çizilen görünüm.
+- waitForAnimationToEnd:
+    timeout: 4000
 - scrollUntilVisible:
     element:
-      id: "gunun-ayeti-onizle"
+      id: "duvar-duzenle"
     direction: DOWN
     timeout: 20000
-- tapOn:
-    id: "gunun-ayeti-onizle"
-- scrollUntilVisible:
-    element:
-      text: "(Bugünün duvar kâğıdı önizlemesi|Preview of today's wallpaper)"
-    direction: DOWN
-    timeout: 30000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/64-gunun-ayeti-duvar-onizleme
+# Düzenleyici: tuval + Zemin sekmesi; ardından İkindi göğü + mihrap süsü uygulanır (native çizer).
+- tapOn:
+    id: "duvar-duzenle"
+- extendedWaitUntil:
+    visible:
+      id: "duvar-tuval"
+    timeout: 15000
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: ozk/67-duvar-duzenleyici
+- tapOn:
+    id: "duvar-zemin-ikindi"
+- tapOn:
+    id: "duvar-sekme-sus"
+- tapOn:
+    id: "duvar-sus-mihrap"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/68-duvar-duzenleyici-mihrap
+# Yazı sekmesi > "Kilit ekranındaki saat": elle ayar kipinde saat alanının kesikli çerçevesi ve tutamakları.
+- tapOn:
+    id: "duvar-sekme-yazi"
+# Kaydırma TEPSİDEN başlamalı: scrollUntilVisible ekranın ortasından kaydırır, orası tuvaldir
+# (tuval hareketi yazıyı taşır, tepsi kaymaz). Tepsi ekranın alt ~%45'idir (sekme çubuğunun üstü).
+- repeat:
+    times: 3
+    commands:
+      - swipe:
+          start: "50%, 84%"
+          end: "50%, 60%"
+          duration: 600
+- tapOn:
+    id: "duvar-saat-elle"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/69-duvar-saat-alani
+- tapOn:
+    id: "duvar-saat-elle"
+- tapOn:
+    id: "duvar-uygula"
+# Uygulayın native'de yazar ve ayar sayfasına döner (yazım ~yüzlerce ms; fotoğrafsız).
+- extendedWaitUntil:
+    visible:
+      id: "duvar-duzenle"
+    timeout: 20000
+- waitForAnimationToEnd:
+    timeout: 5000
 - pressKey: Home
 - waitForAnimationToEnd:
     timeout: 5000

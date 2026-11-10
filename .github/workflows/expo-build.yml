@@ -144,13 +144,10 @@ permissions:
   contents: read
 
 env:
-  # DIKKAT — burasi bilerek 22, diger workflow'lar (ci.yml / android-build.yml) 20.
-  # eas-cli'nin engines alani hala ">=20" der ama transitif bagimliligi
-  # @oclif/plugin-autocomplete 3.3.0'dan itibaren ">=22" istiyor; expo-github-action
-  # eas-cli'yi "yarn add" ile kurar ve yarn engine uyusmazliginda KURULUMU REDDEDER
-  # ("Found incompatible module") -> v0.25.0 release'inde AAB build'i 52 sn'de patladi.
-  # Bu is sadece EAS CLI'yi calistirir (npm ci + eas build); Node 22 npm 10 ile uyumlu
-  # ve package.json engines ">= 20.19.4" sartini saglar.
+  # Node 22: Expo SDK 58 / RN 0.88 zaten >= 22.13 ister (tum workflow'lar 22).
+  # Ayrica eas-cli'nin transitif bagimliligi @oclif/plugin-autocomplete (3.3.0+) ">=22"
+  # ister; expo-github-action eas-cli'yi "yarn add" ile kurar ve yarn engine
+  # uyusmazliginda KURULUMU REDDEDER (v0.25.0'da AAB 52 sn'de patlamisti).
   NODE_VERSION: '22'
 
 jobs:
@@ -197,9 +194,8 @@ jobs:
         uses: actions/cache@v6
         with:
           path: node_modules
-          # Node surumu ANAHTARA dahil: bu is Node 22, ci.yml/android-build.yml Node 20.
-          # Ortak anahtar kalsaydi Node 22'de uretilen node_modules'u Node 20 isleri
-          # geri yukleyebilirdi (native/binary artifact uyusmazligi).
+          # Node surumu ANAHTARA dahil: Node surumu degisince (20 → 22 gibi) eski
+          # node_modules geri yuklenmesin (native/binary artifact uyusmazligi).
           key: ${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
 
       - name: 📚 Install dependencies
@@ -207,7 +203,7 @@ jobs:
         run: npm ci
 
       - name: 🚀 Setup Expo & EAS
-        uses: expo/expo-github-action@eab7a230208c952974db8c3245cfd78402c7b385 # v9
+        uses: expo/expo-github-action@9da89d3617bb88139671bad31b09c65714c2ee06 # v9
         with:
           eas-version: 20.1.0
           token: ${{ secrets.EXPO_TOKEN }}

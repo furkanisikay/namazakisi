@@ -20,7 +20,8 @@ interface YeniOzellikKartiProps {
  */
 export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onAc, onKapat }) => {
     const renkler = useRenkler();
-    const m = useMetin().genel.yeniOzellik;
+    const metinler = useMetin();
+    const m = metinler.genel.yeniOzellik;
     const opacity = useRef(new Animated.Value(0)).current;
     const translateY = useRef(new Animated.Value(-12)).current;
 
@@ -64,6 +65,8 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                         onPress={onKapat}
                         hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                         style={{ marginLeft: 'auto' }}
+                        accessibilityRole="button"
+                        accessibilityLabel={metinler.ortak.kapatin}
                     >
                         <FontAwesome5 name="times" size={14} color={renkler.metinIkincil} />
                     </TouchableOpacity>
@@ -91,6 +94,7 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                     style={{ backgroundColor: renkler.birincil }}
                     onPress={onAc}
                     activeOpacity={0.85}
+                    accessibilityRole="button"
                 >
                     <YonluIkon name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                     <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>

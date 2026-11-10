@@ -60,7 +60,9 @@ jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({
 jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
     OnizlemeSesServisi: { bildirimSesiniCal: jest.fn(), temizle: jest.fn() },
 }));
-jest.mock('../../../hooks/usePlatformYetenekleri', () => ({ usePlatformYetenekleri: () => ({ sesSecici: true }) }));
+jest.mock('../../../hooks/usePlatformYetenekleri', () => ({
+    usePlatformYetenekleri: () => ({ platform: 'android', sesSecici: true, sistemSesSecici: true }),
+}));
 jest.mock('../../../store/seriSlice', () => ({
     ozelGunBaslat: Object.assign(jest.fn(), { fulfilled: { match: () => true } }),
     ozelGunModuDurumunuGuncelle: jest.fn(),

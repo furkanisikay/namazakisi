@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Afidie afoforo',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} fon',
+    tablet: '{marka} tablet',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Wɔantumi ansie nhyehyɛe no. San bɔ mmɔden.',
     kaldirildi: 'Wɔayi {ad}.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Fa Namaz Akışı to wo Android TV so na fa fon yi hwɛ QR kood a ɛwɔ skrin no so. Nyamefrɛ mmerɛ ne Ramadan berɛ a aka bɛda adi wɔ fie skrin kɛseɛ so.',
     tabletVeTelefonlar: 'Tablet ne fon',
     esYok: 'Fa wo tablet anaa wo fon a ɛtɔ so mmienu ka ho: Nyamefrɛ a wokyerɛ wɔ baako so no kɔ baako no so.',
+    kayipEslesmeler: 'Wɔantumi ankenkan nkabom a edi kan no ({adlar}). Ebia wɔasan ahyehyɛ fon yi so kora a ahobammɔ wom no; momfa nnwinnade no nka ho bio.',
     cihaziKaldirinErisim: 'Yi {ad}',
     tabletEkleyin: 'Fa tablet anaa fon ka ho',
     saat: 'Wɔɔkye',

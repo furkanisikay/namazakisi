@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Dooritteen xongolo',
     dokunarak: 'Korisaanamah xagisa',
     seciliDinle: 'Doorime warsa xongolo ubla',
+    paket: {
+      zil: 'Ruffa xongolo',
+      ikiton: 'Nammay xongolo',
+      damla: 'Lee tuxxuqa',
+      sabah: 'Saaku',
+    },
+    silErisim: '{ad} xongolo bayisa',
+    ornekDinleErisim: 'Ubla: {ad}',
+    uzunlukNotu: 'Warsa xongolo 30 sekondi ixxa yaabbimta; fayl xeerek, awwal 30 sekondi xoqoysimta.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

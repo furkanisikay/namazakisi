@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Qalabka kale',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Taleefanka {marka}',
+    tablet: 'Tablet-ka {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Dejinta lama kaydin karin. Isku day mar kale.',
     kaldirildi: '{ad} waa la saaray.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Ku rakib Namaz Akışı Android TV-gaaga oo taleefankan ku akhri koodhka QR ee shaashadda. Waqtiyada salaadda iyo tirinta Ramadaanku waxay ka muuqanayaan shaashadda weyn ee guriga.',
     tabletVeTelefonlar: 'Taabletyada iyo taleefannada',
     esYok: 'Ku dar taabletkaaga ama taleefankaaga labaad: salaadda aad mid ku calaamadeyso waxay u gudbaysaa kan kale.',
+    kayipEslesmeler: 'Isku-xidhkii hore lama akhriyi karin ({adlar}). Kaydka sugan ee taleefankan waa la dib-u-dejiyey laga yaabee; mar kale ku dar qalabka.',
     cihaziKaldirinErisim: 'Ka saar {ad}',
     tabletEkleyin: 'Ku dar taablet ama taleefan',
     saat: 'Saacadda',

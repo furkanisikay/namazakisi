@@ -182,6 +182,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: 'Įjungtas {n} elementas', few: 'Įjungti {n} elementai', many: 'Įjungta {n} elemento', other: 'Įjungta {n} elementų' }),
     sesDosyasi: {
       bicim: 'Šio failo nepavyko atidaryti kaip garso. Galite pasirinkti MP3, M4A, OGG arba WAV failą.',
+      bicimIos: 'Šio failo nepavyko atidaryti kaip garso. Galite pasirinkti MP3, M4A arba WAV failą.',
       boyut: 'Failas per didelis. Galite pasirinkti daugiausia 20 MB.',
       sure: 'Įrašas per ilgas. Galite pasirinkti daugiausia 8 minučių garsą.',
       erisim: 'Nepavyko pasiekti failo. Pabandykite pasirinkti failą iš savo telefono.',

@@ -52,10 +52,21 @@ const mockSesTemizle = jest.fn();
 jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
     OnizlemeSesServisi: { bildirimSesiniCal: (s: string) => mockSesCal(s), temizle: () => mockSesTemizle() },
 }));
-let mockSesSecici = true;
+let mockPlatform: 'android' | 'ios' = 'android';
 jest.mock('../../../hooks/usePlatformYetenekleri', () => ({
-    usePlatformYetenekleri: () => ({ sesSecici: mockSesSecici }),
+    usePlatformYetenekleri: () => ({
+        platform: mockPlatform,
+        sesSecici: true,
+        sistemSesSecici: mockPlatform === 'android',
+    }),
 }));
+const mockStoreDispatch = jest.fn(async (_a: unknown) => undefined);
+jest.mock('../../../store/store', () => ({ store: { dispatch: (a: unknown) => mockStoreDispatch(a) } }));
+jest.mock('../../../store/iosSesSilme', () => ({
+    iosSesiniSil: (kimlik: string) => ({ type: 'ses/iosSil', payload: kimlik }),
+}));
+const mockBelgeSec = jest.fn();
+jest.mock('expo-document-picker', () => ({ getDocumentAsync: (...a: unknown[]) => mockBelgeSec(...a) }));
 jest.mock('../../../store/seriSlice', () => ({
     ozelGunBaslat: Object.assign(
         jest.fn((a) => ({ type: 'seri/ozelBaslat', payload: a })),
@@ -103,7 +114,7 @@ describe('VakitGirinceBolumu', () => {
 
 describe('VakitGirinceBolumu — ses', () => {
     beforeEach(() => {
-        mockSesSecici = true;
+        mockPlatform = 'android';
         mockDosyaDestegi = true;
         mockSesAdiAl.mockResolvedValue('Ezan');
     });
@@ -130,11 +141,6 @@ describe('VakitGirinceBolumu — ses', () => {
         expect(e.queryByTestId('vakit-sesi-uzunluk-notu')).toBeNull();
     });
 
-    it('iOS (ses seçici yok): ses satırı HİÇ çizilmez', () => {
-        mockSesSecici = false;
-        const e = render(<VakitGirinceBolumu />);
-        expect(e.queryByLabelText(/bildirim sesi:/)).toBeNull();
-    });
 
     it('kendi dosyanızdan seçilen ses o vakte yazılır', async () => {
         mockSesDosyasiSec.mockResolvedValueOnce({ uri: 'content://media/external_primary/audio/media/7', ad: 'Ezan' });
@@ -196,6 +202,156 @@ describe('VakitGirinceBolumu — ses', () => {
         const e = render(<VakitGirinceBolumu />);
         fireEvent.press(e.getByLabelText('Sabah bildirim sesini dinleyin'));
         expect(mockSesCal).toHaveBeenCalledWith('content://settings/system/notification_sound');
+    });
+});
+
+describe('VakitGirinceBolumu — ses (iPhone)', () => {
+    // Global köprü mock'u (`__mocks__/expo-muhafiz-anons.js`); her test açıkça kurar.
+    const anons = require('../../../../../modules/expo-muhafiz-anons/src') as Record<string, jest.Mock>;
+    const sesKimligi = require('../../../../core/muhafiz/sesKimligi') as typeof import('../../../../core/muhafiz/sesKimligi');
+
+    beforeEach(() => {
+        mockPlatform = 'ios';
+        sesKimligi.sesPlatformunuAyarla('ios');
+        anons.sesIceAktarmaDestekleniyor.mockReturnValue(true);
+        anons.iceAktarilanSesler.mockResolvedValue([]);
+        anons.klipVarMi.mockResolvedValue(true);
+        anons.sesIceAktar.mockResolvedValue({ hata: 'desteklenmiyor' });
+        mockState = {
+            ...mockState,
+            vakitBildirim: {
+                ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: false, yatsi: false },
+                sesler: {},
+            },
+        };
+    });
+
+    afterEach(async () => {
+        // Liste yükleme / dosya varlığı soruları (native köprü, async) test bitince çözülür:
+        // durum güncellemesi act içinde boşaltılır (CI'da act gürültüsü olmasın).
+        await act(async () => {
+            await new Promise((coz) => setTimeout(coz, 0));
+        });
+        sesKimligi.sesPlatformunuAyarla('android');
+        sesKimligi.eklenmisSesleriAyarla(null);
+    });
+
+    afterAll(() => {
+        anons.sesIceAktarmaDestekleniyor.mockReturnValue(false);
+        anons.klipVarMi.mockResolvedValue(false);
+    });
+
+    it('satıra dokununca uygulamanın ses listesi AÇILIR (sistem seçicisi yok); seçilen ses o vakte yazılır', async () => {
+        const e = render(<VakitGirinceBolumu />);
+        expect(e.queryByLabelText('Sakin zil')).toBeNull();
+        // Telefonun sesi uygulama içinde dinletilemez → satırda ölü "dinle" düğmesi yok.
+        expect(e.queryByLabelText('Sabah bildirim sesini dinleyin')).toBeNull();
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi: Telefonun bildirim sesi/));
+        // "Telefonun sesleri" (Android sistem seçicisi) iPhone'da YOK.
+        expect(e.queryByLabelText('Sabah bildirim sesi: telefonun seslerinden seçin')).toBeNull();
+        expect(e.getByLabelText('Telefonun bildirim sesi').props.accessibilityState).toMatchObject({ checked: true });
+        fireEvent.press(e.getByLabelText('Sakin zil'));
+        expect(mockSesSec).not.toHaveBeenCalled();
+        expect(mockDispatch).toHaveBeenCalledWith({
+            type: 'vb/sesGuncelle',
+            payload: { vakit: 'imsak', secim: { bildirimSesi: 'paket:zil' } },
+        });
+        await waitFor(() => expect(anons.iceAktarilanSesler).toHaveBeenCalled());
+    });
+
+    it('seçili paket sesi adıyla görünür; telefonun sesine dönüş kaydı siler; "sonuna kadar çalar" notu çıkmaz', async () => {
+        mockState = {
+            ...mockState,
+            vakitBildirim: {
+                ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: false, yatsi: false },
+                sesler: { imsak: { bildirimSesi: 'paket:damla' } },
+            },
+        };
+        const e = render(<VakitGirinceBolumu />);
+        expect(e.getByLabelText(/^Sabah bildirim sesi: Damla/)).toBeTruthy();
+        expect(e.queryByTestId('vakit-sesi-uzunluk-notu')).toBeNull();
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
+        fireEvent.press(e.getByLabelText('Damla: dinleyin'));
+        expect(mockSesCal).toHaveBeenCalledWith('paket:damla');
+        // Telefonun sesi uygulama içinde dinletilemez → onun "dinle"si yok.
+        expect(e.queryByLabelText('Telefonun bildirim sesi: dinleyin')).toBeNull();
+        fireEvent.press(e.getByLabelText('Telefonun bildirim sesi'));
+        expect(mockDispatch).toHaveBeenCalledWith({ type: 'vb/sesGuncelle', payload: { vakit: 'imsak', secim: null } });
+        await waitFor(() => expect(anons.iceAktarilanSesler).toHaveBeenCalled());
+    });
+
+    it('SESSİZ SAPMA YOK: eklenen dosya diskte yoksa çalan TELEFONUN sesi görünür, ölü "dinle" yok', async () => {
+        anons.klipVarMi.mockResolvedValue(false);
+        mockState = {
+            ...mockState,
+            vakitBildirim: {
+                ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: false, yatsi: false },
+                sesler: { imsak: { bildirimSesi: 'dosya:kullanici_ses_0123abcd.caf', sesAdi: 'Ezan' } },
+            },
+        };
+        const e = render(<VakitGirinceBolumu />);
+        await waitFor(() => expect(anons.klipVarMi).toHaveBeenCalledWith('kullanici_ses_0123abcd.caf'));
+        await waitFor(() => expect(e.getByLabelText(/^Sabah bildirim sesi: Telefonun bildirim sesi/)).toBeTruthy());
+        expect(e.queryByLabelText('Sabah bildirim sesini dinleyin')).toBeNull();
+        expect(mockSesAdiAl).not.toHaveBeenCalled();
+    });
+
+    it('kendi dosyanız: belge seçicisiyle eklenir, o vakte yazılır; 30 sn\'den uzunsa SÖYLENİR', async () => {
+        mockBelgeSec.mockResolvedValueOnce({
+            canceled: false,
+            assets: [{ uri: 'file:///cache/Ezan.m4a', name: 'Ezan.m4a' }],
+        });
+        anons.sesIceAktar.mockResolvedValueOnce({ dosya: 'kullanici_ses_0123abcd.caf', ad: 'Ezan', kirpildi: true });
+        const e = render(<VakitGirinceBolumu />);
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
+        await act(async () => {
+            fireEvent.press(e.getByLabelText('Kendi dosyanızdan seçin'));
+        });
+        expect(mockBelgeSec).toHaveBeenCalledWith(expect.objectContaining({ type: 'audio/*', copyToCacheDirectory: true }));
+        expect(anons.sesIceAktar).toHaveBeenCalledWith('file:///cache/Ezan.m4a', 'Ezan');
+        expect(mockDispatch).toHaveBeenCalledWith({
+            type: 'vb/sesGuncelle',
+            payload: { vakit: 'imsak', secim: { bildirimSesi: 'dosya:kullanici_ses_0123abcd.caf', sesAdi: 'Ezan' } },
+        });
+        expect(mockKisaBildirim).toHaveBeenCalledWith(expect.stringMatching(/30 saniye/), true);
+    });
+
+    it('eklenemeyen dosya kibar dille söylenir, hiçbir şey yazılmaz', async () => {
+        mockBelgeSec.mockResolvedValueOnce({ canceled: false, assets: [{ uri: 'file:///cache/x.txt', name: 'x.txt' }] });
+        anons.sesIceAktar.mockResolvedValueOnce({ hata: 'bicim' });
+        const e = render(<VakitGirinceBolumu />);
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
+        await act(async () => {
+            fireEvent.press(e.getByLabelText('Kendi dosyanızdan seçin'));
+        });
+        expect(mockKisaBildirim).toHaveBeenCalledWith(expect.stringMatching(/açılamadı/), true);
+        // iPhone OGG okuyamaz → iPhone'un metni OGG önermez (Android'inki önerir).
+        expect(mockKisaBildirim).not.toHaveBeenCalledWith(expect.stringMatching(/OGG/), true);
+        expect(mockDispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'vb/sesGuncelle' }));
+    });
+
+    it('eklenen dosyalar listelenir; seçili dosya silinince vakit telefonun sesine döner', async () => {
+        anons.iceAktarilanSesler.mockResolvedValue([{ dosya: 'kullanici_ses_0123abcd.caf', ad: 'Ezan' }]);
+        anons.iceAktarilanSesiSil.mockResolvedValueOnce(true);
+        mockState = {
+            ...mockState,
+            vakitBildirim: {
+                ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: false, yatsi: false },
+                sesler: { imsak: { bildirimSesi: 'dosya:kullanici_ses_0123abcd.caf', sesAdi: 'Ezan' } },
+            },
+        };
+        const e = render(<VakitGirinceBolumu />);
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
+        await waitFor(() => expect(e.getByLabelText('Ezan').props.accessibilityState).toMatchObject({ checked: true }));
+        anons.iceAktarilanSesler.mockResolvedValue([]);
+        await act(async () => {
+            fireEvent.press(e.getByLabelText('Ezan sesini silin'));
+        });
+        // TEK yol: silme thunk'ı (dosya + HER kayıt varsayılana + slice tazeleme + yeniden plan).
+        expect(mockStoreDispatch).toHaveBeenCalledWith({ type: 'ses/iosSil', payload: 'dosya:kullanici_ses_0123abcd.caf' });
+        // Liste tazelendi: dosya gitti, varsayılan seçili görünür.
+        await waitFor(() => expect(e.queryByLabelText('Ezan')).toBeNull());
+        expect(e.getByLabelText('Telefonun bildirim sesi').props.accessibilityState).toMatchObject({ checked: true });
     });
 });
 

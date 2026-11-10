@@ -34,6 +34,11 @@ interface SiriNativeModule {
     ekranIstegiAl(): Promise<string | null>;
     /** Günün ayeti yükü v1 (`docs/ajan/gunun-ayeti.md`) — eski ikilide yok (opsiyonel). */
     gununAyetiKaydet?(json: string): Promise<void>;
+    /** Duvar kâğıdı fotoğraf zemini (App Group `duvar/<dosya>`) — eski ikilide yok (opsiyonel). */
+    duvarFotografiniYaz?(kaynakUri: string, dosya: string): Promise<boolean>;
+    duvarFotografiniSil?(dosya: string): Promise<void>;
+    /** Kilit ekranı görüntüsünün satır profili (son kilit kopyasına göre) — eski ikilide yok (opsiyonel). */
+    kilitEkraniProfili?(uri: string): Promise<{ profil?: unknown; hata?: unknown } | null>;
     /** #295 — eski ikilide yok (opsiyonel). */
     /** Arayüz dili (App Group) — eski ikilide yok (opsiyonel). */
     arayuzDiliniAyarla?(kod: string): void;
@@ -141,6 +146,59 @@ export function rakamSisteminiAyarla(kod: string | null): void {
         m.rakamSisteminiAyarla(kod);
     } catch {
         // Eski ikili: Batı rakamı kalır.
+    }
+}
+
+/**
+ * Seçilen görseli iPhone duvar kâğıdının fotoğraf zemini olarak App Group'a kopyalar
+ * (`duvar/<dosya>`; uzun kenar en çok 2048 px, JPEG 0,9, konum dahil meta veri atılır).
+ * `kaynakUri` yerel dosya (`file://…`); `dosya` `duvar-foto-<özet>.(jpg|png)` olmalı
+ * (`fotoAyariNormalize` ile aynı kural, native yeniden denetler). Kısayollar görseli dosyayı
+ * buradan okur. Köprü yoksa (Android, eski ikili), ad geçersizse ya da yazılamazsa `false`.
+ * Asla reddetmez.
+ */
+export async function duvarFotografiniYaz(kaynakUri: string, dosya: string): Promise<boolean> {
+    const m = modul();
+    if (!m || typeof m.duvarFotografiniYaz !== 'function') return false;
+    try {
+        return (await m.duvarFotografiniYaz(kaynakUri, dosya)) === true;
+    } catch {
+        return false;
+    }
+}
+
+/** App Group'taki duvar kâğıdı fotoğrafını siler. Köprü yoksa ya da başarısızsa sessizce atlanır. Asla reddetmez. */
+export async function duvarFotografiniSil(dosya: string): Promise<void> {
+    const m = modul();
+    if (!m || typeof m.duvarFotografiniSil !== 'function') return;
+    try {
+        await m.duvarFotografiniSil(dosya);
+    } catch {
+        // Eski ikili ya da dosya sistemi hatası: kalan dosya bir sonraki silmede gider.
+    }
+}
+
+/**
+ * Kilit ekranı ölçümü sonucu: satır profili (yukarıdan aşağı, satır başına değişen piksel oranı 0–1;
+ * karar `saatAlaniBul`) ya da hata — `referans-yok` (Kısayollar görseli henüz kilit görseli üretmedi),
+ * `okunamadi` (görüntü/köprü yok), `oran` (görüntü bu ekranın en-boyunda değil).
+ */
+export type KilitEkraniProfili = { profil: number[] } | { hata: string };
+
+/** Kilit ekranı görüntüsünü (seçicinin `file://` URI'si) son kilit görseliyle karşılaştırır. Köprü yoksa `{ hata: 'okunamadi' }`. Asla reddetmez. */
+export async function kilitEkraniProfili(uri: string): Promise<KilitEkraniProfili> {
+    const m = modul();
+    if (!m || typeof m.kilitEkraniProfili !== 'function') return { hata: 'okunamadi' };
+    try {
+        const sonuc = await m.kilitEkraniProfili(uri);
+        const profil = sonuc?.profil;
+        if (Array.isArray(profil) && profil.every((v) => typeof v === 'number' && Number.isFinite(v))) {
+            return { profil: profil as number[] };
+        }
+        if (typeof sonuc?.hata === 'string') return { hata: sonuc.hata };
+        return { hata: 'okunamadi' };
+    } catch {
+        return { hata: 'okunamadi' };
     }
 }
 

@@ -184,6 +184,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: 'Elɔkɔ {n} efungwami', other: 'Bilɔkɔ {n} efungwami' }),
     sesDosyasi: {
       bicim: 'Fisye oyo ekoki kofungwama te lokola lokito. Bokoki kopona fisye MP3, M4A, OGG to WAV.',
+      bicimIos: 'Fisye oyo ekoki kofungwama te lokola lokito. Bokoki kopona fisye MP3, M4A to WAV.',
       boyut: 'Fisye eleki monene. Bokoki kopona tii 20 MB.',
       sure: 'Lokito eleki molai. Bokoki kopona lokito ya tii miniti 8.',
       erisim: 'Fisye ekoki kozwama te. Bomeka kopona fisye oyo ezali na telefone na bino.',

@@ -182,6 +182,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ other: 'Ohun {n} wà ní títàn' }),
     sesDosyasi: {
       bicim: 'A kò lè ṣí fáìlì yìí gẹ́gẹ́ bí ohùn. Ẹ lè yan fáìlì MP3, M4A, OGG tàbí WAV.',
+      bicimIos: 'A kò lè ṣí fáìlì yìí gẹ́gẹ́ bí ohùn. Ẹ lè yan fáìlì MP3, M4A tàbí WAV.',
       boyut: 'Fáìlì náà tóbi jù. Ẹ lè yan èyí tí kò ju MB 20 lọ.',
       sure: 'Àkọsílẹ̀ ohùn náà gùn jù. Ẹ lè yan ohùn tí kò ju ìṣẹ́jú 8 lọ.',
       erisim: 'A kò lè wọlé sí fáìlì náà. Ẹ gbìyànjú láti yan fáìlì kan lórí fóònù yín.',

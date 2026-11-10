@@ -37,6 +37,12 @@ export interface Tema {
        * kullanmayın, metin daima `metin`/`metinIkincil`.
        */
       dikkat: string;
+      /**
+       * Geri alınamaz/tehlikeli işlem METNİ (ör. "Seri verilerini sıfırla"). `hata` küçük metinde
+       * 4,5:1'i tutmaz (açıkta #F44336 = 3,7:1); bu token iki temada da tutar (açık #C62828
+       * 5,6:1, koyu #EF9A9A 8,7:1). Zemin tonu `tehlike + '14'`.
+       */
+      tehlike: string;
     };
   };
 }
@@ -110,6 +116,7 @@ export const ACIK_TEMA: Tema = {
       hata: '#F44336',
       bilgi: '#2196F3',
       dikkat: '#E65100',
+      tehlike: '#C62828',
     },
   },
 };
@@ -129,6 +136,7 @@ export const KOYU_TEMA: Tema = {
       hata: '#EF5350',
       bilgi: '#42A5F5',
       dikkat: '#FFB74D',
+      tehlike: '#EF9A9A',
     },
   },
 };

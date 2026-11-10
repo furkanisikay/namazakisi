@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Дастгоҳҳои дигар',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Телефони {marka}',
+    tablet: 'Планшети {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Танзим нигоҳ дошта нашуд. Боз кӯшиш кунед.',
     kaldirildi: '{ad} хориҷ карда шуд.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Namaz Akışı-ро дар Android TV насб кунед ва рамзи QR-и экранро бо ин телефон скан кунед. Вақтҳо ва ҳисобкунаки Рамазон дар экрани калони хона пайдо мешаванд.',
     tabletVeTelefonlar: 'Планшетҳо ва телефонҳо',
     esYok: 'Планшет ё телефони дуюматонро илова кунед: намозе, ки дар яке қайд мекунед, ба дигараш мегузарад.',
+    kayipEslesmeler: 'Пайвастҳои қаблӣ хонда нашуданд ({adlar}). Шояд анбори бехатари ин телефон аз нав танзим шуда бошад; дастгоҳҳоро дубора илова кунед.',
     cihaziKaldirinErisim: '{ad}-ро хориҷ кунед',
     tabletEkleyin: 'Планшет ё телефон илова кунед',
     saat: 'Соат',

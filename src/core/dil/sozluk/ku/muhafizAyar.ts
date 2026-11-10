@@ -181,6 +181,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: '{n} tişt vekirî ye', other: '{n} tişt vekirî ne' }),
     sesDosyasi: {
       bicim: 'Ev pel wekî deng nehate vekirin. Hûn dikarin pelekî MP3, M4A, OGG an WAV hilbijêrin.',
+      bicimIos: 'Ev pel wekî deng nehate vekirin. Hûn dikarin pelekî MP3, M4A an WAV hilbijêrin.',
       boyut: 'Pel pir mezin e. Hûn dikarin heta 20 MB hilbijêrin.',
       sure: 'Tomar pir dirêj e. Hûn dikarin dengekî heta 8 deqîqe dirêj hilbijêrin.',
       erisim: 'Negihîşt pelê. Biceribînin ku pelekî li ser telefona xwe hilbijêrin.',

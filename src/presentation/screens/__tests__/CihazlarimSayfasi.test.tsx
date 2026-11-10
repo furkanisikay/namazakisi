@@ -15,6 +15,8 @@ const mockListe = jest.fn();
 const mockGuncelle = jest.fn();
 const mockGonder = jest.fn();
 const mockKaldir = jest.fn();
+const mockKayiplar = jest.fn();
+const mockKayiplariUnut = jest.fn();
 
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
 jest.mock('@react-navigation/native', () => ({
@@ -25,7 +27,12 @@ jest.mock('@react-navigation/native', () => ({
     },
 }));
 jest.mock('../../../data/local/CihazAgiDeposu', () => ({
-    CihazAgiDeposu: { liste: () => mockListe(), guncelle: (...a: unknown[]) => mockGuncelle(...a) },
+    CihazAgiDeposu: {
+        liste: () => mockListe(),
+        guncelle: (...a: unknown[]) => mockGuncelle(...a),
+        kayiplar: () => mockKayiplar(),
+        kayiplariUnut: () => mockKayiplariUnut(),
+    },
 }));
 jest.mock('../../../domain/services/TvSenkronServisi', () => ({
     TvSenkronServisi: { getInstance: () => ({ gonder: () => mockGonder(), kaldir: (k: string) => mockKaldir(k) }) },
@@ -66,6 +73,7 @@ describe('CihazlarimSayfasi', () => {
         jest.replaceProperty(Platform, 'OS', 'android');
         (useRenkler as jest.Mock).mockReturnValue({
             arkaplan: '#fff', kartArkaplan: '#f0f0f0', birincil: '#4CAF50', birincilMetin: '#FFFFFF', metin: '#333', metinIkincil: '#666', sinir: '#ccc', hata: '#F44336', bilgi: '#2196F3', basarili: '#4CAF50',
+            durum: { dikkat: '#E65100' },
         });
         // Durumlu sahte depo: ekran yazdıktan sonra yeniden okuduğunda yazdığını görmeli.
         let kayit = tv();
@@ -74,6 +82,8 @@ describe('CihazlarimSayfasi', () => {
         mockGonder.mockResolvedValue({});
         mockKaldir.mockResolvedValue(undefined);
         mockSaatDurumu.mockResolvedValue(null);
+        mockKayiplar.mockResolvedValue([]);
+        mockKayiplariUnut.mockResolvedValue(undefined);
     });
 
     afterEach(() => jest.restoreAllMocks());
@@ -114,6 +124,21 @@ describe('CihazlarimSayfasi', () => {
         fireEvent.press(await findByLabelText("Salon TV TV'sini yeniden ekleyin"));
         expect(mockNavigate).toHaveBeenCalledWith('TelevizyonAyarlari');
         expect(queryByTestId('cihaz-sayilsin-0123456789abcdef')).toBeNull();
+    });
+
+    it('güvenli depo boşaldıysa boş liste yerine kayıp eşleştirmeleri adıyla söyler; kapatınca unutur', async () => {
+        mockListe.mockResolvedValue([]);
+        mockKayiplar.mockResolvedValue([
+            { kimlik: '0123456789abcdef', ad: 'Salon TV', tur: 'tv' },
+            { kimlik: 'fedcba9876543210', ad: 'Samsung tablet', tur: 'tablet' },
+        ]);
+        const { findByTestId, getByTestId, queryByTestId } = render(<CihazlarimSayfasi />);
+        const kart = await findByTestId('cihazlarim-kayip');
+        expect(kart).toHaveTextContent(/Salon TV, Samsung tablet/);
+        expect(kart).toHaveTextContent(/yeniden ekleyin/);
+        fireEvent.press(getByTestId('cihazlarim-kayip-kapat'));
+        expect(queryByTestId('cihazlarim-kayip')).toBeNull();
+        expect(mockKayiplariUnut).toHaveBeenCalled();
     });
 
     it('TV yoksa boş durum + TV ekleyin', async () => {

@@ -24,6 +24,12 @@ const anonsuKonus = jest.fn().mockResolvedValue(false);
 const anonsuSustur = jest.fn().mockResolvedValue(undefined);
 // Varsayilan: modul YOK → onizleme ve TTS uyarisi Android yolunda kalir.
 const anonsModuluVarMi = jest.fn().mockReturnValue(false);
+// Kendi ses dosyasi (iPhone): varsayilan "yol yok" — olcen test acikca kurar.
+const sesIceAktarmaDestekleniyor = jest.fn().mockReturnValue(false);
+const sesIceAktar = jest.fn().mockResolvedValue({ hata: 'desteklenmiyor' });
+const iceAktarilanSesler = jest.fn().mockResolvedValue([]);
+const iceAktarilanSesiSil = jest.fn().mockResolvedValue(false);
+const sesDosyasiUri = jest.fn().mockResolvedValue(null);
 
 module.exports = {
   anonsModuluVarMi,
@@ -33,4 +39,9 @@ module.exports = {
   kullanilmayanKlipleriSil,
   anonsuKonus,
   anonsuSustur,
+  sesIceAktarmaDestekleniyor,
+  sesIceAktar,
+  iceAktarilanSesler,
+  iceAktarilanSesiSil,
+  sesDosyasiUri,
 };

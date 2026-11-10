@@ -76,6 +76,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Kiti įrenginiai',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} telefonas',
+    tablet: '{marka} planšetė',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Nepavyko išsaugoti nustatymo. Bandykite dar kartą.',
     kaldirildi: '{ad} pašalintas.',
@@ -91,6 +96,7 @@ export const cihaz: Sozluk['cihaz'] = {
       '„Android TV“ įdiekite „Namaz Akışı“ ir šiuo telefonu nuskaitykite ekrane rodomą QR kodą. Maldų laikai ir Ramadano skaitiklis bus rodomi dideliame namų ekrane.',
     tabletVeTelefonlar: 'Planšetės ir telefonai',
     esYok: 'Pridėkite planšetę ar antrąjį telefoną: viename pažymėta malda persikels į kitą.',
+    kayipEslesmeler: 'Ankstesnių susiejimų nepavyko nuskaityti ({adlar}). Šio telefono saugi saugykla galėjo būti atkurta; pridėkite įrenginius iš naujo.',
     cihaziKaldirinErisim: 'Pašalinti įrenginį {ad}',
     tabletEkleyin: 'Pridėti planšetę ar telefoną',
     saat: 'Laikrodis',

@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'מכשירים אחרים',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'טלפון {marka}',
+    tablet: 'טאבלט {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'לא ניתן היה לשמור את ההגדרה. נסו שוב.',
     kaldirildi: '{ad} הוסר.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'התקינו את Namaz Akışı ב-Android TV וסרקו בטלפון הזה את קוד ה-QR שעל המסך. זמני התפילה והספירה לאחור של רמדאן יוצגו על המסך הגדול בבית.',
     tabletVeTelefonlar: 'טאבלטים וטלפונים',
     esYok: 'הוסיפו את הטאבלט או את הטלפון השני שלכם: תפילה שתסמנו באחד תעבור לשני.',
+    kayipEslesmeler: 'לא ניתן היה לקרוא את הצימודים הקודמים ({adlar}). ייתכן שהאחסון המאובטח של הטלפון אופס; יש להוסיף את המכשירים מחדש.',
     cihaziKaldirinErisim: 'הסרת המכשיר {ad}',
     tabletEkleyin: 'הוספת טאבלט או טלפון',
     saat: 'שעון',

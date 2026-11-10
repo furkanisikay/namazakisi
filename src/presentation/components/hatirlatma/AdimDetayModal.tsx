@@ -41,12 +41,14 @@ import { SayisalSecici } from '../common/SayisalSecici';
 import type { AlarmKapsami, SeviyeAyari, SeviyeKademe } from '../../../core/muhafiz/matrisTipleri';
 import { SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { adimKapaliMi, kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
-import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
+import { cihazdaCalinirMi, ozelSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
 import { sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { SesSecimSatiri } from './SesSecimSatiri';
 import { KanalKarti, AltAnahtarSatiri } from './KanalKarti';
 import { useSesDosyasiSecimi } from '../../hooks/useSesDosyasiSecimi';
+import { useIosSesSecimi } from '../../hooks/useIosSesSecimi';
+import { IosSesListesi } from './IosSesListesi';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { SURE } from '../hareket/sureler';
 import { varsayilanAnonsMetni } from '../../../core/muhafiz/anonsMetni';
@@ -87,6 +89,7 @@ import {
     esikAciklamasiOlustur,
     esikErisimAdiOlustur,
     esikBirimiOlustur,
+    varsayilanSesGorunumu,
     type AnaKanal,
     type PencereTanimi,
 } from './pencereTanimi';
@@ -275,6 +278,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     /** Ses secici acik mi? Cift dokunusa karsi butonu kilitler (bkz. `sesiSec`). */
     const [seciciAcik, setSeciciAcik] = useState(false);
     const dosyaSecimi = useSesDosyasiSecimi();
+    // iPhone: sistem ses seçicisi yok → uygulamanın listesi satırın altında (modal değil).
+    const iosSesSecimi = useIosSesSecimi(gorunur && tanim.sesSecimiVar && !tanim.yetenekler.sistemSesSecici);
     // Pencere ölçüsü HOOK'tan: modül yükünde okunan `Dimensions` iPad'de döndürme/bölünmüş
     // ekranda bayatlardı.
     const { height: pencereYuksekligi } = useWindowDimensions();
@@ -494,7 +499,13 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
 
     const gelismisOzeti = gelismisOzetiOlustur(seviye, tanim, seviyeler);
     const gelismisVerisi = gelismisOzetiVerisi(seviye, tanim, seviyeler);
-    const ozet = adimOzetiOlustur(seviye, tanim.yon, { kardesler: seviyeler, pencereUzunluguDk: tanim.pencereUzunluguDk });
+    // Varsayılan ses bu yüzeyde ne çalar (iPhone ek yüzeyleri: telefonun sesi — dinletilemez).
+    const varsayilanSes = varsayilanSesGorunumu(tanim);
+    const ozet = adimOzetiOlustur(seviye, tanim.yon, {
+        kardesler: seviyeler,
+        pencereUzunluguDk: tanim.pencereUzunluguDk,
+        varsayilanSesAdi: varsayilanSes.adi,
+    });
     // Canlı önizleme: adımın ilk tetiği motorun planından, metin yüzeyin üreticisinden.
     const ornek = adimOrnekTetigi(tanim, seviyeler, indeks);
     const onizleme = adimOnizlemeIcerigi(tanim, ornek.tetik);
@@ -599,6 +610,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                         kanallar={seviye.kanallar}
                                         ozetKanallari={ozet.kanallar}
                                         bildirimSesi={seviye.bildirimSesi}
+                                        varsayilanSesDinlenir={varsayilanSes.dinlenir}
                                         renk={bilgi.renk}
                                         ikon={tanim.ikon}
                                         saat={onizlemeSaati}
@@ -675,7 +687,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
 
                                 {/* ── NASIL ── kanal kartları: her kanal KENDİ alt ayarlarını taşır (ilerleyen
                                     açıklama). Kapalı kanalın gövdesi çizilmez; açılınca kart ölçülü
-                                    genişler (`genislet`). iOS'ta ses/titreşim yok → Bildirim kartı başlıktır. */}
+                                    genişler (`genislet`). iOS'ta titreşim yok; ses listesi satırın altında açılır. */}
                                 {tanim.kanalSecimiVar && (
                                     <GirisKademesi sira={2}>
                                         <BolumBasligi metin={ma.nasil} />
@@ -693,6 +705,29 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                 {tanim.sesSecimiVar ? (
                                                     <SesSecimSatiri
                                                         bildirimSesi={seviye.bildirimSesi}
+                                                        varsayilanAdi={varsayilanSes.adi}
+                                                        dinlenebilir={varsayilanSes.dinlenir || cihazdaCalinirMi(seviye.bildirimSesi)}
+                                                        secimListesi={
+                                                            tanim.yetenekler.sistemSesSecici ? undefined : (
+                                                                <IosSesListesi
+                                                                    testID="adim-ses-listesi"
+                                                                    secili={seviye.bildirimSesi}
+                                                                    varsayilanAdi={varsayilanSes.adi ?? sesGorunenAdi(VARSAYILAN_SES)}
+                                                                    varsayilanDinlenir={varsayilanSes.dinlenir}
+                                                                    onSec={(kimlik, ad) =>
+                                                                        onDegistir({
+                                                                            ...seviye,
+                                                                            bildirimSesi: kimlik ?? VARSAYILAN_SES,
+                                                                            sesAdi: kimlik && ad ? ad : undefined,
+                                                                        })
+                                                                    }
+                                                                    onDinle={(kimlik) => {
+                                                                        void OnizlemeSesServisi.bildirimSesiniCal(kimlik ?? VARSAYILAN_SES);
+                                                                    }}
+                                                                    secim={iosSesSecimi}
+                                                                />
+                                                            )
+                                                        }
                                                         sesAdi={seviye.sesAdi}
                                                         seciliyor={seciciAcik}
                                                         onSec={() => {

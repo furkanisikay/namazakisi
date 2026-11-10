@@ -8,11 +8,14 @@
  * (çağıran ekran sorar; derin bağlantı dahil — denetim D-01: onaysız HİÇBİR ŞEY gönderilmez).
  */
 import { Platform } from 'react-native';
+import { bicim, metin } from '../../core/dil/aktifDil';
 import { base64Yaz, coz, esleIstekAad, esleYanitAad, sifrele } from '../../core/cihazAgi/kanal';
 import { eslesmeYanitiniCoz, type EslesmeQr } from '../../core/cihazAgi/eslesme';
 import { CihazAgiDeposu } from '../../data/local/CihazAgiDeposu';
 import { Logger } from '../../core/utils/Logger';
 import { rastgeleBaytlar, yereleGonder } from './CihazAgiTasima';
+// Döngü yok: CihazEsServisi bu modülü yalnız çağrı anında `require` eder.
+import { buCihazinTuru } from './CihazEsServisi';
 
 export type EslesmeSonucu = 'onay' | 'red' | 'zamanAsimi' | 'ulasilamadi' | 'gecersiz' | 'iptal';
 
@@ -21,13 +24,18 @@ const AZAMI_BEKLEME_MS = 150_000;
 
 const hex = (b: Uint8Array) => Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
 
-/** Kullanıcıya görünen telefon adı (TV'nin onay diyaloğunda okunur). */
-export function telefonAdi(): string {
+/**
+ * Kullanıcıya görünen cihaz adı (TV'nin onay diyaloğunda ve eşin Cihazlarım listesinde okunur):
+ * marka + tür. Tablet "telefon" diye görünmesin diye tür `buCihazinTuru`'ndan gelir.
+ */
+export function telefonAdi(tur: 'tablet' | 'telefon' = buCihazinTuru()): string {
     const c = (Platform.constants ?? {}) as { Brand?: string; Model?: string };
-    if (Platform.OS === 'ios') return 'iPhone';
-    const marka = (c.Brand ?? '').trim();
-    if (!marka) return 'Android telefon';
-    return `${marka.charAt(0).toLocaleUpperCase('tr-TR')}${marka.slice(1)} telefon`.slice(0, 40);
+    if (Platform.OS === 'ios') return tur === 'tablet' ? 'iPad' : 'iPhone'; // dil-haric: ürün adı
+    // Marka adı ASCII'dir ("samsung"); ilk harf yerel ayardan bağımsız büyütülür (Türkçe i/İ tuzağı).
+    const ham = (c.Brand ?? '').trim() || 'Android'; // dil-haric: marka
+    const ilk = ham.charAt(0);
+    const marka = `${ilk >= 'a' && ilk <= 'z' ? String.fromCharCode(ilk.charCodeAt(0) - 32) : ilk}${ham.slice(1)}`;
+    return bicim(metin().cihaz.cihazAdi[tur], { marka }).slice(0, 40);
 }
 
 export async function esles(

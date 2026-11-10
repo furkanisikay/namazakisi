@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Eddoboozi ly’olonze',
     dokunarak: 'Nyiga okukyusa',
     seciliDinle: 'Wuliriza eddoboozi ly’obubaka erirondeddwa',
+    paket: {
+      zil: 'Ekide ekiweweevu',
+      ikiton: 'Amaloboozi abiri',
+      damla: 'Amatondo',
+      sabah: 'Enkya',
+    },
+    silErisim: 'Sangula eddoboozi {ad}',
+    ornekDinleErisim: 'Wuliriza: {ad}',
+    uzunlukNotu: 'Eddoboozi ly’obubaka livuga okutuusa ku sikonda 30; ku fayiro empanvu, sikonda 30 ezisooka ze zikozesebwa.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

@@ -52,8 +52,8 @@ export const ANONS_KLIP_ONEKI = 'muhafiz_anons_';
 /**
  * Bir klibin tasiyabilecegi EN UZUN metin.
  *
- * iOS bildirim sesi <= 30 sn olmali; daha uzugu SISTEM KIRPMAZ, sesi hic
- * calmaz. Turkce konusma hizi kabaca 12-15 karakter/saniye → 30 sn yaklasik
+ * iOS bildirim sesi <= 30 sn olmali; daha uzugunu SISTEM KIRPMAZ, onun yerine
+ * kendi varsayilan sesini calar (Apple `UNNotificationSound`). Turkce konusma hizi kabaca 12-15 karakter/saniye → 30 sn yaklasik
  * 400 karakter eder. 300 ile guvenli tarafta duruyoruz; bu sinir ayni zamanda
  * kullaniciya ekranda gosterilecek pratik bir tavandir.
  */

@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'අනෙක් උපාංග',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} දුරකථනය',
+    tablet: '{marka} ටැබ්ලටය',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'සැකසීම සුරැකිය නොහැකි විය. නැවත උත්සාහ කරන්න.',
     kaldirildi: '{ad} ඉවත් කළා.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'ඔබගේ Android TV හි Namaz Akışı ස්ථාපනය කර තිරයේ ඇති QR කේතය මෙම දුරකථනයෙන් පරිලෝකනය කරන්න. සලාත් වේලාවන් සහ රමළාන් ගණන් කිරීම නිවසේ විශාල තිරයේ දිස් වේ.',
     tabletVeTelefonlar: 'ටැබ්ලට් සහ දුරකථන',
     esYok: 'ඔබගේ ටැබ්ලටය හෝ දෙවන දුරකථනය එක් කරන්න: එකක ඔබ සලකුණු කරන සලාතය අනෙකට යයි.',
+    kayipEslesmeler: 'පෙර යුගල කිරීම් කියවිය නොහැකි විය ({adlar}). මෙම දුරකථනයේ ආරක්ෂිත ගබඩාව යළි සකසා ඇති විය හැක; උපාංග නැවත එක් කරන්න.',
     cihaziKaldirinErisim: '{ad} ඉවත් කරන්න',
     tabletEkleyin: 'ටැබ්ලටයක් හෝ දුරකථනයක් එක් කරන්න',
     saat: 'ඔරලෝසුව',

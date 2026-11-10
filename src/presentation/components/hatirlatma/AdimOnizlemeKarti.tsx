@@ -20,6 +20,7 @@ import type { OzetKanali } from '../../../core/muhafiz/seviyeOzeti';
 import type { UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { adimiOnizle } from '../../../domain/services/AnonsOnizlemeServisi';
+import { onizlemedeCalinirMi } from '../../../core/muhafiz/sesKimligi';
 import { KANAL_IKONLARI } from './OzetCipleri';
 import type { AdimOnizlemeIcerigi } from './pencereTanimi';
 import { bicim } from '../../../core/dil/aktifDil';
@@ -89,6 +90,8 @@ export interface AdimOnizlemeKartiProps {
     saat?: string | null;
     /** Kartın altındaki tek satırlık not (ör. acil tonun Rahatsız Etmeyin davranışı). */
     not?: string;
+    /** Yüzeyin varsayılan sesi dinletilebilir mi? (iPhone ek yüzeyleri: hayır — telefonun sesi) */
+    varsayilanSesDinlenir?: boolean;
 }
 
 export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
@@ -100,6 +103,7 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
     ikon,
     saat,
     not,
+    varsayilanSesDinlenir = true,
 }) => {
     const renkler = useRenkler();
     const marka = useMetin().ortak.marka;
@@ -114,7 +118,7 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
     const bildirimVar = ozetKanallari.includes('bildirim');
     const anons = icerik.anons;
     const anonsCalar = sesliAnonsGerekliMi(kanallar) && !!anons;
-    const sesCalar = bildirimSesiGerekliMi(kanallar);
+    const sesCalar = bildirimSesiGerekliMi(kanallar) && onizlemedeCalinirMi(bildirimSesi, varsayilanSesDinlenir);
     const dinlenebilir = anonsCalar || sesCalar;
     const dinleIkonu = anonsCalar && sesCalar ? 'bullhorn' : anonsCalar ? 'volume-up' : 'bell';
 
@@ -189,7 +193,12 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
             {dinlenebilir ? (
                 <TouchableOpacity
                     onPress={() => {
-                        void adimiOnizle({ kanallar, bildirimSesi, cozulmusMetin: anonsCalar ? (anons ?? '') : '' });
+                        void adimiOnizle({
+                            kanallar,
+                            bildirimSesi,
+                            cozulmusMetin: anonsCalar ? (anons ?? '') : '',
+                            varsayilanSesDinlenir,
+                        });
                     }}
                     activeOpacity={0.75}
                     accessibilityRole="button"

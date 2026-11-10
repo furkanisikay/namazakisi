@@ -181,6 +181,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: '{n} ንጥል በርቷል', other: '{n} ንጥሎች በርተዋል' }),
     sesDosyasi: {
       bicim: 'ይህ ፋይል እንደ ድምፅ ሊከፈት አልቻለም። MP3፣ M4A፣ OGG ወይም WAV ፋይል መምረጥ ይችላሉ።',
+      bicimIos: 'ይህ ፋይል እንደ ድምፅ ሊከፈት አልቻለም። MP3፣ M4A ወይም WAV ፋይል መምረጥ ይችላሉ።',
       boyut: 'ፋይሉ በጣም ትልቅ ነው። እስከ 20 MB መምረጥ ይችላሉ።',
       sure: 'ቅጂው በጣም ረጅም ነው። እስከ 8 ደቂቃ የሚረዝም ድምፅ መምረጥ ይችላሉ።',
       erisim: 'ፋይሉን ማግኘት አልተቻለም። በስልክዎ ላይ ያለ ፋይል ለመምረጥ ይሞክሩ።',

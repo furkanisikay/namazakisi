@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Sauti uliyochagua',
     dokunarak: 'Gusa ili kubadilisha',
     seciliDinle: 'Sikiliza sauti ya arifa iliyochaguliwa',
+    paket: {
+      zil: 'Kengele laini',
+      ikiton: 'Toni mbili',
+      damla: 'Matone',
+      sabah: 'Asubuhi',
+    },
+    silErisim: 'Futa sauti {ad}',
+    ornekDinleErisim: 'Sikiliza: {ad}',
+    uzunlukNotu: 'Sauti ya arifa hulia kwa hadi sekunde 30; kwa faili ndefu zaidi, sekunde 30 za kwanza hutumika.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

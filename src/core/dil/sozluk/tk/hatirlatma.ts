@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Siziň saýlan sesiňiz',
     dokunarak: 'Üýtgetmek üçin basyň',
     seciliDinle: 'Saýlanan habarnama sesini diňläň',
+    paket: {
+      zil: 'Ýumşak jaň',
+      ikiton: 'Iki ses',
+      damla: 'Damjalar',
+      sabah: 'Ertir',
+    },
+    silErisim: '{ad} sesini pozuň',
+    ornekDinleErisim: 'Diňläň: {ad}',
+    uzunlukNotu: 'Habarnama sesi iň köp 30 sekunt çalýar; has uzyn faýlyň ilkinji 30 sekundy ulanylýar.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

@@ -30,7 +30,7 @@
  */
 import type { DilKodu } from '../dil/diller';
 
-export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi' | 'sesDosyasi';
+export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi' | 'sesDosyasi' | 'iosSesDosyasi';
 
 /** Duyurunun görüneceği platformlar. */
 export type YeniOzellikPlatformu = 'android' | 'ios';
@@ -85,13 +85,55 @@ export interface YeniOzellik {
 export type YeniOzellikCevirisi = Pick<YeniOzellik, 'baslik' | 'aciklama' | 'detayAciklama' | 'ctaEtiketi' | 'detaylar'>;
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // iPhone'da bildirim sesi seçimi. Android'in öğeleri ('muhafiz-bildirim-sesi-secimi',
+    // 'vakit-girdi-sesi-ve-kendi-dosyaniz') sistem ses seçicisini, titreşimi ve sonuna kadar
+    // çalan sesi anlatır — iPhone'da üçü de yok; yol farklı olduğundan iki öğe (günün ayeti
+    // öğeleriyle aynı gerekçe). Yetenek: kendi dosyanızı ekleyen native ikili.
+    {
+        id: 'ios-bildirim-sesi-secimi',
+        platformlar: ['ios'],
+        surum: '0.72.0',
+        tarih: '2026-11-07',
+        baslik: 'Hatırlatma sesini siz seçin',
+        aciklama:
+            'Namaz Muhafızı adımları ve vakit bildirimleri için uygulamanın seslerinden birini seçebilir ya da kendi ses dosyanızı ekleyebilirsiniz.',
+        detayAciklama:
+            'Bir hatırlatma adımının ayarlarında ya da Hatırlatmalar > Vakit girince sayfasında ses satırına dokunduğunuzda liste açılır: uygulamanın sesi, dört yeni ses ve eklediğiniz dosyalar. Her sesi seçmeden önce dinleyebilirsiniz. "Kendi dosyanızdan seçin" ile telefonunuzdaki bir ses dosyasını, örneğin bir ezan kaydını ekleyebilirsiniz; bildirim sesi en çok 30 saniye çaldığı için daha uzun bir dosyanın ilk 30 saniyesi kullanılır. Eklediğiniz sesleri listeden silebilirsiniz.',
+        ikon: 'music',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Sesinizi seçin',
+        kartGoster: true,
+        yetenek: 'iosSesDosyasi',
+        detaylar: [
+            'Her hatırlatma adımı ve her vakit için ayrı ses',
+            'Dört yeni ses: Sakin zil, İki ton, Damla ve Sabah',
+            'Kendi ses dosyanız: MP3, M4A ya da WAV',
+            'Seçmeden önce dinleyin; dilediğinizde varsayılana dönün',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Choose your reminder sound',
+                aciklama:
+                    'Pick one of the app’s sounds for Prayer Guardian steps and prayer time notifications, or add your own sound file.',
+                detayAciklama:
+                    'Tap the sound row in a reminder step’s settings or on Reminders > At prayer time to open the list: the app sound, four new sounds and the files you added. You can listen to each sound before choosing it. With "Choose your own file" you can add a sound file from your phone, such as an adhan recording; a notification sound plays for up to 30 seconds, so the first 30 seconds of a longer file are used. You can delete the sounds you added from the list.',
+                ctaEtiketi: 'Choose your sound',
+                detaylar: [
+                    'A separate sound for each reminder step and each prayer',
+                    'Four new sounds: Soft chime, Two tones, Droplets and Morning',
+                    'Your own sound file: MP3, M4A or WAV',
+                    'Listen before choosing; go back to the default whenever you like',
+                ],
+            },
+        },
+    },
     // Günün ayeti (#380 widget, #381 duvar kâğıdı). Duvar kâğıdı platforma göre farklı
     // olduğundan iki öğe: Android'de uygulama değiştirir, iPhone'da Kısayollar rehberi.
     {
         id: 'gunun-ayeti-android',
         platformlar: ['android'],
-        surum: '0.71.0',
-        tarih: '2026-10-24',
+        surum: '0.72.0',
+        tarih: '2026-11-07',
         baslik: 'Günün ayeti ana ekranınızda',
         aciklama:
             'Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza widget olarak ekleyebilir, isterseniz kilit ekranınızın duvar kâğıdı yapabilirsiniz.',
@@ -102,7 +144,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ctaEtiketi: 'Günün ayetini açın',
         detaylar: [
             'Meal hiçbir boyutta kesilmez; sığmadığı gün widget okumak için dokunmanızı ister.',
-            'Duvar kâğıdında Arapça metin isteğe bağlıdır ve başta kapalıdır.',
+            'Duvar kâğıdının görünümünü siz seçersiniz: vakte göre değişen gökyüzü, kendi fotoğrafınız, yazı tipi ve süs. Duvar kâğıdında Arapça metin isteğe bağlıdır ve başta kapalıdır.',
+            'Kilit ekranınızdaki saatin yerini ölçüp ayetin ve süslerin saatin altında kalmamasını sağlayabilirsiniz.',
             'Ayeti metin ya da görsel olarak paylaşabilirsiniz.',
         ],
         ceviri: {
@@ -115,7 +158,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Open the verse of the day',
                 detaylar: [
                     "The translation is never cut off; on days it doesn't fit, the widget asks you to tap to read it.",
-                    'Arabic text on the wallpaper is optional and starts off.',
+                    'You choose the wallpaper\'s look: a sky that follows the prayer times, your own photo, the font and an ornament. Arabic text on the wallpaper is optional and starts off.',
+                    'You can measure where the clock sits on your lock screen so the verse and ornaments stay clear of it.',
                     'You can share the verse as text or as an image.',
                 ],
             },
@@ -126,7 +170,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Buka ayat hari ini',
                 detaylar: [
                     'Terjemahan tidak pernah dipotong; pada hari terjemahan tidak muat, widget meminta Anda mengetuk untuk membacanya.',
-                    'Teks Arab di wallpaper bersifat opsional dan awalnya nonaktif.',
+                    'Anda memilih tampilan wallpaper: langit yang mengikuti waktu salat, foto Anda sendiri, jenis huruf, dan hiasan. Teks Arab di wallpaper bersifat opsional dan awalnya nonaktif.',
+                    'Anda dapat mengukur letak jam di layar kunci agar ayat dan hiasan tidak tertutup jam.',
                     'Anda dapat membagikan ayat sebagai teks atau gambar.',
                 ],
             },
@@ -137,7 +182,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Vers des Tages öffnen',
                 detaylar: [
                     'Die Übersetzung wird nie abgeschnitten; passt sie an einem Tag nicht, bittet das Widget Sie, zum Lesen zu tippen.',
-                    'Der arabische Text auf dem Hintergrundbild ist optional und anfangs aus.',
+                    'Das Aussehen des Hintergrundbilds wählen Sie selbst: ein Himmel, der den Gebetszeiten folgt, Ihr eigenes Foto, die Schrift und eine Verzierung. Der arabische Text auf dem Hintergrundbild ist optional und anfangs aus.',
+                    'Sie können messen, wo die Uhr auf Ihrem Sperrbildschirm steht, damit Vers und Verzierung nicht unter der Uhr liegen.',
                     'Sie können den Vers als Text oder als Bild teilen.',
                 ],
             },
@@ -148,7 +194,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ouvrir le verset du jour',
                 detaylar: [
                     'La traduction n’est jamais coupée ; les jours où elle ne tient pas, le widget vous invite à la toucher pour la lire.',
-                    'Le texte arabe sur le fond d’écran est facultatif et désactivé au départ.',
+                    'Vous choisissez l’apparence du fond d’écran : un ciel qui suit les heures de prière, votre propre photo, la police et un ornement. Le texte arabe sur le fond d’écran est facultatif et désactivé au départ.',
+                    'Vous pouvez mesurer l’emplacement de l’horloge sur votre écran de verrouillage pour que le verset et l’ornement ne passent pas sous l’horloge.',
                     'Vous pouvez partager le verset en texte ou en image.',
                 ],
             },
@@ -159,7 +206,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Otvorite ajet dana',
                 detaylar: [
                     'Prijevod značenja se nikada ne skraćuje; u danima kada ne stane, widget Vas poziva da ga dodirnete i pročitate.',
-                    'Arapski tekst na pozadini je opcionalan i u početku je isključen.',
+                    'Izgled pozadine birate sami: nebo koje prati namaska vremena, vlastitu fotografiju, slova i ukras. Arapski tekst na pozadini je opcionalan i u početku je isključen.',
+                    'Možete izmjeriti gdje je sat na zaključanom ekranu kako ajet i ukras ne bi ostali ispod sata.',
                     'Ajet možete podijeliti kao tekst ili kao sliku.',
                 ],
             },
@@ -170,7 +218,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Открыть аят дня',
                 detaylar: [
                     'Перевод смыслов никогда не обрезается; если в какой-то день он не помещается, виджет предложит нажать, чтобы прочитать.',
-                    'Арабский текст на обоях — по желанию, по умолчанию выключен.',
+                    'Вид обоев вы выбираете сами: небо, следующее времени намаза, собственное фото, шрифт и узор. Арабский текст на обоях — по желанию, по умолчанию выключен.',
+                    'Можно измерить, где на экране блокировки находятся часы, чтобы аят и узор не оказались под ними.',
                     'Аятом можно поделиться текстом или картинкой.',
                 ],
             },
@@ -181,7 +230,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Buka ayat hari ini',
                 detaylar: [
                     'Terjemahan tidak sekali-kali dipotong; pada hari ia tidak muat, widget meminta anda mengetik untuk membacanya.',
-                    'Teks Arab pada kertas dinding adalah pilihan dan dimatikan pada mulanya.',
+                    'Anda memilih rupa kertas dinding: langit yang mengikut waktu solat, foto anda sendiri, fon dan hiasan. Teks Arab pada kertas dinding adalah pilihan dan dimatikan pada mulanya.',
+                    'Anda boleh mengukur kedudukan jam pada skrin kunci supaya ayat dan hiasan tidak terlindung oleh jam.',
                     'Anda boleh berkongsi ayat sebagai teks atau imej.',
                 ],
             },
@@ -192,7 +242,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'فتح آية اليوم',
                 detaylar: [
                     'لا تُقطع الآية أبدًا؛ وفي الأيام التي لا تتسع فيها تدعو الأداة إلى النقر لقراءتها.',
-                    'يمكن اختيار الخلفية اللونية للصورة ومكانها: شاشة القفل أو الشاشة الرئيسية أو كلتاهما.',
+                    'يمكن اختيار مظهر الخلفية: سماء تتبع أوقات الصلاة أو صورة خاصة، مع الخط والزخرفة. يمكن اختيار الخلفية اللونية للصورة ومكانها: شاشة القفل أو الشاشة الرئيسية أو كلتاهما.',
+                    'يمكن قياس موضع الساعة على شاشة القفل حتى لا تقع الآية والزخرفة تحت الساعة.',
                     'يمكن مشاركة الآية نصًّا أو صورة.',
                 ],
             },
@@ -203,7 +254,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'آج کی آیت کھولیں',
                 detaylar: [
                     'ترجمہ کبھی کاٹا نہیں جاتا؛ جس دن پورا نہ سمائے، ویجیٹ پڑھنے کے لیے تھپتھپانے کو کہتا ہے۔',
-                    'وال پیپر پر عربی متن اختیاری ہے اور شروع میں بند ہوتا ہے۔',
+                    'وال پیپر کا انداز آپ خود چنتے ہیں: نماز کے اوقات کے ساتھ بدلتا آسمان، اپنی تصویر، تحریر کا انداز اور آرائش۔ وال پیپر پر عربی متن اختیاری ہے اور شروع میں بند ہوتا ہے۔',
+                    'آپ لاک اسکرین پر گھڑی کی جگہ ناپ سکتے ہیں تاکہ آیت اور آرائش گھڑی کے نیچے نہ آئیں۔',
                     'آیت متن یا تصویر کے طور پر شیئر کی جا سکتی ہے۔',
                 ],
             },
@@ -214,7 +266,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Abrir la aleya del día',
                 detaylar: [
                     'La traducción nunca se corta; los días en que no cabe, el widget le pide que toque para leerla.',
-                    'El texto árabe en el fondo de pantalla es opcional y empieza desactivado.',
+                    'Usted elige el aspecto del fondo de pantalla: un cielo que sigue los horarios de oración, su propia foto, la letra y un adorno. El texto árabe en el fondo de pantalla es opcional y empieza desactivado.',
+                    'Puede medir dónde está el reloj en su pantalla de bloqueo para que la aleya y el adorno no queden debajo del reloj.',
                     'Puede compartir la aleya como texto o como imagen.',
                 ],
             },
@@ -225,7 +278,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Het vers van de dag openen',
                 detaylar: [
                     'De vertaling wordt nooit afgekapt; op dagen dat ze niet past, vraagt de widget u te tikken om te lezen.',
-                    'De Arabische tekst op de achtergrond is optioneel en staat in het begin uit.',
+                    'U kiest zelf het uiterlijk van de achtergrond: een hemel die de gebedstijden volgt, uw eigen foto, het lettertype en een versiering. De Arabische tekst op de achtergrond is optioneel en staat in het begin uit.',
+                    'U kunt meten waar de klok op uw vergrendelscherm staat, zodat het vers en de versiering niet onder de klok vallen.',
                     'U kunt het vers als tekst of als afbeelding delen.',
                 ],
             },
@@ -236,7 +290,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Hapni ajetin e ditës',
                 detaylar: [
                     'Përkthimi nuk shkurtohet kurrë; në ditët kur nuk nxë, widget-i ju fton ta prekni për ta lexuar.',
-                    'Teksti arab në sfond është opsional dhe fillimisht joaktiv.',
+                    'Pamjen e sfondit e zgjidhni vetë: një qiell që ndjek kohët e namazit, foton tuaj, shkronjat dhe një zbukurim. Teksti arab në sfond është opsional dhe fillimisht joaktiv.',
+                    'Mund të matni vendin e orës në ekranin e kyçjes, që ajeti dhe zbukurimi të mos mbeten nën orë.',
                     'Ajetin mund ta ndani si tekst ose si figurë.',
                 ],
             },
@@ -247,7 +302,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'आज की आयत खोलें',
                 detaylar: [
                     'तर्जुमा कभी काटा नहीं जाता; जिस दिन वह नहीं समाता, विजेट पढ़ने के लिए टैप करने को कहता है।',
-                    'वॉलपेपर पर अरबी टेक्स्ट अपनी मर्ज़ी से है और शुरू में बंद रहता है।',
+                    'वॉलपेपर का रूप आप ख़ुद चुनते हैं: नमाज़ के वक़्तों के साथ बदलता आसमान, अपनी फ़ोटो, लिखावट और सजावट। वॉलपेपर पर अरबी टेक्स्ट अपनी मर्ज़ी से है और शुरू में बंद रहता है।',
+                    'आप लॉक स्क्रीन पर घड़ी की जगह माप सकते हैं, ताकि आयत और सजावट घड़ी के नीचे न आएँ।',
                     'आयत को टेक्स्ट या तस्वीर के रूप में शेयर किया जा सकता है।',
                 ],
             },
@@ -258,7 +314,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'দিনের আয়াত খুলুন',
                 detaylar: [
                     'অনুবাদ কখনো কাটা হয় না; যেদিন আঁটে না, সেদিন উইজেট পড়তে ট্যাপ করতে বলে।',
-                    'ওয়ালপেপারে আরবি লেখা ঐচ্ছিক এবং শুরুতে বন্ধ থাকে।',
+                    'ওয়ালপেপারের চেহারা আপনিই বেছে নেন: নামাজের সময়ের সাথে বদলানো আকাশ, নিজের ছবি, লেখার ধরন ও অলংকরণ। ওয়ালপেপারে আরবি লেখা ঐচ্ছিক এবং শুরুতে বন্ধ থাকে।',
+                    'লক স্ক্রিনে ঘড়ির জায়গা মেপে নিতে পারেন, যাতে আয়াত ও অলংকরণ ঘড়ির নিচে ঢাকা না পড়ে।',
                     'আয়াতটি লেখা বা ছবি হিসেবে শেয়ার করতে পারেন।',
                 ],
             },
@@ -269,7 +326,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'باز کردن آیهٔ روز',
                 detaylar: [
                     'ترجمه هرگز بریده نمی‌شود؛ روزهایی که جا نشود، ابزارک از شما می‌خواهد برای خواندن ضربه بزنید.',
-                    'متن عربی روی تصویر زمینه اختیاری است و در آغاز خاموش است.',
+                    'ظاهر تصویر زمینه را خودتان انتخاب می‌کنید: آسمانی همراه با وقت‌های نماز، عکس خودتان، قلم و آرایه. متن عربی روی تصویر زمینه اختیاری است و در آغاز خاموش است.',
+                    'می‌توانید جای ساعت را در صفحهٔ قفل اندازه بگیرید تا آیه و آرایه زیر ساعت نروند.',
                     'می‌توانید آیه را به‌صورت متن یا تصویر به اشتراک بگذارید.',
                 ],
             },
@@ -280,7 +338,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'د ورځې آیت پرانیزئ',
                 detaylar: [
                     'ژباړه هېڅکله نه پرې کېږي؛ په هغو ورځو چې نه ځایېږي، ویجټ غواړي چې د لوستلو لپاره یې کېکاږئ.',
-                    'په شالید کې عربي متن اختیاري دی او په پیل کې بند دی.',
+                    'د سکرین د شالید بڼه تاسو پخپله ټاکئ: د لمانځه له وختونو سره بدلېدونکی آسمان، خپل انځور، لیک بڼه او ښکلا. په شالید کې عربي متن اختیاري دی او په پیل کې بند دی.',
+                    'تاسو کولی شئ د قلف سکرین پر مخ د ساعت ځای اندازه کړئ، څو آیت او ښکلا د ساعت لاندې پاتې نه شي.',
                     'آیت د متن یا انځور په توګه شریکولای شئ.',
                 ],
             },
@@ -291,7 +350,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'کردنەوەی ئایەتی ڕۆژ',
                 detaylar: [
                     'وەرگێڕانەکە ھەرگیز ناپچڕێت؛ لەو ڕۆژانەی جێی نابێتەوە، ویجێتەکە داواتان لێ دەکات بۆ خوێندنەوە دەستی لێ بدەن.',
-                    'دەقی عەرەبی لەسەر وێنەی پاشبنەما ئارەزوومەندانەیە و لە سەرەتادا ناچالاکە.',
+                    'ڕووکاری وێنەی پاشبنەما خۆتان ھەڵدەبژێرن: ئاسمانێک کە لەگەڵ کاتەکانی نوێژ دەگۆڕێت، وێنەی خۆتان، جۆری نووسین و ڕازاندنەوە. دەقی عەرەبی لەسەر وێنەی پاشبنەما ئارەزوومەندانەیە و لە سەرەتادا ناچالاکە.',
+                    'دەتوانن شوێنی کاتژمێر لەسەر شاشەی قوفڵ بپێون، تا ئایەت و ڕازاندنەوە نەکەونە ژێر کاتژمێرەکە.',
                     'دەتوانن ئایەتەکە وەک دەق یان وێنە ھاوبەش بکەن.',
                 ],
             },
@@ -302,7 +362,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'كۈننىڭ ئايىتىنى ئېچىڭ',
                 detaylar: [
                     'تەرجىمە ھېچقانداق چوڭلۇقتا كېسىلمەيدۇ؛ سىغمىغان كۈنى كىچىك قورال ئوقۇش ئۈچۈن چېكىشىڭىزنى سورايدۇ.',
-                    'تام قەغىزىدىكى ئەرەبچە تېكىست ئىختىيارىي بولۇپ، باشتا تاقاق تۇرىدۇ.',
+                    'تام قەغىزىنىڭ كۆرۈنۈشىنى ئۆزىڭىز تاللايسىز: ناماز ۋاقتىغا ئەگىشىدىغان ئاسمان، ئۆز سۈرىتىڭىز، خەت نۇسخىسى ۋە بېزەك. تام قەغىزىدىكى ئەرەبچە تېكىست ئىختىيارىي بولۇپ، باشتا تاقاق تۇرىدۇ.',
+                    'قۇلۇپ ئېكرانىڭىزدىكى سائەتنىڭ ئورنىنى ئۆلچەپ، ئايەت ۋە بېزەكنىڭ سائەت ئاستىدا قالماسلىقىنى كاپالەتلەندۈرەلەيسىز.',
                     'ئايەتنى تېكىست ياكى رەسىم قىلىپ ھەمبەھىرلىيەلەيسىز.',
                 ],
             },
@@ -313,7 +374,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Günün ayəsini açın',
                 detaylar: [
                     'Tərcümə heç vaxt kəsilmir; sığmadığı günlərdə vidcet oxumaq üçün toxunmağınızı xahiş edir.',
-                    'Divar kağızında ərəbcə mətn istəyə bağlıdır və əvvəlcə bağlı olur.',
+                    'Divar kağızının görünüşünü özünüz seçirsiniz: namaz vaxtına uyğun dəyişən səma, öz fotonuz, şrift və bəzək. Divar kağızında ərəbcə mətn istəyə bağlıdır və əvvəlcə bağlı olur.',
+                    'Kilid ekranınızdakı saatın yerini ölçə bilərsiniz ki, ayə və bəzək saatın altında qalmasın.',
                     'Ayəni mətn və ya şəkil kimi paylaşa bilərsiniz.',
                 ],
             },
@@ -324,7 +386,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Кун оятини очиш',
                 detaylar: [
                     'Таржима ҳеч бир ўлчамда қисқартирилмайди; сиғмаган куни виджет ўқиш учун босишингизни сўрайди.',
-                    'Фон расмидаги арабча матн ихтиёрий ва бошида ўчиқ.',
+                    'Фон расмининг кўринишини ўзингиз танлайсиз: намоз вақтига мос ўзгарадиган осмон, ўз суратингиз, ҳарф шакли ва безак. Фон расмидаги арабча матн ихтиёрий ва бошида ўчиқ.',
+                    'Қулф экранингиздаги соатнинг ўрнини ўлчаб, оят ва безак соат остида қолмаслигини таъминлашингиз мумкин.',
                     'Оятни матн ёки расм сифатида улашишингиз мумкин.',
                 ],
             },
@@ -335,7 +398,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Күннің аятын ашу',
                 detaylar: [
                     'Аударма ешбір өлшемде қысқартылмайды; сыймаған күні виджет оқу үшін түртуді сұрайды.',
-                    'Тұсқағаздағы арабша мәтін міндетті емес және басында өшірулі.',
+                    'Тұсқағаздың көрінісін өзіңіз таңдайсыз: намаз уақытына сай өзгеретін аспан, өз фотоңыз, қаріп және өрнек. Тұсқағаздағы арабша мәтін міндетті емес және басында өшірулі.',
+                    'Құлып экранындағы сағаттың орнын өлшеп, аят пен өрнектің сағат астында қалмауын қамтамасыз ете аласыз.',
                     'Аятпен мәтін немесе сурет ретінде бөлісе аласыз.',
                 ],
             },
@@ -346,7 +410,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Күндүн аятын ачуу',
                 detaylar: [
                     'Котормо эч качан кесилбейт; батпаган күндөрү виджет окуу үчүн басууну сунуштайт.',
-                    'Тушкагаздагы арабча текст милдеттүү эмес жана башында өчүк турат.',
+                    'Тушкагаздын көрүнүшүн өзүңүз тандайсыз: намаз убактысына жараша өзгөргөн асман, өз сүрөтүңүз, шрифт жана оюм. Тушкагаздагы арабча текст милдеттүү эмес жана башында өчүк турат.',
+                    'Кулпу экраныңыздагы сааттын ордун өлчөй аласыз, ошондо аят менен оюм сааттын астында калбайт.',
                     'Аятты текст же сүрөт катары бөлүшө аласыз.',
                 ],
             },
@@ -357,7 +422,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ояти рӯзро кушоед',
                 detaylar: [
                     'Тарҷума ҳеҷ гоҳ бурида намешавад; дар рӯзҳое, ки намеғунҷад, виҷет хоҳиш мекунад, ки барои хондан пахш кунед.',
-                    'Матни арабӣ дар тасвири замина ихтиёрӣ аст ва дар аввал хомӯш аст.',
+                    'Намуди тасвири заминаро худатон интихоб мекунед: осмоне, ки ба вақтҳои намоз пайравӣ мекунад, акси худатон, ҳуруф ва ороиш. Матни арабӣ дар тасвири замина ихтиёрӣ аст ва дар аввал хомӯш аст.',
+                    'Шумо метавонед ҷойи соатро дар экрани қулф чен кунед, то оят ва ороиш зери соат намонанд.',
                     'Оятро ҳамчун матн ё тасвир мубодила карда метавонед.',
                 ],
             },
@@ -368,7 +434,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Fungua aya ya siku',
                 detaylar: [
                     'Tafsiri haikatwi kamwe; siku isipotoshea, wijeti inakuomba uguse ili uisome.',
-                    'Maandishi ya Kiarabu kwenye mandhari ni hiari na yanaanza yakiwa yamezimwa.',
+                    'Unachagua mwonekano wa mandhari: anga inayofuata nyakati za swala, picha yako mwenyewe, mtindo wa herufi na pambo. Maandishi ya Kiarabu kwenye mandhari ni hiari na yanaanza yakiwa yamezimwa.',
+                    'Unaweza kupima mahali saa ilipo kwenye skrini iliyofungwa ili aya na pambo zisifunikwe na saa.',
                     'Unaweza kushiriki aya kama maandishi au kama picha.',
                 ],
             },
@@ -379,7 +446,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Buɗe ayar yau',
                 detaylar: [
                     'Ba a taɓa yanke fassara; a ranakun da ba ta dace ba, widget yana roƙon ku ku taɓa don karanta ta.',
-                    'Rubutun Larabci a fuskar bango zaɓi ne kuma a kashe yake da farko.',
+                    'Ku ne kuke zaɓar kamannin fuskar bango: sararin samaniya mai bin lokutan sallah, hotonku, salon rubutu da ado. Rubutun Larabci a fuskar bango zaɓi ne kuma a kashe yake da farko.',
+                    'Kuna iya auna wurin agogo a allon kullenku don kada aya da ado su faɗa ƙarƙashin agogon.',
                     'Kuna iya raba ayar a matsayin rubutu ko hoto.',
                 ],
             },
@@ -390,7 +458,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'የዕለቱን አንቀጽ ክፈት',
                 detaylar: [
                     'ትርጉሙ በፍጹም አይቆረጥም፤ በማይበቃባቸው ቀናት ዊጀቱ ለማንበብ እንዲነኩ ይጠይቅዎታል።',
-                    'በግድግዳ ምስሉ ላይ የዓረብኛ ጽሑፍ አማራጭ ሲሆን በመጀመሪያ ጠፍቷል።',
+                    'የግድግዳ ምስሉን መልክ እርስዎ ይመርጣሉ፤ የሶላት ጊዜያትን የሚከተል ሰማይ፣ የራስዎ ፎቶ፣ የፊደል ቅርጽና ጌጥ። በግድግዳ ምስሉ ላይ የዓረብኛ ጽሑፍ አማራጭ ሲሆን በመጀመሪያ ጠፍቷል።',
+                    'የመቆለፊያ ገጽዎ ላይ ሰዓቱ ያለበትን ቦታ መለካት ይችላሉ፤ በዚህም አንቀጹና ጌጡ ከሰዓቱ ስር አይገቡም።',
                     'አንቀጹን እንደ ጽሑፍ ወይም እንደ ምስል ማጋራት ይችላሉ።',
                 ],
             },
@@ -401,7 +470,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Aayata guyyaa banaa',
                 detaylar: [
                     'Hiikkaan gonkumaa hin kutamu; guyyaa hin geenye, wiijetiin akka dubbisuuf tuqxan isin gaafata.',
-                    'Barreeffamni Arabaa suuraa duubaa irratti filannoo dha, jalqaba irratti cufaa dha.',
+                    'Bifa suuraa duubaa ofii keessaniin filattu: samii yeroo salaataa hordofu, suuraa keessan, bifa qubee fi miidhagina. Barreeffamni Arabaa suuraa duubaa irratti filannoo dha, jalqaba irratti cufaa dha.',
+                    'Bakka sa’aatiin fuula cufaa keessan irra jiru safaruu dandeessu, akka aayanni fi miidhaginni sa’aatii jala hin seenneef.',
                     'Aayata akka barreeffamaa ykn akka suuraatti qooddachuu dandeessu.',
                 ],
             },
@@ -412,7 +482,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Fur aayadda maanta',
                 detaylar: [
                     'Tarjumaadda marnaba lama gooyo; maalmaha aysan ku filnayn, wijitku wuxuu kaa codsadaa inaad taabato si aad u akhrido.',
-                    'Qoraalka Carabiga ee sawirka asalka waa ikhtiyaari, wuxuuna ku bilaabmaa isagoo dansan.',
+                    'Adigaa dooranaya muuqaalka sawirka asalka: cir raacaya waqtiyada salaadda, sawirkaaga, qaabka farta iyo qurxin. Qoraalka Carabiga ee sawirka asalka waa ikhtiyaari, wuxuuna ku bilaabmaa isagoo dansan.',
+                    'Waxaad cabbiri kartaa meesha saacaddu kaga taal shaashadda qufulka, si aayadda iyo qurxintu aysan saacadda hoosteeda u gelin.',
                     'Aayadda waxaad u wadaagi kartaa qoraal ama sawir ahaan.',
                 ],
             },
@@ -423,7 +494,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Udditee aaya ñalawma',
                 detaylar: [
                     'Firo ngo taƴetaake abada; ñalɗe ɗe ngo haanaani, widget ngo hino ƴama on dobde ngam janngude ngo.',
-                    'Binndi Aarabeere e natal yaynirde ko e suɓaade, hino fuɗɗoo ñifaa.',
+                    'Ko onon suɓata mbaydi natal yaynirde: asamaan rewoowo waqtuuji juulde, natal mon, mbaydi binndol e cuɗaari. Binndi Aarabeere e natal yaynirde ko e suɓaade, hino fuɗɗoo ñifaa.',
+                    'Ina mbaawon betde nokku montoor e yaynirde uddaande mon, ngam aaya e cuɗaari hoto naat les montoor.',
                     'Hiɗon mbaawi lollinde aaya oo wa binndi walla wa natal.',
                 ],
             },
@@ -434,7 +506,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ṣí āyah ti òní',
                 detaylar: [
                     'A kì í gé ìtumọ̀ kúrú láéláé; ní ọjọ́ tí kò bá bá a mu, wíjẹ́ẹ̀tì yóò ní kí ẹ tẹ̀ ẹ́ láti kà á.',
-                    'Ọ̀rọ̀ Lárúbáwá lórí àwòrán ìbòjú jẹ́ àṣàyàn, ó sì wà ní pípa ní ìbẹ̀rẹ̀.',
+                    'Ẹ̀yin ni ẹ ń yan ìrísí àwòrán ìbòjú: ojú ọ̀run tí ó ń tẹ̀lé àkókò ìrun, fọ́tò tiyín, irú ọ̀rọ̀ àti ọ̀ṣọ́. Ọ̀rọ̀ Lárúbáwá lórí àwòrán ìbòjú jẹ́ àṣàyàn, ó sì wà ní pípa ní ìbẹ̀rẹ̀.',
+                    'Ẹ lè wọn ibi tí aago wà lórí ojú-ìbòjú títì yín, kí āyah àti ọ̀ṣọ́ má baà bọ́ sí abẹ́ aago.',
                     'Ẹ lè pín āyah náà gẹ́gẹ́ bí ọ̀rọ̀ tàbí àwòrán.',
                 ],
             },
@@ -445,7 +518,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: '打开每日经文',
                 detaylar: [
                     '译文绝不会被截断；放不下的日子，小组件会提示您点按阅读。',
-                    '壁纸上的阿拉伯语原文是可选的，默认关闭。',
+                    '壁纸外观由您选择：随礼拜时间变化的天空、您自己的照片、字体和装饰。 壁纸上的阿拉伯语原文是可选的，默认关闭。',
+                    '您可以测量锁屏上时钟的位置，让经文和装饰不被时钟遮挡。',
                     '可以以文字或图片分享经文。',
                 ],
             },
@@ -456,7 +530,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'இன்றைய வசனத்தைத் திறக்க',
                 detaylar: [
                     'மொழிபெயர்ப்பு ஒருபோதும் வெட்டப்படாது; பொருந்தாத நாட்களில் படிக்கத் தட்டுமாறு விட்ஜெட் கேட்கும்.',
-                    'வால்பேப்பரில் அரபு உரை விருப்பத்தேர்வு; தொடக்கத்தில் முடக்கத்தில் இருக்கும்.',
+                    'வால்பேப்பரின் தோற்றத்தை நீங்களே தேர்வு செய்யலாம்: தொழுகை நேரங்களைப் பின்பற்றும் வானம், உங்கள் சொந்தப் புகைப்படம், எழுத்துரு, அலங்காரம். வால்பேப்பரில் அரபு உரை விருப்பத்தேர்வு; தொடக்கத்தில் முடக்கத்தில் இருக்கும்.',
+                    'பூட்டுத் திரையில் கடிகாரம் இருக்கும் இடத்தை அளந்து, வசனமும் அலங்காரமும் கடிகாரத்தின் கீழ் மறையாமல் செய்யலாம்.',
                     'வசனத்தை உரையாகவோ படமாகவோ பகிரலாம்.',
                 ],
             },
@@ -467,7 +542,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ഇന്നത്തെ ആയത്ത് തുറക്കുക',
                 detaylar: [
                     'പരിഭാഷ ഒരിക്കലും മുറിക്കില്ല; ഒതുങ്ങാത്ത ദിവസങ്ങളിൽ വായിക്കാൻ ടാപ്പ് ചെയ്യാൻ വിജറ്റ് പറയും.',
-                    'വാൾപേപ്പറിലെ അറബി പാഠം ഐച്ഛികമാണ്, തുടക്കത്തിൽ ഓഫാണ്.',
+                    'വാൾപേപ്പറിന്റെ രൂപം നിങ്ങൾ തന്നെ തിരഞ്ഞെടുക്കുന്നു: നമസ്കാര സമയങ്ങൾ പിന്തുടരുന്ന ആകാശം, സ്വന്തം ഫോട്ടോ, അക്ഷരരൂപം, അലങ്കാരം. വാൾപേപ്പറിലെ അറബി പാഠം ഐച്ഛികമാണ്, തുടക്കത്തിൽ ഓഫാണ്.',
+                    'ലോക്ക് സ്ക്രീനിലെ ക്ലോക്കിന്റെ സ്ഥാനം അളന്ന്, ആയത്തും അലങ്കാരവും ക്ലോക്കിന് താഴെ മറയാതെ നോക്കാം.',
                     'ആയത്ത് വാചകമായോ ചിത്രമായോ പങ്കിടാം.',
                 ],
             },
@@ -478,7 +554,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'เปิดอายะฮ์ประจำวัน',
                 detaylar: [
                     'คำแปลจะไม่ถูกตัด ในวันที่ไม่พอดี วิดเจ็ตจะขอให้คุณแตะเพื่ออ่าน',
-                    'ตัวบทภาษาอาหรับบนวอลเปเปอร์เป็นตัวเลือกและปิดไว้ตั้งแต่ต้น',
+                    'คุณเลือกรูปลักษณ์ของวอลเปเปอร์เองได้: ท้องฟ้าที่เปลี่ยนตามเวลาละหมาด รูปภาพของคุณเอง แบบอักษร และลวดลาย ตัวบทภาษาอาหรับบนวอลเปเปอร์เป็นตัวเลือกและปิดไว้ตั้งแต่ต้น',
+                    'คุณวัดตำแหน่งนาฬิกาบนหน้าจอล็อกได้ เพื่อไม่ให้อายะฮ์และลวดลายถูกนาฬิกาบัง',
                     'คุณแชร์อายะฮ์เป็นข้อความหรือรูปภาพได้',
                 ],
             },
@@ -489,7 +566,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: '오늘의 구절 열기',
                 detaylar: [
                     '번역은 절대 잘리지 않으며, 맞지 않는 날에는 위젯이 탭하여 읽으라고 안내합니다.',
-                    '배경화면의 아랍어 원문은 선택 사항이며 처음에는 꺼져 있습니다.',
+                    '배경화면 모양은 직접 고릅니다. 예배 시간에 맞춰 바뀌는 하늘, 내 사진, 글꼴과 장식. 배경화면의 아랍어 원문은 선택 사항이며 처음에는 꺼져 있습니다.',
+                    '잠금 화면에서 시계 위치를 측정해 구절과 장식이 시계에 가려지지 않게 할 수 있습니다.',
                     '구절을 텍스트나 이미지로 공유할 수 있습니다.',
                 ],
             },
@@ -500,7 +578,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Mở Câu Kinh hôm nay',
                 detaylar: [
                     'Bản dịch không bao giờ bị cắt; vào những ngày không vừa, tiện ích sẽ mời bạn chạm để đọc.',
-                    'Văn bản Ả Rập trên hình nền là tùy chọn và ban đầu được tắt.',
+                    'Bạn tự chọn giao diện hình nền: bầu trời theo giờ cầu nguyện, ảnh của riêng bạn, kiểu chữ và hoa văn. Văn bản Ả Rập trên hình nền là tùy chọn và ban đầu được tắt.',
+                    'Bạn có thể đo vị trí đồng hồ trên màn hình khóa để câu Kinh và hoa văn không bị đồng hồ che.',
                     'Bạn có thể chia sẻ câu Kinh dưới dạng văn bản hoặc hình ảnh.',
                 ],
             },
@@ -511,7 +590,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Abrir o versículo do dia',
                 detaylar: [
                     'A tradução nunca é cortada; nos dias em que não cabe, o widget convida a tocar para a ler.',
-                    'O texto árabe no papel de parede é opcional e começa desativado.',
+                    'Escolhe o aspeto do papel de parede: um céu que acompanha as horas de oração, a sua própria fotografia, a letra e um ornamento. O texto árabe no papel de parede é opcional e começa desativado.',
+                    'Pode medir onde fica o relógio no ecrã de bloqueio para que o versículo e o ornamento não fiquem por baixo do relógio.',
                     'Pode partilhar o versículo como texto ou como imagem.',
                 ],
             },
@@ -522,7 +602,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Aprire il versetto del giorno',
                 detaylar: [
                     'La traduzione non viene mai tagliata; nei giorni in cui non entra, il widget invita a toccare per leggerla.',
-                    'Il testo arabo sullo sfondo è facoltativo e all’inizio è disattivato.',
+                    'Scegliete voi l’aspetto dello sfondo: un cielo che segue gli orari di preghiera, una vostra foto, il carattere e un ornamento. Il testo arabo sullo sfondo è facoltativo e all’inizio è disattivato.',
+                    'Potete misurare dove si trova l’orologio sulla schermata di blocco, così il versetto e l’ornamento non finiscono sotto l’orologio.',
                     'Può condividere il versetto come testo o come immagine.',
                 ],
             },
@@ -533,7 +614,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Öppna dagens vers',
                 detaylar: [
                     'Översättningen kortas aldrig av; de dagar den inte får plats ber widgeten dig att trycka för att läsa den.',
-                    'Arabisk text på bakgrundsbilden är valfri och är avstängd från början.',
+                    'Du väljer bakgrundsbildens utseende: en himmel som följer bönetiderna, ditt eget foto, typsnittet och ett ornament. Arabisk text på bakgrundsbilden är valfri och är avstängd från början.',
+                    'Du kan mäta var klockan sitter på låsskärmen så att versen och ornamentet inte hamnar under klockan.',
                     'Du kan dela versen som text eller som bild.',
                 ],
             },
@@ -544,7 +626,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Відкрити аят дня',
                 detaylar: [
                     'Переклад ніколи не обрізається; у дні, коли він не вміщається, віджет пропонує торкнутися, щоб прочитати.',
-                    'Арабський текст на шпалерах необов’язковий і спочатку вимкнений.',
+                    'Вигляд шпалер ви обираєте самі: небо, що слідує часу намазу, власне фото, шрифт і візерунок. Арабський текст на шпалерах необов’язковий і спочатку вимкнений.',
+                    'Можна виміряти, де на екрані блокування розташований годинник, щоб аят і візерунок не опинилися під ним.',
                     'Аятом можна поділитися як текстом або як зображенням.',
                 ],
             },
@@ -555,7 +638,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Deschideți versetul zilei',
                 detaylar: [
                     'Traducerea nu este tăiată niciodată; în zilele în care nu încape, widgetul vă invită să atingeți pentru a o citi.',
-                    'Textul arab pe fundal este opțional și pornește dezactivat.',
+                    'Alegeți aspectul fundalului: un cer care urmează orele de rugăciune, propria fotografie, fontul și un ornament. Textul arab pe fundal este opțional și pornește dezactivat.',
+                    'Puteți măsura unde se află ceasul pe ecranul de blocare, ca versetul și ornamentul să nu ajungă sub ceas.',
                     'Puteți distribui versetul ca text sau ca imagine.',
                 ],
             },
@@ -566,7 +650,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Otvorite ajet dana',
                 detaylar: [
                     'Prijevod se nikad ne skraćuje; u danima kad ne stane, widget vas poziva da ga dodirnete i pročitate.',
-                    'Arapski tekst na pozadini nije obavezan i na početku je isključen.',
+                    'Izgled pozadine birate sami: nebo koje prati vremena namaza, vlastitu fotografiju, slova i ukras. Arapski tekst na pozadini nije obavezan i na početku je isključen.',
+                    'Možete izmjeriti gdje je sat na zaključanom zaslonu kako ajet i ukras ne bi ostali ispod sata.',
                     'Ajet možete podijeliti kao tekst ili kao sliku.',
                 ],
             },
@@ -577,7 +662,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Отворите ајет дана',
                 detaylar: [
                     'Превод значења се никада не скраћује; у данима када не стаје, виџет вас позива да га додирнете и прочитате.',
-                    'Арапски текст на позадини је необавезан и у почетку је искључен.',
+                    'Изглед позадине бирате сами: небо које прати времена намаза, сопствену фотографију, слова и украс. Арапски текст на позадини је необавезан и у почетку је искључен.',
+                    'Можете да измерите где је сат на закључаном екрану како ајет и украс не би остали испод сата.',
                     'Ајет можете поделити као текст или као слику.',
                 ],
             },
@@ -588,7 +674,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Άνοιγμα του εδαφίου της ημέρας',
                 detaylar: [
                     'Η μετάφραση δεν κόβεται ποτέ· τις ημέρες που δεν χωράει, το widget σας ζητά να το πατήσετε για να τη διαβάσετε.',
-                    'Το αραβικό κείμενο στην ταπετσαρία είναι προαιρετικό και αρχικά ανενεργό.',
+                    'Την εμφάνιση της ταπετσαρίας τη διαλέγετε εσείς: ουρανός που ακολουθεί τις ώρες προσευχής, δική σας φωτογραφία, γραμματοσειρά και διακόσμηση. Το αραβικό κείμενο στην ταπετσαρία είναι προαιρετικό και αρχικά ανενεργό.',
+                    'Μπορείτε να μετρήσετε πού βρίσκεται το ρολόι στην οθόνη κλειδώματος, ώστε το εδάφιο και η διακόσμηση να μη μένουν κάτω από το ρολόι.',
                     'Μπορείτε να κοινοποιήσετε το εδάφιο ως κείμενο ή ως εικόνα.',
                 ],
             },
@@ -599,7 +686,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ayeta rojê vekin',
                 detaylar: [
                     'Ayet qet nayê birîn; di rojên ku cih nagire de, wîdcet ji we dixwaze ku ji bo xwendinê bitikînin.',
-                    'Nivîsa Erebî ya li ser wêneyê dîwêr bijarte ye û di destpêkê de girtî ye.',
+                    'Hûn xuyangê wêneyê dîwêr bi xwe hildibijêrin: asmanek li gorî demên nimêjê, wêneyê xwe, cureyê nivîsê û xemil. Nivîsa Erebî ya li ser wêneyê dîwêr bijarte ye û di destpêkê de girtî ye.',
+                    'Hûn dikarin cihê saetê li ser dîmena kilîtê bipîvin, da ku ayet û xemil nekevin bin saetê.',
                     'Hûn dikarin ayetê wekî nivîs an wekî wêne parve bikin.',
                 ],
             },
@@ -610,7 +698,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Günüň aýatyny açyň',
                 detaylar: [
                     'Aýat hiç haçan kesilmeýär; sygmaýan günlerde widjet okamak üçin basmagyňyzy soraýar.',
-                    'Diwar kagyzynda arapça tekst islege görä, başda öçük.',
+                    'Diwar kagyzynyň görnüşini özüňiz saýlaýarsyňyz: namaz wagtyna görä üýtgeýän asman, öz suratyňyz, şrift we bezeg. Diwar kagyzynda arapça tekst islege görä, başda öçük.',
+                    'Gulp ekranyňyzdaky sagadyň ýerini ölçüp, aýatyň we bezegiň sagadyň aşagynda galmazlygyny üpjün edip bilersiňiz.',
                     'Aýaty tekst ýa-da surat hökmünde paýlaşyp bilersiňiz.',
                 ],
             },
@@ -621,7 +710,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Көннең аятен ачу',
                 detaylar: [
                     'Аять беркайчан да киселми; сыймаган көннәрдә виджет уку өчен басарга тәкъдим итә.',
-                    'Тышкы рәсемдә гарәпчә текст ихтыяри һәм башта сүндерелгән.',
+                    'Тышкы рәсемнең күренешен үзегез сайлыйсыз: намаз вакытына карап үзгәрә торган күк, үз фотогыз, шрифт һәм бизәк. Тышкы рәсемдә гарәпчә текст ихтыяри һәм башта сүндерелгән.',
+                    'Бикләү экранындагы сәгатьнең урынын үлчәп, аять һәм бизәк сәгать астында калмасын өчен көйли аласыз.',
                     'Аятьне текст яки сурәт итеп уртаклаша аласыз.',
                 ],
             },
@@ -632,7 +722,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ڏينهن جي آيت کوليو',
                 detaylar: [
                     'آيت ڪڏهن به اڌوري نٿي ٿئي؛ جنهن ڏينهن نه سمائجي، ويجيٽ پڙهڻ لاءِ ٽيپ ڪرڻ جو چوي ٿو.',
-                    'وال پيپر تي عربي متن اختياري آهي ۽ شروع ۾ بند هوندو آهي.',
+                    'وال پيپر جو انداز توهان پاڻ چونڊيو ٿا: نماز جي وقتن سان بدلجندڙ آسمان، پنهنجي تصوير، لکت جو انداز ۽ سينگار. وال پيپر تي عربي متن اختياري آهي ۽ شروع ۾ بند هوندو آهي.',
+                    'توهان لاڪ اسڪرين تي گھڙيال جي جاءِ ماپي سگھو ٿا ته جيئن آيت ۽ سينگار گھڙيال جي هيٺان نه اچن.',
                     'آيت عبارت يا تصوير طور شيئر ڪري سگهو ٿا.',
                 ],
             },
@@ -643,7 +734,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Otwórz werset dnia',
                 detaylar: [
                     'Werset nigdy nie jest ucinany; w dni, gdy się nie mieści, widżet prosi o dotknięcie, aby go przeczytać.',
-                    'Tekst arabski na tapecie jest pokazywany zawsze, gdy nie ma przekładu.',
+                    'Wygląd tapety wybierasz sam: niebo zgodne z porami modlitwy, własne zdjęcie, czcionkę i ozdobę. Tekst arabski na tapecie jest pokazywany zawsze, gdy nie ma przekładu.',
+                    'Możesz zmierzyć, gdzie na ekranie blokady jest zegar, aby werset i ozdoba nie znalazły się pod nim.',
                     'Werset możesz udostępnić jako tekst lub obraz.',
                 ],
             },
@@ -654,7 +746,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: '今日のアーヤを開く',
                 detaylar: [
                     '訳が途中で切れることはありません。収まらない日は、ウィジェットがタップして読むよう案内します。',
-                    '壁紙のアラビア語本文は任意で、初期設定ではオフです。',
+                    '壁紙の見た目はご自分で選べます。礼拝時刻に合わせて変わる空、お手持ちの写真、書体、装飾。 壁紙のアラビア語本文は任意で、初期設定ではオフです。',
+                    'ロック画面の時計の位置を測定して、アーヤや装飾が時計に重ならないようにできます。',
                     'アーヤはテキストまたは画像で共有できます。',
                 ],
             },
@@ -665,7 +758,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'આજની આયત ખોલો',
                 detaylar: [
                     'અનુવાદ ક્યારેય કપાતો નથી; જે દિવસે તે ન સમાય, ત્યારે વિજેટ વાંચવા ટૅપ કરવાનું કહે છે.',
-                    'વૉલપેપર પર અરબી લખાણ વૈકલ્પિક છે અને શરૂઆતમાં બંધ હોય છે.',
+                    'વૉલપેપરનો દેખાવ તમે જાતે પસંદ કરો છો: નમાઝના સમય સાથે બદલાતું આકાશ, તમારો પોતાનો ફોટો, અક્ષરશૈલી અને શણગાર. વૉલપેપર પર અરબી લખાણ વૈકલ્પિક છે અને શરૂઆતમાં બંધ હોય છે.',
+                    'લૉક સ્ક્રીન પર ઘડિયાળનું સ્થાન માપીને આયત અને શણગાર ઘડિયાળની નીચે ન આવે તેવું કરી શકો છો.',
                     'તમે આયત લખાણ તરીકે કે છબી તરીકે શેર કરી શકો છો.',
                 ],
             },
@@ -676,7 +770,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Отворете аята на деня',
                 detaylar: [
                     'Преводът никога не се съкращава; в дните, в които не се побира, уиджетът ви кани да докоснете, за да го прочетете.',
-                    'Арабският текст на тапета е по желание и в началото е изключен.',
+                    'Облика на тапета избирате сами: небе, което следва времената за молитва, ваша снимка, шрифта и украса. Арабският текст на тапета е по желание и в началото е изключен.',
+                    'Можете да измерите къде е часовникът на заключения екран, така че аятът и украсата да не остават под него.',
                     'Можете да споделите аята като текст или като изображение.',
                 ],
             },
@@ -687,7 +782,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Отворете го ајетот на денот',
                 detaylar: [
                     'Преводот никогаш не се скратува; во деновите кога не собира, виџетот ве повикува да допрете за да го прочитате.',
-                    'Арапскиот текст на позадината е по избор и на почеток е исклучен.',
+                    'Изгледот на позадината го бирате сами: небо што ги следи времињата за намаз, ваша фотографија, буквите и украс. Арапскиот текст на позадината е по избор и на почеток е исклучен.',
+                    'Можете да измерите каде е часовникот на заклучениот екран, за ајетот и украсот да не останат под него.',
                     'Ајетот можете да го споделите како текст или како слика.',
                 ],
             },
@@ -698,7 +794,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Buksan ang talata ng araw',
                 detaylar: [
                     'Hindi kailanman pinuputol ang salin; sa mga araw na hindi ito kasya, hinihiling ng widget na i-tap ninyo ito para basahin.',
-                    'Opsyonal ang tekstong Arabe sa wallpaper at naka-off ito sa simula.',
+                    'Kayo ang pipili ng itsura ng wallpaper: langit na sumusunod sa oras ng pagdarasal, sariling larawan, font, at palamuti. Opsyonal ang tekstong Arabe sa wallpaper at naka-off ito sa simula.',
+                    'Maaari ninyong sukatin kung nasaan ang orasan sa lock screen para hindi matakpan ng orasan ang talata at palamuti.',
                     'Maibabahagi ninyo ang talata bilang teksto o bilang larawan.',
                 ],
             },
@@ -709,7 +806,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ఈ రోజు ఆయత్‌ను తెరవండి',
                 detaylar: [
                     'అనువాదం ఎప్పుడూ కత్తిరించబడదు; సరిపోని రోజుల్లో, చదవడానికి నొక్కమని విడ్జెట్ అడుగుతుంది.',
-                    'వాల్‌పేపర్‌పై అరబిక్ పాఠం ఐచ్ఛికం, మొదట ఆఫ్‌లో ఉంటుంది.',
+                    'వాల్‌పేపర్ రూపాన్ని మీరే ఎంచుకుంటారు: నమాజు సమయాలను అనుసరించే ఆకాశం, మీ సొంత ఫోటో, అక్షర శైలి, అలంకారం. వాల్‌పేపర్‌పై అరబిక్ పాఠం ఐచ్ఛికం, మొదట ఆఫ్‌లో ఉంటుంది.',
+                    'లాక్ స్క్రీన్‌పై గడియారం ఉన్న చోటును కొలిచి, ఆయత్ మరియు అలంకారం గడియారం కింద పడకుండా చూసుకోవచ్చు.',
                     'ఆయత్‌ను పాఠంగా లేదా చిత్రంగా షేర్ చేయవచ్చు.',
                 ],
             },
@@ -720,7 +818,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ದಿನದ ವಚನ ತೆರೆಯಿರಿ',
                 detaylar: [
                     'ಅರ್ಥಾನುವಾದವನ್ನು ಎಂದೂ ಕತ್ತರಿಸಲಾಗುವುದಿಲ್ಲ; ಅದು ಹೊಂದದ ದಿನ, ಓದಲು ಟ್ಯಾಪ್ ಮಾಡುವಂತೆ ವಿಜೆಟ್ ಕೇಳುತ್ತದೆ.',
-                    'ವಾಲ್‌ಪೇಪರ್‌ನಲ್ಲಿ ಅರೇಬಿಕ್ ಪಠ್ಯ ಐಚ್ಛಿಕ ಮತ್ತು ಆರಂಭದಲ್ಲಿ ಆಫ್ ಆಗಿರುತ್ತದೆ.',
+                    'ವಾಲ್‌ಪೇಪರ್‌ನ ನೋಟವನ್ನು ನೀವೇ ಆಯ್ಕೆಮಾಡುತ್ತೀರಿ: ನಮಾಜಿನ ಸಮಯವನ್ನು ಅನುಸರಿಸುವ ಆಕಾಶ, ನಿಮ್ಮದೇ ಫೋಟೋ, ಅಕ್ಷರಶೈಲಿ ಮತ್ತು ಅಲಂಕಾರ. ವಾಲ್‌ಪೇಪರ್‌ನಲ್ಲಿ ಅರೇಬಿಕ್ ಪಠ್ಯ ಐಚ್ಛಿಕ ಮತ್ತು ಆರಂಭದಲ್ಲಿ ಆಫ್ ಆಗಿರುತ್ತದೆ.',
+                    'ಲಾಕ್ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ಗಡಿಯಾರದ ಸ್ಥಾನವನ್ನು ಅಳೆದು, ವಚನ ಮತ್ತು ಅಲಂಕಾರ ಗಡಿಯಾರದ ಕೆಳಗೆ ಮರೆಯಾಗದಂತೆ ಮಾಡಬಹುದು.',
                     'ವಚನವನ್ನು ಪಠ್ಯವಾಗಿ ಅಥವಾ ಚಿತ್ರವಾಗಿ ಹಂಚಿಕೊಳ್ಳಬಹುದು.',
                 ],
             },
@@ -731,7 +830,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'आजची आयत उघडा',
                 detaylar: [
                     'भाषांतर कधीही कापले जात नाही; ज्या दिवशी ते मावत नाही, त्या दिवशी विजेट वाचण्यासाठी टॅप करायला सांगते.',
-                    'वॉलपेपरवरील अरबी मजकूर ऐच्छिक आहे आणि सुरुवातीला बंद असतो.',
+                    'वॉलपेपरचे रूप तुम्हीच निवडता: नमाजच्या वेळांनुसार बदलणारे आकाश, तुमचा स्वतःचा फोटो, अक्षरशैली आणि सजावट. वॉलपेपरवरील अरबी मजकूर ऐच्छिक आहे आणि सुरुवातीला बंद असतो.',
+                    'लॉक स्क्रीनवरील घड्याळाची जागा मोजून आयत आणि सजावट घड्याळाखाली येणार नाहीत असे करू शकता.',
                     'आयत मजकूर किंवा चित्र म्हणून शेअर करता येते.',
                 ],
             },
@@ -742,7 +842,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'اج دی آیت کھولو',
                 detaylar: [
                     'آیت کدے ادھوری نہیں کٹی جاندی؛ جس دن پوری نہ سماوے، ویجیٹ پڑھن لئی ٹیپ کرن نوں آکھدا اے۔',
-                    'وال پیپر تے عربی متن اپنی مرضی دا اے تے شروع وچ بند ہوندا اے۔',
+                    'وال پیپر دا روپ تُسی آپ چُندے او: نماز دے ویلیاں نال بدلدا اسمان، اپنی تصویر، لکھت دا انداز تے سجاوٹ۔ وال پیپر تے عربی متن اپنی مرضی دا اے تے شروع وچ بند ہوندا اے۔',
+                    'تُسی لاک سکرین اتے گھڑی دی تھاں ناپ سکدے او تاں جے آیت تے سجاوٹ گھڑی دے ہیٹھاں نہ آون۔',
                     'آیت متن یا تصویر وجوں شیئر کیتی جا سکدی اے۔',
                 ],
             },
@@ -753,7 +854,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'আজিৰ আয়াত খোলক',
                 detaylar: [
                     'অৰ্থানুবাদ কেতিয়াও কটা নহয়; যিদিনা নধৰে, সেইদিনা ৱিজেটে পঢ়িবলৈ টিপিবলৈ কয়।',
-                    'ৱালপেপাৰত আৰবী পাঠ ঐচ্ছিক আৰু আৰম্ভণিতে অফ থাকে।',
+                    'ৱালপেপাৰৰ ৰূপ আপুনি নিজেই বাছে: নামাজৰ সময়ৰ লগত সলনি হোৱা আকাশ, নিজৰ ফটো, লিখনিৰ ধৰণ আৰু অলংকৰণ। ৱালপেপাৰত আৰবী পাঠ ঐচ্ছিক আৰু আৰম্ভণিতে অফ থাকে।',
+                    'লক স্ক্ৰীনত ঘড়ীৰ স্থান জুখি আয়াত আৰু অলংকৰণ ঘড়ীৰ তলত নপৰাকৈ ৰাখিব পাৰে।',
                     'আয়াতটো পাঠ বা ছবি হিচাপে শ্বেয়াৰ কৰিব পাৰে।',
                 ],
             },
@@ -764,7 +866,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'आजको आयत खोल्नुहोस्',
                 detaylar: [
                     'अनुवाद कहिल्यै काटिँदैन; नअटाउने दिन विजेटले पढ्न ट्याप गर्न भन्छ।',
-                    'वालपेपरमा अरबी पाठ ऐच्छिक हो र सुरुमा निष्क्रिय हुन्छ।',
+                    'वालपेपरको रूप तपाईं आफैँ छान्नुहुन्छ: नमाजको समयसँगै बदलिने आकाश, आफ्नै फोटो, अक्षरशैली र सजावट। वालपेपरमा अरबी पाठ ऐच्छिक हो र सुरुमा निष्क्रिय हुन्छ।',
+                    'लक स्क्रिनमा घडीको ठाउँ नापेर आयत र सजावट घडीमुनि नपर्ने बनाउन सक्नुहुन्छ।',
                     'आयत पाठ वा तस्बिरका रूपमा सेयर गर्न सक्नुहुन्छ।',
                 ],
             },
@@ -775,7 +878,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'දවසේ ආයතය විවෘත කරන්න',
                 detaylar: [
                     'පරිවර්තනය කිසිවිටෙක කපා හරින්නේ නැත; එය නොගැළපෙන දිනවල, කියවීමට තට්ටු කරන ලෙස විජට් එක ඉල්ලයි.',
-                    'බිතුපතේ අරාබි පාඨය විකල්පයක් වන අතර මුලින් අක්‍රියයි.',
+                    'බිතුපතේ පෙනුම ඔබම තෝරයි: සලාත් වේලාවන් අනුගමනය කරන අහස, ඔබේම ඡායාරූපය, අකුරු විලාසය සහ අලංකාරය. බිතුපතේ අරාබි පාඨය විකල්පයක් වන අතර මුලින් අක්‍රියයි.',
+                    'අගුළු තිරයේ ඔරලෝසුව ඇති තැන මැන, ආයතය සහ අලංකාරය ඔරලෝසුවට යටින් නොවැටෙන ලෙස සැකසිය හැක.',
                     'ආයතය පෙළක් ලෙස හෝ රූපයක් ලෙස බෙදාගත හැක.',
                 ],
             },
@@ -786,7 +890,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'បើកអាយ៉ាត់ប្រចាំថ្ងៃ',
                 detaylar: [
                     'ការបកប្រែមិនដែលត្រូវបានកាត់ទេ នៅថ្ងៃដែលវាមិនសម ធាតុក្រាហ្វិកនឹងស្នើឲ្យអ្នកប៉ះដើម្បីអាន។',
-                    'អត្ថបទអារ៉ាប់លើផ្ទាំងរូបភាពជាជម្រើស ហើយបិទតាមលំនាំដើម។',
+                    'អ្នកជ្រើសរូបរាងផ្ទាំងរូបភាពដោយខ្លួនឯង៖ មេឃដែលប្ដូរតាមម៉ោងសឡាត រូបថតផ្ទាល់ខ្លួន ពុម្ពអក្សរ និងការតុបតែង។ អត្ថបទអារ៉ាប់លើផ្ទាំងរូបភាពជាជម្រើស ហើយបិទតាមលំនាំដើម។',
+                    'អ្នកអាចវាស់ទីតាំងនាឡិកានៅលើអេក្រង់ចាក់សោ ដើម្បីកុំឱ្យអាយ៉ាត់ និងការតុបតែងស្ថិតនៅក្រោមនាឡិកា។',
                     'អ្នកអាចចែករំលែកអាយ៉ាត់ជាអត្ថបទ ឬជារូបភាព។',
                 ],
             },
@@ -797,7 +902,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'פתיחת פסוק היום',
                 detaylar: [
                     "התרגום אף פעם לא נחתך; בימים שהוא לא נכנס, הווידג'ט מבקש להקיש כדי לקרוא אותו.",
-                    'הטקסט הערבי בתמונת הרקע הוא אופציונלי וכבוי בהתחלה.',
+                    'את מראה תמונת הרקע בוחרים בעצמכם: שמיים שמשתנים לפי זמני התפילה, תמונה משלכם, הגופן ועיטור. הטקסט הערבי בתמונת הרקע הוא אופציונלי וכבוי בהתחלה.',
+                    'אפשר למדוד היכן נמצא השעון במסך הנעילה, כדי שהפסוק והעיטור לא יוסתרו מתחת לשעון.',
                     'אפשר לשתף את הפסוק כטקסט או כתמונה.',
                 ],
             },
@@ -808,7 +914,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'დღის აიათის გახსნა',
                 detaylar: [
                     'თარგმანი არასოდეს იჭრება; როცა არ ეტევა, ვიჯეტი გთხოვთ, შეეხოთ და წაიკითხოთ.',
-                    'არაბული ტექსტი ფონზე არასავალდებულოა და თავიდან გამორთულია.',
+                    'ფონის იერსახეს თავად ირჩევთ: ლოცვის დროებს მიყოლილ ცას, საკუთარ ფოტოს, შრიფტს და მორთულობას. არაბული ტექსტი ფონზე არასავალდებულოა და თავიდან გამორთულია.',
+                    'შეგიძლიათ გაზომოთ, სად არის საათი ჩაკეტილ ეკრანზე, რომ აიათი და მორთულობა საათის ქვეშ არ მოხვდეს.',
                     'აიათის გაზიარება შეგიძლიათ ტექსტად ან სურათად.',
                 ],
             },
@@ -819,7 +926,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Atidaryti dienos ajatą',
                 detaylar: [
                     'Vertimas niekada nenukerpamas; tomis dienomis, kai jis netelpa, valdiklis paprašo paliesti ir perskaityti.',
-                    'Arabiškas tekstas ekrano fone neprivalomas ir iš pradžių išjungtas.',
+                    'Ekrano fono išvaizdą pasirenkate patys: dangus pagal maldos laikus, jūsų nuotrauka, šriftas ir puošmena. Arabiškas tekstas ekrano fone neprivalomas ir iš pradžių išjungtas.',
+                    'Galite išmatuoti, kur užrakinimo ekrane yra laikrodis, kad ajatas ir puošmena neatsidurtų po juo.',
                     'Ajatą galite bendrinti kaip tekstą arba kaip paveikslėlį.',
                 ],
             },
@@ -830,7 +938,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Sokafy ny andininy anio',
                 detaylar: [
                     "Tsy tapahina mihitsy ny dikan-teny; amin'ny andro tsy ombany, asain'ny widget kitihinao izy raha hamaky azy.",
-                    "Tsy voatery ny soratra arabo eo amin'ny sary ambadika ary maty izy amin'ny voalohany.",
+                    'Ianao no misafidy ny endriky ny sary ambadika: lanitra manaraka ny fotoam-bavaka, ny saryo manokana, ny endri-tsoratra ary haingo. Tsy voatery ny soratra arabo eo amin\'ny sary ambadika ary maty izy amin\'ny voalohany.',
+                    'Afaka mandrefy ny toeran’ny famantaranandro eo amin’ny efijery mihidy ianao, mba tsy ho voasaron’ny famantaranandro ny andininy sy ny haingo.',
                     'Azonao zaraina ho soratra na ho sary ny andininy.',
                 ],
             },
@@ -841,7 +950,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ggulawo aaya y’olwaleero',
                 detaylar: [
                     'Enkyusa tesalibwako; ku lunaku lw’etagya, wijeti ekusaba onyige ogisome.',
-                    'Ekiwandiiko ky’Oluwarabu ku kifaananyi ky’emabega si kya buwaze era kitandika nga kiggyiddwako.',
+                    'Ggwe olonda endabika y’ekifaananyi ky’emabega: eggulu erigoberera essaawa z’okusaala, ekifaananyi kyo, ennukuta n’eby’okwewunda. Ekiwandiiko ky’Oluwarabu ku kifaananyi ky’emabega si kya buwaze era kitandika nga kiggyiddwako.',
+                    'Osobola okupima ekifo ky’essaawa ku lupapula lw’okusiba, aaya n’eby’okwewunda bireme okubikkibwa essaawa.',
                     'Osobola okugabana aaya ng’ekiwandiiko oba ng’ekifaananyi.',
                 ],
             },
@@ -852,7 +962,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Gufungura umurongo w’umunsi',
                 detaylar: [
                     'Ibisobanuro ntibicibwa na rimwe; ku minsi bitakwirwamo, widijeti ibasaba gukanda kugira ngo mubisome.',
-                    'Inyandiko y’Icyarabu ku ifoto y’inyuma ni iy’ubushake kandi mu ntangiriro iba ifunze.',
+                    'Ni mwe muhitamo isura y’ifoto y’inyuma: ijuru rikurikira ibihe by’isengesho, ifoto yanyu, imiterere y’inyuguti n’umutako. Inyandiko y’Icyarabu ku ifoto y’inyuma ni iy’ubushake kandi mu ntangiriro iba ifunze.',
+                    'Mushobora gupima aho isaha iri kuri ekarani ifunze, kugira ngo umurongo n’umutako bitajya munsi y’isaha.',
                     'Mushobora gusangiza umurongo nk’inyandiko cyangwa nk’ishusho.',
                 ],
             },
@@ -863,7 +974,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Mwugurure umurongo w’umusi',
                 detaylar: [
                     'Ubusobanuro ntibuhagarikwa na rimwe; ku misi butakwirwamwo, widget ibasaba gukanda kugira mubusome.',
-                    'Inyandiko y’Icarabu ku shusho y’inyuma ni iy’ubushake kandi mu ntango irazimije.',
+                    'Ni mwebwe muhitamwo isura y’ishusho y’inyuma: ijuru rikurikira ibihe vy’isengesho, ifoto yanyu, ingene indome zimeze n’umutako. Inyandiko y’Icarabu ku shusho y’inyuma ni iy’ubushake kandi mu ntango irazimije.',
+                    'Murashobora gupima aho isaha iri ku rupapuro rwo kwugara, kugira umurongo n’umutako ntibije munsi y’isaha.',
                     'Murashobora gusangiza umurongo nk’inyandiko canke nk’ishusho.',
                 ],
             },
@@ -874,7 +986,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Bofungola molɔngɔ ya mokɔlɔ',
                 detaylar: [
                     'Libongoli ekatamaka soki moke te; na mikɔlɔ oyo ekoki te, widget esɛngaka bino bofina mpɔ na kotanga yango.',
-                    'Maloba ya Arabe na elilingi ya ekran ezali ya kopona mpe ebandaka ekangami.',
+                    'Bino moko bopona lolenge ya elilingi ya ekran: likoló oyo elandaka bantango ya losambo, foto na bino, lolenge ya makomi mpe bokɛmɛli. Maloba ya Arabe na elilingi ya ekran ezali ya kopona mpe ebandaka ekangami.',
+                    'Bokoki komeka esika ya ngonga na ekran ya kokanga, mpo molɔngɔ mpe bokɛmɛli ezipama te na ngonga.',
                     'Bokoki kokabola molɔngɔ lokola makomi to lokola elilingi.',
                 ],
             },
@@ -885,7 +998,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Yoomi ya dabsili aaya',
                 detaylar: [
                     'Bɛ bi kɔhiri gbinni maa abada; dabsili shɛli di ni bi saɣi, widget maa yɛliri ya ni yi dihi ka karim li.',
-                    'Larabanchi sabbu yaɣili foto zuɣu nyɛla yi piibu, ka di kpariya piligu ni.',
+                    'Yi n-nyɛ ban gahindi yaɣili foto maa binshɛɣu: sagbana din doli jiŋli saha, yi maŋmaŋa foto, sabbu yɛtɔɣa mini yuuni. Larabanchi sabbu yaɣili foto zuɣu nyɛla yi piibu, ka di kpariya piligu ni.',
+                    'Yi ni tooi maɣisi saha kpaŋa shee yi kparibu yaɣili zuɣu, ka aaya mini yuuni ku kpe saha kpaŋa maa gbinni.',
                     'Yi ni tooi talim aaya maa kamani sabbu bee foto.',
                 ],
             },
@@ -896,7 +1010,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Pak-y raarã aayã',
                 detaylar: [
                     'B pa kɩdgd lebgrã wakat baa a ye ye; raar ning a sẽn pa sek ye, widget wã sokda-y tɩ y dig n karem-a.',
-                    'Arab gʋlsgã ekraan-foto wã zugu yaa y sẽn date, la a sɩngda n pagame.',
+                    'Yãmb n yãkd ekraan-foto wã neɛrlem: saas sẽn pʋgd pʋʋsg wakato, y meng foto, gʋlsg buudu la neerẽ. Arab gʋlsgã ekraan-foto wã zugu yaa y sẽn date, la a sɩngda n pagame.',
+                    'Y tõe n mak wakat-makã zĩigã y pagr ekraanã zugu, tɩ aaya la neerẽ ra kẽ wakat-makã tẽngr ye.',
                     'Y tõe n tʋm aayã wala gom-biis maa wala foto.',
                 ],
             },
@@ -907,7 +1022,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ayroh aayat faka',
                 detaylar: [
                     'Korissa ayyu wakti ma xiqimta; ma gexxa ayrol, widget ikriyaanamah xagisaanam sin essera.',
-                    'Fooca suural Qarab maxco faxxinteenik tan, isih alifime.',
+                    'Fooca suurah ubuxxa isin dooritan: salaatak wakti kataysa qaraan, isin suura, xagar ubuxxa kee qaxxeenta. Fooca suural Qarab maxco faxxinteenik tan, isih alifime.',
+                    'Alifo foocal saaqatih arac maaqisuu dudditton, aayat kee qaxxeenta saaqatih gubal maxxa culinnoh.',
                     'Aayat maxco innal hinnay suura innal acuwaanam duddan.',
                 ],
             },
@@ -918,7 +1034,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Bukatan su ayat nu gay',
                 detaylar: [
                     'Di pedtuputulen su salin; sa manga gay a di masulud, ipangeni nu widget i i-tap para basaen.',
-                    'Su sulat a Arab sa wallpaper na di kailangan endu naka-off sa kapamula.',
+                    'Sekanu i mamili kanu lanu nu wallpaper: langit a tumundug sa waktu na sambayang, litrato nu, font, andu pagidu. Su sulat a Arab sa wallpaper na di kailangan endu naka-off sa kapamula.',
+                    'Mapakagaga nu sukatin su darpa na orasan sa lock screen nu, ka di matakpan na orasan su ayat andu su pagidu.',
                     'Ma-share nu su ayat lagid nu sulat atawka ladawan.',
                 ],
             },
@@ -929,7 +1046,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Bue Ɛnnɛ Aaya',
                 detaylar: [
                     'Wɔntwitwa nkyerɛaseɛ no da; nna a ɛmfata no, wijet no ka sɛ mia so na kenkan.',
-                    'Arabeke nsɛm wɔ skrin mfoni so no, wopɛ a; ɛhyɛ ase sɛ ato mu.',
+                    'Wo ara na wopaw skrin mfoni no nsusuwii: soro a ɛdi mpaebɔ bere akyi, wo ankasa wo mfoni, nkyerɛwee su ne ahoɔfɛ. Arabeke nsɛm wɔ skrin mfoni so no, wopɛ a; ɛhyɛ ase sɛ ato mu.',
+                    'Wobɛtumi asusuw dɔnhwerew no beae wɔ wo skrin a wato mu so, sɛnea ɛbɛyɛ a Aaya no ne ahoɔfɛ no renkɔ dɔnhwerew no ase.',
                     'Wobɛtumi akyɛ Aaya no sɛ nsɛm anaa sɛ mfoni.',
                 ],
             },
@@ -940,7 +1058,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ablihi ang bersikulo sa adlaw',
                 detaylar: [
                     'Ang hubad dili gayod putlon; sa mga adlaw nga dili kini mohaom, hangyoon kamo sa widget nga i-tap aron basahon.',
-                    'Opsyonal ang Arabikong teksto sa wallpaper ug naka-off kini sa sinugdanan.',
+                    'Kamo ang mopili sa dagway sa wallpaper: langit nga mosunod sa oras sa pag-ampo, inyong kaugalingong litrato, font, ug dayandayan. Opsyonal ang Arabikong teksto sa wallpaper ug naka-off kini sa sinugdanan.',
+                    'Mahimo ninyong sukdon kon asa ang orasan sa lock screen aron dili matabonan sa orasan ang bersikulo ug dayandayan.',
                     'Maipaambit ninyo ang bersikulo isip teksto o hulagway.',
                 ],
             },
@@ -951,7 +1070,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ߓߌ߬ ߊߦߊ ߘߊߦߟߍ߬',
                 detaylar: [
                     'ߓߊߦߍߟߍߡߊ߲ߠߌ ߕߍ߫ ߕߌߜߍ ߊߓߊߘߊ; ߟߏ߲ ߡߌ߲ߠߎ ߊ߬ ߕߍ߫ ߛߋ߫߸ Widget ߓߍ߫ ߊ߬ ߢߌߣߌ ߊߟߎ߫ ߝߍ߬ ߞߊ߬ ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߞߊߟߊ߲.',
-                    'ߊߙߊߓߎߞߊ߲ ߛߓߍ߫ ߞߐߜߐߖߊ ߞߊ߲ ߦߋ߫ ߛߎߥߊ߲ߘߟߌ ߦߋ߫߸ ߊ߬ ߘߊߕߎߜߎ߲ߠߍ߲ ߘߏ߲߬ ߊ߬ ߘߊߡߌ߬ߣߊ߬ ߣߊ߬.',
+                    'ߊߟߎ߫ ߖߍ߫ ߟߋ߬ ߓߍ߫ ߞߐߜߐߖߊ ߢߍߘߊ ߛߎߥߊ߲ߘߌ߫: ߛߊ߲ ߡߍ߲ ߦߋ߫ ߛߊߟߌ ߕߎߡߊ ߟߎ߬ ߣߐ߬ߣߐ߬߸ ߊߟߎ߫ ߖߘߍ߬ ߟߊ߫ ߖߊ߭߸ ߛߓߍߟߌ ߛߎ߮ ߣߌ߫ ߡߊߛߊ߬ߟߊ߬ߟߌ. ߊߙߊߓߎߞߊ߲ ߛߓߍ߫ ߞߐߜߐߖߊ ߞߊ߲ ߦߋ߫ ߛߎߥߊ߲ߘߟߌ ߦߋ߫߸ ߊ߬ ߘߊߕߎߜߎ߲ߠߍ߲ ߘߏ߲߬ ߊ߬ ߘߊߡߌ߬ߣߊ߬ ߣߊ߬.',
+                    'ߊߟߎ߫ ߘߌ߫ ߛߋ߫ ߘߊߕߎߜߎ ߢߍ߫ ߕߎߡߊߟߊ߲ ߦߙߐ ߛߎߡߊ߫ ߟߊ߫߸ ߛߴߊߦߊ ߣߌ߫ ߡߊߛߊ߬ߟߊ߬ߟߌ ߞߊߣߊ߬ ߕߊ߯ ߕߎߡߊߟߊ߲ ߘߎ߰ߞߘߐ߫.',
                     'ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊߦߊ ߕߌߟߊ ߛߓߍ߫ ߦߋ߫ ߥߟߊ߫ ߖߊ߭ ߦߋ߫.',
                 ],
             },
@@ -961,8 +1081,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         id: 'gunun-ayeti-ios',
         platformlar: ['ios'],
         yetenek: 'iosWidget',
-        surum: '0.71.0',
-        tarih: '2026-10-24',
+        surum: '0.72.0',
+        tarih: '2026-11-07',
         baslik: 'Günün ayeti ana ekranınızda',
         aciklama:
             'Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza ve kilit ekranınıza widget olarak ekleyebilirsiniz.',
@@ -973,7 +1093,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ctaEtiketi: 'Günün ayetini açın',
         detaylar: [
             'Meal hiçbir boyutta kesilmez; sığmadığı gün widget okumak için dokunmanızı ister.',
-            'Kısayollar uygulamasıyla günün ayetini her sabah duvar kâğıdınız yapabilirsiniz; adımlar uygulamada anlatılır.',
+            'Kısayollar uygulamasıyla günün ayetini her sabah duvar kâğıdınız yapabilirsiniz; adımlar uygulamada anlatılır. Duvar kâğıdının görünümünü siz seçersiniz: vakte göre değişen gökyüzü, kendi fotoğrafınız, yazı tipi ve süs.',
+            'Kilit ekranınızdaki saatin yerini ölçüp ayetin ve süslerin saatin altında kalmamasını sağlayabilirsiniz.',
             'Ayeti metin ya da görsel olarak paylaşabilirsiniz.',
         ],
         ceviri: {
@@ -986,7 +1107,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Open the verse of the day',
                 detaylar: [
                     "The translation is never cut off; on days it doesn't fit, the widget asks you to tap to read it.",
-                    'With the Shortcuts app you can make the verse of the day your wallpaper every morning; the app walks you through the steps.',
+                    'With the Shortcuts app you can make the verse of the day your wallpaper every morning; the app walks you through the steps. You choose the wallpaper\'s look: a sky that follows the prayer times, your own photo, the font and an ornament.',
+                    'You can measure where the clock sits on your lock screen so the verse and ornaments stay clear of it.',
                     'You can share the verse as text or as an image.',
                 ],
             },
@@ -997,7 +1119,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Buka ayat hari ini',
                 detaylar: [
                     'Terjemahan tidak pernah dipotong; pada hari terjemahan tidak muat, widget meminta Anda mengetuk untuk membacanya.',
-                    'Dengan aplikasi Pintasan, Anda dapat menjadikan ayat hari ini sebagai wallpaper setiap pagi; aplikasi memandu langkah-langkahnya.',
+                    'Dengan aplikasi Pintasan, Anda dapat menjadikan ayat hari ini sebagai wallpaper setiap pagi; aplikasi memandu langkah-langkahnya. Anda memilih tampilan wallpaper: langit yang mengikuti waktu salat, foto Anda sendiri, jenis huruf, dan hiasan.',
+                    'Anda dapat mengukur letak jam di layar kunci agar ayat dan hiasan tidak tertutup jam.',
                     'Anda dapat membagikan ayat sebagai teks atau gambar.',
                 ],
             },
@@ -1008,7 +1131,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Vers des Tages öffnen',
                 detaylar: [
                     'Die Übersetzung wird nie abgeschnitten; passt sie an einem Tag nicht, bittet das Widget Sie, zum Lesen zu tippen.',
-                    'Mit der App Kurzbefehle können Sie den Vers des Tages jeden Morgen zum Hintergrundbild machen; die App führt Sie durch die Schritte.',
+                    'Mit der App Kurzbefehle können Sie den Vers des Tages jeden Morgen zum Hintergrundbild machen; die App führt Sie durch die Schritte. Das Aussehen des Hintergrundbilds wählen Sie selbst: ein Himmel, der den Gebetszeiten folgt, Ihr eigenes Foto, die Schrift und eine Verzierung.',
+                    'Sie können messen, wo die Uhr auf Ihrem Sperrbildschirm steht, damit Vers und Verzierung nicht unter der Uhr liegen.',
                     'Sie können den Vers als Text oder als Bild teilen.',
                 ],
             },
@@ -1019,7 +1143,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ouvrir le verset du jour',
                 detaylar: [
                     'La traduction n’est jamais coupée ; les jours où elle ne tient pas, le widget vous invite à la toucher pour la lire.',
-                    'Avec l’app Raccourcis, vous pouvez faire du verset du jour votre fond d’écran chaque matin ; l’application vous guide pas à pas.',
+                    'Avec l’app Raccourcis, vous pouvez faire du verset du jour votre fond d’écran chaque matin ; l’application vous guide pas à pas. Vous choisissez l’apparence du fond d’écran : un ciel qui suit les heures de prière, votre propre photo, la police et un ornement.',
+                    'Vous pouvez mesurer l’emplacement de l’horloge sur votre écran de verrouillage pour que le verset et l’ornement ne passent pas sous l’horloge.',
                     'Vous pouvez partager le verset en texte ou en image.',
                 ],
             },
@@ -1030,7 +1155,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Otvorite ajet dana',
                 detaylar: [
                     'Prijevod značenja se nikada ne skraćuje; u danima kada ne stane, widget Vas poziva da ga dodirnete i pročitate.',
-                    'Pomoću aplikacije Prečice ajet dana svako jutro može postati Vaša pozadina; aplikacija Vas vodi kroz korake.',
+                    'Pomoću aplikacije Prečice ajet dana svako jutro može postati Vaša pozadina; aplikacija Vas vodi kroz korake. Izgled pozadine birate sami: nebo koje prati namaska vremena, vlastitu fotografiju, slova i ukras.',
+                    'Možete izmjeriti gdje je sat na zaključanom ekranu kako ajet i ukras ne bi ostali ispod sata.',
                     'Ajet možete podijeliti kao tekst ili kao sliku.',
                 ],
             },
@@ -1041,7 +1167,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Открыть аят дня',
                 detaylar: [
                     'Перевод смыслов никогда не обрезается; если в какой-то день он не помещается, виджет предложит нажать, чтобы прочитать.',
-                    'С приложением «Быстрые команды» аят дня может каждое утро становиться вашими обоями; приложение покажет все шаги.',
+                    'С приложением «Быстрые команды» аят дня может каждое утро становиться вашими обоями; приложение покажет все шаги. Вид обоев вы выбираете сами: небо, следующее времени намаза, собственное фото, шрифт и узор.',
+                    'Можно измерить, где на экране блокировки находятся часы, чтобы аят и узор не оказались под ними.',
                     'Аятом можно поделиться текстом или картинкой.',
                 ],
             },
@@ -1052,7 +1179,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Buka ayat hari ini',
                 detaylar: [
                     'Terjemahan tidak sekali-kali dipotong; pada hari ia tidak muat, widget meminta anda mengetik untuk membacanya.',
-                    'Dengan aplikasi Pintasan, anda boleh menjadikan ayat hari ini kertas dinding anda setiap pagi; aplikasi membimbing anda langkah demi langkah.',
+                    'Dengan aplikasi Pintasan, anda boleh menjadikan ayat hari ini kertas dinding anda setiap pagi; aplikasi membimbing anda langkah demi langkah. Anda memilih rupa kertas dinding: langit yang mengikut waktu solat, foto anda sendiri, fon dan hiasan.',
+                    'Anda boleh mengukur kedudukan jam pada skrin kunci supaya ayat dan hiasan tidak terlindung oleh jam.',
                     'Anda boleh berkongsi ayat sebagai teks atau imej.',
                 ],
             },
@@ -1063,7 +1191,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'فتح آية اليوم',
                 detaylar: [
                     'لا تُقطع الآية أبدًا؛ وفي الأيام التي لا تتسع فيها تدعو الأداة إلى النقر لقراءتها.',
-                    'بتطبيق الاختصارات يمكن جعل آية اليوم خلفية كل صباح؛ ويرشدك التطبيق خطوة بخطوة.',
+                    'بتطبيق الاختصارات يمكن جعل آية اليوم خلفية كل صباح؛ ويرشدك التطبيق خطوة بخطوة. يمكن اختيار مظهر الخلفية: سماء تتبع أوقات الصلاة أو صورة خاصة، مع الخط والزخرفة.',
+                    'يمكن قياس موضع الساعة على شاشة القفل حتى لا تقع الآية والزخرفة تحت الساعة.',
                     'يمكن مشاركة الآية نصًّا أو صورة.',
                 ],
             },
@@ -1074,7 +1203,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'آج کی آیت کھولیں',
                 detaylar: [
                     'ترجمہ کبھی کاٹا نہیں جاتا؛ جس دن پورا نہ سمائے، ویجیٹ پڑھنے کے لیے تھپتھپانے کو کہتا ہے۔',
-                    'Shortcuts ایپ سے آج کی آیت کو ہر صبح وال پیپر بنایا جا سکتا ہے؛ ایپ مراحل میں رہنمائی کرتی ہے۔',
+                    'Shortcuts ایپ سے آج کی آیت کو ہر صبح وال پیپر بنایا جا سکتا ہے؛ ایپ مراحل میں رہنمائی کرتی ہے۔ وال پیپر کا انداز آپ خود چنتے ہیں: نماز کے اوقات کے ساتھ بدلتا آسمان، اپنی تصویر، تحریر کا انداز اور آرائش۔',
+                    'آپ لاک اسکرین پر گھڑی کی جگہ ناپ سکتے ہیں تاکہ آیت اور آرائش گھڑی کے نیچے نہ آئیں۔',
                     'آیت متن یا تصویر کے طور پر شیئر کی جا سکتی ہے۔',
                 ],
             },
@@ -1085,7 +1215,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Abrir la aleya del día',
                 detaylar: [
                     'La traducción nunca se corta; los días en que no cabe, el widget le pide que toque para leerla.',
-                    'Con la app Atajos puede poner cada mañana la aleya del día como fondo de pantalla; la aplicación le guía paso a paso.',
+                    'Con la app Atajos puede poner cada mañana la aleya del día como fondo de pantalla; la aplicación le guía paso a paso. Usted elige el aspecto del fondo de pantalla: un cielo que sigue los horarios de oración, su propia foto, la letra y un adorno.',
+                    'Puede medir dónde está el reloj en su pantalla de bloqueo para que la aleya y el adorno no queden debajo del reloj.',
                     'Puede compartir la aleya como texto o como imagen.',
                 ],
             },
@@ -1096,7 +1227,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Het vers van de dag openen',
                 detaylar: [
                     'De vertaling wordt nooit afgekapt; op dagen dat ze niet past, vraagt de widget u te tikken om te lezen.',
-                    'Met de app Opdrachten kunt u het vers van de dag elke ochtend als achtergrond instellen; de app leidt u door de stappen.',
+                    'Met de app Opdrachten kunt u het vers van de dag elke ochtend als achtergrond instellen; de app leidt u door de stappen. U kiest zelf het uiterlijk van de achtergrond: een hemel die de gebedstijden volgt, uw eigen foto, het lettertype en een versiering.',
+                    'U kunt meten waar de klok op uw vergrendelscherm staat, zodat het vers en de versiering niet onder de klok vallen.',
                     'U kunt het vers als tekst of als afbeelding delen.',
                 ],
             },
@@ -1107,7 +1239,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Hapni ajetin e ditës',
                 detaylar: [
                     'Përkthimi nuk shkurtohet kurrë; në ditët kur nuk nxë, widget-i ju fton ta prekni për ta lexuar.',
-                    'Me aplikacionin Shortcuts mund ta bëni ajetin e ditës sfond çdo mëngjes; aplikacioni ju udhëzon hap pas hapi.',
+                    'Me aplikacionin Shortcuts mund ta bëni ajetin e ditës sfond çdo mëngjes; aplikacioni ju udhëzon hap pas hapi. Pamjen e sfondit e zgjidhni vetë: një qiell që ndjek kohët e namazit, foton tuaj, shkronjat dhe një zbukurim.',
+                    'Mund të matni vendin e orës në ekranin e kyçjes, që ajeti dhe zbukurimi të mos mbeten nën orë.',
                     'Ajetin mund ta ndani si tekst ose si figurë.',
                 ],
             },
@@ -1118,7 +1251,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'आज की आयत खोलें',
                 detaylar: [
                     'तर्जुमा कभी काटा नहीं जाता; जिस दिन वह नहीं समाता, विजेट पढ़ने के लिए टैप करने को कहता है।',
-                    'Shortcuts ऐप से आज की आयत को हर सुबह वॉलपेपर बनाया जा सकता है; ऐप आपको क़दम-ब-क़दम बताता है।',
+                    'Shortcuts ऐप से आज की आयत को हर सुबह वॉलपेपर बनाया जा सकता है; ऐप आपको क़दम-ब-क़दम बताता है। वॉलपेपर का रूप आप ख़ुद चुनते हैं: नमाज़ के वक़्तों के साथ बदलता आसमान, अपनी फ़ोटो, लिखावट और सजावट।',
+                    'आप लॉक स्क्रीन पर घड़ी की जगह माप सकते हैं, ताकि आयत और सजावट घड़ी के नीचे न आएँ।',
                     'आयत को टेक्स्ट या तस्वीर के रूप में शेयर किया जा सकता है।',
                 ],
             },
@@ -1129,7 +1263,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'দিনের আয়াত খুলুন',
                 detaylar: [
                     'অনুবাদ কখনো কাটা হয় না; যেদিন আঁটে না, সেদিন উইজেট পড়তে ট্যাপ করতে বলে।',
-                    'Shortcuts অ্যাপ দিয়ে প্রতিদিন সকালে দিনের আয়াতকে ওয়ালপেপার করতে পারেন; অ্যাপ ধাপগুলো দেখিয়ে দেয়।',
+                    'Shortcuts অ্যাপ দিয়ে প্রতিদিন সকালে দিনের আয়াতকে ওয়ালপেপার করতে পারেন; অ্যাপ ধাপগুলো দেখিয়ে দেয়। ওয়ালপেপারের চেহারা আপনিই বেছে নেন: নামাজের সময়ের সাথে বদলানো আকাশ, নিজের ছবি, লেখার ধরন ও অলংকরণ।',
+                    'লক স্ক্রিনে ঘড়ির জায়গা মেপে নিতে পারেন, যাতে আয়াত ও অলংকরণ ঘড়ির নিচে ঢাকা না পড়ে।',
                     'আয়াতটি লেখা বা ছবি হিসেবে শেয়ার করতে পারেন।',
                 ],
             },
@@ -1140,7 +1275,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'باز کردن آیهٔ روز',
                 detaylar: [
                     'ترجمه هرگز بریده نمی‌شود؛ روزهایی که جا نشود، ابزارک از شما می‌خواهد برای خواندن ضربه بزنید.',
-                    'با برنامهٔ «میانبرها» می‌توانید آیهٔ روز را هر صبح تصویر زمینه کنید؛ برنامه گام‌به‌گام راهنمایی‌تان می‌کند.',
+                    'با برنامهٔ «میانبرها» می‌توانید آیهٔ روز را هر صبح تصویر زمینه کنید؛ برنامه گام‌به‌گام راهنمایی‌تان می‌کند. ظاهر تصویر زمینه را خودتان انتخاب می‌کنید: آسمانی همراه با وقت‌های نماز، عکس خودتان، قلم و آرایه.',
+                    'می‌توانید جای ساعت را در صفحهٔ قفل اندازه بگیرید تا آیه و آرایه زیر ساعت نروند.',
                     'می‌توانید آیه را به‌صورت متن یا تصویر به اشتراک بگذارید.',
                 ],
             },
@@ -1151,7 +1287,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'د ورځې آیت پرانیزئ',
                 detaylar: [
                     'ژباړه هېڅکله نه پرې کېږي؛ په هغو ورځو چې نه ځایېږي، ویجټ غواړي چې د لوستلو لپاره یې کېکاږئ.',
-                    'د Shortcuts اپ په مرسته کولای شئ د ورځې آیت هر سهار خپل شالید کړئ؛ اپ ګامونه درښيي.',
+                    'د Shortcuts اپ په مرسته کولای شئ د ورځې آیت هر سهار خپل شالید کړئ؛ اپ ګامونه درښيي. د سکرین د شالید بڼه تاسو پخپله ټاکئ: د لمانځه له وختونو سره بدلېدونکی آسمان، خپل انځور، لیک بڼه او ښکلا.',
+                    'تاسو کولی شئ د قلف سکرین پر مخ د ساعت ځای اندازه کړئ، څو آیت او ښکلا د ساعت لاندې پاتې نه شي.',
                     'آیت د متن یا انځور په توګه شریکولای شئ.',
                 ],
             },
@@ -1162,7 +1299,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'کردنەوەی ئایەتی ڕۆژ',
                 detaylar: [
                     'وەرگێڕانەکە ھەرگیز ناپچڕێت؛ لەو ڕۆژانەی جێی نابێتەوە، ویجێتەکە داواتان لێ دەکات بۆ خوێندنەوە دەستی لێ بدەن.',
-                    'بە ئەپی Shortcuts دەتوانن ھەموو بەیانییەک ئایەتی ڕۆژ بکەنە وێنەی پاشبنەما؛ ئەپەکە ھەنگاوەکانتان پیشان دەدات.',
+                    'بە ئەپی Shortcuts دەتوانن ھەموو بەیانییەک ئایەتی ڕۆژ بکەنە وێنەی پاشبنەما؛ ئەپەکە ھەنگاوەکانتان پیشان دەدات. ڕووکاری وێنەی پاشبنەما خۆتان ھەڵدەبژێرن: ئاسمانێک کە لەگەڵ کاتەکانی نوێژ دەگۆڕێت، وێنەی خۆتان، جۆری نووسین و ڕازاندنەوە.',
+                    'دەتوانن شوێنی کاتژمێر لەسەر شاشەی قوفڵ بپێون، تا ئایەت و ڕازاندنەوە نەکەونە ژێر کاتژمێرەکە.',
                     'دەتوانن ئایەتەکە وەک دەق یان وێنە ھاوبەش بکەن.',
                 ],
             },
@@ -1173,7 +1311,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'كۈننىڭ ئايىتىنى ئېچىڭ',
                 detaylar: [
                     'تەرجىمە ھېچقانداق چوڭلۇقتا كېسىلمەيدۇ؛ سىغمىغان كۈنى كىچىك قورال ئوقۇش ئۈچۈن چېكىشىڭىزنى سورايدۇ.',
-                    'تېزلەتمىلەر ئەپى بىلەن كۈننىڭ ئايىتىنى ھەر ئەتىگەن تام قەغىزىڭىز قىلالايسىز؛ قەدەملەر ئەپتە چۈشەندۈرۈلىدۇ.',
+                    'تېزلەتمىلەر ئەپى بىلەن كۈننىڭ ئايىتىنى ھەر ئەتىگەن تام قەغىزىڭىز قىلالايسىز؛ قەدەملەر ئەپتە چۈشەندۈرۈلىدۇ. تام قەغىزىنىڭ كۆرۈنۈشىنى ئۆزىڭىز تاللايسىز: ناماز ۋاقتىغا ئەگىشىدىغان ئاسمان، ئۆز سۈرىتىڭىز، خەت نۇسخىسى ۋە بېزەك.',
+                    'قۇلۇپ ئېكرانىڭىزدىكى سائەتنىڭ ئورنىنى ئۆلچەپ، ئايەت ۋە بېزەكنىڭ سائەت ئاستىدا قالماسلىقىنى كاپالەتلەندۈرەلەيسىز.',
                     'ئايەتنى تېكىست ياكى رەسىم قىلىپ ھەمبەھىرلىيەلەيسىز.',
                 ],
             },
@@ -1184,7 +1323,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Günün ayəsini açın',
                 detaylar: [
                     'Tərcümə heç vaxt kəsilmir; sığmadığı günlərdə vidcet oxumaq üçün toxunmağınızı xahiş edir.',
-                    'Shortcuts tətbiqi ilə günün ayəsini hər səhər divar kağızı edə bilərsiniz; tətbiq addımları sizə göstərir.',
+                    'Shortcuts tətbiqi ilə günün ayəsini hər səhər divar kağızı edə bilərsiniz; tətbiq addımları sizə göstərir. Divar kağızının görünüşünü özünüz seçirsiniz: namaz vaxtına uyğun dəyişən səma, öz fotonuz, şrift və bəzək.',
+                    'Kilid ekranınızdakı saatın yerini ölçə bilərsiniz ki, ayə və bəzək saatın altında qalmasın.',
                     'Ayəni mətn və ya şəkil kimi paylaşa bilərsiniz.',
                 ],
             },
@@ -1195,7 +1335,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Кун оятини очиш',
                 detaylar: [
                     'Таржима ҳеч бир ўлчамда қисқартирилмайди; сиғмаган куни виджет ўқиш учун босишингизни сўрайди.',
-                    'Shortcuts иловаси билан кун оятини ҳар тонг фон расмингиз қилишингиз мумкин; қадамлар иловада тушунтирилади.',
+                    'Shortcuts иловаси билан кун оятини ҳар тонг фон расмингиз қилишингиз мумкин; қадамлар иловада тушунтирилади. Фон расмининг кўринишини ўзингиз танлайсиз: намоз вақтига мос ўзгарадиган осмон, ўз суратингиз, ҳарф шакли ва безак.',
+                    'Қулф экранингиздаги соатнинг ўрнини ўлчаб, оят ва безак соат остида қолмаслигини таъминлашингиз мумкин.',
                     'Оятни матн ёки расм сифатида улашишингиз мумкин.',
                 ],
             },
@@ -1206,7 +1347,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Күннің аятын ашу',
                 detaylar: [
                     'Аударма ешбір өлшемде қысқартылмайды; сыймаған күні виджет оқу үшін түртуді сұрайды.',
-                    '«Жылдам пәрмендер» қолданбасы арқылы күннің аятын күн сайын таңертең тұсқағаз ете аласыз; қадамдар қолданбада түсіндірілген.',
+                    '«Жылдам пәрмендер» қолданбасы арқылы күннің аятын күн сайын таңертең тұсқағаз ете аласыз; қадамдар қолданбада түсіндірілген. Тұсқағаздың көрінісін өзіңіз таңдайсыз: намаз уақытына сай өзгеретін аспан, өз фотоңыз, қаріп және өрнек.',
+                    'Құлып экранындағы сағаттың орнын өлшеп, аят пен өрнектің сағат астында қалмауын қамтамасыз ете аласыз.',
                     'Аятпен мәтін немесе сурет ретінде бөлісе аласыз.',
                 ],
             },
@@ -1217,7 +1359,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Күндүн аятын ачуу',
                 detaylar: [
                     'Котормо эч качан кесилбейт; батпаган күндөрү виджет окуу үчүн басууну сунуштайт.',
-                    'Командалар колдонмосу менен күндүн аятын ар таң тушкагаз кыла аласыз; колдонмо кадамдарды көрсөтүп берет.',
+                    'Командалар колдонмосу менен күндүн аятын ар таң тушкагаз кыла аласыз; колдонмо кадамдарды көрсөтүп берет. Тушкагаздын көрүнүшүн өзүңүз тандайсыз: намаз убактысына жараша өзгөргөн асман, өз сүрөтүңүз, шрифт жана оюм.',
+                    'Кулпу экраныңыздагы сааттын ордун өлчөй аласыз, ошондо аят менен оюм сааттын астында калбайт.',
                     'Аятты текст же сүрөт катары бөлүшө аласыз.',
                 ],
             },
@@ -1228,7 +1371,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ояти рӯзро кушоед',
                 detaylar: [
                     'Тарҷума ҳеҷ гоҳ бурида намешавад; дар рӯзҳое, ки намеғунҷад, виҷет хоҳиш мекунад, ки барои хондан пахш кунед.',
-                    'Бо барномаи «Фармонҳои зуд» (Shortcuts) метавонед ояти рӯзро ҳар саҳар тасвири заминаи худ кунед; барнома қадамҳоро ба Шумо нишон медиҳад.',
+                    'Бо барномаи «Фармонҳои зуд» (Shortcuts) метавонед ояти рӯзро ҳар саҳар тасвири заминаи худ кунед; барнома қадамҳоро ба Шумо нишон медиҳад. Намуди тасвири заминаро худатон интихоб мекунед: осмоне, ки ба вақтҳои намоз пайравӣ мекунад, акси худатон, ҳуруф ва ороиш.',
+                    'Шумо метавонед ҷойи соатро дар экрани қулф чен кунед, то оят ва ороиш зери соат намонанд.',
                     'Оятро ҳамчун матн ё тасвир мубодила карда метавонед.',
                 ],
             },
@@ -1239,7 +1383,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Fungua aya ya siku',
                 detaylar: [
                     'Tafsiri haikatwi kamwe; siku isipotoshea, wijeti inakuomba uguse ili uisome.',
-                    'Kwa programu ya Shortcuts unaweza kuifanya aya ya siku kuwa mandhari yako kila asubuhi; programu inakuongoza hatua kwa hatua.',
+                    'Kwa programu ya Shortcuts unaweza kuifanya aya ya siku kuwa mandhari yako kila asubuhi; programu inakuongoza hatua kwa hatua. Unachagua mwonekano wa mandhari: anga inayofuata nyakati za swala, picha yako mwenyewe, mtindo wa herufi na pambo.',
+                    'Unaweza kupima mahali saa ilipo kwenye skrini iliyofungwa ili aya na pambo zisifunikwe na saa.',
                     'Unaweza kushiriki aya kama maandishi au kama picha.',
                 ],
             },
@@ -1250,7 +1395,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Buɗe ayar yau',
                 detaylar: [
                     'Ba a taɓa yanke fassara; a ranakun da ba ta dace ba, widget yana roƙon ku ku taɓa don karanta ta.',
-                    'Da manhajar Shortcuts kuna iya mai da ayar yau fuskar bangonku kowace safiya; manhajar tana jagorantar ku mataki-mataki.',
+                    'Da manhajar Shortcuts kuna iya mai da ayar yau fuskar bangonku kowace safiya; manhajar tana jagorantar ku mataki-mataki. Ku ne kuke zaɓar kamannin fuskar bango: sararin samaniya mai bin lokutan sallah, hotonku, salon rubutu da ado.',
+                    'Kuna iya auna wurin agogo a allon kullenku don kada aya da ado su faɗa ƙarƙashin agogon.',
                     'Kuna iya raba ayar a matsayin rubutu ko hoto.',
                 ],
             },
@@ -1261,7 +1407,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'የዕለቱን አንቀጽ ክፈት',
                 detaylar: [
                     'ትርጉሙ በፍጹም አይቆረጥም፤ በማይበቃባቸው ቀናት ዊጀቱ ለማንበብ እንዲነኩ ይጠይቅዎታል።',
-                    'በአቋራጮች መተግበሪያ የዕለቱን አንቀጽ በየጠዋቱ የግድግዳ ምስልዎ ማድረግ ይችላሉ፤ መተግበሪያው ደረጃዎቹን ያሳይዎታል።',
+                    'በአቋራጮች መተግበሪያ የዕለቱን አንቀጽ በየጠዋቱ የግድግዳ ምስልዎ ማድረግ ይችላሉ፤ መተግበሪያው ደረጃዎቹን ያሳይዎታል። የግድግዳ ምስሉን መልክ እርስዎ ይመርጣሉ፤ የሶላት ጊዜያትን የሚከተል ሰማይ፣ የራስዎ ፎቶ፣ የፊደል ቅርጽና ጌጥ።',
+                    'የመቆለፊያ ገጽዎ ላይ ሰዓቱ ያለበትን ቦታ መለካት ይችላሉ፤ በዚህም አንቀጹና ጌጡ ከሰዓቱ ስር አይገቡም።',
                     'አንቀጹን እንደ ጽሑፍ ወይም እንደ ምስል ማጋራት ይችላሉ።',
                 ],
             },
@@ -1272,7 +1419,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Aayata guyyaa banaa',
                 detaylar: [
                     'Hiikkaan gonkumaa hin kutamu; guyyaa hin geenye, wiijetiin akka dubbisuuf tuqxan isin gaafata.',
-                    'Appii Shortcuts fayyadamuun ganama ganama aayata guyyaa suuraa duubaa gochuu dandeessu; appichi tarkaanfiilee isin qajeelcha.',
+                    'Appii Shortcuts fayyadamuun ganama ganama aayata guyyaa suuraa duubaa gochuu dandeessu; appichi tarkaanfiilee isin qajeelcha. Bifa suuraa duubaa ofii keessaniin filattu: samii yeroo salaataa hordofu, suuraa keessan, bifa qubee fi miidhagina.',
+                    'Bakka sa’aatiin fuula cufaa keessan irra jiru safaruu dandeessu, akka aayanni fi miidhaginni sa’aatii jala hin seenneef.',
                     'Aayata akka barreeffamaa ykn akka suuraatti qooddachuu dandeessu.',
                 ],
             },
@@ -1283,7 +1431,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Fur aayadda maanta',
                 detaylar: [
                     'Tarjumaadda marnaba lama gooyo; maalmaha aysan ku filnayn, wijitku wuxuu kaa codsadaa inaad taabato si aad u akhrido.',
-                    'Barnaamijka "Shortcuts" waxaad aayadda maanta uga dhigi kartaa sawirka asalka subax kasta; barnaamijku tallaabooyinka ayuu kugu hagayaa.',
+                    'Barnaamijka "Shortcuts" waxaad aayadda maanta uga dhigi kartaa sawirka asalka subax kasta; barnaamijku tallaabooyinka ayuu kugu hagayaa. Adigaa dooranaya muuqaalka sawirka asalka: cir raacaya waqtiyada salaadda, sawirkaaga, qaabka farta iyo qurxin.',
+                    'Waxaad cabbiri kartaa meesha saacaddu kaga taal shaashadda qufulka, si aayadda iyo qurxintu aysan saacadda hoosteeda u gelin.',
                     'Aayadda waxaad u wadaagi kartaa qoraal ama sawir ahaan.',
                 ],
             },
@@ -1294,7 +1443,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Udditee aaya ñalawma',
                 detaylar: [
                     'Firo ngo taƴetaake abada; ñalɗe ɗe ngo haanaani, widget ngo hino ƴama on dobde ngam janngude ngo.',
-                    'E jaaɓngal Shortcuts hiɗon mbaawi waɗude aaya ñalawma natal yaynirde mon bimmbi kala; jaaɓngal ngal hino hollira on taaɓe ɗen.',
+                    'E jaaɓngal Shortcuts hiɗon mbaawi waɗude aaya ñalawma natal yaynirde mon bimmbi kala; jaaɓngal ngal hino hollira on taaɓe ɗen. Ko onon suɓata mbaydi natal yaynirde: asamaan rewoowo waqtuuji juulde, natal mon, mbaydi binndol e cuɗaari.',
+                    'Ina mbaawon betde nokku montoor e yaynirde uddaande mon, ngam aaya e cuɗaari hoto naat les montoor.',
                     'Hiɗon mbaawi lollinde aaya oo wa binndi walla wa natal.',
                 ],
             },
@@ -1305,7 +1455,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ṣí āyah ti òní',
                 detaylar: [
                     'A kì í gé ìtumọ̀ kúrú láéláé; ní ọjọ́ tí kò bá bá a mu, wíjẹ́ẹ̀tì yóò ní kí ẹ tẹ̀ ẹ́ láti kà á.',
-                    'Pẹ̀lú ìṣàfilọ́lẹ̀ Shortcuts, ẹ lè fi āyah ti òní ṣe àwòrán ìbòjú yín ní àràárọ̀; ìṣàfilọ́lẹ̀ yóò tọ́ yín sọ́nà ní ìgbésẹ̀ kọ̀ọ̀kan.',
+                    'Pẹ̀lú ìṣàfilọ́lẹ̀ Shortcuts, ẹ lè fi āyah ti òní ṣe àwòrán ìbòjú yín ní àràárọ̀; ìṣàfilọ́lẹ̀ yóò tọ́ yín sọ́nà ní ìgbésẹ̀ kọ̀ọ̀kan. Ẹ̀yin ni ẹ ń yan ìrísí àwòrán ìbòjú: ojú ọ̀run tí ó ń tẹ̀lé àkókò ìrun, fọ́tò tiyín, irú ọ̀rọ̀ àti ọ̀ṣọ́.',
+                    'Ẹ lè wọn ibi tí aago wà lórí ojú-ìbòjú títì yín, kí āyah àti ọ̀ṣọ́ má baà bọ́ sí abẹ́ aago.',
                     'Ẹ lè pín āyah náà gẹ́gẹ́ bí ọ̀rọ̀ tàbí àwòrán.',
                 ],
             },
@@ -1316,7 +1467,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: '打开每日经文',
                 detaylar: [
                     '译文绝不会被截断；放不下的日子，小组件会提示您点按阅读。',
-                    '借助“快捷指令”应用，可以每天早上将每日经文设为墙纸；应用会逐步引导您设置。',
+                    '借助“快捷指令”应用，可以每天早上将每日经文设为墙纸；应用会逐步引导您设置。 壁纸外观由您选择：随礼拜时间变化的天空、您自己的照片、字体和装饰。',
+                    '您可以测量锁屏上时钟的位置，让经文和装饰不被时钟遮挡。',
                     '可以以文字或图片分享经文。',
                 ],
             },
@@ -1327,7 +1479,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'இன்றைய வசனத்தைத் திறக்க',
                 detaylar: [
                     'மொழிபெயர்ப்பு ஒருபோதும் வெட்டப்படாது; பொருந்தாத நாட்களில் படிக்கத் தட்டுமாறு விட்ஜெட் கேட்கும்.',
-                    'Shortcuts ஆப்ஸ் மூலம் ஒவ்வொரு காலையும் இன்றைய வசனத்தை வால்பேப்பராக அமைக்கலாம்; ஆப்ஸ் படிப்படியாக வழிகாட்டும்.',
+                    'Shortcuts ஆப்ஸ் மூலம் ஒவ்வொரு காலையும் இன்றைய வசனத்தை வால்பேப்பராக அமைக்கலாம்; ஆப்ஸ் படிப்படியாக வழிகாட்டும். வால்பேப்பரின் தோற்றத்தை நீங்களே தேர்வு செய்யலாம்: தொழுகை நேரங்களைப் பின்பற்றும் வானம், உங்கள் சொந்தப் புகைப்படம், எழுத்துரு, அலங்காரம்.',
+                    'பூட்டுத் திரையில் கடிகாரம் இருக்கும் இடத்தை அளந்து, வசனமும் அலங்காரமும் கடிகாரத்தின் கீழ் மறையாமல் செய்யலாம்.',
                     'வசனத்தை உரையாகவோ படமாகவோ பகிரலாம்.',
                 ],
             },
@@ -1338,7 +1491,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ഇന്നത്തെ ആയത്ത് തുറക്കുക',
                 detaylar: [
                     'പരിഭാഷ ഒരിക്കലും മുറിക്കില്ല; ഒതുങ്ങാത്ത ദിവസങ്ങളിൽ വായിക്കാൻ ടാപ്പ് ചെയ്യാൻ വിജറ്റ് പറയും.',
-                    'Shortcuts ആപ്പ് ഉപയോഗിച്ച് എല്ലാ പ്രഭാതത്തിലും ഇന്നത്തെ ആയത്ത് വാൾപേപ്പറാക്കാം; ആപ്പ് ഘട്ടങ്ങൾ കാണിച്ചുതരും.',
+                    'Shortcuts ആപ്പ് ഉപയോഗിച്ച് എല്ലാ പ്രഭാതത്തിലും ഇന്നത്തെ ആയത്ത് വാൾപേപ്പറാക്കാം; ആപ്പ് ഘട്ടങ്ങൾ കാണിച്ചുതരും. വാൾപേപ്പറിന്റെ രൂപം നിങ്ങൾ തന്നെ തിരഞ്ഞെടുക്കുന്നു: നമസ്കാര സമയങ്ങൾ പിന്തുടരുന്ന ആകാശം, സ്വന്തം ഫോട്ടോ, അക്ഷരരൂപം, അലങ്കാരം.',
+                    'ലോക്ക് സ്ക്രീനിലെ ക്ലോക്കിന്റെ സ്ഥാനം അളന്ന്, ആയത്തും അലങ്കാരവും ക്ലോക്കിന് താഴെ മറയാതെ നോക്കാം.',
                     'ആയത്ത് വാചകമായോ ചിത്രമായോ പങ്കിടാം.',
                 ],
             },
@@ -1349,7 +1503,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'เปิดอายะฮ์ประจำวัน',
                 detaylar: [
                     'คำแปลจะไม่ถูกตัด ในวันที่ไม่พอดี วิดเจ็ตจะขอให้คุณแตะเพื่ออ่าน',
-                    'คุณตั้งอายะฮ์ประจำวันเป็นวอลเปเปอร์ทุกเช้าได้ด้วยแอปคำสั่งลัด แอปจะแนะนำขั้นตอนให้',
+                    'คุณตั้งอายะฮ์ประจำวันเป็นวอลเปเปอร์ทุกเช้าได้ด้วยแอปคำสั่งลัด แอปจะแนะนำขั้นตอนให้ คุณเลือกรูปลักษณ์ของวอลเปเปอร์เองได้: ท้องฟ้าที่เปลี่ยนตามเวลาละหมาด รูปภาพของคุณเอง แบบอักษร และลวดลาย',
+                    'คุณวัดตำแหน่งนาฬิกาบนหน้าจอล็อกได้ เพื่อไม่ให้อายะฮ์และลวดลายถูกนาฬิกาบัง',
                     'คุณแชร์อายะฮ์เป็นข้อความหรือรูปภาพได้',
                 ],
             },
@@ -1360,7 +1515,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: '오늘의 구절 열기',
                 detaylar: [
                     '번역은 절대 잘리지 않으며, 맞지 않는 날에는 위젯이 탭하여 읽으라고 안내합니다.',
-                    '단축어 앱으로 매일 아침 오늘의 구절을 배경화면으로 만들 수 있으며, 앱이 단계를 안내합니다.',
+                    '단축어 앱으로 매일 아침 오늘의 구절을 배경화면으로 만들 수 있으며, 앱이 단계를 안내합니다. 배경화면 모양은 직접 고릅니다. 예배 시간에 맞춰 바뀌는 하늘, 내 사진, 글꼴과 장식.',
+                    '잠금 화면에서 시계 위치를 측정해 구절과 장식이 시계에 가려지지 않게 할 수 있습니다.',
                     '구절을 텍스트나 이미지로 공유할 수 있습니다.',
                 ],
             },
@@ -1371,7 +1527,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Mở Câu Kinh hôm nay',
                 detaylar: [
                     'Bản dịch không bao giờ bị cắt; vào những ngày không vừa, tiện ích sẽ mời bạn chạm để đọc.',
-                    'Với ứng dụng Phím tắt, bạn có thể đặt câu Kinh hôm nay làm hình nền mỗi sáng; ứng dụng sẽ hướng dẫn bạn từng bước.',
+                    'Với ứng dụng Phím tắt, bạn có thể đặt câu Kinh hôm nay làm hình nền mỗi sáng; ứng dụng sẽ hướng dẫn bạn từng bước. Bạn tự chọn giao diện hình nền: bầu trời theo giờ cầu nguyện, ảnh của riêng bạn, kiểu chữ và hoa văn.',
+                    'Bạn có thể đo vị trí đồng hồ trên màn hình khóa để câu Kinh và hoa văn không bị đồng hồ che.',
                     'Bạn có thể chia sẻ câu Kinh dưới dạng văn bản hoặc hình ảnh.',
                 ],
             },
@@ -1382,7 +1539,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Abrir o versículo do dia',
                 detaylar: [
                     'A tradução nunca é cortada; nos dias em que não cabe, o widget convida a tocar para a ler.',
-                    'Com a aplicação Atalhos, pode pôr o versículo do dia como papel de parede todas as manhãs; a aplicação mostra os passos.',
+                    'Com a aplicação Atalhos, pode pôr o versículo do dia como papel de parede todas as manhãs; a aplicação mostra os passos. Escolhe o aspeto do papel de parede: um céu que acompanha as horas de oração, a sua própria fotografia, a letra e um ornamento.',
+                    'Pode medir onde fica o relógio no ecrã de bloqueio para que o versículo e o ornamento não fiquem por baixo do relógio.',
                     'Pode partilhar o versículo como texto ou como imagem.',
                 ],
             },
@@ -1393,7 +1551,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Aprire il versetto del giorno',
                 detaylar: [
                     'La traduzione non viene mai tagliata; nei giorni in cui non entra, il widget invita a toccare per leggerla.',
-                    'Con l’app Comandi può usare ogni mattina il versetto del giorno come sfondo; l’app la guida passo per passo.',
+                    'Con l’app Comandi può usare ogni mattina il versetto del giorno come sfondo; l’app la guida passo per passo. Scegliete voi l’aspetto dello sfondo: un cielo che segue gli orari di preghiera, una vostra foto, il carattere e un ornamento.',
+                    'Potete misurare dove si trova l’orologio sulla schermata di blocco, così il versetto e l’ornamento non finiscono sotto l’orologio.',
                     'Può condividere il versetto come testo o come immagine.',
                 ],
             },
@@ -1404,7 +1563,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Öppna dagens vers',
                 detaylar: [
                     'Översättningen kortas aldrig av; de dagar den inte får plats ber widgeten dig att trycka för att läsa den.',
-                    'Med appen Genvägar kan du göra dagens vers till bakgrundsbild varje morgon; appen guidar dig genom stegen.',
+                    'Med appen Genvägar kan du göra dagens vers till bakgrundsbild varje morgon; appen guidar dig genom stegen. Du väljer bakgrundsbildens utseende: en himmel som följer bönetiderna, ditt eget foto, typsnittet och ett ornament.',
+                    'Du kan mäta var klockan sitter på låsskärmen så att versen och ornamentet inte hamnar under klockan.',
                     'Du kan dela versen som text eller som bild.',
                 ],
             },
@@ -1415,7 +1575,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Відкрити аят дня',
                 detaylar: [
                     'Переклад ніколи не обрізається; у дні, коли він не вміщається, віджет пропонує торкнутися, щоб прочитати.',
-                    'За допомогою «Швидких команд» аят дня можна щоранку робити шпалерами; застосунок покроково підкаже, як це налаштувати.',
+                    'За допомогою «Швидких команд» аят дня можна щоранку робити шпалерами; застосунок покроково підкаже, як це налаштувати. Вигляд шпалер ви обираєте самі: небо, що слідує часу намазу, власне фото, шрифт і візерунок.',
+                    'Можна виміряти, де на екрані блокування розташований годинник, щоб аят і візерунок не опинилися під ним.',
                     'Аятом можна поділитися як текстом або як зображенням.',
                 ],
             },
@@ -1426,7 +1587,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Deschideți versetul zilei',
                 detaylar: [
                     'Traducerea nu este tăiată niciodată; în zilele în care nu încape, widgetul vă invită să atingeți pentru a o citi.',
-                    'Cu aplicația Scurtături puteți face din versetul zilei fundalul în fiecare dimineață; aplicația vă arată pașii.',
+                    'Cu aplicația Scurtături puteți face din versetul zilei fundalul în fiecare dimineață; aplicația vă arată pașii. Alegeți aspectul fundalului: un cer care urmează orele de rugăciune, propria fotografie, fontul și un ornament.',
+                    'Puteți măsura unde se află ceasul pe ecranul de blocare, ca versetul și ornamentul să nu ajungă sub ceas.',
                     'Puteți distribui versetul ca text sau ca imagine.',
                 ],
             },
@@ -1437,7 +1599,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Otvorite ajet dana',
                 detaylar: [
                     'Prijevod se nikad ne skraćuje; u danima kad ne stane, widget vas poziva da ga dodirnete i pročitate.',
-                    'Pomoću aplikacije Prečaci ajet dana svako jutro može postati vaša pozadina; aplikacija vas vodi kroz korake.',
+                    'Pomoću aplikacije Prečaci ajet dana svako jutro može postati vaša pozadina; aplikacija vas vodi kroz korake. Izgled pozadine birate sami: nebo koje prati vremena namaza, vlastitu fotografiju, slova i ukras.',
+                    'Možete izmjeriti gdje je sat na zaključanom zaslonu kako ajet i ukras ne bi ostali ispod sata.',
                     'Ajet možete podijeliti kao tekst ili kao sliku.',
                 ],
             },
@@ -1448,7 +1611,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Отворите ајет дана',
                 detaylar: [
                     'Превод значења се никада не скраћује; у данима када не стаје, виџет вас позива да га додирнете и прочитате.',
-                    'Помоћу апликације Пречице ајет дана сваког јутра може да постане ваша позадина; апликација вас води кроз кораке.',
+                    'Помоћу апликације Пречице ајет дана сваког јутра може да постане ваша позадина; апликација вас води кроз кораке. Изглед позадине бирате сами: небо које прати времена намаза, сопствену фотографију, слова и украс.',
+                    'Можете да измерите где је сат на закључаном екрану како ајет и украс не би остали испод сата.',
                     'Ајет можете поделити као текст или као слику.',
                 ],
             },
@@ -1459,7 +1623,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Άνοιγμα του εδαφίου της ημέρας',
                 detaylar: [
                     'Η μετάφραση δεν κόβεται ποτέ· τις ημέρες που δεν χωράει, το widget σας ζητά να το πατήσετε για να τη διαβάσετε.',
-                    'Με την εφαρμογή Συντομεύσεις μπορείτε να κάνετε το εδάφιο της ημέρας ταπετσαρία κάθε πρωί· η εφαρμογή σας καθοδηγεί βήμα βήμα.',
+                    'Με την εφαρμογή Συντομεύσεις μπορείτε να κάνετε το εδάφιο της ημέρας ταπετσαρία κάθε πρωί· η εφαρμογή σας καθοδηγεί βήμα βήμα. Την εμφάνιση της ταπετσαρίας τη διαλέγετε εσείς: ουρανός που ακολουθεί τις ώρες προσευχής, δική σας φωτογραφία, γραμματοσειρά και διακόσμηση.',
+                    'Μπορείτε να μετρήσετε πού βρίσκεται το ρολόι στην οθόνη κλειδώματος, ώστε το εδάφιο και η διακόσμηση να μη μένουν κάτω από το ρολόι.',
                     'Μπορείτε να κοινοποιήσετε το εδάφιο ως κείμενο ή ως εικόνα.',
                 ],
             },
@@ -1470,7 +1635,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ayeta rojê vekin',
                 detaylar: [
                     'Ayet qet nayê birîn; di rojên ku cih nagire de, wîdcet ji we dixwaze ku ji bo xwendinê bitikînin.',
-                    'Bi sepana Shortcuts hûn dikarin ayeta rojê her sibe bikin wêneyê dîwêr; sepan gav bi gav rê nîşanî we dide.',
+                    'Bi sepana Shortcuts hûn dikarin ayeta rojê her sibe bikin wêneyê dîwêr; sepan gav bi gav rê nîşanî we dide. Hûn xuyangê wêneyê dîwêr bi xwe hildibijêrin: asmanek li gorî demên nimêjê, wêneyê xwe, cureyê nivîsê û xemil.',
+                    'Hûn dikarin cihê saetê li ser dîmena kilîtê bipîvin, da ku ayet û xemil nekevin bin saetê.',
                     'Hûn dikarin ayetê wekî nivîs an wekî wêne parve bikin.',
                 ],
             },
@@ -1481,7 +1647,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Günüň aýatyny açyň',
                 detaylar: [
                     'Aýat hiç haçan kesilmeýär; sygmaýan günlerde widjet okamak üçin basmagyňyzy soraýar.',
-                    'Gysga ýollar programmasy bilen günüň aýatyny her irden diwar kagyzy edip bilersiňiz; programma ädimleri size görkezýär.',
+                    'Gysga ýollar programmasy bilen günüň aýatyny her irden diwar kagyzy edip bilersiňiz; programma ädimleri size görkezýär. Diwar kagyzynyň görnüşini özüňiz saýlaýarsyňyz: namaz wagtyna görä üýtgeýän asman, öz suratyňyz, şrift we bezeg.',
+                    'Gulp ekranyňyzdaky sagadyň ýerini ölçüp, aýatyň we bezegiň sagadyň aşagynda galmazlygyny üpjün edip bilersiňiz.',
                     'Aýaty tekst ýa-da surat hökmünde paýlaşyp bilersiňiz.',
                 ],
             },
@@ -1492,7 +1659,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Көннең аятен ачу',
                 detaylar: [
                     'Аять беркайчан да киселми; сыймаган көннәрдә виджет уку өчен басарга тәкъдим итә.',
-                    '«Командалар» кушымтасы белән көннең аятен һәр иртә тышкы рәсем итә аласыз; кушымта адымнарны күрсәтеп бара.',
+                    '«Командалар» кушымтасы белән көннең аятен һәр иртә тышкы рәсем итә аласыз; кушымта адымнарны күрсәтеп бара. Тышкы рәсемнең күренешен үзегез сайлыйсыз: намаз вакытына карап үзгәрә торган күк, үз фотогыз, шрифт һәм бизәк.',
+                    'Бикләү экранындагы сәгатьнең урынын үлчәп, аять һәм бизәк сәгать астында калмасын өчен көйли аласыз.',
                     'Аятьне текст яки сурәт итеп уртаклаша аласыз.',
                 ],
             },
@@ -1503,7 +1671,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ڏينهن جي آيت کوليو',
                 detaylar: [
                     'آيت ڪڏهن به اڌوري نٿي ٿئي؛ جنهن ڏينهن نه سمائجي، ويجيٽ پڙهڻ لاءِ ٽيپ ڪرڻ جو چوي ٿو.',
-                    'Shortcuts ايپ سان ڏينهن جي آيت کي هر صبح وال پيپر بڻائي سگهو ٿا؛ ايپ قدم قدم رهنمائي ڪري ٿي.',
+                    'Shortcuts ايپ سان ڏينهن جي آيت کي هر صبح وال پيپر بڻائي سگهو ٿا؛ ايپ قدم قدم رهنمائي ڪري ٿي. وال پيپر جو انداز توهان پاڻ چونڊيو ٿا: نماز جي وقتن سان بدلجندڙ آسمان، پنهنجي تصوير، لکت جو انداز ۽ سينگار.',
+                    'توهان لاڪ اسڪرين تي گھڙيال جي جاءِ ماپي سگھو ٿا ته جيئن آيت ۽ سينگار گھڙيال جي هيٺان نه اچن.',
                     'آيت عبارت يا تصوير طور شيئر ڪري سگهو ٿا.',
                 ],
             },
@@ -1514,7 +1683,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Otwórz werset dnia',
                 detaylar: [
                     'Werset nigdy nie jest ucinany; w dni, gdy się nie mieści, widżet prosi o dotknięcie, aby go przeczytać.',
-                    'Za pomocą aplikacji Skróty możesz co rano ustawiać werset dnia jako tapetę; aplikacja prowadzi przez kolejne kroki.',
+                    'Za pomocą aplikacji Skróty możesz co rano ustawiać werset dnia jako tapetę; aplikacja prowadzi przez kolejne kroki. Wygląd tapety wybierasz sam: niebo zgodne z porami modlitwy, własne zdjęcie, czcionkę i ozdobę.',
+                    'Możesz zmierzyć, gdzie na ekranie blokady jest zegar, aby werset i ozdoba nie znalazły się pod nim.',
                     'Werset możesz udostępnić jako tekst lub obraz.',
                 ],
             },
@@ -1525,7 +1695,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: '今日のアーヤを開く',
                 detaylar: [
                     '訳が途中で切れることはありません。収まらない日は、ウィジェットがタップして読むよう案内します。',
-                    'ショートカットAppを使えば、毎朝今日のアーヤを壁紙にできます。アプリが手順を案内します。',
+                    'ショートカットAppを使えば、毎朝今日のアーヤを壁紙にできます。アプリが手順を案内します。 壁紙の見た目はご自分で選べます。礼拝時刻に合わせて変わる空、お手持ちの写真、書体、装飾。',
+                    'ロック画面の時計の位置を測定して、アーヤや装飾が時計に重ならないようにできます。',
                     'アーヤはテキストまたは画像で共有できます。',
                 ],
             },
@@ -1536,7 +1707,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'આજની આયત ખોલો',
                 detaylar: [
                     'અનુવાદ ક્યારેય કપાતો નથી; જે દિવસે તે ન સમાય, ત્યારે વિજેટ વાંચવા ટૅપ કરવાનું કહે છે.',
-                    'Shortcuts ઍપથી તમે દરરોજ સવારે આજની આયતને તમારું વૉલપેપર બનાવી શકો છો; ઍપ તમને પગલાં બતાવે છે.',
+                    'Shortcuts ઍપથી તમે દરરોજ સવારે આજની આયતને તમારું વૉલપેપર બનાવી શકો છો; ઍપ તમને પગલાં બતાવે છે. વૉલપેપરનો દેખાવ તમે જાતે પસંદ કરો છો: નમાઝના સમય સાથે બદલાતું આકાશ, તમારો પોતાનો ફોટો, અક્ષરશૈલી અને શણગાર.',
+                    'લૉક સ્ક્રીન પર ઘડિયાળનું સ્થાન માપીને આયત અને શણગાર ઘડિયાળની નીચે ન આવે તેવું કરી શકો છો.',
                     'તમે આયત લખાણ તરીકે કે છબી તરીકે શેર કરી શકો છો.',
                 ],
             },
@@ -1547,7 +1719,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Отворете аята на деня',
                 detaylar: [
                     'Преводът никога не се съкращава; в дните, в които не се побира, уиджетът ви кани да докоснете, за да го прочетете.',
-                    'С приложението „Бързи команди“ можете всяка сутрин да правите аята на деня свой тапет; приложението ви води през стъпките.',
+                    'С приложението „Бързи команди“ можете всяка сутрин да правите аята на деня свой тапет; приложението ви води през стъпките. Облика на тапета избирате сами: небе, което следва времената за молитва, ваша снимка, шрифта и украса.',
+                    'Можете да измерите къде е часовникът на заключения екран, така че аятът и украсата да не остават под него.',
                     'Можете да споделите аята като текст или като изображение.',
                 ],
             },
@@ -1558,7 +1731,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Отворете го ајетот на денот',
                 detaylar: [
                     'Преводот никогаш не се скратува; во деновите кога не собира, виџетот ве повикува да допрете за да го прочитате.',
-                    'Со апликацијата Кратенки ајетот на денот може секое утро да ви биде позадина; апликацијата ве води низ чекорите.',
+                    'Со апликацијата Кратенки ајетот на денот може секое утро да ви биде позадина; апликацијата ве води низ чекорите. Изгледот на позадината го бирате сами: небо што ги следи времињата за намаз, ваша фотографија, буквите и украс.',
+                    'Можете да измерите каде е часовникот на заклучениот екран, за ајетот и украсот да не останат под него.',
                     'Ајетот можете да го споделите како текст или како слика.',
                 ],
             },
@@ -1569,7 +1743,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Buksan ang talata ng araw',
                 detaylar: [
                     'Hindi kailanman pinuputol ang salin; sa mga araw na hindi ito kasya, hinihiling ng widget na i-tap ninyo ito para basahin.',
-                    'Gamit ang app na Shortcuts, magagawa ninyong wallpaper ang talata ng araw tuwing umaga; gagabayan kayo ng app sa mga hakbang.',
+                    'Gamit ang app na Shortcuts, magagawa ninyong wallpaper ang talata ng araw tuwing umaga; gagabayan kayo ng app sa mga hakbang. Kayo ang pipili ng itsura ng wallpaper: langit na sumusunod sa oras ng pagdarasal, sariling larawan, font, at palamuti.',
+                    'Maaari ninyong sukatin kung nasaan ang orasan sa lock screen para hindi matakpan ng orasan ang talata at palamuti.',
                     'Maibabahagi ninyo ang talata bilang teksto o bilang larawan.',
                 ],
             },
@@ -1580,7 +1755,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ఈ రోజు ఆయత్‌ను తెరవండి',
                 detaylar: [
                     'అనువాదం ఎప్పుడూ కత్తిరించబడదు; సరిపోని రోజుల్లో, చదవడానికి నొక్కమని విడ్జెట్ అడుగుతుంది.',
-                    'షార్ట్‌కట్‌ల యాప్‌తో ప్రతి ఉదయం ఈ రోజు ఆయత్‌ను మీ వాల్‌పేపర్‌గా చేసుకోవచ్చు; యాప్ దశలవారీగా మీకు చూపిస్తుంది.',
+                    'షార్ట్‌కట్‌ల యాప్‌తో ప్రతి ఉదయం ఈ రోజు ఆయత్‌ను మీ వాల్‌పేపర్‌గా చేసుకోవచ్చు; యాప్ దశలవారీగా మీకు చూపిస్తుంది. వాల్‌పేపర్ రూపాన్ని మీరే ఎంచుకుంటారు: నమాజు సమయాలను అనుసరించే ఆకాశం, మీ సొంత ఫోటో, అక్షర శైలి, అలంకారం.',
+                    'లాక్ స్క్రీన్‌పై గడియారం ఉన్న చోటును కొలిచి, ఆయత్ మరియు అలంకారం గడియారం కింద పడకుండా చూసుకోవచ్చు.',
                     'ఆయత్‌ను పాఠంగా లేదా చిత్రంగా షేర్ చేయవచ్చు.',
                 ],
             },
@@ -1591,7 +1767,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ದಿನದ ವಚನ ತೆರೆಯಿರಿ',
                 detaylar: [
                     'ಅರ್ಥಾನುವಾದವನ್ನು ಎಂದೂ ಕತ್ತರಿಸಲಾಗುವುದಿಲ್ಲ; ಅದು ಹೊಂದದ ದಿನ, ಓದಲು ಟ್ಯಾಪ್ ಮಾಡುವಂತೆ ವಿಜೆಟ್ ಕೇಳುತ್ತದೆ.',
-                    'Shortcuts ಆ್ಯಪ್ ಮೂಲಕ ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ ದಿನದ ವಚನವನ್ನು ನಿಮ್ಮ ವಾಲ್‌ಪೇಪರ್ ಆಗಿ ಮಾಡಬಹುದು; ಆ್ಯಪ್ ಹಂತಗಳನ್ನು ತೋರಿಸುತ್ತದೆ.',
+                    'Shortcuts ಆ್ಯಪ್ ಮೂಲಕ ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ ದಿನದ ವಚನವನ್ನು ನಿಮ್ಮ ವಾಲ್‌ಪೇಪರ್ ಆಗಿ ಮಾಡಬಹುದು; ಆ್ಯಪ್ ಹಂತಗಳನ್ನು ತೋರಿಸುತ್ತದೆ. ವಾಲ್‌ಪೇಪರ್‌ನ ನೋಟವನ್ನು ನೀವೇ ಆಯ್ಕೆಮಾಡುತ್ತೀರಿ: ನಮಾಜಿನ ಸಮಯವನ್ನು ಅನುಸರಿಸುವ ಆಕಾಶ, ನಿಮ್ಮದೇ ಫೋಟೋ, ಅಕ್ಷರಶೈಲಿ ಮತ್ತು ಅಲಂಕಾರ.',
+                    'ಲಾಕ್ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ಗಡಿಯಾರದ ಸ್ಥಾನವನ್ನು ಅಳೆದು, ವಚನ ಮತ್ತು ಅಲಂಕಾರ ಗಡಿಯಾರದ ಕೆಳಗೆ ಮರೆಯಾಗದಂತೆ ಮಾಡಬಹುದು.',
                     'ವಚನವನ್ನು ಪಠ್ಯವಾಗಿ ಅಥವಾ ಚಿತ್ರವಾಗಿ ಹಂಚಿಕೊಳ್ಳಬಹುದು.',
                 ],
             },
@@ -1602,7 +1779,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'आजची आयत उघडा',
                 detaylar: [
                     'भाषांतर कधीही कापले जात नाही; ज्या दिवशी ते मावत नाही, त्या दिवशी विजेट वाचण्यासाठी टॅप करायला सांगते.',
-                    'शॉर्टकट्स ॲपने आजची आयत दररोज सकाळी वॉलपेपर करता येते; ॲप तुम्हाला पायरी-पायरीने सांगते.',
+                    'शॉर्टकट्स ॲपने आजची आयत दररोज सकाळी वॉलपेपर करता येते; ॲप तुम्हाला पायरी-पायरीने सांगते. वॉलपेपरचे रूप तुम्हीच निवडता: नमाजच्या वेळांनुसार बदलणारे आकाश, तुमचा स्वतःचा फोटो, अक्षरशैली आणि सजावट.',
+                    'लॉक स्क्रीनवरील घड्याळाची जागा मोजून आयत आणि सजावट घड्याळाखाली येणार नाहीत असे करू शकता.',
                     'आयत मजकूर किंवा चित्र म्हणून शेअर करता येते.',
                 ],
             },
@@ -1613,7 +1791,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'اج دی آیت کھولو',
                 detaylar: [
                     'آیت کدے ادھوری نہیں کٹی جاندی؛ جس دن پوری نہ سماوے، ویجیٹ پڑھن لئی ٹیپ کرن نوں آکھدا اے۔',
-                    'Shortcuts ایپ نال اج دی آیت نوں ہر سویرے وال پیپر بنایا جا سکدا اے؛ ایپ قدم قدم رہنمائی کردی اے۔',
+                    'Shortcuts ایپ نال اج دی آیت نوں ہر سویرے وال پیپر بنایا جا سکدا اے؛ ایپ قدم قدم رہنمائی کردی اے۔ وال پیپر دا روپ تُسی آپ چُندے او: نماز دے ویلیاں نال بدلدا اسمان، اپنی تصویر، لکھت دا انداز تے سجاوٹ۔',
+                    'تُسی لاک سکرین اتے گھڑی دی تھاں ناپ سکدے او تاں جے آیت تے سجاوٹ گھڑی دے ہیٹھاں نہ آون۔',
                     'آیت متن یا تصویر وجوں شیئر کیتی جا سکدی اے۔',
                 ],
             },
@@ -1624,7 +1803,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'আজিৰ আয়াত খোলক',
                 detaylar: [
                     'অৰ্থানুবাদ কেতিয়াও কটা নহয়; যিদিনা নধৰে, সেইদিনা ৱিজেটে পঢ়িবলৈ টিপিবলৈ কয়।',
-                    'Shortcuts এপেৰে প্ৰতিদিনে ৰাতিপুৱা আজিৰ আয়াত ৱালপেপাৰ কৰিব পাৰে; এপে আপোনাক পদক্ষেপবোৰ দেখুৱাই দিয়ে।',
+                    'Shortcuts এপেৰে প্ৰতিদিনে ৰাতিপুৱা আজিৰ আয়াত ৱালপেপাৰ কৰিব পাৰে; এপে আপোনাক পদক্ষেপবোৰ দেখুৱাই দিয়ে। ৱালপেপাৰৰ ৰূপ আপুনি নিজেই বাছে: নামাজৰ সময়ৰ লগত সলনি হোৱা আকাশ, নিজৰ ফটো, লিখনিৰ ধৰণ আৰু অলংকৰণ।',
+                    'লক স্ক্ৰীনত ঘড়ীৰ স্থান জুখি আয়াত আৰু অলংকৰণ ঘড়ীৰ তলত নপৰাকৈ ৰাখিব পাৰে।',
                     'আয়াতটো পাঠ বা ছবি হিচাপে শ্বেয়াৰ কৰিব পাৰে।',
                 ],
             },
@@ -1635,7 +1815,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'आजको आयत खोल्नुहोस्',
                 detaylar: [
                     'अनुवाद कहिल्यै काटिँदैन; नअटाउने दिन विजेटले पढ्न ट्याप गर्न भन्छ।',
-                    'Shortcuts एपबाट आजको आयतलाई हरेक बिहान वालपेपर बनाउन सक्नुहुन्छ; एपले चरणहरू देखाउँछ।',
+                    'Shortcuts एपबाट आजको आयतलाई हरेक बिहान वालपेपर बनाउन सक्नुहुन्छ; एपले चरणहरू देखाउँछ। वालपेपरको रूप तपाईं आफैँ छान्नुहुन्छ: नमाजको समयसँगै बदलिने आकाश, आफ्नै फोटो, अक्षरशैली र सजावट।',
+                    'लक स्क्रिनमा घडीको ठाउँ नापेर आयत र सजावट घडीमुनि नपर्ने बनाउन सक्नुहुन्छ।',
                     'आयत पाठ वा तस्बिरका रूपमा सेयर गर्न सक्नुहुन्छ।',
                 ],
             },
@@ -1646,7 +1827,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'දවසේ ආයතය විවෘත කරන්න',
                 detaylar: [
                     'පරිවර්තනය කිසිවිටෙක කපා හරින්නේ නැත; එය නොගැළපෙන දිනවල, කියවීමට තට්ටු කරන ලෙස විජට් එක ඉල්ලයි.',
-                    'Shortcuts යෙදුමෙන් සෑම උදෑසනකම දවසේ ආයතය ඔබගේ බිතුපත කළ හැක; යෙදුම පියවර ඔබට පෙන්වා දෙයි.',
+                    'Shortcuts යෙදුමෙන් සෑම උදෑසනකම දවසේ ආයතය ඔබගේ බිතුපත කළ හැක; යෙදුම පියවර ඔබට පෙන්වා දෙයි. බිතුපතේ පෙනුම ඔබම තෝරයි: සලාත් වේලාවන් අනුගමනය කරන අහස, ඔබේම ඡායාරූපය, අකුරු විලාසය සහ අලංකාරය.',
+                    'අගුළු තිරයේ ඔරලෝසුව ඇති තැන මැන, ආයතය සහ අලංකාරය ඔරලෝසුවට යටින් නොවැටෙන ලෙස සැකසිය හැක.',
                     'ආයතය පෙළක් ලෙස හෝ රූපයක් ලෙස බෙදාගත හැක.',
                 ],
             },
@@ -1657,7 +1839,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'បើកអាយ៉ាត់ប្រចាំថ្ងៃ',
                 detaylar: [
                     'ការបកប្រែមិនដែលត្រូវបានកាត់ទេ នៅថ្ងៃដែលវាមិនសម ធាតុក្រាហ្វិកនឹងស្នើឲ្យអ្នកប៉ះដើម្បីអាន។',
-                    'ជាមួយកម្មវិធី Shortcuts អ្នកអាចដាក់អាយ៉ាត់ប្រចាំថ្ងៃជាផ្ទាំងរូបភាពរាល់ព្រឹក កម្មវិធីណែនាំអ្នកតាមជំហាននីមួយៗ។',
+                    'ជាមួយកម្មវិធី Shortcuts អ្នកអាចដាក់អាយ៉ាត់ប្រចាំថ្ងៃជាផ្ទាំងរូបភាពរាល់ព្រឹក កម្មវិធីណែនាំអ្នកតាមជំហាននីមួយៗ។ អ្នកជ្រើសរូបរាងផ្ទាំងរូបភាពដោយខ្លួនឯង៖ មេឃដែលប្ដូរតាមម៉ោងសឡាត រូបថតផ្ទាល់ខ្លួន ពុម្ពអក្សរ និងការតុបតែង។',
+                    'អ្នកអាចវាស់ទីតាំងនាឡិកានៅលើអេក្រង់ចាក់សោ ដើម្បីកុំឱ្យអាយ៉ាត់ និងការតុបតែងស្ថិតនៅក្រោមនាឡិកា។',
                     'អ្នកអាចចែករំលែកអាយ៉ាត់ជាអត្ថបទ ឬជារូបភាព។',
                 ],
             },
@@ -1668,7 +1851,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'פתיחת פסוק היום',
                 detaylar: [
                     "התרגום אף פעם לא נחתך; בימים שהוא לא נכנס, הווידג'ט מבקש להקיש כדי לקרוא אותו.",
-                    'בעזרת אפליקציית קיצורים אפשר להגדיר את פסוק היום כתמונת הרקע בכל בוקר; האפליקציה מדריכה אתכם שלב אחר שלב.',
+                    'בעזרת אפליקציית קיצורים אפשר להגדיר את פסוק היום כתמונת הרקע בכל בוקר; האפליקציה מדריכה אתכם שלב אחר שלב. את מראה תמונת הרקע בוחרים בעצמכם: שמיים שמשתנים לפי זמני התפילה, תמונה משלכם, הגופן ועיטור.',
+                    'אפשר למדוד היכן נמצא השעון במסך הנעילה, כדי שהפסוק והעיטור לא יוסתרו מתחת לשעון.',
                     'אפשר לשתף את הפסוק כטקסט או כתמונה.',
                 ],
             },
@@ -1679,7 +1863,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'დღის აიათის გახსნა',
                 detaylar: [
                     'თარგმანი არასოდეს იჭრება; როცა არ ეტევა, ვიჯეტი გთხოვთ, შეეხოთ და წაიკითხოთ.',
-                    'Shortcuts აპით დღის აიათი შეგიძლიათ ყოველ დილით ფონად დააყენოთ; აპი ნაბიჯ-ნაბიჯ გიხელმძღვანელებთ.',
+                    'Shortcuts აპით დღის აიათი შეგიძლიათ ყოველ დილით ფონად დააყენოთ; აპი ნაბიჯ-ნაბიჯ გიხელმძღვანელებთ. ფონის იერსახეს თავად ირჩევთ: ლოცვის დროებს მიყოლილ ცას, საკუთარ ფოტოს, შრიფტს და მორთულობას.',
+                    'შეგიძლიათ გაზომოთ, სად არის საათი ჩაკეტილ ეკრანზე, რომ აიათი და მორთულობა საათის ქვეშ არ მოხვდეს.',
                     'აიათის გაზიარება შეგიძლიათ ტექსტად ან სურათად.',
                 ],
             },
@@ -1690,7 +1875,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Atidaryti dienos ajatą',
                 detaylar: [
                     'Vertimas niekada nenukerpamas; tomis dienomis, kai jis netelpa, valdiklis paprašo paliesti ir perskaityti.',
-                    'Su programa „Spartieji klavišai“ dienos ajatą galite kas rytą nustatyti ekrano fonu; programa žingsnis po žingsnio parodo, ką daryti.',
+                    'Su programa „Spartieji klavišai“ dienos ajatą galite kas rytą nustatyti ekrano fonu; programa žingsnis po žingsnio parodo, ką daryti. Ekrano fono išvaizdą pasirenkate patys: dangus pagal maldos laikus, jūsų nuotrauka, šriftas ir puošmena.',
+                    'Galite išmatuoti, kur užrakinimo ekrane yra laikrodis, kad ajatas ir puošmena neatsidurtų po juo.',
                     'Ajatą galite bendrinti kaip tekstą arba kaip paveikslėlį.',
                 ],
             },
@@ -1701,7 +1887,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Sokafy ny andininy anio',
                 detaylar: [
                     "Tsy tapahina mihitsy ny dikan-teny; amin'ny andro tsy ombany, asain'ny widget kitihinao izy raha hamaky azy.",
-                    "Amin'ny fampiharana Shortcuts dia azonao atao sary ambadika isa-maraina ny andininy anio; ny fampiharana no mitarika anao amin'ny dingana.",
+                    'Amin\'ny fampiharana Shortcuts dia azonao atao sary ambadika isa-maraina ny andininy anio; ny fampiharana no mitarika anao amin\'ny dingana. Ianao no misafidy ny endriky ny sary ambadika: lanitra manaraka ny fotoam-bavaka, ny saryo manokana, ny endri-tsoratra ary haingo.',
+                    'Afaka mandrefy ny toeran’ny famantaranandro eo amin’ny efijery mihidy ianao, mba tsy ho voasaron’ny famantaranandro ny andininy sy ny haingo.',
                     'Azonao zaraina ho soratra na ho sary ny andininy.',
                 ],
             },
@@ -1712,7 +1899,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ggulawo aaya y’olwaleero',
                 detaylar: [
                     'Enkyusa tesalibwako; ku lunaku lw’etagya, wijeti ekusaba onyige ogisome.',
-                    'Ne app ya Shortcuts osobola okufuula aaya y’olwaleero ekifaananyi ky’emabega buli nkya; app ekulaga emitendera.',
+                    'Ne app ya Shortcuts osobola okufuula aaya y’olwaleero ekifaananyi ky’emabega buli nkya; app ekulaga emitendera. Ggwe olonda endabika y’ekifaananyi ky’emabega: eggulu erigoberera essaawa z’okusaala, ekifaananyi kyo, ennukuta n’eby’okwewunda.',
+                    'Osobola okupima ekifo ky’essaawa ku lupapula lw’okusiba, aaya n’eby’okwewunda bireme okubikkibwa essaawa.',
                     'Osobola okugabana aaya ng’ekiwandiiko oba ng’ekifaananyi.',
                 ],
             },
@@ -1723,7 +1911,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Gufungura umurongo w’umunsi',
                 detaylar: [
                     'Ibisobanuro ntibicibwa na rimwe; ku minsi bitakwirwamo, widijeti ibasaba gukanda kugira ngo mubisome.',
-                    'Mukoresheje porogaramu ya Shortcuts, mushobora kugira umurongo w’umunsi ifoto y’inyuma buri gitondo; porogaramu ibayobora intambwe ku yindi.',
+                    'Mukoresheje porogaramu ya Shortcuts, mushobora kugira umurongo w’umunsi ifoto y’inyuma buri gitondo; porogaramu ibayobora intambwe ku yindi. Ni mwe muhitamo isura y’ifoto y’inyuma: ijuru rikurikira ibihe by’isengesho, ifoto yanyu, imiterere y’inyuguti n’umutako.',
+                    'Mushobora gupima aho isaha iri kuri ekarani ifunze, kugira ngo umurongo n’umutako bitajya munsi y’isaha.',
                     'Mushobora gusangiza umurongo nk’inyandiko cyangwa nk’ishusho.',
                 ],
             },
@@ -1734,7 +1923,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Mwugurure umurongo w’umusi',
                 detaylar: [
                     'Ubusobanuro ntibuhagarikwa na rimwe; ku misi butakwirwamwo, widget ibasaba gukanda kugira mubusome.',
-                    'Mukoresheje porogarama Shortcuts, murashobora kugira umurongo w’umusi ishusho y’inyuma buri gitondo; porogarama ibayobora intambwe ku yindi.',
+                    'Mukoresheje porogarama Shortcuts, murashobora kugira umurongo w’umusi ishusho y’inyuma buri gitondo; porogarama ibayobora intambwe ku yindi. Ni mwebwe muhitamwo isura y’ishusho y’inyuma: ijuru rikurikira ibihe vy’isengesho, ifoto yanyu, ingene indome zimeze n’umutako.',
+                    'Murashobora gupima aho isaha iri ku rupapuro rwo kwugara, kugira umurongo n’umutako ntibije munsi y’isaha.',
                     'Murashobora gusangiza umurongo nk’inyandiko canke nk’ishusho.',
                 ],
             },
@@ -1745,7 +1935,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Bofungola molɔngɔ ya mokɔlɔ',
                 detaylar: [
                     'Libongoli ekatamaka soki moke te; na mikɔlɔ oyo ekoki te, widget esɛngaka bino bofina mpɔ na kotanga yango.',
-                    'Na aplikasiɔ Shortcuts bokoki kotia molɔngɔ ya mokɔlɔ elilingi ya ekran ntɔngɔ nyɔnsɔ; aplikasiɔ elakisaka bino bitape.',
+                    'Na aplikasiɔ Shortcuts bokoki kotia molɔngɔ ya mokɔlɔ elilingi ya ekran ntɔngɔ nyɔnsɔ; aplikasiɔ elakisaka bino bitape. Bino moko bopona lolenge ya elilingi ya ekran: likoló oyo elandaka bantango ya losambo, foto na bino, lolenge ya makomi mpe bokɛmɛli.',
+                    'Bokoki komeka esika ya ngonga na ekran ya kokanga, mpo molɔngɔ mpe bokɛmɛli ezipama te na ngonga.',
                     'Bokoki kokabola molɔngɔ lokola makomi to lokola elilingi.',
                 ],
             },
@@ -1756,7 +1947,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Yoomi ya dabsili aaya',
                 detaylar: [
                     'Bɛ bi kɔhiri gbinni maa abada; dabsili shɛli di ni bi saɣi, widget maa yɛliri ya ni yi dihi ka karim li.',
-                    'Shortcuts app ni, yi ni tooi zaŋ dabsili aaya n-niŋ yi yaɣili foto asiba kam; app maa wuhiri ya kpalinsi maa.',
+                    'Shortcuts app ni, yi ni tooi zaŋ dabsili aaya n-niŋ yi yaɣili foto asiba kam; app maa wuhiri ya kpalinsi maa. Yi n-nyɛ ban gahindi yaɣili foto maa binshɛɣu: sagbana din doli jiŋli saha, yi maŋmaŋa foto, sabbu yɛtɔɣa mini yuuni.',
+                    'Yi ni tooi maɣisi saha kpaŋa shee yi kparibu yaɣili zuɣu, ka aaya mini yuuni ku kpe saha kpaŋa maa gbinni.',
                     'Yi ni tooi talim aaya maa kamani sabbu bee foto.',
                 ],
             },
@@ -1767,7 +1959,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Pak-y raarã aayã',
                 detaylar: [
                     'B pa kɩdgd lebgrã wakat baa a ye ye; raar ning a sẽn pa sek ye, widget wã sokda-y tɩ y dig n karem-a.',
-                    'Ne Shortcuts aplikaasõ wã, y tõe n maan raarã aayã y ekraan-foto yibeoog fãa; aplikaasõ wã wilgda-y tʋʋmã.',
+                    'Ne Shortcuts aplikaasõ wã, y tõe n maan raarã aayã y ekraan-foto yibeoog fãa; aplikaasõ wã wilgda-y tʋʋmã. Yãmb n yãkd ekraan-foto wã neɛrlem: saas sẽn pʋgd pʋʋsg wakato, y meng foto, gʋlsg buudu la neerẽ.',
+                    'Y tõe n mak wakat-makã zĩigã y pagr ekraanã zugu, tɩ aaya la neerẽ ra kẽ wakat-makã tẽngr ye.',
                     'Y tõe n tʋm aayã wala gom-biis maa wala foto.',
                 ],
             },
@@ -1778,7 +1971,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ayroh aayat faka',
                 detaylar: [
                     'Korissa ayyu wakti ma xiqimta; ma gexxa ayrol, widget ikriyaanamah xagisaanam sin essera.',
-                    'Shortcuts appat saaku saaku ayroh aayat sinni fooca suura abaanam duddan; app gurra siinih ubulsa.',
+                    'Shortcuts appat saaku saaku ayroh aayat sinni fooca suura abaanam duddan; app gurra siinih ubulsa. Fooca suurah ubuxxa isin dooritan: salaatak wakti kataysa qaraan, isin suura, xagar ubuxxa kee qaxxeenta.',
+                    'Alifo foocal saaqatih arac maaqisuu dudditton, aayat kee qaxxeenta saaqatih gubal maxxa culinnoh.',
                     'Aayat maxco innal hinnay suura innal acuwaanam duddan.',
                 ],
             },
@@ -1789,7 +1983,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Bukatan su ayat nu gay',
                 detaylar: [
                     'Di pedtuputulen su salin; sa manga gay a di masulud, ipangeni nu widget i i-tap para basaen.',
-                    'Sa app a Shortcuts, mabaluy nu su ayat nu gay a wallpaper nu uman mapita; pedtuduan kanu nu app sa manga hakbang.',
+                    'Sa app a Shortcuts, mabaluy nu su ayat nu gay a wallpaper nu uman mapita; pedtuduan kanu nu app sa manga hakbang. Sekanu i mamili kanu lanu nu wallpaper: langit a tumundug sa waktu na sambayang, litrato nu, font, andu pagidu.',
+                    'Mapakagaga nu sukatin su darpa na orasan sa lock screen nu, ka di matakpan na orasan su ayat andu su pagidu.',
                     'Ma-share nu su ayat lagid nu sulat atawka ladawan.',
                 ],
             },
@@ -1800,7 +1995,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Bue Ɛnnɛ Aaya',
                 detaylar: [
                     'Wɔntwitwa nkyerɛaseɛ no da; nna a ɛmfata no, wijet no ka sɛ mia so na kenkan.',
-                    'Wobɛtumi de Shortcuts app no ayɛ Ɛnnɛ Aaya wo skrin mfoni anɔpa biara; app no kyerɛ wo anammɔn no.',
+                    'Wobɛtumi de Shortcuts app no ayɛ Ɛnnɛ Aaya wo skrin mfoni anɔpa biara; app no kyerɛ wo anammɔn no. Wo ara na wopaw skrin mfoni no nsusuwii: soro a ɛdi mpaebɔ bere akyi, wo ankasa wo mfoni, nkyerɛwee su ne ahoɔfɛ.',
+                    'Wobɛtumi asusuw dɔnhwerew no beae wɔ wo skrin a wato mu so, sɛnea ɛbɛyɛ a Aaya no ne ahoɔfɛ no renkɔ dɔnhwerew no ase.',
                     'Wobɛtumi akyɛ Aaya no sɛ nsɛm anaa sɛ mfoni.',
                 ],
             },
@@ -1811,7 +2007,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'Ablihi ang bersikulo sa adlaw',
                 detaylar: [
                     'Ang hubad dili gayod putlon; sa mga adlaw nga dili kini mohaom, hangyoon kamo sa widget nga i-tap aron basahon.',
-                    'Pinaagi sa Shortcuts app mahimo ninyong wallpaper ang bersikulo sa adlaw matag buntag; giyahan kamo sa app sa mga lakang.',
+                    'Pinaagi sa Shortcuts app mahimo ninyong wallpaper ang bersikulo sa adlaw matag buntag; giyahan kamo sa app sa mga lakang. Kamo ang mopili sa dagway sa wallpaper: langit nga mosunod sa oras sa pag-ampo, inyong kaugalingong litrato, font, ug dayandayan.',
+                    'Mahimo ninyong sukdon kon asa ang orasan sa lock screen aron dili matabonan sa orasan ang bersikulo ug dayandayan.',
                     'Maipaambit ninyo ang bersikulo isip teksto o hulagway.',
                 ],
             },
@@ -1822,7 +2019,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
                 ctaEtiketi: 'ߓߌ߬ ߊߦߊ ߘߊߦߟߍ߬',
                 detaylar: [
                     'ߓߊߦߍߟߍߡߊ߲ߠߌ ߕߍ߫ ߕߌߜߍ ߊߓߊߘߊ; ߟߏ߲ ߡߌ߲ߠߎ ߊ߬ ߕߍ߫ ߛߋ߫߸ Widget ߓߍ߫ ߊ߬ ߢߌߣߌ ߊߟߎ߫ ߝߍ߬ ߞߊ߬ ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߞߊߟߊ߲.',
-                    'ߣߌ߫ Shortcuts ߔߏߙߏߜߊߙߊߡߎ ߦߋ߫߸ ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߓߌ߬ ߊߦߊ ߞߍ߫ ߊߟߎ߫ ߟߊ߫ ߞߐߜߐߖߊ ߦߋ߫ ߛߐߜߐߡߊ ߏ߬ ߛߐߜߐߡߊ; ߔߏߙߏߜߊߙߊߡߎ ߓߍ߫ ߕߊߓߟߏ ߟߎ߬ ߦߌ߬ߘߊ߬ ߊߟߎ߫ ߟߊ߫.',
+                    'ߣߌ߫ Shortcuts ߔߏߙߏߜߊߙߊߡߎ ߦߋ߫߸ ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߓߌ߬ ߊߦߊ ߞߍ߫ ߊߟߎ߫ ߟߊ߫ ߞߐߜߐߖߊ ߦߋ߫ ߛߐߜߐߡߊ ߏ߬ ߛߐߜߐߡߊ; ߔߏߙߏߜߊߙߊߡߎ ߓߍ߫ ߕߊߓߟߏ ߟߎ߬ ߦߌ߬ߘߊ߬ ߊߟߎ߫ ߟߊ߫. ߊߟߎ߫ ߖߍ߫ ߟߋ߬ ߓߍ߫ ߞߐߜߐߖߊ ߢߍߘߊ ߛߎߥߊ߲ߘߌ߫: ߛߊ߲ ߡߍ߲ ߦߋ߫ ߛߊߟߌ ߕߎߡߊ ߟߎ߬ ߣߐ߬ߣߐ߬߸ ߊߟߎ߫ ߖߘߍ߬ ߟߊ߫ ߖߊ߭߸ ߛߓߍߟߌ ߛߎ߮ ߣߌ߫ ߡߊߛߊ߬ߟߊ߬ߟߌ.',
+                    'ߊߟߎ߫ ߘߌ߫ ߛߋ߫ ߘߊߕߎߜߎ ߢߍ߫ ߕߎߡߊߟߊ߲ ߦߙߐ ߛߎߡߊ߫ ߟߊ߫߸ ߛߴߊߦߊ ߣߌ߫ ߡߊߛߊ߬ߟߊ߬ߟߌ ߞߊߣߊ߬ ߕߊ߯ ߕߎߡߊߟߊ߲ ߘߎ߰ߞߘߐ߫.',
                     'ߊߟߎ߫ ߓߍ߫ ߛߋ߫ ߞߊ߬ ߊߦߊ ߕߌߟߊ ߛߓߍ߫ ߦߋ߫ ߥߟߊ߫ ߖߊ߭ ߦߋ߫.',
                 ],
             },
@@ -11184,7 +11382,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Gün sonu hatırlatması kapalıysa çıkmaz',
         ],
     },
-    // Hatırlatma sesi seçimi (0.24) + titreşim (0.25) — yalnız Android (iOS'ta ses ve titreşim
+    // Hatırlatma sesi seçimi (0.24) + titreşim (0.25) — yalnız Android (sistem ses seçicisi ve titreşim;
     // seçimi yok; platform yeteneği kuralı).
     {
         id: 'muhafiz-bildirim-sesi-secimi',

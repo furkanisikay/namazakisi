@@ -212,10 +212,10 @@ jobs:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
-      - name: ⚙️ Node 20
+      - name: ⚙️ Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📦 Bağımlılıkları kur
@@ -487,10 +487,10 @@ jobs:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
-      - name: ⚙️ Node 20
+      - name: ⚙️ Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📦 Bağımlılıkları kur
@@ -575,10 +575,10 @@ jobs:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
-      - name: ⚙️ Node 20
+      - name: ⚙️ Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📦 Bağımlılıkları kur
@@ -653,10 +653,10 @@ jobs:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
-      - name: ⚙️ Node 20
+      - name: ⚙️ Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: 🎨 Pazarlama görsellerini indir
         if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_pazarlama_run_id != '' }}

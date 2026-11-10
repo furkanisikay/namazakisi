@@ -182,6 +182,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: '{n} element açıqdır', other: '{n} element açıqdır' }),
     sesDosyasi: {
       bicim: 'Bu fayl səs kimi açılmadı. MP3, M4A, OGG və ya WAV faylı seçə bilərsiniz.',
+      bicimIos: 'Bu fayl səs kimi açılmadı. MP3, M4A və ya WAV faylı seçə bilərsiniz.',
       boyut: 'Fayl çox böyükdür. Ən çox 20 MB seçə bilərsiniz.',
       sure: 'Qeyd çox uzundur. Ən çox 8 dəqiqəlik səs seçə bilərsiniz.',
       erisim: 'Fayla giriş mümkün olmadı. Telefonunuzdakı bir faylı seçməyə çalışın.',

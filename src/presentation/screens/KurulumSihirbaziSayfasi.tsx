@@ -615,7 +615,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: renkler.arkaplan }} edges={['top', 'bottom', 'left', 'right']}>
-            <StatusBar barStyle={koyuMu ? 'light-content' : 'dark-content'} backgroundColor={renkler.arkaplan} />
+            <StatusBar barStyle={koyuMu ? 'light-content' : 'dark-content'} />
 
             {/* Üst bar: geri + ilerleme ("Adım 2 / 5") */}
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingTop: 8, minHeight: 56 }}>

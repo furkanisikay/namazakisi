@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'دەنگێک کە ھەڵتانبژاردووە',
     dokunarak: 'بۆ گۆڕین دەستی لێ بدەن',
     seciliDinle: 'گوێگرتن لە دەنگی ئاگادارکردنەوەی ھەڵبژێردراو',
+    paket: {
+      zil: 'زەنگی نەرم',
+      ikiton: 'دوو ئاواز',
+      damla: 'دڵۆپ',
+      sabah: 'بەیانی',
+    },
+    silErisim: 'سڕینەوەی دەنگی {ad}',
+    ornekDinleErisim: 'گوێگرتن: {ad}',
+    uzunlukNotu: 'دەنگی ئاگادارکردنەوە زۆرترین 30 چرکە لێدەدات؛ لە فایلی درێژتر تەنها 30 چرکەی یەکەم بەکاردێت.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

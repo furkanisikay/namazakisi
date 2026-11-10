@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'እርስዎ የመረጡት ድምፅ',
     dokunarak: 'ለመቀየር ይንኩ',
     seciliDinle: 'የተመረጠውን የማሳወቂያ ድምፅ አዳምጥ',
+    paket: {
+      zil: 'ለስላሳ ደወል',
+      ikiton: 'ሁለት ድምፆች',
+      damla: 'ጠብታዎች',
+      sabah: 'ጠዋት',
+    },
+    silErisim: 'የ{ad} ድምፅን ሰርዝ',
+    ornekDinleErisim: 'አዳምጥ፦ {ad}',
+    uzunlukNotu: 'የማሳወቂያ ድምፅ ቢበዛ 30 ሰከንድ ይጮኻል፤ ከረዘመ ፋይል የመጀመሪያዎቹ 30 ሰከንዶች ብቻ ይወሰዳሉ።',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}፦ {duzey}',

@@ -1,6 +1,8 @@
 Copyright 2010-2022 The Amiri Quran Project Authors (https://github.com/aliftype/amiri).
 Copyright 2022 The Noto Project Authors (https://github.com/notofonts/nastaliq). Noto Nastaliq Urdu 3.007: NotoNastaliqUrdu-Regular.ttf, NotoNastaliqUrdu-Bold.ttf.
 Copyright 2017 Google Inc. (https://github.com/notofonts/nko). Noto Sans NKo 2.001: NotoSansNKo-Regular.ttf.
+Copyright 2010-2022 The Amiri Project Authors (https://github.com/aliftype/amiri). Amiri 1.002: Amiri-Regular.ttf.
+Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic). Noto Serif 2.015: NotoSerif-Regular.ttf.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

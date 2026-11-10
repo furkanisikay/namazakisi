@@ -17,6 +17,7 @@ import {
     VARSAYILAN_SAAT_AYARLARI,
     saatUyandirmaDurumlariniCoz,
     uyandirmaTelefonMs,
+    yedekOlcuDk,
     type SaatAyarlari,
     type SaatTeslimBaglami,
 } from '../saatAyarlari';
@@ -80,6 +81,19 @@ describe('muhafız üreticisi — saat iş bölümü', () => {
         expect(vakitTeslimAdaylari(matris(), ogle, an, SAATTE)).toEqual(ogleHam);
     });
 
+    it('yedek telefonun GERÇEK anına göre konuşur: saat "son 25 dk" dediyse telefon 3 dk sonra "son 22 dk" der', () => {
+        const ham = vakitTeslimAdaylari(matris(), imsak, an);
+        const kayik = vakitTeslimAdaylari(matris(), imsak, an, SAATTE);
+        const i = ham.findIndex((a) => a.uyari.alarm === true);
+        expect(kayik[i].uyari.olcuDk).toBe(ham[i].uyari.olcuDk - SAAT_YEDEK_GECIKMESI_DK);
+        // Kimlik ve eşik özgün kalanDk'da kalır (saatin "kapat" iptali kimliğe dayanır).
+        expect(kayik[i].uyari.kalanDk).toBe(ham[i].uyari.kalanDk);
+        const kalanGercek = Math.ceil((imsak.cikis.getTime() - kayik[i].zaman.getTime()) / DK);
+        expect(kayik[i].uyari.olcuDk).toBe(kalanGercek);
+        // Kaymayan tetiklerin metni değişmez.
+        for (const [j, a] of ham.entries()) if (j !== i) expect(kayik[j].uyari).toEqual(a.uyari);
+    });
+
     it('anons yalnız saatte: telefon TTS kurmaz; otomatik/telefon seçiminde kurar', () => {
         const kurulan = (saat?: SaatAyarlari) => vakitTeslimAdaylari(matris(), ogle, an, saat).filter(anonsAlarmiKurarMi).length;
         expect(kurulan()).toBeGreaterThan(0);
@@ -128,6 +142,11 @@ describe('nafile üreticisi — teheccüd uyandırması yedeği', () => {
         for (const [i, p] of ham.entries()) {
             expect(kayik[i].zaman.getTime() - p.zaman.getTime()).toBe(SAAT_YEDEK_GECIKMESI_DK * DK);
             expect(kayik[i].zaman.getTime()).toBeLessThan(p.son.getTime());
+            // Metin ölçüsü gerçek (kaydırılmış) ana göre; kimlik aynı.
+            expect(kayik[i].uyari.olcuDk).toBe(
+                yedekOlcuDk(p.yon, p.uyari.olcuDk, p.zaman.getTime(), kayik[i].zaman.getTime(), p.son.getTime())
+            );
+            expect(kayik[i].uyari.olcuDk).not.toBe(p.uyari.olcuDk);
         }
     });
 });
@@ -251,5 +270,23 @@ describe('SÖZLEŞME — telefon native deposuyla aynı yedek kuralı (saat-komu
             };
             expect(uyandirmaTelefonMs(b, u.id, 0, u.sonMs)).toBe(SAAT_YEDEK_GECIKMESI_DK * DK);
         }
+    });
+});
+
+describe('yedekOlcuDk — yedek tetiğin metin ölçüsü', () => {
+    const T = 1_000_000_000_000;
+    const SON = T + 10 * DK;
+    it('kaymayan tetikte özgün ölçü aynen kalır', () => {
+        expect(yedekOlcuDk('cikisaDogru', 10, T, T, SON)).toBe(10);
+    });
+    it('çıkış yönünde gerçek ana kalan dakika (10 dk → 3 dk sonra 7)', () => {
+        expect(yedekOlcuDk('cikisaDogru', 10, T, T + 3 * DK, SON)).toBe(7);
+    });
+    it('çıkışa 30 sn kala sınırlanan yedek "son 1 dakika" der; 0 ya da eksi asla', () => {
+        expect(yedekOlcuDk('cikisaDogru', 2, T + 8 * DK, SON - 30_000, SON)).toBe(1);
+        expect(yedekOlcuDk('cikisaDogru', 2, T, SON + DK, SON)).toBe(1);
+    });
+    it('giriş yönünde geçen dakika kayma kadar artar', () => {
+        expect(yedekOlcuDk('girisindenItibaren', 15, T, T + 3 * DK, SON)).toBe(18);
     });
 });

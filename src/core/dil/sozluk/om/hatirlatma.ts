@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Sagalee isin filattan',
     dokunarak: 'Jijjiiruuf tuqaa',
     seciliDinle: 'Sagalee beeksisaa filatame dhaggeeffadhaa',
+    paket: {
+      zil: 'Bilbila laafaa',
+      ikiton: 'Sagalee lama',
+      damla: 'Copha',
+      sabah: 'Ganama',
+    },
+    silErisim: 'Sagalee {ad} haqaa',
+    ornekDinleErisim: 'Dhaggeeffadhaa: {ad}',
+    uzunlukNotu: "Sagaleen beeksisaa yoo baay'ate sekondii 30 dhaha; faayilii dheeraa irraa sekondii 30 jalqabaa qofatu fayyada.",
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

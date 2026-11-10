@@ -4,7 +4,7 @@
  */
 
 import { useContext, useMemo, useCallback } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type ImageStyle, type TextStyle, type ViewStyle } from 'react-native';
 import { TemaContext } from './TemaContext';
 
 /**
@@ -21,12 +21,15 @@ export const useTema = () => {
   return context;
 };
 
+/** RN 0.87'nin katı tip API'si `StyleSheet.NamedStyles`'ı dışa vermez; aynı şekil burada. */
+type AdliStiller<T> = { [P in keyof T]: ViewStyle | TextStyle | ImageStyle };
+
 /**
  * Stil olusturma hook'u
  * Tema degerlerine gore dinamik stiller olusturur
  * NOT: stilOlusturucu fonksiyonu useCallback ile sarmalanmali
  */
-export const useTemaliStiller = <T extends StyleSheet.NamedStyles<T>>(
+export const useTemaliStiller = <T extends AdliStiller<T>>(
   stilOlusturucu: (tema: ReturnType<typeof useTema>) => T
 ): T => {
   const temaContext = useTema();

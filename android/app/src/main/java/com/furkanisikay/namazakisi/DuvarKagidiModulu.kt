@@ -1,6 +1,5 @@
 package com.furkanisikay.namazakisi
 
-import android.net.Uri
 import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
@@ -8,6 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.furkanisikay.namazakisi.duvar.DuvarKagidiUygulayici
+import com.furkanisikay.namazakisi.duvar.KilitReferansi
 import com.furkanisikay.namazakisi.widget.GununAyetiDeposu
 
 /**
@@ -17,7 +17,7 @@ import com.furkanisikay.namazakisi.widget.GununAyetiDeposu
  * - `durum()` → `{ izinli, sonHata }`: `izinli` = cihaz destekliyor VE yönetim izin veriyor;
  *   false ise ekran "Kullanılamıyor" der (sessiz sapma yok). `sonHata` = "yazilamadi" ya da null.
  * - `simdiUygula()` → gerekirse yazar (imza aynıysa yazmaz) ve sonucu bildirir, true/false.
- * - `onizlemeUret(g, y)` → mevcut ayarla PNG (önbellek), `file://` adresi; yük yoksa null.
+ * - `kilitEkraniProfili(uri)` → kilit ekranı saat alanı ölçümünün satır profili (aşağıda).
  */
 class DuvarKagidiModulu(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
@@ -49,15 +49,30 @@ class DuvarKagidiModulu(reactContext: ReactApplicationContext) :
         }
     }
 
+    /**
+     * Kilit ekranı görüntüsünü ([uri] content:// ya da file://) son uygulanan kilit görseliyle
+     * karşılaştırır → `{ profil: number[] }` (satır başına değişmiş piksel oranı; karar JS
+     * `saatAlaniBul`) ya da `{ hata: 'referans-yok' | 'okunamadi' | 'oran' }`. Asla reddetmez;
+     * iş duvar kâğıdının arka plan kuyruğunda koşar.
+     */
     @ReactMethod
-    fun onizlemeUret(genislik: Int, yukseklik: Int, promise: Promise) {
+    fun kilitEkraniProfili(uri: String, promise: Promise) {
         try {
-            DuvarKagidiUygulayici.arkaPlandaOnizleme(reactApplicationContext, genislik, yukseklik) { dosya ->
-                promise.resolve(dosya?.let { Uri.fromFile(it).toString() })
+            DuvarKagidiUygulayici.arkaPlandaKilitProfili(reactApplicationContext, uri) { sonuc ->
+                val harita = Arguments.createMap()
+                when (sonuc) {
+                    is KilitReferansi.Sonuc.Profil -> {
+                        val dizi = Arguments.createArray()
+                        for (v in sonuc.satirlar) dizi.pushDouble(v)
+                        harita.putArray("profil", dizi)
+                    }
+                    is KilitReferansi.Sonuc.Hata -> harita.putString("hata", sonuc.kod)
+                }
+                promise.resolve(harita)
             }
         } catch (e: Throwable) {
-            Log.w(TAG, "Onizleme uretilemedi", e)
-            promise.resolve(null)
+            Log.w(TAG, "Kilit ekrani profili baslatilamadi", e)
+            promise.resolve(Arguments.createMap().apply { putString("hata", "okunamadi") })
         }
     }
 

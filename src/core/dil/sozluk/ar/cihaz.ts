@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'الأجهزة الأخرى',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'هاتف {marka}',
+    tablet: 'جهاز {marka} اللوحي',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'تعذّر حفظ الإعداد. يُرجى إعادة المحاولة.',
     kaldirildi: 'أُزيل {ad}.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'تثبيت Namaz Akışı على Android TV، ثم مسح رمز QR الظاهر على الشاشة بهذا الهاتف. تظهر المواقيت وعدّاد رمضان على الشاشة الكبيرة في المنزل.',
     tabletVeTelefonlar: 'الأجهزة اللوحية والهواتف',
     esYok: 'إضافة جهازك اللوحي أو هاتفك الثاني: الصلاة المعلَّمة على أحدهما تنتقل إلى الآخر.',
+    kayipEslesmeler: 'تعذّرت قراءة الاقترانات السابقة ({adlar}). ربما أُعيد تعيين التخزين الآمن لهذا الهاتف؛ أضف الأجهزة من جديد.',
     cihaziKaldirinErisim: 'إزالة {ad}',
     tabletEkleyin: 'إضافة جهاز لوحي أو هاتف',
     saat: 'الساعة',
