@@ -52,10 +52,10 @@ jobs:
 
       # Sözleşme İKİ TARAFTA kilitli: JS doğrulayıcısı ve Kotlin YukCozucu aynı
       # örnek dosyayı (wear/app/src/test/resources/ornek-yuk.json) kabul etmeli.
-      - name: 📦 Node 20
+      - name: 📦 Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📦 Bağımlılıklar
