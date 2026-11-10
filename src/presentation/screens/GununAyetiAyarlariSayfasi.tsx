@@ -12,7 +12,7 @@
  */
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Linking, Platform, ScrollView, Text, TouchableOpacity, View, type ViewInstance } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -369,7 +369,7 @@ const IosKisayolRehberi: React.FC<{
 }> = ({ vakteUysun, ayar, foto, yaziTipleri }) => {
   const renkler = useRenkler();
   const m = useMetin().gununAyeti;
-  const gorselRef = useRef<View>(null);
+  const gorselRef = useRef<ViewInstance>(null);
   const [kaydediliyor, setKaydediliyor] = useState(false);
   const ayet = useBugununAyeti();
   const { width: ekranG, height: ekranY } = Dimensions.get('screen');

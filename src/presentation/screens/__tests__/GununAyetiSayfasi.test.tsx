@@ -71,14 +71,14 @@ describe('GununAyetiSayfasi', () => {
     });
 
     it('metin paylaşımı Arapça, meal ve meal kaynağını birlikte gönderir', () => {
-        const paylas = jest.spyOn(Share, 'share').mockResolvedValue({ action: 'sharedAction' });
+        const paylas = jest.spyOn(Share, 'share').mockResolvedValue({ action: 'sharedAction', activityType: undefined });
         const e = render(<GununAyetiSayfasi />);
         fireEvent.press(e.getByTestId('gunun-ayeti-metin-paylas'));
         expect(paylas).toHaveBeenCalledWith({ message: ayetPaylasimMetni(bugununAyeti('tr')) });
     });
 
     it('Tanzil bağlantısı sabit https adresini açar', () => {
-        const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+        const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
         const e = render(<GununAyetiSayfasi />);
         fireEvent.press(e.getByTestId('gunun-ayeti-tanzil'));
         expect(ac).toHaveBeenCalledWith('https://tanzil.net/');

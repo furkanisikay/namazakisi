@@ -14,7 +14,7 @@
  */
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, Easing, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { AccessibilityInfo, Animated, Easing, Platform, ScrollView, Text, TouchableOpacity, View, type ScrollViewInstance } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useRenkler } from '../../core/theme';
@@ -60,7 +60,7 @@ export const TelevizyonSayfasi: React.FC = () => {
     const [onayBekleyen, setOnayBekleyen] = useState<EslesmeQr | null>(null);
     const [eklenenTv, setEklenenTv] = useState<string | null>(null);
     const [hareketAzalt, setHareketAzalt] = useState(false);
-    const scrollRef = useRef<ScrollView>(null);
+    const scrollRef = useRef<ScrollViewInstance>(null);
     const kodY = useRef(0);
     const islemde = useRef(false);
     const bagli = useRef(true);

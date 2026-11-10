@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { ScrollView } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 
 /**
  * Ayarlar arama sonucundan gelen "vurgu" (highlight) altyapısının paylaştığı durum.
@@ -15,7 +15,7 @@ import { ScrollView } from 'react-native';
  */
 export interface VurguBaglamDegeri {
   /** Sayfanın kendi ScrollView'üne bağlanacak ref. */
-  scrollRef: React.RefObject<ScrollView | null>;
+  scrollRef: React.RefObject<ScrollViewInstance | null>;
   /** Arama sonucundan gelen, vurgulanacak çapa kimliği (yoksa undefined). */
   hedefCapaId: string | undefined;
   /** `useVurguKurulumu` her mount'ta çağırır; hedefi ayarlar ve tüketim durumunu sıfırlar. */
@@ -36,7 +36,7 @@ const VurguBaglami = createContext<VurguBaglamDegeri | undefined>(undefined);
  * ```
  */
 export const VurguSaglayici: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
   const [hedefCapaId, setHedefCapaId] = useState<string | undefined>(undefined);
   const [tuketildiMi, setTuketildiMi] = useState(false);
 

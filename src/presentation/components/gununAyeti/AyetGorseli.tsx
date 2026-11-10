@@ -11,7 +11,7 @@
  *   çizdiği görselle aynı düzen.
  */
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, type ViewInstance } from 'react-native';
 import { useFonts } from 'expo-font';
 import { useRenkler } from '../../../core/theme';
 import type { GununAyetiGorunumu } from '../../../core/icerik/gununAyeti';
@@ -40,7 +40,7 @@ interface Props {
   yaziTipi?: string;
 }
 
-export const AyetGorseli = React.forwardRef<View, Props>(({ ayet, yaziTipi }, ref) => {
+export const AyetGorseli = React.forwardRef<ViewInstance, Props>(({ ayet, yaziTipi }, ref) => {
   const renkler = useRenkler();
   const s = useMetin();
   const m = s.gununAyeti;
@@ -77,7 +77,7 @@ export const AyetGorseli = React.forwardRef<View, Props>(({ ayet, yaziTipi }, re
 AyetGorseli.displayName = 'AyetGorseli';
 
 /** Görseli PNG olarak yakalar ve paylaşım menüsünü açar; açılamazsa `false`. */
-export async function ayetGorseliniPaylas(gorunum: View | null, baslik: string): Promise<boolean> {
+export async function ayetGorseliniPaylas(gorunum: ViewInstance | null, baslik: string): Promise<boolean> {
   if (!gorunum) return false;
   const { captureRef } = require('react-native-view-shot') as typeof import('react-native-view-shot');
   const Sharing = require('expo-sharing') as typeof import('expo-sharing');

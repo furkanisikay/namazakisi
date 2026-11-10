@@ -286,8 +286,8 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
 
     useEffect(() => {
         if (rizaAcik || bekleyenIzinRef.current === null) return undefined;
-        // InteractionManager RN 0.86'da kullanımdan kalktı ve Modal animasyonunu
-        // "etkileşim" saymaz → kapanış süresi kadar düz bekleme.
+        // InteractionManager RN 0.87'de kaldırıldı (0.86'da zaten Modal animasyonunu
+        // "etkileşim" saymıyordu) → kapanış süresi kadar düz bekleme.
         if (kapanisZamanlayiciRef.current) clearTimeout(kapanisZamanlayiciRef.current);
         kapanisZamanlayiciRef.current = setTimeout(bekleyenIzniIste, RIZA_KAPANIS_BEKLEMESI_MS);
         return undefined;
