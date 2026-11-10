@@ -1,6 +1,6 @@
 # AGENTS.md — Namaz Akışı
 
-> Proaktif İslami ibadet asistanı. **React Native 0.86 + Expo SDK 57** (bare workflow; `android/` git'te, `ios/` git'te DEĞİL — EAS üretir), **TypeScript 6 strict**, **Redux Toolkit**, **NativeWind/Tailwind**, **Jest + jest-expo**. New Architecture zorunlu, Hermes v1. Bağımsız Gradle kökleri: `wear/` (Wear OS), `tv/` (Android TV). iOS hedefleri `targets/` + `plugins/` ile prebuild'de eklenir.
+> Proaktif İslami ibadet asistanı. **React Native 0.88 + Expo SDK 58** (bare workflow; `android/` git'te, `ios/` git'te DEĞİL — EAS üretir), **TypeScript 6 strict**, **Redux Toolkit**, **NativeWind/Tailwind**, **Jest + jest-expo**. New Architecture zorunlu, Hermes v1. Bağımsız Gradle kökleri: `wear/` (Wear OS), `tv/` (Android TV). iOS hedefleri `targets/` + `plugins/` ile prebuild'de eklenir.
 >
 > Bu dosya tüm kod ajanları (Claude, Codex, Cursor, Copilot, Gemini, Jules) için **tek doğru kaynaktır**: yalnız her işte geçerli kurallar burada. Alan bilgisi (bir özelliğin tuzakları, reçeteleri, nöbetçi testleri) `docs/ajan/` altındadır — dokunduğun alanın belgesini **kod yazmadan önce** oku (en altta konu dizini).
 
@@ -114,7 +114,7 @@ Proje **GPL-3.0 + LICENSE'taki GPLv3 §7 ek izni** (App Store/Google Play). Ek i
 - Biçim: **kural önce**, gerekçe tek cümle (hikâye değil), varsa `Nöbetçi: <test>`. Mevcut maddeyi güncelle/sil, şişirme; spekülasyon yazma ("cihazda doğrulanmadı" diye işaretle); sır/kişisel veri yazma.
 
 ## Ajan ortamı (Jules vb.)
-Setup: `npm ci` (Node 20; `postinstall: patch-package` atlanmamalı) · Doğrulama: `npm run verify` · PR hedefi `master` · `git push` kullanan ajanda `CI=true`. Ayrıntı: [ci-ve-yayin](docs/ajan/ci-ve-yayin.md).
+Setup: `npm ci` (Node 22.13+; `postinstall: patch-package` atlanmamalı) · Doğrulama: `npm run verify` · PR hedefi `master` · `git push` kullanan ajanda `CI=true`. Ayrıntı: [ci-ve-yayin](docs/ajan/ci-ve-yayin.md).
 
 ## Konu dizini — dokunduğun alanın belgesini önce oku
 | Belge | Ne zaman oku |

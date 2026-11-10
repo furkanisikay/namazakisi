@@ -53,7 +53,7 @@ Genel kurallar çekirdekte (AGENTS.md): dosya adları salt ASCII, `.gitignore`'d
 ### iOS görünümü
 
 - **`Switch`'i doğrudan kullanma → `components/common/Anahtar`; geri düğmesi `headerBackButtonDisplayMode: 'minimal'`.** Android Material renklendirmesi iOS'ta açık/kapalı okunmuyordu; `Anahtar` Android'de props'u birebir geçirir, iOS'ta `thumbColor`'ı atar, izi opak yapar (`#RRGGBBAA→#RRGGBB`) ve kapalı izi `ios_backgroundColor`'a verir. `headerBackTitle: ''` iOS'ta yok sayılır, geri düğmesine önceki ekranın (gizli `AyarlarAna`) adı yazılır.
-- **`app.json > ios.infoPlist.UIDesignRequiresCompatibility: true` iOS 26 Liquid Glass'ı kapatır — GEÇİCİDİR.** Xcode 26 SDK ile derlenen yerel kontroller cam görünüme geçip yeşil başlık/kartlarla uyumsuzdu; Apple anahtarı bir sonraki büyük Xcode'da kaldıracak → başlık/anahtar/sekme çubuğu ondan önce elden geçirilmeli. Xcode 27 UIScene'i de zorunlu kılar (bkz. [expo-sdk-ve-bagimliliklar.md](expo-sdk-ve-bagimliliklar.md)).
+- **`app.json > ios.infoPlist.UIDesignRequiresCompatibility: true` iOS 26 Liquid Glass'ı kapatır — GEÇİCİDİR.** Xcode 26 SDK ile derlenen yerel kontroller cam görünüme geçip yeşil başlık/kartlarla uyumsuzdu; Apple anahtarı bir sonraki büyük Xcode'da kaldıracak → başlık/anahtar/sekme çubuğu ondan önce elden geçirilmeli. Xcode 27 UIScene'i de zorunlu kılar; SDK 58'den beri açık (`SceneDelegate`, bkz. [expo-sdk-ve-bagimliliklar.md](expo-sdk-ve-bagimliliklar.md)).
 - **Testte platform değiştirmek için `jest.replaceProperty(Platform, 'OS', …)`;** `react-native/Libraries/Utilities/Platform` modülünü mock'lamak css-interop/safe-area iç parçalarını kırar.
 
 ## iOS yapılandırması
