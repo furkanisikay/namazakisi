@@ -139,7 +139,7 @@ describe('GununAyetiAyarlariSayfasi', () => {
         afterEach(() => jest.restoreAllMocks());
 
         it('Kısayollar rehberini gösterir; Android duvar köprüsüne ve açma anahtarına dokunmaz', async () => {
-            const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+            const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
             const e = render(<GununAyetiAyarlariSayfasi />);
             expect(await e.findByText(/Günün Saati/)).toBeTruthy();
             fireEvent.press(e.getByTestId('gunun-ayeti-kisayollar'));

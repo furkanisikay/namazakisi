@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
+import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, DeviceEventEmitter } from 'react-native';
 import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
 import { TvSenkronServisi } from './src/domain/services/TvSenkronServisi';
 import { CihazEsServisi } from './src/domain/services/CihazEsServisi';
@@ -71,6 +71,7 @@ import { TaniBildirModali } from './src/presentation/components/Tani/TaniBildirM
 import { KisaBildirimKatmani } from './src/presentation/components/common/KisaBildirim';
 import { GeriAlBandiKatmani } from './src/presentation/components/ortak/GeriAlBandi';
 import { EsitlemeTetikleyici } from './src/presentation/components/esitleme/EsitlemeTetikleyici';
+import { etkilesimSonrasi } from './src/presentation/components/ortak/etkilesimSonrasi';
 import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
 import { nowBarDegistiUygula } from './src/domain/services/NowBarDegisikligiServisi';
 import { metinKapisiniKur, NastalikYukleyici, NkoYukleyici } from './src/presentation/components/metin/MetinKapisi';
@@ -391,7 +392,6 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
  */
 const AppIcerik: React.FC = () => {
   const { yukleniyor, koyuMu } = useTema();
-  const renkler = useRenkler();
   const dil = useAktifDil();
 
   useEffect(() => {
@@ -499,7 +499,7 @@ const AppIcerik: React.FC = () => {
     });
 
     // Kritik olmayan islemleri UI animasyonlari tamamlandiktan sonra calistir
-    const interactionHandle = InteractionManager.runAfterInteractions(() => {
+    const interactionHandle = etkilesimSonrasi(() => {
       // Konum takibini senkronize et ve yeniden baslat
       konumTakibiniSenkronizeEt();
 
@@ -619,10 +619,7 @@ const AppIcerik: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar
-        backgroundColor={renkler.birincil}
-        barStyle="light-content"
-      />
+      <StatusBar barStyle="light-content" />
       <ErrorBoundary name="AppRoot">
         <AppNavigator />
       </ErrorBoundary>

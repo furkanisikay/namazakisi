@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, ActivityIndicator, type ViewInstance } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -31,7 +31,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
 }) => {
   const renkler = useRenkler();
   const m = useMetin().seri.paylasim;
-  const viewRef = useRef<View | null>(null);
+  const viewRef = useRef<ViewInstance | null>(null);
   const [paylasiliyor, setPaylasiliyor] = useState(false);
   const [captureLayout, setCaptureLayout] = useState({ width: 0, height: 0 });
   // Alert.alert yerine tema-uyumlu bildirim modalı

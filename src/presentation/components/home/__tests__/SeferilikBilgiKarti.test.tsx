@@ -144,7 +144,7 @@ describe('SeferilikBilgiKarti', () => {
   });
 
   it('Diyanet bağlantısı fetvayı açar', () => {
-    const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
     const { getByLabelText } = ciz(storeKur(durumKur()));
     fireEvent.press(getByLabelText('Diyanet fetvasını tarayıcıda okuyun'));
     expect(ac).toHaveBeenCalledWith(SEFERILIK_KAYNAKLARI.vatan.url);

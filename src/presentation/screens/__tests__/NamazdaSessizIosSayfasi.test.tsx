@@ -57,7 +57,7 @@ describe('NamazdaSessizIosSayfasi', () => {
     });
 
     it('caminin satırı Haritalar’ı adıyla açar; Kısayollar düğmesi Kısayollar’ı açar', async () => {
-        const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+        const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
         const ekran = render(<NamazdaSessizIosSayfasi />);
         await waitFor(() => expect(ekran.getByTestId('cami-osm:w1')).toBeTruthy());
         fireEvent.press(ekran.getByTestId('cami-osm:w1'));

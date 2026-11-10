@@ -7,7 +7,7 @@
  */
 import * as React from 'react';
 import { useMemo, useRef, useState } from 'react';
-import { Linking, ScrollView, Share, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, ScrollView, Share, Text, TouchableOpacity, View, type ViewInstance } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../core/theme';
@@ -57,7 +57,7 @@ export const GununAyetiSayfasi: React.FC = () => {
   const navigation = useNavigation() as unknown as Navigasyon;
   const koordinat = useAppSelector((state) => state.konum.koordinatlar);
   const yaziTipi = useArapcaYaziTipi();
-  const gorselRef = useRef<View>(null);
+  const gorselRef = useRef<ViewInstance>(null);
   const [paylasiliyor, setPaylasiliyor] = useState(false);
   const [simdi] = useState(() => new Date());
 
