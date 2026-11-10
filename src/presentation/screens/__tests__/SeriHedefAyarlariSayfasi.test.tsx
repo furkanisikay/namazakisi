@@ -60,6 +60,7 @@ const mockRenkler = {
   hata: '#F44336',
   bilgi: '#2196F3',
   basarili: '#10b981',
+  durum: { basarili: '#4CAF50', uyari: '#FFC107', hata: '#F44336', bilgi: '#2196F3', dikkat: '#E65100', tehlike: '#C62828' },
 };
 
 describe('SeriHedefAyarlariSayfasi', () => {

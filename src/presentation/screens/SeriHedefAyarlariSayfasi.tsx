@@ -348,33 +348,33 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
         <View className="mb-6">
           <Text
             className="text-xs font-bold tracking-wider mb-3"
-            style={{ color: '#DC2626' }}
+            style={{ color: renkler.durum.tehlike }}
           >
             {m.sifirlama}
           </Text>
 
           <TouchableOpacity
             className="flex-row items-center p-4 rounded-xl"
-            style={{ backgroundColor: '#FEE2E2' }}
+            style={{ backgroundColor: `${renkler.durum.tehlike}14` }}
             onPress={handleSeriSifirla}
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel={m.verileriSifirla}
           >
             <View className="w-10 h-10 rounded-full items-center justify-center mr-3"
-              style={{ backgroundColor: '#DC262620' }}
+              style={{ backgroundColor: `${renkler.durum.tehlike}20` }}
             >
-              <FontAwesome5 name="exclamation-triangle" size={18} color="#DC2626" />
+              <FontAwesome5 name="exclamation-triangle" size={18} color={renkler.durum.tehlike} />
             </View>
             <View className="flex-1">
-              <Text className="text-base font-semibold" style={{ color: '#DC2626' }}>
+              <Text className="text-base font-semibold" style={{ color: renkler.durum.tehlike }}>
                 {m.verileriSifirla}
               </Text>
-              <Text className="text-xs mt-0.5" style={{ color: '#DC2626', opacity: 0.8 }}>
+              <Text className="text-xs mt-0.5" style={{ color: renkler.durum.tehlike }}>
                 {m.verileriSifirlaAlt}
               </Text>
             </View>
-            <YonluIkon name="chevron-right" size={14} color="#DC2626" />
+            <YonluIkon name="chevron-right" size={14} color={renkler.durum.tehlike} />
           </TouchableOpacity>
         </View>
 
