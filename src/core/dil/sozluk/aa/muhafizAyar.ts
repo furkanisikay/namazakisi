@@ -181,6 +181,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: '{n} taama faka', other: '{n} taama faka' }),
     sesDosyasi: {
       bicim: 'Ama fayl xongolo innal fakime wee. MP3, M4A, OGG hinnay WAV fayl dooraanam duddan.',
+      bicimIos: 'Ama fayl xongolo innal fakime wee. MP3, M4A hinnay WAV fayl dooraanam duddan.',
       boyut: 'Fayl kaxxa. 20 MB fanah dooraanam duddan.',
       sure: 'Xongolo xeer le. 8 daqiiqa fanah xongolo dooraanam duddan.',
       erisim: 'Fayl geyime wee. Sinni telefoonal tan fayl dooraanam mokkora.',

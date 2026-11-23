@@ -61,10 +61,10 @@ jobs:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
-      - name: ⚙️ Node 20
+      - name: ⚙️ Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
 
       # Her indirme kendi klasörüne; biri yoksa iş durmaz (o cihazın görselleri eksik kalır).
       - name: 🍎 iPhone kareleri

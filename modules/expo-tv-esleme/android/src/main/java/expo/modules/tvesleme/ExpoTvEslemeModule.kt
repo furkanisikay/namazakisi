@@ -146,19 +146,57 @@ class ExpoTvEslemeModule : Module() {
                     write(bayt)
                     flush()
                 }
-                val giris = s.getInputStream()
-                val tampon = ByteArrayOutputStream()
-                val parca = ByteArray(512)
-                while (tampon.size() < 2048) {
-                    val n = giris.read(parca)
-                    if (n < 0) break
-                    tampon.write(parca, 0, n)
-                }
-                val ham = String(tampon.toByteArray(), Charsets.UTF_8)
-                val ayrac = ham.indexOf("\r\n\r\n")
-                val kod = ham.substringBefore("\r\n").split(" ").getOrNull(1)?.toIntOrNull() ?: 0
-                kod to (if (ayrac < 0) "" else ham.substring(ayrac + 4))
+                yanitOku(s.getInputStream())
             }
+    }
+
+    /**
+     * Yanıtı `Content-Length` kadar okur (başlık yoksa bağlantı kapanana dek), en çok
+     * [YANIT_AZAMI] bayt. Eski 2048 baytlık tavan, eşin şifreli olay paketini (≤ 6000 bayt
+     * düz metin → ~8 KB zarf) keser, `JSON.parse` patlar ve eş "ulaşılamıyor" görünürdü.
+     */
+    private fun yanitOku(giris: java.io.InputStream): Pair<Int, String> {
+        val tampon = ByteArrayOutputStream()
+        val parca = ByteArray(2048)
+        var govdeBasi = -1
+        var beklenen = -1
+        while (tampon.size() < YANIT_AZAMI) {
+            val n = giris.read(parca)
+            if (n < 0) break
+            tampon.write(parca, 0, n)
+            if (govdeBasi < 0) {
+                val b = tampon.toByteArray()
+                govdeBasi = basliklarSonu(b)
+                if (govdeBasi >= 0) beklenen = icerikUzunlugu(String(b, 0, govdeBasi, Charsets.ISO_8859_1))
+            }
+            if (govdeBasi >= 0 && beklenen >= 0 && tampon.size() >= govdeBasi + beklenen) break
+        }
+        val b = tampon.toByteArray()
+        val bas = if (govdeBasi >= 0) govdeBasi else basliklarSonu(b)
+        val baslik = String(b, 0, if (bas < 0) b.size else bas, Charsets.ISO_8859_1)
+        val kod = baslik.substringBefore("\r\n").split(" ").getOrNull(1)?.toIntOrNull() ?: 0
+        if (bas < 0) return kod to ""
+        val son = if (beklenen >= 0) minOf(b.size, bas + beklenen) else b.size
+        return kod to String(b, bas, son - bas, Charsets.UTF_8)
+    }
+
+    /** "\r\n\r\n"den sonraki ilk baytın konumu; yoksa -1. */
+    private fun basliklarSonu(b: ByteArray): Int {
+        for (i in 0..b.size - 4) {
+            if (b[i] == '\r'.code.toByte() && b[i + 1] == '\n'.code.toByte() && b[i + 2] == '\r'.code.toByte() && b[i + 3] == '\n'.code.toByte()) return i + 4
+        }
+        return -1
+    }
+
+    private fun icerikUzunlugu(basliklar: String): Int =
+        basliklar.split("\r\n")
+            .firstOrNull { it.startsWith("content-length:", ignoreCase = true) }
+            ?.substringAfter(':')?.trim()?.toIntOrNull()
+            ?.takeIf { it in 0..YANIT_AZAMI } ?: -1
+
+    private companion object {
+        /** Alıcının gövde sınırı (8 KB) + şifreleme/base64 payı. */
+        const val YANIT_AZAMI = 16 * 1024
     }
 
     /** Katı (denetim D-06): `toIntOrNull` "010" ve "+10"u kabul ediyordu; baştaki sıfır/işaret yok. */

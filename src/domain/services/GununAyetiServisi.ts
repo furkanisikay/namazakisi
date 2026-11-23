@@ -16,8 +16,10 @@ import {
   duvarAyariNormalize,
   gununAyetiYukuOlustur,
   koordinatImsakKaynagi,
+  koordinatVakitKaynagi,
   type DuvarKagidiAyari,
 } from '../../core/icerik/gununAyetiYuku';
+import type { SaatAlaniKaynagi } from '../../core/icerik/duvarTasarimi';
 import { Logger } from '../../core/utils/Logger';
 import { Depolama } from '../../data/local/Depolama';
 
@@ -34,11 +36,18 @@ interface WidgetSabitleyici {
 const widgetKoprusu = (): WidgetSabitleyici | null =>
   Platform.OS === 'android' ? ((NativeModules.WidgetVeri as WidgetSabitleyici | undefined) ?? null) : null;
 
+/**
+ * Kilit ekranı görüntüsünün son uygulanan kilit görseliyle karşılaştırması (native): satır başına
+ * farklı piksel oranı ya da neden ölçülemediği. Android `DuvarKagidi` ve iOS siri modülü aynı şekli
+ * döner; eski ikilide yöntem yoktur.
+ */
+export type KilitEkraniProfili = { profil: number[] } | { hata: 'referans-yok' | 'okunamadi' | 'oran' };
+type KilitProfiliKoprusu = { kilitEkraniProfili?: (uri: string) => Promise<KilitEkraniProfili> };
+
 /** Android `DuvarKagidi` native modülü (iOS'ta yok). */
-interface DuvarKagidiModulu {
+interface DuvarKagidiModulu extends KilitProfiliKoprusu {
   durum(): Promise<{ izinli: boolean; sonHata?: string | null }>;
   simdiUygula(): Promise<boolean>;
-  onizlemeUret(genislik: number, yukseklik: number): Promise<string>;
 }
 
 export interface DuvarKagidiDurumu {
@@ -79,6 +88,22 @@ export class GununAyetiServisi {
     await this.yaz(this.sonKoordinat);
   }
 
+  /** Kilit ekranı saat alanının kaynağı; yoksa, bozuksa ya da okunamazsa `null`. ASLA reddetmez. */
+  public async saatAlaniKaynagiOku(): Promise<SaatAlaniKaynagi | null> {
+    try {
+      const ham = await Depolama.ham(DEPOLAMA_ANAHTARLARI.GUNUN_AYETI_SAAT_KAYNAGI);
+      return ham === 'olcum' || ham === 'elle' ? ham : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Kaynağı yazar; `null` anahtarı siler (alan varsayılana döndü). */
+  public async saatAlaniKaynagiKaydet(kaynak: SaatAlaniKaynagi | null): Promise<void> {
+    if (kaynak) await Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.GUNUN_AYETI_SAAT_KAYNAGI, kaynak);
+    else await Depolama.sil(DEPOLAMA_ANAHTARLARI.GUNUN_AYETI_SAAT_KAYNAGI);
+  }
+
   /**
    * 14 günlük planı native'e yazar. `koordinat` verilmezse son bilinen kullanılır; o da yoksa
    * gün sınırı 05:00'e düşer (konum gelince yeniden yazılır). ASLA reddetmez.
@@ -89,7 +114,9 @@ export class GununAyetiServisi {
     if (!hedef?.gununAyetiKaydet) return;
     try {
       const duvar = await this.duvarAyariOku();
-      const yuk = JSON.stringify(gununAyetiYukuOlustur(new Date(), koordinatImsakKaynagi(this.sonKoordinat), duvar));
+      const yuk = JSON.stringify(
+        gununAyetiYukuOlustur(new Date(), koordinatImsakKaynagi(this.sonKoordinat), duvar, undefined, undefined, koordinatVakitKaynagi(this.sonKoordinat))
+      );
       if (yuk === this.sonYuk) return;
       await hedef.gununAyetiKaydet(yuk);
       this.sonYuk = yuk;
@@ -122,6 +149,34 @@ export class GununAyetiServisi {
     }
   }
 
+  /**
+   * Kullanıcının seçtiği kilit ekranı görüntüsünün satır profili (karar `saatAlaniBul`'da). Görüntü
+   * yalnız okunur, kopyalanmaz. Köprü yoksa (eski ikili), reddederse ya da bozuk dönerse
+   * `{ hata: 'okunamadi' }`; ASLA reddetmez.
+   */
+  public async kilitEkraniProfili(uri: string): Promise<KilitEkraniProfili> {
+    let kopru: KilitProfiliKoprusu | null = null;
+    if (Platform.OS === 'android') kopru = duvarModulu();
+    else if (Platform.OS === 'ios') {
+      try {
+        kopru = require('../../../modules/expo-siri-kisayollari/src') as KilitProfiliKoprusu;
+      } catch {
+        kopru = null;
+      }
+    }
+    if (typeof kopru?.kilitEkraniProfili !== 'function') return { hata: 'okunamadi' };
+    try {
+      const ham = await kopru.kilitEkraniProfili(uri);
+      if (ham && 'profil' in ham && Array.isArray(ham.profil) && ham.profil.every((v) => typeof v === 'number' && Number.isFinite(v)))
+        return { profil: ham.profil };
+      if (ham && 'hata' in ham && (ham.hata === 'referans-yok' || ham.hata === 'oran')) return { hata: ham.hata };
+      return { hata: 'okunamadi' };
+    } catch (e) {
+      Logger.warn('GununAyetiServisi', 'Kilit ekranı görüntüsü ölçülemedi', e);
+      return { hata: 'okunamadi' };
+    }
+  }
+
   /** Başlatıcı widget'ı uygulamadan eklemeyi destekliyor mu (yalnız Android)? */
   public async widgetSabitlenebilirMi(): Promise<boolean> {
     const k = widgetKoprusu();
@@ -143,18 +198,6 @@ export class GununAyetiServisi {
     } catch (e) {
       Logger.warn('GununAyetiServisi', 'Widget sabitlenemedi', e);
       return false;
-    }
-  }
-
-  /** Bugünün görselinin önizlemesi (yerel dosya adresi); üretilemezse `null`. */
-  public async duvarOnizlemesi(genislik: number, yukseklik: number): Promise<string | null> {
-    const modul = duvarModulu();
-    if (!modul) return null;
-    await this.yaz();
-    try {
-      return await modul.onizlemeUret(Math.round(genislik), Math.round(yukseklik));
-    } catch {
-      return null;
     }
   }
 }

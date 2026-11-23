@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'ನೀವು ಆಯ್ಕೆಮಾಡಿದ ಧ್ವನಿ',
     dokunarak: 'ಟ್ಯಾಪ್ ಮಾಡಿ ಬದಲಾಯಿಸಿ',
     seciliDinle: 'ಆಯ್ಕೆಮಾಡಿದ ಅಧಿಸೂಚನೆ ಧ್ವನಿಯನ್ನು ಕೇಳಿ',
+    paket: {
+      zil: 'ಮೃದು ಗಂಟೆ',
+      ikiton: 'ಎರಡು ಸ್ವರ',
+      damla: 'ಹನಿಗಳು',
+      sabah: 'ಬೆಳಗು',
+    },
+    silErisim: '{ad} ಧ್ವನಿಯನ್ನು ಅಳಿಸಿ',
+    ornekDinleErisim: 'ಕೇಳಿ: {ad}',
+    uzunlukNotu: 'ಅಧಿಸೂಚನೆ ಧ್ವನಿ ಗರಿಷ್ಠ 30 ಸೆಕೆಂಡು ಮೊಳಗುತ್ತದೆ; ಉದ್ದವಾದ ಫೈಲ್‌ನ ಮೊದಲ 30 ಸೆಕೆಂಡುಗಳನ್ನು ಬಳಸಲಾಗುತ್ತದೆ.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

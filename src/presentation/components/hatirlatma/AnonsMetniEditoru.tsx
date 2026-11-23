@@ -213,7 +213,7 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
                         onSelectionChange={(e) => setSecim(e.nativeEvent.selection)}
                         onEndEditing={() => onCommit(taslak)}
                         onBlur={() => onCommit(taslak)}
-                        // iOS bildirim sesi 30 sn'yi aşarsa HİÇ çalmaz; sınır iki platformda aynı.
+                        // iOS 30 sn'yi aşan bildirim sesinin yerine sistemin sesini çalar; sınır iki platformda aynı.
                         maxLength={ANONS_METIN_UST_SINIRI}
                         multiline
                         placeholder={yerTutucu}

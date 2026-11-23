@@ -14,7 +14,8 @@ export async function taniEpostasiniAc(opts: {
     const rapor = taniRaporuOlustur(opts);
     const dosya = new File(Paths.cache, `namaz-akisi-tani.txt`);
     try { dosya.create(); } catch { /* zaten varsa yoksay */ }
-    dosya.write(rapor.logMetni);
+    // SDK 58: File.write() Promise döner — eki yazılmadan e-postaya bağlama.
+    await dosya.write(rapor.logMetni);
 
     if (await MailComposer.isAvailableAsync()) {
       const sonuc = await MailComposer.composeAsync({

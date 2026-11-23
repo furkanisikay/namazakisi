@@ -42,7 +42,7 @@ export const InstallDurumlari = {
 // NativeEventEmitter — sadece native modül varsa oluştur
 const _emitter =
   Platform.OS === 'android' && PlayStoreGuncelleme
-    ? new NativeEventEmitter(PlayStoreGuncelleme)
+    ? new NativeEventEmitter<{ PlayStoreInstallStateChanged: [InstallDurumOlayi] }>(PlayStoreGuncelleme)
     : null;
 
 /**

@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'ߡߌߣߍ߲ ߥߍߙߍ ߟߎ߬',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} ߕߋߟߋߝߐߣߌ',
+    tablet: '{marka} ߕߊߓߎߟߍߕߌ',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'ߟߊ߬ߓߍ߲߬ߢߐ߲߰ߡߊ ߡߊ߬ ߛߋ߫ ߞߊ߬ ߡߙߊ߬. ߊߟߎ߫ ߦߋ߫ ߊ߬ ߞߍ߫ ߕߎߜߎ߲.',
     kaldirildi: '{ad} ߓߐߙߊ.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'ߊߟߎ߫ ߦߋ߫ Namaz Akışı ߟߊ߫ ߊߟߎ߫ ߟߊ߫ Android TV ߞߊ߲ ߞߊ߬ QR ߞߏߘߋ ߡߌ߲߬ ߓߍ߫ ߢߍ߫ ߞߊ߲߸ ߏ߬ ߟߊߖߍ ߣߌ߫ ߣߌ߲߬ ߕߋߟߋߝߐߣߌ ߦߋ߫. ߛߊߟߌ ߥߊ߯ߕߌ߫ ߟߎ߬ ߣߌ߫ ߛߎ߲ߞߊߙߏ ߥߊ߯ߕߌ߫ ߖߊ߬ߕߋ߬ߓߐ ߓߍ߫ ߓߐ߫ ߢߍ߫ ߓߊ߯ ߞߊ߲ ߛߏ ߞߐ߬ߣߐ.',
     tabletVeTelefonlar: 'ߕߊߓߎߟߍߕߌ ߣߌ߫ ߕߋߟߋߝߐߣߌ ߟߎ߬',
     esYok: 'ߊߟߎ߫ ߦߋ߫ ߊߟߎ߫ ߟߊ߫ ߕߊߓߎߟߍߕߌ ߥߟߊ߫ ߕߋߟߋߝߐߣߌ ߝߌߟߊߣߊ߲ ߟߊ߫: ߛߊߟߌ ߡߌ߲߬ ߛߍߓߍ߲ߠߊ ߞߋߟߋ߲߫ ߞߊ߲߸ ߏ߬ ߓߍ߫ ߕߊ߯ ߕߐ߮ ߞߊ߲.',
+    kayipEslesmeler: 'ߞߊ߬ߙߊ߬ߓߊ߬ߟߌ ߝߟߐ ߟߎ߬ ߡߊ߫ ߛߋ߫ ߞߊ߬ ߞߊ߬ߙߊ߲߬ ({adlar}). ߣߊ߬ߡߌ߬ߣߊ߬ ߞߊ߲ ߘߊ߲߬ߘߊ߲߬ߠߌ߲ ߦߙߐ ߞߊ߬ ߛߋ߫ ߞߊ߬ ߘߊ߲߬ߠߊ߬ߘߊ߫ ߞߎߘߊ߫ ߘߌ߫؛ ߝߏ߲ߕߌ ߟߎ߬ ߓߊ߲߫ ߞߎߘߊ߫ ߘߌ߫.',
     cihaziKaldirinErisim: '{ad} ߓߐ߫',
     tabletEkleyin: 'ߕߊߓߎߟߍߕߌ ߥߟߊ߫ ߕߋߟߋߝߐߣߌ ߟߊ߫',
     saat: 'ߡߐ߲ߕߎߙߎ',

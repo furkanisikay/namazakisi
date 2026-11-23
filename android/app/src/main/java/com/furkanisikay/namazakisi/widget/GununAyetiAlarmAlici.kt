@@ -8,7 +8,9 @@ import com.furkanisikay.namazakisi.duvar.DuvarKagidiUygulayici
 
 /**
  * Günün ayeti yüzeylerini yeniden hesaplatan TEK alıcı (#380/#381), `exported=false`:
- * - planın bir sonraki `baslangicMs`'indeki sınır alarmı ([GununAyetiGuncelleyici.SINIR_EYLEMI]),
+ * - planın bir sonraki `baslangicMs`'indeki ya da (duvar kâğıdı vakte uyan gökteyse) bir sonraki
+ *   gök sınırındaki alarm ([GununAyetiGuncelleyici.SINIR_EYLEMI]); gök değişince duvar kâğıdının
+ *   imzası değişir ve yeniden yazılır,
  * - sistem olayları: saat / saat dilimi / tarih değişimi, açılış, paket güncellemesi.
  *   Manifest filtresi ikinci kez yazılmaz: `NamazWidgetAlarmAlici` bunları paket içi açık
  *   yayınla buraya iletir ([GununAyetiGuncelleyici.YENIDEN_EYLEMI]).

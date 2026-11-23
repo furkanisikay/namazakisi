@@ -8,12 +8,14 @@ buildscript {
   dependencies {
     classpath('com.android.tools.build:gradle')
     classpath('com.facebook.react:react-native-gradle-plugin')
-    classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+    def kotlinVersion = findProperty('android.kotlinVersion')
+    classpath(kotlinVersion ? "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion" : 'org.jetbrains.kotlin:kotlin-gradle-plugin')
     // KSP — Android AppFunctions derleyicisi için (issue #94, android/app/build.gradle).
-    // Sürüm Kotlin sürümüne KİLİTLİDİR: RN 0.86 / Expo SDK 57 hâlâ Kotlin 2.1.20 kullanır ve
-    // Expo'nun kendi eşlemesi (`KSPLookup`) de 2.1.20 → 2.1.20-2.0.1 der. Kotlin yükselirse
-    // bu satır da yükselmeli (aksi halde KSP "unsupported Kotlin version" ile düşer).
-    classpath('com.google.devtools.ksp:symbol-processing-gradle-plugin:2.1.20-2.0.1')
+    // Sürüm ÇALIŞAN Kotlin Gradle eklentisine KİLİTLİDİR. RN 0.88 kataloğu Kotlin 2.2.0 der ama
+    // AGP 9.2.1'in POM'u kotlin-gradle-plugin 2.2.10'u çalışma bağımlılığı olarak getirir, çözüm
+    // en yükseği seçer → KGP 2.2.10. Expo'nun eşlemesi (`KSPLookup`): 2.2.10 → 2.2.10-2.0.2.
+    // AGP ya da Kotlin yükselirse bu satır da yükselmeli ("unsupported Kotlin version").
+    classpath('com.google.devtools.ksp:symbol-processing-gradle-plugin:2.2.10-2.0.2')
   }
 }
 

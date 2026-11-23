@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'আপনার বেছে নেওয়া শব্দ',
     dokunarak: 'বদলাতে ট্যাপ করুন',
     seciliDinle: 'বেছে নেওয়া নোটিফিকেশনের শব্দ শুনুন',
+    paket: {
+      zil: 'কোমল ঘণ্টা',
+      ikiton: 'দুই সুর',
+      damla: 'ফোঁটা',
+      sabah: 'সকাল',
+    },
+    silErisim: '{ad} শব্দটি মুছুন',
+    ornekDinleErisim: 'শুনুন: {ad}',
+    uzunlukNotu: 'নোটিফিকেশনের শব্দ সর্বোচ্চ 30 সেকেন্ড বাজে; বড় ফাইলের প্রথম 30 সেকেন্ড ব্যবহার করা হয়।',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

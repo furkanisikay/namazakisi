@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'A sound you chose',
     dokunarak: 'Tap to change',
     seciliDinle: 'Listen to the selected notification sound',
+    paket: {
+      zil: 'Soft chime',
+      ikiton: 'Two tones',
+      damla: 'Droplets',
+      sabah: 'Morning',
+    },
+    silErisim: 'Delete the sound {ad}',
+    ornekDinleErisim: 'Listen: {ad}',
+    uzunlukNotu: 'A notification sound plays for up to 30 seconds; for a longer file, the first 30 seconds are used.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

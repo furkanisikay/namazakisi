@@ -323,6 +323,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'آپ کی منتخب کردہ آواز',
     dokunarak: 'تھپتھپا کر بدلیں',
     seciliDinle: 'منتخب اطلاع کی آواز سنیں',
+    paket: {
+      zil: 'نرم گھنٹی',
+      ikiton: 'دو سُر',
+      damla: 'قطرے',
+      sabah: 'صبح',
+    },
+    silErisim: '{ad} آواز حذف کریں',
+    ornekDinleErisim: 'سنیں: {ad}',
+    uzunlukNotu: 'اطلاع کی آواز زیادہ سے زیادہ 30 سیکنڈ بجتی ہے؛ لمبی فائل کے پہلے 30 سیکنڈ استعمال ہوتے ہیں۔',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

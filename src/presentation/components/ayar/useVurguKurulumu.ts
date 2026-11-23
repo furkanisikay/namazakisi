@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
-import type { ScrollView } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useVurguBaglami } from './VurguSaglayici';
 
@@ -21,7 +21,7 @@ import { useVurguBaglami } from './VurguSaglayici';
  * </VurguSaglayici>
  * ```
  */
-export function useVurguKurulumu(): RefObject<ScrollView | null> {
+export function useVurguKurulumu(): RefObject<ScrollViewInstance | null> {
   const { scrollRef, hedefiAyarla } = useVurguBaglami();
   const route = useRoute();
   const vurgula = (route?.params as { vurgula?: string } | undefined)?.vurgula;

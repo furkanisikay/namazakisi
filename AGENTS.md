@@ -1,6 +1,6 @@
 # AGENTS.md — Namaz Akışı
 
-> Proaktif İslami ibadet asistanı. **React Native 0.86 + Expo SDK 57** (bare workflow; `android/` git'te, `ios/` git'te DEĞİL — EAS üretir), **TypeScript 6 strict**, **Redux Toolkit**, **NativeWind/Tailwind**, **Jest + jest-expo**. New Architecture zorunlu, Hermes v1. Bağımsız Gradle kökleri: `wear/` (Wear OS), `tv/` (Android TV). iOS hedefleri `targets/` + `plugins/` ile prebuild'de eklenir.
+> Proaktif İslami ibadet asistanı. **React Native 0.88 + Expo SDK 58** (bare workflow; `android/` git'te, `ios/` git'te DEĞİL — EAS üretir), **TypeScript 6 strict**, **Redux Toolkit**, **NativeWind/Tailwind**, **Jest + jest-expo**. New Architecture zorunlu, Hermes v1. Bağımsız Gradle kökleri: `wear/` (Wear OS), `tv/` (Android TV). iOS hedefleri `targets/` + `plugins/` ile prebuild'de eklenir.
 >
 > Bu dosya tüm kod ajanları (Claude, Codex, Cursor, Copilot, Gemini, Jules) için **tek doğru kaynaktır**: yalnız her işte geçerli kurallar burada. Alan bilgisi (bir özelliğin tuzakları, reçeteleri, nöbetçi testleri) `docs/ajan/` altındadır — dokunduğun alanın belgesini **kod yazmadan önce** oku (en altta konu dizini).
 
@@ -49,7 +49,7 @@ Geçmiyorsa iş **bitmemiştir** — düzelt, çözemiyorsan açıkça raporla. 
 - **Kalite:** en acemi kullanıcının tek bakışta anladığı netlik, anlamlı ikon, ölçülü animasyon (reduced-motion'a saygı), cesaret tek imza öğesinde.
 - **Görsel anlatı korunur (sahip kararı 2026-10-19):** sadeleştirme METNİ kısaltır, illüstrasyonu/animasyonlu anlatımı SİLMEZ. Hareket kuralı ekran türüne göre: tanıtım, sihirbaz ve boş durum ekranlarında sahne GÖRÜNÜRKEN yumuşak döngüyle oynayabilir; ayar listelerinde yalnız girişte (ya da seçim değişince) BİR KEZ oynar; ekran odak dışındayken, uygulama arka plandayken ve "Animasyonları azalt"ta durur (son kare = dinlenme pozu, resim eksiksiz). Tek kapı `components/hareket/dongu.ts` (`useDonguAcik` + `useDonguAnimasyonu`) — her sahneye ayrı kapı yazma. Yalnız transform/opaklık + native driver (genişlik/yükseklik animasyonu yok), renkler token. Ayrıntı: [ana-ekran-ve-ayarlar](docs/ajan/ana-ekran-ve-ayarlar.md).
 - **Mevcut görsel dile sadık kal:** renkler YALNIZ `useRenkler` tokenlarından; kart `borderRadius: 24` + `rounded-xl/2xl`; tonlu ikon çipi (`renk + '20'`); `FontAwesome5`; ikincil buton `arkaplan`+`sinir`, birincil dolu `birincil` + ikon + beyaz metin. Referans kalite: `KerahatOnayModal`, `BildirimModali`.
-- **Token ≠ en yakın görünen renk:** sabit rengi token'a bağlamadan önce (1) metin mi dekoratif mi ayır, (2) değer birebir aynı değilse kontrastı hesapla (`core/utils/kontrastOrani.ts`). `durum.uyari` = `#FFC107` sarı-amberdir; turuncu `durum.dikkat` (`#E65100`) yalnız DEKORATİF (ikon/çubuk/kenar). Uygun token yoksa temaya token ekle (yaşanmış: `RamazanAyarlariSayfasi.iftarRenk`'i `uyari`'ya bağlamak başlık kontrastını ~1.5:1'e düşürüyordu).
+- **Token ≠ en yakın görünen renk:** sabit rengi token'a bağlamadan önce (1) metin mi dekoratif mi ayır, (2) değer birebir aynı değilse kontrastı hesapla (`core/utils/kontrastOrani.ts`). `durum.uyari` = `#FFC107` sarı-amberdir; turuncu `durum.dikkat` (`#E65100`) yalnız DEKORATİF (ikon/çubuk/kenar); `durum.hata` küçük metinde 4,5:1'i tutmaz → tehlikeli işlem METNİ `durum.tehlike` (zemin `tehlike + '14'`). Uygun token yoksa temaya token ekle (yaşanmış: `RamazanAyarlariSayfasi.iftarRenk`'i `uyari`'ya bağlamak başlık kontrastını ~1.5:1'e düşürüyordu).
 - **Modal:** `<Modal animationType="fade" transparent statusBarTranslucent>`; backdrop içeriği SARMAZ, `StyleSheet.absoluteFill` ile **kardeş** olur (yoksa iç liste kaymaz); sabit yükseklikli sheet `maxHeight` değil `height`. New Architecture'da `onRequestClose` Android geri tuşunda güvenilmez → her modalda **`useDonanimGeriTusu(gorunur, onKapat)`** (`onRequestClose`'u da bırak). İç içe iki kardeş modal iOS'ta sunulamaz → rıza modalını ana modal ağacının içine koy.
 - **Sayfa başlığı tek yerde:** ayar ekranları başlığı header'dan alır (`AYARLAR_EKRAN_TANIMLARI`), `edges={['bottom','left','right']}`; gövdede tekrarlama. `headerShown: false` yalnız sekme kökü (`AyarlarAna`) ve kendi üst barını taşıyan sihirbaz (`IceAktarmaSihirbazi`) için.
 - **Hatırlatma ayarı tek yerde:** yeni bir hatırlatma yüzeyi Ayarlar'a yeni satır/sayfa AÇMAZ — Hatırlatmalar sayfasına tek satır (anahtar + canlı cümle + ayrıntı) olarak girer; sesli okuma ve gerçek alarm rızası TEKDİR (`useGenelRiza`, yüzeye özgü rıza kaydı açma). Ekranda teknik terim yok ("kanal", "ton", "TTS", "{süre}" → "sertlik", "sesli okuma"). Ayrıntı: [hatirlatma-yuzeyleri](docs/ajan/hatirlatma-yuzeyleri.md).
@@ -94,7 +94,7 @@ Geçmiyorsa iş **bitmemiştir** — düzelt, çözemiyorsan açıkça raporla. 
 ## Reçete — Yeni özellik duyurusu ("Neler Yeni")
 Tek yer `src/core/constants/YeniOzellikler.ts`; rozet, tanıtım kartı ve "Neler Yeni" sayfası kendiliğinden beslenir. README'nin "Son eklenenler" listesi de oradan üretilir.
 - **Bir özellik = bir öğe.** Özellik henüz mağazaya (production) çıkmadıysa ya da sonradan değiştiyse **YENİ öğe ekleme**: mevcut öğenin metnini bugünkü hâle getir, `surum`/`tarih`'i son değişikliğin değeriyle güncelle. Görülme `<id>@<surum>` anahtarıyla tutulur (`core/utils/yeniOzellikGorulme.ts`) → yükseltilen `surum` duyuruyu yeniden "yeni" gösterir. Öğe birleştirirken en eski `id`'yi koru, diğerlerini `oncekiIdler`'e yaz; `id` asla değişmez.
-- **`platformlar` ZORUNLU** (`['android']` / `['ios']` / ikisi). Bir madde yalnız bazı cihazlarda geçerliyse maddeyi çıkar ya da öğeyi `yetenek` ile süz (`presentation/hooks/yeniOzellikYetenegi.ts`; ölçülemiyorsa gösterme). `PlatformYetenekleri`'ne bağlı özellik (iOS'ta ses seçici/titreşim yok) iki platforma işaretlenmez.
+- **`platformlar` ZORUNLU** (`['android']` / `['ios']` / ikisi). Bir madde yalnız bazı cihazlarda geçerliyse maddeyi çıkar ya da öğeyi `yetenek` ile süz (`presentation/hooks/yeniOzellikYetenegi.ts`; ölçülemiyorsa gösterme). `PlatformYetenekleri`'ne bağlı özellik (iOS'ta titreşim seçimi ve sistem ses seçicisi yok) iki platforma işaretlenmez.
 - **Metin:** kibar "siz", özelliğin bugünkü hâli (tarihçe yok), teknik terim yok (kanal/TTS/API → "sesli okuma", "bildirim"), **işletim sistemi sürümü ve izin şartı yok** (nöbetçi: `yeniOzellikYetenegi.test.ts`).
 
 ## 🚧 Sınırlar
@@ -114,13 +114,13 @@ Proje **GPL-3.0 + LICENSE'taki GPLv3 §7 ek izni** (App Store/Google Play). Ek i
 - Biçim: **kural önce**, gerekçe tek cümle (hikâye değil), varsa `Nöbetçi: <test>`. Mevcut maddeyi güncelle/sil, şişirme; spekülasyon yazma ("cihazda doğrulanmadı" diye işaretle); sır/kişisel veri yazma.
 
 ## Ajan ortamı (Jules vb.)
-Setup: `npm ci` (Node 20; `postinstall: patch-package` atlanmamalı) · Doğrulama: `npm run verify` · PR hedefi `master` · `git push` kullanan ajanda `CI=true`. Ayrıntı: [ci-ve-yayin](docs/ajan/ci-ve-yayin.md).
+Setup: `npm ci` (Node 22.13+; `postinstall: patch-package` atlanmamalı) · Doğrulama: `npm run verify` · PR hedefi `master` · `git push` kullanan ajanda `CI=true`. Ayrıntı: [ci-ve-yayin](docs/ajan/ci-ve-yayin.md).
 
 ## Konu dizini — dokunduğun alanın belgesini önce oku
 | Belge | Ne zaman oku |
 |---|---|
 | [muhafiz-motoru](docs/ajan/muhafiz-motoru.md) | Namaz Muhafızı motoru, matris/adım/ton/yön, preset'ler, göçler, muhafız ayar ekranı, vakit sayacı bastırma |
-| [muhafiz-ses-ve-kanal](docs/ajan/muhafiz-ses-ve-kanal.md) | Bildirim kanalı/ses/titreşim, ses seçici, sesli okuma (TTS) planlama, önizleme, kanal teşhisi, emülatör reçeteleri |
+| [muhafiz-ses-ve-kanal](docs/ajan/muhafiz-ses-ve-kanal.md) | Bildirim kanalı/ses/titreşim, ses seçici (Android sistem seçicisi, iPhone ses listesi + kendi dosyası), sesli okuma (TTS) planlama, önizleme, kanal teşhisi, emülatör reçeteleri |
 | [hatirlatma-yuzeyleri](docs/ajan/hatirlatma-yuzeyleri.md) | Ortak hatırlatma modülü (`components/hatirlatma`), cuma, camiye gitme, yatış/muhasebe, takvim çakışması, nafile, özel gün susturma, gün sonu, bildirim sınırı rehberi |
 | [gercek-alarm](docs/ajan/gercek-alarm.md) | Gerçek alarm kanalı (Android tam ekran alarm, iOS AlarmKit), yarının imsağı |
 | [kaza-seri-puan](docs/ajan/kaza-seri-puan.md) | Puanlama, seri/toparlanma, Kaza Defteri 2.0, depolama göçü, Seri sekmesi/SVG, seri sayacı |

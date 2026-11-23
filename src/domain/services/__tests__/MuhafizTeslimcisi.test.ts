@@ -512,6 +512,60 @@ describe('IosMuhafizTeslimcisi — anons klibi (Faz 2)', () => {
     });
 });
 
+describe('IosMuhafizTeslimcisi — kullanıcının seçtiği ses (paket:/dosya:)', () => {
+    const DOSYA = 'kullanici_ses_0123abcd.caf';
+    const planlananSesler = () =>
+        (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0].content.sound);
+    let t: IosMuhafizTeslimcisi;
+
+    // Tur kapanmazsa uçuştaki kimlikler sonraki suite'lerin bütçe ölçümüne sızar.
+    afterEach(async () => {
+        await t.tamamla();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        ucustakiKlipleriSifirla();
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+        kopru.trSesTanimlayici.mockResolvedValue(null);
+        kopru.klipVarMi.mockResolvedValue(true);
+    });
+
+    test('uygulamanın sesi (paket:) paketteki dosyayı çalar; diske sorulmaz', async () => {
+        t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ bildirimSesi: 'paket:zil' }));
+        expect(planlananSesler()).toEqual(['zil_ios.wav']);
+        expect(kopru.klipVarMi).not.toHaveBeenCalled();
+    });
+
+    test('eklenen dosya (dosya:) diskteyse ONU çalar; varlık tur başına BİR kez sorulur', async () => {
+        t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ seviye: 1, bildirimSesi: `dosya:${DOSYA}` }));
+        await t.uyariPlanla(teslimKur({ seviye: 2, bildirimSesi: `dosya:${DOSYA}` }));
+        expect(planlananSesler()).toEqual([DOSYA, DOSYA]);
+        expect(kopru.klipVarMi).toHaveBeenCalledTimes(1);
+        expect(kopru.klipVarMi).toHaveBeenCalledWith(DOSYA);
+    });
+
+    test('SESSİZ SAPMA YOK: dosya silinmişse uygulama sesine düşer (iOS sistemin sesini çalmasın)', async () => {
+        kopru.klipVarMi.mockResolvedValue(false);
+        t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ bildirimSesi: `dosya:${DOSYA}` }));
+        expect(planlananSesler()).toEqual([IOS_BILDIRIM_SESI]);
+    });
+
+    test('gerçek alarm adımı seçilen sesi değil UZUN alarm sesini çalar (dosya sorulmaz)', async () => {
+        t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ alarm: true, kanallar: { bildirim: true, alarm: true }, bildirimSesi: `dosya:${DOSYA}` }));
+        expect(planlananSesler()).toEqual(['alarm_ios.wav']);
+        expect(kopru.klipVarMi).not.toHaveBeenCalled();
+    });
+});
+
 describe('AndroidMuhafizTeslimcisi — alarm butcesi (500 alarm tavani)', () => {
     beforeEach(() => jest.clearAllMocks());
 

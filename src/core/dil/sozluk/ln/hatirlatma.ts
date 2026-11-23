@@ -330,6 +330,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Lokito oyo boponi',
     dokunarak: 'Bofina mpɔ na kobongola',
     seciliDinle: 'Boyoka lokito ya liyebisi oyo eponami',
+    paket: {
+      zil: 'Ngɔ́ngɔ ya pɛtɛpɛtɛ',
+      ikiton: 'Mingongo mibale',
+      damla: 'Matanga',
+      sabah: 'Ntɔ́ngɔ́',
+    },
+    silErisim: 'Bolongola lokito {ad}',
+    ornekDinleErisim: 'Boyoka: {ad}',
+    uzunlukNotu: 'Lokito ya liyebisi ebɛtaka kino sɛkɔndɛ 30; na fisyé ya molai, sɛkɔndɛ 30 ya liboso nde esalelamaka.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

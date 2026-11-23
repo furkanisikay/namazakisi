@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Сиз тандаган үн',
     dokunarak: 'Өзгөртүү үчүн басыңыз',
     seciliDinle: 'Тандалган билдирме үнүн угуу',
+    paket: {
+      zil: 'Жумшак коңгуроо',
+      ikiton: 'Эки үн',
+      damla: 'Тамчылар',
+      sabah: 'Таң',
+    },
+    silErisim: '{ad} үнүн өчүрүү',
+    ornekDinleErisim: 'Угуу: {ad}',
+    uzunlukNotu: 'Билдирме үнү эң көп 30 секунд ойнойт; узунураак файлдын алгачкы 30 секунду колдонулат.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

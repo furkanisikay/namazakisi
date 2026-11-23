@@ -14,7 +14,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { IOS_BILDIRIM_SESI } from '../teslimPlani';
+import { IOS_ALARM_SESI, IOS_BILDIRIM_SESI } from '../teslimPlani';
+import { PAKET_SESLERI } from '../paketSesleri';
 
 const PROJE_KOKU = path.resolve(__dirname, '../../../../..');
 
@@ -51,5 +52,26 @@ describe('expo-notifications sounds — Android kaynak adi cakismasi', () => {
         const adlar = sesListesi().map((s) => path.basename(s));
         expect(adlar).toContain(IOS_BILDIRIM_SESI);
         expect(IOS_BILDIRIM_SESI.endsWith('.wav')).toBe(true);
+    });
+
+    test('iPhone ses listesindeki HER paket sesi app.json\'da kayitli ve .wav (yoksa iOS sistemin sesini calar)', () => {
+        const adlar = sesListesi().map((s) => path.basename(s));
+        for (const p of PAKET_SESLERI) {
+            expect({ ad: p.ad, kayitli: adlar.includes(p.dosya) }).toEqual({ ad: p.ad, kayitli: true });
+            expect(p.dosya.endsWith('.wav')).toBe(true);
+        }
+    });
+
+    test('iOS bildirim sesleri 30 sn\'den KISA (uzun sesin yerine iOS sistemin sesini calar)', () => {
+        const iosSesleri = [IOS_BILDIRIM_SESI, IOS_ALARM_SESI, ...PAKET_SESLERI.map((p) => p.dosya)];
+        for (const ad of iosSesleri) {
+            const veri = fs.readFileSync(path.join(PROJE_KOKU, 'assets/sounds', ad));
+            // RIFF/WAVE: byteRate fmt parcasinda (ofset 28), sure = data boyutu / byteRate.
+            expect(veri.toString('ascii', 0, 4)).toBe('RIFF');
+            const byteRate = veri.readUInt32LE(28);
+            const data = veri.indexOf(Buffer.from('data'));
+            const saniye = veri.readUInt32LE(data + 4) / byteRate;
+            expect({ ad, kisa: saniye > 0 && saniye < 30 }).toEqual({ ad, kisa: true });
+        }
     });
 });

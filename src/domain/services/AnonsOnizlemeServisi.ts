@@ -32,6 +32,7 @@ import {
 } from '../../../modules/expo-muhafiz-anons/src';
 import { Logger } from '../../core/utils/Logger';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../core/muhafiz/motorAdaptoru';
+import { onizlemedeCalinirMi } from '../../core/muhafiz/sesKimligi';
 import type { UyariKanallari } from '../../core/muhafiz/matrisTipleri';
 import { adimKapaliMi } from '../../core/muhafiz/kanalKumesi';
 import { OnizlemeSesServisi } from './OnizlemeSesServisi';
@@ -91,6 +92,12 @@ export interface AdimOnizlemeGirdisi {
     bildirimSesi: string;
     /** Yer tutuculari COZULMUS anons metni (sesli kanal kapaliyken kullanilmaz) */
     cozulmusMetin: string;
+    /**
+     * Yuzeyin VARSAYILAN sesi uygulama icinde dinletilebilir mi? (varsayilan: evet) iPhone'da
+     * ek yuzeylerin varsayilani telefonun sesidir → bildirim sesi kismi CALINMAZ, yalniz anons
+     * (`varsayilanSesGorunumu`). Android'de daima evet.
+     */
+    varsayilanSesDinlenir?: boolean;
 }
 
 /**
@@ -112,10 +119,11 @@ export async function adimiOnizle({
     kanallar,
     bildirimSesi,
     cozulmusMetin,
+    varsayilanSesDinlenir = true,
 }: AdimOnizlemeGirdisi): Promise<void> {
     if (adimKapaliMi(kanallar)) return;
 
-    const bildirimVar = bildirimSesiGerekliMi(kanallar);
+    const bildirimVar = bildirimSesiGerekliMi(kanallar) && onizlemedeCalinirMi(bildirimSesi, varsayilanSesDinlenir);
     // `cozulmusMetin` tipte zorunlu ama DISKTEN gelir (matris hucresindeki
     // `anonsMetni`) — bozuk/eski kayitta undefined olabilir ve `.trim()` coker.
     // Ayni dosyadaki `anonsuOnizle` zaten ayni savunmayi yapiyor (satir 59).

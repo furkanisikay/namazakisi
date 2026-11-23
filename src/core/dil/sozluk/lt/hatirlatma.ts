@@ -323,6 +323,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Jūsų pasirinktas garsas',
     dokunarak: 'Palieskite, kad pakeistumėte',
     seciliDinle: 'Klausytis pasirinkto pranešimo garso',
+    paket: {
+      zil: 'Švelnus skambutis',
+      ikiton: 'Du tonai',
+      damla: 'Lašai',
+      sabah: 'Rytas',
+    },
+    silErisim: 'Ištrinti garsą {ad}',
+    ornekDinleErisim: 'Klausytis: {ad}',
+    uzunlukNotu: 'Pranešimo garsas skamba ne ilgiau kaip 30 sekundžių; iš ilgesnio failo naudojamos pirmosios 30 sekundžių.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

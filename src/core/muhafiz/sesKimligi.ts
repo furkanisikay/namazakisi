@@ -26,6 +26,8 @@
 import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
 import { VARSAYILAN_SES } from './matrisTipleri';
 import { metin } from '../dil/aktifDil';
+import { iosSesiMi, kullaniciSesDosyasi, paketSesiBul } from './ios/paketSesleri';
+import type { MuhafizPlatformu } from './ios/platformYetenekleri';
 
 /** Kullanicinin sectigi sistem sesleri bu semayla gelir (RingtoneManager). */
 const OZEL_SES_ONEKI = 'content://';
@@ -33,9 +35,73 @@ const OZEL_SES_ONEKI = 'content://';
 const TABAN_NORMAL = BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ;
 const TABAN_ACIL = BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ_ACIL;
 
-/** Kullanicinin cihazdan sectigi bir ses mi (paketlenmis varsayilan degil)? */
+/**
+ * ANDROID: kullanicinin cihazdan sectigi bir ses mi (`content://`; paketlenmis varsayilan
+ * degil)? Android kanal kimliginin TEK girdisi — iPhone kimliklerini (`paket:`/`dosya:`)
+ * BILEREK tanimaz: onlari tanisaydi iPhone yedegi Android'e tasininca hash'li kanal
+ * dogardi. Platformdan bagimsiz "secilmis ses mi" sorusu `secilmisSesMi`'dir.
+ */
 export function ozelSesMi(sesKimligi: string | undefined | null): boolean {
   return typeof sesKimligi === 'string' && sesKimligi.startsWith(OZEL_SES_ONEKI);
+}
+
+/** Varsayilan olmayan, kullanicinin SECTIGI bir ses mi (Android `content://` ya da iPhone `paket:`/`dosya:`)? */
+export function secilmisSesMi(sesKimligi: string | undefined | null): boolean {
+  return ozelSesMi(sesKimligi) || iosSesiMi(sesKimligi);
+}
+
+/**
+ * Bu ses BU PLATFORMDA calinir mi? Ekran "secili ses" durumunu buna gore cizer: Android'de
+ * iPhone kimligi (yedekten gelen) varsayilan calar → varsayilan gorunur; iPhone'da da
+ * `content://` boyledir (`teslimPlani.iosSesiCoz`). Sessiz sapma yok.
+ */
+export function platformdaCalinirMi(
+  sesKimligi: string | undefined | null,
+  platform: MuhafizPlatformu
+): boolean {
+  return platform === 'ios' ? iosSesiMi(sesKimligi) : ozelSesMi(sesKimligi);
+}
+
+/**
+ * Uygulamanin CALISTIGI platform (ses adi ureticisi icin). Cekirdek `react-native` okumaz:
+ * giris noktasi (`index.ts`) her JS baglaminda bir kez yazar (`aktifDil` deseni).
+ * Varsayilan Android → Android davranisi yazilmasa da birebir.
+ */
+let sesPlatformuDegeri: MuhafizPlatformu = 'android';
+export function sesPlatformunuAyarla(platform: MuhafizPlatformu): void {
+  sesPlatformuDegeri = platform;
+}
+export function sesPlatformu(): MuhafizPlatformu {
+  return sesPlatformuDegeri;
+}
+
+/**
+ * iPhone: diskte DURAN eklenmis dosyalar (`Library/Sounds` adlari). `null` = henuz okunmadi
+ * → bilinmiyor sayilir ve dosya calinir kabul edilir (teslimci yine diske sorar). Ses
+ * listesi (`useIosSesSecimi`) ve acilis (`App.tsx`) native listeden yazar.
+ */
+let eklenmisSesler: ReadonlySet<string> | null = null;
+export function eklenmisSesleriAyarla(dosyalar: Iterable<string> | null): void {
+  eklenmisSesler = dosyalar === null ? null : new Set(dosyalar);
+}
+
+/**
+ * Bu kimlik BU CIHAZDA calinir mi? Platform (`platformdaCalinirMi`) + iPhone'da eklenen
+ * dosya hala listede mi. Calinmayan secim ekranda VARSAYILAN gorunur (calan budur).
+ */
+export function cihazdaCalinirMi(sesKimligi: string | undefined | null): boolean {
+  if (!platformdaCalinirMi(sesKimligi, sesPlatformuDegeri)) return false;
+  const dosya = kullaniciSesDosyasi(sesKimligi);
+  return dosya === null || eklenmisSesler === null || eklenmisSesler.has(dosya);
+}
+
+/**
+ * Bildirim sesi uygulama icinde ONIZLENEBILIR mi? Bu cihazda calinan secim daima; varsayilan
+ * ise yalniz yuzeyin varsayilani uygulamanin sesiyse (`varsayilanDinlenir`). iPhone'da ek
+ * yuzeylerin varsayilani telefonun sesidir → onizleme `bildirim.mp3` calardi (sapma).
+ */
+export function onizlemedeCalinirMi(sesKimligi: string | undefined | null, varsayilanDinlenir: boolean = true): boolean {
+  return varsayilanDinlenir || cihazdaCalinirMi(sesKimligi);
 }
 
 /**
@@ -49,6 +115,10 @@ export function ozelSesMi(sesKimligi: string | undefined | null): boolean {
  * DIKKAT: 'alarm' id'si eskiden ACIL KANAL sinyali de tasiyordu. O anlam burada
  * DEGIL, `muhafizGoc.eskiAlarmSesiniGoc` ile gorunur `acilKanal` alanina TASINIR
  * (yedek dal: `muhafizAcilKanalMi`, bkz. motorAdaptoru).
+ *
+ * ANDROID KANAL KIMLIGIDIR: iPhone kimlikleri (`paket:`/`dosya:`) de varsayilana iner →
+ * Android kanal id'si her girdi icin eskisiyle BIREBIR (nobetci `sesKimligi.test.ts`).
+ * iPhone'da ses `teslimPlani.iosSesiCoz` ile HAM kimlikten cozulur.
  */
 export function sesKimliginiNormalize(ham: string | undefined | null): string {
   if (typeof ham !== 'string') return VARSAYILAN_SES;
@@ -67,12 +137,22 @@ export function sesKimliginiNormalize(ham: string | undefined | null): string {
  * hangisi oldugunu ayirt edemez.
  *
  * Ekran ozeti, ses secim satiri ve bildirim KANAL ADI ayni yerden beslenir.
+ *
+ * BU CIHAZDA CALINMAYAN secim (baska platformun kimligi — yedek/esitleme — ya da iPhone'da
+ * silinmis eklenen dosya) VARSAYILANIN adini alir: calan odur. `varsayilanAdi` yuzeyin
+ * varsayilan sesinin adidir (verilmezse "Uygulama sesi"; iPhone'da ek yuzeyler telefonun
+ * sesini calar).
  */
-export function sesGorunenAdi(sesKimligi: string, sesAdi?: string): string {
+export function sesGorunenAdi(sesKimligi: string, sesAdi?: string, varsayilanAdi?: string): string {
+  const k = metin().bildirim.kanal;
+  if (secilmisSesMi(sesKimligi) && !cihazdaCalinirMi(sesKimligi)) return varsayilanAdi ?? k.uygulamaSesi;
+  if (!secilmisSesMi(sesKimligi) && varsayilanAdi && !sesAdi?.trim()) return varsayilanAdi;
+  // iPhone'un paketlenmis sesi: ad SOZLUKTEN (dil degisince ad da degisir; kayitli ad yok sayilir).
+  const paket = paketSesiBul(sesKimligi);
+  if (paket) return metin().hatirlatma.sesSecim.paket[paket.ad];
   const ad = sesAdi?.trim();
   if (ad) return ad;
-  const k = metin().bildirim.kanal;
-  return ozelSesMi(sesKimligi) ? k.seciliSes : k.uygulamaSesi;
+  return secilmisSesMi(sesKimligi) ? k.seciliSes : k.uygulamaSesi;
 }
 
 /**

@@ -149,7 +149,7 @@ export const KazaGecmisiSayfasi: React.FC = () => {
               onPress={() => navigation.navigate('KazaTemizlik')}
               style={stiller.altDugme}
             />
-          ) : null
+          ) : undefined
         }
       />
       <KazaHareketAyrintiModal satir={secili} cihaz={cihaz} onKapat={() => setSecili(null)} />

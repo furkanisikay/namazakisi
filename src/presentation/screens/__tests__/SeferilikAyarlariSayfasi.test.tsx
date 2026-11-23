@@ -84,7 +84,7 @@ describe('SeferilikAyarlariSayfasi', () => {
   });
 
   it('her Diyanet kaynağı tarayıcıda açılır', async () => {
-    const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
     const { getByLabelText, store } = kur();
     await waitFor(() => expect(store.getState().seferilik.yuklendi).toBe(true));
     for (const k of SEFERILIK_KAYNAK_LISTESI) {

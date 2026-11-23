@@ -191,6 +191,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: '{n} element activat', few: '{n} elemente activate', other: '{n} de elemente activate' }),
     sesDosyasi: {
       bicim: 'Acest fișier nu a putut fi deschis ca sunet. Puteți alege un fișier MP3, M4A, OGG sau WAV.',
+      bicimIos: 'Acest fișier nu a putut fi deschis ca sunet. Puteți alege un fișier MP3, M4A sau WAV.',
       boyut: 'Fișierul este prea mare. Puteți alege până la 20 MB.',
       sure: 'Înregistrarea este prea lungă. Puteți alege un sunet de până la 8 minute.',
       erisim: 'Fișierul nu a putut fi accesat. Încercați să alegeți un fișier de pe telefon.',

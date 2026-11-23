@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Një tingull që zgjodhët',
     dokunarak: 'Prekni për ta ndryshuar',
     seciliDinle: 'Dëgjoni tingullin e zgjedhur të njoftimit',
+    paket: {
+      zil: 'Zile e butë',
+      ikiton: 'Dy tone',
+      damla: 'Pika',
+      sabah: 'Mëngjes',
+    },
+    silErisim: 'Fshini tingullin {ad}',
+    ornekDinleErisim: 'Dëgjoni: {ad}',
+    uzunlukNotu: 'Tingulli i njoftimit luhet deri në 30 sekonda; nga një skedar më i gjatë përdoren 30 sekondat e para.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

@@ -1,9 +1,10 @@
 import React, { useCallback, useRef } from 'react';
-import { AccessibilityInfo, Animated, InteractionManager, StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, Animated, StyleSheet, View, type ViewInstance } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import type { CapaId } from '../../../core/ayarlar/capalar';
 import { useVurguBaglami } from './VurguSaglayici';
+import { etkilesimSonrasi } from '../ortak/etkilesimSonrasi';
 
 interface AyarCapasiProps {
   /** Arama indeksindeki çapa kimliği; `vurgula` route parametresiyle eşleşince vurgulanır. */
@@ -17,7 +18,7 @@ interface AyarCapasiProps {
  * — güvenli bir daraltma ile eriş, `any` kullanma.
  */
 interface ScrollViewIcGorunumErisimi {
-  getInnerViewRef?: () => View | null;
+  getInnerViewRef?: () => ViewInstance | null;
 }
 
 const NABIZ_ADIM_SURESI_MS = 300;
@@ -39,7 +40,7 @@ const KAYDIRMA_UST_BOSLUK = 16;
 export const AyarCapasi: React.FC<AyarCapasiProps> = ({ id, children }) => {
   const renkler = useRenkler();
   const { scrollRef, hedefCapaId, tuketildiMi, vurguyuTuket } = useVurguBaglami();
-  const capaRef = useRef<View>(null);
+  const capaRef = useRef<ViewInstance>(null);
   const tint = useRef(new Animated.Value(0)).current;
 
   const nabizBaslat = useCallback(() => {
@@ -70,7 +71,7 @@ export const AyarCapasi: React.FC<AyarCapasiProps> = ({ id, children }) => {
       }
 
       // native-stack giriş animasyonu sürerken erken scrollTo hedefi ıskalar.
-      const gorev = InteractionManager.runAfterInteractions(() => {
+      const gorev = etkilesimSonrasi(() => {
         const kaydiriciIcGorunum = (
           scrollRef.current as unknown as ScrollViewIcGorunumErisimi | null
         )?.getInnerViewRef?.();

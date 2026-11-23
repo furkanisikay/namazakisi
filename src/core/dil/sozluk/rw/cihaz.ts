@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Ibindi bikoresho',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Telefoni ya {marka}',
+    tablet: 'Tabuleti ya {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Igenamiterere ntiryashoboye kubikwa. Mwongere mugerageze.',
     kaldirildi: '{ad} yakuweho.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Mushyire Namaz Akışı kuri Android TV yanyu maze musome kode ya QR iri kuri ekarani mukoresheje iyi telefoni. Ibihe by’iswala n’igihe gisigaye cya Ramadhani bigaragara kuri ekarani nini yo mu rugo.',
     tabletVeTelefonlar: 'Tabuleti na telefoni',
     esYok: 'Mwongeremo tabuleti yanyu cyangwa telefoni ya kabiri: iswala mwemeje ku gikoresho kimwe ijya no ku kindi.',
+    kayipEslesmeler: 'Guhuza kwabanje ntikwashoboye gusomwa ({adlar}). Ububiko burinzwe bw\'iyi telefoni bushobora kuba bwasubijwe uko bwari bumeze; ongera wongeremo ibikoresho.',
     cihaziKaldirinErisim: 'Gukuraho {ad}',
     tabletEkleyin: 'Kongeramo tabuleti cyangwa telefoni',
     saat: 'Isaha',

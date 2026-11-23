@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'ߡߊ߲߬ߞߊ߲ ߡߌ߲߬ ߊߟߎ߫ ߦߋ߫ ߛߎߥߊ߲ߘߌ߫',
     dokunarak: 'ߊߟߎ߫ ߦߋ߫ ߊ߬ ߘߌߜߌ ߞߊ߬ ߊ߬ ߦߍߟߍߡߊ',
     seciliDinle: 'ߞߌ߬ߓߊ߬ߙߏ߬ ߡߊ߲߬ߞߊ߲ ߛߎߥߊ߲ߘߌߣߍ߲ ߠߊߡߍ߲߫',
+    paket: {
+      zil: 'ߡߊ߲߬ߞߊ߲ ߘߎ߬ߡߊ߲߬',
+      ikiton: 'ߡߊ߲߬ߞߊ߲ ߝߌ߬ߟߊ',
+      damla: 'ߖߌ߬ ߕߐ߲߬ߘߐ ߟߎ߬',
+      sabah: 'ߛߐ߰ߡߊ',
+    },
+    silErisim: '{ad} ߡߊ߲߬ߞߊ߲ ߖߏ߬ߛߌ߬',
+    ornekDinleErisim: 'ߊ߬ ߟߊߡߍ߲߫: {ad}',
+    uzunlukNotu: 'ߞߌ߬ߓߊ߬ߙߏ߬ ߡߊ߲߬ߞߊ߲ ߦߋ߫ ߝߏ߬ ߛߋ߲߬ߞߌߟߌ߲߫ 30 ߘߐߙߐ߲߫ ߘߌ߫߸ ߞߐߕߐ߮ ߖߊ߰ߡߊ߲ ߘߐ߫߸ ߛߋ߲߬ߞߌߟߌ߲߫ 30 ߝߟߐ ߟߎ߬ ߟߋ߬ ߓߍ߫ ߟߊߓߊ߰ߙߊ߫.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

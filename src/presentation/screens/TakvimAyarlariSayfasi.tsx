@@ -357,6 +357,8 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                                             borderColor: secili ? renkler.birincil : renkler.sinir,
                                                         }}
                                                         activeOpacity={0.7}
+                                                        accessibilityRole="radio"
+                                                        accessibilityState={{ selected: secili }}
                                                     >
                                                         <Text
                                                             className="text-xs font-bold text-center"
@@ -443,6 +445,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                 style={{ backgroundColor: renkler.birincil }}
                                 onPress={onKapat}
                                 activeOpacity={0.85}
+                                accessibilityRole="button"
                             >
                                 <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
                                     {ms.tamam}
@@ -886,6 +889,8 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                                 }}
                                                 onPress={() => { dispatch(takvimAyarlariniGuncelle({ kaciGunIlerisi: gun })); setOzelGunAktif(false); }}
                                                 activeOpacity={0.7}
+                                                accessibilityRole="radio"
+                                                accessibilityState={{ selected: secili }}
                                             >
                                                 <Text className="text-sm font-semibold" style={{ color: secili ? renkler.birincilMetin : renkler.metinIkincil }}>
                                                     {sayili(ms.gunSecenek, gun)}
@@ -909,6 +914,8 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                             setOzelGunAktif(true);
                                         }}
                                         activeOpacity={0.7}
+                                        accessibilityRole="radio"
+                                        accessibilityState={{ selected: ozelGunAktif }}
                                     >
                                         <Text className="text-sm font-semibold" style={{ color: ozelGunAktif ? renkler.birincilMetin : renkler.metinIkincil }}>
                                             {ms.ozel}

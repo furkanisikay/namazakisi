@@ -350,6 +350,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Feo nofidinao',
     dokunarak: 'Kitiho raha hanova',
     seciliDinle: "Henoy ny feon'ny fampandrenesana voafidy",
+    paket: {
+      zil: 'Lakolosy malefaka',
+      ikiton: 'Feo roa',
+      damla: 'Tete-drano',
+      sabah: 'Maraina',
+    },
+    silErisim: 'Fafao ny feo {ad}',
+    ornekDinleErisim: 'Henoy: {ad}',
+    uzunlukNotu: "Mandeha 30 segondra farafahabetsany ny feon'ny fampandrenesana; amin'ny rakitra lava kokoa, ny 30 segondra voalohany no ampiasaina.",
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

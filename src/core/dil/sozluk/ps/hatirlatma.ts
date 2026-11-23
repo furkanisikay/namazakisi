@@ -320,6 +320,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'ستاسو خپل ټاکلی غږ',
     dokunarak: 'په کېکاږلو یې بدل کړئ',
     seciliDinle: 'ټاکل شوی د خبرتیا غږ واورئ',
+    paket: {
+      zil: 'نرم زنګ',
+      ikiton: 'دوه غږونه',
+      damla: 'څاڅکي',
+      sabah: 'سهار',
+    },
+    silErisim: 'د {ad} غږ ړنګ کړئ',
+    ornekDinleErisim: 'واورئ: {ad}',
+    uzunlukNotu: 'د خبرتیا غږ تر ډېره 30 ثانیې غږېږي؛ د اوږدې فایل لومړۍ 30 ثانیې کارول کېږي.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

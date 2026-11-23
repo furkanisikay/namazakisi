@@ -21,7 +21,7 @@ type OdakKaynagi = { isFocused?: () => boolean; addListener?: (olay: 'focus' | '
 /** Gezinme bağlamı yoksa (test, gezinme dışı ağaç) boş bağlam — `useContext` fırlatmasın. */
 const BOS_BAGLAM = React.createContext<OdakKaynagi | undefined>(undefined);
 
-function onPlandaMi(durum: AppStateStatus | null | undefined): boolean {
+function onPlandaMi(durum: AppStateStatus | string | null | undefined): boolean {
     return durum !== 'background' && durum !== 'inactive';
 }
 

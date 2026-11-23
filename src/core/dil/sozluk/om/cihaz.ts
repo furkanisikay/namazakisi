@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Meeshaalee biroo',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Bilbila {marka}',
+    tablet: 'Taabileetii {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: "Qindaa'inni olkaa'amuu hin dandeenye. Irra deebi'aa yaalaa.",
     kaldirildi: '{ad} haqameera.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       "Android TV keessan irratti Namaz Akışı fe'aatii koodii QR fuula irra jiru bilbila kanaan sakatta'aa. Yeroon salaataafi lakkoofsi duubaa Ramadaanaa mana keessatti fuula guddaa irratti mul'atu.",
     tabletVeTelefonlar: 'Taabletiifi bilbilota',
     esYok: 'Taabletii ykn bilbila lammaffaa keessan dabalaa: salaanni isa tokko irratti mallatteessitan gara isa kaaniitti darba.',
+    kayipEslesmeler: 'Walqabsiisni duraanii dubbifamuu hin dandeenye ({adlar}). Kuusaan nageenya bilbila kanaa irra deebi\'amee qindaa\'ee ta\'uu danda\'a; meeshaalee irra deebi\'aa dabalaa.',
     cihaziKaldirinErisim: '{ad} haqaa',
     tabletEkleyin: 'Taabletii ykn bilbila dabalaa',
     saat: "Sa'aatii",

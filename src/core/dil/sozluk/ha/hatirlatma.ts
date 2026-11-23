@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Sautin da kuka zaɓa',
     dokunarak: 'Ku taɓa don canjawa',
     seciliDinle: 'Saurari sautin sanarwa da aka zaɓa',
+    paket: {
+      zil: 'Ƙararrawa mai taushi',
+      ikiton: 'Sauti biyu',
+      damla: 'Ɗigo',
+      sabah: 'Safiya',
+    },
+    silErisim: 'Share sautin {ad}',
+    ornekDinleErisim: 'Saurara: {ad}',
+    uzunlukNotu: 'Sautin sanarwa yana kara har zuwa daƙiƙa 30; daga fayil mafi tsawo ana amfani da daƙiƙa 30 na farko.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

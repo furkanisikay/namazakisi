@@ -174,6 +174,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ other: '已开启{n}项' }),
     sesDosyasi: {
       bicim: '无法将此文件作为音频打开。可以选择 MP3、M4A、OGG 或 WAV 文件。',
+      bicimIos: '无法将此文件作为音频打开。可以选择 MP3、M4A 或 WAV 文件。',
       boyut: '文件太大。最多可以选择 20 MB。',
       sure: '录音太长。可以选择最长8分钟的声音。',
       erisim: '无法访问该文件。尝试选择手机上的文件。',

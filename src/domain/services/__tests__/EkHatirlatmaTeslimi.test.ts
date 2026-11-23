@@ -265,6 +265,13 @@ describe('iOS — ek hatırlatma teslimi', () => {
         expect(son().content.sound).toBe(IOS_BILDIRIM_SESI);
     });
 
+    test('iPhone\'da seçilen uygulama sesi (paket:) SİSTEM sesine çevrilmez, kendi dosyasını çalar', async () => {
+        const t = new IosMuhafizTeslimcisi({ sahiplik: { tur: 'onek', onek: 'cuma_hatirlatma_' }, matrissizAnons: true });
+        await t.hazirla();
+        await t.uyariPlanla(teslim({ bildirimSesi: 'paket:ikiton' }));
+        expect(son().content.sound).toBe('ikiton_ios.wav');
+    });
+
     test('NÖBETÇİ 64: PARALEL iki örnek (muhafız + cuma) toplamda sınırı AŞMAZ — sıra varsayımı YOK', async () => {
         ucustakiKlipleriSifirla();
         const BASKA = 40;

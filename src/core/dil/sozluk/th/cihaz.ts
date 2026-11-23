@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'อุปกรณ์อื่น',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'โทรศัพท์ {marka}',
+    tablet: 'แท็บเล็ต {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'บันทึกการตั้งค่าไม่สำเร็จ โปรดลองอีกครั้ง',
     kaldirildi: 'ลบ{ad}แล้ว',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'ติดตั้ง Namaz Akışı บน Android TV แล้วสแกนคิวอาร์โค้ดบนหน้าจอด้วยโทรศัพท์เครื่องนี้ เวลาละหมาดและการนับถอยหลังเราะมะฎอนจะปรากฏบนจอใหญ่ที่บ้าน',
     tabletVeTelefonlar: 'แท็บเล็ตและโทรศัพท์',
     esYok: 'เพิ่มแท็บเล็ตหรือโทรศัพท์เครื่องที่สอง: ละหมาดที่คุณทำเครื่องหมายบนเครื่องหนึ่งจะไปยังอีกเครื่อง',
+    kayipEslesmeler: 'อ่านการจับคู่ก่อนหน้าไม่ได้ ({adlar}) ที่เก็บข้อมูลที่ปลอดภัยของโทรศัพท์นี้อาจถูกรีเซ็ต โปรดเพิ่มอุปกรณ์อีกครั้ง',
     cihaziKaldirinErisim: 'ลบ{ad}',
     tabletEkleyin: 'เพิ่มแท็บเล็ตหรือโทรศัพท์',
     saat: 'นาฬิกา',

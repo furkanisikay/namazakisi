@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Peranti lain',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Telefon {marka}',
+    tablet: 'Tablet {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Tetapan tidak dapat disimpan. Cuba lagi.',
     kaldirildi: '{ad} telah dikeluarkan.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Pasang Namaz Akışı pada Android TV anda dan imbas kod QR pada skrin dengan telefon ini. Waktu solat dan kiraan detik Ramadan dipaparkan pada skrin besar di rumah.',
     tabletVeTelefonlar: 'Tablet dan telefon',
     esYok: 'Tambah tablet atau telefon kedua anda: solat yang anda tandakan pada satu peranti berpindah ke peranti yang lain.',
+    kayipEslesmeler: 'Pasangan terdahulu tidak dapat dibaca ({adlar}). Storan selamat telefon ini mungkin telah ditetapkan semula; tambah peranti sekali lagi.',
     cihaziKaldirinErisim: 'Keluarkan {ad}',
     tabletEkleyin: 'Tambah tablet atau telefon',
     saat: 'Jam tangan',

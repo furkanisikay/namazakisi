@@ -76,6 +76,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Бошқа қурилмалар',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} телефони',
+    tablet: '{marka} планшети',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Созламани сақлаб бўлмади. Қайта уриниб кўринг.',
     kaldirildi: '{ad} олиб ташланди.',
@@ -91,6 +96,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Android TV телевизорингизга Namaz Akışı иловасини ўрнатинг ва экрандаги QR кодни шу телефон билан сканерланг. Намоз вақтлари ва Рамазон тескари саноғи уйдаги катта экранда кўринади.',
     tabletVeTelefonlar: 'Планшетлар ва телефонлар',
     esYok: 'Планшетингиз ёки иккинчи телефонингизни қўшинг: бирида белгилаган намозингиз бошқасига ўтади.',
+    kayipEslesmeler: 'Аввалги жуфтлашувлар ўқилмади ({adlar}). Бу телефоннинг ҳимояланган хотираси тикланган бўлиши мумкин; қурилмаларни қайта қўшинг.',
     cihaziKaldirinErisim: '{ad} қурилмасини олиб ташлаш',
     tabletEkleyin: 'Планшет ёки телефон қўшиш',
     saat: 'Соат',

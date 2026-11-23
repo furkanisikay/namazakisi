@@ -346,6 +346,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Звук који сте сами изабрали',
     dokunarak: 'Додирните за промену',
     seciliDinle: 'Послушајте изабрани звук обавештења',
+    paket: {
+      zil: 'Благо звоно',
+      ikiton: 'Два тона',
+      damla: 'Капи',
+      sabah: 'Јутро',
+    },
+    silErisim: 'Избришите звук {ad}',
+    ornekDinleErisim: 'Послушајте: {ad}',
+    uzunlukNotu: 'Звук обавештења траје највише 30 секунди; од дужег фајла користи се првих 30 секунди.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

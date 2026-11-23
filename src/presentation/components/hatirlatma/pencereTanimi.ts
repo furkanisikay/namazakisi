@@ -400,6 +400,14 @@ export interface PencereTanimi {
     kanalSecimiVar: boolean;
     /** Bildirim sesi satiri gosterilsin mi? */
     sesSecimiVar: boolean;
+    /**
+     * Yuzeyin VARSAYILAN sesi telefonun (sistemin) bildirim sesi mi? Ek hatirlatma yuzeyleri
+     * (cuma, camiye gitme, yatis, takvim) iPhone'da `sound: true` calar
+     * (`OzelTeslim.varsayilanSistemSesi`, `IosMuhafizTeslimcisi`) → ekran varsayilani
+     * "Telefonun bildirim sesi" diye adlandirir ve uygulama icinde dinletmez
+     * (`varsayilanSesGorunumu`). Android'de etkisi yok.
+     */
+    varsayilanSistemSesi?: boolean;
     /** Siklik (bir kez / tekrarli) secimi gosterilsin mi? */
     siklikSecimiVar: boolean;
     /**
@@ -505,8 +513,8 @@ export interface PencereTanimi {
  * Sahip kararı: hatırlatma yapısı HER YERDE aynıdır — bir yüzeye sesli anons,
  * alarm ya da tekrar eklenip ötekine eklenmemesi kabul edilmez. Her pencere
  * tanımı bu nesneyi YAYAR; bir yeteneği kapatmak, gerekçesi yanında yazan AÇIK
- * bir istisnadır (yorum zorunlu). Platform yeteneği olmayanlar (iOS'ta ses
- * seçici ve titreşim) `yetenekler`den türetilir — o da
+ * bir istisnadır (yorum zorunlu). Platform yeteneği olmayanlar (iOS'ta titreşim;
+ * ses seçimi iOS'ta uygulamanın listesidir) `yetenekler`den türetilir — o da
  * istisna değil, cihazın gerçeğidir.
  *
  * Nöbetçi: `pencereTanimi.test.ts > YETENEK STANDARDI`.
@@ -771,6 +779,8 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
         tonSecilebilir: false,
         bosMetinOtomatik: true,
         onPlanBanneriVar: false,
+        // Teslimci varsayılan seste `varsayilanSistemSesi: true` verir (iPhone `sound: true`).
+        varsayilanSistemSesi: true,
         kaynak: secenekler.kaynak,
         baslik: secenekler.baslik,
         baslikKucuk: secenekler.baslikKucuk,
@@ -804,6 +814,21 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
         pencere: secenekler.pencere,
         seritGunEtiketi: secenekler.seritGunEtiketi,
     };
+}
+
+/**
+ * Varsayilan sesin bu yuzeyde ve platformda NASIL gorundugu (tek kaynak: satir, liste, ozet).
+ *
+ * iPhone'da ek yuzeylerin varsayilani telefonun sesidir: ad "Telefonun bildirim sesi" ve
+ * uygulama icinde DINLETILEMEZ (onizleme `bildirim.mp3` calardi, bildirim baska ses calar).
+ * Diger her durumda `adi: undefined` (= "Uygulama sesi") ve dinlenir — Android birebir.
+ */
+export function varsayilanSesGorunumu(tanim: Pick<PencereTanimi, 'varsayilanSistemSesi' | 'yetenekler'>): {
+    adi: string | undefined;
+    dinlenir: boolean;
+} {
+    const telefonun = tanim.varsayilanSistemSesi === true && tanim.yetenekler.platform === 'ios';
+    return telefonun ? { adi: sozlukMetni().hatirlatma.vakitSesi.varsayilan, dinlenir: false } : { adi: undefined, dinlenir: true };
 }
 
 /**

@@ -1,7 +1,7 @@
-// Gradle init script: force AGP 8.12.0 for ALL project buildscript classpaths.
+// Gradle init script: force AGP 9.2.1 for ALL project buildscript classpaths.
 //
 // KEEP IN SYNC: the forced version MUST equal `agp` in
-// node_modules/react-native/gradle/libs.versions.toml (Expo SDK 57 / RN 0.86 → 8.12.0).
+// node_modules/react-native/gradle/libs.versions.toml (Expo SDK 58 / RN 0.88 → 9.2.1).
 // Forcing an older AGP than React Native's own Gradle plugin was compiled against
 // breaks the build after every Expo SDK upgrade.
 //
@@ -28,7 +28,7 @@ allprojects {
     buildscript {
         configurations.all {
             resolutionStrategy {
-                force 'com.android.tools.build:gradle:8.12.0'
+                force 'com.android.tools.build:gradle:9.2.1'
             }
         }
     }

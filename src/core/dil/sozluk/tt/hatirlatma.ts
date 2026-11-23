@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Үзегез сайлаган тавыш',
     dokunarak: 'Басып үзгәртегез',
     seciliDinle: 'Сайланган хәбәрнамә тавышын тыңлау',
+    paket: {
+      zil: 'Йомшак кыңгырау',
+      ikiton: 'Ике тавыш',
+      damla: 'Тамчылар',
+      sabah: 'Иртә',
+    },
+    silErisim: '{ad} тавышын бетерү',
+    ornekDinleErisim: 'Тыңлау: {ad}',
+    uzunlukNotu: 'Хәбәрнамә тавышы иң күбе 30 секунд яңгырый; озынрак файлның беренче 30 секунды кулланыла.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

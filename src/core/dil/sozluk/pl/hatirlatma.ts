@@ -359,6 +359,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Wybrany dźwięk',
     dokunarak: 'Dotknij, aby zmienić',
     seciliDinle: 'Posłuchaj wybranego dźwięku powiadomienia',
+    paket: {
+      zil: 'Łagodny dzwonek',
+      ikiton: 'Dwa tony',
+      damla: 'Krople',
+      sabah: 'Poranek',
+    },
+    silErisim: 'Usuń dźwięk {ad}',
+    ornekDinleErisim: 'Posłuchaj: {ad}',
+    uzunlukNotu: 'Dźwięk powiadomienia gra najwyżej 30 sekund; z dłuższego pliku używane jest pierwsze 30 sekund.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

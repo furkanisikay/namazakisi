@@ -118,7 +118,7 @@ android {
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             def enablePngCrunchInRelease = findProperty('android.enablePngCrunchInReleaseBuilds') ?: 'true'
             crunchPngs enablePngCrunchInRelease.toBoolean()
         }
@@ -177,9 +177,9 @@ dependencies {
     // Wear OS saat senkronu (issue #269) — saat uygulamasi (wear/) ile AYNI surum
     implementation("com.google.android.gms:play-services-wearable:20.0.1")
     // Android AppFunctions — "cihaz içi MCP" (issue #94, `asistan/NamazAsistanFonksiyonlari`).
-    // Apache-2.0. alpha08'e SABİT: alpha09+ compileSdk 37 + AGP 9.1 ister (AAR metadata),
-    // Expo SDK 57 / RN 0.86 hattı hâlâ compileSdk 36 + AGP 8.12'dir. Yükseltme, compileSdk 37 +
-    // AGP 9.1 getiren bir Expo SDK'sını bekler (ve bir API göçüdür — AGENTS.md).
+    // Apache-2.0. alpha08'e SABİT: alpha09+ compileSdk 37 + AGP 9.1 ister (AAR metadata).
+    // Expo SDK 58 / RN 0.88 ikisini de getirdi (compileSdk 37, AGP 9.2.1), yani yükseltme artık
+    // MÜMKÜN; ama bir API göçüdür (AGENTS.md) → SDK yükseltmesinden ayrı iş.
     implementation("androidx.appfunctions:appfunctions:1.0.0-alpha08")
     implementation("androidx.appfunctions:appfunctions-service:1.0.0-alpha08")
     ksp("androidx.appfunctions:appfunctions-compiler:1.0.0-alpha08")

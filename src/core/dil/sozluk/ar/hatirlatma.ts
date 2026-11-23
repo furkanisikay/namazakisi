@@ -323,6 +323,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'صوت اخترته',
     dokunarak: 'انقر للتغيير',
     seciliDinle: 'الاستماع إلى صوت الإشعار المختار',
+    paket: {
+      zil: 'جرس هادئ',
+      ikiton: 'نغمتان',
+      damla: 'قطرات',
+      sabah: 'صباح',
+    },
+    silErisim: 'حذف الصوت {ad}',
+    ornekDinleErisim: 'الاستماع: {ad}',
+    uzunlukNotu: 'يعمل صوت الإشعار 30 ثانية على الأكثر؛ ومن الملف الأطول تُستخدم أول 30 ثانية.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'O som que escolheu',
     dokunarak: 'Toque para alterar',
     seciliDinle: 'Ouvir o som de notificação escolhido',
+    paket: {
+      zil: 'Sino suave',
+      ikiton: 'Dois tons',
+      damla: 'Gotas',
+      sabah: 'Manhã',
+    },
+    silErisim: 'Eliminar o som {ad}',
+    ornekDinleErisim: 'Ouvir: {ad}',
+    uzunlukNotu: 'Um som de notificação toca no máximo 30 segundos; de um ficheiro mais longo são usados os primeiros 30 segundos.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

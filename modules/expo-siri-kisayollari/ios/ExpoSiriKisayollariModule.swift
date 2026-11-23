@@ -94,6 +94,24 @@ public class ExpoSiriKisayollariModule: Module {
             CanliEtkinlikKoprusu.gununAyetiWidgetiniTazele()
         }
 
+        /// Duvar kagidi fotograf zemini: secilen gorseli App Group'a `duvar/<dosya>` olarak yeniden
+        /// kodlar (en cok 2048 px, JPEG 0,9). Ad `duvar-foto-<ozet>.(jpg|png)` degilse false.
+        /// AsyncFunction: kod cozme/kodlama JS thread'ini bekletmesin (ANR).
+        AsyncFunction("duvarFotografiniYaz") { (kaynakUri: String, dosya: String) -> Bool in
+            return DuvarFotografi.yaz(kaynakUri: kaynakUri, dosya: dosya)
+        }
+
+        AsyncFunction("duvarFotografiniSil") { (dosya: String) in
+            DuvarFotografi.sil(dosya)
+        }
+
+        /// Kilit ekrani goruntusunden saat alani olcumu: Kisayollar gorselinin son kilit kopyasina gore
+        /// satir profili (`{profil}`) ya da `{hata: referans-yok|okunamadi|oran}`; karar JS `saatAlaniBul`.
+        /// AsyncFunction: gorsel cozme JS thread'ini bekletmesin (ANR).
+        AsyncFunction("kilitEkraniProfili") { (uri: String) -> [String: Any] in
+            return DuvarFotografi.kilitEkraniProfili(uri: uri)
+        }
+
         AsyncFunction("bekleyenleriAl") { () -> String in
             return SiriDeposu.varsayilan.bekleyenleriJson()
         }

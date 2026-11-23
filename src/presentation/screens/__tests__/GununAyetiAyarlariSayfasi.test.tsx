@@ -1,6 +1,8 @@
 /**
  * Günün ayeti ayarı — Android'de duvar kâğıdı onaysız açılmaz, engelli cihazda neden yazılır,
- * yazım başarısızsa bilgi satırı çıkar; iPhone'da Kısayollar rehberi. İngilizcede Türkçe kalmaz.
+ * yazım başarısızsa bilgi satırı çıkar; iPhone'da Kısayollar rehberi. Görünüm kartı (iki küçük
+ * önizleme) düzenleyiciyi açar, hazır görünümler düzenleyiciye parametreyle gider. İngilizcede
+ * Türkçe kalmaz.
  */
 import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
@@ -15,11 +17,15 @@ const mockServis = {
     duvarAyariKaydet: jest.fn(),
     duvarKagidiDurumu: jest.fn(),
     duvarKagidiniSimdiUygula: jest.fn(),
-    duvarOnizlemesi: jest.fn(),
     widgetSabitlenebilirMi: jest.fn(),
     widgetiSabitle: jest.fn(),
 };
 jest.mock('../../../domain/services/GununAyetiServisi', () => ({ GununAyetiServisi: { getInstance: () => mockServis } }));
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: mockNavigate, addListener: () => () => undefined }),
+}));
 jest.mock('../../../core/theme', () => ({
     useRenkler: () => ({ arkaplan: '#fff', kartArkaplan: '#eee', birincil: '#4CAF50', metin: '#333', metinIkincil: '#666', sinir: '#ccc' }),
     KOYU_TEMA: { renkler: { arkaplan: '#121212', metin: '#fff', metinIkincil: '#bbb' } },
@@ -71,7 +77,6 @@ describe('GununAyetiAyarlariSayfasi', () => {
         mockServis.duvarAyariKaydet.mockResolvedValue(undefined);
         mockServis.duvarKagidiDurumu.mockResolvedValue(durum());
         mockServis.duvarKagidiniSimdiUygula.mockResolvedValue(true);
-        mockServis.duvarOnizlemesi.mockResolvedValue(null);
         mockServis.widgetSabitlenebilirMi.mockResolvedValue(false);
         mockServis.widgetiSabitle.mockResolvedValue(true);
     });
@@ -133,13 +138,50 @@ describe('GununAyetiAyarlariSayfasi', () => {
         beforeEach(() => jest.replaceProperty(Platform, 'OS', 'ios'));
         afterEach(() => jest.restoreAllMocks());
 
-        it('Kısayollar rehberini gösterir, duvar kâğıdı servisine dokunmaz', () => {
-            const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+        it('Kısayollar rehberini gösterir; Android duvar köprüsüne ve açma anahtarına dokunmaz', async () => {
+            const ac = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
             const e = render(<GununAyetiAyarlariSayfasi />);
-            expect(e.getByText(/Günün Saati/)).toBeTruthy();
+            expect(await e.findByText(/Günün Saati/)).toBeTruthy();
             fireEvent.press(e.getByTestId('gunun-ayeti-kisayollar'));
             expect(ac).toHaveBeenCalledWith('shortcuts://');
-            expect(mockServis.duvarAyariOku).not.toHaveBeenCalled();
+            expect(mockServis.duvarKagidiDurumu).not.toHaveBeenCalled();
+            expect(e.queryByTestId('gunun-ayeti-duvar-anahtar')).toBeNull();
+        });
+
+        it('vakte uyan gökte ek otomasyon satırı görünür, düz zeminde görünmez', async () => {
+            const e = render(<GununAyetiAyarlariSayfasi />);
+            expect(await e.findByTestId('gunun-ayeti-vakte-uysun-ios')).toBeTruthy();
+            e.unmount();
+            mockServis.duvarAyariOku.mockResolvedValue({ ...VARSAYILAN_DUVAR_AYARI, zemin: 'gece' });
+            const d = render(<GununAyetiAyarlariSayfasi />);
+            await d.findByText(/Günün Saati/);
+            await d.findByTestId('duvar-duzenle');
+            expect(d.queryByTestId('gunun-ayeti-vakte-uysun-ios')).toBeNull();
+        });
+    });
+
+    describe('görünüm kartı', () => {
+        beforeEach(() => jest.replaceProperty(Platform, 'OS', 'android'));
+        afterEach(() => jest.restoreAllMocks());
+
+        it('kilit ve ana ekran önizlemesi çizilir; düğme düzenleyiciyi açar', async () => {
+            const e = render(<GununAyetiAyarlariSayfasi />);
+            fireEvent.press(await e.findByTestId('duvar-duzenle'));
+            expect(mockNavigate).toHaveBeenCalledWith('DuvarDuzenleyici');
+            expect(e.getByTestId('duvar-onizleme-kilit')).toBeTruthy();
+            expect(e.getByTestId('duvar-onizleme-ana')).toBeTruthy();
+            expect(e.getByText('Görünümü düzenleyin')).toBeTruthy();
+        });
+
+        it('hazır görünüm çipleri düzenleyiciye adıyla gider ve kaydetmez', async () => {
+            const e = render(<GununAyetiAyarlariSayfasi />);
+            for (const ad of ['sade', 'mihrap', 'gece', 'foto'] as const) {
+                fireEvent.press(await e.findByTestId(`duvar-hazir-${ad}`));
+                expect(mockNavigate).toHaveBeenLastCalledWith('DuvarDuzenleyici', { hazir: ad });
+            }
+            expect(e.getByText('Sade')).toBeTruthy();
+            expect(e.getByText('Mihrap')).toBeTruthy();
+            expect(mockServis.duvarAyariKaydet).not.toHaveBeenCalled();
         });
     });
 

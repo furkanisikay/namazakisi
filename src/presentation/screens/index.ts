@@ -30,6 +30,7 @@ export { NamazVakitleriSayfasi } from './NamazVakitleriSayfasi';
 export { SaatVeWidgetSayfasi } from './SaatVeWidgetSayfasi';
 export { GununAyetiSayfasi } from './GununAyetiSayfasi';
 export { GununAyetiAyarlariSayfasi } from './GununAyetiAyarlariSayfasi';
+export { DuvarDuzenleyiciSayfasi } from './DuvarDuzenleyiciSayfasi';
 export { YardimSayfasi } from './YardimSayfasi';
 export { CamilerimSayfasi } from './CamilerimSayfasi';
 export { SeriHedefAyarlariSayfasi } from './SeriHedefAyarlariSayfasi';

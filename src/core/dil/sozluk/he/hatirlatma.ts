@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'צליל שבחרתם בעצמכם',
     dokunarak: 'הקישו כדי לשנות',
     seciliDinle: 'האזנה לצליל ההתראה הנבחר',
+    paket: {
+      zil: 'פעמון רך',
+      ikiton: 'שני צלילים',
+      damla: 'טיפות',
+      sabah: 'בוקר',
+    },
+    silErisim: 'מחיקת הצליל {ad}',
+    ornekDinleErisim: 'האזנה ל{ad}',
+    uzunlukNotu: 'צליל ההתראה מתנגן עד 30 שניות; מקובץ ארוך יותר משמשות 30 השניות הראשונות.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

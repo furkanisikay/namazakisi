@@ -181,6 +181,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: '{n} onderdeel aan', other: '{n} onderdelen aan' }),
     sesDosyasi: {
       bicim: 'Dit bestand kon niet als geluid worden geopend. U kunt een MP3-, M4A-, OGG- of WAV-bestand kiezen.',
+      bicimIos: 'Dit bestand kon niet als geluid worden geopend. U kunt een MP3-, M4A- of WAV-bestand kiezen.',
       boyut: 'Het bestand is te groot. U kunt maximaal 20 MB kiezen.',
       sure: 'De opname is te lang. U kunt een geluid van maximaal 8 minuten kiezen.',
       erisim: 'Het bestand was niet toegankelijk. Probeer een bestand op uw telefoon te kiezen.',

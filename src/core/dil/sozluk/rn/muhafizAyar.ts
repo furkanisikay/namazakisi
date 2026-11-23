@@ -181,6 +181,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: 'Ikintu {n} kirakora', other: 'Ibintu {n} birakora' }),
     sesDosyasi: {
       bicim: 'Iyi dosiye ntiyashoboye kwugururwa nk’ijwi. Murashobora guhitamwo dosiye ya MP3, M4A, OGG canke WAV.',
+      bicimIos: 'Iyi dosiye ntiyashoboye kwugururwa nk’ijwi. Murashobora guhitamwo dosiye ya MP3, M4A canke WAV.',
       boyut: 'Dosiye ni nini cane. Murashobora guhitamwo iyitarenga MB 20.',
       sure: 'Ijwi ni rirerire cane. Murashobora guhitamwo ijwi ritarenga iminota 8.',
       erisim: 'Dosiye ntiyashoboye gushikirwa. Mugerageze guhitamwo dosiye iri kuri terefone yanyu.',

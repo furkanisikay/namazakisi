@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Bunyi pilihan anda',
     dokunarak: 'Ketik untuk menukar',
     seciliDinle: 'Dengar bunyi pemberitahuan yang dipilih',
+    paket: {
+      zil: 'Loceng lembut',
+      ikiton: 'Dua nada',
+      damla: 'Titisan',
+      sabah: 'Pagi',
+    },
+    silErisim: 'Padam bunyi {ad}',
+    ornekDinleErisim: 'Dengar: {ad}',
+    uzunlukNotu: 'Bunyi pemberitahuan dimainkan paling lama 30 saat; daripada fail yang lebih panjang, 30 saat pertama digunakan.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

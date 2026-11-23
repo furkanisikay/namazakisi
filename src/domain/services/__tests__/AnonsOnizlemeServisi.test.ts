@@ -94,6 +94,28 @@ describe('adimiOnizle', () => {
     expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
   });
 
+  it("varsayilani TELEFONUN sesi olan yuzeyde (iPhone ek yuzeyi) varsayilan ses CALINMAZ, yalniz anons; secilen ses calar", async () => {
+    await adimiOnizle({
+      kanallar: { bildirim: true, sesli: true },
+      bildirimSesi: 'varsayilan',
+      cozulmusMetin: METIN,
+      varsayilanSesDinlenir: false,
+    });
+    expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
+    expect(mockBitisiniBekle).not.toHaveBeenCalled();
+    expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+
+    mockBildirimSesiniCal.mockClear();
+    // Android sesi (cekirdek platformu varsayilan Android) secilmisse yine calar.
+    await adimiOnizle({
+      kanallar: { bildirim: true },
+      bildirimSesi: 'content://media/1',
+      cozulmusMetin: '',
+      varsayilanSesDinlenir: false,
+    });
+    expect(mockBildirimSesiniCal).toHaveBeenCalledWith('content://media/1');
+  });
+
   it("iki kanal acik ama metin bossa yalniz bildirim sesi calar", async () => {
     await adimiOnizle({ kanallar: { bildirim: true, sesli: true }, bildirimSesi: 'can', cozulmusMetin: '' });
 

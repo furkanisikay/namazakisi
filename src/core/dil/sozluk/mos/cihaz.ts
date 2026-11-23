@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Masĩn a taaba',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} telefõn',
+    tablet: '{marka} tablett',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'B pa tõog n bĩng seglgã ye. Leb-y n maan.',
     kaldirildi: 'B yika {ad}.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Ning-y Namaz Akışı y Android TV wã zugu la y karem QR kood ning sẽn be ekraanẽ wã ne telefõn-kãnga. Pʋʋsg wakatã la Ramadaan sõdgã pukda ekraan kãsengã zugu zakã.',
     tabletVeTelefonlar: 'Tablɛt la telefõne',
     esYok: 'Paas-y y tablɛtã maa y telefõn a yiib soabã: pʋʋsg ning y sẽn gʋls a ye zugu kẽnda a to zugu.',
+    kayipEslesmeler: 'Ka tõe n karem lagem-n-taar a taoor rãmbã ye ({adlar}). Tɩ ra yaa tɩ telefõn kãngã sɩd-gũbr zĩig lebga paalg; lebg-y n paas-y masĩn-rãmbã.',
     cihaziKaldirinErisim: 'Yik-y {ad}',
     tabletEkleyin: 'Paas-y tablɛt maa telefõne',
     saat: 'Nug-lɛɛre',

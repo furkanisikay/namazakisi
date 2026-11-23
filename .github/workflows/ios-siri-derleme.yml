@@ -31,6 +31,8 @@ on:
       - 'modules/expo-siri-kisayollari/**'
       - 'plugins/withSiriKisayollari.js'
       - 'modules/expo-muhafiz-alarmkit/**'
+      # iPhone ses içe aktarma ve anons köprüsü (Swift); yoksa yalnız iOS'u değiştiren PR derlenmezdi.
+      - 'modules/expo-muhafiz-anons/**'
       - 'modules/expo-sistem-durumu/**'
       - 'plugins/withMuhafizAlarmKit.js'
       - 'android/app/src/test/resources/muhafiz-plan-kimligi-ornekleri.json'
@@ -44,6 +46,10 @@ on:
       - 'src/core/siri/**'
       - 'src/core/widget/iosWidgetKarari.ts'
       - 'android/app/src/test/resources/widget-ornek.json'
+      # Duvar kâğıdı sözleşmesi + eşlik örneği (Swift §14 okur); yalnız sözleşmeyi değiştiren PR de koşsun.
+      - 'src/core/icerik/duvarTasarimi.ts'
+      - 'android/app/src/test/resources/duvar-tasarim-ornek.json'
+      - 'assets/fonts/Amiri*.ttf'
       - '.github/workflows/ios-siri-derleme.yml'
   workflow_dispatch:
 
@@ -124,10 +130,10 @@ jobs:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
-      - name: ⚙️ Node 20
+      - name: ⚙️ Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📦 Bağımlılıkları kur
@@ -214,10 +220,10 @@ jobs:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
-      - name: ⚙️ Node 20
+      - name: ⚙️ Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📦 Bağımlılıkları kur
@@ -288,10 +294,10 @@ jobs:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
-      - name: ⚙️ Node 20
+      - name: ⚙️ Node 22
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📦 Bağımlılıkları kur

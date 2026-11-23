@@ -3,8 +3,9 @@
  *
  * Android'den UC yapisal fark:
  *
- * 1. KANAL YOK. iOS'ta ses kanal degil BILDIRIM ozelligidir ve uygulama
- *    paketindeki bir dosya adidir → `hazirla` kanal olusturmaz, matrisi oldugu
+ * 1. KANAL YOK. iOS'ta ses kanal degil BILDIRIM ozelligidir ve bir dosya adidir
+ *    (paket sesi ya da `Library/Sounds` altindaki eklenen dosya; bkz.
+ *    `core/muhafiz/ios/paketSesleri.ts`) → `hazirla` kanal olusturmaz, matrisi oldugu
  *    gibi dondurur. (`MuhafizKanalServisi` zaten Android disinda erken doner;
  *    burada hic cagrilmaz ki bagimlilik da olusmasin.)
  *
@@ -84,7 +85,8 @@ import { BILDIRIM_SABITLERI, DEPOLAMA_ANAHTARLARI } from '../../core/constants/U
 import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import { iosYetenekleri } from '../../core/muhafiz/ios/platformYetenekleri';
-import { iosTesliminiCoz } from '../../core/muhafiz/ios/teslimPlani';
+import { IOS_BILDIRIM_SESI, iosTesliminiCoz } from '../../core/muhafiz/ios/teslimPlani';
+import { iosDosyaSesiMi } from '../../core/muhafiz/ios/paketSesleri';
 import { alarmKitIptalSecimi, alarmKitYukuOlustur } from '../../core/muhafiz/ios/alarmKit';
 import {
     alarmKitDurumu,
@@ -113,7 +115,7 @@ import {
     sahipligiEslestir,
     type TeslimSahipligi,
 } from '../../core/muhafiz/teslimSahipligi';
-import { ozelSesMi, sesKimliginiNormalize } from '../../core/muhafiz/sesKimligi';
+import { secilmisSesMi } from '../../core/muhafiz/sesKimligi';
 import { Depolama } from '../../data/local/Depolama';
 import {
     klipSentezle,
@@ -443,12 +445,20 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         const klip = odakSessiz || uyari.alarm === true ? null : await this.anonsSesiniCoz(teslim);
         // Ek hatırlatma yüzeyinin varsayılan sesi (göçten gelen kayıt): SİSTEM sesi
         // (`sound: true`) — bugünkü cuma bildirimiyle birebir; paket sesine çevrilmez.
+        // Kullanıcının seçtiği ses (Android `content://` ya da iPhone `paket:`/`dosya:`) varsa
+        // sistem sesine ÇEVRİLMEZ.
         const sistemSesi =
             klip === null &&
             ozel?.varsayilanSistemSesi === true &&
             uyari.alarm !== true &&
-            !ozelSesMi(sesKimliginiNormalize(uyari.bildirimSesi));
-        const ses: string | boolean = klip ?? (sistemSesi ? true : plan.ses);
+            !secilmisSesMi(uyari.bildirimSesi?.trim());
+        const ses: string | boolean =
+            klip ??
+            (sistemSesi
+                ? true
+                : uyari.alarm === true
+                  ? plan.ses
+                  : await this.kullaniciSesiniDogrula(plan.ses, uyari.bildirimSesi));
 
         try {
             await Notifications.scheduleNotificationAsync({
@@ -456,7 +466,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 content: {
                     title: baslik,
                     body: mesaj,
-                    // iOS'ta ses DOSYA ADIdir (kanal degil). <=30 sn olmali.
+                    // iOS'ta ses DOSYA ADIdir (kanal degil). <=30 sn olmali; uzunsa iOS
+                    // onun yerine sistemin sesini calar.
                     sound: ses,
                     interruptionLevel: odakSessiz
                         ? 'passive'
@@ -574,6 +585,22 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         }
         this.klipDurumu.set(ad, hazir);
         return hazir ? ad : null;
+    }
+
+    /**
+     * Kullanıcının eklediği dosya (`dosya:<ad>`) diskte YOKSA paket sesine düşer: iOS bulamadığı
+     * sesin yerine SİSTEMİN sesini çalardı (sessiz sapma). Dosya silinmiş olabilir (liste
+     * ekranından) ya da yedek başka iPhone'dan gelmiştir. Sonuç tur boyunca önbellekte.
+     */
+    private async kullaniciSesiniDogrula(ses: string, bildirimSesi: string | undefined): Promise<string> {
+        if (!iosDosyaSesiMi(bildirimSesi)) return ses;
+        let varMi = this.klipDurumu.get(ses);
+        if (varMi === undefined) {
+            varMi = await klipVarMi(ses);
+            this.klipDurumu.set(ses, varMi);
+            if (!varMi) Logger.warn('IosMuhafizTeslimcisi', `Seçilen ses dosyası yok, uygulama sesi kullanılıyor (${ses})`);
+        }
+        return varMi ? ses : IOS_BILDIRIM_SESI;
     }
 
     /**

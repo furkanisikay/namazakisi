@@ -13,6 +13,11 @@ configureReanimatedLogger({
 });
 
 import App from './App';
+import { sesPlatformunuAyarla } from './src/core/muhafiz/sesKimligi';
+
+// Ses adı üreticisi (çekirdek, `react-native` okumaz) bu bağlamın platformunu bilsin: başka
+// platformun ses kimliği (yedek/eşitleme) burada varsayılan çalar ve öyle adlandırılır.
+sesPlatformunuAyarla(Platform.OS === 'ios' ? 'ios' : 'android');
 
 // Hesap ayarı (yöntem/ikindi/dakika) ve arayüz dili HER JS bağlamında vakit/metin üretiminden ÖNCE yüklenir:
 // headless/arka plan bağlamında App.tsx hiç çalışmaz; beklenmezse vakitler Diyanet'le

@@ -37,8 +37,9 @@ import AVFoundation
  * 4. ATOMIK YAZIM. Once `.tmp` dosyaya yazilir, bitince `moveItem` ile yerine
  *    alinir. Yarim dosya asla `varMi = true` dondurmemeli.
  *
- * 5. 30 SANIYE SINIRI. iOS uzun bildirim sesini KIRPMAZ, dosyayi hic calmaz.
- *    Sure asilirsa dosya silinir ve `false` donulur.
+ * 5. 30 SANIYE SINIRI. iOS uzun bildirim sesini KIRPMAZ; onun yerine SISTEMIN
+ *    varsayilan sesini calar (Apple `UNNotificationSound`) — anons hic duyulmaz.
+ *    Sure asilirsa dosya silinir ve `false` donulur (JS paket sesine duser).
  *
  * 6. YEDEKLEMEDEN HARIC. Klipler her an yeniden uretilebilir; iCloud'a
  *    yedeklenmeleri gereksiz (Apple veri saklama kilavuzu).
@@ -56,6 +57,9 @@ public class ExpoMuhafizAnonsModule: Module {
 
     /// Kural 3: butun sentez isleri tek sirada.
     private let kuyruk = DispatchQueue(label: "muhafiz.anons.sentez")
+
+    /// Kendi ses dosyasi donusumu (saniyeler surebilir) — sentezden AYRI sira.
+    private let aktarmaKuyrugu = DispatchQueue(label: "muhafiz.ses.iceaktarma", qos: .userInitiated)
 
     /// Tek klibin sentez ust siniri. 300 karakterlik metin ~20-25 sn konusmadir;
     /// dosyaya yazim gercek zamandan cok hizlidir, 20 sn cok comert bir tavandir.
@@ -158,6 +162,33 @@ public class ExpoMuhafizAnonsModule: Module {
         /** Calan onizlemeyi durdur (idempotent). */
         AsyncFunction("sustur") { () -> Void in
             self.konusucu?.stopSpeaking(at: .immediate)
+        }
+
+        // MARK: Kendi ses dosyaniz (bkz. `SesIceAktarici`)
+
+        /**
+         * Secilen dosyayi (belge secicinin onbellek kopyasi) <=29,5 sn LPCM CAF olarak
+         * `Library/Sounds/kullanici_ses_<sha8>.caf`'a yazar. FIRLATMAZ: hata `["hata": ...]`.
+         */
+        AsyncFunction("sesIceAktar") { (kaynakUri: String, gorunenAd: String, promise: Promise) in
+            self.aktarmaKuyrugu.async {
+                promise.resolve(SesIceAktarici.iceAktar(kaynakUri: kaynakUri, gorunenAd: gorunenAd))
+            }
+        }
+
+        /** Diskte duran ice aktarilmis sesler: `[{ dosya, ad }]`, eklenme sirasiyla. */
+        AsyncFunction("iceAktarilanSesler") { () -> [[String: String]] in
+            return SesIceAktarici.liste()
+        }
+
+        /** Ice aktarilmis sesi siler (yalniz `kullanici_ses_` adlari). */
+        AsyncFunction("iceAktarilanSesiSil") { (dosyaAdi: String) -> Bool in
+            return SesIceAktarici.sil(dosyaAdi)
+        }
+
+        /** Onizleme icin `file://` adresi; yoksa nil. */
+        AsyncFunction("sesDosyasiUri") { (dosyaAdi: String) -> String? in
+            return SesIceAktarici.uri(dosyaAdi)
         }
     }
 
@@ -266,7 +297,7 @@ public class ExpoMuhafizAnonsModule: Module {
             return
         }
 
-        // Kural 5: 30 sn'yi asan dosyayi iOS HIC calmaz -> uretme.
+        // Kural 5: 30 sn'yi asan dosyanin yerine iOS sistem sesini calar -> uretme.
         let saniye = ornekHizi > 0 ? Double(toplamFrame) / ornekHizi : 0
         if saniye > 29.5 {
             vazgec()

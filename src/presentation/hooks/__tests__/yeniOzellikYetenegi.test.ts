@@ -171,6 +171,35 @@ describe('yeni özellik platformu', () => {
   });
 });
 
+describe('yeni özellik yeteneği — iPhone bildirim sesi', () => {
+  const ses = YENI_OZELLIKLER.find((o) => o.id === 'ios-bildirim-sesi-secimi')!;
+  const anons = require('../../../../modules/expo-muhafiz-anons/src') as { sesIceAktarmaDestekleniyor: jest.Mock };
+  afterEach(() => anons.sesIceAktarmaDestekleniyor.mockReturnValue(false));
+
+  it('yalnız iPhone\'a işaretli; titreşim ve sistem ses seçicisi anlatılmaz', () => {
+    expect(ses.platformlar).toEqual(['ios']);
+    const metin = [ses.baslik, ses.aciklama, ses.detayAciklama ?? '', ...(ses.detaylar ?? [])].join(' ');
+    expect(metin).not.toMatch(/titreşim|telefonun ses/i);
+  });
+
+  it('Android\'de görünmez; iPhone\'da yalnız kendi dosyanızı ekleyen native ikilide görünür', () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    anons.sesIceAktarmaDestekleniyor.mockReturnValue(true);
+    expect(yeniOzellikGorunurMu(ses)).toBe(false);
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    anons.sesIceAktarmaDestekleniyor.mockReturnValue(false);
+    expect(yeniOzellikGorunurMu(ses)).toBe(false);
+    anons.sesIceAktarmaDestekleniyor.mockReturnValue(true);
+    expect(yeniOzellikGorunurMu(ses)).toBe(true);
+  });
+
+  it('Android\'in ses öğeleri Android\'de kalır (sistem seçicisi/titreşim iPhone\'da yok)', () => {
+    const bul = (id: string) => YENI_OZELLIKLER.find((o) => o.id === id)!.platformlar;
+    expect(bul('muhafiz-bildirim-sesi-secimi')).toEqual(['android']);
+    expect(bul('vakit-girdi-sesi-ve-kendi-dosyaniz')).toEqual(['android']);
+  });
+});
+
 describe('yeni özellik yeteneği — gerçek alarm (#74)', () => {
   const alarm = YENI_OZELLIKLER.find((o) => o.id === 'gercek-alarm')!;
 

@@ -11,7 +11,8 @@
  *
  * Doğrulanmış kayıt DÖNDÜRÜLÜR; çağıran bildirimleri O kayıtla planlar — ham kayıtla
  * planlamak var olmayan kanala bildirim gönderirdi (Android 8+ HİÇ göstermez).
- * iOS'ta `content://` anlamsız → boş kayıt (her vakit sistem sesi).
+ * iOS'ta kanal yok: yalnız iPhone sesleri (`paket:`/`dosya:`) kalır, eklenen dosyası
+ * diskten silinmiş ses düşer (`iosVakitSesleriniHazirla`); `content://` anlamsızdır.
  */
 import { Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
@@ -23,6 +24,7 @@ import {
     vakitKanalAdi,
     type VakitBildirimSesleri,
 } from '../../core/bildirim/vakitBildirimSesi';
+import { iosSesiMi, kullaniciSesDosyasi } from '../../core/muhafiz/ios/paketSesleri';
 
 type Kopru = typeof import('../../../modules/expo-countdown-notification/src');
 
@@ -37,7 +39,29 @@ export function vakitKanalGcOnbelleginiSifirla(): void {
     sonToplananKume = null;
 }
 
+/**
+ * iPhone: kanal yok, ses bildirimin `sound` alanıdır. iPhone'da çalınamayan kimlik
+ * (`content://`) ve dosyası diskte OLMAYAN eklenmiş ses düşer — iOS bulamadığı sesin
+ * yerine sistemin sesini çalardı; düşen vakit zaten telefonun sesiyle (`sound: true`)
+ * gelir, yani sonuç aynıdır ama ekran ve defter doğruyu söyler. Diske yazılmaz.
+ */
+async function iosVakitSesleriniHazirla(sesler: VakitBildirimSesleri): Promise<VakitBildirimSesleri> {
+    const { klipVarMi } = require('../../../modules/expo-muhafiz-anons/src') as typeof import('../../../modules/expo-muhafiz-anons/src');
+    const sonuc: VakitBildirimSesleri = {};
+    for (const [vakit, secim] of Object.entries(sesler) as [keyof VakitBildirimSesleri, NonNullable<VakitBildirimSesleri[keyof VakitBildirimSesleri]>][]) {
+        if (!secim || !iosSesiMi(secim.bildirimSesi)) continue;
+        const dosya = kullaniciSesDosyasi(secim.bildirimSesi);
+        if (dosya && !(await klipVarMi(dosya))) {
+            Logger.warn('VakitKanal', 'Vakit sesi dosyası bulunamadı; telefonun sesi kullanılacak');
+            continue;
+        }
+        sonuc[vakit] = secim;
+    }
+    return sonuc;
+}
+
 export async function vakitKanallariniHazirla(sesler: VakitBildirimSesleri): Promise<VakitBildirimSesleri> {
+    if (Platform.OS === 'ios') return iosVakitSesleriniHazirla(sesler);
     if (Platform.OS !== 'android') return {};
     // TEMBEL: köprü native olay yayıcısını yükler; bu servisi (dolaylı) yükleyen her
     // test köprüyü mock'lamak zorunda kalmasın (AGENTS.md `requireNativeModule` tuzağı).

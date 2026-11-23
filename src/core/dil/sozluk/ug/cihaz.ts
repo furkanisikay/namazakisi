@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'باشقا ئۈسكۈنىلەر',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} تېلېفونى',
+    tablet: '{marka} تاختا كومپيۇتېرى',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'تەڭشەك ساقلانمىدى. قايتا سىناڭ.',
     kaldirildi: '{ad} چىقىرىۋېتىلدى.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Android TV غا Namaz Akışı نى قاچىلاڭ، ئېكراندىكى QR كودنى بۇ تېلېفون بىلەن سىكانىرلاڭ. ۋاقىتلار ۋە رامىزان ساناقچىسى ئۆيدىكى چوڭ ئېكراندا كۆرۈنىدۇ.',
     tabletVeTelefonlar: 'تاختا كومپيۇتېر ۋە تېلېفونلار',
     esYok: 'تاختا كومپيۇتېرىڭىزنى ياكى ئىككىنچى تېلېفونىڭىزنى قوشۇڭ: بىرىدە بەلگىلىگەن نامىزىڭىز يەنە بىرىگە ئۆتىدۇ.',
+    kayipEslesmeler: 'ئىلگىرىكى جۈپلەشلەر ئوقۇلمىدى ({adlar}). بۇ تېلېفوننىڭ بىخەتەر ساقلىغۇچى قايتا بەلگىلەنگەن بولۇشى مۇمكىن؛ ئۈسكۈنىلەرنى قايتا قوشۇڭ.',
     cihaziKaldirinErisim: '{ad} ئۈسكۈنىسىنى چىقىرىۋېتىڭ',
     tabletEkleyin: 'تاختا كومپيۇتېر ياكى تېلېفون قوشۇڭ',
     saat: 'سائەت',

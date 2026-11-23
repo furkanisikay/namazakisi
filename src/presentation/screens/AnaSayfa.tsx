@@ -1132,7 +1132,7 @@ export const AnaSayfa: React.FC = () => {
       sadeKayitHazir && !!gunlukNamazlar.namazlar.find(n => n.namazAdi === sadeNamazAdi)?.tamamlandi;
     return (
       <View className="flex-1" style={{ backgroundColor: renkler.arkaplan }}>
-        <StatusBar backgroundColor={renkler.arkaplan} barStyle={koyuMu ? 'light-content' : 'dark-content'} />
+        <StatusBar barStyle={koyuMu ? 'light-content' : 'dark-content'} />
         <SadeGorunum
           vakit={vakitBilgisi?.vakit ?? null}
           giris={vakitBilgisi?.giris ?? null}
@@ -1186,7 +1186,7 @@ export const AnaSayfa: React.FC = () => {
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
-      <StatusBar backgroundColor={renkler.kartArkaplan} barStyle={koyuMu ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle={koyuMu ? 'light-content' : 'dark-content'} />
 
       {/* Header */}
       <HomeHeader

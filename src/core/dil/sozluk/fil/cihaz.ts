@@ -76,6 +76,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Ibang mga device',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'Teleponong {marka}',
+    tablet: 'Tablet na {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Hindi ma-save ang setting. Subukang muli.',
     kaldirildi: 'Inalis ang {ad}.',
@@ -91,6 +96,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'I-install ang Namaz Akışı sa inyong Android TV at i-scan ng teleponong ito ang QR code sa screen. Lalabas sa malaking screen sa bahay ang mga oras ng dasal at ang countdown sa Ramadan.',
     tabletVeTelefonlar: 'Mga tablet at telepono',
     esYok: 'Idagdag ang inyong tablet o pangalawang telepono: ang dasal na minarkahan ninyo sa isa ay lilipat sa isa pa.',
+    kayipEslesmeler: 'Hindi mabasa ang mga naunang pagpapares ({adlar}). Maaaring na-reset ang secure na storage ng teleponong ito; idagdag muli ang mga device.',
     cihaziKaldirinErisim: 'Alisin ang {ad}',
     tabletEkleyin: 'Magdagdag ng tablet o telepono',
     saat: 'Relo',

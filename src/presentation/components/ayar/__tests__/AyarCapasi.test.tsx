@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ForwardedRef, PropsWithChildren } from 'react';
 import { act, render, waitFor } from '@testing-library/react-native';
-import { AccessibilityInfo, Animated, InteractionManager, Text } from 'react-native';
+import { AccessibilityInfo, Animated, Text } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { AyarCapasi } from '../AyarCapasi';
 import { VurguSaglayici } from '../VurguSaglayici';
@@ -22,12 +22,22 @@ jest.mock('@react-navigation/native', () => ({
   },
 }));
 
+// Boşta çalıştırma (requestIdleCallback) zamanlaması testleri yavaşlatır/kararsızlaştırır;
+// görevi anında çalıştıracak şekilde sabitliyoruz (native-stack giriş animasyonu
+// burada zaten yok).
+jest.mock('../../ortak/etkilesimSonrasi', () => ({
+  etkilesimSonrasi: (gorev: () => void) => {
+    gorev();
+    return { cancel: jest.fn() };
+  },
+}));
+
 const mockUseRoute = useRoute as unknown as jest.Mock;
 
 // `ScrollView.getInnerViewRef` ve `View.measureLayout` gerçek cihazda native ölçüm
 // yapar; jest'in mockNativeComponent'i measureLayout'u no-op bırakır (callback hiç
 // tetiklenmez). Bu yüzden bu iki bileşeni test dosyasında kontrol edilebilir hale
-// getiriyoruz — geri kalan her şey (Animated, InteractionManager, AccessibilityInfo)
+// getiriyoruz — geri kalan her şey (Animated, AccessibilityInfo)
 // gerçek react-native davranışını korur.
 const mockScrollTo = jest.fn();
 const mockMeasureLayout = jest.fn();
@@ -131,13 +141,6 @@ describe('AyarCapasi', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseRoute.mockReturnValue({ params: undefined });
-    // InteractionManager'ın gerçek zamanlaması testleri yavaşlatır/kararsızlaştırır;
-    // görevi anında çalıştıracak şekilde sabitliyoruz (native-stack giriş animasyonu
-    // burada zaten yok).
-    jest.spyOn(InteractionManager, 'runAfterInteractions').mockImplementation(((task: () => void) => {
-      task();
-      return { then: jest.fn(), done: jest.fn(), cancel: jest.fn() };
-    }) as typeof InteractionManager.runAfterInteractions);
     jest.spyOn(AccessibilityInfo, 'isReduceMotionEnabled').mockResolvedValue(false);
     // Gerçek Animated zamanlaması (requestAnimationFrame tabanlı) jest'in "node"
     // ortamında test bittikten sonra da tikleyip açık handle bırakır (nabız

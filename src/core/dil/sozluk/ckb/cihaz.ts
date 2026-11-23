@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'ئامێرەکانی تر',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: 'مۆبایلی {marka}',
+    tablet: 'تابلێتی {marka}',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'ڕێکخستنەکە پاشەکەوت نەکرا. دووبارە ھەوڵ بدەنەوە.',
     kaldirildi: '{ad} لابرا.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Namaz Akışı لەسەر Android TV دابمەزرێنن و کۆدی QR ی سەر شاشەکە بەم مۆبایلە بخوێننەوە. کاتەکانی نوێژ و ژماردنی ڕەمەزان لەسەر شاشە گەورەکەی ماڵەوە دەردەکەون.',
     tabletVeTelefonlar: 'تابلێت و مۆبایلەکان',
     esYok: 'تابلێت یان مۆبایلی دووەمتان زیاد بکەن: نوێژێک کە لەسەر یەکێکیان نیشانەی دەکەن دەگوازرێتەوە بۆ ئەوی تر.',
+    kayipEslesmeler: 'جووتکردنەکانی پێشوو نەخوێنرانەوە ({adlar}). لەوانەیە کۆگای پارێزراوی ئەم مۆبایلە ڕێکخرابێتەوە؛ ئامێرەکان دووبارە زیاد بکەن.',
     cihaziKaldirinErisim: 'لابردنی {ad}',
     tabletEkleyin: 'تابلێت یان مۆبایلێک زیاد بکەن',
     saat: 'کاتژمێر',

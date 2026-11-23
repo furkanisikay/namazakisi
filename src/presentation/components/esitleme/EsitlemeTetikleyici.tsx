@@ -14,7 +14,8 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { AppState, InteractionManager } from 'react-native';
+import { AppState } from 'react-native';
+import { etkilesimSonrasi } from '../ortak/etkilesimSonrasi';
 import { useAppDispatch } from '../../store/hooks';
 import { kullanilabilirSaglayicilar } from '../../../domain/services/esitlemeSaglayicilari';
 import { onPlandaOtomatikEsitle } from '../../hooks/useEsitleme';
@@ -40,7 +41,7 @@ export const EsitlemeTetikleyici: React.FC = () => {
       onPlandaOtomatikEsitle(dispatch, tetik).catch(() => undefined);
     };
 
-    const etkilesim = InteractionManager.runAfterInteractions(() => kos('acilis'));
+    const etkilesim = etkilesimSonrasi(() => kos('acilis'));
     const abonelik = AppState.addEventListener('change', (yeni) => {
       if (yeni === 'active') kos('oneGelis');
     });

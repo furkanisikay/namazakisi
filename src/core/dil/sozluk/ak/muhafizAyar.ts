@@ -182,6 +182,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: 'Adeɛ {n} abue', other: 'Nneɛma {n} abue' }),
     sesDosyasi: {
       bicim: 'Wɔantumi ammue fael yi sɛ nnyegyeeɛ. Wobɛtumi apaw MP3, M4A, OGG anaa WAV fael.',
+      bicimIos: 'Wɔantumi ammue fael yi sɛ nnyegyeeɛ. Wobɛtumi apaw MP3, M4A anaa WAV fael.',
       boyut: 'Fael no so dodo. Wobɛtumi apaw kosi 20 MB.',
       sure: 'Nnyegyeeɛ no ware dodo. Wobɛtumi apaw nnyegyeeɛ a ɛware kosi sima 8.',
       erisim: 'Wɔantumi annu fael no ho. Bɔ mmɔden paw fael a ɛwɔ wo fon so.',

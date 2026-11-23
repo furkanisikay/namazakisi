@@ -12,7 +12,6 @@ import {
   ActivityIndicator,
   Dimensions,
   FlatList,
-  InteractionManager,
   Modal,
   Pressable,
   StyleSheet,
@@ -32,6 +31,7 @@ import { HESAP_PROFILLERI } from '../../core/vakit/hesapProfilleri';
 import type { DunyaSehriKaydi } from '../../data/local/LocalKonumServisi';
 import { useMetin } from '../hooks/useMetin';
 import { aktifDil, bicim } from '../../core/dil/aktifDil';
+import { etkilesimSonrasi } from './ortak/etkilesimSonrasi';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -94,7 +94,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
   // Kart görünür olur olmaz (geçiş bitince) önceden yüklenir: 34 bin şehirlik varlığın
   // okunması emülatörde birkaç saniye sürüyor, liste ilk dokunuşta hazır olsun.
   useEffect(() => {
-    const is = InteractionManager.runAfterInteractions(() => {
+    const is = etkilesimSonrasi(() => {
       if (!veri && durum === 'bos') void yukle();
     });
     return () => is.cancel();

@@ -182,6 +182,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     nowBarAcik: cogul({ one: '{n} item ang naka-on', other: '{n} item ang naka-on' }),
     sesDosyasi: {
       bicim: 'Hindi mabuksan bilang audio ang file na ito. Maaari kayong pumili ng MP3, M4A, OGG o WAV na file.',
+      bicimIos: 'Hindi mabuksan bilang audio ang file na ito. Maaari kayong pumili ng MP3, M4A o WAV na file.',
       boyut: 'Masyadong malaki ang file. Maaari kayong pumili ng hanggang 20 MB.',
       sure: 'Masyadong mahaba ang recording. Maaari kayong pumili ng tunog na hanggang 8 minuto.',
       erisim: 'Hindi ma-access ang file. Subukang pumili ng file sa inyong telepono.',

@@ -333,6 +333,9 @@ describe('kapaliVarsayilanAdimlariTemizle (bir kerelik — içi boş kapalı ad�
   test('kullanıcının emeği taşıyan kapalı adım KALIR (ses, metin, titreşim/sesli/alarm hafızası, kapsam)', () => {
     const s = eskidenMatriseGoc(eski).ogle.seviyeler[0];
     expect(kapaliVarsayilanAdimMi(kapali(s, { bildirimSesi: 'content://x' }))).toBe(false);
+    // iPhone'da seçilen ses de kullanıcının emeğidir (normalize onu varsayılana indirse de).
+    expect(kapaliVarsayilanAdimMi(kapali(s, { bildirimSesi: 'paket:zil' }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { bildirimSesi: 'dosya:kullanici_ses_0123abcd.caf' }))).toBe(false);
     expect(kapaliVarsayilanAdimMi(kapali(s, { anonsMetni: 'Kendi cümlem' }))).toBe(false);
     expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: { bildirim: true, titresim: true } }))).toBe(false);
     expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: { sesli: true } }))).toBe(false);

@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Sowto ngo on suɓi',
     dokunarak: 'Dobee ngam waylude',
     seciliDinle: 'Heɗee sowto tintinal suɓaango',
+    paket: {
+      zil: 'Sowto deeyngo',
+      ikiton: 'Sowtooji ɗiɗi',
+      damla: 'Toɓɓe',
+      sabah: 'Subaka',
+    },
+    silErisim: 'Momtee sowto {ad}',
+    ornekDinleErisim: 'Heɗee: {ad}',
+    uzunlukNotu: 'Sowto tintinal ina wuuma haa segonde 30 tan; e fiilde ɓurnde juutde, segonde 30 arane ɗee kuutortee.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

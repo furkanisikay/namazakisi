@@ -39,6 +39,7 @@ import {
   SaatVeWidgetSayfasi,
   GununAyetiSayfasi,
   GununAyetiAyarlariSayfasi,
+  DuvarDuzenleyiciSayfasi,
   YardimSayfasi,
   CamilerimSayfasi,
   SeriHedefAyarlariSayfasi,
@@ -157,6 +158,9 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   SaatVeWidgetAyarlari: { component: SaatVeWidgetSayfasi, baslik: (e) => e.SaatVeWidgetAyarlari },
   GununAyeti: { component: GununAyetiSayfasi, baslik: (e) => e.GununAyeti },
   GununAyetiAyarlari: { component: GununAyetiAyarlariSayfasi, baslik: (e) => e.GununAyetiAyarlari },
+  // Duvar kâğıdı düzenleyicisi kendi üst çubuğunu taşır (Vazgeçin / Uygulayın); kaydırma
+  // hareketi yazıyı taşıdığı için iOS'ta kenardan geri kaydırma kapalı.
+  DuvarDuzenleyici: { component: DuvarDuzenleyiciSayfasi, options: { headerShown: false, gestureEnabled: false } },
   Yardim: { component: YardimSayfasi, baslik: (e) => e.Yardim },
   Camilerim: { component: CamilerimSayfasi, baslik: (e) => e.Camilerim },
   KonumAyarlari: { component: KonumAyarlariSayfasi, baslik: (e) => e.KonumAyarlari },
@@ -225,7 +229,7 @@ const ayarlarYerlesimi = anaAyrintiYerlesimiOlustur(
       )
     ),
   },
-  ['IceAktarmaSihirbazi']
+  ['IceAktarmaSihirbazi', 'DuvarDuzenleyici']
 );
 
 /** Kaza ana-ayrıntı: solda defter, sağda (kökteyken) geçmiş. */

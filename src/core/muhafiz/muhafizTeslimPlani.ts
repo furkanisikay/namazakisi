@@ -25,6 +25,7 @@ import {
     saatUyandiriyorMu,
     telefonAnonsuKonusurMu,
     uyandirmaTelefonMs,
+    yedekOlcuDk,
     type SaatTeslimBaglami,
 } from '../saat/saatAyarlari';
 import { muhafizUyandirmasiMi } from '../saat/uyandirmaKapisi';
@@ -55,7 +56,7 @@ export interface MuhafizVakitZamani {
 /** Teslimciye gidecek tek bir uyarının metinsiz hâli. */
 export interface MuhafizTeslimAdayi {
     id: string;
-    /** Tetik anı — daima `cikis − kalanDk`. */
+    /** Tetik anı — `cikis − kalanDk`; saat yedeğinde birkaç dakika sonrası (`uyari.olcuDk` bu ana göredir). */
     zaman: Date;
     uyari: UyariPlani;
     vakit: MuhafizVakitZamani;
@@ -263,7 +264,10 @@ export function vakitTeslimAdaylari(
         if (geceSessizligiSusturuyorMu(geceSessizligi, vakit.tarih, zamanMs, ham.alarm)) continue;
         // Saat W3 — anons "yalnız saatte": telefon TTS planlamaz (çift konuşma yok).
         // Bayrak burada kapanır ki teslimci, ön plan ve defter AYNI cevabı görsün.
-        const uyari = anonsKonusur || !ham.sesliAnons ? ham : { ...ham, sesliAnons: false };
+        // Yedek geç çalıyorsa metin ölçüsü gerçek ana göre (saat "son 10 dk" dediyse telefon 3 dk sonra "son 7 dk" der).
+        const olcuDk = yedekOlcuDk(yon, ham.olcuDk, ozgunMs, zamanMs, cikisMs);
+        const olculu = olcuDk === ham.olcuDk ? ham : { ...ham, olcuDk };
+        const uyari = anonsKonusur || !olculu.sesliAnons ? olculu : { ...olculu, sesliAnons: false };
         adaylar.push({
             id,
             zaman: new Date(zamanMs),

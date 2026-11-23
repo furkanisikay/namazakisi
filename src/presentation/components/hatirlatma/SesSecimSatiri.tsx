@@ -18,7 +18,7 @@ import { View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
-import { ozelSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
+import { cihazdaCalinirMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
 import { bicim } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
 
@@ -33,8 +33,13 @@ interface Eylem {
 }
 
 export interface SesSecimSatiriProps {
-    /** `varsayilan` ya da `content://...` */
+    /** `varsayilan`, Android `content://...` ya da iPhone `paket:…`/`dosya:…` */
     bildirimSesi: string;
+    /**
+     * iPhone: sistem ses seçicisi yok → satıra dokununca BU liste satırın altında açılır
+     * (`IosSesListesi`; modal değil). Verilirse `onSec` ve ikincil eylemler kullanılmaz.
+     */
+    secimListesi?: React.ReactNode;
     /** Kayitli gorunen ad (yoksa kibar yedek metin gosterilir) */
     sesAdi?: string;
     /**
@@ -46,6 +51,11 @@ export interface SesSecimSatiriProps {
     onSec: () => void;
     /** Secili sesi calar */
     onDinle: () => void;
+    /**
+     * Secili ses uygulama icinde dinletilebilir mi? (varsayilan: evet) iPhone'da "telefonun
+     * sesi" dinletilemez → olu bir "dinle" dugmesi cizilmez.
+     */
+    dinlenebilir?: boolean;
     /**
      * "Kendi dosyanizdan secin" (Android 10+; SAF → MediaStore). Verilmezse secenek
      * cizilmez. Ornegin bir ezan kaydi buradan eklenir.
@@ -72,10 +82,12 @@ export interface SesSecimSatiriProps {
 
 export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     bildirimSesi,
+    secimListesi,
     sesAdi,
     seciliyor = false,
     onSec,
     onDinle,
+    dinlenebilir = true,
     onDosyadanSec,
     dosyaAktariliyor = false,
     onVarsayilanaDon,
@@ -89,13 +101,17 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     const ms = useMetin().hatirlatma.sesSecim;
     const varsayilanaDonEtiketi = varsayilanaDonEtiketiProp ?? ms.varsayilanaDon;
     const sesEtiketi = sesEtiketiProp ?? ms.sesEtiketi;
-    const ozelMi = ozelSesMi(bildirimSesi);
+    // Bu cihazda ÇALINMAYAN seçim (başka platformun kimliği, iPhone'da silinmiş dosya) varsayılan
+    // görünür: çalan odur (`sesGorunenAdi` aynı kuralla adlandırır).
+    const ozelMi = cihazdaCalinirMi(bildirimSesi);
     const ad = !ozelMi && varsayilanAdi ? varsayilanAdi : sesGorunenAdi(bildirimSesi, sesAdi);
     const mesgul = seciliyor || dosyaAktariliyor;
     const [acik, setAcik] = useState(false);
+    const listeli = secimListesi !== undefined && secimListesi !== null;
 
+    // iPhone (`listeli`): seçenekler listenin içindedir (varsayılan + uygulama sesleri + dosyalar).
     const eylemler: Eylem[] = [];
-    if (kompakt) {
+    if (kompakt && !listeli) {
         eylemler.push({
             ikon: 'bell',
             etiket: ms.telefonSesleri,
@@ -107,7 +123,7 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
             testID: testID ? `${testID}-sistem` : undefined,
         });
     }
-    if (onDosyadanSec) {
+    if (onDosyadanSec && !listeli) {
         eylemler.push({
             ikon: 'folder-open',
             etiket: ms.dosyadan,
@@ -120,7 +136,7 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
             testID: testID ? `${testID}-dosya` : 'ses-dosyadan-sec',
         });
     }
-    if (onVarsayilanaDon && ozelMi) {
+    if (onVarsayilanaDon && ozelMi && !listeli) {
         eylemler.push({
             ikon: 'undo',
             etiket: varsayilanaDonEtiketi,
@@ -251,17 +267,19 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                             style={{ marginHorizontal: 8 }}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        className="w-11 h-11 items-center justify-center rounded-xl"
-                        onPress={onDinle}
-                        activeOpacity={0.7}
-                        accessibilityRole="button"
-                        accessibilityLabel={bicim(ms.dinleErisim, { ses: sesEtiketi })}
-                    >
-                        <FontAwesome5 name="play" size={11} color={renkler.birincil} solid />
-                    </TouchableOpacity>
+                    {dinlenebilir ? (
+                        <TouchableOpacity
+                            className="w-11 h-11 items-center justify-center rounded-xl"
+                            onPress={onDinle}
+                            activeOpacity={0.7}
+                            accessibilityRole="button"
+                            accessibilityLabel={bicim(ms.dinleErisim, { ses: sesEtiketi })}
+                        >
+                            <FontAwesome5 name="play" size={11} color={renkler.birincil} solid />
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
-                {acik ? eylemListesi : null}
+                {acik ? (listeli ? secimListesi : eylemListesi) : null}
             </View>
         );
     }
@@ -279,11 +297,11 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                 <TouchableOpacity
                     className="flex-row items-center flex-1"
                     style={{ minHeight: 44, opacity: mesgul ? 0.6 : 1 }}
-                    onPress={onSec}
+                    onPress={listeli ? () => setAcik((a) => !a) : onSec}
                     disabled={mesgul}
                     activeOpacity={0.7}
                     accessibilityRole="button"
-                    accessibilityState={{ disabled: seciliyor }}
+                    accessibilityState={listeli ? { disabled: mesgul, expanded: acik } : { disabled: seciliyor }}
                     accessibilityLabel={
                         seciliyor
                             ? ms.aciliyorErisim
@@ -330,23 +348,33 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    className="w-11 h-11 items-center justify-center rounded-xl border mr-1.5"
-                    style={{
-                        backgroundColor: renkler.kartArkaplan,
-                        borderColor: renkler.sinir,
-                    }}
-                    onPress={onDinle}
-                    activeOpacity={0.7}
-                    accessibilityRole="button"
-                    accessibilityLabel={ms.seciliDinle}
-                >
-                    <FontAwesome5 name="play" size={12} color={renkler.birincil} solid />
-                </TouchableOpacity>
+                {dinlenebilir ? (
+                    <TouchableOpacity
+                        className="w-11 h-11 items-center justify-center rounded-xl border mr-1.5"
+                        style={{
+                            backgroundColor: renkler.kartArkaplan,
+                            borderColor: renkler.sinir,
+                        }}
+                        onPress={onDinle}
+                        activeOpacity={0.7}
+                        accessibilityRole="button"
+                        accessibilityLabel={ms.seciliDinle}
+                    >
+                        <FontAwesome5 name="play" size={12} color={renkler.birincil} solid />
+                    </TouchableOpacity>
+                ) : null}
 
-                <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} />
+                {listeli ? (
+                    <FontAwesome5
+                        name={acik ? 'chevron-up' : 'chevron-down'}
+                        size={12}
+                        color={renkler.metinIkincil}
+                    />
+                ) : (
+                    <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} />
+                )}
             </View>
-            {eylemler.length > 0 ? eylemListesi : null}
+            {listeli ? (acik ? secimListesi : null) : eylemler.length > 0 ? eylemListesi : null}
         </View>
     );
 };

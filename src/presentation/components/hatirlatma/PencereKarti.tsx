@@ -21,7 +21,7 @@ import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matri
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { adimOzetiOlustur, seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
 import { vakitOzetiOlustur, vakitOzetiVerisi, aktifSeviyeSayisi } from '../../../core/muhafiz/vakitOzeti';
-import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
+import { cihazdaCalinirMi } from '../../../core/muhafiz/sesKimligi';
 import { adimAnahtarlariniGuncelle, type AdimAnahtarDurumu } from '../../../core/hatirlatma/adimAnahtarlari';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { OzetCipleri } from './OzetCipleri';
@@ -40,6 +40,7 @@ import {
     tonGeriNotuOlustur,
     pencerePlaniOlustur,
     YON_SECENEKLERI,
+    varsayilanSesGorunumu,
     type PencereTanimi,
 } from './pencereTanimi';
 import { ZamanSeridi } from './ZamanSeridi';
@@ -297,7 +298,11 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
             yetenekler: tanim.yetenekler,
         });
         const notMetni = notlar.map((n) => n.metin).join(' ');
-        const baglam = { kardesler: ayar.seviyeler, pencereUzunluguDk: tanim.pencereUzunluguDk };
+        const baglam = {
+            kardesler: ayar.seviyeler,
+            pencereUzunluguDk: tanim.pencereUzunluguDk,
+            varsayilanSesAdi: varsayilanSesGorunumu(tanim).adi,
+        };
         const ozet = adimOzetiOlustur(seviye, tanim.yon, baglam);
         const ozetMetni = seviyeOzetiOlustur(seviye, tanim.yon, baglam);
         return (
@@ -351,7 +356,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                         kanallar={ozet.kanallar}
                                         renk={bilgi.renk}
                                         tekrarDk={ozet.tekrarDk}
-                                        sesAdi={ozelSesMi(seviye.bildirimSesi) ? ozet.sesAdi : undefined}
+                                        sesAdi={cihazdaCalinirMi(seviye.bildirimSesi) ? ozet.sesAdi : undefined}
                                         boyut="kucuk"
                                     />
                                 )}

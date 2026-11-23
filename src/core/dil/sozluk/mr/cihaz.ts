@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'इतर डिव्हाइस',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} फोन',
+    tablet: '{marka} टॅबलेट',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'सेटिंग सेव्ह करता आली नाही. पुन्हा प्रयत्न करा.',
     kaldirildi: '{ad} काढले.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'तुमच्या Android TV वर Namaz Akışı इंस्टॉल करा आणि स्क्रीनवरील QR कोड या फोनने स्कॅन करा. नमाजच्या वेळा आणि रमजानची उलटगणती घरी मोठ्या स्क्रीनवर दिसतात.',
     tabletVeTelefonlar: 'टॅबलेट आणि फोन',
     esYok: 'तुमचा टॅबलेट किंवा दुसरा फोन जोडा: एकावर नोंदवलेली नमाज दुसऱ्यावरही जाते.',
+    kayipEslesmeler: 'आधीच्या जोडण्या वाचता आल्या नाहीत ({adlar}). या फोनचे सुरक्षित स्टोरेज रीसेट झाले असू शकते; उपकरणे पुन्हा जोडा.',
     cihaziKaldirinErisim: '{ad} काढा',
     tabletEkleyin: 'टॅबलेट किंवा फोन जोडा',
     saat: 'घड्याळ',

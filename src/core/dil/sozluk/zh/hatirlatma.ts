@@ -313,6 +313,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: '您选择的声音',
     dokunarak: '点按可更改',
     seciliDinle: '试听所选的通知声音',
+    paket: {
+      zil: '柔和铃声',
+      ikiton: '双音',
+      damla: '水滴',
+      sabah: '清晨',
+    },
+    silErisim: '删除声音{ad}',
+    ornekDinleErisim: '试听: {ad}',
+    uzunlukNotu: '通知声音最长播放 30 秒；较长的文件将使用前 30 秒。',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

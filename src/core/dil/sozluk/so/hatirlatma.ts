@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Cod aad dooratay',
     dokunarak: 'Taabo si aad u beddesho',
     seciliDinle: 'Dhegeyso codka ogeysiiska la doortay',
+    paket: {
+      zil: 'Gambaleel jilicsan',
+      ikiton: 'Laba cod',
+      damla: 'Dhibco',
+      sabah: 'Subax',
+    },
+    silErisim: 'Tirtir codka {ad}',
+    ornekDinleErisim: 'Dhegeyso: {ad}',
+    uzunlukNotu: 'Codka ogeysiisku ugu badnaan 30 ilbiriqsi ayuu dhawaaqaa; faylka ka dheer 30-ka ilbiriqsi ee hore ayaa la isticmaalaa.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

@@ -153,11 +153,10 @@ export function nastalikStili(stil: StyleProp<TextStyle>): TextStyle | null {
   if (duz.fontFamily) return null;
   // Kalın dosya ayrı ailedir: ağırlığı 'normal'e çekmezsek sistem sahte kalın üretmeye çalışır.
   const ek: TextStyle = { fontFamily: kalinMi(duz.fontWeight) ? NASTALIK_KALIN : NASTALIK_AILESI, fontWeight: 'normal' };
-  if (typeof duz.lineHeight === 'number') {
-    const punto = typeof duz.fontSize === 'number' ? duz.fontSize : VARSAYILAN_PUNTO;
-    ek.lineHeight = Math.max(duz.lineHeight, Math.ceil(punto * NASTALIK_SATIR_ORANI));
-  }
-  return ek;
+  if (typeof duz.lineHeight !== 'number') return ek;
+  // TextStyle RN 0.87'den beri salt okunur → alanı sonradan atamak yerine yeni nesne kur.
+  const punto = typeof duz.fontSize === 'number' ? duz.fontSize : VARSAYILAN_PUNTO;
+  return { ...ek, lineHeight: Math.max(duz.lineHeight, Math.ceil(punto * NASTALIK_SATIR_ORANI)) };
 }
 
 /** Üst işaretli yazı eki: sabit satır yüksekliği dar ise genişletir; gerek yoksa `null`. */

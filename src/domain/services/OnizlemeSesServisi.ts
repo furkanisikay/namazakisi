@@ -17,12 +17,15 @@
  * ust uste BINMEZ — mevcut calar basa sarilir. Kaynak degisirse eski calar
  * `remove()` ile birakilir (bellek sizintisi yok).
  */
+import { Platform } from 'react-native';
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import {
     sesDosyasiniCoz,
     ozelSesOnizlemesiMi,
     type SesKaynagi,
 } from '../../core/muhafiz/sesDosyasi';
+import { kullaniciSesDosyasi } from '../../core/muhafiz/ios/paketSesleri';
+import { sesDosyasiUri } from '../../../modules/expo-muhafiz-anons/src';
 import { Logger } from '../../core/utils/Logger';
 import {
     sesiOnizle as nativeSesiOnizle,
@@ -44,8 +47,11 @@ const YOKLAMA_ARALIGI_MS = 200;
 
 const bekle = (ms: number): Promise<void> => new Promise((coz) => setTimeout(coz, ms));
 
+/** Metro varlığı ya da (iPhone'da eklenen dosya) `file://` adresi. */
+type CalarKaynagi = SesKaynagi | { uri: string };
+
 let aktifCalar: AudioPlayer | null = null;
-let aktifKaynak: SesKaynagi | null = null;
+let aktifKaynak: string | null = null;
 let sesModuHazirlandi = false;
 
 /**
@@ -75,13 +81,14 @@ function calariBirak(): void {
 }
 
 /** Istenen kaynak icin calar dondurur; kaynak degistiyse eskisini birakir. */
-function calariAl(kaynak: SesKaynagi): AudioPlayer | null {
-    if (aktifCalar && aktifKaynak === kaynak) return aktifCalar;
+function calariAl(kaynak: CalarKaynagi): AudioPlayer | null {
+    const anahtar = typeof kaynak === 'number' ? `varlik:${kaynak}` : kaynak.uri;
+    if (aktifCalar && aktifKaynak === anahtar) return aktifCalar;
 
     calariBirak();
     try {
         aktifCalar = createAudioPlayer(kaynak);
-        aktifKaynak = kaynak;
+        aktifKaynak = anahtar;
         return aktifCalar;
     } catch (error) {
         Logger.debug('OnizlemeSes', 'Ses calar olusturulamadi:', error);
@@ -101,6 +108,9 @@ export const OnizlemeSesServisi = {
      *    `RingtoneManager`. `expo-audio`'nun bu semayi calabildigi DOGRULANMADI;
      *    native yol garantilidir.
      *  - Paketlenmis varsayilan → mevcut `expo-audio` yolu (sessiz modda da calar).
+     *  - iPhone: paket sesi (`paket:`) bildirimin calacagi `.wav`'in AYNISI; eklenen dosya
+     *    (`dosya:`) `Library/Sounds` altindaki CAF (`file://`). Dosya yoksa varsayilan —
+     *    bildirim de oyle duser (`IosMuhafizTeslimcisi.kullaniciSesiniDogrula`).
      */
     bildirimSesiniCal: async (sesId: string): Promise<void> => {
         if (ozelSesOnizlemesiMi(sesId)) {
@@ -118,7 +128,10 @@ export const OnizlemeSesServisi = {
         try {
             sesModunuHazirla();
 
-            const calar = calariAl(sesDosyasiniCoz(sesId));
+            const ios = Platform.OS === 'ios';
+            const dosya = ios ? kullaniciSesDosyasi(sesId) : null;
+            const uri = dosya ? await sesDosyasiUri(dosya) : null;
+            const calar = calariAl(uri ? { uri } : sesDosyasiniCoz(sesId, ios ? 'ios' : 'android'));
             if (!calar) return;
 
             // Ust uste basma: calan sesi durdur ve HER durumda basa sar —

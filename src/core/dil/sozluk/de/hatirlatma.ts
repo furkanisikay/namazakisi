@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Von Ihnen gewählter Ton',
     dokunarak: 'Zum Ändern tippen',
     seciliDinle: 'Gewählten Benachrichtigungston anhören',
+    paket: {
+      zil: 'Sanftes Glockenspiel',
+      ikiton: 'Zwei Töne',
+      damla: 'Tropfen',
+      sabah: 'Morgen',
+    },
+    silErisim: 'Ton {ad} löschen',
+    ornekDinleErisim: 'Anhören: {ad}',
+    uzunlukNotu: 'Ein Benachrichtigungston spielt höchstens 30 Sekunden; bei einer längeren Datei werden die ersten 30 Sekunden verwendet.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

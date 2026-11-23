@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Ett ljud du har valt',
     dokunarak: 'Tryck för att ändra',
     seciliDinle: 'Lyssna på det valda aviseringsljudet',
+    paket: {
+      zil: 'Mjuk klocka',
+      ikiton: 'Två toner',
+      damla: 'Droppar',
+      sabah: 'Morgon',
+    },
+    silErisim: 'Radera ljudet {ad}',
+    ornekDinleErisim: 'Lyssna: {ad}',
+    uzunlukNotu: 'Ett aviseringsljud spelas i högst 30 sekunder; av en längre fil används de första 30 sekunderna.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

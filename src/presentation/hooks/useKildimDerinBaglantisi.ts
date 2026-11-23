@@ -110,7 +110,7 @@ export function useKildimDerinBaglantisi(etkin: boolean): KildimDerinBaglantiOna
 
     useEffect(() => {
         if (!etkin) return;
-        const isle = async (url: string | null): Promise<void> => {
+        const isle = async (url: string | null | undefined): Promise<void> => {
             if (!kildimBaglantisiMi(url)) return;
             try {
                 // Native kaydı TÜKETİR → bağlantı başına tek çağrı.

@@ -15,6 +15,7 @@ import {
     yetenekleriSec,
 } from '../platformYetenekleri';
 import {
+    IOS_ALARM_SESI,
     IOS_BILDIRIM_SESI,
     iosSesiCoz,
     iosTesliminiCoz,
@@ -84,6 +85,7 @@ describe('platformYetenekleri', () => {
         expect(ANDROID_YETENEKLERI).toEqual({
             platform: 'android',
             sesSecici: true,
+            sistemSesSecici: true,
             serbestAnonsMetni: true,
             titresimSecimi: true,
             sessizligiDelebilir: true,
@@ -95,10 +97,11 @@ describe('platformYetenekleri', () => {
      * Faz 2: anons metni iOS'ta da SERBEST — metin planlamada cihazda ses
      * dosyasina cevrilir (calisma aninda TTS gerekmez).
      */
-    test('iOS Faz 2: anons metni serbest; ses secici, titresim secimi ve sessizligi delme KAPALI', () => {
+    test('iOS: anons metni ve ses SECIMI acik (uygulamanin listesi, sistem secici yok); titresim ve sessizligi delme KAPALI', () => {
         expect(iosYetenekleri(false)).toEqual({
             platform: 'ios',
-            sesSecici: false,
+            sesSecici: true,
+            sistemSesSecici: false,
             serbestAnonsMetni: true,
             titresimSecimi: false,
             sessizligiDelebilir: false,
@@ -112,7 +115,8 @@ describe('platformYetenekleri', () => {
         // Acil tonlu BILDIRIM sessiz anahtarini AlarmKit varken de delmez.
         expect(yetenek.sessizligiDelebilir).toBe(false);
         // Digerleri AlarmKit'ten bagimsizdir — acilmamali.
-        expect(yetenek.sesSecici).toBe(false);
+        expect(yetenek.sesSecici).toBe(true);
+        expect(yetenek.sistemSesSecici).toBe(false);
         expect(yetenek.serbestAnonsMetni).toBe(true);
         expect(yetenek.titresimSecimi).toBe(false);
     });
@@ -143,6 +147,38 @@ describe('iosSesiCoz', () => {
     test('varsayilan ve tanimsiz deger paket sesine duser', () => {
         expect(iosSesiCoz('varsayilan')).toBe(IOS_BILDIRIM_SESI);
         expect(iosSesiCoz(undefined)).toBe(IOS_BILDIRIM_SESI);
+    });
+
+    test('uygulamanin sesi (paket:) paketteki DOSYAYA cozulur', () => {
+        expect(iosSesiCoz('paket:zil')).toBe('zil_ios.wav');
+        expect(iosSesiCoz('paket:ikiton')).toBe('ikiton_ios.wav');
+        expect(iosSesiCoz('paket:damla')).toBe('damla_ios.wav');
+        expect(iosSesiCoz('paket:sabah')).toBe('sabah_ios.wav');
+    });
+
+    test('eklenen dosya (dosya:) Library/Sounds adina cozulur', () => {
+        expect(iosSesiCoz('dosya:kullanici_ses_0123abcd.caf')).toBe('kullanici_ses_0123abcd.caf');
+    });
+
+    test('bilinmeyen paket sesi ve BOZUK/tehlikeli dosya adi varsayilana duser (yol enjeksiyonu yok)', () => {
+        expect(iosSesiCoz('paket:yok')).toBe(IOS_BILDIRIM_SESI);
+        expect(iosSesiCoz('dosya:../Preferences/x.caf')).toBe(IOS_BILDIRIM_SESI);
+        expect(iosSesiCoz('dosya:muhafiz_anons_0123abcd.caf')).toBe(IOS_BILDIRIM_SESI);
+        expect(iosSesiCoz('dosya:kullanici_ses_0123ABCD.caf')).toBe(IOS_BILDIRIM_SESI);
+        expect(iosSesiCoz('dosya:kullanici_ses_0123abcd.wav')).toBe(IOS_BILDIRIM_SESI);
+    });
+
+    test('gercek alarm adimi secilen sesi DEGIL uzun alarm sesini calar', () => {
+        const plan = iosTesliminiCoz(
+            { seviye: 1, alarm: true, bildirimSesi: 'paket:zil' } as never,
+            iosYetenekleri(false)
+        );
+        expect(plan.ses).toBe(IOS_ALARM_SESI);
+    });
+
+    test('bildirim adimi secilen paket sesini calar', () => {
+        const plan = iosTesliminiCoz({ seviye: 2, bildirimSesi: 'paket:sabah' } as never, iosYetenekleri(false));
+        expect(plan).toEqual({ tur: 'bildirim', kesintiSeviyesi: 'timeSensitive', ses: 'sabah_ios.wav' });
     });
 });
 

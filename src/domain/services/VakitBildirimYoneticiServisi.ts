@@ -1,5 +1,6 @@
 import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
 import { LocalVakitBildirimServisi } from '../../data/local/LocalVakitBildirimServisi';
@@ -8,7 +9,7 @@ import { vakitBildirimPlaniOlustur } from '../../core/bildirim/vakitBildirimPlan
 import { VAKIT_BILDIRIM_ICERIKLERI, VakitBildirimTipi } from '../../core/data/VakitBildirimIcerikleri';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { vakitGirdiBasligi } from '../../core/otomasyon/anahtarKelimeler';
-import { vakitBildirimKanalId, type VakitBildirimSesleri } from '../../core/bildirim/vakitBildirimSesi';
+import { vakitBildirimKanalId, vakitIosSesi, type VakitBildirimSesleri } from '../../core/bildirim/vakitBildirimSesi';
 import { vakitKanallariniHazirla } from './VakitKanalServisi';
 
 export class VakitBildirimYoneticiServisi {
@@ -57,8 +58,9 @@ export class VakitBildirimYoneticiServisi {
         // temizlendi; pencere bugün+yarın olduğu için aralığın son günü açılan
         // uygulama ertesi günün bildirimlerini zaten kurar.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
-        // Vakit başına ses (Android): kanal hazırlığı planlamadan ÖNCE, plan DOĞRULANMIŞ
-        // kayıtla kurulur. Ses seçilmemiş vakit taban `vakit_bildirim` kanalında kalır.
+        // Vakit başına ses: kanal hazırlığı (Android) / dosya doğrulaması (iPhone) planlamadan
+        // ÖNCE, plan DOĞRULANMIŞ kayıtla kurulur. Ses seçilmemiş vakit taban `vakit_bildirim`
+        // kanalında (iPhone'da `sound: true`) kalır.
         let sesler: VakitBildirimSesleri = {};
         try {
             sesler = await vakitKanallariniHazirla((await LocalVakitBildirimServisi.getSesler()) ?? {});
@@ -76,7 +78,9 @@ export class VakitBildirimYoneticiServisi {
                 kayit.vakit,
                 kayit.zaman,
                 kayit.id,
-                vakitBildirimKanalId(sesler[kayit.vakit]?.bildirimSesi)
+                vakitBildirimKanalId(sesler[kayit.vakit]?.bildirimSesi),
+                // Android'de ses kanalın özelliğidir → `sound: true` birebir korunur.
+                Platform.OS === 'ios' ? vakitIosSesi(sesler[kayit.vakit]) : null
             );
         }
 
@@ -90,7 +94,9 @@ export class VakitBildirimYoneticiServisi {
         vakit: VakitBildirimTipi,
         zaman: Date,
         bildirimId: string,
-        kanalId: string = BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM
+        kanalId: string = BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
+        /** iPhone: seçilen sesin dosya adı; `null` = telefonun sesi (Android'de daima `null`). */
+        iosSesi: string | null = null
     ): Promise<void> {
         const simdi = new Date();
 
@@ -118,7 +124,8 @@ export class VakitBildirimYoneticiServisi {
                 content: {
                     title: baslik,
                     body: govde,
-                    sound: true, // Standart ses
+                    // Standart ses; iPhone'da seçilen ses dosyası (Android'de ses KANALIN özelliğidir).
+                    sound: iosSesi ?? true,
                     data: {
                         tip: 'vakit_bildirim',
                         vakit: vakit

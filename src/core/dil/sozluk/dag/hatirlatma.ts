@@ -323,6 +323,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Kukoli shɛli yi ni piri',
     dokunarak: 'Dihimi ya ka taɣi',
     seciliDinle: 'Wummi ya lahabali kukoli shɛli yi ni piri',
+    paket: {
+      zil: 'Kukoli shɛli malgu',
+      ikiton: 'Kukoli ayi',
+      damla: 'Kom bila',
+      sabah: 'Asiba',
+    },
+    silErisim: 'Yihimi ya kukoli {ad}',
+    ornekDinleErisim: 'Wummi ya: {ad}',
+    uzunlukNotu: 'Lahabali kukoli yɛliri sekonda 30 pɔi; faali shɛli din waɣa, bɛ zaŋdi di sekonda 30 tuuli maŋ tuma.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

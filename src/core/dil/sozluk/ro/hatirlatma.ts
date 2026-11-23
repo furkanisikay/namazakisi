@@ -348,6 +348,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Un sunet ales',
     dokunarak: 'Atingeți pentru a schimba',
     seciliDinle: 'Ascultați sunetul de notificare selectat',
+    paket: {
+      zil: 'Clopoțel blând',
+      ikiton: 'Două tonuri',
+      damla: 'Picături',
+      sabah: 'Dimineață',
+    },
+    silErisim: 'Ștergeți sunetul {ad}',
+    ornekDinleErisim: 'Ascultați: {ad}',
+    uzunlukNotu: 'Un sunet de notificare se aude cel mult 30 de secunde; dintr-un fișier mai lung se folosesc primele 30 de secunde.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

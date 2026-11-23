@@ -460,4 +460,62 @@ describe('VakitBildirimYoneticiServisi', () => {
             }
         });
     });
+
+    describe('vakit başına ses (iPhone: ses bildirimin `sound` alanı)', () => {
+        const { Platform } = require('react-native');
+        const anons = require('../../../../modules/expo-muhafiz-anons/src') as Record<string, jest.Mock>;
+        const DOSYA = 'kullanici_ses_0123abcd.caf';
+
+        beforeEach(() => {
+            jest.replaceProperty(Platform, 'OS', 'ios');
+            mockVakitKanaliniGarantile.mockReset().mockResolvedValue(true);
+            (LocalVakitBildirimServisi.getAyarlar as jest.Mock).mockResolvedValue({
+                imsak: true, ogle: true, ikindi: true, aksam: false, yatsi: false,
+            });
+            (NamazVaktiHesaplayiciServisi.getInstance().getKonfig as jest.Mock).mockReturnValue({ latitude: 41, longitude: 29 });
+            (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('id');
+        });
+
+        afterEach(() => {
+            anons.klipVarMi.mockResolvedValue(false);
+        });
+
+        it('paket sesi ve diskteki dosya ÇALAR; silinmiş dosya ve seçilmemiş vakit telefonun sesi (sound: true); kanal kurulmaz', async () => {
+            jest.useFakeTimers();
+            jest.setSystemTime(new Date('2024-06-15T03:00:00'));
+            try {
+                anons.klipVarMi.mockImplementation(async (ad: string) => ad === DOSYA);
+                (LocalVakitBildirimServisi.getSesler as jest.Mock).mockResolvedValue({
+                    imsak: { bildirimSesi: 'paket:sabah' },
+                    ogle: { bildirimSesi: `dosya:${DOSYA}`, sesAdi: 'Ezan' },
+                    ikindi: { bildirimSesi: 'dosya:kullanici_ses_ffffffff.caf', sesAdi: 'Silinmiş' },
+                });
+                await service.bildirimleriGuncelle();
+
+                const cagrilar = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+                const ses = (vakit: string) =>
+                    cagrilar.find((c) => c.identifier === `vakit_bildirim_${vakit}_2024-06-15`).content.sound;
+                expect(ses('imsak')).toBe('sabah_ios.wav');
+                expect(ses('ogle')).toBe(DOSYA);
+                expect(ses('ikindi')).toBe(true);
+                expect(mockVakitKanaliniGarantile).not.toHaveBeenCalled();
+            } finally {
+                jest.useRealTimers();
+            }
+        });
+
+        it('NÖBETÇİ: ses seçilmemişse bugünkü gibi `sound: true`', async () => {
+            jest.useFakeTimers();
+            jest.setSystemTime(new Date('2024-06-15T03:00:00'));
+            try {
+                (LocalVakitBildirimServisi.getSesler as jest.Mock).mockResolvedValue({});
+                await service.bildirimleriGuncelle();
+                const sesler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0].content.sound);
+                expect(sesler.length).toBeGreaterThan(0);
+                expect(new Set(sesler)).toEqual(new Set([true]));
+            } finally {
+                jest.useRealTimers();
+            }
+        });
+    });
 });

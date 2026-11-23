@@ -75,6 +75,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Башка түзмөктөр',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} телефону',
+    tablet: '{marka} планшети',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Жөндөө сакталган жок. Кайра аракет кылыңыз.',
     kaldirildi: '{ad} алынып салынды.',
@@ -90,6 +95,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Android TV сыналгыңызга Namaz Akışı орнотуп, экрандагы QR кодду ушул телефон менен скандаңыз. Намаз убактылары жана Рамазандагы артка санак үйдөгү чоң экранда көрүнөт.',
     tabletVeTelefonlar: 'Планшеттер жана телефондор',
     esYok: 'Планшетиңизди же экинчи телефонуңузду кошуңуз: биринде белгилеген намаз экинчисине өтөт.',
+    kayipEslesmeler: 'Мурунку жупташтыруулар окулган жок ({adlar}). Бул телефондун корголгон эстутуму баштапкы абалга келтирилген болушу мүмкүн; түзмөктөрдү кайра кошуңуз.',
     cihaziKaldirinErisim: '{ad} түзмөгүн алып салуу',
     tabletEkleyin: 'Планшет же телефон кошуу',
     saat: 'Саат',

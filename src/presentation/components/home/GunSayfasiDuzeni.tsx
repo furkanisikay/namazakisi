@@ -14,7 +14,7 @@
  * düzenler aynı bileşenleri yeniden kullanır.
  */
 import * as React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, type ViewInstance } from 'react-native';
 
 import {
     masaustuBolmeleriHesapla,
@@ -60,7 +60,7 @@ const MasaustuDuzeni: React.FC<{
     alt: React.ReactNode;
     mentese: MenteseSiniri | null;
 }> = ({ ust, alt, mentese }) => {
-    const kokRef = React.useRef<View>(null);
+    const kokRef = React.useRef<ViewInstance>(null);
     const [olcu, setOlcu] = React.useState<SayfaOlcusu | null>(null);
 
     // Menteşe pencereye göre verilir; sayfanın penceredeki konumu (başlık, durum

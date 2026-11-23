@@ -76,6 +76,11 @@ export const cihaz: Sozluk['cihaz'] = {
     digerCihazlar: 'Ostali uređaji',
     dugumErisim: '{ad}: {rozet}',
   },
+  /** Bu cihazın karşı uçta görünen adı (marka + tür; `telefonAdi`). */
+  cihazAdi: {
+    telefon: '{marka} telefon',
+    tablet: '{marka} tablet',
+  },
   cihazlarim: {
     ayarKaydedilemedi: 'Postavku nije bilo moguće spremiti. Pokušajte ponovno.',
     kaldirildi: 'Uklonjeno: {ad}.',
@@ -91,6 +96,7 @@ export const cihaz: Sozluk['cihaz'] = {
       'Instalirajte Namaz Akışı na svoj Android TV i ovim telefonom skenirajte QR kôd na zaslonu. Vremena namaza i odbrojavanje za ramazan prikazat će se na velikom zaslonu kod kuće.',
     tabletVeTelefonlar: 'Tableti i telefoni',
     esYok: 'Dodajte tablet ili drugi telefon: namaz koji označite na jednom prelazi na drugi.',
+    kayipEslesmeler: 'Ranija uparivanja nije moguće pročitati ({adlar}). Sigurna pohrana ovog telefona možda je vraćena na zadano; ponovno dodajte uređaje.',
     cihaziKaldirinErisim: 'Uklonite {ad}',
     tabletEkleyin: 'Dodajte tablet ili telefon',
     saat: 'Sat',

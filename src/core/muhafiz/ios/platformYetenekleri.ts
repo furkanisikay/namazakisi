@@ -19,14 +19,23 @@ export interface PlatformYetenekleri {
     platform: MuhafizPlatformu;
 
     /**
-     * Kullanici kendi bildirim sesini SECEBILIR mi?
+     * Kullanici bildirim sesini SECEBILIR mi? Iki platformda da EVET.
      *
-     * Android: sistem `RingtoneManager` secicisi (`content://`).
-     * iOS: sistem secici YOKTUR. Ses uygulama paketindeki bir dosya adidir
-     * (<=30 sn); kullanicinin kendi dosyasini almak native AVFoundation ile
-     * CAF'a cevirmeyi gerektirir → Faz 1 kapsam disi.
+     * Android: sistem `RingtoneManager` secicisi (`content://`) + kendi dosyasi.
+     * iOS: uygulamanin kendi listesi (`paket:<ad>`) + kendi dosyasi (`dosya:<ad>`,
+     * AVFoundation ile <=29,5 sn CAF'a cevrilip `Library/Sounds`'a yazilir). Nasil
+     * secildigi `sistemSesSecici`'dedir.
      */
     sesSecici: boolean;
+
+    /**
+     * Ses secimi ISLETIM SISTEMININ seciciyle mi yapilir?
+     *
+     * Android: evet — `RingtoneManager` secicisi ("Telefonun sesleri").
+     * iOS: HAYIR — sistem secici yoktur; ekran uygulamanin ses listesini satirin
+     * altinda cizer (modal degil: iOS iki kardes modali ayni anda sunamaz).
+     */
+    sistemSesSecici: boolean;
 
     /**
      * Anons metni SERBESTCE yazilabilir mi?
@@ -36,7 +45,8 @@ export interface PlatformYetenekleri {
      * metin planlama sirasinda cihazda (`AVSpeechSynthesizer`, cevrimdisi) ses
      * dosyasina cevrilir ve bildirim o dosyayi calar. Metin 300 karakterle
      * sinirlidir (`ANONS_METIN_UST_SINIRI`): iOS 30 sn'yi asan bildirim sesini
-     * kirpmaz, HIC calmaz.
+     * kirpmaz, onun yerine SISTEMIN varsayilan sesini calar (Apple `UNNotificationSound`)
+     * — anons hic duyulmaz.
      */
     serbestAnonsMetni: boolean;
 
@@ -74,6 +84,7 @@ export interface PlatformYetenekleri {
 export const ANDROID_YETENEKLERI: PlatformYetenekleri = {
     platform: 'android',
     sesSecici: true,
+    sistemSesSecici: true,
     serbestAnonsMetni: true,
     titresimSecimi: true,
     sessizligiDelebilir: true,
@@ -90,7 +101,8 @@ export const ANDROID_YETENEKLERI: PlatformYetenekleri = {
 export function iosYetenekleri(alarmKitVar: boolean = false): PlatformYetenekleri {
     return {
         platform: 'ios',
-        sesSecici: false,
+        sesSecici: true,
+        sistemSesSecici: false,
         serbestAnonsMetni: true,
         titresimSecimi: false,
         sessizligiDelebilir: false,

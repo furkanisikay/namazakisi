@@ -9,6 +9,7 @@
  * `src/core/ayarlar/aramaIndeksi.ts` de her kaydın `sayfa` alanı için bu
  * tipi `import type` ile kullanır (runtime bağ kurmaz, `src/core/` saf kalır).
  */
+import type { DuvarHazirAdi } from '../core/icerik/duvarCizimi';
 export const AYARLAR_EKRANLARI = [
   'AyarlarAna',
   // Sade tasarım (Dalga 3): görev bazlı yeni sayfalar
@@ -25,6 +26,8 @@ export const AYARLAR_EKRANLARI = [
   // Günün ayeti (#380 widget, #381 duvar kâğıdı): sayfa widget'tan da açılır (`namazakisi://gunun-ayeti`)
   'GununAyeti',
   'GununAyetiAyarlari',
+  // Duvar kâğıdı görünümü düzenleyicisi (tam ekran, kendi üst çubuğu)
+  'DuvarDuzenleyici',
   'Yardim',
   'Camilerim',
   'KonumAyarlari',
@@ -78,4 +81,6 @@ export type TvDerinParametreleri = { v?: string; a?: string; p?: string; k?: str
 
 export type AyarlarStackParamList = Record<AyarlarEkranAdi, OrtakAyarParametreleri | undefined> & {
   TelevizyonAyarlari: (OrtakAyarParametreleri & TvDerinParametreleri) | undefined;
+  /** `hazir`: ayar sayfasındaki hazır görünüm (düzenleyici açılınca bir kez uygulanır). */
+  DuvarDuzenleyici: (OrtakAyarParametreleri & { hazir?: DuvarHazirAdi }) | undefined;
 };

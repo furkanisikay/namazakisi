@@ -250,7 +250,7 @@ export const DebugLogsSayfasi: React.FC = () => {
       const fileName = `namazakisi_logs_${Date.now()}.txt`;
       const file = new File(Paths.cache, fileName);
 
-      // write() sync API; await zararsiz, olasi async versiyonlara karsi guvenli
+      // SDK 58'den beri write() Promise döner (eşzamanlısı writeSync)
       await file.write(content, {
         encoding: 'utf8',
       });

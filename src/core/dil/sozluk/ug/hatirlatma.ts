@@ -318,6 +318,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'ئۆزىڭىز تاللىغان ئاۋاز',
     dokunarak: 'چېكىپ ئۆزگەرتىڭ',
     seciliDinle: 'تاللانغان ئۇقتۇرۇش ئاۋازىنى ئاڭلاڭ',
+    paket: {
+      zil: 'يۇمشاق قوڭغۇراق',
+      ikiton: 'ئىككى ئاھاڭ',
+      damla: 'تامچىلار',
+      sabah: 'سەھەر',
+    },
+    silErisim: '{ad} ئاۋازىنى ئۆچۈرۈڭ',
+    ornekDinleErisim: 'ئاڭلاڭ: {ad}',
+    uzunlukNotu: 'ئۇقتۇرۇش ئاۋازى ئەڭ كۆپ 30 سېكۇنت چېلىنىدۇ؛ ئۇزۇنراق ھۆججەتنىڭ دەسلەپكى 30 سېكۇنتى ئىشلىتىلىدۇ.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

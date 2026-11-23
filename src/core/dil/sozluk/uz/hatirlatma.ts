@@ -319,6 +319,15 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     kendiSesiniz: 'Сиз танлаган овоз',
     dokunarak: 'Ўзгартириш учун босинг',
     seciliDinle: 'Танланган билдиришнома овозини тинглаш',
+    paket: {
+      zil: 'Юмшоқ қўнғироқ',
+      ikiton: 'Икки оҳанг',
+      damla: 'Томчилар',
+      sabah: 'Тонг',
+    },
+    silErisim: '{ad} овозини ўчириш',
+    ornekDinleErisim: 'Тинглаш: {ad}',
+    uzunlukNotu: 'Билдиришнома овози кўпи билан 30 сония чалинади; узунроқ файлнинг дастлабки 30 сонияси ишлатилади.',
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',

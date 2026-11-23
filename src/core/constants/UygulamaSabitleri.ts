@@ -271,6 +271,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Günün ayeti duvar kâğıdı (#381). CİHAZA ÖZGÜ, YEDEKLENMEZ: duvar kâğıdını değiştirmek o
   // cihazda verilen açık onaya bağlı (`core/icerik/gununAyetiYuku.ts`).
   GUNUN_AYETI_DUVAR: 'gunun_ayeti_duvar',
+  // Kilit ekranı saat alanının kaynağı ('olcum' | 'elle'; yoksa alan tahminidir). Yalnız düzenleyicinin
+  // durum satırı içindir, yüke/`DuvarKagidiAyari`'na girmez. CİHAZA ÖZGÜ, YEDEKLENMEZ.
+  GUNUN_AYETI_SAAT_KAYNAGI: '@namaz_akisi/gunun_ayeti_saat_kaynagi',
   // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
   // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
   KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',
@@ -285,6 +288,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   // "Hatırlatmaları bu cihazda kur" (tek beyin): ana telefon mu, ikinci cihaz mı.
   // Cihaza özgü → YEDEKLENMEZ (yedek ikinci cihaza dönünce telefonun rolünü taşımasın).
   CIHAZ_ROLU: '@namaz_akisi/cihaz_rolu',
+  // Cihaz ağı üyeliklerinin SIRSIZ gölgesi (kimlik, ad, tür; anahtar YOK): güvenli depo
+  // okunamaz ya da sıfırlanırsa Cihazlarım boş liste yerine "okunamadı" der. Cihaza özgü,
+  // YEDEKLENMEZ (`CihazAgiDeposu`).
+  CIHAZ_AGI_GOLGESI: '@namaz_akisi/cihaz_agi_golgesi',
   // TEK RIZA (sade tasarım, Dalga 3): sesli okuma + gerçek alarm onayı BİR KEZ, tüm
   // hatırlatmalar için. Eski yüzey kayıtlarından bir kez göç eder (`core/hatirlatma/rizalar`).
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde).

@@ -120,8 +120,7 @@ describe('anonsSentezlenebilirMi', () => {
     });
 
     test('30 sn sinirini asacak kadar uzun metin ELENIR (sessizce calmamaktansa)', () => {
-        // iOS uzun sesi KIRPMAZ — dosyayi hic calmaz ve SISTEM varsayilan sesine
-        // duser. Once biz eliyoruz ki kendi varsayilan sesimize duselim.
+        // iOS uzun sesi KIRPMAZ — dosyayi calmaz, SISTEM varsayilan sesini calar. Once biz eliyoruz ki kendi varsayilan sesimize duselim.
         expect(anonsSentezlenebilirMi('a'.repeat(ANONS_METIN_UST_SINIRI + 1))).toBe(false);
         expect(anonsSentezlenebilirMi('a'.repeat(ANONS_METIN_UST_SINIRI))).toBe(true);
     });

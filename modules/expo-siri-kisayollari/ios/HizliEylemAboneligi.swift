@@ -7,7 +7,8 @@ import UIKit
  * Eylemler statiktir (`app.json > ios.infoPlist.UIApplicationShortcutItems`); tur adi
  * `HizliEylemKarari.ekran` ile ekran istegine cevrilir ve "Kibleyi ac" intent'inin yolundan
  * gecer (`SiriDeposu.ekranIstegiYaz` → JS `useSiriEkranIstegi`). Soguk acilista da calisir:
- * Expo `didFinishLaunching`'den `true` dondugu icin sistem eylemi ayrica bu metoda verir.
+ * SDK 58'in sahne (UIScene) yasam dongusunde eylem `connectionOptions.shortcutItem` ile
+ * gelir; `ExpoAppSceneDelegate` onu abonelere bu metotla iletir (calisirken de ayni yol).
  * Kayit: `expo-module.config.json > ios.appDelegateSubscribers`.
  */
 public class HizliEylemAboneligi: ExpoAppDelegateSubscriber {
