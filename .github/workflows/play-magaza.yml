@@ -19,6 +19,8 @@ on:
         options:
           - oku
           - yaz
+          - diller-deneme
+          - diller
           - surumler
           - uretime-al
           - cihaz-kareleri

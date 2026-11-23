@@ -198,9 +198,9 @@ function playMetinleri() {
 
 (async () => {
     const mod = process.argv[2];
-    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri', 'tv-ekle', 'gorseller'];
+    const MODLAR = ['oku', 'yaz', 'diller', 'diller-deneme', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri', 'tv-ekle', 'gorseller'];
     if (!MODLAR.includes(mod)) {
-        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle|gorseller> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
+        console.error('Kullanim: play-magaza.js <oku|yaz|diller|diller-deneme|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle|gorseller> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
         process.exit(1);
     }
     const arg = (ad) => {
@@ -425,6 +425,43 @@ function playMetinleri() {
             return;
         }
 
+        if (mod === 'diller' || mod === 'diller-deneme') {
+            // Butun mağaza kaydı dilleri tek edit'te: tr-TR kaynak metinden, digerleri
+            // docs/app-store/play-kayitlari/<kod>.json'dan; varsayilan dil en-US'ye alinir.
+            // `diller-deneme`: hepsini yazar, geri okuyup karsilastirir, COMMIT ETMEDEN siler.
+            const { PLAY_DILLERI, VARSAYILAN_DIL } = require('./play-kayit-dilleri');
+            const { kayitOku, kayitDenetle } = require('./play-kayit-denetle');
+            const kayitlar = { [DIL]: playMetinleri() };
+            const hatalar = [];
+            for (const kod of Object.values(PLAY_DILLERI)) {
+                const { kayit, hata } = kayitOku(kod);
+                const h = hata || kayitDenetle(kayit);
+                if (h.length) hatalar.push(kod + ': ' + h.join(' | '));
+                else kayitlar[kod] = kayit;
+            }
+            if (hatalar.length) throw new Error('kayitlar denetimden gecmedi:\n' + hatalar.join('\n'));
+            for (const [kod, k] of Object.entries(kayitlar)) {
+                const y = await api('PUT', '/edits/' + editId + '/listings/' + encodeURIComponent(kod), {
+                    language: kod,
+                    title: k.title,
+                    shortDescription: k.shortDescription,
+                    fullDescription: k.fullDescription,
+                });
+                if (y.kod >= 300) throw new Error(kod + ' yazilamadi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));
+                const g = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(kod));
+                const ayni = g.j && g.j.title === k.title && g.j.shortDescription === k.shortDescription && g.j.fullDescription === k.fullDescription;
+                if (!ayni) throw new Error(kod + ' geri okunan metin yazilanla ayni degil');
+                console.log('  ' + kod + ': ' + k.title);
+            }
+            const d = await api('PATCH', '/edits/' + editId + '/details', { defaultLanguage: VARSAYILAN_DIL });
+            if (d.kod >= 300) throw new Error('varsayilan dil ayarlanamadi: ' + d.kod + ' ' + JSON.stringify(d.j).slice(0, 300));
+            console.log('VARSAYILAN DIL: ' + (d.j && d.j.defaultLanguage) + ' | ' + Object.keys(kayitlar).length + ' dil');
+            if (mod === 'diller-deneme') {
+                await api('DELETE', '/edits/' + editId);
+                console.log('DENEME: hepsi yazilip geri okundu, edit SILINDI (magazada degisiklik yok).');
+                return;
+            }
+        } else {
         const metin = playMetinleri();
         const y = await api('PUT', '/edits/' + editId + '/listings/' + DIL, {
             language: DIL,
@@ -478,6 +515,7 @@ function playMetinleri() {
                 const r = await gorselYukle(editId, 'featureGraphic', one);
                 console.log('  one-cikan.png -> ' + r.kod);
             }
+        }
         }
 
         let commit = await api('POST', '/edits/' + editId + ':commit');
