@@ -208,7 +208,7 @@ SAAT, TABLET VE TELEVİZYON
 • Kayıtlarınızı kendi Google Drive alanınızda, sizin parolanızla şifreleyerek tabletinizle eşitleyebilirsiniz.
 
 VERİLERİNİZ SİZDE KALIR
-Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik yok. Konumunuz yalnız vakit ve kıble hesabında kullanılır, hiçbir sunucuya gönderilmez. Eşitlemeyi açarsanız verileriniz telefondan çıkmadan önce sizin parolanızla şifrelenir.
+Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik yok. Konumunuz yalnız vakit ve kıble hesabında kullanılır ve bize ulaşmaz. Eşitlemeyi açarsanız verileriniz telefondan çıkmadan önce sizin parolanızla şifrelenir.
 
 AÇIK KAYNAK
 Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsiz, kaynak kodları GNU GPLv3 lisansıyla herkese açık:
