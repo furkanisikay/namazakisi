@@ -216,6 +216,21 @@ object AgProtokolu {
     const val GOVDE_AZAMI = 8 * 1024
     val YOLLAR = setOf("/esle", "/esle-durum", "/esitle")
 
+    /** Tek `read` çağrısının zaman aşımı. */
+    const val TEK_OKUMA_MS = 5000
+
+    /** Bir isteğin başlık + gövdesinin okunabileceği TOPLAM süre (telefon `DinleyiciKurallari` ikizi). */
+    const val ISTEK_SURESI_MS = 8000L
+
+    /**
+     * Bir sonraki okumanın zaman aşımı (ms): tek okuma sınırı ile kalan bütçenin küçüğü; bütçe
+     * bittiyse 0 (çağıran bağlantıyı kapatır — sokete 0 yazılmaz, o SONSUZ bekleme demektir).
+     */
+    fun okumaSuresi(sonAnMs: Long, simdiMs: Long): Int {
+        val kalan = sonAnMs - simdiMs
+        return if (kalan <= 0) 0 else minOf(TEK_OKUMA_MS.toLong(), kalan).toInt()
+    }
+
     /**
      * Kimlikten KARARLI dinleme portu: 40000 + ilk 4 hex mod 20000. JS `kararliPort` ikizi
      * (`core/cihazAgi/kanal.ts`); ortak fikstür `esitleme-ornekleri.json > kararliPort`.

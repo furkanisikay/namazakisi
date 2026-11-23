@@ -96,12 +96,20 @@ class CihazDinleyici(
             try {
                 // İnternetten gelen (port yönlendirmeli) bağlantı hiç okunmaz.
                 if (!DinleyiciKurallari.yerelEsMi(s.inetAddress.address)) return
-                s.soTimeout = 5000
+                // İstek başına TOPLAM okuma bütçesi (yavaş yazan eş bağlantıyı tutamasın).
+                val sonAn = simdiMs() + DinleyiciKurallari.ISTEK_SURESI_MS
+                fun sureAyarla(): Boolean {
+                    val sure = DinleyiciKurallari.okumaSuresi(sonAn, simdiMs())
+                    if (sure <= 0) return false
+                    s.soTimeout = sure
+                    return true
+                }
                 val giris = s.getInputStream()
                 val tampon = ByteArrayOutputStream()
                 val parca = ByteArray(1024)
                 var ayrac = -1
                 while (ayrac < 0 && tampon.size() < DinleyiciKurallari.BASLIK_AZAMI + DinleyiciKurallari.GOVDE_AZAMI) {
+                    if (!sureAyarla()) return
                     val n = giris.read(parca)
                     if (n < 0) break
                     tampon.write(parca, 0, n)
@@ -113,6 +121,7 @@ class CihazDinleyici(
                     ?: return yaz(s, 400, "")
                 val govde = ByteArrayOutputStream().apply { write(ham, ayrac + 4, ham.size - ayrac - 4) }
                 while (govde.size() < istek.uzunluk) {
+                    if (!sureAyarla()) return
                     val n = giris.read(parca)
                     if (n < 0) break
                     govde.write(parca, 0, n)
@@ -167,6 +176,9 @@ class CihazDinleyici(
             Log.w(ETIKET, "mDNS yayinlanamadi: ${e.javaClass.simpleName}")
         }
     }
+
+    /** Tekdüze saat (duvar saati değişse de bütçe kaymaz). */
+    private fun simdiMs(): Long = System.nanoTime() / 1_000_000
 
     private companion object {
         const val ETIKET = "CihazDinleyici"

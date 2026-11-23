@@ -94,10 +94,16 @@ final class CihazDinleyici {
             return
         }
         acik += 1
+        // Bağlantı başına TEK azaltma: `.failed` olan bağlantı 5 sn sonraki `cancel()` ile bir de
+        // `.cancelled` olur; iki kez sayılsaydı sayaç eksiye iner ve 3 bağlantı tavanı aşınırdı.
+        // Geri çağrı `kuyruk` üzerinde koşar (start(queue:)), bayrak yarışsız.
+        var dusuldu = false
         b.stateUpdateHandler = { [weak self] durum in
             switch durum {
             case .cancelled, .failed:
-                self?.kuyruk.async { self?.acik -= 1 }
+                guard !dusuldu else { return }
+                dusuldu = true
+                self?.acik -= 1
             default:
                 break
             }

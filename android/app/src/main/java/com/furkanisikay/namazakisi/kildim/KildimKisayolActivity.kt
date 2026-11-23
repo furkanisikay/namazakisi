@@ -82,9 +82,12 @@ class KildimKisayolActivity : Activity() {
                 .setNegativeButton(R.string.kildim_onay_vazgec) { _, _ -> islendi = true; finish() }
         } else {
             val tarayici = baslatan.sinif == KaynakSinifi.TARAYICI
+            // Başlıktaki ad uygulamanın KENDİ beyanıdır ("Samsung Rutinler" yazan sahte bir
+            // uygulama olabilir) → kalıcı izin istenirken taklit edilemeyen paket adı da görünür.
             insa.setTitle(getString(R.string.kildim_guven_baslik, baslatan.ad))
                 .setMessage(
-                    getString(if (tarayici) R.string.kildim_guven_tarayici_mesaj else R.string.kildim_guven_mesaj, aday.vakitAdi)
+                    getString(if (tarayici) R.string.kildim_guven_tarayici_mesaj else R.string.kildim_guven_mesaj, aday.vakitAdi) +
+                        "\n\n" + paket
                 )
             if (sor.herZamanSunulur) {
                 insa.setPositiveButton(R.string.kildim_guven_her_zaman) { _, _ ->
