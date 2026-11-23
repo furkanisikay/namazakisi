@@ -225,6 +225,14 @@ function playMetinleri() {
                 console.log('TAM ACIKLAMA (' + (d.fullDescription || '').length + '/4000):');
                 console.log(d.fullDescription);
             }
+            // Kanal basina ulke erisimi (salt okunur; ulke listesi Play Console'da yonetilir).
+            for (const kanal of ['production', 'internal']) {
+                const u = await api('GET', '/edits/' + editId + '/countryAvailability/' + kanal);
+                const ulkeler = (u.j && u.j.countries) || [];
+                console.log('=== ULKE ERISIMI: ' + kanal + ' (' + u.kod + ') ===');
+                console.log('restOfWorld:', u.j && u.j.restOfWorld, '| ulke sayisi:', ulkeler.length);
+                console.log(ulkeler.map((c) => c.countryCode).join(' '));
+            }
             // Yuklemeden sonra geri okuyup sayilari dogrulamak icin butun gorsel turleri.
             for (const tur of ['phoneScreenshots', 'sevenInchScreenshots', 'tenInchScreenshots', 'tvScreenshots', 'wearScreenshots', 'featureGraphic', 'icon']) {
                 const g = await api('GET', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
