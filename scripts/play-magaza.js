@@ -230,7 +230,7 @@ function playMetinleri() {
                 const u = await api('GET', '/edits/' + editId + '/countryAvailability/' + kanal);
                 const ulkeler = (u.j && u.j.countries) || [];
                 console.log('=== ULKE ERISIMI: ' + kanal + ' (' + u.kod + ') ===');
-                console.log('restOfWorld:', u.j && u.j.restOfWorld, '| ulke sayisi:', ulkeler.length);
+                console.log('HAM:', JSON.stringify(u.j).slice(0, 400));
                 console.log(ulkeler.map((c) => c.countryCode).join(' '));
             }
             // Yuklemeden sonra geri okuyup sayilari dogrulamak icin butun gorsel turleri.
