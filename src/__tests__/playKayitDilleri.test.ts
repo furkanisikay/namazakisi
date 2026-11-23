@@ -32,9 +32,8 @@ describe('Play mağaza kaydı dilleri', () => {
     expect(dosyalar.sort()).toEqual(Object.values(PLAY_DILLERI).sort());
   });
 
-  test('varsayılan dil İngilizce kayıttır', () => {
-    expect(VARSAYILAN_DIL).toBe('en-US');
-    expect(Object.values(PLAY_DILLERI)).toContain(VARSAYILAN_DIL);
+  test('varsayılan dil kaydı olan bir dildir', () => {
+    expect(['tr-TR', ...Object.values(PLAY_DILLERI)]).toContain(VARSAYILAN_DIL);
   });
 
   test('denetleyici sınır aşımını ve eksik bağlantıyı yakalar', () => {

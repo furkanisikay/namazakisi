@@ -427,7 +427,7 @@ function playMetinleri() {
 
         if (mod === 'diller' || mod === 'diller-deneme') {
             // Butun mağaza kaydı dilleri tek edit'te: tr-TR kaynak metinden, digerleri
-            // docs/app-store/play-kayitlari/<kod>.json'dan; varsayilan dil en-US'ye alinir.
+            // docs/app-store/play-kayitlari/<kod>.json'dan; varsayilan dil VARSAYILAN_DIL'e alinir (gorseli yoksa durur).
             // `diller-deneme`: hepsini yazar, geri okuyup karsilastirir, COMMIT ETMEDEN siler.
             const { PLAY_DILLERI, VARSAYILAN_DIL } = require('./play-kayit-dilleri');
             const { kayitOku, kayitDenetle } = require('./play-kayit-denetle');
@@ -453,9 +453,20 @@ function playMetinleri() {
                 if (!ayni) throw new Error(kod + ' geri okunan metin yazilanla ayni degil');
                 console.log('  ' + kod + ': ' + k.title);
             }
-            const d = await api('PATCH', '/edits/' + editId + '/details', { defaultLanguage: VARSAYILAN_DIL });
-            if (d.kod >= 300) throw new Error('varsayilan dil ayarlanamadi: ' + d.kod + ' ' + JSON.stringify(d.j).slice(0, 300));
-            console.log('VARSAYILAN DIL: ' + (d.j && d.j.defaultLanguage) + ' | ' + Object.keys(kayitlar).length + ' dil');
+            // Gorseli olmayan dil varsayilan olursa kendi gorseli olmayan butun diller gorselsiz kalir.
+            const mevcut = await api('GET', '/edits/' + editId + '/details');
+            if (mevcut.j && mevcut.j.defaultLanguage !== VARSAYILAN_DIL) {
+                const ekran = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(VARSAYILAN_DIL) + '/phoneScreenshots');
+                const one = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(VARSAYILAN_DIL) + '/featureGraphic');
+                const ekranSay = ((ekran.j && ekran.j.images) || []).length;
+                const oneSay = ((one.j && one.j.images) || []).length;
+                if (ekranSay < 2 || oneSay < 1) {
+                    throw new Error(VARSAYILAN_DIL + ' varsayilan yapilamaz: ' + ekranSay + ' telefon goruntusu, ' + oneSay + ' one cikan gorsel (en az 2 + 1)');
+                }
+                const d = await api('PATCH', '/edits/' + editId + '/details', { defaultLanguage: VARSAYILAN_DIL });
+                if (d.kod >= 300) throw new Error('varsayilan dil ayarlanamadi: ' + d.kod + ' ' + JSON.stringify(d.j).slice(0, 300));
+            }
+            console.log('VARSAYILAN DIL: ' + VARSAYILAN_DIL + ' | ' + Object.keys(kayitlar).length + ' dil');
             if (mod === 'diller-deneme') {
                 await api('DELETE', '/edits/' + editId);
                 console.log('DENEME: hepsi yazilip geri okundu, edit SILINDI (magazada degisiklik yok).');

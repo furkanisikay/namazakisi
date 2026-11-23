@@ -8,7 +8,7 @@
  * Bilinçli dışarıda: Play'de karşılığı olmayan 28 dil (bs, ps, ckb, ku, ug, uz, tg, tk, tt, sd,
  * as, ha, om, so, ff, yo, mg, lg, rw, rn, ln, dag, mos, aa, mdh, ak, ceb, nqo) ve Pencapça
  * (Play `pa`'nın yazısını belirtmez; CLDR'de `pa` Gurmukidir, bizim metnimiz Şahmuki). Bu dillerin
- * kullanıcısı varsayılan dili (en-US) görür; uygulama yine kendi dilinde açılır.
+ * kullanıcısı varsayılan dili görür; uygulama yine kendi dilinde açılır.
  */
 const PLAY_DILLERI = {
     en: 'en-US',
@@ -61,8 +61,12 @@ const PLAY_DILLERI = {
     lt: 'lt',
 };
 
-/** Play'deki varsayılan kayıt dili: kaydı olmayan dilin kullanıcısı bunu görür. */
-const VARSAYILAN_DIL = 'en-US';
+/**
+ * Play'deki varsayılan kayıt dili: kaydı olmayan dilin kullanıcısı bunu görür, kendi görseli
+ * olmayan dil de bu dilin görsellerini gösterir. Görseli olmayan dil varsayılan YAPILMAZ
+ * (`play-magaza.js diller` denetler); İngilizce görseller yüklenince `en-US`'ye alınır.
+ */
+const VARSAYILAN_DIL = 'tr-TR';
 
 const SINIRLAR = { title: 30, shortDescription: 80, fullDescription: 4000 };
 
