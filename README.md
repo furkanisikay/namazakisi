@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.71.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.72.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.71.0** · Mağazada: Google Play: **0.70.1** · App Store: **0.70.1**
+Kaynak koddaki sürüm: **0.72.0** · Mağazada: Google Play: **0.70.1** · App Store: **0.70.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -428,18 +428,19 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 ### 🆕 Son Eklenenler
 
 <!-- OTOMATIK:BASLA yenilikler -->
-- **Günün ayeti ana ekranınızda** — Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza widget olarak ekleyebilir, isterseniz kilit ekranınızın duvar kâğıdı yapabilirsiniz. <sub>Android · 0.71.0</sub>
-- **Günün ayeti ana ekranınızda** — Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza ve kilit ekranınıza widget olarak ekleyebilirsiniz. <sub>iOS · 0.71.0</sub>
+- **Hatırlatma sesini siz seçin** — Namaz Muhafızı adımları ve vakit bildirimleri için uygulamanın seslerinden birini seçebilir ya da kendi ses dosyanızı ekleyebilirsiniz. <sub>iOS · 0.72.0</sub>
+- **Günün ayeti ana ekranınızda** — Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza widget olarak ekleyebilir, isterseniz kilit ekranınızın duvar kâğıdı yapabilirsiniz. <sub>Android · 0.72.0</sub>
+- **Günün ayeti ana ekranınızda** — Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza ve kilit ekranınıza widget olarak ekleyebilirsiniz. <sub>iOS · 0.72.0</sub>
 - **Uygulamayı İngilizce de kullanabilirsiniz** — Ayarlar › Dil bölümünden İngilizceyi seçebilirsiniz. Bildirimler, sesli okuma ve widget da seçtiğiniz dilde olur. <sub>Android · iOS · 0.71.0</sub>
 - **Dünyanın her yerinde doğru vakit** — Türkiye dışındaki bir şehri de seçebilirsiniz. Vakitler o ülkenin camilerinin uyduğu takvime göre hesaplanır. <sub>Android · iOS · 0.71.0</sub>
 - **Allah kabul etsin** — Namazı işaretlediğinizde artık "Kılındı" değil, "Allah kabul etsin" yazar. Cuma, kandil, bayram ve Ramazan günlerinde başlıkta kısa bir selam görürsünüz. <sub>Android · iOS · 0.70.0</sub>
 - **Verileriniz Tüm Cihazlarınızda** — Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir. <sub>Android · 0.69.0</sub>
 - **Telefon ve tablet birlikte** — Tabletinizi telefonunuza ekleyin: birinde işaretlediğiniz namaz öbürüne de geçer. Hesap yok, sunucu yok; yalnız evinizin Wi-Fi ağı. <sub>Android · iOS · 0.60.0</sub>
-- **TV kıldığınız namazları da bilir** — Cihazlarım sayfasından evdeki TV’leri yönetin. İsterseniz TV, kıldığınız namazları bilir; vakit daralırken kılmadıysanız ekranın altında sessiz bir bant gösterir. <sub>Android · iOS · 0.65.0</sub>
 
 <details>
-<summary>Diğer 40 özellik</summary>
+<summary>Diğer 41 özellik</summary>
 
+- **TV kıldığınız namazları da bilir** — Cihazlarım sayfasından evdeki TV’leri yönetin. İsterseniz TV, kıldığınız namazları bilir; vakit daralırken kılmadıysanız ekranın altında sessiz bir bant gösterir. <sub>Android · iOS · 0.65.0</sub>
 - **Vakit girince kendi sesiniz çalsın** — Her vakit için bildirim sesini ayrı seçin; telefonunuzdaki bir ses dosyasını, örneğin sevdiğiniz bir ezan kaydını da ekleyebilirsiniz. <sub>Android · 0.64.0</sub>
 - **Camide telefonunuz sessize geçsin** — Namaz odağını bir kez kurun: camiye ya da kendi belirlediğiniz bir yere varınca iPhone sessize geçer, ayrılınca eski hâline döner. <sub>iOS · 0.55.0</sub>
 - **Vakitler Televizyonda** — Evdeki Android TV’de Namaz Akışı’nı açın, ekrandaki kare kodu telefonunuzla okutun: konumunuz TV’ye gelir, vakitler büyük ekranda sizin şehrinize göre görünür. <sub>Android · iOS · 0.55.0</sub>
@@ -538,11 +539,11 @@ Sıradan bir alarm değil, sizi namaza kaldıran akıllı bir sistem:
 Modern mobil geliştirme standartları ile inşa edilmiştir:
 
 <!-- OTOMATIK:BASLA teknolojiler -->
-*   **Çekirdek:** React Native 0.86.3 + Expo SDK 57 (bare workflow, New Architecture), TypeScript 6.0.3 (strict)
-*   **Durum:** Redux Toolkit 2.12.0
+*   **Çekirdek:** React Native 0.88.1 + Expo SDK 58 (bare workflow, New Architecture), TypeScript 6.0.3 (strict)
+*   **Durum:** Redux Toolkit 2.13.0
 *   **Depolama:** AsyncStorage (yalnız cihazda)
 *   **Görünüm:** NativeWind 4.2.7 (TailwindCSS)
-*   **Vakit hesabı:** Adhan.js 4.4.3 (Diyanet / Türkiye yöntemi, çevrimdışı)
+*   **Vakit hesabı:** Adhan.js 4.4.6 (Diyanet / Türkiye yöntemi, çevrimdışı)
 *   **Bildirim ve arka plan:** Notifee, Expo Notifications, Expo Task Manager, Expo Calendar
 *   **Native:** Kotlin (Android widget, gerçek alarm, Wear OS ve Android TV — Jetpack Compose), Swift (Siri, AlarmKit, WidgetKit, watchOS)
 *   **Test:** Jest 29.7.0 + jest-expo

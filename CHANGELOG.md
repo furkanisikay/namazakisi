@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.72.0] - 2026-11-23
+
+### Eklendi
+- [duvar] kişiselleştirilebilir duvar kâğıdı; iPhone bildirim sesi; Expo SDK 58; Cihazlarım ve saat yedeği düzeltmeleri (#398)
+
+### Düzeltildi
+- [guvenlik] güvenlik denetimi — debug imzalı APK yayını, yedek doğrulaması, sertleştirmeler; AGP 9 release birim testi (#406)
+
 ## [0.71.0] - 2026-11-06
 
 ### Eklendi
