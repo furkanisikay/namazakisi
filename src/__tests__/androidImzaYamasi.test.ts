@@ -54,7 +54,7 @@ describe('android-build.yml imza kapıları', () => {
   });
 
   it('APK yalnız imza denetiminden geçerse sürüme eklenir', () => {
-    expect(is).toContain('bash scripts/apk-imza-denetimi.sh "$APK" android/app/debug.keystore');
+    expect(is).toContain('node scripts/apk-imza-denetimi.js "$APK" android/app/debug.keystore');
     expect(is).toContain("files: ${{ steps.imza.outputs.yayinla == 'true' && steps.rename.outputs.apk_name || '' }}");
     expect(is).not.toMatch(/^\s*files: \$\{\{ steps\.rename\.outputs\.apk_name \}\}\s*$/m);
   });

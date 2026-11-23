@@ -464,10 +464,12 @@ jobs:
           set -uo pipefail
           # Varsayilan kabuk `-e` ile kosar: sifirdan farkli cikis kodu adimi kesmesin.
           KOD=0
-          bash scripts/apk-imza-denetimi.sh "$APK" android/app/debug.keystore || KOD=$?
+          node scripts/apk-imza-denetimi.js "$APK" android/app/debug.keystore || KOD=$?
           if [ "$BUILD_TYPE" != "release" ]; then
-            if [ "$KOD" -eq 0 ]; then
-              echo "::error::Imza denetimi debug APK'yi debug imzali olarak TANIYAMADI (denetim bozuk)"
+            # Oz-sinama: debug APK TAM OLARAK "debug imzali" (3) cikmali. 0 = denetim debug
+            # imzayi kaciriyor, 4 = imzayi okuyamiyor; ikisi de release kapisini kor birakir.
+            if [ "$KOD" -ne 3 ]; then
+              echo "::error::Imza denetimi debug APK'yi debug imzali olarak TANIYAMADI (kod $KOD; denetim bozuk)"
               exit 1
             fi
             echo "yayinla=false" >> "$GITHUB_OUTPUT"
