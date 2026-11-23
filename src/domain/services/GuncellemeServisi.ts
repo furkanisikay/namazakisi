@@ -185,9 +185,10 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
    * Platform'a uygun APK/IPA indirme baglantisi bul
    * Bulamazsa veya baglanti guvenilir degilse release sayfasina yonlendir
    *
-   * Guvenlik: API'den gelen tum URL'ler guvenilirBaglantiMi() ile dogrulanir.
-   * Dogrulamayi gecemeyen URL'ler (manipule edilmis/phishing) otomatik olarak
-   * sabit release sayfasi fallback'ine dusuler.
+   * Guvenlik: API'den gelen tum URL'ler guvenilirSurumBaglantisiMi() ile dogrulanir
+   * (ana bilgisayar + BU deponun `/releases` yolu). Dogrulamayi gecemeyen URL'ler
+   * (manipule edilmis/phishing, baska deponun APK'si) otomatik olarak sabit release
+   * sayfasi fallback'ine dusuler.
    */
   private indirmeBaglantisiBul(releaseVeri: any): string {
     const assets = releaseVeri.assets || [];
@@ -200,18 +201,18 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
         (a: any) => a.name?.toLowerCase().endsWith('.apk')
       );
       if (apk?.browser_download_url) {
-        // APK baglantisini guvenilirBaglantiMi ile dogrula
-        if (guvenilirBaglantiMi(apk.browser_download_url)) {
+        // APK baglantisini dogrula: yalniz bu deponun release yolu kabul edilir
+        if (guvenilirSurumBaglantisiMi(apk.browser_download_url, this.repoAdresi)) {
           return apk.browser_download_url;
         }
         // Guvenilmez APK baglantisi — sabit fallback'e dus
-        Logger.warn('GuncellemeServisi', 'APK baglantisi guvenilmez domain iceriyor, release sayfasina yonlendiriliyor');
+        Logger.warn('GuncellemeServisi', 'APK baglantisi guvenilmez, release sayfasina yonlendiriliyor');
         return sabitFallback;
       }
     }
 
     // Release sayfasini da dogrula; guvenilmezse sabit fallback kullan
-    if (guvenilirBaglantiMi(releaseSayfasi)) {
+    if (guvenilirSurumBaglantisiMi(releaseSayfasi, this.repoAdresi)) {
       return releaseSayfasi;
     }
     Logger.warn('GuncellemeServisi', 'Release sayfasi baglantisi guvenilmez, sabit URL kullaniliyor');
@@ -655,10 +656,67 @@ export function guvenilirBaglantiMi(url: string): boolean {
   if (!GORUNUR_ASCII.test(url) || url.includes('@') || url.includes('\\')) return false;
   const eslesme = GUVENILIR_URL_DESENI.exec(url);
   if (!eslesme) return false;
-  const anaBilgisayar = eslesme[1];
-  if (anaBilgisayar.includes('..')) return false;
-  return GUVENILIR_DOMAINLER.some(
-    (domain) => anaBilgisayar === domain || anaBilgisayar.endsWith(`.${domain}`)
+  // Alt alan adı KABUL EDİLMEZ (denetim B-6): `kotu.github.com` gibi adlar listedeki
+  // hizmetin kendisi değildir; meşru bağlantıların hepsi tam bu ana bilgisayarları taşır.
+  return GUVENILIR_DOMAINLER.includes(eslesme[1]);
+}
+
+/** Yol parçası: harf, rakam ve `. _ + ~ -`. Yüzde kodlaması (`%2e`, `%2f`) BİLEREK yok. */
+const GUVENLI_YOL_PARCASI = /^[A-Za-z0-9._+~-]+$/;
+/** `https://<ana bilgisayar>[:443]` ardından yol, sorgu ve parça (ayrıştırma `URL` sınıfı olmadan). */
+const SURUM_URL_DESENI = /^https:\/\/([a-z0-9.-]+)(?::443)?(\/[^?#]*)?(\?[^#]*)?(#.*)?$/;
+/** App Store uygulama sayfası: `/app/...` ya da `/tr/app/...`. */
+const APP_STORE_YOLU = /^\/(?:[a-z]{2}(?:-[a-z]{2,4})?\/)?app\//;
+
+/** ASCII harfleri küçültür (A–Z → a–z); `toLowerCase` Türkçe İ/ı tuzağı yüzünden kullanılmaz. */
+function asciiKucuk(metinDegeri: string): string {
+  let sonuc = '';
+  for (let i = 0; i < metinDegeri.length; i++) {
+    const kod = metinDegeri.charCodeAt(i);
+    sonuc += kod >= 65 && kod <= 90 ? String.fromCharCode(kod + 32) : metinDegeri[i];
+  }
+  return sonuc;
+}
+
+/**
+ * Güncelleme "indir / sürüm sayfası" bağlantısı güvenilir mi? `guvenilirBaglantiMi`
+ * yalnız ana bilgisayara bakar; `github.com` ise herkesin dosya barındırabildiği bir
+ * yerdir. Burada YOL da sabitlenir (denetim B-6):
+ * - `github.com` → yalnız `/<depo>/releases` ve altı (sürüm sayfası, `releases/download/…`
+ *   APK'sı). Sorgu, parça, yüzde kodlaması, boş ya da `.`/`..` yol parçası reddedilir;
+ *   depo adı ASCII harf duyarsız karşılaştırılır (GitHub da öyle çözer).
+ * - `play.google.com` → yalnız `/store/apps/…` (`/url?q=` yönlendiricisi değil).
+ * - `apps.apple.com` → yalnız uygulama sayfası.
+ * - `objects.githubusercontent.com` reddedilir: depoya bağlanamayan imzalı yönlendirme
+ *   hedefidir; API'nin `browser_download_url`'i hep `github.com/<depo>/releases/download/…`
+ *   verir ve o adrese tarayıcı kendisi yönlenir.
+ */
+export function guvenilirSurumBaglantisiMi(url: string, depo: string = UYGULAMA.GITHUB_REPO): boolean {
+  if (!guvenilirBaglantiMi(url)) return false;
+  const eslesme = SURUM_URL_DESENI.exec(url);
+  if (!eslesme) return false;
+  const [, anaBilgisayar, yol = '', sorgu = '', parca = ''] = eslesme;
+
+  if (anaBilgisayar === 'play.google.com') {
+    return yol.startsWith('/store/apps/') && !yol.includes('..');
+  }
+  if (anaBilgisayar === 'apps.apple.com') {
+    return APP_STORE_YOLU.test(yol) && !yol.includes('..');
+  }
+  if (anaBilgisayar !== 'github.com' || sorgu !== '' || parca !== '') return false;
+
+  const parcalar = yol.split('/').slice(1);
+  // Sondaki tek `/` zararsızdır (`…/releases/`); aradaki boş parça (`//`) değildir.
+  if (parcalar.length > 0 && parcalar[parcalar.length - 1] === '') parcalar.pop();
+  if (parcalar.some((p) => !GUVENLI_YOL_PARCASI.test(p) || p === '.' || p === '..')) return false;
+
+  const depoParcalari = depo.split('/');
+  if (depoParcalari.length !== 2 || depoParcalari.some((p) => !GUVENLI_YOL_PARCASI.test(p))) return false;
+  return (
+    parcalar.length >= 3 &&
+    asciiKucuk(parcalar[0]) === asciiKucuk(depoParcalari[0]) &&
+    asciiKucuk(parcalar[1]) === asciiKucuk(depoParcalari[1]) &&
+    parcalar[2] === 'releases'
   );
 }
 

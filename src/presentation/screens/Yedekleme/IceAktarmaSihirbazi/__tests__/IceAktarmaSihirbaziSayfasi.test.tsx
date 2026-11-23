@@ -23,6 +23,7 @@ import { iceAktarmayiUygula } from '../../../../store/yedeklemeSlice';
 import { zarfiCoz, mevcutVeriyiTopla } from '../../../../../domain/services/YedeklemeServisi';
 import { farkCikar } from '../../../../../domain/services/YedekBirlestirmeServisi';
 import type { YedekPayload, FarkOzeti } from '../../../../../core/types';
+import { AZAMI_YEDEK_DOSYASI_BAYT } from '../../../../../core/yedek/yedekPayloadDogrula';
 import { ingilizceyeGec, turkceKalanlar } from '../../../../../__tests__/yardimci/ingilizceDenetimi';
 import { CozmeHatasiAdimi, CozumleniyorAdimi, OzetAdimi, UygulamaHatasiAdimi, UygulaniyorAdimi } from '../adimlar';
 
@@ -204,6 +205,42 @@ describe('IceAktarmaSihirbaziSayfasi', () => {
     expect(getByText('Tekrar Deneyin')).toBeTruthy();
     expect(getByText('Vazgeçin')).toBeTruthy();
     expect(iceAktarmayiUygula).not.toHaveBeenCalled();
+  });
+
+  it('NÖBETÇİ (B-3): sınırı aşan dosya belleğe ALINMADAN aynı hata ekranına düşer', async () => {
+    (DocumentPicker.getDocumentAsync as jest.Mock).mockResolvedValue({
+      canceled: false,
+      assets: [{ uri: 'file:///dev.json', size: AZAMI_YEDEK_DOSYASI_BAYT + 1 }],
+    });
+
+    const { getByText } = render(<IceAktarmaSihirbaziSayfasi />);
+    fireEvent.press(getByText('Dosya Seçin'));
+
+    await waitFor(() => {
+      expect(getByText('Dosya Okunamadı')).toBeTruthy();
+    });
+    expect(mockDosyaIcerik).not.toHaveBeenCalled();
+    expect(zarfiCoz).not.toHaveBeenCalled();
+  });
+
+  it('sınırın tam üstündeki ve boyutu bilinmeyen dosya ENGELLENMEZ', async () => {
+    mockDosyaIcerik.mockResolvedValue('zarf-icerik');
+    (zarfiCoz as jest.Mock).mockResolvedValue(sahtePayload);
+    (farkCikar as jest.Mock).mockReturnValue(sahteFark);
+
+    for (const size of [AZAMI_YEDEK_DOSYASI_BAYT, undefined]) {
+      (zarfiCoz as jest.Mock).mockClear();
+      (DocumentPicker.getDocumentAsync as jest.Mock).mockResolvedValue({
+        canceled: false,
+        assets: [{ uri: 'file:///yedek.json', size }],
+      });
+      const { getByText, unmount } = render(<IceAktarmaSihirbaziSayfasi />);
+      fireEvent.press(getByText('Dosya Seçin'));
+      await waitFor(() => {
+        expect(zarfiCoz).toHaveBeenCalledWith('zarf-icerik');
+      });
+      unmount();
+    }
   });
 
   it('kullanıcı dosya seçimini iptal edince adımda kalır', async () => {

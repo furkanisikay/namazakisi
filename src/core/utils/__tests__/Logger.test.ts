@@ -266,6 +266,56 @@ describe('Logger', () => {
       const exported = Logger.exportLogs();
       expect(exported).toBe('Log bulunamadi');
     });
+
+    // NÖBETÇİ (denetim B-4): cihazdan çıkacak metin için maskeleme VERİ üzerinde yapılır;
+    // dönüştürücü her kaydın data'sına metne dökülmeden ÖNCE uygulanır.
+    it('veriDonustur verilirse data metne dökülmeden önce ondan geçer', async () => {
+      await Logger.setEnabled(true);
+      Logger.info('Konum', 'Konum alindi', { lat: 41.008237, lng: 28.978359, vakit: 'ikindi' });
+      Logger.info('Diger', 'Verisiz kayit');
+
+      const donustur = jest.fn((veri: unknown) => ({ ...(veri as object), lat: 'X', lng: 'X' }));
+      const exported = Logger.exportLogs(donustur);
+
+      expect(donustur).toHaveBeenCalledTimes(1);
+      expect(donustur).toHaveBeenCalledWith({ lat: 41.008237, lng: 28.978359, vakit: 'ikindi' });
+      expect(exported).not.toContain('41.008237');
+      expect(exported).not.toContain('28.978359');
+      expect(exported).toContain('"lat": "X"');
+      expect(exported).toContain('"vakit": "ikindi"');
+      expect(exported).toContain('Verisiz kayit');
+      // Bellekteki kayıt değişmez (ekrandaki log görünümü ham kalır).
+      expect(Logger.getLogs()[1].data).toEqual({ lat: 41.008237, lng: 28.978359, vakit: 'ikindi' });
+    });
+
+    it('veriDonustur verilmezse çıktı eskisi gibidir (girintili JSON)', async () => {
+      await Logger.setEnabled(true);
+      Logger.info('T', 'm', { a: 1 });
+      expect(Logger.exportLogs()).toContain('Data: {\n  "a": 1\n}');
+    });
+
+    it('veriDonustur fırlatırsa veri HAM yazılmaz, yer tutucu yazılır', async () => {
+      await Logger.setEnabled(true);
+      Logger.info('Konum', 'Konum alindi', { lat: 41.008237 });
+
+      const exported = Logger.exportLogs(() => {
+        throw new Error('maskeleyici bozuk');
+      });
+
+      expect(exported).not.toContain('41.008237');
+      expect(exported).toContain('Konum alindi');
+      expect(exported).toContain('[veri yazilamadi]');
+    });
+
+    it('döngüsel data dışa aktarımı çökertmez', async () => {
+      await Logger.setEnabled(true);
+      const dongusel: Record<string, unknown> = { ad: 'x' };
+      dongusel.kendisi = dongusel;
+      Logger.info('T', 'dongusel kayit', dongusel);
+
+      expect(() => Logger.exportLogs()).not.toThrow();
+      expect(Logger.exportLogs()).toContain('[veri yazilamadi]');
+    });
   });
 
   describe('debounce ile storage kalicilik (saveLogs tetiklenmesi)', () => {

@@ -46,15 +46,11 @@ jest.mock('../../../../core/theme', () => ({
 }));
 
 // GuncellemeServisi mock
-// NOT: guvenilirBaglantiMi'yi URETIM ile AYNI sozlesmeye gore (https + guvenilir domain)
-// implemente ediyoruz; cunku GuncellemeBildirimi.tsx GitHub dalinda bunu cagiriyor.
-// Mock'tan eksik olsaydi component icinde undefined olup TypeError firlatirdi.
-const GUVENILIR_DOMAINLER_TEST = [
-  'github.com',
-  'objects.githubusercontent.com',
-  'play.google.com',
-  'apps.apple.com',
-];
+// NOT: guvenilirSurumBaglantisiMi'yi URETIM ile AYNI sozlesmeye gore (https + github.com +
+// YALNIZ uygulamanin kendi deposunun /releases yolu) implemente ediyoruz; cunku
+// GuncellemeBildirimi.tsx GitHub dalinda bunu cagiriyor. Mock'tan eksik olsaydi component
+// icinde undefined olup TypeError firlatirdi. Bu dosyada "kendi depo" = ornek/repo.
+const KENDI_DEPO_SURUM_ONEKI_TEST = 'https://github.com/ornek/repo/releases/';
 // Stabil spy: guncellemeErtele thunk'i GuncellemeServisi.getInstance().guncellemeErtele'yi
 // cagirir. getInstance her cagrida YENI jest.fn dondurseydi cagriyi izleyemezdik;
 // bu yuzden ayni instance'i (ve ayni spy'i) dondururuz. Boylece "Sonra" butonunun
@@ -68,18 +64,7 @@ jest.mock('../../../../domain/services/GuncellemeServisi', () => ({
     }),
   },
   yayinTarihiniFormatla: (tarih: string) => tarih ? '14.02.2026' : '',
-  guvenilirBaglantiMi: (url: string) => {
-    try {
-      const parsed = new URL(url);
-      if (parsed.protocol !== 'https:') return false;
-      return GUVENILIR_DOMAINLER_TEST.some(
-        (domain) =>
-          parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`)
-      );
-    } catch {
-      return false;
-    }
-  },
+  guvenilirSurumBaglantisiMi: (url: string) => url.startsWith(KENDI_DEPO_SURUM_ONEKI_TEST),
 }));
 
 // Linking mock
@@ -342,7 +327,7 @@ describe('GuncellemeBildirimi', () => {
           yeniVersiyon: '1.0.0',
           mevcutVersiyon: '0.3.0',
           degisiklikNotlari: 'Test',
-          // github.com guvenilir domaindir -> guvenilirBaglantiMi(true)
+          // kendi deponun release yolu -> guvenilirSurumBaglantisiMi(true)
           indirmeBaglantisi: 'https://github.com/ornek/repo/releases/download/v1.0.0/app.apk',
           yayinTarihi: '2026-02-14',
           kaynak: 'github',
@@ -420,6 +405,48 @@ describe('GuncellemeBildirimi', () => {
     expect(Linking.openURL).toHaveBeenCalledWith(baglanti);
     // GitHub dalinda Play Store native akisi tetiklenmemeli
     expect(mockEsnekGuncellemeBaslat).not.toHaveBeenCalled();
+
+    act(() => { tree!.unmount(); });
+  });
+
+  // NÖBETÇİ (denetim B-6): github.com üzerinde ama BAŞKA deponun APK'sı — ana bilgisayar
+  // güvenilir görünse de açılmaz (bileşen yol denetimli doğrulayıcıyı kullanır).
+  it('Guncelle butonuna (GitHub) basinca BASKA deponun release baglantisi ACILMAZ', async () => {
+    (Linking.openURL as jest.Mock).mockClear();
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '1.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://github.com/kotu/repo/releases/download/v9/kotu.apk',
+          yayinTarihi: '2026-02-14',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    await act(async () => {
+      await butonBul(tree!, 'Güncelle').props.onPress();
+    });
+
+    expect(Linking.openURL).not.toHaveBeenCalled();
 
     act(() => { tree!.unmount(); });
   });

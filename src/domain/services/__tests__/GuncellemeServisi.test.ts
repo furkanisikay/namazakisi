@@ -16,6 +16,7 @@ import {
   versiyonKarsilastir,
   yayinTarihiniFormatla,
   guvenilirBaglantiMi,
+  guvenilirSurumBaglantisiMi,
   GuncellemeKaynagi,
   GuncellemeKontrolSonucu,
 } from '../GuncellemeServisi';
@@ -237,8 +238,8 @@ describe('GitHubGuncellemeKaynagi', () => {
 
   it('APK indirme baglantisinii dogru bulur', async () => {
     const yeniVersiyon = '99.0.0';
-    // Guvenilir bir domain kullanmak gerekiyor (guvenlik dogrulamasi aktif)
-    const apkUrl = `https://objects.githubusercontent.com/releases/NamazAkisi-v${yeniVersiyon}.apk`;
+    // Guvenlik dogrulamasi aktif: yalniz bu deponun release yolu kabul edilir (API'nin gercek bicimi)
+    const apkUrl = `https://github.com/furkanisikay/namazakisi/releases/download/v${yeniVersiyon}/NamazAkisi-v${yeniVersiyon}.apk`;
     mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon, {
       assets: [
         { name: `NamazAkisi-v${yeniVersiyon}.apk`, browser_download_url: apkUrl },
@@ -1049,7 +1050,7 @@ describe('GitHubGuncellemeKaynagi — guvenilmez indirme baglantisi (guvenlik do
 
   it('API guvenilmez bir APK domaini donerse, indirmeBaglantisi sabit fallbackine dusuyor', async () => {
     // GUVENLIK DUZELTMESI: indirmeBaglantisiBul artik API'den gelen
-    // browser_download_url'i guvenilirBaglantiMi ile DOGRULIYOR. Guvenilmez URL
+    // browser_download_url'i guvenilirSurumBaglantisiMi ile DOGRULIYOR. Guvenilmez URL
     // (phishing/manipule edilmis domain) reddedilerek sabit releases/latest URL'ine
     // dusulmektedir. html_url'de guvenilir olsa da APK reddi durumunda sabit
     // fallback kullanilir (html_url de manipule edilmis olabilir).
@@ -1085,8 +1086,8 @@ describe('GitHubGuncellemeKaynagi — guvenilmez indirme baglantisi (guvenlik do
   });
 
   it('guvenilir bir APK baglantisi oldugu gibi donuluyor', async () => {
-    // Guvenilir domain iceren APK URL'i korunmali
-    const guvenilirApkUrl = 'https://objects.githubusercontent.com/releases/NamazAkisi-99.0.0.apk';
+    // GitHub API'nin gercek browser_download_url bicimi: github.com/<depo>/releases/download/<etiket>/<dosya>
+    const guvenilirApkUrl = 'https://github.com/furkanisikay/namazakisi/releases/download/v99.0.0/NamazAkisi-99.0.0.apk';
     mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
       assets: [{ name: 'NamazAkisi-99.0.0.apk', browser_download_url: guvenilirApkUrl }],
     }));
@@ -1094,7 +1095,129 @@ describe('GitHubGuncellemeKaynagi — guvenilmez indirme baglantisi (guvenlik do
     const sonuc = await kaynak.enSonSurumuKontrolEt();
 
     expect(sonuc.bilgi?.indirmeBaglantisi).toBe(guvenilirApkUrl);
-    expect(guvenilirBaglantiMi(guvenilirApkUrl)).toBe(true);
+    expect(guvenilirSurumBaglantisiMi(guvenilirApkUrl)).toBe(true);
+  });
+
+  // ---- NÖBETÇİ (denetim B-6): ana bilgisayar yetmez, depo yolu da sabit ----
+  const SABIT_FALLBACK = 'https://github.com/furkanisikay/namazakisi/releases/latest';
+
+  it.each([
+    ['baska deponun release APK\'si', 'https://github.com/kotu/repo/releases/download/v9/kotu.apk'],
+    ['github.com alt alan adi', 'https://kotu.github.com/furkanisikay/namazakisi/releases/download/v9/a.apk'],
+    ['depoya baglanamayan imzali varlik adresi', 'https://objects.githubusercontent.com/releases/NamazAkisi-99.0.0.apk'],
+    ['.. ile baska depoya cikan yol', 'https://github.com/furkanisikay/namazakisi/releases/../../../kotu/repo/releases/download/v9/kotu.apk'],
+  ])('APK baglantisi %s ise sabit fallbacke dusulur', async (_ad, kotuApk) => {
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
+      assets: [{ name: 'NamazAkisi-99.0.0.apk', browser_download_url: kotuApk }],
+      html_url: 'https://github.com/furkanisikay/namazakisi/releases/tag/v99.0.0',
+    }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.bilgi?.indirmeBaglantisi).toBe(SABIT_FALLBACK);
+  });
+
+  it.each([
+    'https://github.com/kotu/repo/releases/tag/v99.0.0',
+    'https://github.com/login/oauth/authorize?client_id=x&redirect_uri=https://kotu.com',
+    'https://play.google.com/url?q=https://kotu.com',
+  ])('APK yokken html_url %s ise sabit fallbacke dusulur', async (kotuHtmlUrl) => {
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', { assets: [], html_url: kotuHtmlUrl }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.bilgi?.indirmeBaglantisi).toBe(SABIT_FALLBACK);
+  });
+
+  it('APK yokken bu deponun release sayfasi (html_url) oldugu gibi donuluyor', async () => {
+    const htmlUrl = 'https://github.com/furkanisikay/namazakisi/releases/tag/v99.0.0';
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', { assets: [], html_url: htmlUrl }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.bilgi?.indirmeBaglantisi).toBe(htmlUrl);
+  });
+});
+
+// ==================== NÖBETÇİ: SÜRÜM BAĞLANTISI DEPO YOLU (denetim B-6) ====================
+// `github.com` herkesin dosya barındırabildiği bir yerdir: yalnız ana bilgisayara bakan
+// denetim, sahte API yanıtının gösterdiği BAŞKA deponun APK'sını da "güvenilir" sayıyordu.
+describe('guvenilirSurumBaglantisiMi — depo yolu nöbetçisi', () => {
+  const MESRU = [
+    'https://github.com/furkanisikay/namazakisi/releases',
+    'https://github.com/furkanisikay/namazakisi/releases/',
+    'https://github.com/furkanisikay/namazakisi/releases/latest',
+    'https://github.com/furkanisikay/namazakisi/releases/tag/v0.31.0',
+    'https://github.com/furkanisikay/namazakisi/releases/download/v0.31.0/NamazAkisi-0.31.0.apk',
+    'https://github.com:443/furkanisikay/namazakisi/releases/latest',
+    // GitHub depo adını harf duyarsız çözer; karşılaştırma Türkçe İ/ı tuzağına düşmez.
+    'https://github.com/FurkanIsikay/NamazAkisi/releases/latest',
+    'https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi',
+    'https://apps.apple.com/app/namaz-akisi/id6813061360',
+    'https://apps.apple.com/tr/app/namaz-akisi/id6813061360',
+  ];
+  const ZARARLI = [
+    // Denetim raporundaki "KABUL" satırları
+    'https://github.com:443/x',
+    'https://kotu.github.com/x',
+    'https://github.com/kotu/repo/releases/download/v9/kotu.apk',
+    'https://github.com/login/oauth/authorize?client_id=x&redirect_uri=https://kotu.com',
+    'https://play.google.com/url?q=https://kotu.com',
+    // Depo öneki hileleri
+    'https://github.com/furkanisikay/namazakisi',
+    'https://github.com/furkanisikay/namazakisi/issues/1',
+    'https://github.com/furkanisikay/namazakisi-kotu/releases/download/v9/kotu.apk',
+    'https://github.com/furkanisikay/namazakisi.kotu/releases/latest',
+    'https://github.com/furkanisikay/namazakisi/releasesx/kotu.apk',
+    'https://github.com/kotu/furkanisikay/namazakisi/releases/latest',
+    'https://github.com/furkanisikay/namazakisi/releases/../../../kotu/repo/releases/download/v9/kotu.apk',
+    'https://github.com/furkanisikay/namazakisi/releases/./../../kotu',
+    'https://github.com/furkanisikay/namazakisi/releases/%2e%2e/%2e%2e/%2e%2e/kotu/repo',
+    'https://github.com/furkanisikay/namazakisi/releases/..%2f..%2fkotu',
+    'https://github.com/furkanisikay%2fnamazakisi/releases/latest',
+    'https://github.com//furkanisikay/namazakisi/releases/latest',
+    'https://github.com/furkanisikay//namazakisi/releases/latest',
+    'https://github.com/furkanisikay/namazakisi/releases/latest?next=https://kotu.com',
+    'https://github.com/furkanisikay/namazakisi/releases/latest#kotu',
+    'https://github.com/furkanisikay/namazakisi/releases;kotu/x',
+    'https://github.com/fürkanisikay/namazakisi/releases/latest',
+    'https://github.com/furkanısikay/namazakisi/releases/latest',
+    // Ana bilgisayar hileleri (genel denetim de reddeder)
+    'https://www.github.com/furkanisikay/namazakisi/releases/latest',
+    'https://raw.github.com/furkanisikay/namazakisi/releases/latest',
+    'https://github.com.kotu.com/furkanisikay/namazakisi/releases/latest',
+    'https://kotu.com/@github.com/furkanisikay/namazakisi/releases/latest',
+    'https://github.com@kotu.com/furkanisikay/namazakisi/releases/latest',
+    'http://github.com/furkanisikay/namazakisi/releases/latest',
+    'https://github.com:8443/furkanisikay/namazakisi/releases/latest',
+    // Depoya bağlanamayan / yönlendirici adresler
+    'https://objects.githubusercontent.com/releases/NamazAkisi-99.0.0.apk',
+    'https://play.google.com/store/../url?q=https://kotu.com',
+    'https://kotu.play.google.com/store/apps/details?id=x',
+    'https://apps.apple.com/kotu/yol',
+    'playstore://update',
+    '',
+  ];
+
+  it.each(MESRU)('meşru bağlantıyı kabul eder: %s', (url) => {
+    expect(guvenilirSurumBaglantisiMi(url)).toBe(true);
+  });
+
+  it.each(ZARARLI)('zararlı bağlantıyı reddeder: %s', (url) => {
+    expect(guvenilirSurumBaglantisiMi(url)).toBe(false);
+  });
+
+  it('depo adı varsayılan olarak UYGULAMA.GITHUB_REPO sabitinden gelir; başka depo verilirse ona sabitlenir', () => {
+    expect(guvenilirSurumBaglantisiMi('https://github.com/ornek/repo/releases/latest', 'ornek/repo')).toBe(true);
+    expect(guvenilirSurumBaglantisiMi('https://github.com/furkanisikay/namazakisi/releases/latest', 'ornek/repo')).toBe(false);
+    // Bozuk depo sabiti hiçbir bağlantıyı güvenilir kılmaz.
+    expect(guvenilirSurumBaglantisiMi('https://github.com/a/b/releases/latest', 'a/b/releases')).toBe(false);
+    expect(guvenilirSurumBaglantisiMi('https://github.com/releases/latest', '')).toBe(false);
+  });
+
+  it('genel denetim de alt alan adını artık kabul etmez', () => {
+    expect(guvenilirBaglantiMi('https://kotu.github.com/x')).toBe(false);
+    expect(guvenilirBaglantiMi('https://kotu.play.google.com/x')).toBe(false);
   });
 });
 

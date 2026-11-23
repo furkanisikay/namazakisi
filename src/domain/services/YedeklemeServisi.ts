@@ -34,6 +34,8 @@ import { hareketleriEkle } from '../../data/local/LocalKazaServisi';
 import { defteriHesapla } from './KazaDefteriServisi';
 import { eskiAnlikGoruntuUret } from '../../core/kaza/kazaDefteriHesabi';
 import { sifrele, coz, kontrolHesapla } from '../../core/utils/yedekSifreleme';
+import { AZAMI_YEDEK_DOSYASI_BAYT, yedekPayloadDogrula } from '../../core/yedek/yedekPayloadDogrula';
+import { YEDEK_AYAR_ALANLARI } from './YedekBirlestirmeServisi';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
 
@@ -326,7 +328,7 @@ export const yedeginiPaylas = async (): Promise<void> => {
  * Sürüm göçü: eski şema sürümlerini güncel sürüme yükseltir. Şu an tek sürüm (1)
  * olduğundan değişiklik yok; ileride şema değişince burada adım adım dönüştürülür.
  */
-const surumGocu = (payload: YedekPayload, _surum: number): YedekPayload => {
+const surumGocu = (payload: unknown, _surum: number): unknown => {
   // surum === YEDEK_SURUMU (1): değişiklik yok.
   return payload;
 };
@@ -334,9 +336,12 @@ const surumGocu = (payload: YedekPayload, _surum: number): YedekPayload => {
 /**
  * Yedek dosyası içeriğini çözer ve doğrular. Sırasıyla: JSON ayrıştır → biçim →
  * sürüm (uygulamadan yeni ise null) → şifre çöz → bütünlük (checksum) → payload
- * ayrıştır → sürüm göçü. Herhangi bir adımda hata/uyuşmazlık → `null` (fırlatmaz).
+ * ayrıştır → sürüm göçü → içerik daraltma (`yedekPayloadDogrula`). Herhangi bir adımda
+ * hata/uyuşmazlık → `null` (fırlatmaz).
  */
 export const zarfiCoz = async (dosyaIcerigi: string): Promise<YedekPayload | null> => {
+  // Dosya boyutu bilinmeden okunmuş olabilir (seçici `size` vermeyebilir) → burada da sına.
+  if (typeof dosyaIcerigi !== 'string' || dosyaIcerigi.length > AZAMI_YEDEK_DOSYASI_BAYT) return null;
   let zarf: YedekZarfi;
   try {
     zarf = JSON.parse(dosyaIcerigi) as YedekZarfi;
@@ -359,13 +364,14 @@ export const zarfiCoz = async (dosyaIcerigi: string): Promise<YedekPayload | nul
   const kontrol = await kontrolHesapla(duzMetin);
   if (kontrol !== zarf.kontrol) return null;
 
-  let payload: YedekPayload;
+  let ham: unknown;
   try {
-    payload = JSON.parse(duzMetin) as YedekPayload;
+    ham = JSON.parse(duzMetin);
   } catch {
     return null;
   }
-  if (!payload || typeof payload !== 'object') return null;
 
-  return surumGocu(payload, zarf.surum);
+  // Zarf anahtarı sır değildir → MAC/özet özgünlük kanıtlamaz; içerik alan alan daraltılır
+  // (düz nesne değilse null). Sürüm göçünden SONRA: göç eski şemayı güncele çevirir.
+  return yedekPayloadDogrula(surumGocu(ham, zarf.surum), YEDEK_AYAR_ALANLARI);
 };

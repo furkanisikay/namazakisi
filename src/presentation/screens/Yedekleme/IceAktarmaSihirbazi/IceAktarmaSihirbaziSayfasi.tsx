@@ -53,6 +53,7 @@ import {
 import { zarfiCoz, mevcutVeriyiTopla } from '../../../../domain/services/YedeklemeServisi';
 import { farkCikar } from '../../../../domain/services/YedekBirlestirmeServisi';
 import { Logger } from '../../../../core/utils/Logger';
+import { AZAMI_YEDEK_DOSYASI_BAYT } from '../../../../core/yedek/yedekPayloadDogrula';
 import type {
   YedekPayload,
   FarkOzeti,
@@ -187,7 +188,17 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
       // İptal → adımda kal.
       if (sonuc.canceled || !sonuc.assets?.[0]) return;
 
-      const uri = sonuc.assets[0].uri;
+      const { uri, size: boyut } = sonuc.assets[0];
+      // Belleğe almadan önce boyut sınırı (JS iş parçacığı donmasın). Seçici boyutu
+      // vermeyebilir → o durumda engelleme; `zarfiCoz` okunan metni ayrıca sınar.
+      if (typeof boyut === 'number' && boyut > AZAMI_YEDEK_DOSYASI_BAYT) {
+        await hataFeedback();
+        gecisYap(() => {
+          setAdim(ADIM.COZUMLE);
+          setDosyaHatasi(true);
+        });
+        return;
+      }
       // Klasik readAsStringAsync, Android'in content:// URI'lerini güvenle okur.
       const icerik = await FileSystem.readAsStringAsync(uri, {
         encoding: FileSystem.EncodingType.UTF8,
