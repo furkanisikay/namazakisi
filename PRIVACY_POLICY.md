@@ -1,6 +1,6 @@
 # Gizlilik Politikası / Privacy Policy
 
-**Son Güncelleme / Last Updated:** 18 Nisan 2026
+**Son Güncelleme / Last Updated:** 23 Kasım 2026
 
 **Uygulama / App:** Namaz Akışı  
 **Geliştirici / Developer:** Furkan Işıkay  
@@ -17,7 +17,7 @@ Namaz Akışı uygulamasını kullandığınız için teşekkür ederiz. Bu gizl
 ### Toplanan Veriler
 
 **Konum Bilgisi**
-Uygulama, namaz vakitlerini doğru hesaplayabilmek için cihazınızın konum bilgisine ihtiyaç duymaktadır. Konum verisi yalnızca namaz vakti hesaplaması amacıyla kullanılır ve üçüncü taraflarla paylaşılmaz. Konum verisi cihazınızda yerel olarak işlenir; sunuculara aktarılmaz.
+Uygulama, namaz vakitlerini doğru hesaplayabilmek için cihazınızın konum bilgisine ihtiyaç duymaktadır. Konum verisi yalnızca namaz vakti hesaplaması amacıyla kullanılır, cihazınızda yerel olarak işlenir ve geliştiriciye ya da geliştiricinin bir sunucusuna aktarılmaz. Tek istisna: konumunuzu otomatik aldırdığınızda, bulunduğunuz yerin adını (ilçe ve şehir) gösterebilmek için koordinatınız telefonunuzun kendi konum hizmetine (Android'de Google, iPhone'da Apple) iletilir; bu hizmet yer adını kendi sunucularında bulabilir ve bu işlem o şirketin gizlilik koşullarına tabidir. Koordinat geliştiriciye ulaşmaz. Şehrinizi elle seçerseniz bu aktarım olmaz.
 
 **Arka Plan Konum Erişimi**
 Hareket halindeyken namaz vakitlerini otomatik olarak güncelleyebilmek için arka plan konum iznine ihtiyaç duyulabilir. Bu izin, yalnızca vakitlerin güncellenmesi amacıyla kullanılır.
@@ -34,7 +34,7 @@ Uygulama, kullanıcı tercihleri (şehir, bildirim ayarları, tema vb.) yalnızc
 
 **Saklama Süresi:** Tüm veriler, uygulamayı cihazınızdan kaldırana kadar saklanır. Uygulama kaldırıldığında tüm yerel veriler otomatik olarak silinir.
 
-**Konum verisi:** Son alınan GPS koordinatları yalnızca namaz vakti ve kıble yönü hesaplaması için cihazınızda yerel olarak saklanır; yeni bir konum alındığında önceki koordinatın üzerine yazılır. Sunuculara veya üçüncü taraflara aktarılmaz.
+**Konum verisi:** Son alınan GPS koordinatları yalnızca namaz vakti ve kıble yönü hesaplaması için cihazınızda yerel olarak saklanır; yeni bir konum alındığında önceki koordinatın üzerine yazılır. Yukarıda "Konum Bilgisi" bölümünde anlatılan yer adı sorgusu dışında sunuculara veya üçüncü taraflara aktarılmaz.
 
 ### Veri Silme
 
@@ -86,7 +86,7 @@ Thank you for using Namaz Akışı. This privacy policy explains how the applica
 ### Data Collected
 
 **Location Data**
-The app requires access to your device's location to accurately calculate prayer times. Location data is used solely for prayer time calculation and is not shared with third parties. Location data is processed locally on your device and is not transmitted to any servers.
+The app requires access to your device's location to accurately calculate prayer times. Location data is used solely for prayer time calculation, is processed locally on your device, and is not transmitted to the developer or to any server of the developer. The one exception: when you let the app detect your location automatically, your coordinates are passed to your phone's own location service (Google on Android, Apple on iPhone) to look up the name of the place (district and city); that service may resolve the name on its own servers, subject to that company's privacy terms. The coordinates never reach the developer. If you pick your city manually, this does not happen.
 
 **Background Location Access**
 Background location access may be required to automatically update prayer times while you are moving. This permission is used solely for updating prayer times.
@@ -103,7 +103,7 @@ The app stores user preferences (city, notification settings, theme, etc.) local
 
 **Retention Period:** All data is retained until you uninstall the app from your device. When the app is uninstalled, all local data is automatically deleted.
 
-**Location data:** The most recent GPS coordinates are stored locally on your device solely to calculate prayer times and the Qibla direction; new readings overwrite the previous coordinates. They are never transmitted to servers or shared with third parties.
+**Location data:** The most recent GPS coordinates are stored locally on your device solely to calculate prayer times and the Qibla direction; new readings overwrite the previous coordinates. Apart from the place-name lookup described under "Location Data" above, they are not transmitted to servers or shared with third parties.
 
 ### Data Deletion
 

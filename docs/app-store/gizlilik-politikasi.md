@@ -4,7 +4,7 @@ title: Gizlilik Politikası — Namaz Akışı
 
 # Gizlilik Politikası — Namaz Akışı
 
-**Son güncelleme:** 20 Ekim 2026
+**Son güncelleme:** 23 Kasım 2026
 
 Namaz Akışı, hiçbir kişisel verinizi toplamaz, saklamaz veya üçüncü taraflarla
 paylaşmaz. Uygulamayı kullanmak için hesap açmanız gerekmez.
@@ -24,7 +24,11 @@ paylaşmaz. Uygulamayı kullanmak için hesap açmanız gerekmez.
 Namaz vakitleri bulunduğunuz yerin enlem ve boylamından hesaplanır. Konumunuz:
 
 - yalnızca bu hesap için kullanılır,
-- telefonunuzun içinde kalır, **hiçbir sunucuya gönderilmez**,
+- telefonunuzun içinde saklanır ve **geliştiriciye ulaşmaz**; bizim bir sunucumuz yoktur,
+- "Konumumu kullan" seçeneğinde, bulunduğunuz yerin adını (ilçe ve şehir) gösterebilmek
+  için koordinatınız telefonunuzun kendi konum hizmetine (Android'de Google, iPhone'da
+  Apple) iletilir; bu hizmet yer adını kendi sunucularında bulabilir ve bu işlem o
+  şirketin gizlilik koşullarına tabidir. Şehrinizi elle seçerseniz bu aktarım olmaz,
 - Wear OS saat uygulamasını kullanıyorsanız, saatteki kıble pusulası için
   **yaklaşık** konumunuz (yaklaşık 11 km hassasiyetle yuvarlanmış enlem ve boylam)
   telefonunuzdan **yalnızca kendi saatinize**, Google'ın Wear OS veri eşitlemesiyle
