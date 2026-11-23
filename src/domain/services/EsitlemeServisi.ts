@@ -38,6 +38,7 @@ import {
   icerikNormalizeEt,
   icerikOzeti,
 } from '../../core/esitleme/esitlemeIcerigi';
+import { yedekPayloadDogrula } from '../../core/yedek/yedekPayloadDogrula';
 import {
   KdfParametreleri,
   anahtarTuret,
@@ -89,6 +90,14 @@ export interface TurSonucu {
 
 const hata = (kod: EsitlemeHataKodu): TurSonucu => ({ sonuc: { tur: 'hata', kod } });
 
+/**
+ * Eşitlemenin gördüğü içerik: yerel yedekle AYNI daraltıcıdan geçer (ayarlar buluta
+ * gitmez → beyaz liste boş). İKİ TARAFA da uygulanır: yalnız gelen daraltılsaydı, bir
+ * cihazın diskinde kalmış ve karşı tarafın attığı bir kayıt iki özeti hiç buluşturmaz,
+ * cihazlar her turda birbirinin üzerine yüklerdi.
+ */
+const esitlemeGorunumu = (icerik: YedekPayload): YedekPayload => yedekPayloadDogrula(icerik, []) ?? icerik;
+
 const yukle = async (
   o: EsitlemeOrtami,
   yerel: YedekPayload,
@@ -110,7 +119,7 @@ export async function esitlemeTuru(
 ): Promise<TurSonucu> {
   try {
     const meta = await o.saglayici.meta();
-    let yerel = await o.yerelTopla();
+    let yerel = esitlemeGorunumu(await o.yerelTopla());
     let yerelOzet = icerikOzeti(yerel);
 
     // Uzakta kayıt yok (ilk cihaz ya da silinmiş): önbellekteki anahtarla yükle.
@@ -155,15 +164,17 @@ export async function esitlemeTuru(
     } catch {
       return hata('bozukVeri');
     }
-    const gelen = icerikNormalizeEt(ham);
-    if (!gelen) return hata('bozukVeri');
+    const normalize = icerikNormalizeEt(ham);
+    if (!normalize) return hata('bozukVeri');
+    // Parolayı bilen ama eski/bozuk sürüm çalıştıran cihazın yükü de diske daraltılmış gider.
+    const gelen = esitlemeGorunumu(normalize);
     const gelenOzet = icerikOzeti(gelen);
 
     let indirildi = false;
     if (gelenOzet !== yerelOzet) {
       await o.uygula(gelen);
       indirildi = true;
-      yerel = await o.yerelTopla();
+      yerel = esitlemeGorunumu(await o.yerelTopla());
       yerelOzet = icerikOzeti(yerel);
     }
 

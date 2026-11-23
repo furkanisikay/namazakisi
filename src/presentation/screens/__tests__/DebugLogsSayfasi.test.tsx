@@ -133,6 +133,8 @@ describe('DebugLogsSayfasi — onay/bildirim modalı', () => {
     expect(yazilan).not.toContain('İstanbul');
     expect(yazilan).not.toContain('41.0082');
     expect(yazilan).not.toContain('28.9784');
+    // Maskeleme önce VERİ üzerinde yapılır: Logger'a dönüştürücü verilir (denetim B-4).
+    expect(Logger.exportLogs).toHaveBeenCalledWith(expect.any(Function));
     expect(yazilan).toContain('[konum gizlendi]');
   });
 

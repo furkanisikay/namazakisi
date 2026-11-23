@@ -12,9 +12,11 @@ import {
   farkCikar,
   birlestirNamazGunleri,
   birlestirmePlaniOlustur,
+  YEDEK_AYAR_ALANLARI,
 } from '../YedekBirlestirmeServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
-import { YedekPayload, KategoriSecimleri, NamazGunleri } from '../../../core/types';
+import { YedekPayload, KategoriSecimleri, KategoriStratejisi, KullaniciRozeti, NamazGunleri } from '../../../core/types';
+import { yedekPayloadDogrula } from '../../../core/yedek/yedekPayloadDogrula';
 import { hareketleriAyristir, hareketleriBirlestir, type KazaHareketi } from '../../../core/kaza/kazaHareketi';
 import { defterHesapla, eskiAnlikGoruntuUret } from '../../../core/kaza/kazaDefteriHesabi';
 
@@ -46,6 +48,13 @@ const payloadKur = (kismi: Partial<YedekPayload>): YedekPayload => ({
   kazaTempo: {},
   ayarlar: { ...bosAyarlar },
   ...kismi,
+});
+
+/** Gerçek şekilli rozet kaydı (`KullaniciRozeti`). */
+const rozet = (rozetId: string, kazanilmaTarihi: string | null = null): KullaniciRozeti => ({
+  rozetId,
+  kazanildiMi: kazanilmaTarihi !== null,
+  kazanilmaTarihi,
 });
 
 /** Dört kategoriyi de aynı stratejiye ayarlar (global mod). */
@@ -133,7 +142,7 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (akilli)', () => {
     namazGunleri: { g1: { Sabah: true, 'Öğle': false } },
     kilinanVakitler: { g1: ['sabah'] },
     bonusPuan: 100,
-    rozetler: [{ id: 'a' }, { id: 'b' }],
+    rozetler: [rozet('a'), rozet('b')],
     seri: { mevcutSeri: 9, enUzunSeri: 10 },
     seviye: { seviye: 5 },
     istatistik: { toplamKilinan: 999, mukemmelGun: 50, toparlanma: 7 },
@@ -143,7 +152,7 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (akilli)', () => {
     namazGunleri: { g1: { Sabah: false, 'Öğle': true }, g2: { Yatsı: true } },
     kilinanVakitler: { g1: ['ogle'], g2: ['yatsi'] },
     bonusPuan: 40,
-    rozetler: [{ id: 'b' }, { id: 'c' }],
+    rozetler: [rozet('b'), rozet('c')],
     seri: { mevcutSeri: 4, enUzunSeri: 30 },
     kaza: { toplamTamamlanan: 3 },
     ayarlar: { ...bosAyarlar, konum: { sehir: 'Gelen' } },
@@ -164,10 +173,10 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (akilli)', () => {
     expect(plan[`${KILINAN_ONEK}g2`]).toEqual(['yatsi']);
   });
 
-  it('BONUS_PUAN max(mevcut, gelen); rozetler id-tekil birleşim', () => {
+  it('BONUS_PUAN max(mevcut, gelen); rozetler rozetId-tekil birleşim', () => {
     expect(plan[DEPOLAMA_ANAHTARLARI.BONUS_PUAN]).toBe(100);
-    const rozetler = plan[DEPOLAMA_ANAHTARLARI.ROZET_VERILERI] as Array<{ id: string }>;
-    expect(rozetler.map((r) => r.id).sort()).toEqual(['a', 'b', 'c']);
+    const rozetler = plan[DEPOLAMA_ANAHTARLARI.ROZET_VERILERI] as KullaniciRozeti[];
+    expect(rozetler.map((r) => r.rozetId)).toEqual(['a', 'b', 'c']);
   });
 
   it('seviye/istatistik anahtarları YAZILMAZ (reconcile türetir)', () => {
@@ -546,5 +555,156 @@ describe('YedekBirlestirmeServisi — Kaza Defteri 2.0 hareketleri', () => {
       zaman: '2026-10-17T10:00:00.000Z',
     });
     expect(plandanHareketler(tekrar, a)).toHaveLength(a.length);
+  });
+});
+
+// ─── Denetim G-1: rozet tekilleştirme ───────────────────────────────────────
+
+describe('YedekBirlestirmeServisi — rozetler rozetId ile tekilleşir (G-1)', () => {
+  const planla = (mevcut: unknown[], gelen: unknown[]): KullaniciRozeti[] =>
+    birlestirmePlaniOlustur(payloadKur({ rozetler: mevcut }), payloadKur({ rozetler: gelen }), secimler('akilli'))[
+      DEPOLAMA_ANAHTARLARI.ROZET_VERILERI
+    ] as KullaniciRozeti[];
+
+  it('cihazdaki "kazanılmadı" kaydı yedekteki kazanımı GÖLGELEMEZ: tek kayıt kalır, kazanılmış', () => {
+    const sonuc = planla([rozet('ilk_adim'), rozet('efsane')], [rozet('ilk_adim', '2026-04-01T10:00:00.000Z')]);
+    expect(sonuc).toEqual([rozet('ilk_adim', '2026-04-01T10:00:00.000Z'), rozet('efsane')]);
+    // Tüketicinin gördüğü (`find` ilk eşleşmeyi döndürür) kazanılmış kayıttır.
+    expect(sonuc.find((r) => r.rozetId === 'ilk_adim')?.kazanildiMi).toBe(true);
+  });
+
+  it('iki tarafta da kazanılmışsa en ESKİ kazanılma tarihi korunur (sıra bağımsız)', () => {
+    const eski = rozet('ilk_adim', '2026-03-01T10:00:00.000Z');
+    const yeni = rozet('ilk_adim', '2026-05-01T10:00:00.000Z');
+    expect(planla([yeni], [eski])).toEqual([eski]);
+    expect(planla([eski], [yeni])).toEqual([eski]);
+  });
+
+  it('cihazdaki kazanım, yedekte kazanılmamış görünse de geri alınmaz', () => {
+    const kazanilmis = rozet('bin_namaz', '2026-02-01T10:00:00.000Z');
+    expect(planla([kazanilmis], [rozet('bin_namaz')])).toEqual([kazanilmis]);
+  });
+
+  it('diskte kalmış bozuk rozet kaydı (null, eksik alan) birleştirmede temizlenir', () => {
+    expect(planla([null, { id: 'eski' }, rozet('a')], [rozet('b')])).toEqual([rozet('a'), rozet('b')]);
+  });
+
+  it('rozet listesi dizi değilse (bozuk disk) fırlatmaz', () => {
+    const mevcut = payloadKur({ rozetler: 'bozuk' as unknown as unknown[] });
+    const plan = birlestirmePlaniOlustur(mevcut, payloadKur({ rozetler: [rozet('a')] }), secimler('akilli'));
+    expect(plan[DEPOLAMA_ANAHTARLARI.ROZET_VERILERI]).toEqual([rozet('a')]);
+  });
+});
+
+// ─── Denetim B-2 / B-3: kötü amaçlı yedek ───────────────────────────────────
+
+describe('YedekBirlestirmeServisi — kötü amaçlı yedek (B-2 / B-3)', () => {
+  /** Kaynak koddaki açık anahtarla herkesin üretebileceği zarfın içeriği. */
+  const kotuAmacliIcerik = (): unknown => {
+    const gunler: Record<string, unknown> = {
+      '2026-06-14': { Sabah: true, 'Öğle': 'evet', Teheccud: true },
+      '../x': { Sabah: true },
+      '': { Sabah: true },
+      '2026-06-14/../../@namaz_akisi/bonus_puan': { Sabah: true },
+    };
+    for (let i = 0; i < 2000; i++) gunler[`cop-${i}`] = { Sabah: true };
+    return JSON.parse(
+      JSON.stringify({
+        namazGunleri: gunler,
+        kilinanVakitler: { '2026-06-14': ['imsak', 'cop', 5], '../y': ['imsak'], 'cop': ['imsak'] },
+        seri: 'bozuk',
+        rozetler: [null, { rozetId: { x: 1 }, kazanildiMi: 'evet' }, { rozetId: 'ilk_adim', kazanildiMi: true, kazanilmaTarihi: null }],
+        seviye: [1, 2, 3],
+        bonusPuan: 1e308,
+        istatistik: { toplamKilinan: 'abc', mukemmelGun: -5, toparlanma: 1e308 },
+        kaza: { namazlar: 'yok' },
+        kazaTempo: { '2026-06-10': 1e308, '../z': 3, 'cop': 1 },
+        kazaHareketleri: [
+          { id: 'manuel:1', zaman: '2026-06-14T08:00:00.000Z', cihaz: 'abc123', kaynak: 'manuel', vakit: 'sabah', adet: 2 },
+          { id: 'x', zaman: '../../ay', kaynak: 'manuel', vakit: 'sabah', adet: 1 },
+          null,
+        ],
+        ayarlar: { muhafiz: { aktif: true }, yabanci: { x: 1 }, '@namaz_akisi/bonus_puan': 9 },
+      })
+    );
+  };
+
+  const TARIH = '\\d{4}-\\d{2}-\\d{2}';
+  const esc = (s: string): string => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+  const ONEKLI_DESENLER = [
+    new RegExp(`^${esc(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK)}${TARIH}$`),
+    new RegExp(`^${esc(KILINAN_ONEK)}${TARIH}$`),
+    new RegExp(`^${esc(DEPOLAMA_ANAHTARLARI.KAZA_HAREKET_ONEK)}\\d{4}-\\d{2}$`),
+  ];
+  const SABIT_ANAHTARLAR = new Set<string>([
+    DEPOLAMA_ANAHTARLARI.BONUS_PUAN,
+    DEPOLAMA_ANAHTARLARI.ROZET_VERILERI,
+    DEPOLAMA_ANAHTARLARI.SERI_DURUMU,
+    DEPOLAMA_ANAHTARLARI.SEVIYE_DURUMU,
+    DEPOLAMA_ANAHTARLARI.TOPLAM_KILILAN_NAMAZ,
+    DEPOLAMA_ANAHTARLARI.MUKEMMEL_GUN_SAYISI,
+    DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI,
+    DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS,
+    DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI,
+    DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI,
+    DEPOLAMA_ANAHTARLARI.HATIRLATMA_RIZALARI,
+  ]);
+  const STRATEJILER: KategoriStratejisi[] = ['akilli', 'uzerineYaz', 'eksikleriEkle'];
+
+  const planla = (strateji: KategoriStratejisi) => {
+    const gelen = yedekPayloadDogrula(kotuAmacliIcerik(), YEDEK_AYAR_ALANLARI);
+    if (!gelen) throw new Error('daraltıcı null döndü');
+    return birlestirmePlaniOlustur(payloadKur({}), gelen, secimler(strateji));
+  };
+
+  it.each(STRATEJILER)('%s: planın TÜM anahtarları bilinen desenlere uyar (serbest metinli anahtar yok)', (strateji) => {
+    const anahtarlar = Object.keys(planla(strateji));
+    expect(anahtarlar.length).toBeGreaterThan(0);
+    for (const anahtar of anahtarlar) {
+      const bilinen = SABIT_ANAHTARLAR.has(anahtar) || ONEKLI_DESENLER.some((desen) => desen.test(anahtar));
+      expect([anahtar, bilinen]).toEqual([anahtar, true]);
+    }
+    // 2000+ çöp günden yalnız tek gerçek gün plana girer.
+    expect(anahtarlar.filter((a) => a.startsWith(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK))).toEqual([
+      `${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}2026-06-14`,
+    ]);
+  });
+
+  it.each(STRATEJILER)('%s: plan değerlerinde null rozet ve sonlu olmayan / dev sayı bulunmaz', (strateji) => {
+    const plan = planla(strateji);
+    const sayilar: number[] = [];
+    const gez = (deger: unknown): void => {
+      if (typeof deger === 'number') sayilar.push(deger);
+      else if (deger && typeof deger === 'object') Object.values(deger).forEach(gez);
+    };
+    gez(plan);
+    for (const s of sayilar) {
+      expect(Number.isFinite(s)).toBe(true);
+      expect(s).toBeGreaterThanOrEqual(0);
+      expect(s).toBeLessThanOrEqual(1_000_000_000);
+    }
+    // Diske JSON olarak gider: `null`'a düşen (NaN/Infinity) sayı kalmamalı.
+    expect(JSON.parse(JSON.stringify(plan))).toEqual(plan);
+    if (strateji === 'eksikleriEkle') return;
+    expect(plan[DEPOLAMA_ANAHTARLARI.ROZET_VERILERI]).toEqual([
+      { rozetId: 'ilk_adim', kazanildiMi: true, kazanilmaTarihi: null },
+    ]);
+    expect(plan[DEPOLAMA_ANAHTARLARI.BONUS_PUAN]).toBe(1_000_000_000);
+    expect(plan[`${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}2026-06-14`]).toEqual({ Sabah: true });
+    expect(plan[`${KILINAN_ONEK}2026-06-14`]).toEqual(['imsak']);
+  });
+
+  it('uzerineYaz: bozuk seri/seviye anahtara `null` YAZMAZ (okuyucu null kaydı çözemez)', () => {
+    const plan = planla('uzerineYaz');
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.SERI_DURUMU);
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.SEVIYE_DURUMU);
+    // Beyaz liste dışı ayar alanı hiçbir anahtara dönüşmez.
+    expect(plan[DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI]).toEqual({ aktif: true });
+  });
+
+  it('cihazdaki bonus bozuksa (sayı değil) akıllı birleştirme NaN yazmaz', () => {
+    const mevcut = payloadKur({ bonusPuan: 'abc' as unknown as number });
+    const plan = birlestirmePlaniOlustur(mevcut, payloadKur({ bonusPuan: 40 }), secimler('akilli'));
+    expect(plan[DEPOLAMA_ANAHTARLARI.BONUS_PUAN]).toBe(40);
   });
 });

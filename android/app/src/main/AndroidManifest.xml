@@ -183,10 +183,12 @@
     <receiver android:name=".widget.GununAyetiAlarmAlici" android:exported="false"/>
 
     <!-- Widget yeniden hesaplama alıcısı (issue #275): vakit sınırı alarmı (dakikalık alarm
-         YOK), açılış, güncelleme, saat / saat dilimi / tarih değişimi. -->
+         YOK), açılış, güncelleme, saat / saat dilimi / tarih değişimi. Dışa KAPALI: sistem
+         yayınları ve kendi PendingIntent'imiz kapalı alıcıya da ulaşır; açık olsaydı başka
+         bir uygulama döngüyle yeniden çizim tetikleyebilirdi. -->
     <receiver
         android:name=".widget.NamazWidgetAlarmAlici"
-        android:exported="true">
+        android:exported="false">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED" />
         <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />

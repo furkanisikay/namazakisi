@@ -42,9 +42,15 @@ class WidgetYapilandirmaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appWidgetId = intent?.extras?.getInt(
-            AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID,
-        ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
+        // Etkinlik dışa açık: başka bir uygulamanın bozuk Parcel taşıyan ekleri süreci
+        // çökertmesin (okunamayan ek = geçersiz kimlik → sessizce kapanır).
+        appWidgetId = try {
+            intent?.extras?.getInt(
+                AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID,
+            ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
+        } catch (_: Exception) {
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        }
         // Varsayılan sonuç VAZGEÇ: geri tuşu widget eklemez.
         setResult(RESULT_CANCELED, sonucNiyeti())
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {

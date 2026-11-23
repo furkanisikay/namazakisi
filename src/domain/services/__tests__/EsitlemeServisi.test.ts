@@ -205,6 +205,60 @@ describe('esitlemeTuru (motor)', () => {
     expect(uzaktakiIcerik(s).namazGunleri['2026-10-01']).toEqual({ Sabah: true, Öğle: true });
   });
 
+  it('NÖBETÇİ (B-2): uzaktan gelen bozuk içerik (null rozet, dev bonus, yabancı ad) DARALTILMIŞ uygulanır', async () => {
+    const s = new SahteSaglayici();
+    // Parolayı bilen ama eski/bozuk sürüm çalıştıran cihazın yükü.
+    s.icerik = zarfOlustur(
+      JSON.stringify({
+        namazGunleri: { '2026-10-01': { Sabah: true, Teheccud: true } },
+        kilinanVakitler: { '2026-10-01': ['imsak', 'cop'] },
+        seri: { mevcutSeri: 'çok', enUzunSeri: 1e308, yabanci: [1] },
+        rozetler: [null, { rozetId: { x: 1 }, kazanildiMi: 'evet' }, { rozetId: 'ilk_adim', kazanildiMi: true, kazanilmaTarihi: null }],
+        bonusPuan: 1e308,
+        kazaTempo: { '2026-10-01': 1e308 },
+      }),
+      anahtar,
+      KDF,
+      new Date('2026-10-13T09:00:00Z')
+    );
+    s.surum = 1;
+    const c = cihaz({});
+    await esitlemeTuru(ortam(s, c), { sonEtiket: null, sonOzet: null });
+    expect(c.uygula).toHaveBeenCalledTimes(1);
+    const gelen = c.uygula.mock.calls[0][0];
+    expect(gelen.namazGunleri).toEqual({ '2026-10-01': { Sabah: true } });
+    expect(gelen.kilinanVakitler).toEqual({ '2026-10-01': ['imsak'] });
+    expect(gelen.rozetler).toEqual([{ rozetId: 'ilk_adim', kazanildiMi: true, kazanilmaTarihi: null }]);
+    expect(gelen.bonusPuan).toBe(1_000_000_000);
+    expect(gelen.kazaTempo).toEqual({ '2026-10-01': 100_000 });
+    expect(gelen.seri).toMatchObject({ mevcutSeri: 0, enUzunSeri: 100_000 });
+    expect(gelen.seri).not.toHaveProperty('yabanci');
+  });
+
+  it('NÖBETÇİ: iki cihazın diskinde de daraltıcının attığı kayıt varken eşitleme YAKINSAR (ping-pong yok)', async () => {
+    const s = new SahteSaglayici();
+    const telefon = cihaz({ namazGunleri: { '2026-10-01': { Sabah: true, CopA: true } } });
+    const tablet = cihaz({ namazGunleri: { '2026-10-01': { Öğle: true, CopB: true } } });
+    const telefonDurumu = { sonEtiket: null as string | null, sonOzet: null as string | null };
+    const tabletDurumu = { sonEtiket: null as string | null, sonOzet: null as string | null };
+    const tur = async (c: ReturnType<typeof cihaz>, durum: typeof telefonDurumu) => {
+      const t = await esitlemeTuru(ortam(s, c), durum);
+      if (t.etiket) Object.assign(durum, { sonEtiket: t.etiket, sonOzet: t.ozet });
+      return t.sonuc;
+    };
+    await tur(telefon, telefonDurumu);
+    await tur(tablet, tabletDurumu);
+    await tur(telefon, telefonDurumu);
+    // Yabancı ad buluta hiç çıkmaz.
+    expect(uzaktakiIcerik(s).namazGunleri).toEqual({ '2026-10-01': { Sabah: true, Öğle: true } });
+    const yazmaOncesi = s.yazmaSayisi;
+    for (let i = 0; i < 3; i++) {
+      expect(await tur(tablet, tabletDurumu)).toEqual({ tur: 'guncel' });
+      expect(await tur(telefon, telefonDurumu)).toEqual({ tur: 'guncel' });
+    }
+    expect(s.yazmaSayisi).toBe(yazmaOncesi);
+  });
+
   it('AĞ YOK: sessiz hata kodu, hiçbir şey uygulanmaz', async () => {
     const s = new SahteSaglayici();
     s.agYok = true;

@@ -33,6 +33,12 @@ class KildimKutusuServisi : TileService() {
 
     override fun onClick() {
         super.onClick()
+        // Kilitli ekranda panel açılabilir: telefonu eline alan biri kilidi açmadan vakti
+        // işaretleyip alarmı susturamasın (widget'taki `KilitEkraniKarari` ile aynı tehdit).
+        if (isLocked) unlockAndRun { isaretle() } else isaretle()
+    }
+
+    private fun isaretle() {
         // Bound kutu servisi ön plan sayılır → headless görev başlatılabilir.
         KildimIslemleri.simdikiVaktiKuyrugaAl(this, KildimKuyruguKurallari.KAYNAK_KUTU)
         ciz()

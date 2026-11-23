@@ -94,6 +94,14 @@ HTTP MCP sunucusu YAZILMAZ (sürekli açık sunucu çevrimdışı vaadine aykır
 - **Kıble = `PendingIntent`** (`ACTION_VIEW namazakisi://kible`, MainActivity açık bileşen, `FLAG_IMMUTABLE`); RN Linking soğuk açılışta `getInitialURL` ile okur.
 - **Bugün uçtan uca ÇALIŞMAZ ve duyurulmadı** (Gemini'nin üçüncü taraf çağrısı özel önizlemede). Deneme: `adb shell cmd app_function list-app-functions` / `execute-app-function --package com.furkanisikay.namazakisi --function 'com.furkanisikay.namazakisi.asistan.NamazAsistanFonksiyonlari#siradakiNamaz' --parameters '{}'`. Cihazda DOĞRULANMADI.
 
+## Dışa açık bileşenler
+
+- **`android:exported="true"` listesi bilinçlidir; yeni bileşen ancak çağıranı doğruluyorsa (güven listesi, belirteç, sistem `BIND_*` izni) ya da dış girdi okumuyorsa eklenir.** Dışa açık her bileşen cihazdaki başka bir uygulamanın giriş kapısıdır. Yalnız sistem yayını ve kendi `PendingIntent`'imizi alan alıcı `exported="false"` olur — ikisi de kapalı alıcıya ulaşır (`NamazWidgetAlarmAlici`, `MuhafizAlarmAlici`). Nöbetçi: `androidDisaAcikBilesenler.test.ts`.
+- **Dışa açık etkinlikte intent eklerini `try` içinde oku:** bozuk `Parcelable` taşıyan ek `BadParcelableException` ile süreci düşürür (`WidgetYapilandirmaActivity`).
+- **Güven sorusunda uygulama adının yanında PAKET ADI da gösterilir** (`KildimKisayolActivity`, `OtomasyonDuzenleActivity`): etiket uygulamanın kendi beyanıdır, "Samsung Rutinler" adını taşıyan sahte bir uygulama kalıcı izin isteyebilir.
+- **Kilit ekranından erişilen yüzey "Kıldım"ı kilit açılmadan yazmaz:** hızlı ayarlar kutusu `isLocked` iken `unlockAndRun` kullanır; widget'ta aynı karar `KilitEkraniKarari`'nda. Cihazda doğrulanmadı (üçüncü taraf kutusunun kilitliyken tıklanabilirliği üreticiye göre değişir).
+- **`Activity.getReferrer()` Android 10 ve altında kimlik kanıtı DEĞİLDİR** (çağıran paket adını kendisi beyan eder; Android 11 çağıran uid'e bağladı). `KildimBaslatani.coz` bu sürümlerde ana ekran/kendi paketimiz sınıfını sormadan geçirir — açık kalan risk, cihazda doğrulanmadı.
+
 ## Güvenilirlik, alarm bütçesi, pil, manifest
 
 - **notifee `TimestampTrigger`'ı DAİMA `zamanTetigiOlustur` ile kur** (`domain/services/notifeeTetik.ts`): `alarmManager` verilmezse notifee WorkManager'a bırakır, Doze/Samsung uyku kısıtında bildirim dakikalarca gecikir. Yardımcı `SET_EXACT_AND_ALLOW_WHILE_IDLE` kurar, tam alarm izni kapalı/okunamazsa (`getNotificationSettings().android.alarm === DISABLED`) `SET_AND_ALLOW_WHILE_IDLE`'a düşer; `allowWhileIdle` deprecated. notifee mock'ları `AlarmType` + `AndroidNotificationSetting` + `getNotificationSettings` taşımalı.

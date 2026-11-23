@@ -3,7 +3,7 @@
  * kabı hazır olunca tüketilir. Köprü global mock'tan (`__mocks__/expo-siri-kisayollari.js`)
  * gelir ve `require` ile kurulur (AGENTS.md: moduleNameMapper mock'una jest.requireMock değil).
  */
-import { renderHook, waitFor } from '@testing-library/react-native';
+import { act, renderHook, waitFor } from '@testing-library/react-native';
 import { useSiriEkranIstegi } from '../useSiriEkranIstegi';
 
 const kopru = require('../../../../modules/expo-siri-kisayollari/src') as {
@@ -90,4 +90,22 @@ describe('useSiriEkranIstegi', () => {
         await waitFor(() => expect(kopru.siriEkranIstegiAl).toHaveBeenCalled());
         expect(nav.navigate).not.toHaveBeenCalled();
     });
+
+    // NÖBETÇİ (denetim G-3): düz nesne araması prototip anahtarlarını da "bulur";
+    // `constructor` gelirse rota bir fonksiyon olur ve gezinmeye giderdi.
+    it.each(['constructor', 'toString', '__proto__', 'hasOwnProperty', 'valueOf'])(
+        'prototip anahtarı "%s" ekran adı sayılmaz',
+        async (ad) => {
+            kopru.siriEkranIstegiAl.mockResolvedValueOnce(ad);
+            const nav = navKur();
+            renderHook(() => useSiriEkranIstegi(true, nav as never));
+            await waitFor(() => expect(kopru.siriEkranIstegiAl).toHaveBeenCalled());
+            // İsteği işleyen `then` zincirinin bitmesini bekle (yoksa "çağrılmadı" boş yere geçer).
+            await act(async () => {
+                await Promise.resolve();
+                await Promise.resolve();
+            });
+            expect(nav.navigate).not.toHaveBeenCalled();
+        },
+    );
 });

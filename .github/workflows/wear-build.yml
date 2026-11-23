@@ -45,10 +45,10 @@ jobs:
           java-version: '17'
 
       - name: 🐘 Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
       - name: 🤖 Android SDK
-        uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
 
       # Sözleşme İKİ TARAFTA kilitli: JS doğrulayıcısı ve Kotlin YukCozucu aynı
       # örnek dosyayı (wear/app/src/test/resources/ornek-yuk.json) kabul etmeli.

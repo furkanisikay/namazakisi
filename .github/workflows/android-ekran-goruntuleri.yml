@@ -256,7 +256,7 @@ jobs:
 
       - name: 📱 Emülatörde kareleri çek
         if: ${{ inputs.tur != 'ozellik' && inputs.tur != 'tablet' && inputs.tur != 'katlanabilir' }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: ${{ inputs.api }}
           target: google_apis
@@ -291,7 +291,7 @@ jobs:
       # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur birbirinden bagimsiz.
       - name: 🧭 Özellik turu — telefon (açık + koyu)
         if: ${{ !cancelled() && inputs.tur != 'magaza' && inputs.tur != 'tablet' && inputs.tur != 'katlanabilir' }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: ${{ inputs.api }}
           target: google_apis
@@ -307,7 +307,7 @@ jobs:
 
       - name: 🧭 Özellik turu — tablet (açık)
         if: ${{ !cancelled() && inputs.tur != 'magaza' && (inputs.tablet || inputs.tur == 'tablet') }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         env:
           AKIS_FILTRESI: ${{ inputs.akis_filtresi }}
           PERFORMANS_OLCUMU: ${{ inputs.performans_olcumu && '1' || '' }}
@@ -325,7 +325,7 @@ jobs:
       # yatay menteşe). Yalnız iki akış koşar; postür `# hazirlik: masaustu` ile adb'den kurulur.
       - name: 📖 Katlanabilir (Pixel Fold)
         if: ${{ !cancelled() && inputs.tur == 'katlanabilir' }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         env:
           AKIS_FILTRESI: ${{ inputs.akis_filtresi || '^(01-ana-ekran|20-katlanabilir)' }}
         with:
@@ -344,7 +344,7 @@ jobs:
       # mentese yazilir (scripts/android-flip-avd.sh). Yalniz masaustu postur karesi.
       - name: 📱 Katlanabilir (Flip, masaüstü)
         if: ${{ !cancelled() && inputs.tur == 'katlanabilir' }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         env:
           AKIS_FILTRESI: '^20-katlanabilir'
         with:
@@ -411,7 +411,7 @@ jobs:
 
       # ~/.gradle onbellegi (wear-build.yml ile ayni eylem): bagimliliklar her kosuda inmesin.
       - name: 🐘 Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
       # Tohum yuku adhan JS ile uretilir (telefonun hesap yolu); yamalar gerekmez.
       - name: 📦 Bağımlılıkları kur
@@ -432,7 +432,7 @@ jobs:
           find app/build/outputs/apk -name '*.apk' -print
 
       - name: ⌚ Yuvarlak saat (Wear OS 5, 454x454)
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 34
           target: android-wear
@@ -446,7 +446,7 @@ jobs:
       # ekran `-skin 384x384` ile buyutulur (yogunluk ayni, ~16 dp daha genis).
       - name: ⌚ Kare saat (Wear OS 5, 384x384)
         if: ${{ !cancelled() }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 34
           target: android-wear
@@ -503,7 +503,7 @@ jobs:
           java-version: '17'
 
       - name: 🐘 Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
       - name: 🔓 KVM'i etkinleştir
         run: |
@@ -525,7 +525,7 @@ jobs:
 
       # android-tv imaji API 34'te yalniz x86 (x86_64 yok); uygulama saf Kotlin/JVM.
       - name: 📺 TV (1080p)
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 34
           target: android-tv

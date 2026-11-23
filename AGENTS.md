@@ -85,8 +85,8 @@ Geçmiyorsa iş **bitmemiştir** — düzelt, çözemiyorsan açıkça raporla. 
 - **Release adımında tag push'tan SONRA atılır** (rebase release commit'ini yeniden yazar). Sürüm numarasını elle değiştirme. Ayrıntı: [ci-ve-yayin](docs/ajan/ci-ve-yayin.md).
 
 ## Güvenlik
-- Harici URL açmadan önce doğrula (`guvenilirBaglantiMi`: https + domain beyaz listesi).
-- Loglar cihazda tutulur ve `DebugLogsSayfasi`/tanı raporuyla paylaşılabilir: hassas veri yazma; koordinat en fazla `toFixed(1)`; token redakte.
+- Harici URL açmadan önce doğrula (`guvenilirBaglantiMi`: https + tam ana bilgisayar beyaz listesi); güncelleme/indirme bağlantısı `guvenilirSurumBaglantisiMi`'den geçer (GitHub'da yalnız bu deponun `/releases` yolu — ana bilgisayar tek başına başkasının APK'sını da kabul eder). Nöbetçi: `GuncellemeServisi.test.ts`.
+- Loglar cihazda tutulur ve `DebugLogsSayfasi`/tanı raporuyla paylaşılabilir: hassas veri yazma; koordinat en fazla `toFixed(1)`; token redakte. Logu cihaz dışına veren her yer `maskeliLogMetni` (`TaniRaporuServisi`) kullanır, çıplak `Logger.exportLogs()` paylaşılmaz (maskeleme alan adına göre veri üzerinde yapılır; metin deseni yalnız yedektir). Nöbetçi: `TaniRaporuServisi.test.ts`.
 - Manifest: `allowBackup="false"`; kullanılmayan izinler (`RECORD_AUDIO`, `SYSTEM_ALERT_WINDOW`, eski depolama, `ACTIVITY_RECOGNITION` — `expo-sensors` adımsayarı ekler, `Pedometer` kullanılırsa geri alınmalı; kullanılmayan FGS türleri) `tools:node="remove"` ile engelli. Yeni kütüphane eklerken izin sızıntısını `aapt2 dump permissions <apk>` ile kontrol et. Ayrıntı: [android-native](docs/ajan/android-native.md).
 - WebView eklenirse (bugün YOK; kıble kendi kodumuz): `geolocationEnabled` açıksa `onShouldStartLoadWithRequest` ile host beyaz listesi zorunlu, dış linkler `Linking.openURL`.
 - CI: `ci.yml` üst seviye `contents: read`; yazma izni yalnız `auto-release` işinde.

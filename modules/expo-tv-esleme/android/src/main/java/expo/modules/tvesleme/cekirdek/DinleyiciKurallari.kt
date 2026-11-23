@@ -13,6 +13,26 @@ object DinleyiciKurallari {
     const val ES_ZAMANLI_AZAMI = 3
     val YOLLAR = setOf("/esle", "/esle-durum", "/esitle")
 
+    /** Tek `read` çağrısının zaman aşımı. */
+    const val TEK_OKUMA_MS = 5000
+
+    /**
+     * Bir isteğin başlık + gövdesinin okunabileceği TOPLAM süre. Soket zaman aşımı yalnız tek
+     * okumayı sınırlar: bayt bayt yazan bir eş (aynı Wi-Fi'deki herhangi bir cihaz) üç bağlantıyı
+     * saatlerce açık tutup gerçek eşi dışarıda bırakabilirdi.
+     */
+    const val ISTEK_SURESI_MS = 8000L
+
+    /**
+     * Bir sonraki okumanın zaman aşımı (ms): tek okuma sınırı ile kalan bütçenin küçüğü.
+     * Bütçe bittiyse 0 (çağıran bağlantıyı kapatır — `soTimeout = 0` SONSUZ bekleme demektir,
+     * sokete asla 0 yazılmaz).
+     */
+    fun okumaSuresi(sonAnMs: Long, simdiMs: Long): Int {
+        val kalan = sonAnMs - simdiMs
+        return if (kalan <= 0) 0 else minOf(TEK_OKUMA_MS.toLong(), kalan).toInt()
+    }
+
     data class Istek(val yol: String, val uzunluk: Int)
 
     /** Başlık bloğunu (boş satıra kadar) çözer; yalnız POST + bilinen yol + geçerli uzunluk. */
