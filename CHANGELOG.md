@@ -5,6 +5,46 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.72.0] - 2026-11-23
+
+### Eklendi
+- [duvar] kişiselleştirilebilir duvar kâğıdı; iPhone bildirim sesi; Expo SDK 58; Cihazlarım ve saat yedeği düzeltmeleri (#398)
+- [duvar] saat alanı kaynağı — elle ayara "ölçüldü" denmez
+- [duvar] kilit ekranı saat alanı — düzenleyicide ölçüm ve elle ayar
+- [duvar] Android kilit ekranı saat alanı — bantlar, cisim kaçışı, mihrap solması, ölçüm köprüsü
+- [duvar] iPhone kilit görseli saat alanından kaçar, kilit ekranı ölçüm köprüsü
+- [duvar] kilit ekranı saat alanı sözleşmesi — bantlar, cisim kaçışı, mihrap solması, ölçüm
+- [duvar] duvar kâğıdı düzenleyicisi — vakit gökleri, fotoğraf, yazı ve süs
+- [duvar] iPhone Kısayollar görseli kişiselleştirilmiş duvar kâğıdını çizer
+- [duvar] Android'de kişiselleştirme — vakit gökleri, fotoğraf, yazı yeri/hiza/tipi ve süs
+- [duvar] kişiselleştirme sözleşmesi — vakit gökleri, yazı yerleşimi, süs ve fotoğraf ayarı
+- [ses] iPhone'da bildirim sesi seçimi — uygulamanın sesleri ve kendi dosyanız
+
+### Düzeltildi
+- [android] AGP 9'da release birim testi görevini geri aç — sürüm derlemesi düşüyordu
+- [etkilesim] boşta çalıştırmaya 2 sn üst sınır; CI'da doğrulanmayanları işaretle
+- [erisilebilirlik] bekleyen PR'lardaki düzeltmeler güncel koda — rol/durum, tehlike rengi tokenı
+- [duvar] ölçüm adımları duvar kâğıdını açmayı ve bildirimleri temizlemeyi söyler (78 dil)
+- [duvar] saat alanı inceleme bulguları
+- [duvar] ölçüm ve mihrap yıldızı iOS ile eşlendi — eşitlikte küçük indeks, çokgen uzanımı
+- [duvar] iPhone ölçüm yüksekliği referansın oranından (Android ile aynı)
+- [duvar] önizleme sığdırmayı native gibi yapar (küçült + yeniden kır, sonra Arapçayı düşür)
+- [duvar] CI derlemeleri — Swift ham dize sınırı ve Android org.json keySet
+- [duvar] inceleme bulguları — anlık gök önizlemesi, iPhone fotoğraf kopyası, çift dokunuş
+- [duvar] Arapça satır yüksekliği 2 (Amiri Quran'da harekeler 1,75'te çakışıyordu)
+- [duvar] Android ve iPhone süs/yazı ölçüleri önizlemeyle aynı
+- [duvar] iPhone'da elle kaydedilen görsel düzenleyicideki görünümün kendisi
+- [duvar] kayıp fotoğrafta seçici yeniden açılır, hazır "Fotoğraf" geçişten sonra
+- [duvar] sağdan sola mealin altında künye ve atıf aynı kenara yaslanır (Android)
+- [duvar] imzadaki sahne özeti süreçler arası kararlı olsun
+- [ses] iPhone ek yüzeyinde adım önizlemesi telefonun sesi yerine uygulama sesini çalmasın
+- [ses] silinen iPhone sesi her kayıttan düşer; ad çalan sese göre, OGG metni platforma özgü
+- [cihaz] inceleme bulguları — geçici okuma hatası, erken göç, zorla denemenin geri çekilmesi, yerelleştirilmiş cihaz adı
+- [ses] biçim hatası OGG'yi önermesin (iPhone OGG okuyamaz)
+- [ses] iPhone vakit satırında ölü "dinle" düğmesi gizlendi
+- [cihaz] tablet adı, odakta zorla eşitleme, yanıt sınırı ve kayıp eşleştirme uyarısı
+- [saat] telefonun yedek uyandırması kalan süreyi gerçek ana göre söyler
+
 ## [0.71.0] - 2026-11-06
 
 ### Eklendi
