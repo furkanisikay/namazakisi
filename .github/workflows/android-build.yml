@@ -96,13 +96,13 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: 🐘 Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
         with:
           gradle-version: wrapper
           cache-read-only: false
 
       - name: 🤖 Setup Android SDK
-        uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
 
       - name: 📚 Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
@@ -343,78 +343,42 @@ jobs:
       # ==========================================
       # Imzalama (Release)
       # ==========================================
+      # GUVENLIK: depodaki `release` derleme turu React Native sablonundaki HERKESE ACIK
+      # debug.keystore ile imzalar. O anahtarla imzali bir APK yayinlanirsa herkes ayni
+      # anahtarla, cihazin "guncelleme" sayacagi sahte bir APK uretebilir. Bu yuzden:
+      #   - 4 imza sirri da tanimliysa release GERCEK anahtarla imzalanir (yama + denetim),
+      #   - biri eksikse derleme yine yapilir (testler, surum, tag, Play tetiklemesi surer)
+      #     ama APK GitHub surumune EKLENMEZ ("APK imza denetimi" adimi).
+      # Sirlar `env` ile gecer: `run:` metnine gomulen sir, icindeki ozel karakterle kabuk
+      # komutuna donusebilir.
       - name: 🔐 Keystore olustur (Release)
         if: inputs.build_type == 'release'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PAROLASI: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANAHTAR_ADI: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANAHTAR_PAROLASI: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
-            echo "⚠️ Keystore bulunamadi, debug signing kullanilacak"
-            echo "use_debug_signing=true" >> $GITHUB_ENV
-          else
-            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
-            echo "✅ Keystore olusturuldu"
-            echo "use_debug_signing=false" >> $GITHUB_ENV
+          set -euo pipefail
+          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$KEYSTORE_PAROLASI" ] || [ -z "$ANAHTAR_ADI" ] || [ -z "$ANAHTAR_PAROLASI" ]; then
+            echo "::warning::Imza sirlari (ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD) eksik: APK GitHub surumune EKLENMEYECEK"
+            echo "imza_sirlari=yok" >> "$GITHUB_ENV"
+            exit 0
           fi
-
-      - name: 📝 Gradle signing ayarlari (Release)
-        if: inputs.build_type == 'release' && env.use_debug_signing == 'false'
-        run: |
-          cat >> android/gradle.properties << EOF
-          
-          RELEASE_STORE_FILE=release.keystore
-          RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
-          RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
-          EOF
-
-      - name: 🔧 Build.gradle signing config (Release)
-        if: inputs.build_type == 'release' && env.use_debug_signing == 'false'
-        run: |
-          # Yama yalniz bu derleme icindir: release commit'i build.gradle'i
-          # `git add` ettigi icin yamasiz hali saklanip derlemeden sonra geri konur.
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > android/app/release.keystore
+          # Yama yalniz bu derleme icindir: release commit'i build.gradle'i `git add`
+          # ettigi icin yamasiz hali saklanip derlemeden sonra geri konur.
           cp android/app/build.gradle "$RUNNER_TEMP/build.gradle.imzasiz"
-          cat << 'EOF' > update_signing.js
-          const fs = require('fs');
-          const path = 'android/app/build.gradle';
-          let content = fs.readFileSync(path, 'utf8');
-
-          if (!content.includes('RELEASE_STORE_FILE')) {
-            const releaseSigningConfig = `
-              release {
-                  if (project.hasProperty('RELEASE_STORE_FILE')) {
-                      storeFile file(RELEASE_STORE_FILE)
-                      storePassword RELEASE_STORE_PASSWORD
-                      keyAlias RELEASE_KEY_ALIAS
-                      keyPassword RELEASE_KEY_PASSWORD
-                  }
-              }
-          `;
-            if (content.includes('signingConfigs')) {
-              content = content.replace(
-                /(signingConfigs\s*\{)/,
-                '$1' + releaseSigningConfig
-              );
-            } else {
-              const signingConfig = `
-          signingConfigs {
-          ${releaseSigningConfig}}
-          `;
-              content = content.replace(/(android\s*\{)/, '$1' + signingConfig);
-            }
-          }
-
-          if (!content.includes('signingConfig signingConfigs.release')) {
-            content = content.replace(
-              /(buildTypes\s*\{[\s\S]*?release\s*\{)/,
-              '$1\n            signingConfig signingConfigs.release'
-            );
-          }
-
-          fs.writeFileSync(path, content);
-          console.log('✅ build.gradle signing config guncellendi');
-          EOF
-
-          node update_signing.js
-          rm update_signing.js
+          node scripts/android-imza-yamasi.js android/app/build.gradle
+          {
+            echo ""
+            echo "RELEASE_STORE_FILE=release.keystore"
+            printf 'RELEASE_STORE_PASSWORD=%s\n' "$KEYSTORE_PAROLASI"
+            printf 'RELEASE_KEY_ALIAS=%s\n' "$ANAHTAR_ADI"
+            printf 'RELEASE_KEY_PASSWORD=%s\n' "$ANAHTAR_PAROLASI"
+          } >> android/gradle.properties
+          echo "imza_sirlari=var" >> "$GITHUB_ENV"
+          echo "✅ Release imzasi hazir"
 
       # ==========================================
       # Gradle Build
@@ -484,6 +448,43 @@ jobs:
           echo "apk_name=$APK_NAME" >> $GITHUB_OUTPUT
           echo "apk_size=$APK_SIZE" >> $GITHUB_OUTPUT
           echo "📦 $APK_NAME ($APK_SIZE)"
+
+      # ==========================================
+      # APK imza denetimi — SON SOZ sertifikanindir, yapilandirmanin degil.
+      # Release: debug anahtariyla imzali ya da dogrulanamayan APK surume EKLENMEZ;
+      #          sirlar tanimliyken debug imza cikarsa is DURUR (yama etkisiz kalmis).
+      # Debug:   ayni betik debug imzayi YAKALAMALI (denetimin oz-sinamasi).
+      # ==========================================
+      - name: 🔏 APK imza denetimi
+        id: imza
+        env:
+          APK: ${{ steps.rename.outputs.apk_name }}
+          BUILD_TYPE: ${{ inputs.build_type }}
+        run: |
+          set -uo pipefail
+          # Varsayilan kabuk `-e` ile kosar: sifirdan farkli cikis kodu adimi kesmesin.
+          KOD=0
+          bash scripts/apk-imza-denetimi.sh "$APK" android/app/debug.keystore || KOD=$?
+          if [ "$BUILD_TYPE" != "release" ]; then
+            if [ "$KOD" -eq 0 ]; then
+              echo "::error::Imza denetimi debug APK'yi debug imzali olarak TANIYAMADI (denetim bozuk)"
+              exit 1
+            fi
+            echo "yayinla=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$KOD" -eq 0 ]; then
+            echo "yayinla=true" >> "$GITHUB_OUTPUT"
+            echo "indirme=| $APK | ${{ steps.rename.outputs.apk_size }} |" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${imza_sirlari:-yok}" = "var" ]; then
+            echo "::error::Imza sirlari tanimli ama APK yayin anahtariyla imzalanmadi (kod $KOD). Release durduruldu."
+            exit 1
+          fi
+          echo "::warning::APK yayin anahtariyla imzali degil; GitHub surumune eklenmiyor (Play dagitimi etkilenmez)."
+          echo "yayinla=false" >> "$GITHUB_OUTPUT"
+          echo "indirme=| APK bu sürüme eklenmedi (imza anahtarı tanımlı değil) | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) |" >> "$GITHUB_OUTPUT"
 
       # ==========================================
       # Debug: Artifact Upload
@@ -557,14 +558,15 @@ jobs:
             
             | Dosya | Boyut |
             |-------|-------|
-            | ${{ steps.rename.outputs.apk_name }} | ${{ steps.rename.outputs.apk_size }} |
-            
+            ${{ steps.imza.outputs.indirme }}
+
             ---
-            
+
             📄 [Tüm değişiklikler (CHANGELOG.md)](https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.version_tag }}/CHANGELOG.md)
             
             ${{ steps.release_notes.outputs.previous_tag != '' && format('🔗 **Full Changelog**: https://github.com/{0}/compare/{1}...{2}', github.repository, steps.release_notes.outputs.previous_tag, steps.version.outputs.version_tag) || '' }}
-          files: ${{ steps.rename.outputs.apk_name }}
+          # Yalniz imza denetiminden gecen APK eklenir (bos deger = dosyasiz surum).
+          files: ${{ steps.imza.outputs.yayinla == 'true' && steps.rename.outputs.apk_name || '' }}
           draft: false
           prerelease: false
         env:
