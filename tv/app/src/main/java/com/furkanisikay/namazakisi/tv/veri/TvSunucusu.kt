@@ -114,13 +114,25 @@ class TvSunucusu(context: Context, val depo: UyeDeposu) {
             yanitla(b, Yanit(429))
             return
         }
-        b.soTimeout = 5000
+        // İstek başına TOPLAM okuma bütçesi: soket zaman aşımı yalnız tek okumayı sınırlar;
+        // bayt bayt yazan bir eş üç bağlantıyı saatlerce tutup telefonu dışarıda bırakabilirdi.
+        val sonAn = System.nanoTime() / 1_000_000 + AgProtokolu.ISTEK_SURESI_MS
+        fun sureAyarla(): Boolean {
+            val sure = AgProtokolu.okumaSuresi(sonAn, System.nanoTime() / 1_000_000)
+            if (sure <= 0) {
+                hiz.basarisiz(ip)
+                return false
+            }
+            b.soTimeout = sure
+            return true
+        }
         try {
             val giris = b.getInputStream()
             val tampon = ByteArrayOutputStream()
             val parca = ByteArray(1024)
             var son = -1
             while (son < 0 && tampon.size() < 1024 + AgProtokolu.GOVDE_AZAMI) {
+                if (!sureAyarla()) return
                 val n = giris.read(parca)
                 if (n < 0) break
                 tampon.write(parca, 0, n)
@@ -135,6 +147,7 @@ class TvSunucusu(context: Context, val depo: UyeDeposu) {
             }
             val govde = ByteArrayOutputStream().apply { write(tum, son + 4, tum.size - son - 4) }
             while (govde.size() < istek.uzunluk) {
+                if (!sureAyarla()) return
                 val n = giris.read(parca)
                 if (n < 0) break
                 govde.write(parca, 0, n)

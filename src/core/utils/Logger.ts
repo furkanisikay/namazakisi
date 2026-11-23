@@ -218,15 +218,28 @@ class LoggerClass {
 
   /**
    * Loglari export eder (text formatinda)
+   *
+   * @param veriDonustur her kaydin `data`'si metne dokulmeden ONCE bundan gecer. Cihazdan
+   *   cikacak metin icin maskeleyici verilir (`TaniRaporuServisi.maskeliLogMetni`): alan adina
+   *   gore maskeleme ancak veri uzerinde guvenilirdir, metin deseni JSON bicimini kacirir.
+   *   Donusturucu ya da JSON dokumu firlatirsa veri HAM yazilmaz, yer tutucu yazilir.
    */
-  exportLogs(): string {
+  exportLogs(veriDonustur?: (veri: unknown) => unknown): string {
     if (this.logs.length === 0) {
       return 'Log bulunamadi';
     }
 
+    const veriMetni = (veri: unknown): string => {
+      try {
+        return JSON.stringify(veriDonustur ? veriDonustur(veri) : veri, null, 2) ?? '[veri yazilamadi]';
+      } catch {
+        return '[veri yazilamadi]';
+      }
+    };
+
     const lines = this.logs.map((log) => {
       const date = new Date(log.timestamp).toISOString();
-      const dataStr = log.data ? `\nData: ${JSON.stringify(log.data, null, 2)}` : '';
+      const dataStr = log.data ? `\nData: ${veriMetni(log.data)}` : '';
       return `[${date}] [${log.level}] [${log.tag}] ${log.message}${dataStr}`;
     });
 

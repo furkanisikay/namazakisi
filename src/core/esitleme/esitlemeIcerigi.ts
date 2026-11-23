@@ -142,7 +142,12 @@ const temizOlaylar = (ham: unknown): { cihazOlaylari?: unknown[] } => {
   return olaylar.length > 0 ? { cihazOlaylari: olaylar } : {};
 };
 
-/** Rozet kimliği (birleştirme servisiyle aynı anahtar: `id` ya da JSON). */
+/**
+ * Özet için rozet anahtarı. Rozet kayıtlarında `id` alanı YOKTUR (gerçek alan `rozetId`), bu
+ * yüzden anahtar pratikte kaydın tam JSON'udur (kazanım durumu ve tarihi dahil). Birleştirme
+ * `rozetId` ile tekilleştirir ve en eski tarihi korur (`rozetleriTekillestir`), yani iki cihaz
+ * yine aynı kayda ve aynı özete iner. Anahtarı DEĞİŞTİRME: her cihazın özeti değişir.
+ */
 const rozetKimligi = (rozet: unknown): string => {
   const id = (rozet as { id?: unknown } | null)?.id;
   return typeof id === 'string' ? id : JSON.stringify(rozet);

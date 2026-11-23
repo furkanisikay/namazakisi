@@ -92,7 +92,8 @@ abstract class OtomasyonDuzenleActivity : Activity() {
     }
 
     private fun izinSor(paket: String, ad: String, onceki: EklentiAyari?) {
-        val mesaj = getString(if (kosulMu) R.string.otomasyon_izin_kosul else R.string.otomasyon_izin_kildim, ad)
+        // `ad` uygulamanın kendi beyanıdır (taklit edilebilir) → paket adı da gösterilir.
+        val mesaj = getString(if (kosulMu) R.string.otomasyon_izin_kosul else R.string.otomasyon_izin_kildim, ad) + "\n\n" + paket
         goster(
             AlertDialog.Builder(this, R.style.KildimOnayTemasi)
                 .setTitle(getString(R.string.otomasyon_izin_baslik, ad))

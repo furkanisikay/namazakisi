@@ -1,8 +1,11 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { Linking } from 'react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { HakkindaSayfasi } from '../HakkindaSayfasi';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
+import { guvenilirSurumBaglantisiMi } from '../../../domain/services/GuncellemeServisi';
+import { metin } from '../../../core/dil/aktifDil';
 import { UYGULAMA } from '../../../core/constants/UygulamaSabitleri';
 import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
@@ -12,7 +15,7 @@ jest.mock('../../store/guncellemeSlice', () => ({
   guncellemeKontrolEt: jest.fn((arg) => ({ type: 'guncelleme/kontrolEt', payload: arg })),
 }));
 jest.mock('../../../domain/services/GuncellemeServisi', () => ({
-  guvenilirBaglantiMi: jest.fn(() => true),
+  guvenilirSurumBaglantisiMi: jest.fn(() => true),
 }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
   const { Text } = require('react-native');
@@ -69,6 +72,57 @@ describe('HakkindaSayfasi', () => {
   it('sürüm metni render edilir', () => {
     const { getByText } = render(<HakkindaSayfasi />);
     expect(getByText(UYGULAMA.VERSIYON)).toBeTruthy();
+  });
+});
+
+// NÖBETÇİ (denetim B-6): "İndir" yalnız yol denetimli doğrulayıcıdan geçen bağlantıyı açar.
+describe('HakkindaSayfasi — güncelleme indirme bağlantısı', () => {
+  const baglanti = 'https://github.com/kotu/repo/releases/download/v9/kotu.apk';
+  let openURL: jest.SpyInstance;
+
+  beforeEach(() => {
+    openURL = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
+    (guvenilirSurumBaglantisiMi as jest.Mock).mockReset();
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useAppDispatch as jest.Mock).mockReturnValue(jest.fn());
+    (useAppSelector as jest.Mock).mockImplementation(
+      (selector: (state: { guncelleme: unknown }) => unknown) =>
+        selector({
+          guncelleme: {
+            kontrolEdiliyor: false,
+            guncellemeMevcut: true,
+            bilgi: {
+              yeniVersiyon: '99.0.0',
+              mevcutVersiyon: UYGULAMA.VERSIYON,
+              degisiklikNotlari: '',
+              indirmeBaglantisi: baglanti,
+              yayinTarihi: '',
+              kaynak: 'github',
+              zorunluMu: false,
+            },
+          },
+        })
+    );
+  });
+  afterEach(() => openURL.mockRestore());
+
+  it('doğrulayıcı reddederse bağlantı AÇILMAZ', () => {
+    (guvenilirSurumBaglantisiMi as jest.Mock).mockReturnValue(false);
+    const { getByLabelText } = render(<HakkindaSayfasi />);
+
+    fireEvent.press(getByLabelText(metin().genel.hakkinda.indirErisim));
+
+    expect(guvenilirSurumBaglantisiMi).toHaveBeenCalledWith(baglanti);
+    expect(openURL).not.toHaveBeenCalled();
+  });
+
+  it('doğrulayıcı kabul ederse bağlantı açılır', () => {
+    (guvenilirSurumBaglantisiMi as jest.Mock).mockReturnValue(true);
+    const { getByLabelText } = render(<HakkindaSayfasi />);
+
+    fireEvent.press(getByLabelText(metin().genel.hakkinda.indirErisim));
+
+    expect(openURL).toHaveBeenCalledWith(baglanti);
   });
 });
 

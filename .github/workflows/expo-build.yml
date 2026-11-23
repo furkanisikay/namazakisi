@@ -203,7 +203,7 @@ jobs:
         run: npm ci
 
       - name: 🚀 Setup Expo & EAS
-        uses: expo/expo-github-action@9da89d3617bb88139671bad31b09c65714c2ee06 # v9
+        uses: expo/expo-github-action@9da89d3617bb88139671bad31b09c65714c2ee06 # 9.0.1
         with:
           eas-version: 20.1.0
           token: ${{ secrets.EXPO_TOKEN }}
@@ -362,11 +362,11 @@ jobs:
 
       - name: 🐘 Gradle (GitHub yedeği)
         if: steps.aab_yol.outputs.yol == 'github'
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
       - name: 🤖 Android SDK (GitHub yedeği)
         if: steps.aab_yol.outputs.yol == 'github'
-        uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
 
       - name: 🔑 Yükleme anahtarı (EAS) — GitHub yedeği
         if: steps.aab_yol.outputs.yol == 'github'
@@ -849,10 +849,10 @@ jobs:
           java-version: '21'
 
       - name: 🐘 Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
       - name: 🤖 Android SDK
-        uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
 
       - name: 📦 Node
         uses: actions/setup-node@v7

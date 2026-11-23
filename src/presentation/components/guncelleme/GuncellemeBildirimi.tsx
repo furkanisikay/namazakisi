@@ -36,7 +36,7 @@ import {
   indirmeTamamlandiIsaretle,
   indirmeDurumuSifirla,
 } from '../../store/guncellemeSlice';
-import { yayinTarihiniFormatla, guvenilirBaglantiMi } from '../../../domain/services/GuncellemeServisi';
+import { yayinTarihiniFormatla, guvenilirSurumBaglantisiMi } from '../../../domain/services/GuncellemeServisi';
 import { PlayStoreModulu } from '../../../domain/services/PlayStoreGuncellemeModulu';
 import { useMetin } from '../../hooks/useMetin';
 
@@ -169,8 +169,8 @@ export const GuncellemeBildirimi: React.FC = () => {
         Logger.warn('GuncellemeBildirimi', 'Play Store update başlatılamadı', hata?.message);
       }
     } else {
-      // GitHub / sideload — mevcut davranış
-      if (bilgi.indirmeBaglantisi && guvenilirBaglantiMi(bilgi.indirmeBaglantisi)) {
+      // GitHub / sideload — yalnız bu deponun sürüm bağlantısı açılır (ana bilgisayar + yol)
+      if (bilgi.indirmeBaglantisi && guvenilirSurumBaglantisiMi(bilgi.indirmeBaglantisi)) {
         Linking.openURL(bilgi.indirmeBaglantisi).catch((hata) => {
           Logger.warn('GuncellemeBildirimi', 'Baglanti acilamadi', hata);
         });

@@ -49,4 +49,18 @@ class DinleyiciKurallariTest {
         assertTrue(k.yanit(200, "{}").startsWith("HTTP/1.1 200 OK\r\n"))
         assertTrue(k.yanit(200, "ğ").contains("Content-Length: 2\r\n"))
     }
+
+    /** Yavaş yazan eş bağlantıyı tutamaz: okuma süresi istek bütçesiyle kenetlenir. */
+    @Test
+    fun okumaSuresiToplamButceyleSinirli() {
+        val sonAn = 100_000L + k.ISTEK_SURESI_MS
+        assertEquals(k.TEK_OKUMA_MS, k.okumaSuresi(sonAn, 100_000L))
+        assertEquals(1_000, k.okumaSuresi(sonAn, sonAn - 1_000))
+        assertEquals(1, k.okumaSuresi(sonAn, sonAn - 1))
+        // Bütçe bitti: 0 döner; çağıran kapatır (soTimeout=0 sonsuz bekleme olurdu).
+        assertEquals(0, k.okumaSuresi(sonAn, sonAn))
+        assertEquals(0, k.okumaSuresi(sonAn, sonAn + 60_000))
+        // 4,9 sn'de bir bayt yollayan eş en çok iki okuma yapabilir (eskiden ~9 bin).
+        assertTrue(k.ISTEK_SURESI_MS < 2L * k.TEK_OKUMA_MS)
+    }
 }

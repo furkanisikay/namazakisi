@@ -58,7 +58,11 @@ export function useSiriEkranIstegi(
                     await simgedenKildim();
                     return;
                 }
-                const rota = ekran ? SIRI_EKRANLARI[ekran] : undefined;
+                // Kendi-özellik denetimi: düz nesnede `constructor`/`toString`/`__proto__` gibi
+                // prototip anahtarları da "bulunur" ve rota diye gezinmeye giderdi.
+                const rota = typeof ekran === 'string' && Object.prototype.hasOwnProperty.call(SIRI_EKRANLARI, ekran)
+                    ? SIRI_EKRANLARI[ekran]
+                    : undefined;
                 if (rota && navRef.isReady()) navRef.navigate('MainTabs', { screen: rota });
             })
             .catch((e) => Logger.warn('SiriEkranIstegi', 'Ekran istegi islenemedi', e));

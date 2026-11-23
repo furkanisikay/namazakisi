@@ -41,6 +41,16 @@ class CihazAgiTest {
         for (k in p.keys()) assertEquals(p.getInt(k), AgProtokolu.kararliPort(k))
     }
 
+    /** Yavaş yazan eş bağlantıyı tutamaz: okuma süresi istek bütçesiyle kenetlenir. */
+    @Test
+    fun okumaSuresiToplamButceyleSinirli() {
+        val sonAn = 100_000L + AgProtokolu.ISTEK_SURESI_MS
+        assertEquals(AgProtokolu.TEK_OKUMA_MS, AgProtokolu.okumaSuresi(sonAn, 100_000L))
+        assertEquals(1_000, AgProtokolu.okumaSuresi(sonAn, sonAn - 1_000))
+        assertEquals(0, AgProtokolu.okumaSuresi(sonAn, sonAn))
+        assertEquals(0, AgProtokolu.okumaSuresi(sonAn, sonAn + 60_000))
+    }
+
     @Test
     fun ozelIpv4KatiTelefonlaAyni() {
         val ip = f.getJSONObject("ozelIpv4")

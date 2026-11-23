@@ -7,7 +7,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
 import { mesafeHesapla } from '../../core/utils/MesafeHesaplayici';
-import { ilceKoordinatiBul, cevrimdisiIlceler } from '../../core/konum/ilceKoordinati';
+import { ilceKoordinatiBul, cevrimdisiIlceler, adAnahtari } from '../../core/konum/ilceKoordinati';
 
 // =====================
 // TIP TANIMLARI
@@ -43,28 +43,6 @@ export interface Mahalle {
     ilceId: number;
     ad: string;
     postaKodu?: string;
-}
-
-/**
- * API yanit tipleri
- */
-interface TurkiyeAPIIlYanit {
-    id: number;
-    name: string;
-    coordinates: {
-        latitude: number;
-        longitude: number;
-    };
-}
-
-interface TurkiyeAPIIlceYanit {
-    id: number;
-    name: string;
-    province?: string;
-    coordinates?: {
-        latitude: number;
-        longitude: number;
-    };
 }
 
 // =====================
@@ -212,6 +190,141 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
 ];
 
 // =====================
+// YANIT / ONBELLEK DOGRULAMA
+// =====================
+// `api.turkiyeapi.dev` bağımsız bir üçüncü taraftır: yanıtı (ve ondan yazılmış 24 saatlik
+// önbelleği) satır satır süzmeden konuma almak, kaymış koordinatla sessizce yanlış vakit
+// ya da dize gelen koordinatla açılmayan seçici demektir. Önbellek de AYNI süzgeçten geçer.
+
+/** Türkiye sınır kutusu (81 il; KKTC bu serviste yok). Ölçülen uçlar: 36.2–42.0 K, 26.4–44.0 D. */
+const TR_KUTUSU = { latMin: 35.5, latMax: 42.5, lngMin: 25.5, lngMax: 45.0 };
+/** API il merkezi çevrimdışı tablodan en çok bu kadar sapabilir (ölçülen en büyük fark ≈ 3,4 km). */
+const IL_MERKEZI_TOLERANS_KM = 50;
+/** İlçe merkezi kendi il merkezinden en çok bu kadar uzak olabilir (en geniş il Konya ≈ 155 km). */
+const ILCE_IL_MERKEZI_TOLERANS_KM = 250;
+const IL_SAYISI = 81;
+const ILCE_KIMLIK_UST_SINIR = 99999;
+const AD_UZUNLUK_UST_SINIR = 60;
+/** Kontrol karakteri (satır sonu, sekme, NUL…) taşıyan ad reddedilir. */
+const KONTROL_KARAKTERI = /[\u0000-\u001f\u007f]/;
+
+function nesneMi(deger: unknown): deger is Record<string, unknown> {
+    return typeof deger === 'object' && deger !== null && !Array.isArray(deger);
+}
+
+/** Makul uzunlukta, kontrol karaktersiz ad; değilse `null`. */
+function gecerliAd(deger: unknown): string | null {
+    if (typeof deger !== 'string') return null;
+    const ad = deger.trim();
+    if (ad.length === 0 || ad.length > AD_UZUNLUK_UST_SINIR || KONTROL_KARAKTERI.test(ad)) return null;
+    return ad;
+}
+
+/** Sonlu sayı çifti ve Türkiye sınır kutusunda mı? (`'41.0'` gibi dize koordinat reddedilir.) */
+export function trKoordinatiMi(lat: unknown, lng: unknown): boolean {
+    return (
+        typeof lat === 'number' && typeof lng === 'number' &&
+        Number.isFinite(lat) && Number.isFinite(lng) &&
+        lat >= TR_KUTUSU.latMin && lat <= TR_KUTUSU.latMax &&
+        lng >= TR_KUTUSU.lngMin && lng <= TR_KUTUSU.lngMax
+    );
+}
+
+/** Satırdaki koordinat: API biçimi (`coordinates.latitude/longitude`) ya da önbellek biçimi (`lat/lng`). */
+function hamKoordinat(satir: Record<string, unknown>): { lat: unknown; lng: unknown } {
+    const k = satir.coordinates;
+    if (nesneMi(k)) return { lat: k.latitude, lng: k.longitude };
+    return { lat: satir.lat, lng: satir.lng };
+}
+
+/** Koordinat geçerli VE `merkez`e en çok `toleransKm` uzaklıkta mı? */
+function merkezeYakinMi(lat: unknown, lng: unknown, merkez: { lat: number; lng: number }, toleransKm: number): boolean {
+    if (!trKoordinatiMi(lat, lng)) return false;
+    return mesafeHesapla(lat as number, lng as number, merkez.lat, merkez.lng) / 1000 <= toleransKm;
+}
+
+function cevrimdisiIl(ilId: number): Il | undefined {
+    return TURKIYE_ILLERI_OFFLINE.find((il) => il.id === ilId);
+}
+
+/**
+ * API ya da önbellek il listesini süzer. Kimlik 1–81 tamsayı olmalı (yinelenen ve geçersiz
+ * satır atılır); ad ve koordinat çevrimdışı tabloyla UYUŞMUYORSA tablodaki değer kullanılır
+ * (81 il sabittir — API buraya yeni bilgi getirmez, yalnız bozabilir).
+ */
+export function illeriDogrula(ham: unknown): Il[] {
+    if (!Array.isArray(ham)) return [];
+    const gorulen = new Set<number>();
+    const sonuc: Il[] = [];
+    for (const satir of ham) {
+        if (!nesneMi(satir)) continue;
+        const id = satir.id;
+        if (typeof id !== 'number' || !Number.isInteger(id) || id < 1 || id > IL_SAYISI || gorulen.has(id)) continue;
+        const tablo = cevrimdisiIl(id);
+        if (!tablo) continue;
+        gorulen.add(id);
+        const ad = gecerliAd(satir.name ?? satir.ad);
+        const { lat, lng } = hamKoordinat(satir);
+        const koordinatGecerli = merkezeYakinMi(lat, lng, tablo, IL_MERKEZI_TOLERANS_KM);
+        sonuc.push({
+            id,
+            ad: ad !== null && adAnahtari(ad) === adAnahtari(tablo.ad) ? ad : tablo.ad,
+            plakaKodu: plakaKodu(id),
+            lat: koordinatGecerli ? (lat as number) : tablo.lat,
+            lng: koordinatGecerli ? (lng as number) : tablo.lng,
+        });
+    }
+    return sonuc;
+}
+
+/**
+ * API ya da önbellek ilçe listesini süzer. Adı geçersiz ya da kimliği bozuk satır atılır
+ * (kimlik hiç yoksa sıra numarası verilir); koordinat geçersizse ya da il merkezinden
+ * makul uzaklıkta değilse il merkezine düşülür (çağıran ardından ilçe tablosuyla düzeltir).
+ * @param ilKoordinati aynı yanıttaki il koordinatı (doğrulanmamış; yalnız tabloda olmayan il için)
+ */
+export function ilceleriDogrula(ilId: number, ham: unknown, ilKoordinati?: unknown): Ilce[] {
+    if (!Array.isArray(ham)) return [];
+    const tablo = cevrimdisiIl(ilId);
+    const yanitMerkezi = nesneMi(ilKoordinati) ? { lat: ilKoordinati.latitude, lng: ilKoordinati.longitude } : null;
+    const yedekMerkez: { lat: number; lng: number } = tablo
+        ?? (yanitMerkezi && trKoordinatiMi(yanitMerkezi.lat, yanitMerkezi.lng)
+            ? { lat: yanitMerkezi.lat as number, lng: yanitMerkezi.lng as number }
+            : { lat: 0, lng: 0 });
+    const gorulen = new Set<number>();
+    const sonuc: Ilce[] = [];
+    ham.forEach((satir, sira) => {
+        if (!nesneMi(satir)) return;
+        const ad = gecerliAd(satir.name ?? satir.ad);
+        if (ad === null) return;
+        const hamId = satir.id;
+        const id = hamId === undefined || hamId === null || hamId === 0 ? sira + 1 : hamId;
+        if (typeof id !== 'number' || !Number.isInteger(id) || id < 1 || id > ILCE_KIMLIK_UST_SINIR || gorulen.has(id)) return;
+        gorulen.add(id);
+        const { lat, lng } = hamKoordinat(satir);
+        const koordinatGecerli = tablo
+            ? merkezeYakinMi(lat, lng, tablo, ILCE_IL_MERKEZI_TOLERANS_KM)
+            : trKoordinatiMi(lat, lng);
+        sonuc.push({
+            id,
+            ilId,
+            ad,
+            lat: koordinatGecerli ? (lat as number) : yedekMerkez.lat,
+            lng: koordinatGecerli ? (lng as number) : yedekMerkez.lng,
+        });
+    });
+    return sonuc;
+}
+
+/** Önbellek zarfı: süresi dolmamış (ve gelecekten damgalanmamış) kaydın `data` alanı; değilse `null`. */
+function tazeOnbellekVerisi(hamMetin: string): unknown | null {
+    const zarf: unknown = JSON.parse(hamMetin);
+    if (!nesneMi(zarf) || typeof zarf.timestamp !== 'number') return null;
+    const yas = Date.now() - zarf.timestamp;
+    return yas >= 0 && yas < CACHE_SURESI ? zarf.data : null;
+}
+
+// =====================
 // SERVIS SINIFI
 // =====================
 
@@ -255,10 +368,11 @@ class TurkiyeKonumServisiClass {
         try {
             const cachedData = await AsyncStorage.getItem(CACHE_ANAHTARI_ILLER);
             if (cachedData) {
-                const parsed = JSON.parse(cachedData);
-                if (Date.now() - parsed.timestamp < CACHE_SURESI) {
-                    // Eski sürümün önbelleğinde plaka yerine alan kodu yazılı olabilir.
-                    const iller = (parsed.data as Il[]).map((il) => ({ ...il, plakaKodu: plakaKodu(il.id) }));
+                // Önbellek de API yanıtıyla AYNI süzgeçten geçer (eski sürümün yazdığı ya da
+                // bozulmuş kayıt); plaka da burada kimlikten yeniden türetilir. Hiç geçerli
+                // satır kalmadıysa önbellek yok sayılır ve API'ye gidilir.
+                const iller = illeriDogrula(tazeOnbellekVerisi(cachedData));
+                if (iller.length > 0) {
                     this.illerCache = iller;
                     return iller;
                 }
@@ -273,23 +387,20 @@ class TurkiyeKonumServisiClass {
             const response = await zamanAsimliGetir(`${API_BASE_URL}/provinces?fields=id,name,coordinates`);
 
             if (response.ok) {
-                const json = await response.json();
-                const iller: Il[] = (json.data || json).map((il: TurkiyeAPIIlYanit) => ({
-                    id: il.id,
-                    ad: il.name,
-                    plakaKodu: plakaKodu(il.id),
-                    lat: il.coordinates?.latitude || 0,
-                    lng: il.coordinates?.longitude || 0,
-                }));
+                const json: unknown = await response.json();
+                const iller = illeriDogrula(nesneMi(json) ? json.data : json);
 
-                // Cache'e kaydet
-                this.illerCache = iller;
-                await AsyncStorage.setItem(CACHE_ANAHTARI_ILLER, JSON.stringify({
-                    timestamp: Date.now(),
-                    data: iller,
-                }));
+                // Tek geçerli satır yoksa önbelleğe YAZMA: çevrimdışı tabloya düş.
+                if (iller.length > 0) {
+                    this.illerCache = iller;
+                    await AsyncStorage.setItem(CACHE_ANAHTARI_ILLER, JSON.stringify({
+                        timestamp: Date.now(),
+                        data: iller,
+                    }));
 
-                return iller;
+                    return iller;
+                }
+                Logger.warn('TurkiyeKonumServisi', 'Il yaniti gecersiz, offline veri kullaniliyor');
             }
         } catch (e) {
             Logger.warn('TurkiyeKonumServisi', 'API hatasi, offline veri kullaniliyor:', e);
@@ -334,10 +445,11 @@ class TurkiyeKonumServisiClass {
         try {
             const cachedData = await AsyncStorage.getItem(cacheKey);
             if (cachedData) {
-                const parsed = JSON.parse(cachedData);
-                if (Date.now() - parsed.timestamp < CACHE_SURESI) {
-                    // Eski sürümün önbelleği ilçelere İL MERKEZİ yazmıştı → tablodan düzelt.
-                    const duzeltilmis = ilceKoordinatlariniDuzelt(ilId, parsed.data as Ilce[]);
+                // Önbellek de süzülür; eski sürümün önbelleği ilçelere İL MERKEZİ yazmıştı →
+                // ardından tablodan düzeltilir.
+                const suzulmus = ilceleriDogrula(ilId, tazeOnbellekVerisi(cachedData));
+                if (suzulmus.length > 0) {
+                    const duzeltilmis = ilceKoordinatlariniDuzelt(ilId, suzulmus);
                     this.ilcelerCache.set(ilId, duzeltilmis);
                     return duzeltilmis;
                 }
@@ -351,31 +463,29 @@ class TurkiyeKonumServisiClass {
             const response = await zamanAsimliGetir(`${API_BASE_URL}/provinces/${ilId}?fields=coordinates,districts`);
 
             if (response.ok) {
-                const json = await response.json();
-                const ilData = json.data || json;
-                
+                const json: unknown = await response.json();
+                const zarf = nesneMi(json) && nesneMi(json.data) ? json.data : json;
+                const ilData = nesneMi(zarf) ? zarf : {};
+
                 // Ilce verisi districts alaninda olmali
                 // API ilçelerde `coordinates` VERMEZ (2026-10 ölçüldü) → ilçe merkezi çevrimdışı
-                // tablodan; tabloda yoksa API alanı, o da yoksa il merkezi (son çare).
+                // tablodan; tabloda yoksa (doğrulanmış) API alanı, o da yoksa il merkezi (son çare).
                 const ilceler: Ilce[] = ilceKoordinatlariniDuzelt(
                     ilId,
-                    (ilData.districts || []).map((ilce: TurkiyeAPIIlceYanit, index: number) => ({
-                        id: ilce.id || index + 1,
-                        ilId: ilId,
-                        ad: ilce.name,
-                        lat: ilce.coordinates?.latitude || ilData.coordinates?.latitude || 0,
-                        lng: ilce.coordinates?.longitude || ilData.coordinates?.longitude || 0,
-                    })),
+                    ilceleriDogrula(ilId, ilData.districts, ilData.coordinates),
                 );
 
-                // Cache'e kaydet
-                this.ilcelerCache.set(ilId, ilceler);
-                await AsyncStorage.setItem(cacheKey, JSON.stringify({
-                    timestamp: Date.now(),
-                    data: ilceler,
-                }));
+                // Tek geçerli satır yoksa önbelleğe YAZMA: çevrimdışı tabloya düş.
+                if (ilceler.length > 0) {
+                    this.ilcelerCache.set(ilId, ilceler);
+                    await AsyncStorage.setItem(cacheKey, JSON.stringify({
+                        timestamp: Date.now(),
+                        data: ilceler,
+                    }));
 
-                return ilceler;
+                    return ilceler;
+                }
+                Logger.warn('TurkiyeKonumServisi', 'Ilce yaniti gecersiz, offline veri kullaniliyor');
             }
         } catch (e) {
             Logger.warn('TurkiyeKonumServisi', 'Ilce API hatasi:', e);

@@ -35,6 +35,7 @@ import {
 import { defterDoluMu, eskiDurumdanHareketler, eskiGorunumHareketi } from '../../core/kaza/kazaDefteriHesabi';
 import { mezhepSecildiMi, seferilikMezhebi } from '../../core/mezhep/mezhepAyari';
 import { rizaEkle, rizaKaydiniNormalize } from '../../core/hatirlatma/rizalar';
+import { rozetleriTekillestir } from '../../core/yedek/yedekPayloadDogrula';
 
 /** Kılınan-vakitler anahtar öneki: `${MUHAFIZ_AYARLARI}_kilinan_<tarih>`. */
 const KILINAN_VAKIT_ONEK = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_`;
@@ -65,6 +66,12 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   hesap: DEPOLAMA_ANAHTARLARI.HESAP_AYARI,
   dil: DEPOLAMA_ANAHTARLARI.DIL_AYARI,
 };
+
+/**
+ * Yedeğe giren ayar alanları — içerik daraltıcısının (`core/yedek/yedekPayloadDogrula`)
+ * beyaz listesi. Tek kaynak `AYAR_ANAHTARLARI`'dır; ayrı bir liste TUTMA.
+ */
+export const YEDEK_AYAR_ALANLARI: readonly string[] = Object.freeze(Object.keys(AYAR_ANAHTARLARI));
 
 /**
  * Dört kategoride de "akıllı" strateji (union; hiçbir şey geri alınmaz, ayarlara
@@ -184,19 +191,14 @@ const birlestirKilinanVakitler = (
   return sonuc;
 };
 
-/** id'ye göre tekilleştirerek rozetleri birleştirir (her iki taraftaki kazanımlar). */
-const rozetleriBirlestir = (mevcut: unknown[], gelen: unknown[]): unknown[] => {
-  const birlesik: unknown[] = [];
-  const gorulenIdler = new Set<string>();
-  for (const rozet of [...mevcut, ...gelen]) {
-    const id = (rozet as { id?: unknown })?.id;
-    const anahtar = typeof id === 'string' ? id : JSON.stringify(rozet);
-    if (gorulenIdler.has(anahtar)) continue;
-    gorulenIdler.add(anahtar);
-    birlesik.push(rozet);
-  }
-  return birlesik;
-};
+/**
+ * Rozetleri `rozetId` ile tekilleştirerek birleştirir: aynı rozetin iki kaydında kazanılmış
+ * olan kalır, kazanılma tarihi en eskisidir. Rozet reconcile ile TÜRETİLMEZ; yanlış alanla
+ * tekilleştirmek cihazdaki "kazanılmadı" kaydının yedekteki kazanımı gölgelemesine yol
+ * açıyordu. Biçimi tutmayan öğe (diskte kalmış bozuk kayıt dahil) atılır.
+ */
+const rozetleriBirlestir = (mevcut: unknown, gelen: unknown): unknown[] =>
+  rozetleriTekillestir([...(Array.isArray(mevcut) ? mevcut : []), ...(Array.isArray(gelen) ? gelen : [])]);
 
 /** Etkilenen namaz günlerini ve kılınan vakitleri plana ekler. */
 const namazPlaniEkle = (
@@ -259,7 +261,7 @@ const puanPlaniEkle = (
 
   if (strateji === 'akilli') {
     // bonusPuan reconcile'dan ÖNCE diske yazılmalı (AGENTS.md) → plana koy.
-    plan[DEPOLAMA_ANAHTARLARI.BONUS_PUAN] = Math.max(mevcut.bonusPuan, gelen.bonusPuan);
+    plan[DEPOLAMA_ANAHTARLARI.BONUS_PUAN] = Math.max(sayiAl(mevcut.bonusPuan), sayiAl(gelen.bonusPuan));
     plan[DEPOLAMA_ANAHTARLARI.ROZET_VERILERI] = rozetleriBirlestir(
       mevcut.rozetler,
       gelen.rozetler
@@ -276,8 +278,10 @@ const puanPlaniEkle = (
   // uzerineYaz: tüm puan/seviye/istatistik/seri anahtarları gelenden.
   plan[DEPOLAMA_ANAHTARLARI.BONUS_PUAN] = gelen.bonusPuan;
   plan[DEPOLAMA_ANAHTARLARI.ROZET_VERILERI] = gelen.rozetler;
-  plan[DEPOLAMA_ANAHTARLARI.SERI_DURUMU] = gelen.seri;
-  plan[DEPOLAMA_ANAHTARLARI.SEVIYE_DURUMU] = gelen.seviye;
+  // Yedekte seri/seviye YOKSA (ya da daraltıcı bozuk kaydı null'a indirdiyse) anahtara
+  // `null` yazma: okuyucu `null` kaydı çözemez ve seri/seviye hiç yüklenmez.
+  if (gelen.seri !== null && gelen.seri !== undefined) plan[DEPOLAMA_ANAHTARLARI.SERI_DURUMU] = gelen.seri;
+  if (gelen.seviye !== null && gelen.seviye !== undefined) plan[DEPOLAMA_ANAHTARLARI.SEVIYE_DURUMU] = gelen.seviye;
   plan[DEPOLAMA_ANAHTARLARI.TOPLAM_KILILAN_NAMAZ] = gelen.istatistik.toplamKilinan;
   plan[DEPOLAMA_ANAHTARLARI.MUKEMMEL_GUN_SAYISI] = gelen.istatistik.mukemmelGun;
   plan[DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI] = gelen.istatistik.toparlanma;

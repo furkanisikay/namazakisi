@@ -25,7 +25,7 @@ import { UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { guncellemeKontrolEt } from '../store/guncellemeSlice';
 import { Logger } from '../../core/utils/Logger';
-import { guvenilirBaglantiMi } from '../../domain/services/GuncellemeServisi';
+import { guvenilirSurumBaglantisiMi } from '../../domain/services/GuncellemeServisi';
 import { useMetin } from '../hooks/useMetin';
 import { bicim } from '../../core/dil/aktifDil';
 
@@ -134,7 +134,7 @@ export const HakkindaSayfasi: React.FC = () => {
 
   // Bağlantıyı sistem tarayıcısında açar. Kendisi DOĞRULAMA YAPMAZ: bu sayfadaki
   // bağlantılar koda gömülü sabitlerdir; dış kaynaktan gelen URL'ler (güncelleme
-  // bağlantısı) çağırandan önce guvenilirBaglantiMi ile doğrulanır (handleIndirBasildi).
+  // bağlantısı) çağırandan önce guvenilirSurumBaglantisiMi ile doğrulanır (handleIndirBasildi).
   const handleWebSitesiAc = (url: string) => {
     Linking.openURL(url).catch((hata) => {
       Logger.warn('HakkindaSayfasi', 'Baglanti acilamadi', hata);
@@ -144,8 +144,9 @@ export const HakkindaSayfasi: React.FC = () => {
   /**
    * Guncelleme indirme/yonlendirme butonuna basildi.
    * Play Store kaynaginda indirmeBaglantisi 'playstore://update' seklindedir —
-   * guvenilirBaglantiMi bunu reddeder, bu yuzden Play Store akisi ayri ele alinir.
-   * GitHub/sideload icin baglanti guvenilirBaglantiMi ile dogrulanir; gecemezse
+   * guvenilirSurumBaglantisiMi bunu reddeder, bu yuzden Play Store akisi ayri ele alinir.
+   * GitHub/sideload icin baglanti guvenilirSurumBaglantisiMi ile dogrulanir (ana bilgisayar
+   * + bu deponun release yolu); gecemezse
    * sessizce loglanir ve hicbir sey yapilmaz (kullanici zarari olmaz).
    */
   const handleIndirBasildi = (indirmeBaglantisi: string) => {
@@ -157,8 +158,8 @@ export const HakkindaSayfasi: React.FC = () => {
       return;
     }
     // Derinlemesine savunma: baglantinin guvenilir oldugunu dogrula
-    if (!guvenilirBaglantiMi(indirmeBaglantisi)) {
-      Logger.warn('HakkindaSayfasi', 'Guncelleme baglantisi guvenilmez domain iceriyor, islemi iptal edildi');
+    if (!guvenilirSurumBaglantisiMi(indirmeBaglantisi)) {
+      Logger.warn('HakkindaSayfasi', 'Guncelleme baglantisi guvenilmez, islemi iptal edildi');
       return;
     }
     handleWebSitesiAc(indirmeBaglantisi);

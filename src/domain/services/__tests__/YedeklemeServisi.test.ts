@@ -12,7 +12,10 @@ import {
   coz as cozGercek,
   kontrolHesapla as kontrolHesaplaGercek,
 } from '../../../core/utils/yedekSifreleme';
-import { yedekZarfiOlustur, zarfiCoz, yedeginiPaylas } from '../YedeklemeServisi';
+import { yedekZarfiOlustur, zarfiCoz, yedeginiPaylas, mevcutVeriyiTopla } from '../YedeklemeServisi';
+import { YEDEK_AYAR_ALANLARI } from '../YedekBirlestirmeServisi';
+import { AZAMI_YEDEK_DOSYASI_BAYT } from '../../../core/yedek/yedekPayloadDogrula';
+import { ROZET_TANIMLARI } from '../../../core/types/SeriTipleri';
 import { YEDEK_BICIMI, YEDEK_SURUMU, YedekZarfi } from '../../../core/types';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 
@@ -390,5 +393,150 @@ describe('YedeklemeServisi — yedeginiPaylas', () => {
     yazMock.mockRejectedValueOnce(new Error('disk dolu'));
     await expect(yedeginiPaylas()).resolves.toBeUndefined();
     expect(mockShareAsync).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ─── Denetim B-2 / B-3: zarf anahtarı sır değil → içerik daraltılır ─────────
+
+/** Kaynak koddaki açık anahtarla herkesin üretebileceği "geçerli" zarf (mock şifrelemeyle). */
+const zarfla = (icerik: unknown): string => {
+  const duzMetin = JSON.stringify(icerik);
+  return JSON.stringify({
+    bicim: YEDEK_BICIMI,
+    surum: YEDEK_SURUMU,
+    olusturulma: '2026-06-14T08:00:00.000Z',
+    uygulamaSurumu: '0.0.0',
+    sifreli: true,
+    nonce: 'N',
+    veri: Buffer.from(duzMetin).toString('base64'),
+    kontrol: 'sum-' + duzMetin.length,
+  });
+};
+
+/** Depolamayı uygulamanın GERÇEKTE yazdığı şekillerle doldurur (her ayar alanı dolu). */
+const gercekciDepolama = (): void => {
+  const gunler: Record<string, unknown> = {
+    '2026-06-13': { Sabah: true, 'Öğle': true, 'İkindi': true, 'Akşam': true, 'Yatsı': true },
+    '2026-06-14': { Sabah: true, 'Öğle': false },
+  };
+  const kilinan: Record<string, unknown> = {
+    '2026-06-13': ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'],
+    '2026-06-14': [],
+  };
+  onEkiMock.mockImplementation(async (onek: string) => {
+    if (onek === DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK) return Object.keys(gunler).map((t) => `${onek}${t}`);
+    if (onek === KILINAN_ONEK) return Object.keys(kilinan).map((t) => `${onek}${t}`);
+    return [];
+  });
+  cogunuOkuMock.mockImplementation(async (anahtarlar: string[]) =>
+    anahtarlar.map((a) => {
+      const kaynak = a.startsWith(KILINAN_ONEK) ? kilinan : gunler;
+      const onek = a.startsWith(KILINAN_ONEK) ? KILINAN_ONEK : DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK;
+      return [a, JSON.stringify(kaynak[a.slice(onek.length)])];
+    })
+  );
+  const sabitler: Record<string, unknown> = {
+    [DEPOLAMA_ANAHTARLARI.SERI_DURUMU]: {
+      mevcutSeri: 12,
+      enUzunSeri: 45,
+      sonTamGun: '2026-06-13',
+      seriBaslangici: '2026-06-02',
+      toparlanmaDurumu: { tamamlananGun: 1, baslangicTarihi: '2026-06-01', hedefGunSayisi: 2, oncekiSeri: 30 },
+      dondurulduMu: false,
+      dondurulmaTarihi: null,
+      sonGuncelleme: '2026-06-14T05:12:00.000Z',
+      bugunOncesi: null,
+      bugunKazanilanPuan: 25,
+    },
+    [DEPOLAMA_ANAHTARLARI.ROZET_VERILERI]: ROZET_TANIMLARI.map((tanim, sira) => ({
+      rozetId: tanim.id,
+      kazanildiMi: sira === 0,
+      kazanilmaTarihi: sira === 0 ? '2026-05-01T10:00:00.000Z' : null,
+    })),
+    [DEPOLAMA_ANAHTARLARI.SEVIYE_DURUMU]: {
+      mevcutSeviye: 4,
+      toplamPuan: 1830,
+      mevcutSeviyePuani: 330,
+      sonrakiSeviyeKalanPuan: 170,
+      rank: 'Rank',
+      rankIkonu: '⭐',
+    },
+    [DEPOLAMA_ANAHTARLARI.BONUS_PUAN]: 240,
+    [DEPOLAMA_ANAHTARLARI.TOPLAM_KILILAN_NAMAZ]: 1250,
+    [DEPOLAMA_ANAHTARLARI.MUKEMMEL_GUN_SAYISI]: 42,
+    [DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI]: 3,
+    [DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS]: { '2026-06-10': 3 },
+  };
+  okuMock.mockImplementation(async (anahtar: string) =>
+    // Tanımlı olmayan her anahtar (= ayar anahtarları) kendine özgü dolu bir ayar nesnesi döner.
+    anahtar in sabitler ? sabitler[anahtar] : { aktif: true, kaynakAnahtar: anahtar }
+  );
+};
+
+describe('YedeklemeServisi — zarfiCoz içeriği daraltır (B-2 / B-3)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    gercekciDepolama();
+  });
+
+  it('NÖBETÇİ: uygulamanın ürettiği yedek çözülünce toplanan içerikle DERİN EŞİT (hiçbir alan kaybolmaz)', async () => {
+    const toplanan = JSON.parse(JSON.stringify(await mevcutVeriyiTopla()));
+    const cozulen = await zarfiCoz(await yedekZarfiOlustur());
+    expect(cozulen).toEqual(toplanan);
+    // Fikstür gerçekten dolu: boş içerik eşitliği hiçbir şey kanıtlamaz.
+    expect(Object.keys(cozulen!.namazGunleri)).toHaveLength(2);
+    expect(cozulen!.rozetler).toHaveLength(ROZET_TANIMLARI.length);
+    expect(cozulen!.kazaHareketleri).toEqual([mockKazaHareketi, mockBilinmeyen]);
+    expect(cozulen!.seri).toMatchObject({ mevcutSeri: 12, enUzunSeri: 45 });
+  });
+
+  it('NÖBETÇİ: yedeğe yazılan her ayar alanı daraltıcının beyaz listesindedir (liste ayrışırsa ayar sessizce kaybolur)', async () => {
+    const toplanan = await mevcutVeriyiTopla();
+    expect(Object.keys(toplanan.ayarlar).sort()).toEqual([...YEDEK_AYAR_ALANLARI].sort());
+    const cozulen = await zarfiCoz(await yedekZarfiOlustur());
+    for (const alan of YEDEK_AYAR_ALANLARI) expect(cozulen!.ayarlar[alan]).toEqual(toplanan.ayarlar[alan]);
+  });
+
+  it('kötü amaçlı zarf: null rozet, dize/dev bonus ve çöp tarih anahtarı atılmış/sıfırlanmış döner', async () => {
+    const cozulen = await zarfiCoz(
+      zarfla({
+        namazGunleri: { '../x': { Sabah: true }, '2026-06-14': { Sabah: true, Teheccud: true }, __yabanci: {} },
+        kilinanVakitler: { '../y': ['imsak'], '2026-06-14': ['imsak', 'cop'] },
+        seri: 'bozuk',
+        rozetler: [null, { rozetId: { x: 1 }, kazanildiMi: 'evet' }, { rozetId: 'ilk_adim', kazanildiMi: true, kazanilmaTarihi: null }],
+        seviye: 7,
+        bonusPuan: 'abc',
+        istatistik: { toplamKilinan: 1e308, mukemmelGun: -1, toparlanma: null },
+        kaza: 'yok',
+        kazaTempo: { '../z': 5, '2026-06-10': 1e308 },
+        kazaHareketleri: 'yok',
+        ayarlar: { muhafiz: { aktif: true }, yabanci: { x: 1 } },
+        yabanciAlan: [1, 2, 3],
+      })
+    );
+    expect(cozulen).toEqual({
+      namazGunleri: { '2026-06-14': { Sabah: true } },
+      kilinanVakitler: { '2026-06-14': ['imsak'] },
+      seri: null,
+      rozetler: [{ rozetId: 'ilk_adim', kazanildiMi: true, kazanilmaTarihi: null }],
+      seviye: null,
+      bonusPuan: 0,
+      istatistik: { toplamKilinan: 10_000_000, mukemmelGun: 0, toparlanma: 0 },
+      kaza: null,
+      kazaTempo: { '2026-06-10': 100_000 },
+      ayarlar: { muhafiz: { aktif: true } },
+    });
+  });
+
+  it('zarf geçerli ama içerik düz nesne değilse (dizi, sayı, null) null döner', async () => {
+    expect(await zarfiCoz(zarfla([{ namazGunleri: {} }]))).toBeNull();
+    expect(await zarfiCoz(zarfla(42))).toBeNull();
+    expect(await zarfiCoz(zarfla(null))).toBeNull();
+  });
+
+  it('sınırı aşan dosya içeriği ayrıştırılmadan reddedilir (null; şifre çözme hiç çağrılmaz)', async () => {
+    const dev = zarfla({ namazGunleri: {} }) + ' '.repeat(AZAMI_YEDEK_DOSYASI_BAYT);
+    expect(await zarfiCoz(dev)).toBeNull();
+    expect(cozMock).not.toHaveBeenCalled();
   });
 });
