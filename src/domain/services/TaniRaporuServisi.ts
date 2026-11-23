@@ -94,8 +94,16 @@ function maskele(veri: unknown, konumDahil: boolean, derinlik: number): unknown 
   if (veri === null || typeof veri !== 'object') return veri;
   if (derinlik >= AZAMI_DERINLIK) return GIZLENDI;
   if (Array.isArray(veri)) return veri.map((oge) => maskele(oge, konumDahil, derinlik + 1));
-  // Error JSON'a `{}` olarak dökülür; Date gibi `toJSON`'lu nesneler kendi dizesini verir.
-  if (veri instanceof Error) return veri;
+  // Error'ın alanları sayılabilir değildir: olduğu gibi dönerse JSON'a `{}` dökülür (tanı
+  // kaybolur) ve başka bir yazıcı onu maskelenmemiş basabilir. Düz nesneye indirilir; ileti
+  // ve yığın metin yedek ağından geçer. Date gibi `toJSON`'lu nesneler kendi dizesini verir.
+  if (veri instanceof Error) {
+    return maskele(
+      { name: veri.name, message: veri.message, ...(veri.stack ? { stack: veri.stack } : {}) },
+      konumDahil,
+      derinlik + 1,
+    );
+  }
   const jsonaCevir = (veri as { toJSON?: unknown }).toJSON;
   if (typeof jsonaCevir === 'function') {
     return maskele((jsonaCevir as () => unknown).call(veri), konumDahil, derinlik + 1);

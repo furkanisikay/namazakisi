@@ -370,13 +370,9 @@ jobs:
           # ettigi icin yamasiz hali saklanip derlemeden sonra geri konur.
           cp android/app/build.gradle "$RUNNER_TEMP/build.gradle.imzasiz"
           node scripts/android-imza-yamasi.js android/app/build.gradle
-          {
-            echo ""
-            echo "RELEASE_STORE_FILE=release.keystore"
-            printf 'RELEASE_STORE_PASSWORD=%s\n' "$KEYSTORE_PAROLASI"
-            printf 'RELEASE_KEY_ALIAS=%s\n' "$ANAHTAR_ADI"
-            printf 'RELEASE_KEY_PASSWORD=%s\n' "$ANAHTAR_PAROLASI"
-          } >> android/gradle.properties
+          # Parolalar diske YAZILMAZ: "Build APK" adimi onlari ORG_GRADLE_PROJECT_* ortam
+          # degiskeniyle Gradle proje ozelligi olarak verir (gradle.properties'te ters egik
+          # cizgi kacis olarak okunur, parola bozulurdu).
           echo "imza_sirlari=var" >> "$GITHUB_ENV"
           echo "✅ Release imzasi hazir"
 
@@ -397,6 +393,13 @@ jobs:
       # cihaz ağı dinleyicisi) da burada koşar — eskiden CI'da HİÇ koşmuyordu.
       - name: 🏗️ Build APK
         working-directory: android
+        env:
+          # Yalniz imza yamasi uygulandiysa okunur (yamali build.gradle `project.property`
+          # ile ister); sirlar yoksa bos kalir ve hicbir sey onlara bakmaz.
+          ORG_GRADLE_PROJECT_RELEASE_STORE_FILE: release.keystore
+          ORG_GRADLE_PROJECT_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ORG_GRADLE_PROJECT_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ORG_GRADLE_PROJECT_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           chmod +x gradlew
           if [ "${{ inputs.build_type }}" == "release" ]; then
@@ -450,9 +453,21 @@ jobs:
           echo "📦 $APK_NAME ($APK_SIZE)"
 
       # ==========================================
+      # Debug: Artifact Upload (imza oz-sinamasi dusse de APK elde kalsin diye ONCE)
+      # ==========================================
+      - name: 📤 APK Artifact (Debug)
+        if: inputs.build_type == 'debug'
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.rename.outputs.apk_name }}
+          path: ${{ steps.rename.outputs.apk_name }}
+          retention-days: 3
+
+      # ==========================================
       # APK imza denetimi — SON SOZ sertifikanindir, yapilandirmanin degil.
-      # Release: debug anahtariyla imzali ya da dogrulanamayan APK surume EKLENMEZ;
-      #          sirlar tanimliyken debug imza cikarsa is DURUR (yama etkisiz kalmis).
+      # Release: debug anahtariyla imzali (3) ya da dogrulanamayan (4) APK surume EKLENMEZ.
+      #          Sirlar tanimliyken DEBUG imza cikarsa is DURUR (yama etkisiz kalmis);
+      #          dogrulanamama surumu durdurmaz (APK'siz surum, Play dagitimi surer).
       # Debug:   ayni betik debug imzayi YAKALAMALI (denetimin oz-sinamasi).
       # ==========================================
       - name: 🔏 APK imza denetimi
@@ -480,24 +495,18 @@ jobs:
             echo "indirme=| $APK | ${{ steps.rename.outputs.apk_size }} |" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if [ "${imza_sirlari:-yok}" = "var" ]; then
-            echo "::error::Imza sirlari tanimli ama APK yayin anahtariyla imzalanmadi (kod $KOD). Release durduruldu."
+          if [ "$KOD" -eq 3 ] && [ "${imza_sirlari:-yok}" = "var" ]; then
+            echo "::error::Imza sirlari tanimli ama APK DEBUG anahtariyla imzalandi (yama etkisiz). Release durduruldu."
             exit 1
           fi
-          echo "::warning::APK yayin anahtariyla imzali degil; GitHub surumune eklenmiyor (Play dagitimi etkilenmez)."
+          if [ "$KOD" -eq 3 ]; then
+            NEDEN="imza anahtarı tanımlı değil"
+          else
+            NEDEN="imza doğrulanamadı"
+          fi
+          echo "::warning::APK GitHub surumune eklenmiyor ($NEDEN; kod $KOD). Play dagitimi etkilenmez."
           echo "yayinla=false" >> "$GITHUB_OUTPUT"
-          echo "indirme=| APK bu sürüme eklenmedi (imza anahtarı tanımlı değil) | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) |" >> "$GITHUB_OUTPUT"
-
-      # ==========================================
-      # Debug: Artifact Upload
-      # ==========================================
-      - name: 📤 APK Artifact (Debug)
-        if: inputs.build_type == 'debug'
-        uses: actions/upload-artifact@v7
-        with:
-          name: ${{ steps.rename.outputs.apk_name }}
-          path: ${{ steps.rename.outputs.apk_name }}
-          retention-days: 3
+          echo "indirme=| APK bu sürüme eklenmedi ($NEDEN) | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) |" >> "$GITHUB_OUTPUT"
 
       # ==========================================
       # Release: Commit, Tag, GitHub Release
@@ -602,17 +611,13 @@ jobs:
             console.log('✅ EAS Build kuyruğa alındı → internal track');
 
       # ==========================================
-      # Hassas dosya temizligi (imza secret'lari ephemeral runner'dan)
-      # gradle.properties'e yazilan imza parolalari + keystore dosyasi
-      # build sonunda silinir (loglar zaten maskeli; on-disk kaliciligi azalt).
+      # Hassas dosya temizligi: keystore dosyasi build sonunda silinir. Parolalar diske
+      # hic yazilmaz (Build adimina ortam degiskeniyle gecer).
       # ==========================================
       - name: 🧹 Hassas dosya temizliği
         if: always()
         run: |
           rm -f android/app/release.keystore || true
-          if [ -f android/gradle.properties ]; then
-            sed -i '/RELEASE_STORE_PASSWORD/d;/RELEASE_KEY_ALIAS/d;/RELEASE_KEY_PASSWORD/d' android/gradle.properties || true
-          fi
 
       # ==========================================
       # Build Ozeti
@@ -650,8 +655,12 @@ jobs:
               echo "| 🏷️ **Tag** | \`${TAG}\` |"
             fi
             
-            echo "| 📦 **APK** | \`${{ steps.rename.outputs.apk_name }}\` |"
-            echo "| 📏 **Boyut** | ${{ steps.rename.outputs.apk_size }} |"
+            if [ "$BUILD_TYPE" == "release" ] && [ "${{ steps.imza.outputs.yayinla }}" != "true" ]; then
+              echo "| 📦 **APK** | surume eklenmedi (imza denetimi) |"
+            else
+              echo "| 📦 **APK** | \`${{ steps.rename.outputs.apk_name }}\` |"
+              echo "| 📏 **Boyut** | ${{ steps.rename.outputs.apk_size }} |"
+            fi
             echo "| ⏱️ **Sure** | ${MINUTES}dk ${SECONDS}sn |"
             echo "| 🌿 **Branch** | \`${{ github.ref_name }}\` |"
             echo "| 📝 **Commit** | [\`${GITHUB_SHA::7}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) |"

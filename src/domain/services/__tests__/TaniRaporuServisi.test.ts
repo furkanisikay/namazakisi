@@ -353,8 +353,15 @@ describe('NÖBETÇİ B-4: veriyiMaskele alan adına göre VERİ üzerinde maskel
     expect(veriyiMaskele(42, { konumDahil: false })).toBe(42);
     expect(veriyiMaskele(null, { konumDahil: false })).toBeNull();
     expect(veriyiMaskele(undefined, { konumDahil: false })).toBeUndefined();
-    const hata = new Error('x');
-    expect(veriyiMaskele(hata, { konumDahil: false })).toBe(hata);
+    // Error düz nesneye iner: olduğu gibi dönseydi JSON'a `{}` dökülür (tanı kaybolur) ve
+    // başka bir yazıcı onu maskelenmemiş basabilirdi.
+    const hata = Object.assign(new Error('x'), { accessToken: 'ya29.sizmaz' });
+    const inen = veriyiMaskele({ hata }, { konumDahil: false }) as { hata: Record<string, unknown> };
+    expect(inen.hata).not.toBeInstanceOf(Error);
+    expect(inen.hata.name).toBe('Error');
+    expect(inen.hata.message).toBe('x');
+    expect(typeof inen.hata.stack).toBe('string');
+    expect(JSON.stringify(inen)).not.toContain('ya29.sizmaz');
     expect(veriyiMaskele({ an: new Date(0) }, { konumDahil: false })).toEqual({ an: '1970-01-01T00:00:00.000Z' });
 
     const dongusel: Record<string, unknown> = { lat: 41.008237 };

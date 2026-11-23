@@ -59,6 +59,18 @@ describe('android-build.yml imza kapıları', () => {
     expect(is).not.toMatch(/^\s*files: \$\{\{ steps\.rename\.outputs\.apk_name \}\}\s*$/m);
   });
 
+  it('imza parolaları diske yazılmaz; derlemeye ortam değişkeniyle geçer', () => {
+    expect(is).not.toMatch(/RELEASE_(STORE|KEY)_PASSWORD=/);
+    expect(is).not.toMatch(/>>\s*android\/gradle\.properties[\s\S]{0,200}RELEASE_/);
+    for (const ad of ['STORE_FILE', 'STORE_PASSWORD', 'KEY_ALIAS', 'KEY_PASSWORD']) {
+      expect(is).toContain(`ORG_GRADLE_PROJECT_RELEASE_${ad}:`);
+    }
+  });
+
+  it('yalnız DEBUG imza (kod 3) sürümü durdurur; doğrulanamama (kod 4) dosyasız sürümle devam eder', () => {
+    expect(is).toContain('if [ "$KOD" -eq 3 ] && [ "${imza_sirlari:-yok}" = "var" ]; then');
+  });
+
   it('imza sırları run: metnine gömülmez (env ile geçer)', () => {
     const satirlar = is.split('\n');
     const gomulu = satirlar.filter(
