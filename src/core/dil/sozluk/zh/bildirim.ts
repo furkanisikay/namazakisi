@@ -52,7 +52,7 @@ export const bildirim: Sozluk['bildirim'] = {
     cokluOto: '打开应用，查看并标记您已礼的拜。{oto}',
     coklu: '打开应用，查看并标记您已礼的拜。',
     otoSor: '如不标记，还补记录中会就这一天询问您。',
-    otoEkle: '如不标记，礼拜日结束时将加入还补。',
+    otoEkle: '如不标记，礼拜计算日结束时将加入还补。',
   },
   gunSonu: {
     baslik: '今天尚未完成 · 连续记录',
