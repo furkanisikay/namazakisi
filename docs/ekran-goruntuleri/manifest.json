@@ -807,131 +807,275 @@
       "ogeler": [
         {
           "dosya": "01-ana-ekran.webp",
-          "kimlik": "480:c6ae29428161f2e726bde722371278235c79fb9b9509d882d3846035ee8fdef0"
+          "kimlik": "480:d8f7c488b74b4620de5981ae54ad96808139593fbd13bfc7aace0f6e80dc6f1c"
         },
         {
           "dosya": "02-ana-nafile-zinciri.webp",
-          "kimlik": "480:c6ae29428161f2e726bde722371278235c79fb9b9509d882d3846035ee8fdef0"
+          "kimlik": "480:d8f7c488b74b4620de5981ae54ad96808139593fbd13bfc7aace0f6e80dc6f1c"
         },
         {
           "dosya": "03-sade-gorunum.webp",
-          "kimlik": "480:2aa62d40443b7d52b06479c496dc19695b5b25591e65fa5359e1a2383723e030"
+          "kimlik": "480:41e6c8da5c3c87d6a989561e4241eb05c85910665c966302b4bdea17c179d299"
         },
         {
           "dosya": "04-ayarlar.webp",
-          "kimlik": "480:796bf6b2d0ea7001de27c787c13d560679ad05175988695a48897f77c25dea70"
+          "kimlik": "480:35b32359ccc897335e3a16e9e61318a2c3b7fd2f7203838d812113aaa33f2273"
+        },
+        {
+          "dosya": "05-ayarlar-alt.webp",
+          "kimlik": "480:4e5e94b6841f438acef4d0817faeb441b8c6c2f9bca455dd74be5e85daabe578"
         },
         {
           "dosya": "06-muhafiz.webp",
-          "kimlik": "480:d49d9ed8af92171b22ac1b78516ec5a156493c70629e05196b1a52669fef5802"
+          "kimlik": "480:50003f255470f79803d931bce5d6458dc988b20afe6d42ae490da85adaff693c"
         },
         {
           "dosya": "07-muhafiz-zaman-seridi.webp",
-          "kimlik": "480:adf7f450e7eddaaed90eef8d305cb5267f8951abe4bdf37ff366d82a3fc5dc4c"
+          "kimlik": "480:8dfcf105b0586fe3412e659f9a33ff1c9c9e729c43be75292694a0fa99f23392"
         },
         {
           "dosya": "08-adim-detay.webp",
-          "kimlik": "480:d1a92df3ee5c78a93bc9c69ac6720942858865122c11184fc6836b363bbd4928"
+          "kimlik": "480:8f4607a2f77e27e1c66b7e7d51d5de5672a22c17903efc52aa67d583147df4df"
         },
         {
           "dosya": "09-adim-detay-anahtarlar.webp",
-          "kimlik": "480:5d4ada928c80edfcf8837fe20c0940d2018a32820350190ec19a1f8c8693aa27"
+          "kimlik": "480:1f6f2b52646129d36439d8ae70a2805d1874f634113f53468aca922bd0275d96"
         },
         {
           "dosya": "10-alarm-onay.webp",
-          "kimlik": "480:a1181c440a4914afa73019da0fab8617609a41703a481ddcba39d6d3f98ccfed"
+          "kimlik": "480:b677579b5b0ed49777c2502d1f0be9404f9b8656ac0fba5d57c8a16c282bcda2"
         },
         {
           "dosya": "11-muhafiz-butce-karti.webp",
-          "kimlik": "480:0b81bc22360132286182ca02263d89fe60d54e9cbe6bc62575dbe02e1964a65c"
+          "kimlik": "480:5f6c07b5bfb55212d8c617b4a2eccec968ffdf8773fe948f53ab3163682f69fa"
         },
         {
           "dosya": "12-bildirim-siniri-rehberi.webp",
-          "kimlik": "480:0b81bc22360132286182ca02263d89fe60d54e9cbe6bc62575dbe02e1964a65c"
+          "kimlik": "480:e6b9ab2f114b87e7aefe4f416f588e68136a2b53ddf9799c424191365bf3205b"
         },
         {
           "dosya": "13-bildirim-ayarlari.webp",
-          "kimlik": "480:796bf6b2d0ea7001de27c787c13d560679ad05175988695a48897f77c25dea70"
+          "kimlik": "480:35b32359ccc897335e3a16e9e61318a2c3b7fd2f7203838d812113aaa33f2273"
         },
         {
           "dosya": "14-cuma.webp",
-          "kimlik": "480:9e3c395cecf0b38619c9adfc776c6e77c0b5b2cf445837fec1bd018e8e836240"
+          "kimlik": "480:6bb8b5669a3834a02c7f161f5252cc50f2871b73dc0653a017d85ac2b3fe36e0"
         },
         {
           "dosya": "15-yatis.webp",
-          "kimlik": "480:c60fb2e8cd2b4a885ef3a5b1119933adf4dd37e0fc60452a363dda19a89beed3"
+          "kimlik": "480:7977b97f2cc7f865887a696787807f54d15bc40c60d7b985cde222f3329ece44"
         },
         {
           "dosya": "16-camiye-git.webp",
-          "kimlik": "480:11e7ed14ad7d8bb9b7524a345fdba08e9711981087751596056c3cbb46d78067"
+          "kimlik": "480:aacbfa906265422c67e644767d7d830d2b2483c1caa3cdc1f3fe58cd7b477cf4"
+        },
+        {
+          "dosya": "17-bileklik-rehberi.webp",
+          "kimlik": "480:6523f65709aeb59b45d1425f9e8ad77d962bb074380ee6f79155519743f1f1f5"
         },
         {
           "dosya": "18-nafile.webp",
-          "kimlik": "480:8a714ba8d64733032aa36d5a8c04d2c9687b59eb1552feaf0c7d7551cb1b7409"
+          "kimlik": "480:9dfd6d1d755c4478c29aee4c048ccc1549da61e9fcd09101ec786ff0fba8da73"
+        },
+        {
+          "dosya": "19-kabul-once.webp",
+          "kimlik": "480:cbfe56bdd28a3e9a11e2064a4527f853b22b51ae0ef8b6a4ef54267de3f5ae63"
         },
         {
           "dosya": "19-nafile-teheccud.webp",
-          "kimlik": "480:891d6f6377ac6bcf63b281c4b310ab6561bbf02ddaf691e2f31aaacaf1b75434"
+          "kimlik": "480:628cf97c7e04c7fced4e3f357aaf77d6833745817651295046801422ceda97a0"
+        },
+        {
+          "dosya": "20-now-bar.webp",
+          "kimlik": "480:155b561fa432dbc10932ab728bb94ff04b1d3932139be4a13e8db2c1ce45c25d"
+        },
+        {
+          "dosya": "21-now-bar-alt.webp",
+          "kimlik": "480:f4d20be5c03772da66797d955db55cc2948e45d25019e52955636abf092f432d"
+        },
+        {
+          "dosya": "22-otomasyon-rehberi.webp",
+          "kimlik": "480:3a051c179658c7b3642226688a59fa1a363d132dde47b731c9eb695f17bcd183"
+        },
+        {
+          "dosya": "23-otomasyon-rehberi-alt.webp",
+          "kimlik": "480:efbdf6c055771cd4e8a73cede12efd05fdcf1df98923a2562e1079b24143109a"
+        },
+        {
+          "dosya": "24-kildim-uygulamalari.webp",
+          "kimlik": "480:7a6a1df8ac166c9a60a7723b2d84d71b7a2806117b26c2e7146b71af98754c38"
         },
         {
           "dosya": "25-camideyim-ayarlar.webp",
-          "kimlik": "480:7ba433f17e0aef221b2fa97c2c7e2ea87afd3d0d1fba58a1a12e287a35f57921"
+          "kimlik": "480:4b0a36eacbddac92734d30dbe99f1548a037d57b1d3e50f7750e8af03fe6a4b5"
         },
         {
           "dosya": "26-camideyim-harita.webp",
-          "kimlik": "480:22067bd0e1f3937a542aa23eea38309fc0ad81b4e0cd1192e4e3871d784c69b9"
+          "kimlik": "480:79ab4d15b05465166d616f5514d43a5fc177673c9f6fc066b772bb912549954e"
         },
         {
           "dosya": "27-camideyim-nasil.webp",
-          "kimlik": "480:2bfa8889c0f26c97965904944ec6d88a9e020e0417e17c76d0a03c12356c790a"
+          "kimlik": "480:d4b279122929963008e7366f3786478eb7e49f8da5089bf5a68421cc6feeeaba"
         },
         {
           "dosya": "28-kaza.webp",
-          "kimlik": "480:2646c764fa619dc7f6f921250b7840e07c973e61ac73bc7f9e59282af289cbb7"
+          "kimlik": "480:08838082fc460942d56adf96fdbf97c371c67a6fae8389038e3f37433ae19416"
         },
         {
           "dosya": "29-kaza-her-farzla.webp",
-          "kimlik": "480:33ca9280947f18057fe9bce954b59882ac1e22be47ceb733fe6d3086681358d5"
+          "kimlik": "480:99903c24be2e43861f6ccb7f52ab1b7ea3c14a3bae964d07462355470aef17b1"
+        },
+        {
+          "dosya": "30-neler-yeni.webp",
+          "kimlik": "480:56886510cb6d410279aea2d829596b46e4351b80db357f6efc12e0f394bd4c84"
         },
         {
           "dosya": "31-seferilik.webp",
-          "kimlik": "480:1e649e457eb96689bf45d7bf88da001b6d1bde9595f5ca58e9ff1dec3999c560"
+          "kimlik": "480:6552680586ead74e30c9bbb6f59be6e351194cd6cdbcc3d3ee384fab44136ce5"
+        },
+        {
+          "dosya": "32-cihazlarim.webp",
+          "kimlik": "480:a33f19f2c35a153a2052292a6365bf7745077842bec9003ce4686469da647e09"
         },
         {
           "dosya": "32-kible.webp",
-          "kimlik": "480:c9ceacb47e739976434215a21d3331b8f21b628d62d01fe8f26edfb66bf43df0"
+          "kimlik": "480:0346ef5e443a7e2aec41446519124a1a1bb8b446a9dc99fa6e5ac6f8918f3e6f"
         },
         {
           "dosya": "33-ilerleme.webp",
-          "kimlik": "480:eefab7a738500f995880c203eca9ec6ec5f724b1f8bd10358d44af96e0de336b"
+          "kimlik": "480:14f24141a5069fa10992b882f53f152c6b7be6bd282293771911b36c67e2b19c"
+        },
+        {
+          "dosya": "33-televizyon.webp",
+          "kimlik": "480:62c996e68edd6216f3220e6b6d822853e61830f2ecdb9f2e10ba2f7c28e5c894"
+        },
+        {
+          "dosya": "34-televizyon-kod.webp",
+          "kimlik": "480:338318d01f03b9981dfb50000df4cc3297f25307f3c5ee5de95b83eb06bd9e26"
+        },
+        {
+          "dosya": "35-cihazlarim-tablet.webp",
+          "kimlik": "480:c9a4ad265c931383325a96796c8b4073082ee94f59b7c68003a31638b5408882"
+        },
+        {
+          "dosya": "35-kible-kamera.webp",
+          "kimlik": "480:3fadb3e2235445a0479c2a1c1c885acde41d908c41c6a18f9de46547a90ae8e9"
+        },
+        {
+          "dosya": "36-cihaz-ekle-okut.webp",
+          "kimlik": "480:54f95278e20b5e612fdb7509afb5b1940f478f16a190ab29b58d2534c4154967"
         },
         {
           "dosya": "36-kible-kalibrasyon.webp",
-          "kimlik": "480:5ba0a1e21843c665667494f96071a42d8312780592dd1d8d31df4596d19ea75c"
+          "kimlik": "480:e735ff12da09114d1be47d5a7d8b274f71ee4dac89e691f8d672025fc1f5a138"
+        },
+        {
+          "dosya": "37-cihaz-ekle-kod.webp",
+          "kimlik": "480:54f95278e20b5e612fdb7509afb5b1940f478f16a190ab29b58d2534c4154967"
+        },
+        {
+          "dosya": "37-kible-kalibrasyon-kamera.webp",
+          "kimlik": "480:bbef9c8134ff02d8b5b650ed473247e5f244ac21d06d2602c7c76236d491fb54"
+        },
+        {
+          "dosya": "38-kible-kamera-egik-25.webp",
+          "kimlik": "480:3fadb3e2235445a0479c2a1c1c885acde41d908c41c6a18f9de46547a90ae8e9"
+        },
+        {
+          "dosya": "39-kible-kamera-egik-45.webp",
+          "kimlik": "480:3fadb3e2235445a0479c2a1c1c885acde41d908c41c6a18f9de46547a90ae8e9"
         },
         {
           "dosya": "40-vakit-sesi.webp",
-          "kimlik": "480:354ec0624d1017884539da32b1c0323c0c299582bc07a8604825f7c162caa4bf"
+          "kimlik": "480:d75a52f2d4c05ee1880b88c91f3a4e3e73aa177fd34206c7dd5a2b6e8ec87e6c"
         },
         {
           "dosya": "41-vakit-sesi-secenekler.webp",
-          "kimlik": "480:fccb7e4c29fa6e9b8bc0fda6d07bada32b8fa8a0736832aea2ea3b6e4db2d104"
+          "kimlik": "480:e28fc258b677b8e4a0cb0659588660eb105b4a0f8ab8720bb6827de08e4fa786"
         },
         {
           "dosya": "42-adim-detay-kanallar-acik.webp",
-          "kimlik": "480:73ea3c7d0d1d6a3596f33269aac38d793be4d2d0bc8c1c143033f63e919a03f7"
+          "kimlik": "480:437e942ce8a937fde39907d9b057bc55c8cac606aa6aca67851e5a1cc5198dd6"
         },
         {
           "dosya": "43-adim-detay-bildirim-kapali.webp",
-          "kimlik": "480:e5eca72817a129398a986151e5df857a7b71dec9e3222c2033af9abca686e350"
+          "kimlik": "480:5e9e1197459990eafeb27a81be6a153d2c9ef837aad97675ce1565bc1c645ce7"
         },
         {
           "dosya": "44-adim-detay-tekrar-acik.webp",
-          "kimlik": "480:167c515241c525515dbb12d731ce73aa862450713dbf4fe923bfff6bf988fab1"
+          "kimlik": "480:3c2776f51538de092756d170d0f1a1b6f4b437ba8800ff985c223ab6b804b85e"
         },
         {
           "dosya": "45-zaman-seridi-tekrar.webp",
-          "kimlik": "480:46c32707c3d5eacd2ff10f3e0f3f27fe5b4cacb1acac38bf42095d1c0332f0c0"
+          "kimlik": "480:7ebbc275b67db7343cea4b86c2dc5be16a14bb80a72e31489928a55eecba69f3"
+        },
+        {
+          "dosya": "50-ayarlar-guc-tasarrufu-cipi.webp",
+          "kimlik": "480:878a6ccd9ebfc3c70bcbbf5905434b1bd8043c43e0c8843a22561c8ae1fa760b"
+        },
+        {
+          "dosya": "50-bolge-takvimi.webp",
+          "kimlik": "480:7a033acd68c28b672f8d9435b5716a64b20d6108ab66b7b24eee3da0a5e5b859"
+        },
+        {
+          "dosya": "51-ana-ekran-jakim.webp",
+          "kimlik": "480:2c391ba31b942568a8c5d627f6b1a8d50e53856d9503149e705e8e767faeaa23"
+        },
+        {
+          "dosya": "52-hesap-yontemi.webp",
+          "kimlik": "480:d54fdf61ff432a445c753c2df15d81ebff2ce5b038628e25e3f8a2c268b696ac"
+        },
+        {
+          "dosya": "53-hesap-yontemi-ikindi.webp",
+          "kimlik": "480:22ccb03a422217e40cfa2756df8ebee2d2c83d253c8a030a678b99f801037f12"
+        },
+        {
+          "dosya": "55-konum-dunya.webp",
+          "kimlik": "480:4692b32894ecab08833edfba427ae5c9bf6055b185a6f28adce9d726826c0250"
+        },
+        {
+          "dosya": "56-ulke-listesi.webp",
+          "kimlik": "480:5e90082ad43b75240c4e5ce037e2d23fa324d52f7ef7e4bbce334d285a242265"
+        },
+        {
+          "dosya": "57-sehir-arama.webp",
+          "kimlik": "480:55b1706f189669babc2a382163c5f3e239eea84c56ab7a8450397e2b31669e03"
+        },
+        {
+          "dosya": "58-konum-kuala-lumpur.webp",
+          "kimlik": "480:e8928918f442fc85761376f94cd9b7b59e4088f63c7e247d25ad2d8446d1d548"
+        },
+        {
+          "dosya": "59-gunun-ayeti.webp",
+          "kimlik": "480:73bde08af8021f868e4e1fd64b2c6272f3a78198c28f3c46de507932360f2378"
+        },
+        {
+          "dosya": "60-gunun-ayeti-onceki.webp",
+          "kimlik": "480:00a91a3196e6a92131438fe600ef8bde25ee1e36068043a566b7ea6bf7bd0886"
+        },
+        {
+          "dosya": "61-gunun-ayeti-ayar.webp",
+          "kimlik": "480:e8a18c4234b489d47bbe7a11acf05a45065168045ad0c44973f1345251ef775e"
+        },
+        {
+          "dosya": "62-gunun-ayeti-duvar-onay.webp",
+          "kimlik": "480:e4eb909bd510976b09e6f156153591e03e5bd768fe51c1f2b11b6a058a428c8f"
+        },
+        {
+          "dosya": "67-dil-secimi.webp",
+          "kimlik": "480:3af69635ca5b64ecdccc318b2710856162d56f644020807b74ca8ebeb97a7806"
+        },
+        {
+          "dosya": "68-dil-secimi-alt.webp",
+          "kimlik": "480:b12cc6c98eadc403e8611f15beca0bb8dbed21221cb63f4b09f5478802e09ea3"
+        },
+        {
+          "dosya": "69-bolge-takvimi-baku.webp",
+          "kimlik": "480:b673faf190f1bba57c1eaee9c3068b6a8209afd6ecfd730d8abd87a0d2fa50b8"
+        },
+        {
+          "dosya": "70-ana-ekran-qmi.webp",
+          "kimlik": "480:e783c56dab9d7ef95b01ef15da3650ab1c0c12fd5ac092fb95066d6df8e932bf"
         }
       ]
     },

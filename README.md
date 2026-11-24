@@ -259,6 +259,7 @@ Kaynak koddaki sürüm: **0.72.0** · Mağazada: Google Play: **0.70.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/02-ana-nafile-zinciri.webp" width="240" alt="Ana nafile zinciri" title="Ana nafile zinciri">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/03-sade-gorunum.webp" width="240" alt="Sade görünüm" title="Sade görünüm">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/04-ayarlar.webp" width="240" alt="Ayarlar" title="Ayarlar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/05-ayarlar-alt.webp" width="240" alt="Ayarlar alt" title="Ayarlar alt">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/06-muhafiz.webp" width="240" alt="Muhafız" title="Muhafız">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/07-muhafiz-zaman-seridi.webp" width="240" alt="Muhafız zaman şeridi" title="Muhafız zaman şeridi">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/08-adim-detay.webp" width="240" alt="Adım detay" title="Adım detay">
@@ -270,23 +271,58 @@ Kaynak koddaki sürüm: **0.72.0** · Mağazada: Google Play: **0.70.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/14-cuma.webp" width="240" alt="Cuma" title="Cuma">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/15-yatis.webp" width="240" alt="Yatış" title="Yatış">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/16-camiye-git.webp" width="240" alt="Camiye git" title="Camiye git">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/17-bileklik-rehberi.webp" width="240" alt="Bileklik rehberi" title="Bileklik rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/18-nafile.webp" width="240" alt="Nafile" title="Nafile">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/19-kabul-once.webp" width="240" alt="Kabul once" title="Kabul once">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/19-nafile-teheccud.webp" width="240" alt="Nafile teheccüd" title="Nafile teheccüd">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/20-now-bar.webp" width="240" alt="Now bar" title="Now bar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/21-now-bar-alt.webp" width="240" alt="Now bar alt" title="Now bar alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/22-otomasyon-rehberi.webp" width="240" alt="Otomasyon rehberi" title="Otomasyon rehberi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/23-otomasyon-rehberi-alt.webp" width="240" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/24-kildim-uygulamalari.webp" width="240" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/25-camideyim-ayarlar.webp" width="240" alt="Camideyim ayarlar" title="Camideyim ayarlar">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/26-camideyim-harita.webp" width="240" alt="Camideyim harita" title="Camideyim harita">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/27-camideyim-nasil.webp" width="240" alt="Camideyim nasıl" title="Camideyim nasıl">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/28-kaza.webp" width="240" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/29-kaza-her-farzla.webp" width="240" alt="Kaza her farzla" title="Kaza her farzla">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/30-neler-yeni.webp" width="240" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/31-seferilik.webp" width="240" alt="Seferîlik" title="Seferîlik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/32-cihazlarim.webp" width="240" alt="Cihazlarim" title="Cihazlarim">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/32-kible.webp" width="240" alt="Kıble" title="Kıble">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/33-ilerleme.webp" width="240" alt="İlerleme" title="İlerleme">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/33-televizyon.webp" width="240" alt="Televizyon" title="Televizyon">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/34-televizyon-kod.webp" width="240" alt="Televizyon kod" title="Televizyon kod">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/35-cihazlarim-tablet.webp" width="240" alt="Cihazlarim tablet" title="Cihazlarim tablet">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/35-kible-kamera.webp" width="240" alt="Kıble kamera" title="Kıble kamera">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/36-cihaz-ekle-okut.webp" width="240" alt="Cihaz ekle okut" title="Cihaz ekle okut">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/36-kible-kalibrasyon.webp" width="240" alt="Kıble kalibrasyon" title="Kıble kalibrasyon">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/37-cihaz-ekle-kod.webp" width="240" alt="Cihaz ekle kod" title="Cihaz ekle kod">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/37-kible-kalibrasyon-kamera.webp" width="240" alt="Kıble kalibrasyon kamera" title="Kıble kalibrasyon kamera">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/38-kible-kamera-egik-25.webp" width="240" alt="Kıble kamera egik 25" title="Kıble kamera egik 25">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/39-kible-kamera-egik-45.webp" width="240" alt="Kıble kamera egik 45" title="Kıble kamera egik 45">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/40-vakit-sesi.webp" width="240" alt="Vakit sesi" title="Vakit sesi">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/41-vakit-sesi-secenekler.webp" width="240" alt="Vakit sesi secenekler" title="Vakit sesi secenekler">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/42-adim-detay-kanallar-acik.webp" width="240" alt="Adım detay kanallar acik" title="Adım detay kanallar acik">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/43-adim-detay-bildirim-kapali.webp" width="240" alt="Adım detay bildirim kapali" title="Adım detay bildirim kapali">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/44-adim-detay-tekrar-acik.webp" width="240" alt="Adım detay tekrar acik" title="Adım detay tekrar acik">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/45-zaman-seridi-tekrar.webp" width="240" alt="Zaman şeridi tekrar" title="Zaman şeridi tekrar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/50-ayarlar-guc-tasarrufu-cipi.webp" width="240" alt="Ayarlar güç tasarrufu cipi" title="Ayarlar güç tasarrufu cipi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/50-bolge-takvimi.webp" width="240" alt="Bolge takvimi" title="Bolge takvimi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/51-ana-ekran-jakim.webp" width="240" alt="Ana ekran jakim" title="Ana ekran jakim">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/52-hesap-yontemi.webp" width="240" alt="Hesap yontemi" title="Hesap yontemi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/53-hesap-yontemi-ikindi.webp" width="240" alt="Hesap yontemi ikindi" title="Hesap yontemi ikindi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/55-konum-dunya.webp" width="240" alt="Konum dunya" title="Konum dunya">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/56-ulke-listesi.webp" width="240" alt="Ulke listesi" title="Ulke listesi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/57-sehir-arama.webp" width="240" alt="Sehir arama" title="Sehir arama">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/58-konum-kuala-lumpur.webp" width="240" alt="Konum kuala lumpur" title="Konum kuala lumpur">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/59-gunun-ayeti.webp" width="240" alt="Gunun ayeti" title="Gunun ayeti">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/60-gunun-ayeti-onceki.webp" width="240" alt="Gunun ayeti onceki" title="Gunun ayeti onceki">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/61-gunun-ayeti-ayar.webp" width="240" alt="Gunun ayeti ayar" title="Gunun ayeti ayar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/62-gunun-ayeti-duvar-onay.webp" width="240" alt="Gunun ayeti duvar onay" title="Gunun ayeti duvar onay">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/67-dil-secimi.webp" width="240" alt="Dil seçimi" title="Dil seçimi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/68-dil-secimi-alt.webp" width="240" alt="Dil seçimi alt" title="Dil seçimi alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/69-bolge-takvimi-baku.webp" width="240" alt="Bolge takvimi baku" title="Bolge takvimi baku">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/70-ana-ekran-qmi.webp" width="240" alt="Ana ekran qmi" title="Ana ekran qmi">
 </p>
 
 </details>
