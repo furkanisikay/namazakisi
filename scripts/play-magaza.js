@@ -289,7 +289,7 @@ function gorselDiliniDenetle(klasor) {
                 const u = await api('GET', '/edits/' + editId + '/countryAvailability/' + kanal);
                 const ulkeler = (u.j && u.j.countries) || [];
                 console.log('=== ULKE ERISIMI: ' + kanal + ' (' + u.kod + ') ===');
-                console.log('HAM:', JSON.stringify(u.j).slice(0, 400));
+                console.log('DUNYANIN GERI KALANI (restOfWorld):', u.j && u.j.restOfWorld === true ? 'ACIK' : 'KAPALI', '| ulke sayisi:', ulkeler.length);
                 console.log(ulkeler.map((c) => c.countryCode).join(' '));
             }
             // Yuklemeden sonra geri okuyup sayilari dogrulamak icin butun gorsel turleri.
