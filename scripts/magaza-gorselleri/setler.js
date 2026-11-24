@@ -386,7 +386,7 @@ const SETLER = {
             // Sabah alarmi + bilekte ayni alarm (Wear sessiz uyandirma ekrani, GERCEK kare).
             kare('02-sabah', ORTAK.sabah, {
                 alt: 'Alarm her sabah vakte göre kurulur; isterseniz yalnız bileğiniz titrer.',
-                dipnot: 'Wear OS saat gerekir.',
+                dipnot: 'Yalnız bilek titreşimi için Wear OS saat gerekir.',
                 katmanlar: [{ cihaz: 'wearYuvarlak', kaynak: ['10-uyandirma.png'], yedekCizim: 'uyandirma' }],
                 rozet: { ikon: 'titresim', metin: 'Yalnız titreşim', yer: 'sol', y: 0.8 },
                 iddialar: ['alarm', 'wear-uyandirma'],

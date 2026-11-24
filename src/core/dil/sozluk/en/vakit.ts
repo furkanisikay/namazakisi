@@ -10,7 +10,7 @@ export const vakit: Sozluk['vakit'] = {
   cumaKucuk: "Jumu'ah",
   gunesDogusu: 'Sunrise',
   gunesDogusuKucuk: 'sunrise',
-  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not yet time', gecti: 'Not prayed' },
+  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not time yet', gecti: 'Not prayed' },
   durumKucuk: { kilindi: 'prayed', vaktiGeldi: 'time to pray', girmedi: 'not yet time', gecti: 'not prayed' },
   eylem: { kildim: "I've prayed", kilindi: 'Prayed' },
   kerahatVakti: 'Makruh time',

@@ -36,6 +36,8 @@ const path = require('path');
 
 const PAKET = process.env.PLAY_PAKET || 'com.furkanisikay.namazakisi';
 const DIL = 'tr-TR';
+/** Gorsellerin yuklenecegi kayit dili (`yaz --dil en-US`); metin yalniz DIL'e yazilir. */
+let GORSEL_DIL = DIL;
 
 const ham = process.env.GOOGLE_SERVICE_ACCOUNT;
 if (!ham) {
@@ -132,7 +134,7 @@ function gorselYukle(editId, tur, dosya) {
                 '/edits/' +
                 editId +
                 '/listings/' +
-                DIL +
+                encodeURIComponent(GORSEL_DIL) +
                 '/' +
                 tur +
                 '?uploadType=media',
@@ -196,11 +198,24 @@ function playMetinleri() {
     };
 }
 
+/**
+ * Pazarlama gorselleri hangi dilde uretildiyse (uret.js `<cikis>/dil.txt`) o dilin kaydina
+ * gider: Ingilizce gorsel Turkce kayda, Turkce gorsel Ingilizce kayda yuklenmesin.
+ * dil.txt yoksa (eski uretim) gorsel Turkce sayilir.
+ */
+function gorselDiliniDenetle(klasor) {
+    const { PLAY_DILLERI } = require('./play-kayit-dilleri');
+    const dosya = path.join(klasor, '..', 'dil.txt');
+    const uygulamaDili = fs.existsSync(dosya) ? fs.readFileSync(dosya, 'utf8').trim() : 'tr';
+    const beklenen = uygulamaDili === 'tr' ? DIL : PLAY_DILLERI[uygulamaDili];
+    if (beklenen !== GORSEL_DIL) throw new Error('gorseller ' + uygulamaDili + ' dilinde uretilmis; ' + GORSEL_DIL + ' kaydina yuklenmez (--dil ' + (beklenen || '?') + ' verin)');
+}
+
 (async () => {
     const mod = process.argv[2];
-    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri', 'tv-ekle', 'gorseller'];
+    const MODLAR = ['oku', 'yaz', 'diller', 'diller-deneme', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri', 'tv-ekle', 'gorseller'];
     if (!MODLAR.includes(mod)) {
-        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle|gorseller> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
+        console.error('Kullanim: play-magaza.js <oku|yaz|diller|diller-deneme|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle|gorseller> [--gorseller <klasor>] [--dil en-US] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
         process.exit(1);
     }
     const arg = (ad) => {
@@ -208,6 +223,12 @@ function playMetinleri() {
         return i >= 0 ? process.argv[i + 1] : null;
     };
     const saltOkur = mod === 'oku' || mod === 'surumler' || mod === 'gorseller';
+    if (arg('dil')) {
+        const { PLAY_DILLERI } = require('./play-kayit-dilleri');
+        GORSEL_DIL = arg('dil');
+        if (mod !== 'yaz') throw new Error('--dil yalniz yaz moduyla kullanilir');
+        if (GORSEL_DIL !== DIL && !Object.values(PLAY_DILLERI).includes(GORSEL_DIL)) throw new Error('bilinmeyen Play dili: ' + GORSEL_DIL);
+    }
     api.jeton = await jeton();
 
     const ekle = await api('POST', '/edits');
@@ -224,6 +245,14 @@ function playMetinleri() {
                 console.log(d.shortDescription);
                 console.log('TAM ACIKLAMA (' + (d.fullDescription || '').length + '/4000):');
                 console.log(d.fullDescription);
+            }
+            // Kanal basina ulke erisimi (salt okunur; ulke listesi Play Console'da yonetilir).
+            for (const kanal of ['production', 'internal']) {
+                const u = await api('GET', '/edits/' + editId + '/countryAvailability/' + kanal);
+                const ulkeler = (u.j && u.j.countries) || [];
+                console.log('=== ULKE ERISIMI: ' + kanal + ' (' + u.kod + ') ===');
+                console.log('HAM:', JSON.stringify(u.j).slice(0, 400));
+                console.log(ulkeler.map((c) => c.countryCode).join(' '));
             }
             // Yuklemeden sonra geri okuyup sayilari dogrulamak icin butun gorsel turleri.
             for (const tur of ['phoneScreenshots', 'sevenInchScreenshots', 'tenInchScreenshots', 'tvScreenshots', 'wearScreenshots', 'featureGraphic', 'icon']) {
@@ -417,26 +446,77 @@ function playMetinleri() {
             return;
         }
 
-        const metin = playMetinleri();
-        const y = await api('PUT', '/edits/' + editId + '/listings/' + DIL, {
-            language: DIL,
-            title: metin.title,
-            shortDescription: metin.shortDescription,
-            fullDescription: metin.fullDescription,
-        });
-        if (y.kod >= 300) throw new Error('metin yazilamadi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));
-        console.log('METINLER yazildi:', metin.title, '|', metin.shortDescription.length, 'krk kisa,', metin.fullDescription.length, 'krk tam');
+        if (mod === 'diller' || mod === 'diller-deneme') {
+            // Butun mağaza kaydı dilleri tek edit'te: tr-TR kaynak metinden, digerleri
+            // docs/app-store/play-kayitlari/<kod>.json'dan; varsayilan dil VARSAYILAN_DIL'e alinir (gorseli yoksa durur).
+            // `diller-deneme`: hepsini yazar, geri okuyup karsilastirir, COMMIT ETMEDEN siler.
+            const { PLAY_DILLERI, VARSAYILAN_DIL } = require('./play-kayit-dilleri');
+            const { kayitOku, kayitDenetle } = require('./play-kayit-denetle');
+            const kayitlar = { [DIL]: playMetinleri() };
+            const hatalar = [];
+            for (const kod of Object.values(PLAY_DILLERI)) {
+                const { kayit, hata } = kayitOku(kod);
+                const h = hata || kayitDenetle(kayit);
+                if (h.length) hatalar.push(kod + ': ' + h.join(' | '));
+                else kayitlar[kod] = kayit;
+            }
+            if (hatalar.length) throw new Error('kayitlar denetimden gecmedi:\n' + hatalar.join('\n'));
+            for (const [kod, k] of Object.entries(kayitlar)) {
+                const y = await api('PUT', '/edits/' + editId + '/listings/' + encodeURIComponent(kod), {
+                    language: kod,
+                    title: k.title,
+                    shortDescription: k.shortDescription,
+                    fullDescription: k.fullDescription,
+                });
+                if (y.kod >= 300) throw new Error(kod + ' yazilamadi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));
+                const g = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(kod));
+                const ayni = g.j && g.j.title === k.title && g.j.shortDescription === k.shortDescription && g.j.fullDescription === k.fullDescription;
+                if (!ayni) throw new Error(kod + ' geri okunan metin yazilanla ayni degil');
+                console.log('  ' + kod + ': ' + k.title);
+            }
+            // Gorseli olmayan dil varsayilan olursa kendi gorseli olmayan butun diller gorselsiz kalir.
+            const mevcut = await api('GET', '/edits/' + editId + '/details');
+            if (mevcut.j && mevcut.j.defaultLanguage !== VARSAYILAN_DIL) {
+                const ekran = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(VARSAYILAN_DIL) + '/phoneScreenshots');
+                const one = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(VARSAYILAN_DIL) + '/featureGraphic');
+                const ekranSay = ((ekran.j && ekran.j.images) || []).length;
+                const oneSay = ((one.j && one.j.images) || []).length;
+                if (ekranSay < 2 || oneSay < 1) {
+                    throw new Error(VARSAYILAN_DIL + ' varsayilan yapilamaz: ' + ekranSay + ' telefon goruntusu, ' + oneSay + ' one cikan gorsel (en az 2 + 1)');
+                }
+                const d = await api('PATCH', '/edits/' + editId + '/details', { defaultLanguage: VARSAYILAN_DIL });
+                if (d.kod >= 300) throw new Error('varsayilan dil ayarlanamadi: ' + d.kod + ' ' + JSON.stringify(d.j).slice(0, 300));
+            }
+            console.log('VARSAYILAN DIL: ' + VARSAYILAN_DIL + ' | ' + Object.keys(kayitlar).length + ' dil');
+            if (mod === 'diller-deneme') {
+                await api('DELETE', '/edits/' + editId);
+                console.log('DENEME: hepsi yazilip geri okundu, edit SILINDI (magazada degisiklik yok).');
+                return;
+            }
+        } else {
+        if (GORSEL_DIL === DIL) {
+            const metin = playMetinleri();
+            const y = await api('PUT', '/edits/' + editId + '/listings/' + DIL, {
+                language: DIL,
+                title: metin.title,
+                shortDescription: metin.shortDescription,
+                fullDescription: metin.fullDescription,
+            });
+            if (y.kod >= 300) throw new Error('metin yazilamadi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));
+            console.log('METINLER yazildi:', metin.title, '|', metin.shortDescription.length, 'krk kisa,', metin.fullDescription.length, 'krk tam');
+        } else console.log('METIN yazilmadi (' + GORSEL_DIL + ' metni `diller` moduyla yazilir); yalniz gorseller.');
 
         const gi = process.argv.indexOf('--gorseller');
         if (gi >= 0 && process.argv[gi + 1]) {
             const klasor = process.argv[gi + 1];
+            gorselDiliniDenetle(klasor);
             const telefon = fs
                 .readdirSync(klasor)
                 .filter((f) => /^\d.*\.png$/i.test(f))
                 .sort();
             if (telefon.length) {
                 // Eskiler silinmezse yenileri ARKASINA eklenir ve magazada karisik sira olur.
-                const sil = await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/phoneScreenshots');
+                const sil = await api('DELETE', '/edits/' + editId + '/listings/' + encodeURIComponent(GORSEL_DIL) + '/phoneScreenshots');
                 console.log('eski telefon goruntuleri silindi:', sil.kod);
                 for (const f of telefon) {
                     const r = await gorselYukle(editId, 'phoneScreenshots', path.join(klasor, f));
@@ -455,7 +535,7 @@ function playMetinleri() {
                     .sort()
                     .slice(0, 8);
                 for (const tur of tablet.length ? ['sevenInchScreenshots', 'tenInchScreenshots'] : []) {
-                    const sil = await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
+                    const sil = await api('DELETE', '/edits/' + editId + '/listings/' + encodeURIComponent(GORSEL_DIL) + '/' + tur);
                     console.log('eski ' + tur + ' silindi:', sil.kod);
                     for (const f of tablet) {
                         const r = await gorselYukle(editId, tur, path.join(tabletKlasor, f));
@@ -466,10 +546,11 @@ function playMetinleri() {
             }
             const one = path.join(klasor, 'one-cikan.png');
             if (fs.existsSync(one)) {
-                await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/featureGraphic');
+                await api('DELETE', '/edits/' + editId + '/listings/' + encodeURIComponent(GORSEL_DIL) + '/featureGraphic');
                 const r = await gorselYukle(editId, 'featureGraphic', one);
                 console.log('  one-cikan.png -> ' + r.kod);
             }
+        }
         }
 
         let commit = await api('POST', '/edits/' + editId + ':commit');

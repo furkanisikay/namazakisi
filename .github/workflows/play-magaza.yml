@@ -19,6 +19,8 @@ on:
         options:
           - oku
           - yaz
+          - diller-deneme
+          - diller
           - surumler
           - uretime-al
           - cihaz-kareleri
@@ -37,6 +39,10 @@ on:
         default: ''
       cihaz_run_id:
         description: 'cihaz-kareleri için android-ekran-goruntuleri (tur=saat|tv|cihazlar) çalışma kimliği'
+        required: false
+        default: ''
+      gorsel_dili:
+        description: 'yaz için görsellerin yükleneceği Play kayıt dili (ör. en-US). Boş = tr-TR (metin de yazılır); başka dilde yalnız görseller yüklenir ve pazarlama koşusunun dili bununla aynı olmalı.'
         required: false
         default: ''
       pazarlama_run_id:
@@ -125,13 +131,19 @@ jobs:
       - name: 🏪 Play kaydını ${{ inputs.mod }}
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          GORSEL_DILI: ${{ inputs.gorsel_dili }}
         run: |
           set -eo pipefail
+          DIL_ARG=""
+          if [ -n "$GORSEL_DILI" ]; then
+            [[ "$GORSEL_DILI" =~ ^[a-zA-Z-]{2,10}$ ]] || { echo "::error::Geçersiz dil: $GORSEL_DILI"; exit 1; }
+            DIL_ARG="--dil $GORSEL_DILI"
+          fi
           if [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.pazarlama_run_id }}" ]; then
             # Pazarlama gorselleri: telefon setinin yerine konur (silinip yeniden yuklenir),
             # tablet seti 7 ve 10 inc'e; one-cikan.png one cikan gorsel olur. Wear/TV ayri: cihaz-kareleri.
             ls -la pazarlama/play-telefon pazarlama/play-tablet
-            node scripts/play-magaza.js yaz --gorseller pazarlama/play-telefon --tablet pazarlama/play-tablet
+            node scripts/play-magaza.js yaz --gorseller pazarlama/play-telefon --tablet pazarlama/play-tablet $DIL_ARG
           elif [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.kare_run_id }}" ]; then
             node scripts/play-magaza.js yaz --gorseller mockup
           elif [ "${{ inputs.mod }}" = "cihaz-kareleri" ]; then

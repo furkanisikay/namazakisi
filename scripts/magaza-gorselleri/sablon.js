@@ -10,6 +10,7 @@
  * #C8E6C9. Buyuk harf donusumu YOK (Turkce I/i tuzagi; metin sentence case).
  */
 const { ikon } = require('./ikonlar');
+const { t: cevir, etkinDil } = require('./dil');
 
 const FONT_BAGLANTISI =
     '<link rel="preconnect" href="https://fonts.googleapis.com">' +
@@ -52,8 +53,12 @@ function bezier(t, p0, p1, p2) {
     return [u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0], u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1]];
 }
 
-/** Rastgele gorunen ama her calismada AYNI yildizlar (karsilastirilabilir cikti). */
-function yildizlar(gen, yuk, adet, renk) {
+/**
+ * Rastgele gorunen ama her calismada AYNI yildizlar (karsilastirilabilir cikti).
+ * `bos` ({x1,y1,x2,y2}): metin blogu; oraya yildiz konmaz (harfin yanindaki nokta
+ * virgul ya da yazim hatasi gibi okunuyordu: "Wear, OS").
+ */
+function yildizlar(gen, yuk, adet, renk, bos) {
     let tohum = 7;
     const r = () => ((tohum = (tohum * 9301 + 49297) % 233280) / 233280);
     let s = '';
@@ -61,7 +66,9 @@ function yildizlar(gen, yuk, adet, renk) {
         const x = r() * gen;
         const y = r() * yuk;
         const b = 0.6 + r() * 1.8;
-        s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${b.toFixed(2)}" fill="${renk}" opacity="${(0.25 + r() * 0.5).toFixed(2)}"/>`;
+        const saydam = (0.25 + r() * 0.5).toFixed(2);
+        if (bos && x >= bos.x1 && x <= bos.x2 && y >= bos.y1 && y <= bos.y2) continue;
+        s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${b.toFixed(2)}" fill="${renk}" opacity="${saydam}"/>`;
     }
     return s;
 }
@@ -150,10 +157,10 @@ function uyandirmaEkrani(cap) {
         `<div style="margin-top:${8 * p}px;width:${190 * p}px;height:${46 * p}px;border-radius:999px;background:${zemin};color:${renk};display:flex;align-items:center;justify-content:center;font-family:Roboto,'Segoe UI',sans-serif;font-weight:600;font-size:${20 * p}px">${metin}</div>`;
     return (
         `<div style="width:100%;height:100%;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 ${56 * p}px;text-align:center;font-family:Roboto,'Segoe UI',sans-serif">` +
-        `<div style="color:#FFFFFF;font-weight:600;font-size:${27 * p}px;line-height:1.2">Sabah · 25 dk kaldı ⏰</div>` +
-        `<div style="margin-top:${8 * p}px;color:#B8C2BA;font-size:${19 * p}px;line-height:1.3">Vakit daralmaya başladı, fırsat varken kıl.</div>` +
-        dugme('Kıldım', '#6CC070', '#0B2214') +
-        dugme('Kapat', '#26332C', '#E2F2E3') +
+        `<div style="color:#FFFFFF;font-weight:600;font-size:${27 * p}px;line-height:1.2">${esc(cevir('Sabah · 25 dk kaldı ⏰'))}</div>` +
+        `<div style="margin-top:${8 * p}px;color:#B8C2BA;font-size:${19 * p}px;line-height:1.3">${esc(cevir('Vakit daralmaya başladı, fırsat varken kıl.'))}</div>` +
+        dugme(esc(cevir('Kıldım')), '#6CC070', '#0B2214') +
+        dugme(esc(cevir('Kapat')), '#26332C', '#E2F2E3') +
         `</div>`
     );
 }
@@ -277,7 +284,7 @@ function bildirimHtml(bildirim, gen, k, ikonUrl) {
             ? `<span style="width:${ikonKutu}px;height:${ikonKutu}px;border-radius:${16 * k}px;overflow:hidden;position:relative;flex:none">` +
               `<img src="${ikonUrl}" style="position:absolute;width:${(ikonKutu * 1024) / 685}px;left:-${(170 * ikonKutu) / 685}px;top:-${(172 * ikonKutu) / 685}px"></span>`
             : '') +
-        `<span style="font-size:${34 * k}px;font-weight:600;color:#4A5F50">Namaz Akışı · şimdi</span></div>` +
+        `<span style="font-size:${34 * k}px;font-weight:600;color:#4A5F50">${esc(cevir('Namaz Akışı · şimdi'))}</span></div>` +
         `<div style="margin-top:${18 * k}px;font-size:${42 * k}px;font-weight:800;color:#12301B;line-height:1.25">${esc(bildirim.baslik)}</div>` +
         `<div style="margin-top:${8 * k}px;font-size:${37 * k}px;font-weight:500;color:#33463A;line-height:1.38">${esc(bildirim.govde)}</div>` +
         `</div>`
@@ -302,11 +309,11 @@ function alarmEkrani(a, platform, g) {
             `<div style="margin-top:${78 * p}px;font-size:${17 * p}px;font-weight:600;opacity:0.85">${esc(a.tarih)}</div>` +
             `<div style="font-size:${96 * p}px;font-weight:600;letter-spacing:-0.02em;line-height:1">${esc(a.saat)}</div>` +
             `<div style="position:absolute;left:${16 * p}px;right:${16 * p}px;top:${300 * p}px;padding:${18 * p}px;border-radius:${26 * p}px;background:rgba(255,255,255,0.14);text-align:left">` +
-            `<div style="font-size:${13 * p}px;font-weight:600;opacity:0.75">Alarm</div>` +
+            `<div style="font-size:${13 * p}px;font-weight:600;opacity:0.75">${esc(cevir('Alarm'))}</div>` +
             `<div style="margin-top:${4 * p}px;font-size:${22 * p}px;font-weight:700">${esc(a.baslik)}</div>` +
             `<div style="display:flex;gap:${10 * p}px;margin-top:${16 * p}px">` +
-            `<div style="flex:1;height:${46 * p}px;border-radius:999px;background:#4CAF50;display:flex;align-items:center;justify-content:center;font-size:${17 * p}px;font-weight:700">✓ Kıldım</div>` +
-            `<div style="flex:1;height:${46 * p}px;border-radius:999px;background:rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:${17 * p}px;font-weight:700">■ Durdur</div>` +
+            `<div style="flex:1;height:${46 * p}px;border-radius:999px;background:#4CAF50;display:flex;align-items:center;justify-content:center;font-size:${17 * p}px;font-weight:700">✓ ${esc(cevir('Kıldım'))}</div>` +
+            `<div style="flex:1;height:${46 * p}px;border-radius:999px;background:rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:${17 * p}px;font-weight:700">■ ${esc(cevir('Durdur'))}</div>` +
             `</div></div></div>`
         );
     }
@@ -318,8 +325,8 @@ function alarmEkrani(a, platform, g) {
         `<div style="margin-top:${14 * p}px;font-size:${17 * p}px;font-weight:700">${esc(a.baslik)}</div>` +
         `<div style="margin-top:${6 * p}px;font-size:${14 * p}px;color:#B3BDB5">${esc(a.metin)}</div>` +
         `<div style="flex:1"></div>` +
-        `<div style="width:100%;height:${52 * p}px;border-radius:${26 * p}px;background:#81C784;color:#0B1F0D;display:flex;align-items:center;justify-content:center;font-size:${19 * p}px;font-weight:700">Kıldım</div>` +
-        `<div style="margin-top:${12 * p}px;width:100%;height:${48 * p}px;border-radius:${24 * p}px;border:${1.5 * p}px solid #36403A;background:#1E2420;display:flex;align-items:center;justify-content:center;font-size:${16 * p}px;font-weight:600">Kapat</div>` +
+        `<div style="width:100%;height:${52 * p}px;border-radius:${26 * p}px;background:#81C784;color:#0B1F0D;display:flex;align-items:center;justify-content:center;font-size:${19 * p}px;font-weight:700">${esc(cevir('Kıldım'))}</div>` +
+        `<div style="margin-top:${12 * p}px;width:100%;height:${48 * p}px;border-radius:${24 * p}px;border:${1.5 * p}px solid #36403A;background:#1E2420;display:flex;align-items:center;justify-content:center;font-size:${16 * p}px;font-weight:600">${esc(cevir('Kapat'))}</div>` +
         `</div>`
     );
 }
@@ -339,11 +346,11 @@ function appleUyandirmaEkrani(g) {
         `<div style="position:absolute;inset:0;${yazi};background:radial-gradient(90% 55% at 50% 0%, rgba(149,117,205,0.55) 0%, rgba(0,0,0,0) 70%), #000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 ${26 * p}px">` +
         `<div style="display:flex;align-items:center;gap:${12 * p}px">` +
         `<span style="width:${60 * p}px;height:${60 * p}px;border-radius:50%;background:rgba(179,157,219,0.25);box-shadow:0 0 0 ${4 * p}px rgba(179,157,219,0.35);display:flex;align-items:center;justify-content:center">${ikon('gunes', ton, 34 * p)}</span>` +
-        `<span style="font-size:${36 * p}px;font-weight:700">Sabah</span></div>` +
+        `<span style="font-size:${36 * p}px;font-weight:700">${esc(cevir('Sabah'))}</span></div>` +
         `<div style="margin-top:${10 * p}px;font-size:${64 * p}px;font-weight:600;letter-spacing:-0.01em;line-height:1">${a.saat}</div>` +
         `<div style="margin-top:${10 * p}px;font-size:${26 * p}px;color:#9A9AA0">⌛ ${a.vaktinSonu}</div>` +
         `<div style="margin-top:${22 * p}px;display:flex;gap:${12 * p}px;width:100%">` +
-        `<div style="flex:1;height:${76 * p}px;border-radius:999px;background:${ton};color:#1A1033;display:flex;align-items:center;justify-content:center;font-size:${30 * p}px;font-weight:700">✓ Kıldım</div>` +
+        `<div style="flex:1;height:${76 * p}px;border-radius:999px;background:${ton};color:#1A1033;display:flex;align-items:center;justify-content:center;font-size:${30 * p}px;font-weight:700">✓ ${esc(cevir('Kıldım'))}</div>` +
         `<div style="width:${96 * p}px;height:${76 * p}px;border-radius:999px;background:#2A2A2E;display:flex;align-items:center;justify-content:center;font-size:${30 * p}px;font-weight:700">✕</div>` +
         `</div></div>`
     );
@@ -414,10 +421,10 @@ function kibleKameraEkrani(url, g) {
         `<svg style="position:absolute;left:0;top:${-U}px" width="${g}" height="${A}">${zemin}</svg></div>` +
         `<svg style="position:absolute;left:0;top:0" width="${g}" height="${A}">${yol}</svg>` +
         kabe +
-        `<div style="position:absolute;left:${vx - 78 * s}px;top:${855 * s}px;width:${156 * s}px;height:${58 * s}px;border-radius:999px;background:rgba(80,80,80,0.78);${yazi};font-size:${27 * s}px;font-weight:700;line-height:${58 * s}px">2.405 km</div>` +
+        `<div style="position:absolute;left:${vx - 78 * s}px;top:${855 * s}px;width:${156 * s}px;height:${58 * s}px;border-radius:999px;background:rgba(80,80,80,0.78);${yazi};font-size:${27 * s}px;font-weight:700;line-height:${58 * s}px">${esc(cevir('2.405 km'))}</div>` +
         `<div style="position:absolute;left:${42 * s}px;top:${1946 * s}px;width:${996 * s}px;height:${178 * s}px;border-radius:${60 * s}px;background:rgba(30,40,32,0.78);${yazi}">` +
-        `<div style="margin-top:${30 * s}px;font-size:${44 * s}px;font-weight:700">Kıble yönündesiniz</div>` +
-        `<div style="margin-top:${6 * s}px;font-size:${30 * s}px">Kâbe 2.405 km uzakta</div></div>` +
+        `<div style="margin-top:${30 * s}px;font-size:${44 * s}px;font-weight:700">${esc(cevir('Kıble yönündesiniz'))}</div>` +
+        `<div style="margin-top:${6 * s}px;font-size:${30 * s}px">${esc(cevir('Kâbe 2.405 km uzakta'))}</div></div>` +
         kes(0, 522) +
         kes(2166, 2400) +
         `</div>`
@@ -478,24 +485,24 @@ function takvimGunu(t, gen, k, yukseklik) {
     const bandY = y(t.vakitGiris);
     const bandH = y(t.vakitCikis) - bandY;
     h += `<div style="position:absolute;left:${solSutun + 10 * k}px;width:${200 * k}px;top:${bandY}px;height:${bandH}px;border-radius:${20 * k}px;background:rgba(76,175,80,0.16);border-left:${8 * k}px solid ${MARKA.yesil};padding:${20 * k}px ${18 * k}px">` +
-        `<div style="font-size:${34 * k}px;font-weight:800;color:${MARKA.koyu};line-height:1.15">${esc(t.vakitAdi)}<br>namazı</div>` +
+        `<div style="font-size:${34 * k}px;font-weight:800;color:${MARKA.koyu};line-height:1.15">${esc(cevir('{vakit}\nnamazı', { vakit: t.vakitAdi })).replace('\n', '<br>')}</div>` +
         `<div style="font-size:${28 * k}px;font-weight:600;color:${MARKA.koyu};opacity:0.8;margin-top:${6 * k}px">${t.vakitGiris}</div></div>`;
     // Toplanti blogu: baska bir takvimden (renk dekoratif, takvim uygulamalarinin mavisi).
     const tx = solSutun + 240 * k;
     h += `<div style="position:absolute;left:${tx}px;right:${20 * k}px;top:${y(t.etkinlik.bas)}px;height:${y(t.etkinlik.bit) - y(t.etkinlik.bas)}px;border-radius:${24 * k}px;background:#E4EBFA;border-left:${8 * k}px solid #5B7BD5;padding:${22 * k}px ${28 * k}px">` +
-        `<div style="font-size:${40 * k}px;font-weight:800;color:#24366B">Toplantı</div>` +
+        `<div style="font-size:${40 * k}px;font-weight:800;color:#24366B">${esc(cevir('Toplantı'))}</div>` +
         `<div style="font-size:${32 * k}px;font-weight:600;color:#4B5D93;margin-top:${6 * k}px">${t.etkinlik.bas} – ${t.etkinlik.bit}</div></div>`;
     // Vaktin sonu cizgisi.
     const cy = y(t.vakitCikis);
     h += `<div style="position:absolute;left:${solSutun - 6 * k}px;right:0;top:${cy - 2 * k}px;height:${5 * k}px;background:#C62828"></div>`;
     h += `<div style="position:absolute;left:${solSutun - 18 * k}px;top:${cy - 12 * k}px;width:${28 * k}px;height:${28 * k}px;border-radius:50%;background:#C62828"></div>`;
-    h += `<div style="position:absolute;right:${28 * k}px;top:${cy - 66 * k}px;padding:${8 * k}px ${18 * k}px;border-radius:${14 * k}px;background:#C62828;color:#fff;font-size:${30 * k}px;font-weight:700">${esc(t.vakitAdi)} vakti çıkar ${t.vakitCikis}</div>`;
+    h += `<div style="position:absolute;right:${28 * k}px;top:${cy - 66 * k}px;padding:${8 * k}px ${18 * k}px;border-radius:${14 * k}px;background:#C62828;color:#fff;font-size:${30 * k}px;font-weight:700">${esc(cevir('{vakit} vakti çıkar {saat}', { vakit: t.vakitAdi, saat: t.vakitCikis }))}</div>`;
     const yuk = ust + (bitSaat - basSaat) * satirYuk + 40 * k;
     return `<div style="position:relative;width:${gen}px;height:${yuk}px;border-radius:${56 * k}px;background:#FFFFFF;box-shadow:0 ${40 * k}px ${100 * k}px rgba(18,48,27,0.18)"><div style="position:absolute;left:${30 * k}px;right:${30 * k}px;top:${20 * k}px;bottom:0">${h}</div></div>`;
 }
 
 function belge(gen, yuk, z, govde, ekStil = '') {
-    return `<!doctype html><html lang="tr"><head><meta charset="utf-8">${FONT_BAGLANTISI}<style>
+    return `<!doctype html><html lang="${etkinDil()}"><head><meta charset="utf-8">${FONT_BAGLANTISI}<style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { width:${gen}px; height:${yuk}px; overflow:hidden; }
   body { background:#FFFFFF; font-family:${FONT_AILESI}; position:relative; -webkit-font-smoothing:antialiased; }
@@ -587,7 +594,7 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
     const pad = 104 * k;
     const yay =
         `<svg style="position:absolute;left:0;top:0" width="${gen}" height="${yuk}" viewBox="0 0 ${gen} ${yuk}">` +
-        (z.yildiz ? yildizlar(gen, yuk * 0.45, 60, '#E8F5E9') : '') +
+        (z.yildiz ? yildizlar(gen, yuk * 0.45, 60, '#E8F5E9', { x1: pad * 0.6, y1: 290 * k, x2: gen - pad * 0.6, y2: metinAlti(kare, k) + 30 * k }) : '') +
         vakitYayi(gen, yayYuk, k, z, kare.vakit) +
         `</svg>`;
     const metin =
@@ -775,7 +782,7 @@ function yatay(kare, b, gorseller, cihazTuru) {
     const k = yuk / 1600;
     const yay =
         `<svg style="position:absolute;left:0;top:0" width="${gen}" height="${yuk}">` +
-        (z.yildiz ? yildizlar(gen, yuk * 0.4, 70, '#E8F5E9') : '') +
+        (z.yildiz ? yildizlar(gen, yuk * 0.4, 70, '#E8F5E9', { x1: gen * 0.04, y1: yuk * 0.05, x2: gen * 0.96, y2: yuk * (kare.alt ? 0.235 : 0.19) }) : '') +
         vakitYayi(gen, yuk * 0.16, k * 0.8, z, kare.vakit) +
         `</svg>`;
     const o = yatayOlcu(b);
@@ -958,7 +965,7 @@ function oneCikanSayfa(ikonUrl, kareUrl) {
             `<div style="width:104px;height:104px;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 14px 30px rgba(22,48,26,0.18)">` +
             `<img src="${ikonUrl}" style="position:absolute;width:${Math.round((104 * 1024) / 685)}px;left:-${Math.round((170 * 104) / 685)}px;top:-${Math.round((172 * 104) / 685)}px"></div>` +
             `<h1 style="margin-top:24px;font-size:62px;line-height:1.05">Namaz Akışı</h1>` +
-            `<p class="alt" style="margin-top:12px;font-size:28px;line-height:1.35">Artık namaz kaçırmayın.</p></div>` +
+            `<p class="alt" style="margin-top:12px;font-size:28px;line-height:1.35">${esc(cevir('Artık namaz kaçırmayın.'))}</p></div>` +
             `<div style="position:absolute;right:84px;top:46px;width:300px;padding:8px;background:#0E0E11;border-radius:44px;box-shadow:0 30px 60px rgba(11,25,14,0.25)">` +
             `<div style="border-radius:37px;overflow:hidden"><img src="${kareUrl}" style="display:block;width:100%"></div></div>`
     );

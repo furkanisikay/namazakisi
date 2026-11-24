@@ -164,62 +164,53 @@ Apple iki boyut istiyor: **6.9"** (iPhone 17 Pro Max vb.) ve **6.5"**.
 #### Play — uygulama adı
 
 ```
-Namaz Akışı
+Namaz Akışı: Namaz Vakti
 ```
 
 #### Play — kısa açıklama
 
 ```
-İnternetsiz namaz vakti, kıble ve kaza defteri. Muhafız vakitten önce uyarır.
+Vakti kaçırmamanız için hatırlatır. Ücretsiz, reklamsız, internetsiz, 78 dilde.
 ```
 
 #### Play — tam açıklama
 
 ```
-Namaz Akışı namaz vakitlerini takip etmenize ve vakti kaçırmamanıza yardım eden bir ibadet asistanıdır. İnternet bağlantısı olmadan çalışır.
+Gün koşturmacayla geçerken vaktin girdiğini fark etmemek ya da ezanı duyup "birazdan kılarım" deyip unutmak çoğumuzun başına geliyor. Namaz Akışı bu anlar için hazırlandı. Vakit girince haber verir, vakit daraldıkça sizi daha ısrarla çağırır ve namazı gününüzün içine yerleştirmenize yardım eder. Tamamen ücretsizdir, reklam içermez ve internet olmadan çalışır.
 
-Vakitleri bulunduğunuz yerin koordinatlarından astronomik olarak hesaplar (Diyanet ile uyumlu yöntem). Namaz kayıtlarınız, ayarlarınız ve konumunuz telefonunuzda kalır; uygulama hiçbir veriyi sunucuya göndermez.
+BİLDİRİMLERE ALIŞTIYSANIZ
+Tek bir bildirim kolayca kaydırılıp geçilir. Namaz Muhafızı her vakit için birden altıya kadar hatırlatma kurar. Vakit daraldıkça hatırlatmalar sıklaşır, tonu da sertleşir. İsterseniz istediğiniz adımda telefonunuzun gerçek alarmı çalar, telefon sessizdeyken de duyulur. Hatırlatmayı telefonunuzun sesiyle okutabilirsiniz. Bildirimden tek dokunuşla "Kıldım" dediğinizde o vaktin hatırlatmaları susar.
 
-NAMAZ MUHAFIZI
-Muhafız sizi dört kademede uyarır: nazik hatırlatma, uyarı, sert uyarı ve acil. Vakit daraldıkça ton sertleşir. Her vaktin ayarını ayrı tutarsınız.
+GÜNÜNÜZ YOĞUNSA
+Takviminizdeki bir toplantı vaktin sonuna denk geliyorsa uygulama toplantıdan önce kılmanızı hatırlatır. Cuma günü ve camide kılmak istediğiniz vakitlerde, camiye yürüme süreniz kadar önce haber verir. Yatsıyı kılmadıysanız yatış saatinizden önce uyarır.
 
-• Hatırlatmaların vaktin sonuna doğru mu, vakit girer girmez mi başlayacağını seçersiniz.
-• Her adımın kaç dakika kala başlayacağını ve ne sıklıkla tekrarlanacağını belirler, istemediğiniz adımı kapatırsınız.
-• Hafif, Normal ve Yoğun hazır ayarlarından biri tek dokunuşla bütün vakitleri düzenler.
-• Sesli anonsu telefonunuzun Türkçe sesi okur. Metni kendiniz yazabilirsiniz ve anons için internet gerekmez.
-• Bildirim sesini telefonunuzdaki seslerden seçebilirsiniz.
-• Zaman şeridi, seçtiğiniz ayarın o gün sizi hangi saatlerde uyaracağını gösterir.
+CAMİDE TELEFONUNUZ ÇALMASIN
+Vakte yakın bir camide birkaç dakika kaldığınızda Namaz modu kendiliğinden açılır. Emin olunamayan durumlarda önce size sorulur. Namazda aramaların ve bildirimlerin ne olacağını telefonunuzun ayarlarında siz belirlersiniz.
 
-VAKİT TAKİBİ
-• Ana ekran bir sonraki vakte kalan süreyi saniye saniye sayar.
-• Ana ekran widget'ı vakitleri uygulamayı açmadan gösterir.
-• Şehir değiştirdiğinizde uygulama vakitleri yeni konuma göre günceller. Konum takibi sürekli GPS yerine bölge sınırlarını izlediği için pili az harcar.
-• Kerahat vakitlerinde ana ekran sizi uyarır.
-• Cuma günleri, öğle vakti girmeden önce camiye yetişmeniz için ayrı bir hatırlatma kurabilirsiniz.
-• Namaz vakitlerini telefonunuzun takvimine etkinlik olarak ekleyebilirsiniz.
+YOLDA VE YURT DIŞINDA
+Vakitler bulunduğunuz yerin koordinatlarından, o ülkenin camilerinin uyduğu takvime göre hesaplanır. Türkiye'de Diyanet'in yöntemi kullanılır. Başka bir ülkeye gittiğinizde uygulama oranın takvimini önerir, siz onaylamadan yöntem değişmez. Kıbleyi pusulayla ya da kamera görünümüyle bulursunuz. Kamerada Kâbe işareti kıble yönünde belirir. Bunların hiçbiri internet gerektirmez.
 
-KIBLE PUSULASI
-Pusula, cihazınızın sensörleriyle Kâbe yönünü gösterir.
+KAZA BORCUNUZ GÖZÜNÜZÜ KORKUTUYORSA
+Sihirbaz kaza borcunuzu hesaplar. Bir farzı kıldığınızda uygulama yanına bir kaza kılmanızı önerir, tek dokunuşla defterden düşersiniz. Borç böylece her gün biraz azalır. İsterseniz kılınmayan farzlar namaz günü bitince deftere kendiliğinden eklenir.
 
-KAZA DEFTERİ
-Uygulama kılınmayan namazları tespit edip kaza çetelesine ekler. Geçmişe dönük kayıt girebilir, kıldığınız kazayı çeteleden düşebilirsiniz.
+DÜZEN KURMAKTA ZORLANIYORSANIZ
+Tam kıldığınız her gün serinizi bir gün uzatır. Gün bitmeden eksik vaktiniz varsa kalan süreyi büyük bir geri sayımla görürsünüz. Uzun bir seri bir gün koparsa iki gün tam kılarak geri alırsınız, tek bir aksak gün emeğinizi silmez. İstatistik ekranı günlük, haftalık ve aylık dökümü gösterir.
 
-SERİ VE İSTATİSTİK
-Tam kıldığınız her gün serinizi bir gün uzatır. 7 günü aşan bir seriniz koparsa, ardından 2 gün tam kılarak seriyi kurtarabilirsiniz. Kıldıkça puan toplar, seviye atlar ve rozet kazanırsınız. İstatistik ekranı günlük, haftalık ve aylık dökümü gösterir.
+GÜNE BİR AYETLE BAŞLAYIN
+Her imsakta yenilenen bir ayet ve meali ana ekran widget'ında durur. İsterseniz ayet kilit ekranınızın duvar kâğıdı olur. Zemini, yazı tipini ve süsü siz seçersiniz, kendi fotoğrafınızı da kullanabilirsiniz.
 
-RAMAZAN
-İftar ve sahura kalan süreyi bildirimde geri sayımla gösterir.
+KENDİ DİLİNİZDE
+Uygulama 78 dilde kullanılabilir. Ekranlar, bildirimler ve sesli okuma seçtiğiniz dilde çalışır. Arapça, Urduca ve Farsça gibi dillerde arayüz sağdan sola döner.
 
-WEAR OS SAAT UYGULAMASI
-Saat uygulaması telefonunuzla eşitlenir; saatte işaretlediğiniz vakit telefona da geçer.
-• Kutucuklar (tile): "Sıradaki vakit" kutucuğu sıradaki namazı ve saatini gösterir. "Bugün" kutucuğu günün beş vaktini gösterir; kıldığınız vakti kutucuktan iki dokunuşla işaretlersiniz.
-• Kadran komplikasyonları (complication): Kadranınıza kalan süre, vakit çıkış saati, sıradaki namaz, günlük ilerleme, gün dağılımı, kerahat ve kıble komplikasyonlarını ekleyebilirsiniz.
-• Tesbihat sayacı ve kıble pusulası saatte de çalışır.
+SAAT, TABLET VE TELEVİZYON
+• Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" dersiniz.
+• Evdeki Android TV'de vakitler büyük ekranda sizin şehrinize göre görünür.
+• Kayıtlarınızı kendi Google Drive alanınızda, sizin parolanızla şifreleyerek tabletinizle eşitleyebilirsiniz.
 
-GİZLİLİK
-Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit ve kıble hesabı için kullanır, hiçbir sunucuya göndermez; Wear OS saatinizdeki kıble pusulası için saatinize yalnızca yaklaşık konum aktarılır. Verilerinizi bir yedek dosyasına alıp başka bir cihaza taşıyabilirsiniz.
+VERİLERİNİZ SİZDE KALIR
+Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik yok. Konumunuz yalnız vakit ve kıble hesabında kullanılır ve bize ulaşmaz. Eşitlemeyi açarsanız verileriniz telefondan çıkmadan önce sizin parolanızla şifrelenir.
 
 AÇIK KAYNAK
-Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsizdir ve kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
+Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsiz, kaynak kodları GNU GPLv3 lisansıyla herkese açık:
 https://github.com/furkanisikay/namazakisi
 ```

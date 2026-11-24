@@ -7,7 +7,7 @@
  *   node scripts/magaza-gorselleri/uret.js <ham-kare-klasoru> <cikis>
  *   node scripts/magaza-gorselleri/uret.js --kaynak kareler --kaynak kareler-ozellik --cikis pazarlama \
  *        [--set iphone,play-telefon] [--kosul appleWatchYayinda] [--duz] [--one-cikan]
- *        [--en-eski 2026-10-19T20:00] [--tarihsiz tv]
+ *        [--en-eski 2026-10-19T20:00] [--tarihsiz tv] [--dil en]
  *
  * Ham kare, ADI (01-ana-ekran.png ...) ve BOYUTU (setler.js > CIHAZ_TURLERI) ile
  * bulunur: ayni klasorde iPhone ve Android kareleri karisik olsa da dogru cihaz secilir.
@@ -17,12 +17,15 @@
  * `magazaDisi` kareler <cikis>/<set>/magaza-disi/ altina yazilir (yuklenmez).
  * `--duz`: tek set dogrudan <cikis>/ altina (eski mockup klasoru duzeni).
  * Ham karesi bulunmayan kare ATLANIR ve ozette "eksik" olarak listelenir.
+ * `--dil`: gorsel metinlerinin dili (varsayilan tr; digerleri metinler/<dil>.json, dil.js).
+ * Ham kareler de o dilin kare hattindan (`dil` girdisi) gelmelidir.
  */
 const fs = require('fs');
 const path = require('path');
 const { ciz, dosyaUrl, pngBoyutu, tarayiciBul } = require('./cizici');
 const { SETLER, CIHAZ_TURLERI } = require('./setler');
 const { sayfaUret, oneCikanSayfa } = require('./sablon');
+const { dilAyarla, yerellestir } = require('./dil');
 
 const ATLANAN_YOLLAR = /takeScreenshot|[\\/](mockup|pazarlama|agac|android-maestro-ciktisi)[\\/]/i;
 
@@ -103,7 +106,7 @@ function gorselleriCoz(dizin, set, kare, secenek = {}) {
 }
 
 function argumanlar(argv) {
-    const a = { kaynak: [], kosul: [], set: null, cikis: null, duz: false, oneCikan: false, enEski: null, tarihsiz: [] };
+    const a = { kaynak: [], kosul: [], set: null, cikis: null, duz: false, oneCikan: false, enEski: null, tarihsiz: [], dil: 'tr' };
     const konumsal = [];
     for (let i = 0; i < argv.length; i++) {
         const x = argv[i];
@@ -115,6 +118,7 @@ function argumanlar(argv) {
         else if (x === '--en-eski') a.enEski = Date.parse(argv[++i]);
         else if (x === '--tarihsiz') a.tarihsiz = argv[++i].split(',').filter(Boolean);
         else if (x === '--one-cikan') a.oneCikan = true;
+        else if (x === '--dil') a.dil = argv[++i];
         else konumsal.push(x);
     }
     if (!a.kaynak.length && konumsal[0]) a.kaynak.push(konumsal[0]);
@@ -123,7 +127,8 @@ function argumanlar(argv) {
 }
 
 function uret(secenek) {
-    const { kaynak, cikis, kosul = [], duz = false, oneCikan = false, enEski = null, tarihsiz = [] } = secenek;
+    const { kaynak, cikis, kosul = [], duz = false, oneCikan = false, enEski = null, tarihsiz = [], dil = 'tr' } = secenek;
+    dilAyarla(dil);
     if (enEski !== null && Number.isNaN(enEski)) throw new Error('--en-eski gecersiz tarih');
     const kapi = { enEski, tarihsiz };
     const uyarilanlar = new Set();
@@ -135,8 +140,8 @@ function uret(secenek) {
     const ikonUrl = dosyaUrl(path.resolve(__dirname, '..', '..', 'assets', 'icon.png'));
     const ozet = {};
     for (const setAdi of setAdlari) {
-        const set = SETLER[setAdi];
-        if (!set) throw new Error('bilinmeyen set: ' + setAdi);
+        if (!SETLER[setAdi]) throw new Error('bilinmeyen set: ' + setAdi);
+        const set = yerellestir(SETLER[setAdi]);
         const hedefKlasor = duz ? cikis : path.join(cikis, setAdi);
         const o = { uretilen: [], eksik: [], kosulsuz: [] };
         for (const kare of set.kareler) {
@@ -186,6 +191,11 @@ if (require.main === module) {
         process.exit(1);
     }
     const ozet = uret(a);
+    // Yukleyici (play-magaza.js yaz) gorseli bu dilin kaydina gonderir; baska dile gidemez.
+    if (!a.duz) {
+        fs.mkdirSync(a.cikis, { recursive: true });
+        fs.writeFileSync(path.join(a.cikis, 'dil.txt'), a.dil + '\n');
+    }
     for (const [ad, o] of Object.entries(ozet)) {
         const set = SETLER[ad];
         console.log(`${ad}: ${o.uretilen.length} gorsel${set.yukleme ? '' : ' (MAGAZAYA YUKLENMEZ: ' + set.yuklenmezNedeni + ')'}`);

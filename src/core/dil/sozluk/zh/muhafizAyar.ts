@@ -141,7 +141,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     degiskenAciklamalari: {
       '%vakit': '应用语言中的礼拜名称（例如 晌礼）',
       '%vakitkodu': 'sabah、ogle、ikindi、aksam 或 yatsi',
-      '%tarih': '礼拜日（YYYY-MM-DD）',
+      '%tarih': '礼拜计算日（YYYY-MM-DD）',
       '%kalandk': '即将结束: 剩余分钟数',
       '%cami': '在清真寺: 清真寺的名称',
     },

@@ -47,6 +47,10 @@ on:
         description: 'Açılacak gelecek özellik kareleri (virgüllü; örn. icloudEsitleme,androidAutoYayinda)'
         required: false
         default: ''
+      dil:
+        description: 'Görsel metinlerinin dili (tr kaynak; diğerleri scripts/magaza-gorselleri/metinler/<dil>.json). Ham kareler de aynı dilin koşusundan olmalı.'
+        required: false
+        default: 'tr'
 
 permissions:
   contents: read
@@ -67,6 +71,7 @@ jobs:
           node-version: '22'
 
       # Her indirme kendi klasörüne; biri yoksa iş durmaz (o cihazın görselleri eksik kalır).
+      # Desenler `*` ile biter: Türkçe dışındaki kare koşularının artifact'ları `-<dil>` eklidir.
       - name: 🍎 iPhone kareleri
         if: ${{ inputs.ios_run_id != '' }}
         continue-on-error: true
@@ -81,7 +86,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          name: ios-ekran-goruntuleri
+          pattern: 'ios-ekran-goruntuleri*'
           path: ham/ios-magaza
           run-id: ${{ inputs.ios_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -90,7 +95,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          name: ios-ipad-ekran-goruntuleri
+          pattern: 'ios-ipad-ekran-goruntuleri*'
           path: ham/ipad
           run-id: ${{ inputs.ipad_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -99,7 +104,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          name: ios-saat-kareleri
+          pattern: 'ios-saat-kareleri*'
           path: ham/apple-watch
           run-id: ${{ inputs.saat_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -108,7 +113,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          pattern: 'android-*-kareleri'
+          pattern: 'android-*-kareleri*'
           path: ham/android
           run-id: ${{ inputs.android_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -117,7 +122,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          name: android-ekran-goruntuleri
+          pattern: 'android-ekran-goruntuleri*'
           path: ham/android-magaza
           run-id: ${{ inputs.android_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -126,7 +131,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          pattern: 'android-*-kareleri'
+          pattern: 'android-*-kareleri*'
           path: ham/cihazlar
           run-id: ${{ inputs.cihaz_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -136,7 +141,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          pattern: 'android-*-kareleri'
+          pattern: 'android-*-kareleri*'
           path: ham/tablet
           run-id: ${{ inputs.tablet_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -145,14 +150,17 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          pattern: 'android-*-kareleri'
+          pattern: 'android-*-kareleri*'
           path: ham/katlanabilir
           run-id: ${{ inputs.katlanabilir_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🎨 Görselleri üret
+        env:
+          DIL: ${{ inputs.dil }}
         run: |
           set -eo pipefail
+          [[ "$DIL" =~ ^[a-z]{2,3}$ ]] || { echo "::error::Geçersiz dil: $DIL"; exit 1; }
           KAYNAK=""
           for d in ham/*; do [ -d "$d" ] && KAYNAK="$KAYNAK --kaynak $d"; done
           [ -n "$KAYNAK" ] || { echo "::error::Hiç ham kare indirilemedi (koşu kimliklerini verin)."; exit 1; }
@@ -161,7 +169,7 @@ jobs:
           {
             echo '## Mağaza pazarlama görselleri'
             echo '```'
-            node scripts/magaza-gorselleri/uret.js $KAYNAK $KOSUL --cikis pazarlama --one-cikan | grep -v ' KB$'
+            node scripts/magaza-gorselleri/uret.js $KAYNAK $KOSUL --cikis pazarlama --one-cikan --dil "$DIL" | grep -v ' KB$'
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
           node scripts/magaza-gorselleri/kontak.js --hepsi pazarlama
