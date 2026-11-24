@@ -154,8 +154,11 @@ Kaynak koddaki sürüm: **0.72.0** · Mağazada: Google Play: **0.70.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/65-gunun-ayeti-ana-ekran.webp" width="160" alt="Gunun ayeti ana ekran" title="Gunun ayeti ana ekran">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/66-gunun-ayeti-kilit.webp" width="160" alt="Gunun ayeti kilit" title="Gunun ayeti kilit">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/67-dil-secimi.webp" width="160" alt="Dil seçimi" title="Dil seçimi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/67-duvar-duzenleyici.webp" width="160" alt="Duvar duzenleyici" title="Duvar duzenleyici">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/68-dil-secimi-alt.webp" width="160" alt="Dil seçimi alt" title="Dil seçimi alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/68-duvar-duzenleyici-mihrap.webp" width="160" alt="Duvar duzenleyici mihrap" title="Duvar duzenleyici mihrap">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/69-bolge-takvimi-baku.webp" width="160" alt="Bolge takvimi baku" title="Bolge takvimi baku">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/69-duvar-saat-alani.webp" width="160" alt="Duvar saat alani" title="Duvar saat alani">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/70-ana-ekran-qmi.webp" width="160" alt="Ana ekran qmi" title="Ana ekran qmi">
 </p>
 
@@ -238,8 +241,11 @@ Kaynak koddaki sürüm: **0.72.0** · Mağazada: Google Play: **0.70.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/65-gunun-ayeti-ana-ekran.webp" width="160" alt="Gunun ayeti ana ekran" title="Gunun ayeti ana ekran">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/66-gunun-ayeti-kilit.webp" width="160" alt="Gunun ayeti kilit" title="Gunun ayeti kilit">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/67-dil-secimi.webp" width="160" alt="Dil seçimi" title="Dil seçimi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/67-duvar-duzenleyici.webp" width="160" alt="Duvar duzenleyici" title="Duvar duzenleyici">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/68-dil-secimi-alt.webp" width="160" alt="Dil seçimi alt" title="Dil seçimi alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/68-duvar-duzenleyici-mihrap.webp" width="160" alt="Duvar duzenleyici mihrap" title="Duvar duzenleyici mihrap">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/69-bolge-takvimi-baku.webp" width="160" alt="Bolge takvimi baku" title="Bolge takvimi baku">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/69-duvar-saat-alani.webp" width="160" alt="Duvar saat alani" title="Duvar saat alani">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/70-ana-ekran-qmi.webp" width="160" alt="Ana ekran qmi" title="Ana ekran qmi">
 </p>
 
