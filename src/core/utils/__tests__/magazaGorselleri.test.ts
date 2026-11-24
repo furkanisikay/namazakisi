@@ -222,33 +222,41 @@ describe('magaza pazarlama gorselleri — DOGRULUK (platform suzgeci)', () => {
     });
 });
 
-describe('magaza pazarlama gorselleri — metin olcusu', () => {
-    it('baslik en fazla iki satir ve her satir alana sigar', () => {
-        for (const [ad, s] of setler) {
-            const o = metinOlcusu(s);
-            for (const k of s.kareler) {
-                const satirlar = k.baslik.split('\n');
-                expect(satirlar.length).toBeLessThanOrEqual(2);
-                // Saat karelerinde baslik kendiliginden kirilir: toplam iki satira sigmali.
-                const sinir = s.yon === 'kare' ? 2 : 1;
-                for (const sat of satirlar) {
-                    const oran = metinGenisligi(sat, o.baslikPx) / o.baslikGen;
-                    expect({ set: ad, kare: k.ad, sat, sigar: oran <= sinir }).toEqual({ set: ad, kare: k.ad, sat, sigar: true });
-                }
+/** Basliklarin ve alt satirlarin alana sigdigini olcer (her dil icin ayni olcu). */
+function baslikSigarMi(setListesi: [string, Set][]) {
+    for (const [ad, s] of setListesi) {
+        const o = metinOlcusu(s);
+        for (const k of s.kareler) {
+            const satirlar = k.baslik.split('\n');
+            expect({ set: ad, kare: k.ad, satir: satirlar.length <= 2 }).toEqual({ set: ad, kare: k.ad, satir: true });
+            // Saat karelerinde baslik kendiliginden kirilir: toplam iki satira sigmali.
+            const sinir = s.yon === 'kare' ? 2 : 1;
+            for (const sat of satirlar) {
+                const oran = metinGenisligi(sat, o.baslikPx) / o.baslikGen;
+                expect({ set: ad, kare: k.ad, sat, sigar: oran <= sinir }).toEqual({ set: ad, kare: k.ad, sat, sigar: true });
             }
         }
+    }
+}
+function altSatirSigarMi(setListesi: [string, Set][]) {
+    for (const [ad, s] of setListesi) {
+        const o = metinOlcusu(s);
+        for (const k of s.kareler) {
+            if (!k.alt) continue;
+            expect(o.altSatir).toBeGreaterThan(0);
+            const satir = Math.ceil(metinGenisligi(k.alt, o.altPx, false) / o.altGen);
+            expect({ set: ad, kare: k.ad, satir: satir <= o.altSatir }).toEqual({ set: ad, kare: k.ad, satir: true });
+        }
+    }
+}
+
+describe('magaza pazarlama gorselleri — metin olcusu', () => {
+    it('baslik en fazla iki satir ve her satir alana sigar', () => {
+        baslikSigarMi(setler);
     });
 
     it('alt satir kisa: tahmini satir sayisi sinirda', () => {
-        for (const [, s] of setler) {
-            const o = metinOlcusu(s);
-            for (const k of s.kareler) {
-                if (!k.alt) continue;
-                expect(o.altSatir).toBeGreaterThan(0);
-                const satir = Math.ceil(metinGenisligi(k.alt, o.altPx, false) / o.altGen);
-                expect({ kare: k.ad, satir: satir <= o.altSatir }).toEqual({ kare: k.ad, satir: true });
-            }
-        }
+        altSatirSigarMi(setler);
     });
 
     it('buyuk harf donusumu kullanilmaz (Turkce I/i tuzagi)', () => {
@@ -263,6 +271,47 @@ describe('magaza pazarlama gorselleri — metin olcusu', () => {
             for (const k of s.kareler) {
                 if (k.rozet) expect(IKON_ADLARI).toContain(k.rozet.ikon);
                 (k.maddeler || []).forEach((m) => expect(IKON_ADLARI).toContain(m.ikon));
+            }
+    });
+});
+
+describe('magaza pazarlama gorselleri — diller (metinler/<dil>.json)', () => {
+    const dil = require(path.join(KOK, 'scripts/magaza-gorselleri/dil'));
+    const diller: string[] = dil.dilleriListele();
+    const yerelSetler = (d: string) => {
+        dil.dilAyarla(d);
+        return setler.map(([ad, s]) => [ad, dil.yerellestir(s)]) as [string, Set][];
+    };
+    afterEach(() => dil.dilAyarla('tr'));
+
+    it('en az Ingilizce var', () => {
+        expect(diller).toContain('en');
+    });
+
+    it.each(diller)('%s: ceviri dosyasi Turkce kaynagin butun metinlerini tasir, fazlasini degil', (d) => {
+        const kaynak = [...dil.kaynakMetinler(SETLER)].sort();
+        const ceviri = dil.sozlukOku(d);
+        expect(Object.keys(ceviri).sort()).toEqual(kaynak);
+        for (const [tr, deger] of Object.entries(ceviri)) {
+            expect({ tr, dolu: typeof deger === 'string' && (deger as string).trim().length > 0 }).toEqual({ tr, dolu: true });
+            // Satir kirilimi ve yer tutucular korunur: baslik iki satira kirilmissa ceviri de kirilir.
+            expect({ tr, satir: (deger as string).split('\n').length }).toEqual({ tr, satir: tr.split('\n').length });
+            for (const yt of tr.match(/\{[a-z]+\}/g) || []) expect({ tr, yt, var: (deger as string).includes(yt) }).toEqual({ tr, yt, var: true });
+        }
+    });
+
+    it.each(diller)('%s: basliklar ve alt satirlar alana sigar', (d) => {
+        const yerel = yerelSetler(d);
+        baslikSigarMi(yerel);
+        altSatirSigarMi(yerel);
+    });
+
+    it.each(diller)('%s: sablon her kareyi cevrilmis metinle uretir (Turkce artik kalmaz)', (d) => {
+        for (const [, s] of yerelSetler(d))
+            for (const k of s.kareler) {
+                const html = sayfaUret(k, s, [], 'ikon.png');
+                expect(html).toContain(`lang="${d}"`);
+                expect({ kare: k.ad, turkce: /[ğışĞİŞ]/.test(html.replace(/Namaz Akışı/g, '')) }).toEqual({ kare: k.ad, turkce: false });
             }
     });
 });

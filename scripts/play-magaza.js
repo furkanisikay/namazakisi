@@ -36,6 +36,8 @@ const path = require('path');
 
 const PAKET = process.env.PLAY_PAKET || 'com.furkanisikay.namazakisi';
 const DIL = 'tr-TR';
+/** Gorsellerin yuklenecegi kayit dili (`yaz --dil en-US`); metin yalniz DIL'e yazilir. */
+let GORSEL_DIL = DIL;
 
 const ham = process.env.GOOGLE_SERVICE_ACCOUNT;
 if (!ham) {
@@ -132,7 +134,7 @@ function gorselYukle(editId, tur, dosya) {
                 '/edits/' +
                 editId +
                 '/listings/' +
-                DIL +
+                encodeURIComponent(GORSEL_DIL) +
                 '/' +
                 tur +
                 '?uploadType=media',
@@ -196,11 +198,24 @@ function playMetinleri() {
     };
 }
 
+/**
+ * Pazarlama gorselleri hangi dilde uretildiyse (uret.js `<cikis>/dil.txt`) o dilin kaydina
+ * gider: Ingilizce gorsel Turkce kayda, Turkce gorsel Ingilizce kayda yuklenmesin.
+ * dil.txt yoksa (eski uretim) gorsel Turkce sayilir.
+ */
+function gorselDiliniDenetle(klasor) {
+    const { PLAY_DILLERI } = require('./play-kayit-dilleri');
+    const dosya = path.join(klasor, '..', 'dil.txt');
+    const uygulamaDili = fs.existsSync(dosya) ? fs.readFileSync(dosya, 'utf8').trim() : 'tr';
+    const beklenen = uygulamaDili === 'tr' ? DIL : PLAY_DILLERI[uygulamaDili];
+    if (beklenen !== GORSEL_DIL) throw new Error('gorseller ' + uygulamaDili + ' dilinde uretilmis; ' + GORSEL_DIL + ' kaydina yuklenmez (--dil ' + (beklenen || '?') + ' verin)');
+}
+
 (async () => {
     const mod = process.argv[2];
     const MODLAR = ['oku', 'yaz', 'diller', 'diller-deneme', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri', 'tv-ekle', 'gorseller'];
     if (!MODLAR.includes(mod)) {
-        console.error('Kullanim: play-magaza.js <oku|yaz|diller|diller-deneme|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle|gorseller> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
+        console.error('Kullanim: play-magaza.js <oku|yaz|diller|diller-deneme|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle|gorseller> [--gorseller <klasor>] [--dil en-US] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
         process.exit(1);
     }
     const arg = (ad) => {
@@ -208,6 +223,12 @@ function playMetinleri() {
         return i >= 0 ? process.argv[i + 1] : null;
     };
     const saltOkur = mod === 'oku' || mod === 'surumler' || mod === 'gorseller';
+    if (arg('dil')) {
+        const { PLAY_DILLERI } = require('./play-kayit-dilleri');
+        GORSEL_DIL = arg('dil');
+        if (mod !== 'yaz') throw new Error('--dil yalniz yaz moduyla kullanilir');
+        if (GORSEL_DIL !== DIL && !Object.values(PLAY_DILLERI).includes(GORSEL_DIL)) throw new Error('bilinmeyen Play dili: ' + GORSEL_DIL);
+    }
     api.jeton = await jeton();
 
     const ekle = await api('POST', '/edits');
@@ -473,26 +494,29 @@ function playMetinleri() {
                 return;
             }
         } else {
-        const metin = playMetinleri();
-        const y = await api('PUT', '/edits/' + editId + '/listings/' + DIL, {
-            language: DIL,
-            title: metin.title,
-            shortDescription: metin.shortDescription,
-            fullDescription: metin.fullDescription,
-        });
-        if (y.kod >= 300) throw new Error('metin yazilamadi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));
-        console.log('METINLER yazildi:', metin.title, '|', metin.shortDescription.length, 'krk kisa,', metin.fullDescription.length, 'krk tam');
+        if (GORSEL_DIL === DIL) {
+            const metin = playMetinleri();
+            const y = await api('PUT', '/edits/' + editId + '/listings/' + DIL, {
+                language: DIL,
+                title: metin.title,
+                shortDescription: metin.shortDescription,
+                fullDescription: metin.fullDescription,
+            });
+            if (y.kod >= 300) throw new Error('metin yazilamadi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));
+            console.log('METINLER yazildi:', metin.title, '|', metin.shortDescription.length, 'krk kisa,', metin.fullDescription.length, 'krk tam');
+        } else console.log('METIN yazilmadi (' + GORSEL_DIL + ' metni `diller` moduyla yazilir); yalniz gorseller.');
 
         const gi = process.argv.indexOf('--gorseller');
         if (gi >= 0 && process.argv[gi + 1]) {
             const klasor = process.argv[gi + 1];
+            gorselDiliniDenetle(klasor);
             const telefon = fs
                 .readdirSync(klasor)
                 .filter((f) => /^\d.*\.png$/i.test(f))
                 .sort();
             if (telefon.length) {
                 // Eskiler silinmezse yenileri ARKASINA eklenir ve magazada karisik sira olur.
-                const sil = await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/phoneScreenshots');
+                const sil = await api('DELETE', '/edits/' + editId + '/listings/' + encodeURIComponent(GORSEL_DIL) + '/phoneScreenshots');
                 console.log('eski telefon goruntuleri silindi:', sil.kod);
                 for (const f of telefon) {
                     const r = await gorselYukle(editId, 'phoneScreenshots', path.join(klasor, f));
@@ -511,7 +535,7 @@ function playMetinleri() {
                     .sort()
                     .slice(0, 8);
                 for (const tur of tablet.length ? ['sevenInchScreenshots', 'tenInchScreenshots'] : []) {
-                    const sil = await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
+                    const sil = await api('DELETE', '/edits/' + editId + '/listings/' + encodeURIComponent(GORSEL_DIL) + '/' + tur);
                     console.log('eski ' + tur + ' silindi:', sil.kod);
                     for (const f of tablet) {
                         const r = await gorselYukle(editId, tur, path.join(tabletKlasor, f));
@@ -522,7 +546,7 @@ function playMetinleri() {
             }
             const one = path.join(klasor, 'one-cikan.png');
             if (fs.existsSync(one)) {
-                await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/featureGraphic');
+                await api('DELETE', '/edits/' + editId + '/listings/' + encodeURIComponent(GORSEL_DIL) + '/featureGraphic');
                 const r = await gorselYukle(editId, 'featureGraphic', one);
                 console.log('  one-cikan.png -> ' + r.kod);
             }
