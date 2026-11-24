@@ -62,7 +62,7 @@
   <string name="widget_dugme_kildim">I\'ve prayed</string>
   <string name="widget_dugme_isaretleniyor">Marking</string>
   <string name="widget_dugme_kilindi">Prayed</string>
-  <string name="widget_dugme_vakit_girmedi">Not yet time</string>
+  <string name="widget_dugme_vakit_girmedi">Not time yet</string>
   <string name="widget_klasik_uygulamayi_acin">open the app</string>
   <string name="widget_klasik_erisim_veri_yok">Open the app to see prayer times</string>
   <string name="widget_klasik_erisim_siradaki">Next prayer: %1$s, starts at %2$s</string>

@@ -53,8 +53,12 @@ function bezier(t, p0, p1, p2) {
     return [u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0], u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1]];
 }
 
-/** Rastgele gorunen ama her calismada AYNI yildizlar (karsilastirilabilir cikti). */
-function yildizlar(gen, yuk, adet, renk) {
+/**
+ * Rastgele gorunen ama her calismada AYNI yildizlar (karsilastirilabilir cikti).
+ * `bos` ({x1,y1,x2,y2}): metin blogu; oraya yildiz konmaz (harfin yanindaki nokta
+ * virgul ya da yazim hatasi gibi okunuyordu: "Wear, OS").
+ */
+function yildizlar(gen, yuk, adet, renk, bos) {
     let tohum = 7;
     const r = () => ((tohum = (tohum * 9301 + 49297) % 233280) / 233280);
     let s = '';
@@ -62,7 +66,9 @@ function yildizlar(gen, yuk, adet, renk) {
         const x = r() * gen;
         const y = r() * yuk;
         const b = 0.6 + r() * 1.8;
-        s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${b.toFixed(2)}" fill="${renk}" opacity="${(0.25 + r() * 0.5).toFixed(2)}"/>`;
+        const saydam = (0.25 + r() * 0.5).toFixed(2);
+        if (bos && x >= bos.x1 && x <= bos.x2 && y >= bos.y1 && y <= bos.y2) continue;
+        s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${b.toFixed(2)}" fill="${renk}" opacity="${saydam}"/>`;
     }
     return s;
 }
@@ -588,7 +594,7 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
     const pad = 104 * k;
     const yay =
         `<svg style="position:absolute;left:0;top:0" width="${gen}" height="${yuk}" viewBox="0 0 ${gen} ${yuk}">` +
-        (z.yildiz ? yildizlar(gen, yuk * 0.45, 60, '#E8F5E9') : '') +
+        (z.yildiz ? yildizlar(gen, yuk * 0.45, 60, '#E8F5E9', { x1: pad * 0.6, y1: 290 * k, x2: gen - pad * 0.6, y2: metinAlti(kare, k) + 30 * k }) : '') +
         vakitYayi(gen, yayYuk, k, z, kare.vakit) +
         `</svg>`;
     const metin =
@@ -776,7 +782,7 @@ function yatay(kare, b, gorseller, cihazTuru) {
     const k = yuk / 1600;
     const yay =
         `<svg style="position:absolute;left:0;top:0" width="${gen}" height="${yuk}">` +
-        (z.yildiz ? yildizlar(gen, yuk * 0.4, 70, '#E8F5E9') : '') +
+        (z.yildiz ? yildizlar(gen, yuk * 0.4, 70, '#E8F5E9', { x1: gen * 0.04, y1: yuk * 0.05, x2: gen * 0.96, y2: yuk * (kare.alt ? 0.235 : 0.19) }) : '') +
         vakitYayi(gen, yuk * 0.16, k * 0.8, z, kare.vakit) +
         `</svg>`;
     const o = yatayOlcu(b);
