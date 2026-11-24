@@ -369,7 +369,6 @@ Kaynak koddaki sürüm: **0.72.0** · Mağazada: Google Play: **0.70.1** · App 
 <p>
   <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/01-ana-ekran.webp" width="150" alt="Ana ekran" title="Ana ekran">
   <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/02-vakitler.webp" width="150" alt="Vakitler" title="Vakitler">
-  <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/03-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı">
   <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/04-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat">
   <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/05-tile-bugun.webp" width="150" alt="Tile bugün" title="Tile bugün">
   <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/06-tile-vakit.webp" width="150" alt="Tile vakit" title="Tile vakit">
@@ -387,7 +386,6 @@ Kaynak koddaki sürüm: **0.72.0** · Mağazada: Google Play: **0.70.1** · App 
 <p>
   <img src="docs/ekran-goruntuleri/cihaz/wear-kare/01-ana-ekran.webp" width="150" alt="Ana ekran" title="Ana ekran">
   <img src="docs/ekran-goruntuleri/cihaz/wear-kare/02-vakitler.webp" width="150" alt="Vakitler" title="Vakitler">
-  <img src="docs/ekran-goruntuleri/cihaz/wear-kare/03-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı">
   <img src="docs/ekran-goruntuleri/cihaz/wear-kare/04-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat">
   <img src="docs/ekran-goruntuleri/cihaz/wear-kare/05-tile-bugun.webp" width="150" alt="Tile bugün" title="Tile bugün">
   <img src="docs/ekran-goruntuleri/cihaz/wear-kare/06-tile-vakit.webp" width="150" alt="Tile vakit" title="Tile vakit">
