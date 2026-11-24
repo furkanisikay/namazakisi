@@ -64,9 +64,9 @@ const PLAY_DILLERI = {
 /**
  * Play'deki varsayılan kayıt dili: kaydı olmayan dilin kullanıcısı bunu görür, kendi görseli
  * olmayan dil de bu dilin görsellerini gösterir. Görseli olmayan dil varsayılan YAPILMAZ
- * (`play-magaza.js diller` denetler); İngilizce görseller yüklenince `en-US`'ye alınır.
+ * (`play-magaza.js diller` denetler).
  */
-const VARSAYILAN_DIL = 'tr-TR';
+const VARSAYILAN_DIL = 'en-US';
 
 const SINIRLAR = { title: 30, shortDescription: 80, fullDescription: 4000 };
 
