@@ -225,7 +225,7 @@ async function ikonuKopyala(editId, hedefDil) {
     const kaynak = await api('GET', '/edits/' + editId + '/listings/' + DIL + '/icon');
     const im = ((kaynak.j && kaynak.j.images) || [])[0];
     if (!im) throw new Error(DIL + ' kaydinda da ikon yok; ikon once Play Console\'dan yuklenmeli');
-    const veri = await indir(im.url + '=s512');
+    const veri = await indir(im.url + '=s512-rp'); // -rp: PNG (yoksa JPEG doner)
     if (veri.readUInt32BE(0) !== 0x89504e47 || veri.readUInt32BE(16) !== 512 || veri.readUInt32BE(20) !== 512) {
         throw new Error('indirilen ikon 512x512 PNG degil');
     }
