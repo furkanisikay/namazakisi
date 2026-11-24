@@ -122,7 +122,7 @@ function api(tur, yol, govde, ekBaslik = {}) {
 }
 
 /** Gorsel yukleme ayri bir host (upload) ve ikili govde ister. */
-function gorselYukle(editId, tur, dosya) {
+function gorselYukle(editId, tur, dosya, dil = GORSEL_DIL) {
     const veri = fs.readFileSync(dosya);
     return istekGonder(
         {
@@ -134,7 +134,7 @@ function gorselYukle(editId, tur, dosya) {
                 '/edits/' +
                 editId +
                 '/listings/' +
-                encodeURIComponent(GORSEL_DIL) +
+                encodeURIComponent(dil) +
                 '/' +
                 tur +
                 '?uploadType=media',
@@ -196,6 +196,44 @@ function playMetinleri() {
         shortDescription: blok('#### Play — kısa açıklama'),
         fullDescription: blok('#### Play — tam açıklama'),
     };
+}
+
+/** URL'yi indirir (yonlendirmeleri izler); Buffer doner. */
+function indir(url, kalanYonlendirme = 3) {
+    return new Promise((coz, reddet) => {
+        https
+            .get(url, (res) => {
+                if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location && kalanYonlendirme > 0) {
+                    res.resume();
+                    return coz(indir(new URL(res.headers.location, url).toString(), kalanYonlendirme - 1));
+                }
+                if (res.statusCode !== 200) return reddet(new Error('indirilemedi: ' + res.statusCode + ' ' + url));
+                const parcalar = [];
+                res.on('data', (c) => parcalar.push(c));
+                res.on('end', () => coz(Buffer.concat(parcalar)));
+            })
+            .on('error', reddet);
+    });
+}
+
+/**
+ * Varsayilan dil olacak kaydin yuksek cozunurluklu ikonu yoksa Play commit'i reddeder
+ * ("no high resolution icon set for language"). Ikon dile gore degismez: Turkce kayittaki
+ * ikon (512x512) aynen kopyalanir.
+ */
+async function ikonuKopyala(editId, hedefDil) {
+    const kaynak = await api('GET', '/edits/' + editId + '/listings/' + DIL + '/icon');
+    const im = ((kaynak.j && kaynak.j.images) || [])[0];
+    if (!im) throw new Error(DIL + ' kaydinda da ikon yok; ikon once Play Console\'dan yuklenmeli');
+    const veri = await indir(im.url + '=s512');
+    if (veri.readUInt32BE(0) !== 0x89504e47 || veri.readUInt32BE(16) !== 512 || veri.readUInt32BE(20) !== 512) {
+        throw new Error('indirilen ikon 512x512 PNG degil');
+    }
+    const gecici = path.join(require('os').tmpdir(), 'play-ikon-512.png');
+    fs.writeFileSync(gecici, veri);
+    const y = await gorselYukle(editId, 'icon', gecici, hedefDil);
+    if (y.kod >= 300) throw new Error('ikon yuklenemedi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 200));
+    console.log('IKON ' + DIL + ' kaydindan ' + hedefDil + ' kaydina kopyalandi');
 }
 
 /**
@@ -479,6 +517,8 @@ function gorselDiliniDenetle(klasor) {
             if (mevcut.j && mevcut.j.defaultLanguage !== VARSAYILAN_DIL) {
                 const ekran = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(VARSAYILAN_DIL) + '/phoneScreenshots');
                 const one = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(VARSAYILAN_DIL) + '/featureGraphic');
+                const ikon = await api('GET', '/edits/' + editId + '/listings/' + encodeURIComponent(VARSAYILAN_DIL) + '/icon');
+                if (!((ikon.j && ikon.j.images) || []).length) await ikonuKopyala(editId, VARSAYILAN_DIL);
                 const ekranSay = ((ekran.j && ekran.j.images) || []).length;
                 const oneSay = ((one.j && one.j.images) || []).length;
                 if (ekranSay < 2 || oneSay < 1) {
