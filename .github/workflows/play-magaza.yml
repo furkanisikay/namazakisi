@@ -42,7 +42,7 @@ on:
         required: false
         default: ''
       gorsel_dili:
-        description: 'yaz için görsellerin yükleneceği Play kayıt dili (ör. en-US). Boş = tr-TR (metin de yazılır); başka dilde yalnız görseller yüklenir ve pazarlama koşusunun dili bununla aynı olmalı.'
+        description: 'yaz ve cihaz-kareleri için görsellerin yükleneceği Play kayıt dili (ör. en-US). Boş = tr-TR (metin de yazılır); başka dilde yalnız görseller yüklenir ve pazarlama koşusunun dili bununla aynı olmalı.'
         required: false
         default: ''
       pazarlama_run_id:
@@ -113,7 +113,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          name: android-saat-kareleri
+          pattern: 'android-saat-kareleri*'
           path: indirilen-saat
           run-id: ${{ inputs.cihaz_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -123,7 +123,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
-          name: android-tv-kareleri
+          pattern: 'android-tv-kareleri*'
           path: indirilen-tv
           run-id: ${{ inputs.cihaz_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -152,7 +152,7 @@ jobs:
             [ -d indirilen-saat ] && find indirilen-saat -path '*yuvarlak*' -name '[0-9][0-9]-*.png' -exec cp {} saat/ \;
             [ -d indirilen-tv ] && find indirilen-tv -name '[0-9][0-9]-*.png' -exec cp {} tv/ \;
             ls -la saat tv
-            node scripts/play-magaza.js cihaz-kareleri --saat saat --tv tv
+            node scripts/play-magaza.js cihaz-kareleri --saat saat --tv tv $DIL_ARG
           elif [ "${{ inputs.mod }}" = "uretime-al" ]; then
             EK=""
             [ -n "${{ inputs.oran }}" ] && EK="--oran ${{ inputs.oran }}"

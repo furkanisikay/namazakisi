@@ -264,7 +264,7 @@ function gorselDiliniDenetle(klasor) {
     if (arg('dil')) {
         const { PLAY_DILLERI } = require('./play-kayit-dilleri');
         GORSEL_DIL = arg('dil');
-        if (mod !== 'yaz') throw new Error('--dil yalniz yaz moduyla kullanilir');
+        if (mod !== 'yaz' && mod !== 'cihaz-kareleri') throw new Error('--dil yalniz yaz ve cihaz-kareleri modlariyla kullanilir');
         if (GORSEL_DIL !== DIL && !Object.values(PLAY_DILLERI).includes(GORSEL_DIL)) throw new Error('bilinmeyen Play dili: ' + GORSEL_DIL);
     }
     api.jeton = await jeton();
@@ -404,8 +404,8 @@ function gorselDiliniDenetle(klasor) {
                     .sort()
                     .slice(0, 8);
                 if (!kareler.length) continue;
-                const sil = await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
-                console.log('eski ' + tur + ' silindi:', sil.kod);
+                const sil = await api('DELETE', '/edits/' + editId + '/listings/' + encodeURIComponent(GORSEL_DIL) + '/' + tur);
+                console.log('eski ' + GORSEL_DIL + ' ' + tur + ' silindi:', sil.kod);
                 for (const f of kareler) {
                     const r = await gorselYukle(editId, tur, path.join(klasor, f));
                     console.log('  ' + tur + ' ' + f + ' -> ' + r.kod);
