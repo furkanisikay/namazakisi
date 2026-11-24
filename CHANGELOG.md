@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.72.1] - 2026-11-24
+
+### Düzeltildi
+- [dil] Çincede namaz günü düzeltildi; Play kaydı 49 dilde, görseller dil seçebilir (#408)
+
 ## [0.72.0] - 2026-11-23
 
 ### Eklendi
