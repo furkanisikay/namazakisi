@@ -128,10 +128,10 @@ const ORTAK = {
         // Gorsel anlati: takvimin bir gunu (cizim) + uygulamanin gercek uyari metni
         // (takvimCakismaPlani.takvimCakismaMetniOlustur; etkinlik adi varsayilan GIZLI).
         yerlesim: 'takvim',
-        takvim: { vakitAdi: 'Öğle', vakitGiris: '12:54', vakitCikis: '15:50', etkinlik: { bas: '14:00', bit: '16:30' } },
+        takvim: { vakitAdi: 'Öğle', vakitGiris: '12:56', vakitCikis: '15:23', etkinlik: { bas: '14:00', bit: '16:30' } },
         bildirim: {
             baslik: 'Öğle · etkinlik 14:00 · önce kıl',
-            govde: 'Takvimindeki bir etkinlik 14:00–16:30 arası sürüyor; öğle vaktinin çıkışı 15:50. Etkinlik başlamadan öğle namazını kıl.',
+            govde: 'Takvimindeki bir etkinlik 14:00–16:30 arası sürüyor; öğle vaktinin çıkışı 15:23. Etkinlik başlamadan öğle namazını kıl.',
             y: 0,
         },
         iddialar: ['takvim'],
@@ -678,7 +678,7 @@ const IPUCLARI = {
     iphone: {
         '01-muhafiz': { metin: 'Vakit daraldıkça sıklaşır', hedef: { x: 0.762, y: 0.553 }, yon: 'sol' },
         '02-sabah': { metin: 'Her sabah\nvakte göre kayar', hedef: { x: 0.585, y: 0.43 }, yon: 'sag' },
-        '03-takvim': { metin: 'Toplantı vakti yutuyor', hedef: { x: 0.52, y: 0.82 }, yon: 'ust' },
+        '03-takvim': { metin: 'Toplantı vakti yutuyor', hedef: { x: 0.52, y: 0.775 }, yon: 'ust' },
         '05-saat': { metin: 'Bilekten işaretleyin', hedef: { x: 0.78, y: 0.722 }, yon: 'alt' },
         '07-kible': { metin: 'Yöne dönünce söyler', hedef: { x: 0.65, y: 0.705 }, yon: 'sol' },
         '08-kaza': { metin: 'Kıldıkça düşer', hedef: { x: 0.73, y: 0.562 }, yon: 'ust' },
@@ -709,7 +709,7 @@ const IPUCLARI = {
     },
     'play-telefon': {
         '01-muhafiz': { metin: 'Vakit daraldıkça sıklaşır', hedef: { x: 0.665, y: 0.612 }, yon: 'sol' },
-        '04-takvim': { metin: 'Toplantı vakti yutuyor', hedef: { x: 0.58, y: 0.825 }, yon: 'ust' },
+        '04-takvim': { metin: 'Toplantı vakti yutuyor', hedef: { x: 0.58, y: 0.797 }, yon: 'ust' },
         '05-kible': { metin: 'Yol yere çizilir', hedef: { x: 0.31, y: 0.64 }, yon: 'sag' },
         '06-kaza': { metin: 'Kıldıkça düşer', hedef: { x: 0.72, y: 0.69 }, yon: 'ust' },
         '07-katlanabilir': { metin: 'Açınca iki bölme', hedef: { x: 0.4, y: 0.83 }, yon: 'alt' },
