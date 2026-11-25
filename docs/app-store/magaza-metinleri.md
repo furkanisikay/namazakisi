@@ -32,13 +32,13 @@ Namaz Akışı: Namaz Vakti
 #### App Store — alt başlık
 
 ```
-Reklamsız hatırlatıcı ve kıble
+Ücretsiz, reklamsız ezan vakti
 ```
 
 #### App Store — anahtar kelimeler
 
 ```
-ezan,vakit,kıble,kaza,imsak,iftar,sahur,oruç,hatırlatma,alarm,internetsiz,diyanet,tesbih,ayet,cami
+kıble,kaza,imsak,iftar,sahur,oruç,hatırlatma,alarm,internetsiz,diyanet,tesbih,ayet,cami,cuma,kuran
 ```
 
 (Ad ve alt başlıktaki sözcükleri tekrar etmeye gerek yok; Apple onları zaten indeksler.)
@@ -55,13 +55,16 @@ Vakti kaçırmamanız için hatırlatır, vakit daraldıkça ısrarlı olur. Üc
 Gün koşturmacayla geçerken vaktin girdiğini fark etmemek ya da ezanı duyup "birazdan kılarım" deyip unutmak çoğumuzun başına geliyor. Namaz Akışı bu anlar için hazırlandı. Vakit girince haber verir, vakit daraldıkça sizi daha ısrarla çağırır ve namazı gününüzün içine yerleştirmenize yardım eder. Tamamen ücretsizdir, reklam içermez ve internet olmadan çalışır.
 
 BİLDİRİMLERE ALIŞTIYSANIZ
-Tek bir bildirim kolayca kaydırılıp geçilir. Namaz Muhafızı her vakit için birden altıya kadar hatırlatma kurar. Vakit daraldıkça hatırlatmalar sıklaşır, tonu da sertleşir. iOS 26 ve sonrasında istediğiniz adımda gerçek alarm çalar. Hatırlatma sesini uygulamanın seslerinden seçebilir ya da kendi ses dosyanızı ekleyebilirsiniz. "Kıldım" dediğinizde o vaktin hatırlatmaları susar.
+Tek bir bildirim kolayca kaydırılıp geçilir. Namaz Muhafızı her vakit için birden altıya kadar hatırlatma kurar. Vakit daraldıkça hatırlatmalar sıklaşır, tonu da sertleşir. iOS 26 ve sonrasında seçtiğiniz hatırlatma, telefon sessizdeyken de duyulan gerçek bir alarm olarak çalar. Hatırlatma sesini uygulamanın seslerinden seçebilir ya da kendi ses dosyanızı ekleyebilirsiniz. "Kıldım" dediğinizde o vaktin hatırlatmaları susar.
 
 GÜNÜNÜZ YOĞUNSA
 Takviminizdeki bir toplantı vaktin sonuna denk geliyorsa uygulama toplantıdan önce kılmanızı hatırlatır. Cuma günü ve camide kılmak istediğiniz vakitlerde, camiye yürüme süreniz kadar önce haber verir. Yatsıyı kılmadıysanız yatış saatinizden önce uyarır.
 
+TELEFONU AÇMADAN GÖRÜN
+Sıradaki vakte kalan süre kilit ekranınızda ve Dinamik Ada'da durur. Vakitler ana ekran ve kilit ekranı widget'larında görünür. "Kıldım"ı uygulamayı açmadan, Kontrol Merkezi'nden ya da Siri'ye söyleyerek işaretlersiniz.
+
 CAMİDE TELEFONUNUZ ÇALMASIN
-Kısayollar ile bir kez kurduğunuz Namaz odağı, camiye vardığınızda iPhone'unuzu sessize alır, ayrılınca eski hâline döndürür.
+Uygulamanın rehberiyle bir kez kurduğunuz Namaz odağı, eklediğiniz camiye vardığınızda iPhone'unuzu sessize alır, ayrılınca eski hâline döndürür.
 
 YOLDA VE YURT DIŞINDA
 Vakitler bulunduğunuz yerin koordinatlarından, o ülkenin camilerinin uyduğu takvime göre hesaplanır. Türkiye'de Diyanet'in yöntemi kullanılır. Başka bir ülkeye gittiğinizde uygulama oranın takvimini önerir, siz onaylamadan yöntem değişmez. Kıbleyi pusulayla ya da kamera görünümüyle bulursunuz. Bunların hiçbiri internet gerektirmez.
@@ -70,18 +73,18 @@ KAZA BORCUNUZ GÖZÜNÜZÜ KORKUTUYORSA
 Sihirbaz kaza borcunuzu hesaplar. Bir farzı kıldığınızda uygulama yanına bir kaza kılmanızı önerir, tek dokunuşla defterden düşersiniz. İsterseniz kılınmayan farzlar namaz günü bitince deftere kendiliğinden eklenir.
 
 DÜZEN KURMAKTA ZORLANIYORSANIZ
-Tam kıldığınız her gün serinizi bir gün uzatır. Uzun bir seri bir gün koparsa iki gün tam kılarak geri alırsınız, tek bir aksak gün emeğinizi silmez. İstatistik ekranı günlük, haftalık ve aylık dökümü gösterir.
+Tam kıldığınız her gün serinizi bir gün uzatır. Uzun bir seri bir gün koparsa iki gün tam kılarak geri alırsınız, tek bir aksak gün emeğinizi silmez. İlerleme sekmesi günlük, haftalık ve aylık dökümü gösterir. Dilerseniz teheccüd, kuşluk ve evvâbîn vakitlerini de hatırlatır.
 
 GÜNE BİR AYETLE BAŞLAYIN
-Her imsakta yenilenen bir ayet ve meali ana ekran ve kilit ekranı widget'ında durur.
+Her imsakta yenilenen bir ayet ve meali ana ekran ve kilit ekranı widget'ında durur. Kısayollar ile ayeti her sabah kilit ekranınızın duvar kâğıdı yapabilirsiniz; zemini, yazı tipini ve süsü siz seçersiniz, kendi fotoğrafınızı da kullanabilirsiniz.
 
 KENDİ DİLİNİZDE
 Uygulama 78 dilde kullanılabilir. Ekranlar ve bildirimler seçtiğiniz dilde çalışır. Arapça, Urduca ve Farsça gibi dillerde arayüz sağdan sola döner.
 
-APPLE WATCH VE iPAD
-• Apple Watch'ta kalan süreyi görür, bilekten "Kıldım" der, kıbleyi bulur ve tesbih çekersiniz. Sabah alarmı yalnız bileğinizi titretebilir.
-• iPad'de geniş düzen. Telefonunuzla tabletiniz ev ağınızda "Kıldım" bilgisini birbirine iletir.
-• Evdeki Android TV'ye konumunuzu kare kodla gönderin, vakitler büyük ekranda görünsün.
+SAAT, TABLET VE TELEVİZYON
+• Apple Watch'ta kalan süreyi görür, bilekten "Kıldım" der, kıbleyi bulur ve tesbih çekersiniz. Telefon uzaktayken saatiniz hatırlatır. Sabah alarmı telefonu çaldırmadan yalnız bileğinizi titretir, yanınızdakini uyandırmaz.
+• iPad'de ekran genişler, günün tamamı tek bakışta görünür. Telefonunuzla tabletiniz ev ağınızda "Kıldım" bilgisini birbirine iletir.
+• Evdeki televizyonunuza konumunuzu kare kodla gönderin, vakitler büyük ekranda görünsün.
 
 VERİLERİNİZ SİZDE KALIR
 Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik yok. Konumunuz yalnız vakit ve kıble hesabında kullanılır ve bize ulaşmaz.
@@ -110,8 +113,8 @@ sonra açılıyor (kişisel ibadet verisi içermez).
 
 **Wear OS saat kıblesi (yalnız Play):** telefon, kullanıcının kendi Wear OS saatine
 Data Layer üzerinden 1 ondalığa yuvarlanmış (≈11 km) konum gönderir; geliştirici sunucusu yok (Bluetooth bağlı değilken Data Layer Google bulutu üzerinden eşitleyebilir),
-saat konum izni istemez. Apple Watch'a konum GİTMEZ (orada kıble yok) → App Store
-beyanı değişmez. Play Data Safety: Google'ın "kullanıcının kendi cihazları arasında,
+saat konum izni istemez. Apple Watch'a da kıble için aynı yuvarlanmış konum WatchConnectivity ile
+gider (kullanıcının kendi cihazları arası, geliştiriciye ulaşmaz) → App Store beyanı değişmez. Play Data Safety: Google'ın "kullanıcının kendi cihazları arasında,
 geliştiriciye ulaşmadan" aktarımı "paylaşım/toplama" saymadığını sahibin Play Console
 yardım metniyle bir kez doğrulaması önerilir (risk, karar değil).
 

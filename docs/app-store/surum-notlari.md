@@ -164,12 +164,12 @@ Kayıt için (üretimdeki not, mağazadan okundu).
 
 #### 0.72.1
 
-Yayındaki önceki sürüm 0.70.1; not 0.71.0 ile 0.72.1 arasını kapsar. Android'e özgü duvar kâğıdı ve Google Drive girmez.
+Yayındaki önceki sürüm 0.70.1; not 0.71.0 ile 0.72.1 arasını kapsar. Android'e özgü Google Drive girmez; iPhone'da duvar kâğıdı Kısayollar ile yapılır.
 
 ```
 - Uygulama artık 78 dilde; dilinizi Ayarlar'dan seçin. Arapça, Urduca, Farsça gibi diller sağdan sola gösterilir.
 - Dünyanın her yerinde doğru vakit: ülkenize göre hesap yöntemi ve dünya şehirleri.
-- Günün ayeti: her gün değişen ayet ve meali ana ekran ve kilit ekranı widget'ında.
+- Günün ayeti: her gün değişen ayet ve meali ana ekran ve kilit ekranı widget'ında. Kısayollar ile kilit ekranınızın duvar kâğıdı da yapabilirsiniz.
 - Hatırlatma sesini uygulamanın seslerinden seçin ya da kendi ses dosyanızı ekleyin.
 - Güvenlik ve kararlılık iyileştirmeleri.
 ```
