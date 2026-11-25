@@ -936,7 +936,15 @@ function ipucuHtml(ip, gen, yuk, koyu = false) {
         `box-shadow:0 ${fs * 0.25}px ${fs * 0.8}px rgba(18,48,27,0.18);color:#12301B;font-size:${fs}px;font-weight:700;line-height:1.15;white-space:nowrap;text-align:${ip.sag ? 'right' : 'left'}">${satirlar(ip.metin)}` +
         (ip.not ? `<div style="margin-top:${fs * 0.12}px;font-size:${fs * 0.72}px;font-weight:500;color:#4A5F50">${esc(ip.not)}</div>` : '') +
         `</div>`;
-    return `<svg style="position:absolute;left:0;top:0;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 ${cizgi * 0.8}px rgba(255,255,255,0.9))" width="${gen}" height="${yuk}">${svg}</svg>${etiket}`;
+    // Ustte/altta ortalanan etiket ceviride uzayinca tuvalden tasmasin: yazi tipi yuklenince
+    // olcup yatayda iceri kaydir (baglanti dikey oldugu icin hedeften kopmaz). Yanlara acilan
+    // etiket kaydirilmaz, cizginin ustune biner: orada metin kisa tutulur.
+    const sinirla =
+        ip.hedef && (ip.yon === 'alt' || ip.yon === 'ust')
+            ? `<script>(function(e){document.fonts.ready.then(function(){var r=e.getBoundingClientRect(),m=${fs * 0.5},dx=0;` +
+              `if(r.right>${gen}-m)dx=${gen}-m-r.right;else if(r.left<m)dx=m-r.left;if(dx)e.style.marginLeft=dx+'px';});})(document.currentScript.previousElementSibling)</script>`
+            : '';
+    return `<svg style="position:absolute;left:0;top:0;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 ${cizgi * 0.8}px rgba(255,255,255,0.9))" width="${gen}" height="${yuk}">${svg}</svg>${etiket}${sinirla}`;
 }
 
 function sayfaUret(kare, set, gorseller, ikonUrl) {

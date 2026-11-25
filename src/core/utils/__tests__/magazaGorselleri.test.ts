@@ -231,7 +231,9 @@ function baslikSigarMi(setListesi: [string, Set][]) {
             expect({ set: ad, kare: k.ad, satir: satirlar.length <= 2 }).toEqual({ set: ad, kare: k.ad, satir: true });
             // Saat karelerinde baslik kendiliginden kirilir: toplam iki satira sigmali.
             const sinir = s.yon === 'kare' ? 2 : 1;
-            for (const sat of satirlar) {
+            // Yatay sablon basligi TEK satira birlestirir (sablon.js > yatay): butunu sigmali.
+            const olculen = s.yon === 'yatay' ? [satirlar.join(' ')] : satirlar;
+            for (const sat of olculen) {
                 const oran = metinGenisligi(sat, o.baslikPx) / o.baslikGen;
                 expect({ set: ad, kare: k.ad, sat, sigar: oran <= sinir }).toEqual({ set: ad, kare: k.ad, sat, sigar: true });
             }
@@ -244,7 +246,10 @@ function altSatirSigarMi(setListesi: [string, Set][]) {
         for (const k of s.kareler) {
             if (!k.alt) continue;
             expect(o.altSatir).toBeGreaterThan(0);
-            const satir = Math.ceil(metinGenisligi(k.alt, o.altPx, false) / o.altGen);
+            // Yatay alt satir tek satirdir ve tahmin orada gercek cizimden ~%8 dar cikar
+            // (Ingilizce iPad karelerinde yasandi): yataya pay birak.
+            const pay = s.yon === 'yatay' ? 0.92 : 1;
+            const satir = Math.ceil(metinGenisligi(k.alt, o.altPx, false) / (o.altGen * pay));
             expect({ set: ad, kare: k.ad, satir: satir <= o.altSatir }).toEqual({ set: ad, kare: k.ad, satir: true });
         }
     }
