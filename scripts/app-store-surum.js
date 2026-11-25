@@ -581,12 +581,18 @@ async function diller(a) {
 async function birincilDil() {
     const simdiki = await birincilYerel();
     if (simdiki === BIRINCIL_YEREL) return console.log('Birincil dil zaten ' + BIRINCIL_YEREL);
-    const hedef = await duzenlenebilirSurum(await surumler());
-    if (!hedef) throw new Error('Duzenlenebilir surum yok.');
-    const loc = (await yerellestirmeler(hedef.id)).find((l) => l.attributes.locale === BIRINCIL_YEREL);
-    if (!loc) throw new Error(BIRINCIL_YEREL + ' yerellestirmesi yok; once diller.');
-    const ekran = await ekranSayilari(loc.id);
-    if (!Object.values(ekran).some((n) => n > 0)) throw new Error(BIRINCIL_YEREL + ' ekran goruntusu yok; gorselsiz dil birincil yapilmaz (ekran-yukle).');
+    // Apple, yayindaki surum dahil acik HER surumde o yerelin gorselini ister (yoksa 409). Yayindaki
+    // surum duzenlenemez: yeni dil, onu tasiyan surum yayina ciktiktan sonra birincil yapilir.
+    const ACIK = [...DUZENLENEBILIR, 'WAITING_FOR_REVIEW', 'IN_REVIEW', 'PENDING_DEVELOPER_RELEASE', 'READY_FOR_SALE'];
+    const acik = (await surumler()).filter((s) => ACIK.includes(s.attributes.appStoreState));
+    if (!acik.length) throw new Error('Acik surum yok.');
+    for (const sv of acik) {
+        const ad = sv.attributes.versionString + ' (' + sv.attributes.appStoreState + ')';
+        const loc = (await yerellestirmeler(sv.id)).find((l) => l.attributes.locale === BIRINCIL_YEREL);
+        const ekran = loc ? await ekranSayilari(loc.id) : {};
+        if (!Object.values(ekran).some((n) => n > 0))
+            throw new Error(ad + ' surumunde ' + BIRINCIL_YEREL + ' ekran goruntusu yok. Duzenlenebilir surumse ekran-yukle; yayindaysa o yereli tasiyan surum yayina cikinca tekrar deneyin.');
+    }
     const r = await api('PATCH', '/v1/apps/' + APP, { data: { type: 'apps', id: APP, attributes: { primaryLocale: BIRINCIL_YEREL } } });
     if (r.kod >= 300) hata('birincil dil degistirilemedi', r);
     console.log('Birincil dil: ' + simdiki + ' -> ' + BIRINCIL_YEREL);
