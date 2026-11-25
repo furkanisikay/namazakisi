@@ -8648,13 +8648,13 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             de: {
                 baslik: 'Ihr Telefon in der Moschee stummschalten',
                 aciklama: 'Richten Sie einmal einen Fokus „Gebet“ ein: Wenn Sie an der Moschee oder einem gewählten Ort ankommen, wird Ihr iPhone stumm, und beim Verlassen schaltet es zurück.',
-                detayAciklama: 'Das iPhone schaltet sich nur über einen Fokus stumm; die App kann ihn nicht selbst einschalten. Die Seite „Stumm beim Gebet“ führt Sie in drei kurzen Schritten: Fokus „Gebet“ erstellen, einen Ort mit dem Namen einer Moschee in Ihrer Nähe hinzufügen und auf Wunsch mit Kurzbefehle in den Minuten nach Beginn einer Gebetszeit einschalten. Solange der Fokus „Gebet“ an ist, kommen unsere Erinnerungen ohne Ton und ohne den Bildschirm einzuschalten.',
+                detayAciklama: 'Das iPhone schaltet sich nur über einen Fokus stumm; die App kann ihn nicht selbst einschalten. Die Seite „Stumm beim Gebet“ führt Sie in drei kurzen Schritten: Fokus „Gebet“ erstellen, einen Ort mit dem Namen einer Moschee in Ihrer Nähe hinzufügen und auf Wunsch mit Kurzbefehlen in den Minuten nach Beginn einer Gebetszeit einschalten. Solange der Fokus „Gebet“ an ist, kommen unsere Erinnerungen ohne Ton und ohne den Bildschirm einzuschalten.',
                 ctaEtiketi: 'Einrichtung öffnen',
                 detaylar: [
                     'Ein Fokus „Gebet“, der sich in der Moschee ein- und beim Verlassen ausschaltet',
                     'Moscheen in der Nähe als Liste; tippen Sie auf einen Namen, um ihn in Karten zu sehen',
                     'Dasselbe funktioniert für Zuhause, die Arbeit oder jeden anderen Ort',
-                    'Stumm in den Minuten nach Beginn einer Gebetszeit, mit Kurzbefehle',
+                    'Stumm in den Minuten nach Beginn einer Gebetszeit, mit Kurzbefehlen',
                     'Bei aktivem Fokus kommen Erinnerungen lautlos; keine geht verloren',
                 ],
             },

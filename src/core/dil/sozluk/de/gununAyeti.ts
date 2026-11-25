@@ -106,7 +106,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
           'Dieses Bildschirmfoto passt nicht zum zuletzt übernommenen Hintergrundbild. Wählen Sie ein Bildschirmfoto des Sperrbildschirms, das nach dem Übernehmen aufgenommen wurde.',
         bulunamadi: 'Im Bildschirmfoto wurde keine Uhr gefunden; Sie können die Ränder manuell anpassen.',
         referansYokAndroid: 'Schalten Sie zuerst in den Einstellungen das Hintergrundbild ein und übernehmen Sie es; gemessen wird mit dem zuletzt übernommenen Bild.',
-        referansYokIos: 'Setzen Sie das Hintergrundbild zuerst einmal mit Kurzbefehle.',
+        referansYokIos: 'Setzen Sie das Hintergrundbild zuerst einmal mit Kurzbefehlen.',
         okunamadi: 'Das Bild konnte nicht gelesen werden. Wählen Sie ein Bildschirmfoto des gesamten Sperrbildschirms.',
       },
     },
