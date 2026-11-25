@@ -18,6 +18,48 @@ sonraki sürümde üslup kayar.
 
 ## Google Play
 
+Dil başına not: Türkçe `#### X.Y.Z`, İngilizce `#### X.Y.Z [en-US]` (saat için `#### X.Y.Z (saat) [en-US]`). İngilizce not, varsayılan kayıt dili İngilizce olduğundan kendi notu olmayan dillerde gösterilir; yazılmazsa betik yalnız Türkçeyi gönderir.
+
+#### 0.72.1
+
+Üretimdeki önceki sürüm 0.70.1; not 0.71.0 ile 0.72.1 arasını kapsar. iPhone bildirim sesi iOS'a özgü olduğu için girmedi.
+
+```
+- Uygulama artık 78 dilde; dilinizi Ayarlar'dan seçin. Arapça, Urduca, Farsça gibi diller sağdan sola gösterilir.
+- Dünyanın her yerinde doğru vakit: ülkenize göre hesap yöntemi ve dünya şehirleri.
+- Günün ayeti: her gün değişen ayet ve meali ana ekranda widget, isterseniz kilit ekranında duvar kâğıdı.
+- Duvar kâğıdını siz düzenleyin: vakte göre gökyüzü, kendi fotoğrafınız, yazı tipi ve süs.
+- Telefon, tablet ve TV arasında daha güvenilir eşitleme.
+- Güvenlik ve kararlılık iyileştirmeleri.
+```
+
+#### 0.72.1 [en-US]
+
+```
+- The app now speaks 78 languages, including right-to-left ones like Arabic, Urdu and Persian.
+- Accurate prayer times worldwide, with your country's calculation method.
+- Verse of the day: a daily verse and its translation as a home screen widget or lock screen wallpaper.
+- Design your wallpaper: a sky that follows prayer times, your own photo, font and ornament.
+- More reliable sync between phone, tablet and TV.
+- Security and stability improvements.
+```
+
+#### 0.72.1 (saat)
+
+```
+- Saat uygulaması artık 78 dilde.
+- Uzun dillerde başlıklar ekrana sığacak şekilde küçülür.
+- Kararlılık iyileştirmeleri.
+```
+
+#### 0.72.1 (saat) [en-US]
+
+```
+- The watch app now speaks 78 languages.
+- In longer languages, headings shrink to fit the screen.
+- Stability improvements.
+```
+
 #### 0.70.1
 
 Üretimdeki önceki sürüm 0.45.0 (telefon, TV ve saat); not 0.46.0 ile 0.70.1 arasını kapsar. TV paketi telefon sürümünün içindedir, aynı notu taşır. Android Auto Play'de açık olmadığı için girmedi; iOS'a özgü düzeltmeler girmez.

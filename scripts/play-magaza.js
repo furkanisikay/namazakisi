@@ -171,6 +171,21 @@ function paketYukle(editId, dosya) {
  * blogunu okur. Notlarin tek dogru kaynagi o dosya: magazaya elle yazilan not
  * repoda iz birakmaz ve bir sonraki surumde uslup kayar.
  */
+/**
+ * Surumun dil basina notlari: Turkce blok zorunlu, `[en-US]` eki varsa Ingilizce de eklenir
+ * (varsayilan kayit dili Ingilizce; notu olmayan dillerde o gosterilir).
+ */
+function surumNotlari(surum, ek = '') {
+    const liste = [{ language: DIL, text: surumNotunuOku(surum, ek) }];
+    try {
+        liste.push({ language: 'en-US', text: surumNotunuOku(surum, (ek ? ek + ' ' : '') + '[en-US]') });
+    } catch {
+        // Ingilizce not yazilmamis: yalniz Turkce gider.
+    }
+    for (const n of liste) if (n.text.length > 500) throw new Error(n.language + ' surum notu ' + n.text.length + ' karakter; Play siniri 500');
+    return liste;
+}
+
 function surumNotunuOku(surum, ek = '') {
     const md = fs.readFileSync(path.resolve(__dirname, '..', 'docs/app-store/surum-notlari.md'), 'utf8');
     const baslik = '#### ' + surum + (ek ? ' ' + ek : '') + '\n';
@@ -341,8 +356,7 @@ function gorselDiliniDenetle(klasor) {
         if (mod === 'uretime-al') {
             const surum = arg('surum');
             if (!surum) throw new Error('--surum gerekli (ör. 0.28.2)');
-            const notlar = surumNotunuOku(surum);
-            if (notlar.length > 500) throw new Error('surum notu ' + notlar.length + ' karakter; Play siniri 500');
+            const notlar = surumNotlari(surum);
             // Surum kodu ic test kanalindan bulunur: EAS o kanala yukluyor.
             const ic = await api('GET', '/edits/' + editId + '/tracks/internal');
             const kaynak = ((ic.j && ic.j.releases) || []).find((r) => (r.name || '').includes(surum));
@@ -354,7 +368,7 @@ function gorselDiliniDenetle(klasor) {
                 // Oran verilirse kademeli yayin (inProgress), verilmezse herkese.
                 status: oran ? 'inProgress' : 'completed',
                 ...(oran ? { userFraction: Number(oran) } : {}),
-                releaseNotes: [{ language: DIL, text: notlar }],
+                releaseNotes: notlar,
             };
             const u = await api('PUT', '/edits/' + editId + '/tracks/production', {
                 track: 'production',
@@ -362,22 +376,23 @@ function gorselDiliniDenetle(klasor) {
             });
             if (u.kod >= 300) throw new Error('uretim kanali yazilamadi: ' + u.kod + ' ' + JSON.stringify(u.j).slice(0, 300));
             console.log('URETIM: ' + surum + ' | kod ' + kaynak.versionCodes.join(',') + ' | ' + surumKaydi.status + (oran ? ' ' + oran : ''));
-            console.log('NOT (' + notlar.length + '/500):');
-            notlar.split(/\r?\n/).forEach((satir) => console.log('  ' + satir));
+            for (const n of notlar) {
+                console.log('NOT ' + n.language + ' (' + n.text.length + '/500):');
+                n.text.split(/\r?\n/).forEach((satir) => console.log('  ' + satir));
+            }
             // Saat (Wear OS) ayri form faktoru kanalindadir: `wear:internal`'da ayni surum
             // varsa ayni edit'te `wear:production`'a alinir. Not `#### X.Y.Z (saat)` blogundan.
             const saatIc = await api('GET', '/edits/' + editId + '/tracks/' + encodeURIComponent('wear:internal'));
             const saatKaynak = ((saatIc.j && saatIc.j.releases) || []).find((r) => (r.name || '').includes(surum));
             if (saatKaynak) {
-                const saatNot = surumNotunuOku(surum, '(saat)');
-                if (saatNot.length > 500) throw new Error('saat surum notu ' + saatNot.length + ' karakter; Play siniri 500');
-                const saatKaydi = { ...surumKaydi, name: surum + ' (saat)', versionCodes: saatKaynak.versionCodes, releaseNotes: [{ language: DIL, text: saatNot }] };
+                const saatNot = surumNotlari(surum, '(saat)');
+                const saatKaydi = { ...surumKaydi, name: surum + ' (saat)', versionCodes: saatKaynak.versionCodes, releaseNotes: saatNot };
                 const su = await api('PUT', '/edits/' + editId + '/tracks/' + encodeURIComponent('wear:production'), {
                     track: 'wear:production',
                     releases: [saatKaydi],
                 });
                 if (su.kod >= 300) throw new Error('saat uretim kanali yazilamadi: ' + su.kod + ' ' + JSON.stringify(su.j).slice(0, 300));
-                console.log('SAAT URETIM: ' + saatKaydi.name + ' | kod ' + saatKaynak.versionCodes.join(',') + ' | not ' + saatNot.length + '/500');
+                console.log('SAAT URETIM: ' + saatKaydi.name + ' | kod ' + saatKaynak.versionCodes.join(',') + ' | not ' + saatNot.map((n) => n.language + ' ' + n.text.length).join(', '));
             } else {
                 console.log('SAAT: wear:internal kanalinda ' + surum + ' yok; saat uretimine dokunulmadi.');
             }
