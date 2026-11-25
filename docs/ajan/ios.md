@@ -69,6 +69,7 @@ Genel kurallar çekirdekte (AGENTS.md): dosya adları salt ASCII, `.gitignore`'d
 
 ## Yayın hattı (EAS, TestFlight, App Store Connect)
 
+- **`expo.name` ASCII kalır ("Namaz Akisi"), görünen ad `ios.infoPlist.CFBundleDisplayName` ("Namaz Akışı").** Xcode hedef adı addan türer; SDK 58 prebuild'i Türkçe harfi çevirir (NamazAkisi), EAS CLI'ın gömülü config-plugins'i atar (NamazAk) → EAS "Could not find target 'NamazAk'" ile CONFIGURE_XCODE_PROJECT'te düşer (yaşandı 2026-11-25, 0.72.1); eas-cli 27.11 de aynı eski kopyayı taşır, yükseltmek çözmez. Nöbetçi: `iosHedefAdi.test.ts`.
 - **iOS build'i release zincirine BAĞLI DEĞİL (bilinçli).** Her master merge'ü release keser; her birinde iOS build'i kuyruğu ve kotayı tüketirdi. `expo-build.yml` girdileri `build_ios` / `testflight_a_gonder` `workflow_call`'da varsayılan **false** → yalnız elle dispatch. iOS adımı AAB deseniyle: `continue-on-error` + kendi timeout'u, gerçek durum `eas build:list --platform ios` ile EAS'e sorulur.
 - **EAS build logunu CLI'dan çek** (Actions logunda yalnız "Unknown error" görünür): `~/.expo/state.json > auth.sessionSecret` ile `https://api.expo.dev/graphql`'e `expo-session` başlığıyla `builds { byId(buildId:…) { logFiles } }` sorgula; imzalı URL'deki JSON satırlarında gerçek hata (`phase`, `msg`) yazar.
 - **TestFlight gönderimi App Store Connect API anahtarıyla, Apple ID parolasıyla DEĞİL** (2FA otomatikleştirilemez). `.p8` ASC'den bir kez indirilir → `ASC_API_KEY` / `ASC_KEY_ID` / `ASC_KEY_ISSUER_ID` secret'ları (Play'deki `GOOGLE_SERVICE_ACCOUNT` ikizi).

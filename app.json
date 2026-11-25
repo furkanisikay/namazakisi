@@ -79,7 +79,7 @@
       "ceb": "./locales/ceb.json",
       "nqo": "./locales/nqo.json"
     },
-    "name": "Namaz Akışı",
+    "name": "Namaz Akisi",
     "slug": "namazakisi",
     "version": "0.72.1",
     "orientation": "portrait",
@@ -90,6 +90,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.furkanisikay.namazakisi",
       "infoPlist": {
+        "CFBundleDisplayName": "Namaz Akışı",
         "UIDesignRequiresCompatibility": true,
         "UIApplicationShortcutItems": [
           {
