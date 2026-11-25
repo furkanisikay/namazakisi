@@ -140,7 +140,7 @@ on:
           - saat
           - asc
       asc_islem:
-        description: 'tur=asc için: durum | surum-hazirla | ekran-yukle | build-bagla | incelemeye-gonder | icloud-durum | icloud-ac (yalnız App ID iCloud yeteneği)'
+        description: 'tur=asc için: durum | surum-hazirla | diller (bütün mağaza dilleri) | ekran-yukle | birincil-dil | build-bagla | incelemeye-gonder | ulkeler | ulkeler-ac | icloud-durum | icloud-ac'
         type: choice
         required: false
         default: 'durum'
@@ -151,6 +151,10 @@ on:
           - build-bagla
           - incelemeye-gonder
           - icloud-durum
+          - diller
+          - birincil-dil
+          - ulkeler
+          - ulkeler-ac
           - icloud-ac
       asc_surum:
         description: 'tur=asc için sürüm (boş = app.json)'
@@ -706,11 +710,16 @@ jobs:
           elif [ "$ISLEM" = "ekran-yukle" ] && [ -d pazarlama ]; then
             # Pazarlama gorselleri (scripts/magaza-gorselleri): her set kendi gorunum tipine,
             # settekilerin YERINE (--degistir). Yalniz ust klasordeki NN-*.png yuklenir;
-            # magaza-disi/ alt klasoru yuklenmez.
-            node scripts/app-store-ekran-goruntuleri.js pazarlama/iphone --tip APP_IPHONE_67 --degistir
-            node scripts/app-store-ekran-goruntuleri.js pazarlama/iphone-orta --tip APP_IPHONE_61 --degistir
-            node scripts/app-store-ekran-goruntuleri.js pazarlama/ipad --tip APP_IPAD_PRO_3GEN_129 --degistir
-            node scripts/app-store-ekran-goruntuleri.js pazarlama/apple-watch --tip APP_WATCH_ULTRA --degistir
+            # magaza-disi/ alt klasoru yuklenmez. Gorseller uretildikleri dilin (dil.txt)
+            # App Store yereline gider: tr -> tr, en -> en-US (scripts/app-store-dilleri.js).
+            GDIL=$(cat pazarlama/dil.txt 2>/dev/null || echo tr)
+            YEREL=$(node -e "const {ASC_DILLERI}=require('./scripts/app-store-dilleri');const d=process.argv[1];console.log(d==='tr'?'tr':(ASC_DILLERI[d]||[])[0]||'')" "$GDIL")
+            [ -n "$YEREL" ] || { echo "::error::$GDIL dili App Store'da yok"; exit 1; }
+            echo "Gorsel dili: $GDIL -> $YEREL"
+            node scripts/app-store-ekran-goruntuleri.js pazarlama/iphone --tip APP_IPHONE_67 --dil "$YEREL" --degistir
+            node scripts/app-store-ekran-goruntuleri.js pazarlama/iphone-orta --tip APP_IPHONE_61 --dil "$YEREL" --degistir
+            node scripts/app-store-ekran-goruntuleri.js pazarlama/ipad --tip APP_IPAD_PRO_3GEN_129 --dil "$YEREL" --degistir
+            node scripts/app-store-ekran-goruntuleri.js pazarlama/apple-watch --tip APP_WATCH_ULTRA --dil "$YEREL" --degistir
           elif [ "$ISLEM" = "ekran-yukle" ]; then
             # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
             node scripts/app-store-ekran-goruntuleri.js indirilen/mockup --degistir

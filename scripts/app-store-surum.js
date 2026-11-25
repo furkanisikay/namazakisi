@@ -8,6 +8,9 @@
  *   node scripts/app-store-surum.js surum-hazirla      [--surum X.Y.Z]
  *   node scripts/app-store-surum.js build-bagla        [--surum X.Y.Z] [--bekle 45]
  *   node scripts/app-store-surum.js incelemeye-gonder  [--surum X.Y.Z]
+ *   node scripts/app-store-surum.js diller             [--surum X.Y.Z]
+ *   node scripts/app-store-surum.js birincil-dil
+ *   node scripts/app-store-surum.js ulkeler | ulkeler-ac
  *
  * --surum verilmezse app.json'daki surum kullanilir.
  *
@@ -20,6 +23,12 @@
  *   uyumlulugunu (usesNonExemptEncryption=false) yazar ve surume baglar.
  * incelemeye-gonder: eksik var mi denetler, sonra reviewSubmission olusturup
  *   gonderir.
+ *
+ * diller: butun mağaza dillerinin kaydini (ad, alt baslik, gizlilik adresi; aciklama, anahtar
+ *   kelime, promosyon, yenilikler) duzenlenebilir surume yazar. Turkce kaynak
+ *   magaza-metinleri.md, digerleri docs/app-store/app-store-kayitlari/<dil>.json.
+ * birincil-dil: birincil dili BIRINCIL_YEREL'e alir; o yerelde ekran goruntusu yoksa durur.
+ * ulkeler: ulke erisimini okur. ulkeler-ac: kapali butun ulkeleri acar.
  *
  * Kimlik bilgileri: scripts/asc-istemci.js.
  */
@@ -238,12 +247,12 @@ async function surumHazirla(a) {
         console.log('Surum ' + a.surum + ' zaten duzenlenebilir durumda (' + hedef.attributes.appStoreState + ').');
     }
 
-    // "Yenilikler" — notu yalniz Turkce var; baska dil cikarsa durup soyle.
+    // "Yenilikler": Turkce surum-notlari.md'den, digerleri kayit dosyasindan (diller islemi).
     const locs = await yerellestirmeler(hedef.id);
+    const dilNotu = yerelNotlari(not);
     for (const l of locs) {
-        if (!l.attributes.locale.startsWith('tr')) {
-            throw new Error(l.attributes.locale + ' yerellestirmesi icin not metni yok; surum-notlari.md\'ye ekleyin.');
-        }
+        const not = dilNotu[l.attributes.locale];
+        if (!not) throw new Error(l.attributes.locale + ' yerellestirmesi icin not metni yok (surum-notlari.md ya da app-store-kayitlari).');
         if (l.attributes.whatsNew === not) {
             console.log('  ' + l.attributes.locale + ': not zaten guncel');
             continue;
@@ -335,8 +344,11 @@ async function incelemeyeGonder(a) {
     const b = await surumBuildi(hedef.id);
     if (!b) eksik.push('bagli build');
     if (!(await incelemeDetayi(hedef.id))) eksik.push('inceleme iletisim bilgisi');
+    const birincil = await birincilYerel();
     for (const l of await yerellestirmeler(hedef.id)) {
         if (!l.attributes.whatsNew) eksik.push(l.attributes.locale + ' yenilikler metni');
+        // Kendi ekran goruntusu olmayan yerel birincil dilinkini gosterir; zorunlu yalniz birincilde.
+        if (l.attributes.locale !== birincil) continue;
         const ekran = await ekranSayilari(l.id);
         if (!Object.values(ekran).some((n) => n > 0)) eksik.push(l.attributes.locale + ' ekran goruntuleri');
         // app.json > ios.supportsTablet acikken Apple iPad 13" setini ZORUNLU tutar;
@@ -431,6 +443,183 @@ async function incelemeyeGonder(a) {
     console.log('Incelemeye gonderildi: ' + g.j.data.attributes.state + ' (release=' + hedef.attributes.releaseType + ')');
 }
 
+// ---------------------------------------------------------------------------
+// Dil kayitlari, birincil dil, ulke erisimi
+// ---------------------------------------------------------------------------
+const { ASC_DILLERI, KAYNAK_YEREL, BIRINCIL_YEREL } = require('./app-store-dilleri');
+const { kayitOku, kayitDenetle } = require('./app-store-kayit-denetle');
+
+/** magaza-metinleri.md > #### App Store — <alan> kod blogu. */
+function kaynakAlan(baslik) {
+    const md = fs.readFileSync(path.join(KOK, 'docs/app-store/magaza-metinleri.md'), 'utf8');
+    const i = md.indexOf('#### App Store — ' + baslik + '\n');
+    if (i < 0) throw new Error('magaza-metinleri.md icinde "#### App Store — ' + baslik + '" yok');
+    const bas = md.indexOf('```', i) + 3;
+    return md.slice(bas, md.indexOf('```', bas)).replace(/^[a-z]*\n/, '').trim();
+}
+
+/** Yerel -> kayit (Turkce kaynak dahil). whatsNew Turkcede surum notundan gelir. */
+function butunKayitlar(turkceNot) {
+    const kayitlar = {
+        [KAYNAK_YEREL]: {
+            name: kaynakAlan('ad'),
+            subtitle: kaynakAlan('alt başlık'),
+            keywords: kaynakAlan('anahtar kelimeler'),
+            promotionalText: kaynakAlan('promosyon metni'),
+            description: kaynakAlan('açıklama'),
+            whatsNew: turkceNot,
+        },
+    };
+    const hatalar = [];
+    for (const [dil, yereller] of Object.entries(ASC_DILLERI)) {
+        const { kayit, hata: h } = kayitOku(dil);
+        const sorun = h || kayitDenetle(kayit);
+        if (sorun.length) hatalar.push(dil + ': ' + sorun.join(' | '));
+        else yereller.forEach((y) => (kayitlar[y] = kayit));
+    }
+    const tr = kayitDenetle(kayitlar[KAYNAK_YEREL]);
+    if (tr.length) hatalar.push('tr: ' + tr.join(' | '));
+    if (hatalar.length) throw new Error('kayitlar denetimden gecmedi:\n' + hatalar.join('\n'));
+    return kayitlar;
+}
+
+function yerelNotlari(turkceNot) {
+    const sonuc = {};
+    for (const [y, k] of Object.entries(butunKayitlar(turkceNot))) sonuc[y] = k.whatsNew;
+    return sonuc;
+}
+
+async function birincilYerel() {
+    const r = await api('GET', '/v1/apps/' + APP);
+    if (r.kod >= 300) hata('uygulama okunamadi', r);
+    return r.j.data.attributes.primaryLocale;
+}
+
+/** Duzenlenebilir appInfo (ad ve alt baslik yalniz onda yazilir). */
+async function duzenlenebilirAppInfo() {
+    const r = await api('GET', '/v1/apps/' + APP + '/appInfos');
+    if (r.kod >= 300) hata('appInfos okunamadi', r);
+    const kapali = ['READY_FOR_DISTRIBUTION', 'READY_FOR_SALE', 'REPLACED_WITH_NEW_INFO'];
+    return r.j.data.find((x) => !kapali.includes(x.attributes.state || x.attributes.appStoreState)) || null;
+}
+
+async function diller(a) {
+    const kayitlar = butunKayitlar(surumNotu(a.surum));
+    const hedef = await duzenlenebilirSurum(await surumler());
+    if (!hedef || hedef.attributes.versionString !== a.surum) throw new Error('Duzenlenebilir ' + a.surum + ' surumu yok; once surum-hazirla.');
+    const info = await duzenlenebilirAppInfo();
+    if (!info) throw new Error('Duzenlenebilir appInfo yok (yeni surum acilmamis olabilir).');
+
+    const infoLoc = await api('GET', '/v1/appInfos/' + info.id + '/appInfoLocalizations?limit=200');
+    if (infoLoc.kod >= 300) hata('appInfoLocalizations okunamadi', infoLoc);
+    const mevcutInfo = Object.fromEntries(infoLoc.j.data.map((x) => [x.attributes.locale, x]));
+    const verLoc = await api('GET', '/v1/appStoreVersions/' + hedef.id + '/appStoreVersionLocalizations?limit=200');
+    if (verLoc.kod >= 300) hata('surum yerellestirmeleri okunamadi', verLoc);
+    const mevcutVer = Object.fromEntries(verLoc.j.data.map((x) => [x.attributes.locale, x]));
+
+    // Adresler dile gore degismez: kaynak yerelden (yoksa ilk kayittan) kopyalanir.
+    const ornekInfo = mevcutInfo[KAYNAK_YEREL] || infoLoc.j.data[0];
+    const ornekVer = mevcutVer[KAYNAK_YEREL] || verLoc.j.data[0];
+    const gizlilik = ornekInfo && ornekInfo.attributes.privacyPolicyUrl;
+    const destek = ornekVer && ornekVer.attributes.supportUrl;
+    const pazarlama = ornekVer && ornekVer.attributes.marketingUrl;
+    if (!destek) throw new Error('Kaynak yerelde destek adresi yok; once App Store Connect\'te doldurun.');
+
+    for (const [yerel, k] of Object.entries(kayitlar)) {
+        const infoAlan = { name: k.name, subtitle: k.subtitle, ...(gizlilik ? { privacyPolicyUrl: gizlilik } : {}) };
+        let r;
+        if (mevcutInfo[yerel]) {
+            r = await api('PATCH', '/v1/appInfoLocalizations/' + mevcutInfo[yerel].id, {
+                data: { type: 'appInfoLocalizations', id: mevcutInfo[yerel].id, attributes: infoAlan },
+            });
+        } else {
+            r = await api('POST', '/v1/appInfoLocalizations', {
+                data: {
+                    type: 'appInfoLocalizations',
+                    attributes: { locale: yerel, ...infoAlan },
+                    relationships: { appInfo: { data: { type: 'appInfos', id: info.id } } },
+                },
+            });
+        }
+        if (r.kod >= 300) hata(yerel + ' ad/alt baslik yazilamadi', r);
+
+        const verAlan = {
+            description: k.description,
+            keywords: k.keywords,
+            promotionalText: k.promotionalText,
+            whatsNew: k.whatsNew,
+            supportUrl: destek,
+            ...(pazarlama ? { marketingUrl: pazarlama } : {}),
+        };
+        if (mevcutVer[yerel]) {
+            r = await api('PATCH', '/v1/appStoreVersionLocalizations/' + mevcutVer[yerel].id, {
+                data: { type: 'appStoreVersionLocalizations', id: mevcutVer[yerel].id, attributes: verAlan },
+            });
+        } else {
+            r = await api('POST', '/v1/appStoreVersionLocalizations', {
+                data: {
+                    type: 'appStoreVersionLocalizations',
+                    attributes: { locale: yerel, ...verAlan },
+                    relationships: { appStoreVersion: { data: { type: 'appStoreVersions', id: hedef.id } } },
+                },
+            });
+        }
+        if (r.kod >= 300) hata(yerel + ' surum metni yazilamadi', r);
+        console.log('  ' + yerel + ': ' + k.name + (mevcutVer[yerel] ? '' : ' (yeni)'));
+    }
+    console.log('DILLER: ' + Object.keys(kayitlar).length + ' yerel yazildi (surum ' + a.surum + ', incelemeye gonderilince yayina girer)');
+}
+
+async function birincilDil() {
+    const simdiki = await birincilYerel();
+    if (simdiki === BIRINCIL_YEREL) return console.log('Birincil dil zaten ' + BIRINCIL_YEREL);
+    const hedef = await duzenlenebilirSurum(await surumler());
+    if (!hedef) throw new Error('Duzenlenebilir surum yok.');
+    const loc = (await yerellestirmeler(hedef.id)).find((l) => l.attributes.locale === BIRINCIL_YEREL);
+    if (!loc) throw new Error(BIRINCIL_YEREL + ' yerellestirmesi yok; once diller.');
+    const ekran = await ekranSayilari(loc.id);
+    if (!Object.values(ekran).some((n) => n > 0)) throw new Error(BIRINCIL_YEREL + ' ekran goruntusu yok; gorselsiz dil birincil yapilmaz (ekran-yukle).');
+    const r = await api('PATCH', '/v1/apps/' + APP, { data: { type: 'apps', id: APP, attributes: { primaryLocale: BIRINCIL_YEREL } } });
+    if (r.kod >= 300) hata('birincil dil degistirilemedi', r);
+    console.log('Birincil dil: ' + simdiki + ' -> ' + BIRINCIL_YEREL);
+}
+
+async function ulkeErisimi() {
+    const r = await api('GET', '/v1/apps/' + APP + '/appAvailabilityV2');
+    if (r.kod >= 300) hata('ulke erisimi okunamadi', r);
+    const id = r.j.data.id;
+    const liste = [];
+    let yol = '/v2/appAvailabilities/' + id + '/territoryAvailabilities?limit=200&include=territory';
+    while (yol) {
+        const t = await api('GET', yol);
+        if (t.kod >= 300) hata('ulkeler okunamadi', t);
+        t.j.data.forEach((x) => liste.push({ id: x.id, ulke: ((x.relationships || {}).territory || {}).data?.id, acik: x.attributes.available, durum: x.attributes.contentStatuses }));
+        yol = t.j.links && t.j.links.next ? t.j.links.next.replace(/^https:\/\/api\.appstoreconnect\.apple\.com/, '') : null;
+    }
+    return { yeniUlkelerde: r.j.data.attributes.availableInNewTerritories, liste };
+}
+
+async function ulkeler() {
+    const { yeniUlkelerde, liste } = await ulkeErisimi();
+    const acik = liste.filter((x) => x.acik);
+    console.log('ULKELER: ' + acik.length + ' acik / ' + liste.length + ' | yeni ulkelerde otomatik: ' + yeniUlkelerde);
+    console.log('KAPALI: ' + liste.filter((x) => !x.acik).map((x) => x.ulke + (x.durum && x.durum.length ? '(' + x.durum.join('/') + ')' : '')).join(' '));
+}
+
+async function ulkelerAc() {
+    const { liste } = await ulkeErisimi();
+    let acilan = 0;
+    for (const x of liste.filter((u) => !u.acik)) {
+        const r = await api('PATCH', '/v1/territoryAvailabilities/' + x.id, {
+            data: { type: 'territoryAvailabilities', id: x.id, attributes: { available: true } },
+        });
+        if (r.kod >= 300) console.log('  ' + x.ulke + ' acilamadi: ' + r.kod + ' ' + JSON.stringify(r.j).slice(0, 160));
+        else acilan++;
+    }
+    console.log('ACILAN: ' + acilan);
+    await ulkeler();
+}
+
 (async () => {
     kimlikDenetle();
     const a = argumanlar();
@@ -439,6 +628,10 @@ async function incelemeyeGonder(a) {
         'surum-hazirla': surumHazirla,
         'build-bagla': buildBagla,
         'incelemeye-gonder': incelemeyeGonder,
+        diller,
+        'birincil-dil': birincilDil,
+        ulkeler,
+        'ulkeler-ac': ulkelerAc,
     };
     const f = islemler[a.islem];
     if (!f) throw new Error('Bilinmeyen islem: ' + a.islem + ' (' + Object.keys(islemler).join(', ') + ')');

@@ -160,6 +160,20 @@ Kayıt için (üretimdeki not, mağazadan okundu).
 
 ## App Store
 
+Öteki dillerin notu `docs/app-store/app-store-kayitlari/<dil>.json > whatsNew` alanındadır (o sürüm için yazılır; `scripts/app-store-surum.js diller` yazar).
+
+#### 0.72.1
+
+Yayındaki önceki sürüm 0.70.1; not 0.71.0 ile 0.72.1 arasını kapsar. Android'e özgü duvar kâğıdı ve Google Drive girmez.
+
+```
+- Uygulama artık 78 dilde; dilinizi Ayarlar'dan seçin. Arapça, Urduca, Farsça gibi diller sağdan sola gösterilir.
+- Dünyanın her yerinde doğru vakit: ülkenize göre hesap yöntemi ve dünya şehirleri.
+- Günün ayeti: her gün değişen ayet ve meali ana ekran ve kilit ekranı widget'ında.
+- Hatırlatma sesini uygulamanın seslerinden seçin ya da kendi ses dosyanızı ekleyin.
+- Güvenlik ve kararlılık iyileştirmeleri.
+```
+
 #### 0.70.1
 
 Yayındaki önceki sürüm 0.41.1 (0.53.1 arka plan ses kipi yüzünden reddedildi, 0.70.1 bunu giderir, kullanıcıya ulaşmadı); not ikisinin arasındaki her şeyi kapsar. Kaynak: `YeniOzellikler.ts` iOS duyuruları ve CHANGELOG. iCloud eşitlemesi iOS'ta duyurulmadığı için girmedi; Android'e özgü özellikler (kendi ses dosyası, Google Drive eşitlemesi, Wear OS, widget dışı Android yüzeyleri) girmez.

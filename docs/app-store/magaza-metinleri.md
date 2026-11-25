@@ -10,77 +10,85 @@
 
 ## Alanlar
 
-| Alan | Sınır | Değer |
-|---|---|---|
-| Ad (Name) | 30 | `Namaz Akışı` |
-| Alt başlık (Subtitle) | 30 | `Vakit takibi ve namaz muhafızı` |
-| Birincil kategori | — | Referans (Reference) |
-| İkincil kategori | — | Yaşam Tarzı (Lifestyle) |
-| Telif (Copyright) | — | `2026 Furkan IŞIKAY` |
+`scripts/app-store-surum.js diller` aşağıdaki `#### App Store — …` bloklarını birebir okur (başlıkları değiştirmeyin); öteki diller `docs/app-store/app-store-kayitlari/<ASC dili>.json`.
 
-### Anahtar kelimeler (100 karakter, virgülle, boşluksuz)
+| Alan | Sınır |
+|---|---|
+| Ad (Name) | 30 |
+| Alt başlık (Subtitle) | 30 |
+| Anahtar kelimeler | 100, virgülle, boşluksuz |
+| Promosyon metni | 170 (yayındayken güncellenebilir) |
+| Açıklama | 4000 |
+| Birincil kategori | Referans (Reference) |
+| İkincil kategori | Yaşam Tarzı (Lifestyle) |
+| Telif (Copyright) | `2026 Furkan IŞIKAY` |
 
-```
-namaz,vakit,ezan,kıble,kaza,imsak,iftar,sahur,oruç,hatırlatma,alarm,çevrimdışı,takvim
-```
-
-(84 karakter. Uygulama adında geçen sözcükleri tekrar etmeye gerek yok — Apple
-zaten ad ve alt başlıktaki kelimeleri indeksler.)
-
-### Promosyon metni (170 karakter — yayındayken güncellenebilir)
+#### App Store — ad
 
 ```
-Vakitleri internetsiz hesaplar ve vakit daraldıkça sertleşen hatırlatmalarla sizi namaza çağırır. Reklam içermez, verileriniz telefonunuzda kalır.
+Namaz Akışı: Namaz Vakti
 ```
 
-### Açıklama (4000 karakter)
+#### App Store — alt başlık
 
 ```
-Namaz Akışı namaz vakitlerini takip etmenize ve vakti kaçırmamanıza yardım eden bir ibadet asistanıdır. İnternet bağlantısı olmadan çalışır.
+Reklamsız hatırlatıcı ve kıble
+```
 
-Vakitleri bulunduğunuz yerin koordinatlarından astronomik olarak hesaplar (Diyanet ile uyumlu yöntem). Namaz kayıtlarınız, ayarlarınız ve konumunuz telefonunuzda kalır; uygulama hiçbir veriyi sunucuya göndermez.
+#### App Store — anahtar kelimeler
 
-NAMAZ MUHAFIZI
-Muhafız sizi dört kademede uyarır: nazik hatırlatma, uyarı, sert uyarı ve acil. Vakit daraldıkça ton sertleşir. Her vaktin ayarını ayrı tutarsınız.
+```
+ezan,vakit,kıble,kaza,imsak,iftar,sahur,oruç,hatırlatma,alarm,internetsiz,diyanet,tesbih,ayet,cami
+```
 
-• Hatırlatmaların vaktin sonuna doğru mu, vakit girer girmez mi başlayacağını seçersiniz.
-• Her adımın kaç dakika kala başlayacağını ve ne sıklıkla tekrarlanacağını belirler, istemediğiniz adımı kapatırsınız.
-• Hafif, Normal ve Yoğun hazır ayarlarından biri tek dokunuşla bütün vakitleri düzenler.
-• Sesli anonsu telefonunuzun Türkçe sesi okur. Metni kendiniz yazabilirsiniz ve anons için internet gerekmez.
-• Zaman şeridi, seçtiğiniz ayarın o gün sizi hangi saatlerde uyaracağını gösterir.
+(Ad ve alt başlıktaki sözcükleri tekrar etmeye gerek yok; Apple onları zaten indeksler.)
 
-VAKİT TAKİBİ
-• Ana ekran bir sonraki vakte kalan süreyi saniye saniye sayar.
-• Konumu GPS ile alabilir ya da şehrinizi elle seçebilirsiniz.
-• Kerahat vakitlerinde ana ekran sizi uyarır.
-• Namaz vakitlerini telefonunuzun takvimine etkinlik olarak ekleyebilirsiniz.
+#### App Store — promosyon metni
 
-KIBLE PUSULASI
-Pusula, cihazınızın sensörleriyle Kâbe yönünü gösterir.
+```
+Vakti kaçırmamanız için hatırlatır, vakit daraldıkça ısrarlı olur. Ücretsiz, reklamsız, internetsiz ve 78 dilde. Verileriniz telefonunuzda kalır.
+```
 
-KAZA DEFTERİ
-Uygulama kılınmayan namazları tespit edip kaza çetelesine ekler. Geçmişe dönük kayıt girebilir, kıldığınız kazayı çeteleden düşebilirsiniz.
+#### App Store — açıklama
 
-SERİ VE İSTATİSTİK
-Tam kıldığınız her gün serinizi bir gün uzatır. 7 günü aşan bir seriniz koparsa, ardından 2 gün tam kılarak seriyi kurtarabilirsiniz. Kıldıkça puan toplar, seviye atlar ve rozet kazanırsınız. İstatistik ekranı günlük, haftalık ve aylık dökümü gösterir.
+```
+Gün koşturmacayla geçerken vaktin girdiğini fark etmemek ya da ezanı duyup "birazdan kılarım" deyip unutmak çoğumuzun başına geliyor. Namaz Akışı bu anlar için hazırlandı. Vakit girince haber verir, vakit daraldıkça sizi daha ısrarla çağırır ve namazı gününüzün içine yerleştirmenize yardım eder. Tamamen ücretsizdir, reklam içermez ve internet olmadan çalışır.
 
-GİZLİLİK
-Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit hesabı için kullanır ve telefonunuzdan dışarı çıkarmaz. Verilerinizi bir yedek dosyasına alıp başka bir cihaza taşıyabilirsiniz.
+BİLDİRİMLERE ALIŞTIYSANIZ
+Tek bir bildirim kolayca kaydırılıp geçilir. Namaz Muhafızı her vakit için birden altıya kadar hatırlatma kurar. Vakit daraldıkça hatırlatmalar sıklaşır, tonu da sertleşir. iOS 26 ve sonrasında istediğiniz adımda gerçek alarm çalar. Hatırlatma sesini uygulamanın seslerinden seçebilir ya da kendi ses dosyanızı ekleyebilirsiniz. "Kıldım" dediğinizde o vaktin hatırlatmaları susar.
+
+GÜNÜNÜZ YOĞUNSA
+Takviminizdeki bir toplantı vaktin sonuna denk geliyorsa uygulama toplantıdan önce kılmanızı hatırlatır. Cuma günü ve camide kılmak istediğiniz vakitlerde, camiye yürüme süreniz kadar önce haber verir. Yatsıyı kılmadıysanız yatış saatinizden önce uyarır.
+
+CAMİDE TELEFONUNUZ ÇALMASIN
+Kısayollar ile bir kez kurduğunuz Namaz odağı, camiye vardığınızda iPhone'unuzu sessize alır, ayrılınca eski hâline döndürür.
+
+YOLDA VE YURT DIŞINDA
+Vakitler bulunduğunuz yerin koordinatlarından, o ülkenin camilerinin uyduğu takvime göre hesaplanır. Türkiye'de Diyanet'in yöntemi kullanılır. Başka bir ülkeye gittiğinizde uygulama oranın takvimini önerir, siz onaylamadan yöntem değişmez. Kıbleyi pusulayla ya da kamera görünümüyle bulursunuz. Bunların hiçbiri internet gerektirmez.
+
+KAZA BORCUNUZ GÖZÜNÜZÜ KORKUTUYORSA
+Sihirbaz kaza borcunuzu hesaplar. Bir farzı kıldığınızda uygulama yanına bir kaza kılmanızı önerir, tek dokunuşla defterden düşersiniz. İsterseniz kılınmayan farzlar namaz günü bitince deftere kendiliğinden eklenir.
+
+DÜZEN KURMAKTA ZORLANIYORSANIZ
+Tam kıldığınız her gün serinizi bir gün uzatır. Uzun bir seri bir gün koparsa iki gün tam kılarak geri alırsınız, tek bir aksak gün emeğinizi silmez. İstatistik ekranı günlük, haftalık ve aylık dökümü gösterir.
+
+GÜNE BİR AYETLE BAŞLAYIN
+Her imsakta yenilenen bir ayet ve meali ana ekran ve kilit ekranı widget'ında durur.
+
+KENDİ DİLİNİZDE
+Uygulama 78 dilde kullanılabilir. Ekranlar ve bildirimler seçtiğiniz dilde çalışır. Arapça, Urduca ve Farsça gibi dillerde arayüz sağdan sola döner.
+
+APPLE WATCH VE iPAD
+• Apple Watch'ta kalan süreyi görür, bilekten "Kıldım" der, kıbleyi bulur ve tesbih çekersiniz. Sabah alarmı yalnız bileğinizi titretebilir.
+• iPad'de geniş düzen. Telefonunuzla tabletiniz ev ağınızda "Kıldım" bilgisini birbirine iletir.
+• Evdeki Android TV'ye konumunuzu kare kodla gönderin, vakitler büyük ekranda görünsün.
+
+VERİLERİNİZ SİZDE KALIR
+Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik yok. Konumunuz yalnız vakit ve kıble hesabında kullanılır ve bize ulaşmaz.
 
 AÇIK KAYNAK
-Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsizdir ve kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
+Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsiz, kaynak kodları GNU GPLv3 lisansıyla herkese açık:
 https://github.com/furkanisikay/namazakisi
-```
-
-### Sürüm notları — "Neler Yeni" (ilk sürüm)
-
-```
-Namaz Akışı'nın iPhone'daki ilk sürümü.
-
-• Vakitleri internetsiz hesaplar, bir sonraki vakte kalan süreyi canlı sayar.
-• Namaz Muhafızı dört kademede uyarır; sesli anonsu telefonunuzun Türkçe sesi okur.
-• Kıble pusulası, kaza defteri, seri takibi ve rozetler.
-• Hesap istemez, reklam göstermez.
 ```
 
 ## Zorunlu adresler
@@ -145,13 +153,12 @@ Apple iki boyut istiyor: **6.9"** (iPhone 17 Pro Max vb.) ve **6.5"**.
 4. Seri sekmesi
 5. Kıble pusulası
 
-## Kapsam dışı (bilinçli — iOS'ta yok, metinlerde GEÇMEZ)
+## Kapsam dışı (bilinçli — iOS'ta yok, App Store metinlerinde GEÇMEZ)
 
-- Ana ekran widget'ları (yalnız Android)
-- Native geri sayım bildirimleri (iftar/sahur/vakit — yalnız Android)
-- Bildirim sesi olarak kendi müziğini seçme (iOS'ta sistem seçici yok)
-- Uygulama içi güncelleme teklifi (Play Core'a özgü)
-- Sessiz moddayken duyulan acil uyarı (iOS'ta AlarmKit ile gelecek — Faz 3)
+- Kendiliğinden açılan Namaz modu ve Rahatsız Etmeyin (iPhone'da yerine Odak + Kısayollar)
+- Wear OS saat, Google Drive eşitlemesi, uygulama içi güncelleme teklifi (Play Core)
+- iCloud eşitlemesi (kodda var, kullanıcıya kapalı)
+- iOS 26 öncesinde gerçek alarm (AlarmKit yok)
 
 ---
 
