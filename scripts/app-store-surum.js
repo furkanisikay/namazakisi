@@ -551,6 +551,14 @@ async function diller(a) {
             supportUrl: destek,
             ...(pazarlama ? { marketingUrl: pazarlama } : {}),
         };
+        // Apple, appInfo'ya yeni yerel eklenince surum yerellestirmesini de kendiliginden acar:
+        // yoksa listeyi yeniden oku (POST 409 "already exists" verir).
+        if (!mevcutVer[yerel]) {
+            const yeniden = await api('GET', '/v1/appStoreVersions/' + hedef.id + '/appStoreVersionLocalizations?limit=200');
+            if (yeniden.kod >= 300) hata('surum yerellestirmeleri okunamadi', yeniden);
+            const bulunan = yeniden.j.data.find((x) => x.attributes.locale === yerel);
+            if (bulunan) mevcutVer[yerel] = bulunan;
+        }
         if (mevcutVer[yerel]) {
             r = await api('PATCH', '/v1/appStoreVersionLocalizations/' + mevcutVer[yerel].id, {
                 data: { type: 'appStoreVersionLocalizations', id: mevcutVer[yerel].id, attributes: verAlan },
@@ -565,7 +573,7 @@ async function diller(a) {
             });
         }
         if (r.kod >= 300) hata(yerel + ' surum metni yazilamadi', r);
-        console.log('  ' + yerel + ': ' + k.name + (mevcutVer[yerel] ? '' : ' (yeni)'));
+        console.log('  ' + yerel + ': ' + k.name);
     }
     console.log('DILLER: ' + Object.keys(kayitlar).length + ' yerel yazildi (surum ' + a.surum + ', incelemeye gonderilince yayina girer)');
 }
